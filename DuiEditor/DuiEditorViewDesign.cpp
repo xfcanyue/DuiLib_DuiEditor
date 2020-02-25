@@ -161,10 +161,10 @@ void CDuiEditorViewDesign::InitView()
 	m_Manager.m_pCmdHistory = &m_cmdHistory;
 	m_Manager.m_pTreeView = GetDocument()->GetTreeView();
 
-	CPoint pos = GetScrollPosition();
-	CString temp;
-	temp.Format(_T("GetScrollPosition(), x=%d, y=%d"), pos.x, pos.y);
-	InsertMsg(temp);
+// 	CPoint pos = GetScrollPosition();
+// 	CString temp;
+// 	temp.Format(_T("GetScrollPosition(), x=%d, y=%d"), pos.x, pos.y);
+// 	InsertMsg(temp);
 
 	CUIWindow *pUiWindow;	
 //  	if(GetDocument()->m_bMenuWnd)
