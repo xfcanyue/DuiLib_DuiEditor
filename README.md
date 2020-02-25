@@ -1,5 +1,7 @@
 
-    首先说明的是, 使用DuiEditor编辑界面的前提是, 你要会手写. 比如DuiEditor并不会禁止在Window下面直接插入一个List.
+    首先说明的是, 设计器没有废弃。
+	
+	使用DuiEditor编辑界面的前提是, 你要会手写. 比如DuiEditor并不会禁止在Window下面直接插入一个List.
 
     由于duilib有许多的个人维护版本, 为了更大的兼容, 设计器从duilib.xml载入控件属性. 需要给设计器增加新控件的话, 只需要编辑duilib.xml就可以. 如果一个控件在duilib.xml定义, 但界面库没定义, 设计器依然可以编辑属性, 但无法预览. 
 
