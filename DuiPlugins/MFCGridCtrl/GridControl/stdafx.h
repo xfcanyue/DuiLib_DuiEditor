@@ -21,6 +21,7 @@
 #include <afxdisp.h>        // MFC 自动化类
 #endif // _AFX_NO_OLE_SUPPORT
 
+/*
 #ifndef _AFX_NO_DB_SUPPORT
 #include <afxdb.h>                      // MFC ODBC 数据库类
 #endif // _AFX_NO_DB_SUPPORT
@@ -28,6 +29,7 @@
 #ifndef _AFX_NO_DAO_SUPPORT
 #include <afxdao.h>                     // MFC DAO 数据库类
 #endif // _AFX_NO_DAO_SUPPORT
+*/
 
 #ifndef _AFX_NO_OLE_SUPPORT
 #include <afxdtctl.h>           // MFC 对 Internet Explorer 4 公共控件的支持
@@ -36,25 +38,6 @@
 #include <afxcmn.h>                     // MFC 对 Windows 公共控件的支持
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
-#define UILIB_PLUGIN_API __declspec(dllexport)
+#include "TinyXml2/tinyxml2.h"
 
-//#include "E:/Mylibrary/Duilib/Duilib/Duilib.h"
-
-#include "../DuiLib/UIlib.h"
-#ifdef _DEBUG
-#   ifdef _UNICODE
-#       pragma comment(lib, "../Lib/DuiLib_ud.lib")
-#   else
-#       pragma comment(lib, "../Lib/DuiLib_d.lib")
-#   endif
-#else
-#   ifdef _UNICODE
-#       pragma comment(lib, "../Lib/DuiLib_u.lib")
-#   else
-#       pragma comment(lib, "../Lib/DuiLib.lib")
-#   endif
-#endif
-using namespace DuiLib;
-
-#include "MFCGridCtrl/Include/GridControl.h"
-#include "CxImage/Include/image.h"
+#define XF_GRIDCONTROL_CTRL __declspec(dllexport)
