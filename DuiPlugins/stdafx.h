@@ -38,23 +38,6 @@
 
 #define UILIB_PLUGIN_API __declspec(dllexport)
 
-//#include "E:/Mylibrary/Duilib/Duilib/Duilib.h"
-
-#include "../DuiLib/UIlib.h"
-#ifdef _DEBUG
-#   ifdef _UNICODE
-#       pragma comment(lib, "../Lib/DuiLib_ud.lib")
-#   else
-#       pragma comment(lib, "../Lib/DuiLib_d.lib")
-#   endif
-#else
-#   ifdef _UNICODE
-#       pragma comment(lib, "../Lib/DuiLib_u.lib")
-#   else
-#       pragma comment(lib, "../Lib/DuiLib.lib")
-#   endif
-#endif
-using namespace DuiLib;
-
-#include "MFCGridCtrl/Include/GridControl.h"
+#include "../Duilib/Duilib.h"
+#include "GridControl/Include/GridControl.h"
 #include "CxImage/Include/image.h"

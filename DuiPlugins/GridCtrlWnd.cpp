@@ -58,16 +58,11 @@ LRESULT CGridCtrlWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		::GetClientRect(m_hWnd, &rcClient);
 		m_pGrid->MoveWindow(rcClient);
 
-		m_pGrid->ExpandColumnsToFit(TRUE);
+		//m_pGrid->ExpandColumnsToFit(TRUE);
 	}
 	else if(uMsg == WM_NOTIFY)
 	{
 		m_pOwner->OnGridNotify(uMsg, wParam, lParam);
-	}
-	else if(uMsg == WM_COMMAND)
-	{
-		int x = 0;
-		x++;
 	}
 
 	if( !bHandled ) return CWindowWnd::HandleMessage(uMsg, wParam, lParam);

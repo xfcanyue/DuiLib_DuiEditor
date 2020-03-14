@@ -1,22 +1,41 @@
 #pragma once
+
 class UILIB_PLUGIN_API CUIDataExchange
 {
 public:
-	enum _ddx_type
+	//绑定的数据类型
+	enum _ddx_value_type
 	{
-		_ddx_null = 0,
-		_ddx_int,
-		_ddx_duistring,
+		_value_null = 0,
+		_value_bool,
+		_value_BOOL,
+		_value_int,
+		_value_duistring,
 #ifdef _AFX
-		_ddx_cstring,
-		_ddx_coledatetime,
-		_ddx_colecurrency,
+		_value_cstring,
+		_value_coledatetime,
+		_value_colecurrency,
 #endif
 	};
+
+	//绑定的控件类型
+	enum _ddx_control_type
+	{
+		//无特殊标识的，拥有有意义的SetText()和GetText()的控件
+		_control_text = 0,  
+
+		//Option类控件
+		_control_checkbox, 
+
+		//combo控件
+		_control_combo,	
+	};
+
 	struct _ddx_data 
 	{
 		CControlUI *pControl;
-		_ddx_type type_;
+		_ddx_control_type controlType;
+		_ddx_value_type valueType;
 		PVOID pValue;
 	};
 public:
@@ -24,15 +43,13 @@ public:
 	virtual ~CUIDataExchange(void);
 
 	void ddxSetManager(CPaintManagerUI *pManager);
-
-	bool UpdateDataUI(bool bSaveAndValidate);
-
-	bool ddxText(CControlUI *pControl, PVOID pValue, _ddx_type type);
+	bool UpdateDataUI(bool bSaveAndValidate); //true: 界面>>变量; false: 变量>>界面
 
 	bool ddxText(CControlUI *pControl, CDuiString &va);
 	bool ddxText(LPCTSTR pControlName, CDuiString &va);
 	bool ddxText(CControlUI *pControl, int &va);
 	bool ddxText(LPCTSTR pControlName, int &va);
+
 #ifdef _AFX
 	bool ddxText(CControlUI *pControl, CString &va);
 	bool ddxText(LPCTSTR pControlName, CString &va);
@@ -42,7 +59,18 @@ public:
 	bool ddxText(LPCTSTR pControlName, COleCurrency &va);
 #endif
 
+	bool ddxCheckBox(CControlUI *pControl, bool &va);
+	bool ddxCheckBox(LPCTSTR pControlName, bool &va);
+	bool ddxCheckBox(CControlUI *pControl, BOOL &va);
+	bool ddxCheckBox(LPCTSTR pControlName, BOOL &va);
 
+	bool ddxCombo(CControlUI *pControl, int &va); //cursel
+	bool ddxCombo(LPCTSTR pControlName, int &va); //cursel
+protected:
+	bool ddxText(CControlUI *pControl, PVOID pValue, _ddx_value_type type);
+	bool _UpdateText(_ddx_data *pData, bool bSaveAndValidate);
+	bool _UpdateCheckBox(_ddx_data *pData, bool bSaveAndValidate);
+	bool _UpdateCombo(_ddx_data *pData, bool bSaveAndValidate);
 private:
 	CPaintManagerUI *m_pManager;
 	CStdPtrArray m_arrData;

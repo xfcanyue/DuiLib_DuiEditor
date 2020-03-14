@@ -521,10 +521,17 @@ void CGridCtrlUI::ExpandColumnsToFit(BOOL bExpandFixed)
 
 int  CGridCtrlUI::InsertRow(int rowPosition)
 {
+	int row = -1;
 	if(m_pWindow && m_pWindow->m_pGrid)
-		return m_pWindow->m_pGrid->InsertRow(_T(""), rowPosition);
+	{
+		row = m_pWindow->m_pGrid->InsertRow(_T(""), rowPosition);
+		if(row >= 0)
+		{
+			m_pWindow->m_pGrid->SetRowHeight(row, GetRowHeight());
+		}
+	}
 
-	return -1;
+	return row;
 }
 
 void CGridCtrlUI::SetHeaderTexts(LPCTSTR pstrValue)

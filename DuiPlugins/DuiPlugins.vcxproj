@@ -97,7 +97,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>.\DuiPlugins.def</ModuleDefinitionFile>
-      <OutputFile>../Bin/DuiPlugins_d.dll</OutputFile>
+      <OutputFile>../../Exec/DuiPlugins_d.dll</OutputFile>
       <ImportLibrary>
       </ImportLibrary>
     </Link>
@@ -122,7 +122,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>.\DuiPlugins.def</ModuleDefinitionFile>
-      <OutputFile>../Bin/DuiPlugins_ud.dll</OutputFile>
+      <OutputFile>../../Exec/DuiPlugins_ud.dll</OutputFile>
       <ImportLibrary>
       </ImportLibrary>
     </Link>
@@ -151,7 +151,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>.\DuiPlugins.def</ModuleDefinitionFile>
-      <OutputFile>../Bin/DuiPlugins.dll</OutputFile>
+      <OutputFile>../../Exec/DuiPlugins.dll</OutputFile>
       <ImportLibrary>
       </ImportLibrary>
     </Link>
@@ -180,7 +180,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>.\DuiPlugins.def</ModuleDefinitionFile>
-      <OutputFile>../Bin/DuiPlugins_u.dll</OutputFile>
+      <OutputFile>../../Exec/DuiPlugins_u.dll</OutputFile>
       <ImportLibrary>
       </ImportLibrary>
     </Link>
@@ -200,6 +200,7 @@
     <None Include="res\DuiPlugins.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ComboExUI.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">false</CompileAsManaged>
@@ -232,6 +233,7 @@
     <ClCompile Include="UIDataExchange.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ComboExUI.h" />
     <ClInclude Include="GridCtrlUI.h" />
     <ClInclude Include="GridCtrlWnd.h" />
     <ClInclude Include="ImageBoxUI.h" />

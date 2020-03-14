@@ -1,5 +1,5 @@
 #pragma once
-
+#include "StaticImageView.h"
 
 // CDlgCreateDuiDocument ¶Ô»°¿ò
 
@@ -20,7 +20,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	CListBox m_listBox;
-	CStatic m_staPicture;
+	CStaticImageView m_staPicture;
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnSelchangeList1();

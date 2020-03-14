@@ -214,6 +214,11 @@ void CUIPropertyGridAttributeListProperty::OnClickButton(CPoint point)
 		m_strClassName = _T("HorizontalLayout");
 	}
 
+	//comboµƒdropbox Ù–‘
+	else if(CompareString(GetName(), _T("dropbox")))
+	{
+		m_strClassName = _T("VerticalLayout");
+	}
 
 	if(m_strClassName.IsEmpty())
 		return;

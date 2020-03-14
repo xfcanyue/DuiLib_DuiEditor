@@ -20,6 +20,8 @@
 #include "UIWindowEx.h"
 #include "UIWindowMenu.h"
 
+#include "DlgTemplateSave.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -101,6 +103,8 @@ BEGIN_MESSAGE_MAP(CDuiEditorViewDesign, CScrollView)
 	ON_UPDATE_COMMAND_UI(ID_FORMAT_SHOW_UI_PREVIEW, &CDuiEditorViewDesign::OnUpdateFormatShowUiPreview)
 	ON_COMMAND_RANGE(ID_EDIT_DPI, ID_EDIT_DPI_200, OnSetDPI)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_DPI, ID_EDIT_DPI_200, OnUpdateSetDPI)
+	ON_COMMAND(ID_FILE_SAVE_TEMPLATE, &CDuiEditorViewDesign::OnFileSaveTemplate)
+	ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_TEMPLATE, &CDuiEditorViewDesign::OnUpdateFileSaveTemplate)
 END_MESSAGE_MAP()
 
 // CDuiEditorView 构造/析构
@@ -1181,4 +1185,29 @@ void CDuiEditorViewDesign::OnSetDPI(UINT id)
 void CDuiEditorViewDesign::OnUpdateSetDPI(CCmdUI *pCmdUI)
 {
 
+}
+
+void CDuiEditorViewDesign::OnFileSaveTemplate()
+{
+	CImage image;
+	CControlUI *pRoot = m_Manager.m_pUiWindow->GetManager()->GetRoot();
+	CSize szForm = m_Manager.m_pUiWindow->GetManager()->GetInitSize();
+	image.Create(szForm.cx, szForm.cy, 32);
+	CRect rcPaint(0,0,szForm.cx,szForm.cy);
+	pRoot->DoPaint(image.GetDC(), rcPaint, NULL);
+
+
+	CDlgTemplateSave dlg;
+	dlg.m_pDoc = m_Manager.GetDocument();
+	dlg.m_staPicture.SetPreviewImage(image);
+	image.ReleaseDC();
+
+	dlg.DoModal();
+
+}
+
+
+void CDuiEditorViewDesign::OnUpdateFileSaveTemplate(CCmdUI *pCmdUI)
+{
+	// TODO: 在此添加命令更新用户界面处理程序代码
 }

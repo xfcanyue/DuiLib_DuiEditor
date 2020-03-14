@@ -4,14 +4,15 @@
 #define UILIB_PLUGIN_API __declspec(dllimport)
 #endif
 
-#include "../MFCGridCtrl/Include/GridControl.h"
 #include "../CxImage/Include/image.h"
+#include "../GridControl/Include/GridControl.h"
 
+#include "../ComboExUI.h"
 #include "../GridCtrlUI.h"
 #include "../MsgWndUI.h"
 #include "../KeyBoardUI.h"
-#include "../UIDataExchange.h"
 #include "../ImageBoxUI.h"
+#include "../UIDataExchange.h"
 #include "../PictureControlUI.h"
 
 extern "C" __declspec(dllimport) void DuiPluginsRegister();

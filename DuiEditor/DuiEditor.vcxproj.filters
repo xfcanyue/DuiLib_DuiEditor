@@ -346,6 +346,12 @@
     <ClInclude Include="DlgStringEditor.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="StaticImageView.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgTemplateSave.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -499,6 +505,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DlgStringEditor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticImageView.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgTemplateSave.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

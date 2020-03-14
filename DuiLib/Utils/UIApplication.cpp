@@ -124,6 +124,7 @@ int CUIApplication::ExitInstance()
 
 void CUIApplication::InitResource()
 {
+	CPaintManagerUI::SetResourceType(m_resType);
 	// º”‘ÿ◊ ‘¥
 	switch(CPaintManagerUI::GetResourceType())
 	{

@@ -75,7 +75,6 @@
 #include "Layout/UIChildLayout.h"
 
 #include "Control/UIList.h"
-//#include "Control/UIGridCtrl.h" //add by liqs99
 #include "Control/UICombo.h"
 #include "Control/UIScrollBar.h"
 #include "Control/UITreeView.h"

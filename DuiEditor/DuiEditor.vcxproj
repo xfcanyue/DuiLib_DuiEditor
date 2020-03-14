@@ -68,21 +68,20 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\Bin\</OutDir>
+    <OutDir>..\..\..\Exec\</OutDir>
     <TargetName>$(ProjectName)d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\Bin\</OutDir>
+    <OutDir>..\..\Exec\</OutDir>
     <TargetName>DuiEditord</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\Bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\Bin\</OutDir>
+    <OutDir>..\..\Exec\</OutDir>
     <TargetName>DuiEditor</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -256,6 +255,7 @@
     <ClInclude Include="DlgInsertControl.h" />
     <ClInclude Include="DlgOptions.h" />
     <ClInclude Include="DlgStringEditor.h" />
+    <ClInclude Include="DlgTemplateSave.h" />
     <ClInclude Include="DockFileViewCtrl.h" />
     <ClInclude Include="DockFileViewWnd.h" />
     <ClInclude Include="DuiEditorViewCode.h" />
@@ -270,6 +270,7 @@
     <ClInclude Include="SciFind.h" />
     <ClInclude Include="ScriptEditorDoc.h" />
     <ClInclude Include="ScriptEditorView.h" />
+    <ClInclude Include="StaticImageView.h" />
     <ClInclude Include="StringToolExt.h" />
     <ClInclude Include="ThreadPipe.h" />
     <ClInclude Include="ThreadTest.h" />
@@ -311,6 +312,7 @@
     <ClCompile Include="DlgInsertControl.cpp" />
     <ClCompile Include="DlgOptions.cpp" />
     <ClCompile Include="DlgStringEditor.cpp" />
+    <ClCompile Include="DlgTemplateSave.cpp" />
     <ClCompile Include="DockFileViewCtrl.cpp" />
     <ClCompile Include="DockFileViewWnd.cpp" />
     <ClCompile Include="DuiEditorViewCode.cpp" />
@@ -325,6 +327,7 @@
     <ClCompile Include="SciFind.cpp" />
     <ClCompile Include="ScriptEditorDoc.cpp" />
     <ClCompile Include="ScriptEditorView.cpp" />
+    <ClCompile Include="StaticImageView.cpp" />
     <ClCompile Include="StringToolExt.cpp" />
     <ClCompile Include="ThreadPipe.cpp" />
     <ClCompile Include="ThreadTest.cpp" />

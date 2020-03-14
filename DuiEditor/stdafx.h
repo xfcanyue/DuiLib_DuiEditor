@@ -64,6 +64,7 @@
 #endif
 using namespace DuiLib;
 
+//#include "E:/Mylibrary/GridControl/Include/GridControl.h"
 #include "../DuiPlugins/Include/DuiPlugins.h"
 
 #include "scintilla/include/Scintilla.h"
@@ -73,6 +74,15 @@ using namespace DuiLib;
 #include "pugixml/pugixml.hpp"
 using namespace pugi;
 #define XML_PARSER_OPTIONS pugi::parse_full//parse_default|parse_declaration|parse_comments
+
+/*
+#include "../DuiLib/3rd/DuiAngelScript/include/angelscript.h"
+#ifdef _DEBUG
+#pragma comment(lib, "../DuiLib/3rd/DuiAngelScript/Lib/DuiAngelScriptd.lib")
+#else
+#pragma comment(lib, "../DuiLib/3rd/DuiAngelScript/Lib/DuiAngelScript.lib")
+#endif
+*/
 
 #include "MemDCEx.h"
 

@@ -50,6 +50,7 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 	return 1;   // È·¶¨
 }
 
+#include "ComboExUI.h"
 #include "GridCtrlUI.h"
 #include "MsgWndUI.h"
 #include "KeyBoardUI.h"
@@ -67,6 +68,7 @@ extern "C" __declspec(dllexport) void DuiPluginsRegister()
 	REGIST_DUICONTROL(CKeyBoardSimpleUI);
 	REGIST_DUICONTROL(CImageBoxUI);
 	REGIST_DUICONTROL(CPictureControlUI);
+	REGIST_DUICONTROL(CComboExUI);
 }
 
 extern "C" __declspec(dllexport) CControlUI *CreateControl(LPCTSTR pstrClass)
@@ -98,6 +100,10 @@ extern "C" __declspec(dllexport) CControlUI *CreateControl(LPCTSTR pstrClass)
 	else if( _tcscmp(pstrClass, _T("PictureControl")) == 0 ) 
 	{
 		return new CPictureControlUI;
+	}
+	else if( _tcscmp(pstrClass, _T("ComboEx")) == 0 ) 
+	{
+		return new CComboExUI;
 	}
 	return NULL;
 }

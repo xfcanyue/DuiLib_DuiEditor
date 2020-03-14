@@ -62,7 +62,8 @@ void CUIFrameWnd::ShowFullScreen() //全屏显示
 {
 	int screenX = ::GetSystemMetrics(SM_CXSCREEN);//获取整个屏幕右下角X坐标   
 	int screenY = ::GetSystemMetrics(SM_CYSCREEN);//屏幕Y坐标 
-	::SetWindowPos(GetHWND(), HWND_TOPMOST, 0, 0, screenX, screenY, SWP_SHOWWINDOW);
+	MoveWindow(GetHWND(), 0, 0, screenX, screenY, TRUE);
+	//::SetWindowPos(GetHWND(), HWND_TOPMOST, 0, 0, screenX, screenY, SWP_SHOWWINDOW);
 }
 
 LRESULT CUIFrameWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)

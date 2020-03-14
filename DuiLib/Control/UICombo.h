@@ -22,7 +22,7 @@ namespace DuiLib {
 		void DoInit();
 		UINT GetControlFlags() const;
 
-		CDuiString GetText() const;
+		virtual CDuiString GetText() const;
 		void SetEnabled(bool bEnable = true);
 
 		void SetTextStyle(UINT uStyle);

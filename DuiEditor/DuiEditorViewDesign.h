@@ -128,6 +128,8 @@ public:
 	afx_msg void OnUpdateFormatShowUiPreview(CCmdUI *pCmdUI);
 	afx_msg void OnSetDPI(UINT id);
 	afx_msg void OnUpdateSetDPI(CCmdUI *pCmdUI);
+	afx_msg void OnFileSaveTemplate();
+	afx_msg void OnUpdateFileSaveTemplate(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // DuiEditorView.cpp 中的调试版本
