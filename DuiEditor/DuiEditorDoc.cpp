@@ -57,154 +57,22 @@ CDuiEditorDoc::~CDuiEditorDoc()
 BOOL CDuiEditorDoc::OnNewDocument()
 {
 	CDlgCreateDuiDocument dlg;
-	if(dlg.DoModal() != IDOK)
-		return FALSE;
-/*
-	xml_node node, node1, node2, node3;
-
-	if(dlg.m_nCreateStyle == CREATE_DIALOG_WINDOW)
+	if(dlg.DoModal() == IDOK)
 	{
-		xml_node nodeWindow = m_doc.root().append_child(_T("Window"));
-		nodeWindow.append_attribute(_T("size")).set_value(_T("550,400"));
-		nodeWindow.append_attribute(_T("sizebox")).set_value(_T("4,4,6,6"));
-		nodeWindow.append_attribute(_T("caption")).set_value(_T("0,0,0,25"));
-		nodeWindow.append_attribute(_T("roundcorner")).set_value(_T("5,5"));
-
-		xml_node rootVert = nodeWindow.append_child(_T("VerticalLayout"));
-		rootVert.append_attribute(_T("inset")).set_value(_T("1,1,1,1"));
-		rootVert.append_attribute(_T("bkcolor")).set_value(_T("0xFFCFE7F4"));
-		rootVert.append_attribute(_T("bordercolor")).set_value(_T("0xFF768D9B"));
-		rootVert.append_attribute(_T("bordersize")).set_value(_T("1"));
-
-		//////////////////////////////////////////////////////////////////////////
-		//header
-		xml_node nodeHori = rootVert.append_child(_T("HorizontalLayout"));
-		nodeHori.append_attribute(_T("name")).set_value(_T("dialog_header"));
-		nodeHori.append_attribute(_T("height")).set_value(_T("25"));
-		nodeHori.append_attribute(_T("bkcolor")).set_value(_T("0xFFB8DFF2"));
-
-		node1 = nodeHori.append_child(_T("HorizontalLayout"));
-		node2 = node1.append_child(_T("Container"));
-		node2.append_attribute(_T("name")).set_value(_T("dialog_icon"));
-		node2.append_attribute(_T("width")).set_value(_T("25"));
-		node3 = node1.append_child(_T("Label"));
-		node3.append_attribute(_T("name")).set_value(_T("dialog_caption"));
-
-		node1 = nodeHori.append_child(_T("HorizontalLayout"));
-		node1.append_attribute(_T("width")).set_value(_T("97"));
-
-		node = node1.append_child(_T("FadeButton"));
-		node.append_attribute(_T("name")).set_value(_T("windowminbtn"));
-		node.append_attribute(_T("width")).set_value(_T("26"));
-		node.append_attribute(_T("height")).set_value(_T("17"));
-		node.append_attribute(_T("normalimage")).set_value(_T("file='image\\sys\\sys_dlg_min.png' source='52,0,78,17'"));
-		node.append_attribute(_T("hotimage")).set_value(_T("file='image\\sys\\sys_dlg_min.png' source='26,0,52,17'"));
-		node.append_attribute(_T("pushedimage")).set_value(_T("file='image\\sys\\sys_dlg_min.png' source='0,0,26,17'"));
-
-		node = node1.append_child(_T("FadeButton"));
-		node.append_attribute(_T("name")).set_value(_T("windowmaxbtn"));
-		node.append_attribute(_T("width")).set_value(_T("26"));
-		node.append_attribute(_T("height")).set_value(_T("17"));
-		node.append_attribute(_T("normalimage")).set_value(_T("file='image\\sys\\sys_dlg_max.png' source='52,0,78,17'"));
-		node.append_attribute(_T("hotimage")).set_value(_T("file='image\\sys\\sys_dlg_max.png' source='26,0,52,17'"));
-		node.append_attribute(_T("pushedimage")).set_value(_T("file='image\\sys\\sys_dlg_max.png' source='0,0,26,17'"));
-
-		node = node1.append_child(_T("FadeButton"));
-		node.append_attribute(_T("name")).set_value(_T("windowrestorebtn"));
-		node.append_attribute(_T("width")).set_value(_T("26"));
-		node.append_attribute(_T("height")).set_value(_T("17"));
-		node.append_attribute(_T("normalimage")).set_value(_T("file='image\\sys\\sys_dlg_restore.png' source='52,0,78,17'"));
-		node.append_attribute(_T("hotimage")).set_value(_T("file='image\\sys\\sys_dlg_restore.png' source='26,0,52,17'"));
-		node.append_attribute(_T("pushedimage")).set_value(_T("file='image\\sys\\sys_dlg_restore.png' source='0,0,26,17'"));
-		node.append_attribute(_T("visible")).set_value(false);
-
-		node = node1.append_child(_T("FadeButton"));
-		node.append_attribute(_T("name")).set_value(_T("windowclosebtn"));
-		node.append_attribute(_T("width")).set_value(_T("45"));
-		node.append_attribute(_T("height")).set_value(_T("17"));
-		node.append_attribute(_T("normalimage")).set_value(_T("file='image\\sys\\sys_dlg_close.png' source='90,0,135,17'"));
-		node.append_attribute(_T("hotimage")).set_value(_T("file='image\\sys\\sys_dlg_close.png' source='45,0,90,17'"));
-		node.append_attribute(_T("pushedimage")).set_value(_T("file='image\\sys\\sys_dlg_close.png' source='0,0,45,17'"));
-
-		//分割线1
-		nodeHori = rootVert.append_child(_T("HorizontalLayout"));
-		nodeHori.append_attribute(_T("height")).set_value(_T("2"));
-		node = nodeHori.append_child(_T("Control"));
-		node.append_attribute(_T("width")).set_value(_T("5"));
-		node = nodeHori.append_child(_T("HorizontalLayout"));
-		node.append_attribute(_T("bkcolor")).set_value(_T("0xFFB8DFF2"));
-		node.append_attribute(_T("bkcolor2")).set_value(_T("0xFFFFFFFF"));
-		node = nodeHori.append_child(_T("Control"));
-		node.append_attribute(_T("width")).set_value(_T("5"));
-
-		//body
-		nodeHori = rootVert.append_child(_T("HorizontalLayout"));
-		node = nodeHori.append_child(_T("Control"));
-		node.append_attribute(_T("width")).set_value(_T("5"));
-
-		node = nodeHori.append_child(_T("HorizontalLayout"));
-		node.append_attribute(_T("bkcolor")).set_value(_T("0xFFFFFFFF"));
-
-		node = nodeHori.append_child(_T("Control"));
-		node.append_attribute(_T("width")).set_value(_T("5"));
-
-		//分割线2
-		nodeHori = rootVert.append_child(_T("HorizontalLayout"));
-		nodeHori.append_attribute(_T("height")).set_value(_T("2"));
-		node = nodeHori.append_child(_T("Control"));
-		node.append_attribute(_T("width")).set_value(_T("5"));
-		node = nodeHori.append_child(_T("HorizontalLayout"));
-		node.append_attribute(_T("bkcolor")).set_value(_T("0xFFFFFFFF"));
-		node.append_attribute(_T("bkcolor2")).set_value(_T("0xFFCFE7F4"));
-		node = nodeHori.append_child(_T("Control"));
-		node.append_attribute(_T("width")).set_value(_T("5"));
-
-		nodeHori = rootVert.append_child(_T("HorizontalLayout"));
-		nodeHori.append_attribute(_T("name")).set_value(_T("dialog_bottom"));
-		nodeHori.append_attribute(_T("height")).set_value(_T("50"));
-		nodeHori.append_attribute(_T("inset")).set_value(_T("10,0,10,0"));
-		nodeHori.append_attribute(_T("childpadding")).set_value(_T("10"));
-		nodeHori.append_attribute(_T("childvalign")).set_value(_T("vcenter"));
-
-		node = nodeHori.append_child(_T("Control"));
-		node = nodeHori.append_child(_T("Button"));
-		node.append_attribute(_T("name")).set_value(_T("btn_ok"));
-		node.append_attribute(_T("width")).set_value(_T("100"));
-		node.append_attribute(_T("height")).set_value(_T("30"));
-		node.append_attribute(_T("hotbkcolor")).set_value(_T("0xFFB8CFE9"));
-		node.append_attribute(_T("pushedbkcolor")).set_value(_T("0xFFC9DDF6"));
-		node.append_attribute(_T("text")).set_value(_T("确定"));
-		node.append_attribute(_T("bkcolor")).set_value(_T("0xFFDDDDDD"));
-		node.append_attribute(_T("bordercolor")).set_value(_T("0xFF707070"));
-		node.append_attribute(_T("bordersize")).set_value(_T("1"));
-		node.append_attribute(_T("borderround")).set_value(_T("5,5"));
-		node = nodeHori.append_child(_T("Button"));
-		node.append_attribute(_T("name")).set_value(_T("btn_cancel"));
-		node.append_attribute(_T("width")).set_value(_T("100"));
-		node.append_attribute(_T("height")).set_value(_T("30"));
-		node.append_attribute(_T("hotbkcolor")).set_value(_T("0xFFB8CFE9"));
-		node.append_attribute(_T("pushedbkcolor")).set_value(_T("0xFFC9DDF6"));
-		node.append_attribute(_T("text")).set_value(_T("取消"));
-		node.append_attribute(_T("bkcolor")).set_value(_T("0xFFDDDDDD"));
-		node.append_attribute(_T("bordercolor")).set_value(_T("0xFF707070"));
-		node.append_attribute(_T("bordersize")).set_value(_T("1"));
-		node.append_attribute(_T("borderround")).set_value(_T("5,5"));
-
-		//nodeHori.append_attribute(_T("")).set_value(_T(""));
-	}
-*/
-
-	CString strFile = g_strAppPath + _T("DuiTemplate\\") + dlg.m_strModuleName + _T("\\skin.xml");
-	if(!m_doc.load_file(strFile))
-	{
-		AfxMessageBox(_T("载入模板页失败!"));
-		xml_node nodeWindow = m_doc.root().append_child(_T("Window"));
-		nodeWindow.append_attribute(_T("size")).set_value(_T("400,300"));
-		nodeWindow.append_child(_T("VerticalLayout"));
+		CString strFile = g_strAppPath + _T("DuiTemplate\\") + dlg.m_strModuleName + _T("\\skin.xml");
+		if(!m_doc.load_file(strFile))
+		{
+			AfxMessageBox(_T("载入模板页失败!"));
+			xml_node nodeWindow = m_doc.root().append_child(_T("Window"));
+			nodeWindow.append_attribute(_T("size")).set_value(_T("400,300"));
+			nodeWindow.append_child(_T("VerticalLayout"));
+		}
 	}
 	else
 	{
-		
+		xml_node nodeWindow = m_doc.child_auto(_T("Window"));
+		nodeWindow.append_attribute(_T("size")).set_value(_T("400,300"));
+		nodeWindow.append_child(_T("VerticalLayout"));
 	}
 
 	if (!CDocument::OnNewDocument())
