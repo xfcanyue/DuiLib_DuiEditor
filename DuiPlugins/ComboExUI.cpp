@@ -5,6 +5,8 @@
 IMPLEMENT_DUICONTROL(CComboExUI)
 CComboExUI::CComboExUI(void)
 {
+	m_szDropButtonSize.cx = 16;
+	m_szDropButtonSize.cy = 16;
 }
 
 
@@ -52,13 +54,6 @@ bool CComboExUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
 		else return true;
 	}
 
-// 	RECT rcBtn = m_rcItem;
-// 	rcBtn.top++;
-// 	rcBtn.bottom--;
-// 	rcBtn.right--;
-// 	rcBtn.left = rcBtn.right - (rcBtn.bottom - rcBtn.top);
-// 	::DrawFrameControl(hDC, &rcBtn, DFC_SCROLL, DFCS_SCROLLCOMBOBOX|DFCS_FLAT|DFCS_MONO);
-
 	return true;
 }
 
@@ -70,7 +65,7 @@ bool CComboExUI::DrawDropButtonImage(HDC hDC, LPCTSTR pStrImage, LPCTSTR pStrMod
 	rc.right--;
 	rc.left = rc.right - (rc.bottom - rc.top);
 
-	SIZE sz = {16,16};
+	SIZE sz = m_szDropButtonSize;
 	RECT rcButton;
 	rcButton.left = rc.left + (rc.right - rc.left)/2 - sz.cx/2;
 	rcButton.right = rcButton.left + sz.cx;
@@ -102,11 +97,19 @@ void CComboExUI::SetText(LPCTSTR pstrText)
 
 void CComboExUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 {
-	if( _tcsicmp(pstrName, _T("dbnormalimage")) == 0 ) SetdbNormalImage(pstrValue);
-	else if( _tcsicmp(pstrName, _T("dbhotimage")) == 0 ) SetdbHotImage(pstrValue);
-	else if( _tcsicmp(pstrName, _T("dbpushedimage")) == 0 ) SetdbPushedImage(pstrValue);
-	else if( _tcsicmp(pstrName, _T("dbfocusedimage")) == 0 ) SetdbFocusedImage(pstrValue);
-	else if( _tcsicmp(pstrName, _T("dbdisabledimage")) == 0 ) SetdbDisabledImage(pstrValue);
+	if( _tcsicmp(pstrName, _T("dropbuttonsize")) == 0 )
+	{
+		SIZE cx = { 0 };
+		LPTSTR pstr = NULL;
+		cx.cx = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
+		cx.cy = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);
+		m_szDropButtonSize = cx;
+	}
+	else if( _tcsicmp(pstrName, _T("dropbuttonnormalimage")) == 0 ) SetdbNormalImage(pstrValue);
+	else if( _tcsicmp(pstrName, _T("dropbuttonhotimage")) == 0 ) SetdbHotImage(pstrValue);
+	else if( _tcsicmp(pstrName, _T("dropbuttonpushedimage")) == 0 ) SetdbPushedImage(pstrValue);
+	else if( _tcsicmp(pstrName, _T("dropbuttonfocusedimage")) == 0 ) SetdbFocusedImage(pstrValue);
+	else if( _tcsicmp(pstrName, _T("dropbuttondisabledimage")) == 0 ) SetdbDisabledImage(pstrValue);
 	else CComboUI::SetAttribute(pstrName, pstrValue);
 }
 

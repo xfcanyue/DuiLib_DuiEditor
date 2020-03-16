@@ -259,6 +259,67 @@ BOOL CUIManager::UpdateControlUI(xml_node node)
 
 BOOL CUIManager::UpdateControlUI(xml_node node, xml_attribute attr)
 {
+	//更新Style属性
+	if(CompareString(node.name(), _T("Style")))
+	{
+		CString strStyleName = node.attribute(_T("name")).as_string();
+		CString strStyleValue = node.attribute(_T("value")).as_string();
+		bool bShared = node.attribute(_T("shared")).as_bool();
+		GetManager()->AddStyle(strStyleName, strStyleValue, bShared);
+		return TRUE;
+	}
+
+	//更新Font属性
+	if( CompareString(node.name(), _T("Font")) )
+	{
+		int id = -1;
+		LPCTSTR pFontName = NULL;
+		int size = 12;
+		bool bold = false;
+		bool underline = false;
+		bool italic = false;
+		bool defaultfont = false;
+		bool shared = false;
+
+		LPCTSTR pstrName = NULL;
+		LPCTSTR pstrValue = NULL;
+		LPTSTR pstr = NULL;
+
+		for( xml_attribute attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
+			pstrName = attr.name();
+			pstrValue = attr.value();
+			if( _tcsicmp(pstrName, _T("id")) == 0 ) {
+				id = _tcstol(pstrValue, &pstr, 10);
+			}
+			else if( _tcsicmp(pstrName, _T("name")) == 0 ) {
+				pFontName = pstrValue;
+			}
+			else if( _tcsicmp(pstrName, _T("size")) == 0 ) {
+				size = _tcstol(pstrValue, &pstr, 10);
+			}
+			else if( _tcsicmp(pstrName, _T("bold")) == 0 ) {
+				bold = (_tcsicmp(pstrValue, _T("true")) == 0);
+			}
+			else if( _tcsicmp(pstrName, _T("underline")) == 0 ) {
+				underline = (_tcsicmp(pstrValue, _T("true")) == 0);
+			}
+			else if( _tcsicmp(pstrName, _T("italic")) == 0 ) {
+				italic = (_tcsicmp(pstrValue, _T("true")) == 0);
+			}
+			else if( _tcsicmp(pstrName, _T("default")) == 0 ) {
+				defaultfont = (_tcsicmp(pstrValue, _T("true")) == 0);
+			}
+			else if( _tcsicmp(pstrName, _T("shared")) == 0 ) {
+				shared = (_tcsicmp(pstrValue, _T("true")) == 0);
+			}
+		}
+		if( id >= 0 ) {
+			GetManager()->AddFont(id, pFontName, size, bold, underline, italic, shared);
+			if( defaultfont ) GetManager()->SetDefaultFont(pFontName, GetManager()->GetDPIObj()->Scale(size), bold, underline, italic, shared);
+		}
+	}
+
+
 	CControlUI *pControl = (CControlUI *)node.get_tag();
 	if(pControl)
 	{

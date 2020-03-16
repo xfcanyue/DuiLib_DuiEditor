@@ -3844,17 +3844,19 @@ namespace DuiLib {
 	void CPaintManagerUI::AddStyle(LPCTSTR pName, LPCTSTR pDeclarationList, bool bShared)
 	{
 		CDuiString* pStyle = new CDuiString(pDeclarationList);
+		if(!pStyle) return;
 
-		if(bShared || m_bForceUseSharedRes){
-			if( !m_SharedResInfo.m_StyleHash.Insert(pName, pStyle) ) {
-				delete pStyle;
-			}
+		if(bShared || m_bForceUseSharedRes)
+		{
+			//用于设计器重新打开文件 和 即时更新Style定义。 modify by liqs99
+			CDuiString *pOldStyle = static_cast<CDuiString*>(m_SharedResInfo.m_StyleHash.Set(pName, pStyle));
+			if(pOldStyle) delete pOldStyle;
 		}
 		else
 		{
-			if( !m_ResInfo.m_StyleHash.Insert(pName, pStyle) ) {
-				delete pStyle;
-			}
+			//用于设计器重新打开文件 和 即时更新Style定义。 modify by liqs99
+			CDuiString *pOldStyle = static_cast<CDuiString*>(m_ResInfo.m_StyleHash.Set(pName, pStyle));
+			if(pOldStyle) delete pOldStyle;
 		}
 	}
 

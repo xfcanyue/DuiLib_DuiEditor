@@ -799,9 +799,26 @@ void CUIPropertyGridCtrl::OnPropertyChanged(CMFCPropertyGridProperty* pProp) con
 	if(pProp->GetValue().vt == VT_EMPTY || pProp->GetValue().vt == VT_NULL)
 		return;
 
+	//特别处理Style的修改
+	if( CompareString(m_TreeNode.name(), _T("Style")) )
+	{
+		if( CompareString(attrName.value(), _T("shared")) )
+		{
+			//修改Style的shared属性, 应该把原来的remove掉
+			BOOL bShared = m_TreeNode.attribute(_T("shared")).as_bool();
+			BOOL bSharedNew = pProp->GetValue().boolVal != 0;
+			CDuiEditorViewDesign *pView = GetView();
+			if(pView)
+			{
+				CString strStyleName = m_TreeNode.attribute(_T("name")).as_string();
+				bool bShared = m_TreeNode.attribute(_T("shared")).as_bool();
+				pView->m_Manager.GetManager()->RemoveStyle(strStyleName, bShared);
+			}
+		}
+	}
+
 	if(CompareString(attrType.value(), _T("INT")))
 	{
-		//attrTree.set_value(pProp->GetValue().intVal);
 		attrTree = g_duiProp.AddAttribute(m_TreeNode, attrName.value(), pProp->GetValue().intVal, GetView());
 	}
 	else if(CompareString(attrType.value(), _T("DWORD")))
@@ -867,8 +884,12 @@ void CUIPropertyGridCtrl::OnPropertyChanged(CMFCPropertyGridProperty* pProp) con
 		attrTree = g_duiProp.AddAttribute(m_TreeNode, attrName.value(), (LPCTSTR)pProp->GetValue().bstrVal, GetView());
 	}
 
-	CDuiEditorViewDesign *pView = GetView();
-	if(pView)	pView->m_Manager.UpdateControlUI(m_TreeNode, attrTree);
+ 	CDuiEditorViewDesign *pView = GetView();
+	if(pView)
+	{
+		pView->m_Manager.UpdateControlUI(m_TreeNode, attrTree);
+		pView->Invalidate();
+	}
 
 	g_duiProp.FilterDefaultValue(m_TreeNode);
 

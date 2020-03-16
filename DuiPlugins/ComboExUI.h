@@ -15,7 +15,6 @@ public:
 
 	virtual void SetText(LPCTSTR pstrText);
 
-
 	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 
 	LPCTSTR GetdbNormalImage() const;
@@ -29,6 +28,7 @@ public:
 	LPCTSTR GetdbDisabledImage() const;
 	void SetdbDisabledImage(LPCTSTR pStrImage);
 
+	CSize m_szDropButtonSize;
 	CDuiString m_dbNormalImage;
 	CDuiString m_dbHotImage;
 	CDuiString m_dbPushedImage;
