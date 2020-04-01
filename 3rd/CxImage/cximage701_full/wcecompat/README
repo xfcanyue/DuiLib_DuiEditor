@@ -1,0 +1,42 @@
+wcecompat: Windows CE C Runtime Library "compatibility" library.
+Copyright (C) 2001-2002 Essemer Pty Ltd.  All rights reserved.
+
+This software is licensed under the terms and conditions in the LICENSE file.
+
+Contact: Steven Reddie (smr@essemer.com.au)
+         Essemer Pty Ltd
+         http://www.essemer.com.au/
+
+
+This is a work in progress.  You will no doubt find that the code here is a
+real mess at the moment, but it does work.  A cleaner version will be available
+shortly, keep an eye on the website.
+
+
+Building
+--------
+
+To build, set the environment variables with one of the batch files installed
+with eVC, and then invoke nmake.
+
+Two libraries are built:
+
+* wcecompat.lib
+* wcecompatex.lib
+
+In this initial release, both libraries are identical and contain the
+functionality that is meant for wcecompatex.lib.  This library contains
+features to support stdin/stdout/stderr and their redirection.  The first
+library will in the future be a leaner library without these features.
+Whilst both libraries will be suitable for releasable applications it is
+assumed that some people will not want these extra features outside of
+debugging, and therefore the cutdown version will be provided.
+
+
+Todo
+----
+
+Build a version that doesn't contain the stdin/stdout/stderr support.
+
+Finish and cleanup implementation of existing functions, particularly
+the stream IO.

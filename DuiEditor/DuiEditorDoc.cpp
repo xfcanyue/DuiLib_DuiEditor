@@ -56,6 +56,7 @@ CDuiEditorDoc::~CDuiEditorDoc()
 
 BOOL CDuiEditorDoc::OnNewDocument()
 {
+/*
 	CDlgCreateDuiDocument dlg;
 	if(dlg.DoModal() == IDOK)
 	{
@@ -74,6 +75,11 @@ BOOL CDuiEditorDoc::OnNewDocument()
 		nodeWindow.append_attribute(_T("size")).set_value(_T("400,300"));
 		nodeWindow.append_child(_T("VerticalLayout"));
 	}
+	*/
+
+	xml_node nodeWindow = m_doc.child_auto(_T("Window"));
+	nodeWindow.append_attribute(_T("size")).set_value(_T("400,300"));
+	nodeWindow.append_child(_T("VerticalLayout"));
 
 	if (!CDocument::OnNewDocument())
 		return FALSE;
@@ -82,6 +88,26 @@ BOOL CDuiEditorDoc::OnNewDocument()
 	// (SDI 文档将重用该文档)
 
 	GetTreeView()->InitTreeContent();
+	m_strDefaultTitle = m_strTitle;
+	return TRUE;
+}
+
+BOOL CDuiEditorDoc::OnNewDocumentFromUiTemplate()
+{
+	CDlgCreateDuiDocument dlg;
+	if(dlg.DoModal() != IDOK) return FALSE;
+	
+	CString strFile = g_strAppPath + _T("DuiTemplate\\") + dlg.m_strModuleName + _T("\\skin.xml");
+	if(!m_doc.load_file(strFile))
+	{
+		AfxMessageBox(_T("载入模板页失败!"));
+		xml_node nodeWindow = m_doc.root().append_child(_T("Window"));
+		nodeWindow.append_attribute(_T("size")).set_value(_T("400,300"));
+		nodeWindow.append_child(_T("VerticalLayout"));
+	}	
+	
+	GetTreeView()->InitTreeContent();
+	m_strDefaultTitle = m_strTitle;
 	return TRUE;
 }
 
@@ -294,6 +320,40 @@ BOOL CDuiEditorDoc::OnSaveDocument(LPCTSTR lpszPathName)
 void CDuiEditorDoc::OnCloseDocument()
 {
 	CDocument::OnCloseDocument();
+}
+
+void CDuiEditorDoc::SetModifiedFlag(BOOL bModified)
+{
+	if(m_bModified != bModified)
+	{
+		CString strTitle;
+		if(GetPathName().IsEmpty())
+		{
+			strTitle = m_strDefaultTitle;
+		}
+		else
+		{
+			LPCTSTR lpszPathName = (LPCTSTR)GetPathName();
+
+			// always capture the complete file name including extension (if present)
+			LPTSTR lpszTemp = (LPTSTR)lpszPathName;
+			for (LPCTSTR lpsz = lpszPathName; *lpsz != '\0'; lpsz = _tcsinc(lpsz))
+			{
+				// remember last directory/drive separator
+				if (*lpsz == '\\' || *lpsz == '/' || *lpsz == ':')
+					lpszTemp = (LPTSTR)_tcsinc(lpsz);
+			}
+
+			strTitle = lpszTemp;
+		}
+
+		if(bModified)
+			SetTitle(strTitle + " *");
+		else
+			SetTitle(strTitle);
+	}
+
+	__super::SetModifiedFlag(bModified);
 }
 
 CDuiEditorViewDesign *CDuiEditorDoc::GetDesignView() const

@@ -100,8 +100,9 @@ void CSciFind::OnOK()
 	if(((CButton *)GetDlgItem(IDC_RADIO3))->GetCheck())
 		s_nFindDirection = 2;
 
-	CStringA strFindTextA = CStringToolExt::CStrT2CStrA(s_strFindText);
-	CStringA strReplaceTextA = CStringToolExt::CStrT2CStrA(s_strReplaceText);
+	LSSTRING_CONVERSION;
+	CStringA strFindTextA = LST2UTF8(s_strFindText);
+	CStringA strReplaceTextA = LST2UTF8(s_strReplaceText);
 
 	Sci_TextToFind ttf;
 	ttf.lpstrText = (char *)(const char *)strFindTextA;
@@ -184,7 +185,8 @@ void CSciFind::OnBtnRepaceCurrent()
 	if(!UpdateData(TRUE))
 		return;
 
-	CStringA strReplaceTextA = CStringToolExt::CStrT2CStrA(s_strReplaceText);
+	LSSTRING_CONVERSION;
+	CStringA strReplaceTextA = LST2UTF8(s_strReplaceText);
 	if(strReplaceTextA.IsEmpty())	
 		return;
 
@@ -208,12 +210,13 @@ void CSciFind::OnBtnReplaceAll()
 	if(((CButton *)GetDlgItem(IDC_RADIO3))->GetCheck())
 		s_nFindDirection = 2;
 
-	CStringA strFindTextA = CStringToolExt::CStrT2CStrA(s_strFindText);
+	LSSTRING_CONVERSION;
+	CStringA strFindTextA = LST2UTF8(s_strFindText);
 	{
 		GetDlgItem(IDC_STATIC_TEXT_FIND)->SetWindowText(_T("查找内容不允许为空"));
 		return;
 	}
-	CStringA strReplaceTextA = CStringToolExt::CStrT2CStrA(s_strReplaceText);
+	CStringA strReplaceTextA = LST2UTF8(s_strReplaceText);
 	if(strReplaceTextA.IsEmpty())	
 	{
 		GetDlgItem(IDC_STATIC_TEXT_REPLACE)->SetWindowText(_T("替换内容不允许为空"));
@@ -265,8 +268,9 @@ void CSciFind::OnBtnReplaceAll()
 void CSciFind::OnBnClickedBtnFindNext()
 {
 	if(!UpdateData(TRUE))	return;
-	CStringA strFindTextA = CStringToolExt::CStrT2CStrA(s_strFindText);
-	CStringA strReplaceTextA = CStringToolExt::CStrT2CStrA(s_strReplaceText);
+	LSSTRING_CONVERSION;
+	CStringA strFindTextA = LST2UTF8(s_strFindText);
+	CStringA strReplaceTextA = LST2UTF8(s_strReplaceText);
 
 	Sci_TextToFind ttf;
 	ttf.lpstrText = (char *)(const char *)strFindTextA;
@@ -313,8 +317,9 @@ void CSciFind::OnBnClickedBtnFindPre()
 	if(((CButton *)GetDlgItem(IDC_RADIO3))->GetCheck())
 		s_nFindDirection = 2;
 
-	CStringA strFindTextA = CStringToolExt::CStrT2CStrA(s_strFindText);
-	CStringA strReplaceTextA = CStringToolExt::CStrT2CStrA(s_strReplaceText);
+	LSSTRING_CONVERSION;
+	CStringA strFindTextA = LST2UTF8(s_strFindText);
+	CStringA strReplaceTextA = LST2UTF8(s_strReplaceText);
 
 	Sci_TextToFind ttf;
 	ttf.lpstrText = (char *)(const char *)strFindTextA;

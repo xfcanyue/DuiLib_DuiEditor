@@ -5,11 +5,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DuiEditor", "DuiEditor\DuiE
 	ProjectSection(ProjectDependencies) = postProject
 		{AEBE2742-393C-489D-962E-94B52CC02114} = {AEBE2742-393C-489D-962E-94B52CC02114}
 		{1F020C88-31A7-406F-91D8-DB65C36BF428} = {1F020C88-31A7-406F-91D8-DB65C36BF428}
+		{37877FB6-4668-440C-8F5F-B8884F1A0C68} = {37877FB6-4668-440C-8F5F-B8884F1A0C68}
 		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E} = {E106ACD7-4E53-4AEE-942B-D0DD426DB34E}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DuiPreviewer", "DuiEditor\DuiPreviewer\DuiPreviewer.vcxproj", "{1F020C88-31A7-406F-91D8-DB65C36BF428}"
 	ProjectSection(ProjectDependencies) = postProject
+		{AEBE2742-393C-489D-962E-94B52CC02114} = {AEBE2742-393C-489D-962E-94B52CC02114}
+		{37877FB6-4668-440C-8F5F-B8884F1A0C68} = {37877FB6-4668-440C-8F5F-B8884F1A0C68}
 		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E} = {E106ACD7-4E53-4AEE-942B-D0DD426DB34E}
 	EndProjectSection
 EndProject
@@ -19,6 +22,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DuiPlugins", "DuiPlugins\Du
 	ProjectSection(ProjectDependencies) = postProject
 		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E} = {E106ACD7-4E53-4AEE-942B-D0DD426DB34E}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DuiScript", "DuiScript\DuiScript.vcxproj", "{37877FB6-4668-440C-8F5F-B8884F1A0C68}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E} = {E106ACD7-4E53-4AEE-942B-D0DD426DB34E}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DuiAngelScript", "3rd\DuiAngelScript\DuiAngelScript\DuiAngelScript.vcxproj", "{B6520A5A-2B32-4E28-A111-1486755054FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -84,6 +94,30 @@ Global
 		{AEBE2742-393C-489D-962E-94B52CC02114}.UnicodeRelease|Win32.ActiveCfg = UnicodeRelease|Win32
 		{AEBE2742-393C-489D-962E-94B52CC02114}.UnicodeRelease|Win32.Build.0 = UnicodeRelease|Win32
 		{AEBE2742-393C-489D-962E-94B52CC02114}.UnicodeRelease|x64.ActiveCfg = Release|Win32
+		{37877FB6-4668-440C-8F5F-B8884F1A0C68}.Debug|Win32.ActiveCfg = Debug|Win32
+		{37877FB6-4668-440C-8F5F-B8884F1A0C68}.Debug|Win32.Build.0 = Debug|Win32
+		{37877FB6-4668-440C-8F5F-B8884F1A0C68}.Debug|x64.ActiveCfg = Debug|Win32
+		{37877FB6-4668-440C-8F5F-B8884F1A0C68}.Release|Win32.ActiveCfg = Release|Win32
+		{37877FB6-4668-440C-8F5F-B8884F1A0C68}.Release|Win32.Build.0 = Release|Win32
+		{37877FB6-4668-440C-8F5F-B8884F1A0C68}.Release|x64.ActiveCfg = Release|Win32
+		{37877FB6-4668-440C-8F5F-B8884F1A0C68}.UnicodeDebug|Win32.ActiveCfg = UnicodeDebug|Win32
+		{37877FB6-4668-440C-8F5F-B8884F1A0C68}.UnicodeDebug|Win32.Build.0 = UnicodeDebug|Win32
+		{37877FB6-4668-440C-8F5F-B8884F1A0C68}.UnicodeDebug|x64.ActiveCfg = UnicodeDebug|Win32
+		{37877FB6-4668-440C-8F5F-B8884F1A0C68}.UnicodeRelease|Win32.ActiveCfg = UnicodeRelease|Win32
+		{37877FB6-4668-440C-8F5F-B8884F1A0C68}.UnicodeRelease|Win32.Build.0 = UnicodeRelease|Win32
+		{37877FB6-4668-440C-8F5F-B8884F1A0C68}.UnicodeRelease|x64.ActiveCfg = UnicodeRelease|Win32
+		{B6520A5A-2B32-4E28-A111-1486755054FF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B6520A5A-2B32-4E28-A111-1486755054FF}.Debug|Win32.Build.0 = Debug|Win32
+		{B6520A5A-2B32-4E28-A111-1486755054FF}.Debug|x64.ActiveCfg = Debug|Win32
+		{B6520A5A-2B32-4E28-A111-1486755054FF}.Release|Win32.ActiveCfg = Release|Win32
+		{B6520A5A-2B32-4E28-A111-1486755054FF}.Release|Win32.Build.0 = Release|Win32
+		{B6520A5A-2B32-4E28-A111-1486755054FF}.Release|x64.ActiveCfg = Release|Win32
+		{B6520A5A-2B32-4E28-A111-1486755054FF}.UnicodeDebug|Win32.ActiveCfg = Debug|Win32
+		{B6520A5A-2B32-4E28-A111-1486755054FF}.UnicodeDebug|Win32.Build.0 = Debug|Win32
+		{B6520A5A-2B32-4E28-A111-1486755054FF}.UnicodeDebug|x64.ActiveCfg = Debug|Win32
+		{B6520A5A-2B32-4E28-A111-1486755054FF}.UnicodeRelease|Win32.ActiveCfg = Release|Win32
+		{B6520A5A-2B32-4E28-A111-1486755054FF}.UnicodeRelease|Win32.Build.0 = Release|Win32
+		{B6520A5A-2B32-4E28-A111-1486755054FF}.UnicodeRelease|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

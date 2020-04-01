@@ -131,7 +131,7 @@ void CGridCtrlUI::DoInit()
 			pGrid->SetFont(&ft);
 			ft.Detach();
 
-			pGrid->CellDef().SetTextClr(UIRGB_2_RGB(m_dwTextColor));
+			pGrid->CellDef().SetTextClr(UIARGB_2_RGB(m_dwTextColor));
 
 			pGrid->SetVirtualMode(m_bVirtualGrid);
 
@@ -150,7 +150,7 @@ void CGridCtrlUI::DoInit()
 			pGrid->SetHighLightTextClr(RGB(UIARGB_GetRValue(m_crHighLightTextClr), UIARGB_GetGValue(m_crHighLightTextClr), UIARGB_GetBValue(m_crHighLightTextClr)));
 
 			pGrid->SetFrameFocusCell(m_bFocusCellBorder);		//选中单元格外边框
-			pGrid->SetFrameFocusCellColor(UIRGB_2_RGB(m_dwFocusCellBorderColor));		//选中单元格外边框
+			pGrid->SetFrameFocusCellColor(UIARGB_2_RGB(m_dwFocusCellBorderColor));		//选中单元格外边框
 
 			pGrid->SetEditable(m_bEditable);
 			pGrid->SetSingleRowSelection(m_bSingleRowSelection);

@@ -153,11 +153,14 @@ namespace DuiLib {
 			}
 		}
 
-		// 调整DPI资源
-		if (paintManager->GetDPIObj()->GetScale() != 100) {
-			CDuiString sScale;
-			sScale.Format(_T("@%d."), paintManager->GetDPIObj()->GetScale());
-			sImageName.Replace(_T("."), sScale);
+		if(paintManager->GetDPIObj()->IsAdjustDPIRecource()) //Modify by liqs99
+		{
+			// 调整DPI资源
+			if (paintManager->GetDPIObj()->GetScale() != 100) {
+				CDuiString sScale;
+				sScale.Format(_T("@%d."), paintManager->GetDPIObj()->GetScale());
+				sImageName.Replace(_T("."), sScale);
+			}
 		}
 	}
 	void tagTDrawInfo::Clear()
@@ -199,6 +202,11 @@ namespace DuiLib {
 	CStdPtrArray CPaintManagerUI::m_aPreMessages;
 	CStdPtrArray CPaintManagerUI::m_aPlugins;
 
+
+	CREATE_SCRIPT_ENGINE_INSTANCE CPaintManagerUI::m_funCreateScriptEngine = NULL;	//add by liqs99
+	DELETE_SCRIPT_ENGINE_INSTANCE CPaintManagerUI::m_funDeleteScriptEngine = NULL;	//add by liqs99
+	IScriptEngine* CPaintManagerUI::m_pSharedScriptEngine = NULL;					//add by liqs99
+
 	CPaintManagerUI::CPaintManagerUI() :
 	m_hWndPaint(NULL),
 		m_hDcPaint(NULL),
@@ -233,7 +241,8 @@ namespace DuiLib {
 		m_bDragMode(false),
 		m_hDragBitmap(NULL),
 		m_pDPI(NULL),
-		m_iHoverTime(400UL)
+		m_iHoverTime(400UL),
+		m_pScriptEngine(NULL) // add by liqs99
 	{
 		if (m_SharedResInfo.m_DefaultFontInfo.sFontName.IsEmpty())
 		{
@@ -292,6 +301,12 @@ namespace DuiLib {
 
 	CPaintManagerUI::~CPaintManagerUI()
 	{
+		//卸载脚本引擎
+		if(m_funDeleteScriptEngine)
+		{
+			(*m_funDeleteScriptEngine)(m_pScriptEngine);
+		}
+
 		// Delete the control-tree structures
 		for( int i = 0; i < m_aDelayedCleanup.GetSize(); i++ ) delete static_cast<CControlUI*>(m_aDelayedCleanup[i]);
 		m_aDelayedCleanup.Resize(0);
@@ -2021,6 +2036,11 @@ namespace DuiLib {
 
 	void CPaintManagerUI::Term()
 	{
+		//卸载脚本引擎
+		if(m_funDeleteScriptEngine){
+			(*m_funDeleteScriptEngine)(m_pSharedScriptEngine);
+		}
+
 		// 销毁资源管理器
 		CResourceManager::GetInstance()->Release();
 		CControlFactory::GetInstance()->Release();
@@ -2087,6 +2107,7 @@ namespace DuiLib {
 			CloseZip((HZIP)m_hResourceZip);
 			m_hResourceZip = NULL;
 		}
+
 	}
 
 	CDPI * DuiLib::CPaintManagerUI::GetDPIObj()
@@ -2123,6 +2144,16 @@ namespace DuiLib {
 			CPaintManagerUI* pManager = static_cast<CPaintManagerUI*>(m_aPreMessages[i]);
 			pManager->SetDPI(iDPI);
 		}
+	}
+
+	void DuiLib::CPaintManagerUI::SetAdjustDPIRecource(bool bAdjust) //是否动态调整DPI资源, add by liqs99
+	{
+		CDPI::SetAdjustDPIRecource(bAdjust);
+	}
+
+	bool DuiLib::CPaintManagerUI::IsAdjustDPIRecource() //是否动态调整DPI资源, add by liqs99
+	{
+		return CDPI::IsAdjustDPIRecource();
 	}
 
 	void DuiLib::CPaintManagerUI::ResetDPIAssets()
@@ -4160,5 +4191,85 @@ namespace DuiLib {
 			GlobalUnlock(medium.hGlobal);
 		}
 		return true; //let base free the medium
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	// 脚本
+	//////////////////////////////////////////////////////////////////////////
+	void CPaintManagerUI::RegisterScriptEngine(CREATE_SCRIPT_ENGINE_INSTANCE pFunCreate, DELETE_SCRIPT_ENGINE_INSTANCE pFunDelete)
+	{
+		m_funCreateScriptEngine = pFunCreate;
+		m_funDeleteScriptEngine = pFunDelete;
+	}
+
+	IScriptEngine *CPaintManagerUI::GetScriptEngine(bool bShared)
+	{
+		ASSERT(m_funCreateScriptEngine);
+		if(m_funCreateScriptEngine == NULL)	return NULL;
+
+		if(bShared)
+		{
+			if(m_pSharedScriptEngine == NULL)
+				m_pSharedScriptEngine = (*m_funCreateScriptEngine)();
+			return m_pSharedScriptEngine;
+		}
+
+		if(m_pScriptEngine == NULL)
+			m_pScriptEngine = (*m_funCreateScriptEngine)();
+		return m_pScriptEngine;
+	}
+
+	void CPaintManagerUI::AddScriptCode(LPCTSTR pScriptCode, LPCTSTR pLanguageType, bool bShared)
+	{
+		IScriptEngine *pScriptEngine = GetScriptEngine(bShared);
+		if(pScriptEngine == NULL) return;
+		pScriptEngine->AddScriptCode(pScriptCode);
+	}
+
+	void CPaintManagerUI::AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pLanguageType, bool bShared)
+	{
+		IScriptEngine *pScriptEngine = GetScriptEngine(bShared);
+		if(pScriptEngine == NULL) return;
+		pScriptEngine->AddScriptFile(pstrFileName);
+	}
+
+	void CPaintManagerUI::CompileScript()
+	{
+		if(m_pScriptEngine) m_pScriptEngine->CompileScript();
+		if(m_pSharedScriptEngine) m_pSharedScriptEngine->CompileScript();
+	}
+
+	bool CPaintManagerUI::ExecuteScript(LPCTSTR funName, CControlUI *pControl)
+	{
+		IScriptEngine *pScriptEngine = GetScriptEngine(false);
+		if(pScriptEngine)
+		{
+			if(!pScriptEngine->ExecuteScript(funName, pControl))
+			{
+				pScriptEngine = GetScriptEngine(true);
+				if(!pScriptEngine) return false;
+				if(!pScriptEngine->ExecuteScript(funName, pControl)) return false;
+			}
+		}
+		else return false;
+
+		return true;
+	}
+
+	bool CPaintManagerUI::ExecuteScript(LPCTSTR funName, CControlUI *pControl, TEventUI *ev)
+	{
+		IScriptEngine *pScriptEngine = GetScriptEngine(false);
+		if(pScriptEngine)
+		{
+			if(!pScriptEngine->ExecuteScript(funName, pControl, ev))
+			{
+				pScriptEngine = GetScriptEngine(true);
+				if(!pScriptEngine) return false;
+				if(!pScriptEngine->ExecuteScript(funName, pControl, ev)) return false;
+			}
+		}
+		else return false;
+
+		return true;
 	}
 } // namespace DuiLib

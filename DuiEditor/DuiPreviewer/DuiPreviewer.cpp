@@ -5,6 +5,9 @@
 #include "DuiPreviewer.h"
 #include "WinMain.h"
 #include "DuiPreviewerWnd.h"
+#include "locale.h"
+
+#include "../LsStringConverter.h"
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
@@ -23,12 +26,13 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	HANDLE  m_hOutput = NULL;
 
 	int argc = 0;
-	LPWSTR *argv = CommandLineToArgvW(lpCmdLine, &argc);
+	LSSTRING_CONVERSION;
+	LPWSTR *argv = CommandLineToArgvW(LST2W(lpCmdLine), &argc);
 
 	//解析命令行参数
 	for (int i=0; i<argc; i++)
 	{
-		CString cmdline = argv[i];
+		CString cmdline = LSW2T(argv[i]);
 		if(cmdline.Find(_T("-f")) >= 0)
 		{
 			cmdline.Delete(0,2);
@@ -87,6 +91,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 #else
 	CPaintManagerUI::LoadPlugin(_T("DuiPlugins_u.dll"));
 #endif
+
+	DuiScriptRegister();
+
 	CPaintManagerUI::SetInstance(hInstance);
 	CPaintManagerUI::SetResourcePath(strSkinPath);
 
@@ -107,6 +114,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	{
 		
 	}
+
+	DuiScriptUnRegister();
 	
 	CoUninitialize();
 

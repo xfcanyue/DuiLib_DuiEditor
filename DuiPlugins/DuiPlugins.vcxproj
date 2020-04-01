@@ -218,6 +218,7 @@
     <ClCompile Include="DuiPlugins.cpp" />
     <ClCompile Include="GridCtrlUI.cpp" />
     <ClCompile Include="GridCtrlWnd.cpp" />
+    <ClCompile Include="IconButton.cpp" />
     <ClCompile Include="ImageBoxUI.cpp" />
     <ClCompile Include="KeyBoardSimpleUI.cpp" />
     <ClCompile Include="KeyBoardNumberUI.cpp" />
@@ -236,6 +237,7 @@
     <ClInclude Include="ComboExUI.h" />
     <ClInclude Include="GridCtrlUI.h" />
     <ClInclude Include="GridCtrlWnd.h" />
+    <ClInclude Include="IconButton.h" />
     <ClInclude Include="ImageBoxUI.h" />
     <ClInclude Include="Include\DuiPlugins.h" />
     <ClInclude Include="KeyBoardSimpleUI.h" />

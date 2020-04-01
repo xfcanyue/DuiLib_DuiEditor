@@ -6,7 +6,7 @@
 #include "DlgOptions.h"
 #include "afxdialogex.h"
 
-
+#include "MainFrm.h"
 // CDlgOptions 对话框
 
 IMPLEMENT_DYNAMIC(CDlgOptions, CDialogEx)
@@ -29,6 +29,7 @@ void CDlgOptions::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK1, m_bUpdateSizeWhenModifyPos);
 	DDX_Text(pDX, IDC_EDIT1, m_nTreeDeep);
 	DDX_Text(pDX, IDC_EDIT2, m_strAttachTestCommand);
+	DDX_Control(pDX, IDC_MFCCOLORBUTTON1, m_ctrlBkColor);
 }
 
 
@@ -55,6 +56,8 @@ BOOL CDlgOptions::OnInitDialog()
 
 	m_strAttachTestCommand = g_strAttachTestCommand;
 
+	m_ctrlBkColor.SetColor(g_crBkDesign);
+
 	UpdateData(FALSE);
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
@@ -72,6 +75,15 @@ void CDlgOptions::OnBnClickedOk()
 	{
 		g_strAttachTestCommand = m_strAttachTestCommand;
 		AfxGetApp()->WriteProfileString(_T("Options"), _T("TestCommand"), g_strAttachTestCommand);
+	}
+
+	g_crBkDesign = m_ctrlBkColor.GetColor();
+	AfxGetApp()->WriteProfileInt(_T("Options"), _T("DegsignBackColor"), g_crBkDesign);
+
+	CDuiEditorViewDesign *pView = ((CMainFrame *)AfxGetMainWnd())->GetActiveUIView();
+	if(pView)
+	{
+		pView->Invalidate();
 	}
 
 	CDialogEx::OnOK();

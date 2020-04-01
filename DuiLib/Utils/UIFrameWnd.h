@@ -23,8 +23,7 @@ public:
 
 	void ShowFullScreen(); //»´∆¡œ‘ æ
 public:
-	virtual LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-
+	virtual void InitWindow(){}
 	virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
 	virtual LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	virtual LRESULT HandleMenuCommandMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -36,8 +35,11 @@ public:
 
 	virtual LRESULT OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
+protected:
+	virtual void __InitWindow();
 public:
 	CUIApplication *m_pApplication;
+
 protected:
 	std::list<CUIForm *>	m_listForm;
 };

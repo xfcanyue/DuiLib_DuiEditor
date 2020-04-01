@@ -8,12 +8,12 @@
 #endif
 
 #include "resource.h"       // 主符号
-#include "StringToolExt.h"
 #include "DuiPropertyFile.h"
 #include "DuiEditorCommandHistory.h"
 
 extern CString g_strAppPath;							//应用程序路径
 extern CString g_strAttachTestCommand;					//附加测试窗体程序
+extern COLORREF g_crBkDesign;
 extern CDuiPropertyFile g_duiProp;
 
 inline BOOL CompareString(LPCTSTR str1, LPCTSTR str2)
@@ -128,10 +128,8 @@ public:
 	afx_msg void OnFileNew();
 	afx_msg void OnFileOpen();
 	afx_msg void OnFileNewXml();
+	afx_msg void OnFileNewXmlFromTemplate();
 	afx_msg void OnFileNewAsScript();
-	afx_msg void OnFileOpenXml();
-	afx_msg void OnFileOpenAsScript();
-	afx_msg void OnUpdateFileNewAsScript(CCmdUI *pCmdUI);
 };
 
 extern CDuiEditorApp theApp;

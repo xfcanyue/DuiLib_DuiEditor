@@ -24,7 +24,7 @@ void CUIPropertyGridStringProperty::OnClickButton(CPoint point)
 	m_bButtonIsDown = TRUE;
 	Redraw();
 
-	CString strOldValue = GetValue().bstrVal;
+	CString strOldValue = COLE2CT(GetValue().bstrVal);
 	CDlgStringEditor dlg;
 //	dlg.m_pMainProp = this;
 	dlg.m_string = strOldValue;
@@ -153,7 +153,7 @@ void CUIPropertyGridImageProperty::OnClickButton(CPoint point)
 	m_bButtonIsDown = TRUE;
 	Redraw();
 
-	CString strOldValue = GetValue().bstrVal;
+	CString strOldValue = COLE2CT(GetValue().bstrVal);
 	CImageEditor dlg;
 	dlg.m_pParentGrid = m_pWndList;
 	dlg.m_pParentProp = this;
@@ -224,7 +224,7 @@ void CUIPropertyGridAttributeListProperty::OnClickButton(CPoint point)
 		return;
 
 	CDefaultEditor dlg;
-	dlg.SetAttributeValue(m_strClassName, GetValue().bstrVal);
+	dlg.SetAttributeValue(m_strClassName, COLE2CT(GetValue().bstrVal));
 	if(dlg.DoModal() == IDOK)
 	{
 		SetValue((_variant_t)(LPCTSTR)dlg.GetAttributeValue());

@@ -177,7 +177,7 @@ void CImageEditorFrame::OnSelectedFile(LPCTSTR lpstrPathName)
 	}
 	else
 	{
-		MessageBoxA(NULL, "只能使用当前目录或者子目录的文件", "ERROR", MB_OK);
+		::MessageBoxA(NULL, "只能使用当前目录或者子目录的文件", "ERROR", MB_OK);
 		return;
 	}
 

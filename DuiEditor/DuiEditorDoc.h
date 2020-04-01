@@ -30,6 +30,7 @@ public:
 // 重写
 public:
 	virtual BOOL OnNewDocument();
+	virtual BOOL OnNewDocumentFromUiTemplate();
 	virtual void Serialize(CArchive& ar);
 #ifdef SHARED_HANDLERS
 	virtual void InitializeSearchContent();
@@ -42,6 +43,7 @@ public:
 
 protected:
 	CDockControlTreeCtrl *m_pTreeView;
+	CString m_strDefaultTitle;
 // 生成的消息映射函数
 protected:
 	DECLARE_MESSAGE_MAP()
@@ -56,6 +58,7 @@ public:
 	virtual BOOL DoFileSave();
 	virtual BOOL OnSaveDocument(LPCTSTR lpszPathName);
 	virtual void OnCloseDocument();
+	virtual void SetModifiedFlag(BOOL bModified = TRUE);
 	afx_msg void OnFileReopen();
 	afx_msg void OnEditXml();
 	afx_msg void OnUpdateEditXml(CCmdUI *pCmdUI);

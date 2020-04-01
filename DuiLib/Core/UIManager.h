@@ -203,6 +203,18 @@ namespace DuiLib {
 		virtual LRESULT TranslateAccelerator(MSG *pMsg) = 0;
 	};
 
+	//duilib script interface  add by liqs99
+	class UILIB_API IScriptEngine
+	{
+	public:
+		virtual bool AddScriptCode(LPCTSTR pScriptCode) = 0;
+		virtual bool AddScriptFile(LPCTSTR pstrFileName) = 0;
+		virtual bool CompileScript() = 0;
+		virtual bool ExecuteScript(LPCTSTR funName, CControlUI *pControl) = 0;
+		virtual bool ExecuteScript(LPCTSTR funName, CControlUI *pControl, TEventUI *ev) = 0;
+	};
+	typedef IScriptEngine* (__stdcall *CREATE_SCRIPT_ENGINE_INSTANCE)();
+	typedef void (__stdcall *DELETE_SCRIPT_ENGINE_INSTANCE)(IScriptEngine *pEngine);
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
@@ -432,6 +444,8 @@ namespace DuiLib {
 		void RebuildFont(TFontInfo* pFontInfo);
 		void SetDPI(int iDPI);
 		static void SetAllDPI(int iDPI);
+		static void SetAdjustDPIRecource(bool bAdjust); //是否动态调整DPI资源, add by liqs99
+		static bool IsAdjustDPIRecource(); //是否动态调整DPI资源, add by liqs99
 
 		bool MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& lRes);
 		bool PreMessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& lRes);
@@ -564,7 +578,26 @@ namespace DuiLib {
 		void SetInitWindowParameter(bool bInit) { m_bInitWindowParameter = bInit; }
 	private:
 		bool m_bInitWindowParameter; //是否已经初始化了Window属性, window属性只能初始化一次,用来过滤Include文件中的window属性 Modify by liqs99
+		
 
+
+	//////////////////////////////////////////////////////////////////////////
+	// 脚本
+	//////////////////////////////////////////////////////////////////////////
+	public:
+		static void RegisterScriptEngine(CREATE_SCRIPT_ENGINE_INSTANCE pFunCreate, DELETE_SCRIPT_ENGINE_INSTANCE pFunDelete);
+
+		IScriptEngine *GetScriptEngine(bool bShared = false);
+		void AddScriptCode(LPCTSTR pScriptCode, LPCTSTR pLanguageType, bool bShared = false);
+		void AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pLanguageType, bool bShared = false);
+		void CompileScript();
+		bool ExecuteScript(LPCTSTR funName, CControlUI *pControl);
+		bool ExecuteScript(LPCTSTR funName, CControlUI *pControl, TEventUI *ev);
+	private:
+		IScriptEngine *m_pScriptEngine;
+		static IScriptEngine *m_pSharedScriptEngine;
+		static CREATE_SCRIPT_ENGINE_INSTANCE m_funCreateScriptEngine;
+		static DELETE_SCRIPT_ENGINE_INSTANCE m_funDeleteScriptEngine;
 	};
 
 } // namespace DuiLib

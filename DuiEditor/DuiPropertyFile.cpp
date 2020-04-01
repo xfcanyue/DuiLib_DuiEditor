@@ -2,7 +2,7 @@
 #include "DuiEditor.h"
 #include "DuiPropertyFile.h"
 
-
+#include <typeinfo>
 
 CDuiPropertyFile::CDuiPropertyFile(void)
 {
@@ -231,6 +231,10 @@ UINT CDuiPropertyFile::GetControlIconIndex(xml_node nodeDoc)
 	{
 		return TREENODETYPE_COMBO;
 	}
+	else if(CompareString(nodeName, _T("ComboEx")))
+	{
+		return TREENODETYPE_COMBO;
+	}
 	else if(CompareString(nodeName, _T("Container")))
 	{
 		return TREENODETYPE_CONTAINER;
@@ -288,6 +292,10 @@ UINT CDuiPropertyFile::GetControlIconIndex(xml_node nodeDoc)
 		return TREENODETYPE_SLIDER;
 	}
 	else if(CompareString(nodeName, _T("TabLayout")))
+	{
+		return TREENODETYPE_TABLAYOUT;
+	}
+	else if(CompareString(nodeName, _T("AnimationTabLayout")))
 	{
 		return TREENODETYPE_TABLAYOUT;
 	}

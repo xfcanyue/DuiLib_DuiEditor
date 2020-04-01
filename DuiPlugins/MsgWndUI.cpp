@@ -16,18 +16,9 @@ void CMsgWndUI::InsertMsg(LPCTSTR pstring, COLORREF cr)
 		_Time.wHour, _Time.wMinute, _Time.wSecond, _Time.wMilliseconds, 
 		pstring);
 
-// 	m_pStaticWindow->InsertText(-1, strRet);
-// 	m_pStaticWindow->InsertText(-1, _T("\r\n"));
-// 	m_pStaticWindow->TxSendMessage(WM_VSCROLL, SB_BOTTOM, 0,0);
-
 	CDuiString *pNewString = new CDuiString;
 	*pNewString = strRet;
 	m_pStaticWindow->GetManager()->SendNotify(m_pStaticWindow, _T("CMsgWndUI::InsertMsg"), 0, (LPARAM)pNewString, true);
-
-// 	TCHAR *pString = new TCHAR[strRet.GetLength()+1];
-// 	_tcscpy(pString)
-// 	m_pStaticWindow->GetManager()->SendNotify(m_pStaticWindow, _T("CMsgWndUI::InsertMsg"), 0, (LPARAM)pstring, true);
-
 }
 
 IMPLEMENT_DUICONTROL(CMsgWndUI)
@@ -80,8 +71,7 @@ bool CMsgWndUI::OnInsertMsg(void* param)
 	TNotifyUI* pMsg = (TNotifyUI*)param;
 	if(_tcsicmp(pMsg->sType, _T("CMsgWndUI::InsertMsg")) == 0) 
 	{
-		//CMsgWndUI* pItem		= static_cast<CMsgWndUI*>(pMsg->pSender);
-		CDuiString *pString = (CDuiString *)(pMsg->lParam); //static_cast<CString *>(pMsg->wParam);
+		CDuiString *pString = (CDuiString *)(pMsg->lParam);
 		InsertText(-1, *pString);
 		InsertText(-1, _T("\r\n"));
 		TxSendMessage(WM_VSCROLL, SB_BOTTOM, 0,0);

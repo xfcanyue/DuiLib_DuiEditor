@@ -4,6 +4,7 @@
 
 #define TVI_BEFORE              ((HTREEITEM)(ULONG_PTR)-0x0FFFC)
 #define TVI_NEXT                ((HTREEITEM)(ULONG_PTR)-0x0FFFB)
+#define TVI_CHILD                ((HTREEITEM)(ULONG_PTR)-0x0FFFA)
 
 class CUIManager;
 class CDockControlTreeCtrl : public CTreeCtrl

@@ -461,8 +461,8 @@ namespace DuiLib {
 		data->bAlpha = bAlphaChannel;
 		return data;
 	}
-#ifdef USE_XIMAGE_EFFECT
-	static DWORD LoadImage2Memory(const STRINGorID &bitmap, LPCTSTR type,LPBYTE &pData)
+
+	DWORD CRenderEngine::LoadImage2Memory(const STRINGorID &bitmap, LPCTSTR type,LPBYTE &pData)
 	{
 		assert(pData == NULL);
 		pData = NULL;
@@ -505,10 +505,10 @@ namespace DuiLib {
 						CDuiString sFilePwd = CPaintManagerUI::GetResourceZipPwd();
 #ifdef UNICODE
 						char* pwd = w2a((wchar_t*)sFilePwd.GetData());
-						hz = OpenZip((void*)sFile.GetData(), pwd);
+						hz = OpenZip(sFile.GetData(), pwd);
 						if(pwd) delete[] pwd;
 #else
-						hz = OpenZip((void*)sFile.GetData(), sFilePwd.GetData());
+						hz = OpenZip(sFile.GetData(), sFilePwd.GetData());
 #endif
 					}
 					if( hz == NULL ) break;
@@ -520,7 +520,7 @@ namespace DuiLib {
 					dwSize = ze.unc_size;
 					if( dwSize == 0 ) break;
 					pData = new BYTE[ dwSize ];
-					int res = UnzipItem(hz, i, pData, dwSize, 3);
+					int res = UnzipItem(hz, i, pData, dwSize);
 					if( res != 0x00000000 && res != 0x00000600)
 					{
 						delete[] pData;
@@ -578,6 +578,7 @@ namespace DuiLib {
 		}
 		return dwSize;
 	}
+#ifdef USE_XIMAGE_EFFECT
 	CxImage* CRenderEngine::LoadGifImageX(STRINGorID bitmap, LPCTSTR type , DWORD mask)
 	{
 		//write by wangji

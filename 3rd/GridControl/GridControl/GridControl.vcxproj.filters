@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="头文件\ExcelFile">
+      <UniqueIdentifier>{b03fc5b0-aaa9-45ac-89e3-a8f0cc2370d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\ExcelFile">
+      <UniqueIdentifier>{d26feb30-11d4-4d86-b0f5-d802780d14a4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+    <None Include="GridControl.def">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="res\GridControl.rc2">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="ClassDiagram1.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GridCell.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GridCellBase.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GridCtrl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GridDropTarget.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="InPlaceEdit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleTip.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CellType\GridCellCheck.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CellType\GridCellCombo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CellType\GridCellDateTime.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CellType\GridCellNumeric.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CellType\GridURLCell.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TinyXml2\tinyxml2.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ExcelFile\ExcelFile.cpp">
+      <Filter>源文件\ExcelFile</Filter>
+    </ClCompile>
+    <ClCompile Include="ExcelFile\ExcelRangeEx.cpp">
+      <Filter>源文件\ExcelFile</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleTip.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CellRange.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GridCell.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GridCtrl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GridDropTarget.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GridMemDC.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="InPlaceEdit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CellType\GridCellCheck.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CellType\GridCellCombo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CellType\GridCellDateTime.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CellType\GridCellNumeric.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CellType\GridURLCell.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GridCellBase.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TinyXml2\tinyxml2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ExcelFile\CExcelBorder.h">
+      <Filter>头文件\ExcelFile</Filter>
+    </ClInclude>
+    <ClInclude Include="ExcelFile\ExcelSheets.h">
+      <Filter>头文件\ExcelFile</Filter>
+    </ClInclude>
+    <ClInclude Include="ExcelFile\CExcelBorders.h">
+      <Filter>头文件\ExcelFile</Filter>
+    </ClInclude>
+    <ClInclude Include="ExcelFile\ExcelApplication.h">
+      <Filter>头文件\ExcelFile</Filter>
+    </ClInclude>
+    <ClInclude Include="ExcelFile\ExcelBook.h">
+      <Filter>头文件\ExcelFile</Filter>
+    </ClInclude>
+    <ClInclude Include="ExcelFile\ExcelBooks.h">
+      <Filter>头文件\ExcelFile</Filter>
+    </ClInclude>
+    <ClInclude Include="ExcelFile\ExcelCnterior.h">
+      <Filter>头文件\ExcelFile</Filter>
+    </ClInclude>
+    <ClInclude Include="ExcelFile\ExcelFile.h">
+      <Filter>头文件\ExcelFile</Filter>
+    </ClInclude>
+    <ClInclude Include="ExcelFile\ExcelRange.h">
+      <Filter>头文件\ExcelFile</Filter>
+    </ClInclude>
+    <ClInclude Include="ExcelFile\ExcelRangeEx.h">
+      <Filter>头文件\ExcelFile</Filter>
+    </ClInclude>
+    <ClInclude Include="ExcelFile\ExcelSheet.h">
+      <Filter>头文件\ExcelFile</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GridControl.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

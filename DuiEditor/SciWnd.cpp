@@ -112,8 +112,6 @@ BOOL CSciWnd::LoadFile(LPCTSTR szPath)
 	if(!file.Open(szPath, CFile::modeRead))	return FALSE;
 	UINT buflen = (UINT)file.GetLength();
 
-	TCHAR test[255] = L"12345";
-
 	TCHAR *pBuffer = new TCHAR[buflen+1];
 	memset(pBuffer, 0, sizeof(TCHAR)*(buflen+1));
 	file.Read((void *)pBuffer, buflen);

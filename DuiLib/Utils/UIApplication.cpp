@@ -52,12 +52,13 @@ void CUIApplication::SetResType_ZIP(LPCTSTR pstrPath, LPCTSTR pstrZip, bool bCac
 	m_zipPassword = password;
 }
 
-void CUIApplication::SetResType_ZipResource(LPCTSTR pstrPath, UINT resID, LPCTSTR type)
+void CUIApplication::SetResType_ZipResource(LPCTSTR pstrPath, LPCTSTR password, UINT resID, LPCTSTR type)
 {
 	m_resType = UILIB_ZIPRESOURCE;
 	m_strSkinPath = pstrPath;
 	m_uZipResourceID = resID;
 	m_strZipResourceType = type;
+	m_zipPassword = password;
 }
 
 bool CUIApplication::InitInstance(HINSTANCE hInstance)
@@ -161,7 +162,7 @@ void CUIApplication::InitResource()
 				if( hGlobal != NULL ) {
 					dwSize = ::SizeofResource(CPaintManagerUI::GetResourceDll(), hResource);
 					if( dwSize > 0 ) {
-						CPaintManagerUI::SetResourceZip((LPBYTE)::LockResource(hGlobal), dwSize);
+						CPaintManagerUI::SetResourceZip((LPBYTE)::LockResource(hGlobal), dwSize, m_zipPassword);
 						// 加载资源管理器
 						CResourceManager::GetInstance()->LoadResource(_T("res.xml"), NULL);
 					}

@@ -1,0 +1,699 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="属性列表.xslt"?>
+<!-- 如有遗漏，欢迎补充：qdtroy(qdtroy@qq.com) -->
+<!-- 落魄书生  53751267@qq.com
+
+1, Attribute节点增加value属性, 标注取值范围, 目前只有STRING类型有用到. 
+例如 
+<Attribute name="itemalign" default="center" type="STRING" value="left、right、center" comment=""/>
+<Attribute name="value" default="" type="ATTRIBUTELIST" value="类名" />
+
+2, 图片节点的type属性, 改为IMAGE. 否则程序不能识别为图片属性.
+例如 <Attribute name="bkimage" default="" type="IMAGE" comment=""/>
+
+3, 编辑软件工具箱列出的控件, parent必须是Control, 祖宗是Control也可以.
+   可以在文档中添加控件和属性. 要遵循现有的规则.
+   
+4, Default节点多了一个属性类型ATTRIBUTELIST
+<Default>
+		<Attribute name="name" default="" type="STRING" comment="控件名称"/>
+		<Attribute name="shared" default="false" type="BOOL" comment="是否共享"/>
+		<Attribute name="value" default="" type="ATTRIBUTELIST" comment="控件默认参数"/>
+</Default>
+
+ -->
+<Controls>
+	<Window parent="">
+		<Attribute name="size" default="0,0" type="SIZE" comment="窗口的初始化大小,如(800,600)" />
+		<Attribute name="sizebox" default="0,0,0,0" type="RECT" comment="窗口可拖动改变窗口大小的边距,如(4,4,6,6)" />
+		<Attribute name="caption" default="0,0,0,0" type="RECT" comment="窗口可拖动的标题栏大小的边距,最后一个参数是指离上边框的距离,如(0,0,0,28)" />
+		<Attribute name="roundcorner" default="0,0" type="SIZE" comment="窗口圆角大小,如(4,4)" />
+		<Attribute name="mininfo" default="0,0" type="SIZE" comment="窗口最小大小,如(320,240)" />
+		<Attribute name="maxinfo" default="0,0" type="SIZE" comment="窗口最大大小,如(1600,1200)" />
+		<Attribute name="showdirty" default="false" type="BOOL" comment="ShowUpdateRect显示更新区域" />
+		<Attribute name="alpha" default="255" type="INT" comment="窗口的alpha值(0-255),如(100)" />
+		<Attribute name="layeredopacity" default="255" type="INT" comment="分层不透明的 值(0-255)" />
+		<Attribute name="bktrans" default="false" type="BOOL" comment="窗口是否使用静态透明背景,如(false)" />
+		<Attribute name="layeredimage" default="" type="IMAGE" comment="静态透明背景图片,如(false)" />
+		<Attribute name="disabledfontcolor" default="0xFFA7A6AA" type="DWORD" comment="默认的disabled字体颜色,如(0xFFA7A6AA)" />
+		<Attribute name="defaultfontcolor" default="0xFF000000" type="DWORD" comment="默认的字体颜色,如(0xFF000000)" />
+		<Attribute name="linkfontcolor" default="0xFF0000FF" type="DWORD" comment="默认的link字体颜色,如(0xFF0000FF)" />
+		<Attribute name="linkhoverfontcolor" default="0xFFD3215F" type="DWORD" comment="默认的linkhoverfont字体颜色,如(0xFFD3215F)" />
+		<Attribute name="selectedcolor" default="0xFFBAE4FF" type="DWORD" comment="默认的selected字体颜色,如(0xFFBAE4FF)" />
+		<Attribute name="showshadow" default="false" type="BOOL" comment="是否启用窗体阴影" />
+		<Attribute name="shadowimage" default="" type="IMAGE" comment="阴影图片，使用此属性后自动屏蔽算法阴影(不支持source等属性设置)" />
+		<Attribute name="shadowcorner" default="0,0,0,0" type="RECT" comment="图片阴影的九宫格描述" />
+		<Attribute name="shadowsize" default="0" type="INT" comment="算法阴影的宽度(-20到20)" />
+		<Attribute name="shadowsharpness" default="255" type="INT" comment="算法阴影的锐度" />
+		<Attribute name="shadowdarkness" default="255" type="INT" comment="算法阴影的深度(相当于透明度)" />
+		<Attribute name="shadowposition" default="0,0" type="SIZE" comment="算法阴影的偏移量" />
+		<Attribute name="shadowcolor" default="0x000000" type="DWORD" comment="算法阴影的颜色，RGB格式，不支持透明度，使用shadowdarkness设置透明度" />
+		<Attribute name="gdiplustext" default="false" type="BOOL" comment="是否用gdi+渲染文字（抗锯齿效果更好，默认开启，但是效率低）" />
+		<Attribute name="textrenderinghint" default="0" type="int" comment="gdi+渲染文字提示（0-5），字体大的时候可以设置为4" />
+	</Window>
+	<Include>
+		<Attribute name="source" default="" type="STRING" comment="XML布局文件" />
+		<Attribute name="count" default="" type="INT" comment="嵌入的次数" />
+	</Include>
+	<ChildLayout parent="Container">
+		<Attribute name="xmlfile" default="" type="STRING" comment="子窗体XML布局文件" />
+	</ChildLayout>
+	<Control parent="" notifies="setfocus killfocus timer menu windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
+		<Attribute name="pos" default="0,0,0,0" type="RECT" comment="位置，如果为float控件则指定位置和大小，否则只指定大小,如(0,0,100,100)" />
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="float" default="false" type="BOOL" comment="是否使用绝对定位,如(true)" />
+		<Attribute name="floatalign" default="" type="STRING" value="left,right,center,top,bottom,vcenter" comment="用于控制float控件先对于父控件的对齐方式（left\center\right、top\vcenter\bottom）" />		
+		<Attribute name="padding" default="0,0,0,0" type="RECT" comment="外边距,如(2,2,2,2)" />
+		<Attribute name="gradient" default="" type="STRING" value="hor" comment="梯度" />
+		<Attribute name="bkcolor" default="0x00000000" type="DWORD" comment="背景颜色,如(0xFFFF0000)" />
+		<Attribute name="bkcolor2" default="0x00000000" type="DWORD" comment="背景渐变色2,和bkcolor配合使用,如(0xFFFFFF00)" />
+		<Attribute name="bkcolor3" default="0x00000000" type="DWORD" comment="背景渐变色3,和bkcolor、bkcolor2配合使用,如(0xFFFF00FF)" />
+		<Attribute name="forecolor" default="0x00000000" type="DWORD" comment="" />	
+		<Attribute name="nativebkcolor" default="0x00000000" type="DWORD" comment="获得...的背景颜色,如(0xFFFF0000)" />
+		<Attribute name="colorhsl" default="false" type="BOOL" comment="本控件的颜色是否随窗口的hsl变化而变化,如(false)" />
+		<Attribute name="bordercolor" default="0x00000000" type="DWORD" comment="边框颜色,如(0xFF000000)" />
+		<Attribute name="focusbordercolor" default="0x00000000" type="DWORD" comment="获得焦点时边框的颜色,如(0xFFFF0000)" />
+		<Attribute name="hotbordercolor" default="0x00000000" type="DWORD" comment="鼠标悬浮时边框的颜色,如(0xFFFF0000)" />
+		<Attribute name="bordersize" default="0" type="INT" comment="可以设置INT或RECT类型的值。当值为ING时则左、上、右、下都用该值作为宽。值为RECT类型时则分别设置左、上、右、下的边框" />
+		<Attribute name="leftbordersize" default="0" type="INT" comment="左边边框大小，如(1)，设置该值大于0，则将忽略bordersize属性的设置" />
+		<Attribute name="topbordersize" default="0" type="INT" comment="顶部边框大小，如(1)，设置该值大于0，则将忽略bordersize属性的设置" />
+		<Attribute name="rightbordersize" default="0" type="INT" comment="右边边框大小，如(1)，设置该值大于0，则将忽略bordersize属性的设置" />
+		<Attribute name="bottombordersize" default="0" type="INT" comment="底部边框大小，如(1)，设置该值大于0，则将忽略bordersize属性的设置" />
+		<Attribute name="borderstyle" default="0" type="INT" comment="边框样式的设置,数值范围0-5" />
+		<Attribute name="borderround" default="0,0" type="SIZE" comment="边框圆角半径,如(2,2)" />
+		<Attribute name="bkimage" default="" type="IMAGE" comment="背景图片,如(bk.bmp或file='aaa.jpg' res='' restype='0' dest='0,0,0,0' source='0,0,0,0' corner='0,0,0,0' mask='#FF0000' fade='255' hole='false' xtiled='false' ytiled='false')" />
+		<Attribute name="foreimage" default="" type="IMAGE" comment="前景图片" />
+		<Attribute name="disabledimage" default="" type="IMAGE" comment="禁用的状态图片" />
+		<Attribute name="minwidth" default="0" type="INT" comment="控件的最小宽度，如(100)" />
+		<Attribute name="minheight" default="0" type="INT" comment="控件的最小高度，如(30)" />
+		<Attribute name="maxwidth" default="9999" type="INT" comment="控件的最大宽度，如(100)" />
+		<Attribute name="maxheight" default="9999" type="INT" comment="控件的最大高度，如(30)" />		
+		<Attribute name="drag" default="false" type="BOOL" comment="" />
+		<Attribute name="drop" default="false" type="BOOL" comment="" />		
+		<Attribute name="resourcetext" default="false" type="BOOL" comment="是否支持多语言，为true文字绘制会走多语言接口" />			
+		<Attribute name="text" default="" type="STRING" comment="显示文本,如(测试文本)" />
+		<Attribute name="tooltip" default="" type="STRING" comment="鼠标悬浮提示,如(请在这里输入你的密码)" />
+		<Attribute name="userdata" default="" type="STRING" comment="自定义标识" />
+		<Attribute name="enabled" default="true" type="BOOL" comment="是否可以响应用户操作,如(true)" />
+		<Attribute name="mouse" default="true" type="BOOL" comment="本控件是否可以响应鼠标操作,如(true)" />
+		<Attribute name="keyboard" default="true" type="BOOL" comment="非CButtonUI类忽略该值，为false时不支持TAB_STOP,且该对象不处理键盘信息" />
+		<Attribute name="visible" default="true" type="BOOL" comment="是否可见,如(true)" />
+		<Attribute name="shortcut" default="" type="CHAR" comment="对应的快捷键,如(P)" />
+		<Attribute name="menu" default="false" type="BOOL" comment="是否需要右键菜单,如(true)" />
+		<Attribute name="cursor" default="false" type="STRING" value="arrow,ibeam,wait,cross,uparrow,size,icon,sizenwse,sizenesw,sizewe,sizens,sizeall,no,hand" comment="鼠标样式" />
+		<Attribute name="virtualwnd" default="" type="STRING" comment="设置控件的虚拟窗体的名字" />		
+		<Attribute name="style" default="" type="STRING" comment="通过样式名称设置控件的样式" />
+		<Attribute name="innerstyle" default="" type="STRING" comment="通过样式表设置控件的样式" />
+	</Control>
+	<Container parent="Control" notifies="setfocus killfocus timer menu windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />	
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="inset" default="0,0,0,0" type="RECT" comment="容器的内边距,如(2,2,2,2)" />
+		<Attribute name="mousechild" default="true" type="BOOL" comment="本控件的子控件是否可以响应用户操作,如(true)" />	
+		<Attribute name="vscrollbar" default="false" type="BOOL" comment="是否使用竖向滚动条,如(true)" />
+		<Attribute name="vscrollbarstyle" default="" type="STRING" comment="设置本容器的纵向滚动条的样式" />
+		<Attribute name="hscrollbar" default="false" type="BOOL" comment="是否使用横向滚动条,如(true)" />
+		<Attribute name="hscrollbarstyle" default="" type="STRING" comment="设置本容器的横向滚动条的样式" />
+		<Attribute name="scrollstepsize" default="0" type="INT" comment="容器的滚动条滚动步长，0代表使用默认步长" />	
+		<Attribute name="childpadding" default="0" type="INT" comment="子控件之间的额外距离,如(4)" />		
+		<Attribute name="childvpadding" default="0" type="INT" comment="子控件之间的额外距离,如(4)" />		
+		<Attribute name="childalign" default="left" type="STRING" value="left、right、center" comment=""/>
+		<Attribute name="childvalign" default="top" type="STRING" value="top、bottom、vcenter" comment=""/>
+	</Container>
+	<VerticalLayout parent="Container" notifies="setfocus killfocus timer menu windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="sepheight" default="0" type="INT" comment="分隔符高度,正负表示分隔符在顶部还是底部,如(4)" />
+		<Attribute name="sepimm" default="false" type="BOOL" comment="拖动分隔符是否立即改变大小,如(false)" />
+	</VerticalLayout>
+	<HorizontalLayout parent="Container" notifies="setfocus killfocus timer menu windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="sepwidth" default="0" type="INT" comment="分隔符宽,正负表示分隔符在左边还是右边,如(-4)" />
+		<Attribute name="sepimm" default="false" type="BOOL" comment="拖动分隔符是否立即改变大小,如(false)" />
+	</HorizontalLayout>
+	<TileLayout parent="Container" notifies="setfocus killfocus timer menu windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="columns" default="1" type="INT" comment="列数,如(4)" />
+		<Attribute name="itemsize" default="0,0" type="SIZE" comment="子项固定大小，如(128,128)" />
+	</TileLayout>
+	<TabLayout parent="Container" notifies="setfocus killfocus timer menu tabselect windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="selectedid" default="0" type="INT" comment="默认选中的页面id,如(0)" />
+	</TabLayout>
+	<AnimationTabLayout parent="TabLayout" notifies="setfocus killfocus timer menu tabselect windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="animation_direction" default="horizontal" type="STRING" value="vertical,horizontal" comment="动画方向左右、上下，默认是左右,如(vertical、horizontal)" />
+	</AnimationTabLayout>
+	<ActiveX parent="Control" notifies="setfocus killfocus timer menu showactivex windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="clsid" default="" type="STRING" comment="activex的clsid,如({8856F961-340A-11D0-A96B-00C04FD705A2})" />
+		<Attribute name="modulename" default="" type="STRING" comment="activex从指定位置加载,如(flash/flash.ocx)" />
+		<Attribute name="delaycreate" default="true" type="BOOL" comment="是否需要延迟创建activex,如(false)" />
+	</ActiveX>
+	<WebBrowser parent="ActiveX">
+		<Attribute name="homepage" default="" type="STRING" comment="默认首页" />
+		<Attribute name="autonavi" default="false" type="BOOL" comment="是否打开默认首页" />
+	</WebBrowser>
+	<Combo parent="Container" notifies="setfocus killfocus timer menu dropdown itemselect windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="align" default="center" type="STRING" value="left,right,center" comment="对齐方式,取值left、right、center" />		
+		<Attribute name="valign" default="vcenter" type="STRING" value="top,bottom,vcenter" comment="对齐方式,取值top,bottom,center" />		
+		<Attribute name="endellipsis" default="false" type="BOOL" comment="item句末显示不全是否使用...代替,如(true)" />
+		<Attribute name="wordbreak" default="false" type="INT" comment="是否支持多行文字" />
+		<Attribute name="font" default="-1" type="INT" comment="字体id,如(0)" />
+		<Attribute name="textcolor" default="0x00000000" type="DWORD" comment="字体颜色，0表示使用默认字体颜色,如(0xFFFF0000)" />
+		<Attribute name="disabledtextcolor" default="0x00000000" type="DWORD" comment="disabled字体颜色，0表示使用默认disabled字体颜色,如(0xFFFF0000)" />		
+		<Attribute name="textpadding" default="0,0,0,0" type="RECT" comment="文字显示的边距,如(2,2,2,2)" />
+		<Attribute name="showhtml" default="false" type="BOOL" comment="是否使用类html富文本绘制,如(false)" />
+		<Attribute name="showshadow" default="false" type="BOOL" comment="是否显示阴影效果" />		
+		<Attribute name="normalimage" default="" type="IMAGE" comment="普通状态图片" />
+		<Attribute name="hotimage" default="" type="IMAGE" comment="鼠标悬浮的状态图片" />
+		<Attribute name="pushedimage" default="" type="IMAGE" comment="鼠标按下的状态图片" />
+		<Attribute name="focusedimage" default="" type="IMAGE" comment="获得焦点时的状态图片" />
+		<Attribute name="disabledimage" default="" type="IMAGE" comment="禁用的状态图片" />
+		<Attribute name="scrollselect" default="false" type="BOOL" comment="" />	
+		<Attribute name="dropbox" default="" type="ATTRIBUTELIST" value="VerticalLayout" comment="控件默认参数" />
+		<Attribute name="dropboxsize" default="0,150" type="STRING" comment="弹出框大小设置" />		
+		<Attribute name="itemfont" default="-1" type="INT" comment="item的字体id,如(0)" />
+		<Attribute name="itemalign" default="center" type="STRING" value="left,right,center" comment="item对齐方式,取值left、right、center" />
+		<Attribute name="itemvalign" default="center" type="STRING" value="top,bottom,center" comment="item对齐方式,取值top,bottom,center" />	
+		<Attribute name="itemendellipsis" default="false" type="BOOL" comment="item句末显示不全是否使用...代替,如(true)" />
+		<Attribute name="itemtextpadding" default="0,0,0,0" type="RECT" comment="item文字显示的边距,如(2,2,2,2)" />
+		<Attribute name="itemtextcolor" default="0xFF000000" type="DWORD" comment="item字体颜色" />
+		<Attribute name="itembkcolor" default="0x00000000" type="DWORD" comment="item背景颜色" />
+		<Attribute name="itembkimage" default="" type="IMAGE" comment="item背景图片" />
+		<Attribute name="itemaltbk" default="false" type="BOOL" comment="item是否使用隔行交替背景" />
+		<Attribute name="itemselectedtextcolor" default="0xFF000000" type="DWORD" comment="item被选中时的字体颜色" />
+		<Attribute name="itemselectedbkcolor" default="0xFFC1E3FF" type="DWORD" comment="item被选中时的背景颜色" />
+		<Attribute name="itemselectedimage" default="" type="IMAGE" comment="item被选中时的背景图片" />
+		<Attribute name="itemhottextcolor" default="0xFF000000" type="DWORD" comment="item鼠标悬浮时的字体颜色" />
+		<Attribute name="itemhotbkcolor" default="0xFFE9F5FF" type="DWORD" comment="item鼠标悬浮时的背景颜色" />
+		<Attribute name="itemhotimage" default="" type="IMAGE" comment="item鼠标悬浮时的背景图片" />
+		<Attribute name="itemdisabledtextcolor" default="0xFFCCCCCC" type="DWORD" comment="item禁用时的字体颜色" />
+		<Attribute name="itemdisabledbkcolor" default="0xFFFFFFFF" type="DWORD" comment="item禁用时的背景颜色" />
+		<Attribute name="itemdisabledimage" default="" type="IMAGE" comment="item禁用时的背景图片" />
+		<Attribute name="itemlinecolor" default="0x00000000" type="DWORD" comment="item行分割线颜色" />
+		<Attribute name="itemshowhtml" default="false" type="BOOL" comment="item是否使用类html富文本绘制,如(false)" />
+	</Combo>
+	<GifAnim parent="Control" notifies="setfocus killfocus timer menu windowinit(root)">
+		<Attribute name="bkimage" default="" type="IMAGE" comment="Gif动画图片路径(不支持source等属性设置)" />
+		<Attribute name="autoplay" default="true" type="BOOL" comment="是否自动播放GIF动画" />
+		<Attribute name="autosize" default="false" type="BOOL" comment="是否根据图片自动设置控件大小(开启后width和height属性失效)" />
+	</GifAnim>
+	<Label parent="Control" notifies="setfocus killfocus timer menu windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
+		<Attribute name="text" default="" type="STRING" comment="显示文本,如(测试文本)" />
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="align" default="left" type="STRING" value="left,right,center" comment="对齐方式,取值left、right、center" />		
+		<Attribute name="valign" default="vcenter" type="STRING" value="top,bottom,vcenter" comment="对齐方式,取值top,bottom,center" />		
+		<Attribute name="endellipsis" default="false" type="BOOL" comment="句末显示不全是否使用...代替,如(true)" />
+		<Attribute name="wordbreak" default="false" type="BOOL" comment="是否支持多行文字" />
+		<Attribute name="noprefix" default="false" type="BOOL" comment="" />
+		<Attribute name="font" default="-1" type="INT" comment="字体id,如(0)" />
+		<Attribute name="textcolor" default="0x00000000" type="DWORD" comment="字体颜色，0表示使用默认字体颜色,如(0xFFFF0000)" />
+		<Attribute name="disabledtextcolor" default="0x00000000" type="DWORD" comment="disabled字体颜色，0表示使用默认disabled字体颜色,如(0xFFFF0000)" />		
+		<Attribute name="textpadding" default="0,0,0,0" type="RECT" comment="文字显示的边距,如(2,2,2,2)" />		
+		<Attribute name="showhtml" default="false" type="BOOL" comment="是否使用类html富文本绘制,如(false)" />
+		<Attribute name="autocalcwidth" default="false" type="BOOL" comment="是否自动调整宽度" />
+	</Label>
+	<Ring parent="Label" notifies="setfocus killfocus timer menu windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="bkimage" default="" type="IMAGE" comment="Ring旋转图片" />
+	</Ring>
+	<DateTime parent="Label" notifies="setfocus killfocus timer menu windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="formatstyle" default="date" type="STRING" value="date,time,datetime" comment="时间格式" />
+	</DateTime>
+	<IPAddress parent="Label" notifies="setfocus killfocus timer menu windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />		
+	</IPAddress> 
+	<Button parent="Label" notifies="setfocus killfocus timer menu click windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="normalimage" default="" type="IMAGE" comment="普通状态图片" />
+		<Attribute name="hotimage" default="" type="IMAGE" comment="鼠标悬浮的状态图片" />
+		<Attribute name="pushedimage" default="" type="IMAGE" comment="鼠标按下的状态图片" />
+		<Attribute name="focusedimage" default="" type="IMAGE" comment="获得焦点时的状态图片" />
+		<Attribute name="disabledimage" default="" type="IMAGE" comment="禁用的状态图片" />
+		<Attribute name="hotforeimage" default="" type="IMAGE" comment="状态图片" />
+		<Attribute name="stateimage" default="" type="IMAGE" comment="状态图片" />
+		<Attribute name="statecount" default="0" type="INT" comment="" />		
+		<Attribute name="bindtablayoutname" default="" type="STRING" comment="绑定TabLayout控件"/>
+		<Attribute name="bindtabindex" default="-1" type="INT" comment="点击后将触发绑定TabLayout控件的对应索引号"/>		
+		<Attribute name="hotbkcolor" default="0x00000000" type="DWORD" comment="鼠标悬浮背景颜色,如(0xFFFF00FF)" />
+		<Attribute name="pushedbkcolor" default="0x00000000" type="DWORD" comment="鼠标按下背景颜色,如(0xFFFF00FF)" />
+		<Attribute name="disabledbkcolor" default="0x00000000" type="DWORD" comment="禁用时背景颜色,如(0xFFFF00FF)" />		
+		<Attribute name="textcolor" default="0x00000000" type="DWORD" comment="字体颜色，0表示使用默认字体颜色,如(0xFFFF0000)" />
+		<Attribute name="disabledtextcolor" default="0x00000000" type="DWORD" comment="disabled字体颜色，0表示使用默认disabled字体颜色,如(0xFFFF0000)" />
+		<Attribute name="hottextcolor" default="0x00000000" type="DWORD" comment="鼠标悬浮字体颜色，0表示不使用此颜色,如(0xFFFF0000)" />
+		<Attribute name="pushedtextcolor" default="0x00000000" type="DWORD" comment="鼠标按下字体颜色，0表示不使用此颜色,如(0xFFFF0000)" />
+		<Attribute name="focusedtextcolor" default="0x00000000" type="DWORD" comment="获得焦点字体颜色，0表示不使用此颜色,如(0xFFFF0000)" />
+		<Attribute name="hotfont" default="-1" type="INT" comment="字体id,如(0)" />
+		<Attribute name="pushedfont" default="-1" type="INT" comment="字体id,如(0)" />
+		<Attribute name="focuedfont" default="-1" type="INT" comment="字体id,如(0)" />
+		<Attribute name="text" default="" type="STRING" comment="显示文本,如(测试文本)" />
+		<Attribute name="align" default="center" type="STRING" value="left,right,center" comment="对齐方式,取值left、right、center" />		
+		<Attribute name="valign" default="vcenter" type="STRING" value="top,bottom,vcenter" comment="对齐方式,取值top,bottom,center" />	
+		<Attribute name="pushedbordercolor" default="0x00000000" type="DWORD" comment="鼠标按下边框颜色,如(0xFF000000)" />
+		<Attribute name="disablebordercolor" default="0x00000000" type="DWORD" comment="禁用时边框颜色,如(0xFF000000)" />
+	</Button>
+	<FadeButton parent="Button" notifies="setfocus killfocus timer menu click windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />	
+	</FadeButton>
+	<Option parent="Button" notifies="setfocus killfocus timer menu click selectchanged windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />	
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="selectedimage" default="" type="IMAGE" comment="选中的状态图片" />
+		<Attribute name="selectedhotimage" default="" type="IMAGE" comment="选中鼠标悬浮的的状态图片" />
+		<Attribute name="selectedpushedimage" default="" type="IMAGE" comment="选中鼠标按下的的状态图片" />
+		<Attribute name="selectedforeimage" default="" type="IMAGE" comment="选中的前景图片" />
+		<Attribute name="selectedstateimage" default="" type="IMAGE" comment="状态图片" />
+		<Attribute name="selectedstatecount" default="0" type="INT" comment="" />		
+		<Attribute name="selectedbkcolor" default="0x00000000" type="DWORD" comment="鼠标悬浮背景颜色,如(0xFFFF00FF)" />
+		<Attribute name="selectedtextcolor" default="0x00000000" type="DWORD" comment="鼠标悬浮字体颜色，0表示不使用此颜色,如(0xFFFF0000)" />
+		<Attribute name="selectedfont" default="-1" type="INT" comment="字体id,如(0)" />
+		<Attribute name="selectedbordercolor" default="0x00000000" type="DWORD" comment="选中时边框颜色,如(0xFF000000)" />
+		<Attribute name="group" default="" type="STRING" comment="所属组的名称，可不设"/>
+		<Attribute name="selected" default="false" type="BOOL" comment="是否选中"/>
+	</Option>
+	<CheckBox parent="Option">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />	
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="EnableAutoCheck" default="false" type="BOOL" comment="" />
+	</CheckBox>
+	<TabCtrl parent="Option" notifies="setfocus killfocus timer menu click selectchanged windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)"/>
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="bindtablayoutname" default="" type="STRING" comment="绑定TabLayout控件"/>
+		<Attribute name="bindtabindex" default="-1" type="INT" comment="点击后将触发绑定TabLayout控件的对应索引号"/>
+	</TabCtrl>
+	<Text parent="Label" notifies="setfocus killfocus timer menu link windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />	
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />				
+	</Text>
+	<Progress parent="Label" notifies="setfocus killfocus timer menu windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="foreimage" default="" type="IMAGE" comment="前景图片" />
+		<Attribute name="hor" default="true" type="BOOL" comment="水平或垂直,如(true)" />
+		<Attribute name="min" default="0" type="INT" comment="进度最小值，如(0)" />
+		<Attribute name="max" default="100" type="INT" comment="进度最大值，如(100)" />
+		<Attribute name="value" default="0" type="INT" comment="进度值，如(50)" />
+		<Attribute name="isstretchfore" default="TRUE" type="BOOL" comment="指定前景图片是否缩放显示" />
+	</Progress>
+	<Slider parent="Progress" notifies="setfocus killfocus timer menu valuechanged movevaluechanged windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="thumbimage" default="" type="IMAGE" comment="拖动滑块普通状态图片" />
+		<Attribute name="thumbhotimage" default="" type="IMAGE" comment="拖动滑块鼠标悬浮状态图片" />
+		<Attribute name="thumbpushedimage" default="" type="IMAGE" comment="拖动滑块鼠标按下状态图片" />
+		<Attribute name="thumbsize" default="10,10" type="SIZE" comment="拖动滑块大小,如(10,10)" />
+		<Attribute name="step" default="1" type="INT" comment="进度步长，如(1)" />
+		<Attribute name="sendmove" default="false" type="BOOL" comment="是否发送movevaluechanged消息" />
+	</Slider>
+	<Edit parent="Label" notifies="setfocus killfocus timer menu return textchanged windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="readonly" default="false" type="BOOL" comment="是否只读,如(false)" />
+		<Attribute name="numberonly" default="false" type="BOOL" comment="是否只允许数字输入,如(false)" />
+		<Attribute name="password" default="false" type="BOOL" comment="是否显示密码字符,如(false)" />
+		<Attribute name="passwordchar" default="" type="STRING" comment="设置密码字符" />
+		<Attribute name="maxchar" default="255" type="INT" comment="输入字符最大长度，如(100)" />		
+		<Attribute name="normalimage" default="" type="IMAGE" comment="普通状态图片" />
+		<Attribute name="hotimage" default="" type="IMAGE" comment="鼠标悬浮状态图片" />
+		<Attribute name="focusedimage" default="" type="IMAGE" comment="获得焦点状态图片" />
+		<Attribute name="disabledimage" default="" type="IMAGE" comment="禁用状态图片" />
+		<Attribute name="nativebkcolor" default="0x00000000" type="DWORD" comment="windows原生edit控件的背景颜色,如(0xFFFFFFFF)" />
+		<Attribute name="nativetextcolor" default="0x00000000" type="DWORD" comment="windows原生edit控件的文字颜色,如(0xFFFFFFFF)" />	
+		<Attribute name="tipvalue" default="" type="STRING" comment="文本框内提示文字，当文本框text为空时显示并失去焦点时显示" />
+		<Attribute name="tipvaluecolor" default="0xFFBAC0C5" type="DWORD" comment="文本框内提示文字的颜色" />
+	</Edit>
+	<ScrollBar parent="Control" notifies="timer menu scrolled windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
+		<Attribute name="button1normalimage" default="" type="IMAGE" comment="左或上按钮普通状态图片" />
+		<Attribute name="button1hotimage" default="" type="IMAGE" comment="左或上按钮鼠标悬浮状态图片" />
+		<Attribute name="button1pushedimage" default="" type="IMAGE" comment="左或上按钮鼠标按下状态图片" />
+		<Attribute name="button1disabledimage" default="" type="IMAGE" comment="左或上按钮禁用状态图片" />
+		<Attribute name="button2normalimage" default="" type="IMAGE" comment="右或下按钮普通状态图片" />
+		<Attribute name="button2hotimage" default="" type="IMAGE" comment="右或下按钮鼠标悬浮状态图片" />
+		<Attribute name="button2pushedimage" default="" type="IMAGE" comment="右或下按钮鼠标按下状态图片" />
+		<Attribute name="button2disabledimage" default="" type="IMAGE" comment="右或下按钮禁用状态图片" />
+		<Attribute name="thumbnormalimage" default="" type="IMAGE" comment="滑块普通状态图片" />
+		<Attribute name="thumbhotimage" default="" type="IMAGE" comment="滑块鼠标悬浮状态图片" />
+		<Attribute name="thumbpushedimage" default="" type="IMAGE" comment="滑块鼠标按下状态图片" />
+		<Attribute name="thumbdisabledimage" default="" type="IMAGE" comment="滑块禁用状态图片" />
+		<Attribute name="railnormalimage" default="" type="IMAGE" comment="滑块中间标识普通状态图片" />
+		<Attribute name="railhotimage" default="" type="IMAGE" comment="滑块中间标识鼠标悬浮状态图片" />
+		<Attribute name="railpushedimage" default="" type="IMAGE" comment="滑块中间标识鼠标按下状态图片" />
+		<Attribute name="raildisabledimage" default="" type="IMAGE" comment="滑块中间标识禁用状态图片" />
+		<Attribute name="bknormalimage" default="" type="IMAGE" comment="背景普通状态图片" />
+		<Attribute name="bkhotimage" default="" type="IMAGE" comment="背景鼠标悬浮状态图片" />
+		<Attribute name="bkpushedimage" default="" type="IMAGE" comment="背景鼠标按下状态图片" />
+		<Attribute name="bkdisabledimage" default="" type="IMAGE" comment="背景禁用状态图片" />
+		<Attribute name="hor" default="true" type="BOOL" comment="水平或垂直,如(true)" />
+		<Attribute name="linesize" default="8" type="INT" comment="滚动一行的大小，如(8)" />
+		<Attribute name="range" default="100" type="INT" comment="滚动范围，如(100)" />
+		<Attribute name="value" default="0" type="INT" comment="滚动位置，如(0)" />
+		<Attribute name="showbutton1" default="true" type="BOOL" comment="是否显示左或上按钮,如(true)" />
+		<Attribute name="showbutton2" default="true" type="BOOL" comment="是否显示右或下按钮,如(true)" />
+	</ScrollBar>
+	<List parent="VerticalLayout" notifies="setfocus killfocus timer menu itemselect windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		
+		<Attribute name="header" default="true" type="BOOL" comment="是否显示表头,如(true),隐藏则设置为hidden" />
+		<Attribute name="headerbkimage" default="" type="IMAGE" comment="表头背景图片" />
+		<Attribute name="scrollselect" default="false" type="BOOL" comment="是否随滚动改变选中项,如(false)" />
+		<Attribute name="fixedscrollbar" default="false" type="BOOL" comment="" />	
+		<Attribute name="itemfont" default="-1" type="INT" comment="item的字体id,如(0)" />
+		<Attribute name="itemalign" default="left" type="STRING" value="left,right,center" comment="item对齐方式,取值left、right、center，如(center)" />
+		<Attribute name="itemvalign" default="center" type="STRING" value="top,bottom,center" comment="对齐方式,取值top,bottom,center" />		
+		<Attribute name="itemendellipsis" default="false" type="BOOL" comment="item句末显示不全是否使用...代替,如(true)" />		
+		<Attribute name="itemtextpadding" default="0,0,0,0" type="RECT" comment="item文字显示的边距,如(2,2,2,2)" />		
+		<Attribute name="itemtextcolor" default="0xFF000000" type="DWORD" comment="item字体颜色" />
+		<Attribute name="itembkcolor" default="0x00000000" type="DWORD" comment="item背景颜色" />
+		<Attribute name="itembkimage" default="" type="IMAGE" comment="item背景图片" />
+		<Attribute name="itemaltbk" default="false" type="BOOL" comment="item是否使用隔行交替背景" />
+		<Attribute name="itemselectedtextcolor" default="0xFF000000" type="DWORD" comment="item被选中时的字体颜色" />
+		<Attribute name="itemselectedbkcolor" default="0xFFC1E3FF" type="DWORD" comment="item被选中时的背景颜色" />
+		<Attribute name="itemselectedimage" default="" type="IMAGE" comment="item被选中时的背景图片" />
+		<Attribute name="itemhottextcolor" default="0xFF000000" type="DWORD" comment="item鼠标悬浮时的字体颜色" />
+		<Attribute name="itemhotbkcolor" default="0xFFE9F5FF" type="DWORD" comment="item鼠标悬浮时的背景颜色" />
+		<Attribute name="itemhotimage" default="" type="IMAGE" comment="item鼠标悬浮时的背景图片" />
+		<Attribute name="itemdisabledtextcolor" default="0xFFCCCCCC" type="DWORD" comment="item禁用时的字体颜色" />
+		<Attribute name="itemdisabledbkcolor" default="0xFFFFFFFF" type="DWORD" comment="item禁用时的背景颜色" />
+		<Attribute name="itemdisabledimage" default="" type="IMAGE" comment="item禁用时的背景图片" />
+		<Attribute name="itemlinecolor" default="0x00000000" type="DWORD" comment="item行分割线颜色" />
+		<Attribute name="itemshowhtml" default="false" type="BOOL" comment="item是否使用类html富文本绘制,如(false)" />
+		<Attribute name="itemshowrowline" default="false" type="BOOL" comment="item是否绘制行线,如(false)" />
+		<Attribute name="itemshowcolumnline" default="false" type="BOOL" comment="item是否绘制列线,如(false)" />
+		<Attribute name="multiselect" default="false" type="BOOL" comment="是否支持多行选择)" />
+		<Attribute name="itemrselected" default="false" type="BOOL" comment="是否支持右键选择)" />
+	</List>
+	<ListHeader parent="HorizontalLayout" notifies="setfocus killfocus timer windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="scaleheader" default="false" type="BOOL" comment="每个表头的宽度是否按照百分比来设置" />
+	</ListHeader>
+	<ListHeaderItem parent="Control" notifies="setfocus killfocus timer headerclick windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="dragable" default="true" type="BOOL" comment="是否可拖动改变大小,如(true)" />
+		<Attribute name="sepwidth" default="4" type="INT" comment="分隔符宽,如(4)" />
+		<Attribute name="align" default="left" type="STRING" value="left,right,center" comment="文字对齐方式,取值left、right、cente，如(center)" />
+		<Attribute name="endellipsis" default="false" type="BOOL" comment="句末显示不全是否使用...代替,如(true)" />
+		<Attribute name="font" default="-1" type="INT" comment="字体id,如(0)" />
+		<Attribute name="textcolor" default="0x00000000" type="DWORD" comment="字体颜色，0表示使用默认字体颜色,如(0xFFFF0000)" />
+		<Attribute name="textpadding" default="2,0,2,0" type="RECT" comment="文字显示的边距,如(2,2,2,2)" />
+		<Attribute name="showhtml" default="false" type="BOOL" comment="是否使用类html富文本绘制,如(false)" />
+		<Attribute name="normalimage" default="" type="IMAGE" comment="普通状态图片" />
+		<Attribute name="hotimage" default="" type="IMAGE" comment="鼠标悬浮的状态图片" />
+		<Attribute name="pushedimage" default="" type="IMAGE" comment="鼠标按下的状态图片" />
+		<Attribute name="focusedimage" default="" type="IMAGE" comment="获得焦点时的状态图片" />
+		<Attribute name="sepimage" default="" type="IMAGE" comment="拖动条图片" />
+		<Attribute name="scale" default="0" type="INT" comment="设置子表头所占总表头的百分比宽度，如40（代表占40%的宽度）" />
+	</ListHeaderItem>
+	<ListLabelElement parent="Control" notifies="setfocus killfocus timer itemactivate itemclick windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
+		<Attribute name="selected" default="false" type="BOOL" comment="是否选中,如(true)" />
+	</ListLabelElement>
+	<ListTextElement parent="ListLabelElement" notifies="setfocus killfocus timer itemactivate itemclick link windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
+	</ListTextElement>
+	<ListContainerHeaderItem parent="HorizontalLayout" notifies="setfocus killfocus timer itemactivate itemclick itemexpanded itemcollapsed windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />	
+	</ListContainerHeaderItem>
+	<ListContainerElement parent="HorizontalLayout" notifies="setfocus killfocus timer itemactivate itemclick itemexpanded itemcollapsed windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
+		<Attribute name="selected" default="false" type="BOOL" comment="是否选中,如(true)" />
+	</ListContainerElement>
+	<RichEdit parent="Container" notifies="textchanged setfocus killfocus timer menu return windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="inset" default="0,0,0,0" type="RECT" comment="容器的内边距,如(2,2,2,2)" />
+		<Attribute name="vscrollbar" default="false" type="BOOL" comment="是否使用竖向滚动条,如(true)" />
+		<Attribute name="autovscroll" default="false" type="BOOL" comment="是否随输入竖向滚动,如(true)" />
+		<Attribute name="hscrollbar" default="false" type="BOOL" comment="是否使用横向滚动条,如(true)" />
+		<Attribute name="autohscroll" default="false" type="BOOL" comment="是否随输入横向滚动,如(true)" />		
+		<Attribute name="wanttab" default="false" type="BOOL" comment="是否接受tab按键消息,如(true)" />
+		<Attribute name="wantreturn" default="false" type="BOOL" comment="是否接受return按键消息,如(true)" />
+		<Attribute name="wantctrlreturn" default="false" type="BOOL" comment="是否接受ctrl+return按键消息,如(true)" />
+		<Attribute name="transparent" default="true" type="BOOL" comment="是否背景透明,如(true)" />
+		<Attribute name="rich" default="true" type="BOOL" comment="是否使用富格式,如(true)" />
+		<Attribute name="multiline" default="false" type="BOOL" comment="是否使用多行,如(true)" />
+		<Attribute name="readonly" default="false" type="BOOL" comment="是否只读,如(false)" />
+		<Attribute name="password" default="false" type="BOOL" comment="是否显示密码符,如(true)" />		
+		<Attribute name="align" default="left" type="STRING" value="left,right,center" comment="文字水平对齐方式,取值left、right、center，如(center)" />
+		<Attribute name="valign" default="top" type="STRING" value="top,bottom,center" comment="文字垂直对齐方式,仅单行有效,使用TextPadding实现" />
+		<Attribute name="font" default="-1" type="INT" comment="字体id,如(0)" />
+		<Attribute name="textcolor" default="0xFF000000" type="DWORD" comment="字体颜色，如(0xFFFF0000)" />
+		<Attribute name="maxchar" default="-1" type="INT" comment="输入字符最大长度，如(100),默认为无限制" />
+		<Attribute name="normalimage" default="" type="IMAGE" comment="普通状态图片" />
+		<Attribute name="hotimage" default="" type="IMAGE" comment="鼠标悬浮状态图片" />
+		<Attribute name="focusedimage" default="" type="IMAGE" comment="获得焦点状态图片" />
+		<Attribute name="disabledimage" default="" type="IMAGE" comment="禁用状态图片" />
+		<Attribute name="textpadding" default="0,0,0,0" type="RECT" comment="文字显示的边距,如(2,2,2,2)" />
+		<Attribute name="tipvalue" default="" type="STRING" comment="文本框内提示文字，当文本框text为空时显示并失去焦点时显示" />
+		<Attribute name="tipvaluecolor" default="0xFFBAC0C5" type="DWORD" comment="文本框内提示文字的颜色" />
+	</RichEdit>
+	<TreeView parent="List" notifies="selectchanged setfocus killfocus timer menu itemselect windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="multipleitem" default="true" type="BOOL" comment="是否允许item多选" />
+		<Attribute name="itemcheckimgsize" default="0,0" type="SIZE" comment="Item的复选框图片大小,如(2,2)" />
+		<Attribute name="itemiconimgsize" default="0,0" type="SIZE" comment="Item的图标大小,如(2,2)" />
+		<Attribute name="visiblefolderbtn" default="true" type="BOOL" comment="是否显示展开与收缩按钮对象" />
+		<Attribute name="visiblecheckbtn" default="false" type="BOOL" comment="是否显示复选框对象" />
+		<Attribute name="itemminwidth" default="0" type="UINT" comment="设置Item的最小宽度，当hscrollbar为真且itemminwidth大于TreeView宽度时才会显示横向滚动条" />
+		<Attribute name="itemtextcolor" default="0x00000000" type="DWORD" comment="item文本颜色" />
+		<Attribute name="itemhottextcolor" default="0x00000000" type="DWORD" comment="鼠标进入item时文本颜色" />
+		<Attribute name="selitemtextcolor" default="0x00000000" type="DWORD" comment="item被选中时文本颜色" />
+		<Attribute name="selitemhottextcolor" default="0x00000000" type="DWORD" comment="item被选中时且鼠标进入时的文本颜色" />
+	</TreeView>
+	<TreeNode parent="ListContainerElement" notifies="setfocus killfocus timer itemactivate itemclick itemexpanded itemcollapsed windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
+		<Attribute name="text" default="" type="STRING" comment="显示文本,如(测试文本)" />
+		<!--TreeNode 私有属性-->
+		<Attribute name="horizattr" default="" type="ATTRIBUTELIST" value="HorizontalLayout" comment="item虚线、复选框、展开与收缩、文本按钮等对象容器属性设置，格式参考Default元素的属性设置" />
+		<Attribute name="dotlineattr" default="" type="ATTRIBUTELIST" value="Label" comment="item虚线对象属性设置，格式参考Default元素的属性设置" />
+		<Attribute name="folderattr" default="" type="ATTRIBUTELIST" value="CheckBox" comment="item展开与收缩按钮对象属性设置，格式参考Default元素的属性设置" />
+		<Attribute name="checkboxattr" default="" type="ATTRIBUTELIST" value="CheckBox" comment="item复选框对象属性设置，格式参考Default元素的属性设置" />
+		<Attribute name="itemattr" default="" type="ATTRIBUTELIST" value="Button" comment="item按钮对象属性设置，格式参考Default元素的属性设置" />
+		<Attribute name="textcolor" default="0x00000000" type="DWORD" comment="item文本颜色" />
+		<Attribute name="texthotcolor" default="0x00000000" type="DWORD" comment="鼠标进入item时文本颜色" />
+		<Attribute name="selitemtextcolor" default="0x00000000" type="DWORD" comment="item被选中时文本颜色" />
+		<Attribute name="selhotitemtextcolor" default="0x00000000" type="DWORD" comment="item被选中时且鼠标进入时的文本颜色" />
+	</TreeNode>
+	<Menu parent="List" notifies="setfocus killfocus timer menu itemselect windowinit(root)">
+		<Attribute name="inset" default="0,0,0,0" type="RECT" comment="菜单的高度等于所有菜单项的高度之和，加上inset属性的top和bottom" />
+		<!-- Menu标签的属性要通过Default来定义，为了让下级菜单也能拥有同样的外观，其他属性设置见List -->
+	</Menu>
+	<MenuElement parent="ListContainerElement" notifies="click valuechanged WM_MENUCLICK">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />	
+		<Attribute name="text" default="" type="STRING" comment="显示文本,如(测试文本)" />
+		<Attribute name="icon" default="" type="IMAGE" comment="菜单项的图标图片" />
+		<Attribute name="iconsize" default="0,0" type="SIZE" comment="图片的大小，最大为26x26" />
+		<Attribute name="checkitem" default="false" type="BOOL" comment="是否有复选功能" />
+		<Attribute name="ischeck" default="false" type="BOOL" comment="是否被选中（前提是开启了复选功能，复选功能属性应该写在本属性的前面）" />
+		<Attribute name="linetype" default="false" type="BOOL" comment="是否是分割线（开启后将不会显示图标）" />
+		<Attribute name="linepadding" default="29,0,7,0" type="RECT" comment="分割线的外边据" />
+		<Attribute name="linecolor" default="0xFFBCBFC4" type="DWORD" comment="分割线的颜色" />
+		<Attribute name="expland" default="false" type="BOOL" comment="是否显示下级菜单的小三角图片（需要通过Default标签设置ExplandIcon属性图片的路径）" />
+		<Attribute name="height" default="30" type="INT" comment="菜单项高度（分割线默认高度是6）" />
+	</MenuElement>
+	<GroupBox parent="VerticalLayout">
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />		
+		<Attribute name="text" default="" type="STRING" comment="显示文本,如(测试文本)" />
+		<Attribute name="textcolor" default="0x00000000" type="DWORD" comment="字体颜色" />
+		<Attribute name="disabledtextcolor" default="0x00000000" type="DWORD" comment="disabled字体颜色" />
+		<Attribute name="font" default="" type="INT" comment="字体" />
+		<Attribute name="bkcolor" default="0x00000000" type="DWORD" comment="背景颜色,如(0xFFFF0000)" />
+		<Attribute name="bordercolor" default="0x00000000" type="DWORD" comment="边框颜色,如(0xFF000000)" />
+		<Attribute name="bordersize" default="0" type="INT" comment="可以设置INT或RECT类型的值。当值为ING时则左、上、右、下都用该值作为宽。值为RECT类型时则分别设置左、上、右、下的边框" />					
+		<Attribute name="inset" default="20,25,20,20" type="RECT" comment="容器的内边距,如(2,2,2,2)" />
+	</GroupBox>
+	<ColorPalette parent="Control">
+		<Attribute name="palletheight" default="200" type="INT" comment="" />
+		<Attribute name="barheight" default="10" type="INT" comment="" />
+		<Attribute name="thumbimage" default="" type="IMAGE" comment="" />
+	</ColorPalette>
+	
+	<!------------------------------------------------------------------------------------------------------------------->
+	<ComboEx parent="Combo" notifies="setfocus killfocus timer menu dropdown itemselect windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
+		<Attribute name="dropbuttonsize" default="16,16" type="SIZE" comment="边框圆角半径,如(2,2)" />
+		<Attribute name="dropbuttonnormalimage" default="" type="IMAGE" comment="下拉按钮,普通状态图片" />
+		<Attribute name="dropbuttonhotimage" default="" type="IMAGE" comment="下拉按钮,鼠标悬浮的状态图片" />
+		<Attribute name="dropbuttonpushedimage" default="" type="IMAGE" comment="下拉按钮,鼠标按下的状态图片" />
+		<Attribute name="dropbuttonfocusedimage" default="" type="IMAGE" comment="下拉按钮,获得焦点时的状态图片" />
+		<Attribute name="dropbuttondisabledimage" default="" type="IMAGE" comment="下拉按钮,禁用的状态图片" />
+	</ComboEx>
+	<IconButton parent="Button" notifies="setfocus killfocus timer menu dropdown itemselect windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
+		<Attribute name="iconsize" default="16,16" type="SIZE" comment="边框圆角半径,如(2,2)" />
+		<Attribute name="iconnormalimage" default="" type="IMAGE" comment="按钮图标,普通状态图片" />
+		<Attribute name="iconhotimage" default="" type="IMAGE" comment="按钮图标,鼠标悬浮的状态图片" />
+		<Attribute name="iconpushedimage" default="" type="IMAGE" comment="按钮图标,鼠标按下的状态图片" />
+		<Attribute name="iconfocusedimage" default="" type="IMAGE" comment="按钮图标,获得焦点时的状态图片" />
+		<Attribute name="icondisabledimage" default="" type="IMAGE" comment="按钮图标,禁用的状态图片" />
+	</IconButton>
+	<GridCtrl parent="Container">
+		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
+		<Attribute name="virtualgrid" default="false" type="BOOL" comment="虚表模式" />
+		<Attribute name="rowheight" default="25" type="INT" comment="默认行高" />
+		<Attribute name="rowcount" default="1" type="INT" comment="表格行数" />
+		<Attribute name="columncount" default="1" type="INT" comment="表格列数" />
+		<Attribute name="fixedrowcount" default="1" type="INT" comment="表格固定行数" />
+		<Attribute name="fixedcolumncount" default="1" type="INT" comment="表格固定列数" />		
+		<Attribute name="fixedcolumntext" default="" type="STRING" comment="表头文字, 以,分开"/>
+			
+		<Attribute name="editable" default="false" type="BOOL" comment="是否允许编辑" />	
+		<Attribute name="singlerowselection" default="true" type="BOOL" comment="仅允许选中单行" />	
+	
+		<Attribute name="listmode" default="true" type="BOOL" comment="列表模式" />
+		<Attribute name="viewlistnumber" default="true" type="BOOL" comment="list模式时,最左边固定列显示行号" />
+		
+		<Attribute name="font" default="-1" type="INT" comment="字体id,如(0)" />
+		<Attribute name="textcolor" default="0xFF000000" type="DWORD" comment="字体颜色，0表示使用默认字体颜色,如(0xFFFF0000)" />
+		
+		<Attribute name="gridbkcolor" default="0xFFFFFFFF" type="DWORD" comment="表格背景颜色,如(0xFFFF0000)" />
+		<Attribute name="gridlinecolor" default="0xFFc0c0c0" type="DWORD" comment="表格线颜色,如(0xFFFF0000)" />
+		<Attribute name="enablehighlightbkcolor" default="true" type="BOOL" comment="是否需要高亮行背景颜色" />
+		<Attribute name="highlightbkcolor" default="0xFFa6caf0" type="DWORD" comment="高亮行背景颜色,如(0xFFFF0000)" />
+		<Attribute name="enablehighlighttextColor" default="true" type="BOOL" comment="是否需要高亮行文本颜色" />
+		<Attribute name="highlighttextColor" default="0xFF000000" type="DWORD" comment="高亮行文本颜色,如(0xFFFF0000)" />
+		<Attribute name="enablefocuscellborder" default="true" type="BOOL" comment="选中单元格时显示边框" />
+		<Attribute name="focuscellbordercolor" default="0xFF4e00ff" type="DWORD" comment="选中单元格时边框颜色,如(0xFFFF0000)" />
+	</GridCtrl>
+	<MsgWnd parent="RichEdit">
+		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
+	</MsgWnd>
+	<KeyBoard parent="VerticalLayout">
+		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
+		<Attribute name="keywidth" default="80" type="INT" comment="按钮宽度"/>
+		<Attribute name="keyheight" default="80" type="INT" comment="按钮高度"/>
+		<Attribute name="keypadding" default="5" type="INT" comment="按钮之间的间隔"/>
+		<Attribute name="font" default="-1" type="INT" comment="字体id,如(0)" />
+		<Attribute name="keybordersize" default="1" type="INT" comment="可以设置INT或RECT类型的值。当值为ING时则左、上、右、下都用该值作为宽。值为RECT类型时则分别设置左、上、右、下的边框" />
+		<Attribute name="keyborderround" default="5,5" type="SIZE" comment="边框圆角半径,如(2,2)" />
+	
+		<Attribute name="keytextcolor" default="0xFFFFFFFF" type="DWORD" comment="文本颜色,如(0xFF000000)" />
+		<Attribute name="keybkcolor" default="0xFF383742" type="DWORD" comment="按钮背景颜色,如(0xFF000000)" />
+		<Attribute name="keybordercolor" default="0xFFFFFFFF" type="DWORD" comment="边框颜色,如(0xFF000000)" />
+		
+		<Attribute name="keypushedtextcolor" default="0xFF383742" type="DWORD" comment="按下时文本颜色,如(0xFF000000)" />
+		<Attribute name="keypushedbkcolor" default="0xFFFFFFFF" type="DWORD" comment="按下时按钮背景颜色,如(0xFF000000)" />
+		<Attribute name="keypushedbordercolor" default="0xFF000000" type="DWORD" comment="按下时边框的颜色,如(0xFFFF0000)" />
+		
+		<Attribute name="bindfocuscontrolname" default="" type="STRING" comment="绑定输入焦点,有时候需要固定键盘焦点到某个控件.不绑定则用当前焦点"/>
+		<Attribute name="bindentercontrolname" default="" type="STRING" comment="绑定绑定键盘回车事件到一个控件，一般是某个按钮."/>
+		<Attribute name="entercontrolname" default="" type="STRING" comment="回车键的控件名字"/>			
+	</KeyBoard>
+	<KeyBoardSimple parent="KeyBoard" comment="简易键盘">
+		<Attribute name="name" default="" type="STRING" comment="控件名字"/>	
+	</KeyBoardSimple>
+	<KeyBoardNumber parent="KeyBoard" comment="数字键盘">
+		<Attribute name="name" default="" type="STRING" comment="控件名字"/>	
+	</KeyBoardNumber>
+	
+	<PictureControl parent="Control" >
+		<Attribute name="name" default="" type="STRING" comment="控件名字，同一窗口内必须唯一，如(testbtn)"/>
+		<Attribute name="fileimage" default="" type="STRING" comment="图片文件路径"/>
+		<Attribute name="framedelay" default="0" type="INT" comment="gif每帧延迟时间(毫秒)"/>
+	</PictureControl>
+	<ImageBox parent="Control" >
+		<Attribute name="name" default="" type="STRING" comment="控件名字，同一窗口内必须唯一，如(testbtn)"/>
+		<Attribute name="imagepath" default="" type="STRING" comment="图片文件夹"/>
+		<Attribute name="retention" default="200" type="INT" comment="每张图片停留时间"/>
+	</ImageBox>
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- 以下只给设计器使用 -->
+	<Font>
+		<Attribute name="id" default="" type="INT" comment="font=xx 字体编号" />
+		<Attribute name="name" default="" type="STRING" comment="字体名称" />
+		<Attribute name="size" default="10" type="INT" comment="字体大小" />
+		<Attribute name="bold" default="false" type="BOOL" comment="是否粗体" />
+		<Attribute name="underline" default="false" type="BOOL" comment="是否下划线" />
+		<Attribute name="italic" default="false" type="BOOL" comment="是否斜体" />
+		<Attribute name="shared" default="false" type="BOOL" comment="是否共享" />
+		<Attribute name="default" default="false" type="BOOL" comment="设置为默认字体" />
+		<Attribute name="sname" default="" type="STRING" comment="设计器标志字体备注名称,UI库并不处理." />
+	</Font>
+	<Image>
+		<Attribute name="name" default="" type="STRING" comment="控件名称" />
+		<Attribute name="restype" default="0" type="STRING" comment="ImageResType" />
+		<Attribute name="mask" default="0x00000000" type="DWORD" comment="mask" />
+		<Attribute name="shared" default="true" type="BOOL" comment="是否共享" />
+	</Image>
+	<Default>
+		<Attribute name="name" default="" type="STRING" comment="控件名称" />
+		<Attribute name="shared" default="false" type="BOOL" comment="是否共享" />
+		<Attribute name="value" default="" type="ATTRIBUTELIST" comment="控件默认参数" />
+	</Default>
+	<Style>
+		<Attribute name="name" default="" type="STRING" comment="样式名称" />
+		<Attribute name="class" default="" type="STRING" comment="样式控件, 仅设计器使用" />
+		<Attribute name="shared" default="false" type="BOOL" comment="是否共享" />
+		<Attribute name="value" default="" type="ATTRIBUTELIST" comment="样式表默认参数" />
+	</Style>
+	<IMAGE>
+		<Attribute name="file" default="" type="STRING" comment="" />
+		<Attribute name="res" default="" type="STRING" comment="载入的图片资源名称" />
+		<Attribute name="restype" default="0" type="INT" comment="" />
+		<Attribute name="dest" default="0,0,0,0" type="RECT" comment="显示目标区域" />
+		<Attribute name="source" default="0,0,0,0" type="RECT" comment="图片资源的区域." />
+		<Attribute name="corner" default="0,0,0,0" type="RECT" comment="圆角区域" />
+		<Attribute name="mask" default="0x00000000" type="DWORD" comment="..." />
+		<Attribute name="fade" default="255" type="INT" comment="透明度" />
+		<Attribute name="hole" default="false" type="BOOL" comment="..." />
+		<Attribute name="xtiled" default="false" type="BOOL" comment="" />
+		<Attribute name="ytiled" default="false" type="BOOL" comment="" />
+	</IMAGE>
+	<CustomControl parent="Control" comment="自定义控件">
+		<Attribute name="custombasedfrom" default="" type="STRING" comment="自定义控件的父类, 如果没定义, 就不是自定义控件" />
+	</CustomControl>
+</Controls>

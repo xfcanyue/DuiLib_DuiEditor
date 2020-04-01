@@ -223,9 +223,6 @@
     <ClInclude Include="UIPropertyGridCtrl.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="StringToolExt.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="DuiPropertyFile.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -352,6 +349,12 @@
     <ClInclude Include="DlgTemplateSave.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="DuiEditorDocTemplate.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="LsStringConverter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -382,9 +385,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="UIPropertyGridCtrl.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="StringToolExt.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DuiPropertyFile.cpp">
@@ -511,6 +511,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DlgTemplateSave.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiEditorDocTemplate.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

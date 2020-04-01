@@ -121,9 +121,9 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndToolBar.RemoveButton(2);
 	m_wndToolBar.RemoveButton(2);
 	
-//	CMenu menuNew, menuOpen;
-//	menuNew.LoadMenu(IDR_MENU_FILE_NEW);
-//	m_wndToolBar.ReplaceButton(ID_FILE_NEW, CMFCToolBarMenuButton(-1, menuNew.GetSubMenu(0)->GetSafeHmenu(), GetCmdMgr()->GetCmdImage (ID_FILE_NEW)));
+	CMenu menuNew, menuOpen;
+	menuNew.LoadMenu(IDR_MENU_FILE_NEW);
+	m_wndToolBar.ReplaceButton(ID_FILE_NEW, CMFCToolBarMenuButton(-1, menuNew.GetSubMenu(0)->GetSafeHmenu(), GetCmdMgr()->GetCmdImage (ID_FILE_NEW)));
 
 	int npos = m_wndToolBar.CommandToIndex(ID_EDIT_DPI);
 	m_wndToolBar.RemoveButton(npos+1);
@@ -197,6 +197,9 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return FALSE; // 未能创建
 	}
 
+
+	// 启用增强的窗口管理对话框
+	EnableWindowsDialog(ID_WINDOW_MANAGER, ID_WINDOW_MANAGER, TRUE);
 
 	// TODO: 如果您不希望工具栏和菜单栏可停靠，请删除这五行
 	m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);

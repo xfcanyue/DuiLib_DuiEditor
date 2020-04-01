@@ -34,7 +34,7 @@ public:
 	virtual void SetResType_File(LPCTSTR pstrPath=_T("skin"));
 	virtual void SetResType_Resource(LPCTSTR pstrPath, LPCTSTR resID=_T("IDR_RES"), LPCTSTR type=_T("xml"));
 	virtual void SetResType_ZIP(LPCTSTR pstrPath, LPCTSTR pstrZip, bool bCachedResourceZip = false, LPCTSTR password = NULL);
-	virtual void SetResType_ZipResource(LPCTSTR pstrPath, UINT resID, LPCTSTR type=_T("ZIPRES"));
+	virtual void SetResType_ZipResource(LPCTSTR pstrPath, LPCTSTR password, UINT resID, LPCTSTR type=_T("ZIPRES"));
 
 	virtual bool InitInstance(HINSTANCE hInstance);
 	virtual void Run();

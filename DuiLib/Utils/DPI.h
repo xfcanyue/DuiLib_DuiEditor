@@ -32,6 +32,8 @@ namespace DuiLib
 		static int GetDPIOfMonitor(HMONITOR hMonitor);
 		static int GetDPIOfMonitorNearestToPoint(POINT pt);
 
+		static void SetAdjustDPIRecource(bool bAdjust); //是否动态调整DPI资源, add by liqs99
+		static bool IsAdjustDPIRecource(); //是否动态调整DPI资源, add by liqs99
 	public:
 		PROCESS_DPI_AWARENESS GetDPIAwareness();
 		BOOL SetDPIAwareness(PROCESS_DPI_AWARENESS Awareness);
@@ -53,6 +55,8 @@ namespace DuiLib
 		int m_nScaleFactor;
 		int m_nScaleFactorSDA;
 		PROCESS_DPI_AWARENESS m_Awareness;
+
+		static bool m_bAdjustDPIRecource;
 	};
 }
 #endif //__DPI_H__

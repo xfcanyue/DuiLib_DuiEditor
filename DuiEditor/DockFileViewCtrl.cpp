@@ -93,9 +93,10 @@ BOOL CDockFileViewCtrl::InitFolder(LPCTSTR szFolderPath)
 		return FALSE;
 	}
 
+	LSSTRING_CONVERSION;
 	LPSHELLFOLDER psfRootFolder = NULL;
 	LPITEMIDLIST pidlRootFolder = NULL;
-	if (FAILED(pDesktop->ParseDisplayName(NULL, NULL, T2W((LPTSTR)szFolderPath), NULL, &pidlRootFolder, NULL)))
+	if (FAILED(pDesktop->ParseDisplayName(NULL, NULL, (LPWSTR)LST2W(szFolderPath), NULL, &pidlRootFolder, NULL)))
 	{
 		return FALSE;
 	}

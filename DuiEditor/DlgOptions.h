@@ -25,4 +25,5 @@ public:
 	UINT m_nTreeDeep;
 	afx_msg void OnBnClickedButton1();
 	CString m_strAttachTestCommand;
+	CMFCColorButton m_ctrlBkColor;
 };

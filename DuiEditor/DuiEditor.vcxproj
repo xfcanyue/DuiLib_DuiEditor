@@ -68,7 +68,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\..\Exec\</OutDir>
+    <OutDir>..\..\Exec\</OutDir>
     <TargetName>$(ProjectName)d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">
@@ -78,6 +78,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\..\Exec\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -258,6 +259,7 @@
     <ClInclude Include="DlgTemplateSave.h" />
     <ClInclude Include="DockFileViewCtrl.h" />
     <ClInclude Include="DockFileViewWnd.h" />
+    <ClInclude Include="DuiEditorDocTemplate.h" />
     <ClInclude Include="DuiEditorViewCode.h" />
     <ClInclude Include="DuiEditorCommandHistory.h" />
     <ClInclude Include="DuiEditorTabView.h" />
@@ -265,13 +267,13 @@
     <ClInclude Include="ImageEditorFrame.h" />
     <ClInclude Include="ImageEditorTreeWnd.h" />
     <ClInclude Include="ImageEditorView.h" />
+    <ClInclude Include="LsStringConverter.h" />
     <ClInclude Include="MenuElementExUI.h" />
     <ClInclude Include="MenuExUI.h" />
     <ClInclude Include="SciFind.h" />
     <ClInclude Include="ScriptEditorDoc.h" />
     <ClInclude Include="ScriptEditorView.h" />
     <ClInclude Include="StaticImageView.h" />
-    <ClInclude Include="StringToolExt.h" />
     <ClInclude Include="ThreadPipe.h" />
     <ClInclude Include="ThreadTest.h" />
     <ClInclude Include="TinyXml2\tinyxml2.h" />
@@ -315,6 +317,7 @@
     <ClCompile Include="DlgTemplateSave.cpp" />
     <ClCompile Include="DockFileViewCtrl.cpp" />
     <ClCompile Include="DockFileViewWnd.cpp" />
+    <ClCompile Include="DuiEditorDocTemplate.cpp" />
     <ClCompile Include="DuiEditorViewCode.cpp" />
     <ClCompile Include="DuiEditorCommandHistory.cpp" />
     <ClCompile Include="DuiEditorTabView.cpp" />
@@ -328,7 +331,6 @@
     <ClCompile Include="ScriptEditorDoc.cpp" />
     <ClCompile Include="ScriptEditorView.cpp" />
     <ClCompile Include="StaticImageView.cpp" />
-    <ClCompile Include="StringToolExt.cpp" />
     <ClCompile Include="ThreadPipe.cpp" />
     <ClCompile Include="ThreadTest.cpp" />
     <ClCompile Include="TinyXml2\tinyxml2.cpp" />

@@ -109,7 +109,7 @@ struct CPictureControlUI::Imp
 };
 
 //////////////////////////////////////////////////////////////////////////
-CPictureControlUI::CPictureControlUI(void):m_pImp(new CPictureControlUI::Imp(m_pManager))
+CPictureControlUI::CPictureControlUI(void):m_pImp(new CPictureControlUI::Imp(m_pManager)), m_uButtonState(0)
 {
 	m_pImage = NULL;
 	m_pImp->SetOwer(this);
@@ -143,16 +143,18 @@ void CPictureControlUI::SetVisible(bool bVisible/* = true*/)
 	__super::SetVisible(bVisible);
 	m_pImp->EventSetVisible(bVisible);
 }
-
-void CPictureControlUI::SetInternVisible(bool bVisible/* = true*/)
+/*
+//奇怪了，这个加上之后，在Tab下面，如果不是TAB的第一页，可能会出错。
+void CPictureControlUI::SetInternVisible(bool bVisible)
 {
 	__super::SetInternVisible(bVisible);
 	m_pImp->EventSetVisible(bVisible);
 }
-
+*/
 bool CPictureControlUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
 {
 	if( !::IntersectRect( &m_rcPaint, &rcPaint, &m_rcItem ) ) return true;
+	if( !__super::DoPaint(hDC, rcPaint, pStopControl) ) return false;
 
 	if(m_pImage)
 	{
@@ -164,14 +166,56 @@ bool CPictureControlUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopC
 				m_pImage->Draw(hDC, m_rcItem);
 		}
 	}
-	return __super::DoPaint(hDC, rcPaint, pStopControl);
+	return true;
 }
 
 void CPictureControlUI::DoEvent(TEventUI& event)
 {
 	WPARAM nID = event.wParam;
 	if( event.Type == UIEVENT_TIMER )
+	{
 		m_pImp->EventOnTimer(nID);
+		return;
+	}
+
+	if( event.Type == UIEVENT_KEYDOWN )
+	{
+		if (IsKeyboardEnabled()) {
+			if( event.chKey == VK_SPACE || event.chKey == VK_RETURN ) {
+				Activate();
+				return;
+			}
+		}
+	}		
+
+	if( event.Type == UIEVENT_BUTTONDOWN || event.Type == UIEVENT_DBLCLICK)
+	{
+		if( ::PtInRect(&m_rcItem, event.ptMouse) && IsEnabled() ) {
+			m_uButtonState |= UISTATE_PUSHED | UISTATE_CAPTURED;
+			Invalidate();
+		}
+		return;
+	}	
+
+	if( event.Type == UIEVENT_BUTTONUP )
+	{
+		if( (m_uButtonState & UISTATE_CAPTURED) != 0 ) {
+			m_uButtonState &= ~(UISTATE_PUSHED | UISTATE_CAPTURED);
+			Invalidate();
+			if( ::PtInRect(&m_rcItem, event.ptMouse) ) Activate();				
+		}
+		return;
+	}
+}
+
+bool CPictureControlUI::Activate()
+{
+	if( !CControlUI::Activate() ) return false;
+	if( m_pManager != NULL )
+	{
+		m_pManager->SendNotify(this, DUI_MSGTYPE_CLICK);
+	}
+	return true;
 }
 
 void CPictureControlUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
@@ -224,7 +268,7 @@ void CPictureControlUI::SetPicture(CxImage &img)
 {
 	if(m_pImage != NULL) { delete m_pImage; m_pImage = NULL; }
 	m_pImage = new CxImage;
-	m_pImage->Transfer(img);
+	*m_pImage = img;
 	m_type = m_pImage->GetType();
 
 	if(m_type == CXIMAGE_FORMAT_GIF)

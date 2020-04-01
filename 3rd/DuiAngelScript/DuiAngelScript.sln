@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DuiAngelScript", "DuiAngelScript\DuiAngelScript.vcxproj", "{B6520A5A-2B32-4E28-A111-1486755054FF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B6520A5A-2B32-4E28-A111-1486755054FF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B6520A5A-2B32-4E28-A111-1486755054FF}.Debug|Win32.Build.0 = Debug|Win32
+		{B6520A5A-2B32-4E28-A111-1486755054FF}.Release|Win32.ActiveCfg = Release|Win32
+		{B6520A5A-2B32-4E28-A111-1486755054FF}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

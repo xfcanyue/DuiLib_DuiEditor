@@ -19,7 +19,7 @@ namespace DuiLib
 		// 只需主窗口重写（初始化资源与多语言接口）
 		virtual void InitResource(){};
 		// 每个窗口都可以重写
-		virtual void InitWindow(){};
+		virtual void __InitWindow(){};
 		virtual void OnFinalMessage( HWND hWnd );
 		virtual void Notify(TNotifyUI& msg);
 

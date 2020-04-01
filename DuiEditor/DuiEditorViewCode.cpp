@@ -116,25 +116,26 @@ BOOL CDuiEditorViewCode::ApplyDocument()
 	if(!sci.sci_GetModify())
 		return TRUE;
 
-	CStringA strTextA;
-	sci.sci_GetTextAll(strTextA);
-	CString strTextW = CStringToolExt::utf8ToCStrW(strTextA);
+	LSSTRING_CONVERSION;
+	CStringA strTextUtf8;
+	sci.sci_GetTextAll(strTextUtf8);
+	CString strText = LSUTF82T(strTextUtf8);
 
 	//尝试解析修改后的xml文档
 	tinyxml2::XMLDocument xml;
-	tinyxml2::XMLError err = xml.LoadBuffer(strTextA, strTextA.GetLength());
+	tinyxml2::XMLError err = xml.LoadBuffer(strTextUtf8, strTextUtf8.GetLength());
 	if(xml.Error())
 	{
 		CStringA strMsg;
 		strMsg.Format("解析错误: \r\nErrorID:  %d \r\nErrorName:  %s \r\n\r\n错误所在行:  %d", 
 			xml.ErrorID(), xml.ErrorIDToName(err), xml.GetErrorLineNum());
-		MessageBoxA(NULL, strMsg, "XML ERROR", MB_OK);
+		::MessageBoxA(NULL, strMsg, "XML ERROR", MB_OK);
 		return FALSE;
 	}
 
 	//更新到主框架
 	CDuiEditorDoc *pDoc = (CDuiEditorDoc *)GetDocument();
-	pDoc->m_doc.load_string(strTextW, XML_PARSER_OPTIONS);
+	pDoc->m_doc.load_string(strText, XML_PARSER_OPTIONS);
 	pDoc->GetTreeView()->InitTreeContent();
 	pDoc->SetModifiedFlag(TRUE);
 	((CDuiEditorViewDesign *)pDoc->GetDesignView())->InitView();
@@ -170,6 +171,8 @@ void CDuiEditorViewCode::UpdateFrameStatus()
 
 BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
 {
+	LSSTRING_CONVERSION;
+
 	NMHDR *phDR;
 	phDR = (NMHDR*)lParam;
 
@@ -202,10 +205,9 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 			}
 			else if(pMsg->ch == ' ')
 			{
-				CString strShowW = AutoCompleteProperty(GetNodeName(), _T(""));
-				CStringA strShowA = CStringToolExt::CStrT2CStrA(strShowW);
-				if(!strShowA.IsEmpty())
-					sci.sci_AutocShow(0, strShowA);
+				CString strShow = AutoCompleteProperty(GetNodeName(), _T(""));
+				if(!strShow.IsEmpty())
+					sci.sci_AutocShow(0, LST2UTF8(strShow));
 			}
 			else if(pMsg->ch == '>')
 			{
@@ -226,20 +228,20 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 
 				CStringA objectNameA;
 				sci.sci_GetTextRange(startPos, endPos, objectNameA);
-				CStringW objectNameW = CStringToolExt::utf8ToCStrW(objectNameA);
 
 				CStringA strLeftA;
 				sci.sci_GetTextRange(startPos-1, startPos, strLeftA);
 				if(strLeftA == '<' || strLeftA == '/')
 				{
-					AutoCompleteNode(objectNameW);
+					AutoCompleteNode(LSUTF82T(objectNameA));
 				}
 				else
 				{
-					CString strShowW = AutoCompleteProperty(GetNodeName(), objectNameW);
-					CStringA strShowA = CStringToolExt::CStrT2CStrA(strShowW);
-					if(!strShowA.IsEmpty())
-						sci.sci_AutocShow(0, strShowA);
+					CString strShow = AutoCompleteProperty(GetNodeName(), LSUTF82T(objectNameA));
+					if(!strShow.IsEmpty())
+					{
+						sci.sci_AutocShow(0, LST2UTF8(strShow));
+					}
 				}
 			}			
 		}
@@ -292,7 +294,8 @@ CString CDuiEditorViewCode::GetNodeName()
 				CStringA strRetA;
 				sci.sci_GetTextRange(nodePos+2, nSpacePos, strRetA);
 				//InsertMsg(CStringToolExt::CStrA2CStrW(strRetA));
-				strRet = CStringToolExt::CStrA2CStrW(strRetA);
+				LSSTRING_CONVERSION;
+				strRet = LSUTF82T(strRetA);
 				break;
 			}
 		}
@@ -304,39 +307,42 @@ CString CDuiEditorViewCode::GetNodeName()
 	return strRet;
 }
 
-void CDuiEditorViewCode::AutoCompleteNode(CStringW objectNameW)		//自动完成控件名
+void CDuiEditorViewCode::AutoCompleteNode(CString objectName)		//自动完成控件名
 {
-	CStringW strShowW;
+	CString strShow;
+
+	objectName.MakeUpper();
 
 	for (xml_node node=g_duiProp.GetRoot().first_child(); node; node=node.next_sibling())
 	{
-		CStringW nodeName = node.name();
+		CString nodeName = node.name();
 		nodeName.MakeUpper();
-		objectNameW.MakeUpper();
-		if(nodeName.Find(objectNameW) >= 0)
+		if(nodeName.Find(objectName) >= 0)
 		{
-			strShowW += node.name();
-			strShowW += _T(" ");
+			strShow += node.name();
+			strShow += _T(" ");
 		}
 	}
 
-	CStringA strShowA = CStringToolExt::CStrT2CStrA(strShowW);
-	if(!strShowA.IsEmpty())
-		sci.sci_AutocShow(0, strShowA);
+	LSSTRING_CONVERSION;
+	if(!strShow.IsEmpty())
+	{
+		sci.sci_AutocShow(0, LST2UTF8(strShow));
+	}
 }
 
-CStringW CDuiEditorViewCode::AutoCompleteProperty(CStringW objectNameW, CStringW AttrName)	//自动完成属性名
+CString CDuiEditorViewCode::AutoCompleteProperty(CString objectName, CString AttrName)	//自动完成属性名
 {
-	CStringW strShowW;
+	CString strShow;
 
-	xml_node node = g_duiProp.FindControl(objectNameW);
+	xml_node node = g_duiProp.FindControl(objectName);
 	for (xml_node nodeAttr = node.first_child(); nodeAttr; nodeAttr=nodeAttr.next_sibling())
 	{
 		LPCTSTR className = nodeAttr.attribute(_T("name")).value();
 		if(AttrName.IsEmpty())
 		{
-			strShowW += className;
-			strShowW += _T(" ");
+			strShow += className;
+			strShow += _T(" ");
 		}
 		else
 		{
@@ -345,8 +351,8 @@ CStringW CDuiEditorViewCode::AutoCompleteProperty(CStringW objectNameW, CStringW
 			AttrName.MakeUpper();
 			if(strClass.Find(AttrName) >= 0)
 			{
-				strShowW += className;
-				strShowW += _T(" ");
+				strShow += className;
+				strShow += _T(" ");
 			}
 		}
 	}
@@ -354,10 +360,10 @@ CStringW CDuiEditorViewCode::AutoCompleteProperty(CStringW objectNameW, CStringW
 	CString parentName = node.attribute(_T("parent")).as_string();
 	if(!parentName.IsEmpty())
 	{
-		strShowW += AutoCompleteProperty(parentName, AttrName);
+		strShow += AutoCompleteProperty(parentName, AttrName);
 	}
 
-	return strShowW;
+	return strShow;
 }
 
 

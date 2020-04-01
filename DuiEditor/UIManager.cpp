@@ -403,6 +403,7 @@ void CUIManager::SetScrollSize()
 void CUIManager::SetZoom(int zoom)
 {
 	GetManager()->SetDPI(zoom);
+	GetManager()->ResetDPIAssets();
 
 	CRect rc;
 	GetUiWindow()->GetWindowRect(rc);

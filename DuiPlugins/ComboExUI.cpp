@@ -26,32 +26,32 @@ bool CComboExUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
 
 	if( (m_uButtonState & UISTATE_DISABLED) != 0 ) {
 		if( !m_dbDisabledImage.IsEmpty() ) {
-			if( !DrawDropButtonImage(hDC, (LPCTSTR)m_dbDisabledImage) ) {}
-			else return true;
+			if( DrawDropButtonImage(hDC, (LPCTSTR)m_dbDisabledImage) )
+				return true;
 		}
 	}
 	else if( (m_uButtonState & UISTATE_PUSHED) != 0 ) {
 		if( !m_dbPushedImage.IsEmpty() ) {
-			if( !DrawDropButtonImage(hDC, (LPCTSTR)m_dbPushedImage) ) {}
-			else return true;
+			if( DrawDropButtonImage(hDC, (LPCTSTR)m_dbPushedImage) )
+				return true;
 		}
 	}
 	else if( (m_uButtonState & UISTATE_HOT) != 0 ) {
 		if( !m_dbHotImage.IsEmpty() ) {
-			if( !DrawDropButtonImage(hDC, (LPCTSTR)m_dbHotImage) ) {}
-			else return true;
+			if( DrawDropButtonImage(hDC, (LPCTSTR)m_dbHotImage) ) 
+				return true;
 		}
 	}
 	else if( (m_uButtonState & UISTATE_FOCUSED) != 0 ) {
 		if( !m_dbFocusedImage.IsEmpty() ) {
-			if( !DrawDropButtonImage(hDC, (LPCTSTR)m_dbFocusedImage) ) {}
-			else return true;
+			if( DrawDropButtonImage(hDC, (LPCTSTR)m_dbFocusedImage) )
+				return true;
 		}
 	}
 
 	if( !m_dbNormalImage.IsEmpty() ) {
-		if( !DrawDropButtonImage(hDC, (LPCTSTR)m_dbNormalImage) ) {}
-		else return true;
+		if( DrawDropButtonImage(hDC, (LPCTSTR)m_dbNormalImage) )
+			return true;
 	}
 
 	return true;

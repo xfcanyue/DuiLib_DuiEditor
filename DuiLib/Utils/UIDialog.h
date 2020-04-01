@@ -15,7 +15,7 @@ public:
 	int m_nMode;
 
 	virtual void OnFinalMessage( HWND hWnd );
-
+/*
 	UINT DoModal();
 	void ShowDialog();
 
@@ -24,6 +24,9 @@ public:
 
 	UINT DoModal(CUIForm *pParentWnd);
 	void ShowDialog(CUIForm *pParentWnd);
+	*/
+	UINT DoModal(CUIFrmBase *pParentWnd = NULL);
+	void ShowDialog(CUIFrmBase *pParentWnd = NULL);
 
 	virtual void Notify(TNotifyUI& msg);
 

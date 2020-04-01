@@ -48,23 +48,9 @@
 #endif
 #endif
 
-#include "../DuiLib/UIlib.h"
-#ifdef _DEBUG
-#   ifdef _UNICODE
-#       pragma comment(lib, "../Lib/DuiLib_ud.lib")
-#   else
-#       pragma comment(lib, "../Lib/DuiLib_d.lib")
-#   endif
-#else
-#   ifdef _UNICODE
-#       pragma comment(lib, "../Lib/DuiLib_u.lib")
-#   else
-#       pragma comment(lib, "../Lib/DuiLib.lib")
-#   endif
-#endif
+#include "../DuiLib/DuiLib.h"
 using namespace DuiLib;
 
-//#include "E:/Mylibrary/GridControl/Include/GridControl.h"
 #include "../DuiPlugins/Include/DuiPlugins.h"
 
 #include "scintilla/include/Scintilla.h"
@@ -85,7 +71,7 @@ using namespace pugi;
 */
 
 #include "MemDCEx.h"
-
+#include "LsStringConverter.h"
 
 
 #define RULEBAR_SIZE_X	20
@@ -93,7 +79,5 @@ using namespace pugi;
 
 
 #define WM_CREATE_UIWINDOW		WM_USER + 1
-
-
 
 extern pugi::xml_document g_proj;

@@ -51,6 +51,7 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 }
 
 #include "ComboExUI.h"
+#include "IconButton.h"
 #include "GridCtrlUI.h"
 #include "MsgWndUI.h"
 #include "KeyBoardUI.h"
@@ -69,6 +70,7 @@ extern "C" __declspec(dllexport) void DuiPluginsRegister()
 	REGIST_DUICONTROL(CImageBoxUI);
 	REGIST_DUICONTROL(CPictureControlUI);
 	REGIST_DUICONTROL(CComboExUI);
+	REGIST_DUICONTROL(CIconButtonUI);
 }
 
 extern "C" __declspec(dllexport) CControlUI *CreateControl(LPCTSTR pstrClass)
@@ -104,6 +106,10 @@ extern "C" __declspec(dllexport) CControlUI *CreateControl(LPCTSTR pstrClass)
 	else if( _tcscmp(pstrClass, _T("ComboEx")) == 0 ) 
 	{
 		return new CComboExUI;
+	}
+	else if( _tcscmp(pstrClass, _T("IconButton")) == 0 ) 
+	{
+		return new CIconButtonUI;
 	}
 	return NULL;
 }

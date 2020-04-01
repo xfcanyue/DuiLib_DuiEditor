@@ -29,7 +29,7 @@ void CUIDialog::OnFinalMessage( HWND hWnd )
 	}
 }
 
-
+/*
 UINT CUIDialog::DoModal()
 {
 	Create(NULL, GetWindowClassName(), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE);
@@ -77,6 +77,28 @@ void CUIDialog::ShowDialog(CUIForm *pParentWnd)
 {
 	return ShowDialog(pParentWnd->GetFrameWnd());
 }
+*/
+UINT CUIDialog::DoModal(CUIFrmBase *pParentWnd)
+{
+	if(pParentWnd)
+		Create(pParentWnd->GetManager()->GetPaintWindow(), GetWindowClassName(), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE);
+	else
+		Create(NULL, GetWindowClassName(), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE);
+	CenterWindow();
+	_bModal = true;
+	return ShowModal();
+}
+
+void CUIDialog::ShowDialog(CUIFrmBase *pParentWnd)
+{
+	if(pParentWnd)
+		Create(pParentWnd->GetManager()->GetPaintWindow(), GetWindowClassName(), WS_POPUP|UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE);
+	else
+		Create(NULL, GetWindowClassName(), WS_POPUP|UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE);
+	CenterWindow();
+	_bModal = false;
+	return ShowWindow();
+}
 /*
 UINT CUIDialog::DoModal(CPaintManagerUI* pMainPaintManager)
 {
@@ -102,8 +124,6 @@ void CUIDialog::ShowDialog(CPaintManagerUI* pMainPaintManager)
 */
 void CUIDialog::InitWindow()
 {
-	__super::InitWindow();
-
 	switch (m_nMode)
 	{
 	case TMD_ADD:
@@ -123,21 +143,7 @@ void CUIDialog::InitWindow()
 		break;
 	}
 }
-/*
-void CUIDialog::OnNotifyClick(TNotifyUI& msg)
-{
-	__super::OnNotifyClick(msg);
 
-	if(IsControl(msg, _T("btn_ok")))
-	{
-		OnClickOK();
-	}
-	else if(IsControl(msg, _T("btn_cancel")))
-	{
-		OnClickCancel();
-	}
-}
-*/
 void CUIDialog::Notify(TNotifyUI& msg)
 {
 	if(msg.sType == DUI_MSGTYPE_CLICK)

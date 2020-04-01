@@ -110,22 +110,23 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 		break;
 	case 1:	//当前控件下方插入兄弟控件
 		{
-			if(! pParent->AddAt(pNewControl, pParent->GetItemIndex(pCurControl)) ) { delete pNewControl; return; }
+			if(! pParent->AddAt(pNewControl, pParent->GetItemIndex(pCurControl) + 1) ) { delete pNewControl; return; }
 			nodeNewControl = nodeContainer.append_child(strClass);	//写入文档
 		}
 		break;
 	case 2:	//当前控件上方插入兄弟控件
 		{
-			int nIndex = pParent->GetItemIndex(pCurControl);
-			if(nIndex == 0) //第一个
-			{
-				if(! pParent->AddAt(pNewControl, nIndex) ) { delete pNewControl; return; }
-				pParent->SetItemIndex(pNewControl, 0);
-			}
-			else
-			{
-				if(! pParent->AddAt(pNewControl, nIndex-1) ) { delete pNewControl; return; }
-			}
+// 			int nIndex = pParent->GetItemIndex(pCurControl);
+// 			if(nIndex == 0) //第一个
+// 			{
+// 				if(! pParent->AddAt(pNewControl, nIndex) ) { delete pNewControl; return; }
+// 				pParent->SetItemIndex(pNewControl, 0);
+// 			}
+// 			else
+// 			{
+// 				if(! pParent->AddAt(pNewControl, nIndex-1) ) { delete pNewControl; return; }
+			// 			}
+			if(! pParent->AddAt(pNewControl, pParent->GetItemIndex(pCurControl)) ) { delete pNewControl; return; }
 			nodeNewControl = nodeContainer.insert_child_before(strClass, nodeCurrent);	//写入文档
 		}
 		break;
@@ -202,8 +203,10 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 	//插入控件树
 	if(dlg.m_nPosition == 2)
 		m_pManager->GetTreeView()->AddNewControl(nodeNewControl, nodeCurrent, TVI_BEFORE);
-	else
+	else if(dlg.m_nPosition == 1)
 		m_pManager->GetTreeView()->AddNewControl(nodeNewControl, nodeCurrent, TVI_NEXT);
+	else
+		m_pManager->GetTreeView()->AddNewControl(nodeNewControl, nodeCurrent, TVI_CHILD);
 
 	//刷新属性窗口
 	g_pPropWnd->InitProp(nodeNewControl);
@@ -386,6 +389,8 @@ LRESULT CUIWindowEx::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHa
 
 	ResizeWindow();
 
+	GetManager()->GetDPIObj()->SetDPIAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
+	GetManager()->SetDPI(CDPI::GetMainMonitorDPI());
 	return 0;
 }
 
@@ -469,6 +474,7 @@ LRESULT CUIWindowEx::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHan
 
 	CRect rectClient;
 	::GetClientRect(m_hWnd, rectClient);
+
 	if(m_pManager->GetView()->m_bViewGrid)
 	{
 		for(int i=rectClient.left; i<rectClient.right; i+=10)

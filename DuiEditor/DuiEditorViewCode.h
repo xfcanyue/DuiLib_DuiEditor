@@ -31,8 +31,8 @@ public:
 	void UpdateFrameStatus();
 
 	CString GetNodeName();
-	void AutoCompleteNode(CStringW objectNameW);		//自动完成控件名
-	CStringW AutoCompleteProperty(CStringW objectNameW, CStringW AttrName);	//自动完成属性名
+	void AutoCompleteNode(CString objectName);		//自动完成控件名
+	CString AutoCompleteProperty(CString objectName, CString AttrName);	//自动完成属性名
 
 	CUIManager *m_pManager;
 protected:

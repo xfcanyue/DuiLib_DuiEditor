@@ -3,6 +3,7 @@
 //namespace DuiLib{
 using namespace DuiLib;
 
+
 class UILIB_API CUIFrmBase : public CNotifyPump
 {
 

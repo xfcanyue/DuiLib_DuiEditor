@@ -246,7 +246,8 @@ BOOL CDuiEditorViewDesign::OnEraseBkgnd(CDC* pDC)
 		else
 			rc.SetRect(rcUiWnd.Width(), 0, rectClient.Width(), rectClient.Height());
 
-		pDC->FillSolidRect(rc,RGB(255, 255, 255));
+
+		pDC->FillSolidRect(rc, g_crBkDesign);
 	}
 
 	if(rectClient.Height() - rcUiWnd.Height())	//刷新UI窗口下边的空白区域
@@ -257,16 +258,16 @@ BOOL CDuiEditorViewDesign::OnEraseBkgnd(CDC* pDC)
 		else
 			rc.SetRect(0, rcUiWnd.Height(), rectClient.Width(), rectClient.Height());
 
-		pDC->FillSolidRect(rc,RGB(255, 255, 255));
+		pDC->FillSolidRect(rc, g_crBkDesign);
 	}
 
 	if(m_bViewRuleBar)
 	{
 		CRect rc1(0,0, rectClient.Width(), RULEBAR_SIZE_Y);
-		pDC->FillSolidRect(rc1,RGB(255, 255, 255));
+		pDC->FillSolidRect(rc1,g_crBkDesign);
 
 		CRect rc2(0,0, RULEBAR_SIZE_Y, rectClient.Height());
-		pDC->FillSolidRect(rc2,RGB(255, 255, 255));
+		pDC->FillSolidRect(rc2,g_crBkDesign);
 
 		for (int i=0; i<=200; i++)
 		{

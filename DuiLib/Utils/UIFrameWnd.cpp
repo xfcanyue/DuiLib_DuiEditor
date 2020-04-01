@@ -66,19 +66,6 @@ void CUIFrameWnd::ShowFullScreen() //»´∆¡œ‘ æ
 	//::SetWindowPos(GetHWND(), HWND_TOPMOST, 0, 0, screenX, screenY, SWP_SHOWWINDOW);
 }
 
-LRESULT CUIFrameWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
-{
-	int lRet = __super::OnCreate(uMsg, wParam, lParam, bHandled);
-
-	std::list<CUIForm *>::iterator it;
-	for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
-	{
-		(*it)->InitWindow();
-	}
-
-	return lRet;
-}
-
 LRESULT CUIFrameWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	LRESULT lRes = 0;
@@ -263,4 +250,17 @@ LRESULT CUIFrameWnd::OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&
 	LRESULT lRes = CWindowWnd::HandleMessage(uMsg, wParam, lParam);
 #endif
 	return lRes;
+}
+
+void CUIFrameWnd::__InitWindow()
+{
+	__super::__InitWindow();
+
+	std::list<CUIForm *>::iterator it;
+	for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
+	{
+		(*it)->InitWindow();
+	}
+
+	InitWindow();
 }

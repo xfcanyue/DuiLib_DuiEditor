@@ -1,0 +1,123 @@
+// AxImage.odl : type library source for ActiveX Control project.
+
+#include <olectl.h>
+#include <idispids.h>
+
+[ uuid(4FED1AC3-6CF3-11D6-BB83-9FDD9223647D), version(1.0),
+  helpfile("AxImage.hlp"),
+  helpstring("AxImage ActiveX Control module"),
+  control ]
+library AXIMAGELib
+{
+	importlib(STDOLE_TLB);
+	importlib(STDTYPE_TLB);
+
+	[ uuid(4FED1AC4-6CF3-11D6-BB83-9FDD9223647D),
+	  helpstring("Dispatch interface for AxImage Control"), hidden ]
+	dispinterface _DAxImage
+	{
+		properties:
+			//{{AFX_ODL_PROP(AxImage)
+			[id(DISPID_BACKCOLOR), bindable, requestedit] OLE_COLOR BackColor;
+			[id(1)] boolean Border;
+			[id(2)] boolean Stretch;
+			//}}AFX_ODL_PROP
+
+		methods:
+			//{{AFX_ODL_METHOD(AxImage)
+			[id(DISPID_REFRESH)] void Refresh();
+			[id(3)] long Load(BSTR FileName, long ImageType);
+			[id(4)] long Save(BSTR FileName, long ImageType);
+			[id(5)] long CreateFromHandle(long handle);
+			[id(6)] long CreateFromBitmap(long bitmap);
+			[id(7)] OLE_HANDLE MakeBitmap(long hdc);
+			[id(8)] long Create(long width, long height, long bpp);
+			[id(9)] void Clear(long val);
+			[id(10)] void SetStdPalette();
+			[id(11)] boolean IsValid();
+			[id(12)] boolean Flip();
+			[id(13)] boolean Mirror();
+			[id(14)] boolean Rotate(float angle);
+			[id(15)] boolean RotateLeft();
+			[id(16)] boolean RotateRight();
+			[id(17)] boolean Rotate180();
+			[id(18)] boolean Negative();
+			[id(19)] boolean GrayScale();
+			[id(20)] boolean Resample(long newx, long newy, long fast);
+			[id(21)] boolean DecreaseBpp(long bpp, long errordiffusion);
+			[id(22)] boolean IncreaseBpp(long bpp);
+			[id(23)] boolean Dither(long method);
+			[id(24)] boolean Crop(long left, long top, long right, long bottom);
+			[id(25)] boolean Threshold(long level);
+			[id(26)] boolean Colorize(long hue, long sat);
+			[id(27)] boolean Light(long light, long contrast);
+			[id(28)] float Mean();
+			[id(29)] boolean Dilate(long Ksize);
+			[id(30)] boolean Erode(long Ksize);
+			[id(31)] boolean Filter(long* kernel, long Ksize, long Kfactor, long Koffset);
+			[id(32)] long GetNumFrames();
+			[id(33)] long GetFrame();
+			[id(34)] void SetFrame(long nFrame);
+			[id(35)] long GetTransIndex();
+			[id(36)] OLE_COLOR GetTransColor();
+			[id(37)] void SetTransIndex(long index);
+			[id(38)] void SetTransColor(long color);
+			[id(39)] long GetPaletteSize();
+			[id(40)] long GetPalette();
+			[id(41)] OLE_COLOR GetPaletteColor(long index);
+			[id(42)] void SetPalette(long* pal, long ncolors);
+			[id(43)] void SetPaletteIndex(long index, OLE_COLOR color);
+			[id(44)] void SetGrayPalette();
+			[id(45)] boolean IsGrayScale();
+			[id(46)] boolean IsIndexed();
+			[id(47)] void SwapIndex(long index1, long index2);
+			[id(48)] void HuePalette(float correction);
+			[id(49)] boolean IsInside(long x, long y);
+			[id(50)] long GetPixelIndex(long x, long y);
+			[id(51)] OLE_COLOR GetPixelColor(long x, long y);
+			[id(52)] void SetPixelIndex(long x, long y, long index);
+			[id(53)] void SetPixelColor(long x, long y, OLE_COLOR color);
+			[id(54)] long GetWidth();
+			[id(55)] long GetHeight();
+			[id(56)] long GetNumColors();
+			[id(57)] long GetColorType();
+			[id(58)] long GetBpp();
+			[id(59)] long GetType();
+			[id(60)] BSTR GetLastError();
+			[id(61)] long GetJpegQuality();
+			[id(62)] void SetJpegQuality(long q);
+			[id(63)] long GetXDPI();
+			[id(64)] long GetYDPI();
+			[id(65)] void SetXDPI(long dpi);
+			[id(66)] void SetYDPI(long dpi);
+			[id(67)] OLE_HANDLE CopyToHandle();
+			[id(68)] long StringToFormat(BSTR extension);
+			[id(69)] boolean FloodFill(long xStart, long yStart, OLE_COLOR cFillColor, short nTolerance, short nOpacity, short bSelectFillArea, short nSelectionLevel);
+			//}}AFX_ODL_METHOD
+	};
+
+	[ uuid(4FED1AC5-6CF3-11D6-BB83-9FDD9223647D),
+	  helpstring("Event interface for AxImage Control") ]
+	dispinterface _DAxImageEvents
+	{
+		properties:
+			//  Event interface has no properties
+
+		methods:
+			//{{AFX_ODL_EVENT(AxImage)
+			[id(DISPID_CLICK)] void Click();
+			//}}AFX_ODL_EVENT
+	};
+
+	[ uuid(4FED1AC6-6CF3-11D6-BB83-9FDD9223647D),
+	  helpstring("AxImage Control"), control ]
+	coclass AxImage
+	{
+		[default] dispinterface _DAxImage;
+		[default, source] dispinterface _DAxImageEvents;
+	};
+
+
+	//{{AFX_APPEND_ODL}}
+	//}}AFX_APPEND_ODL}}
+};

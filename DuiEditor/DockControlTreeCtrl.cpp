@@ -160,16 +160,45 @@ HTREEITEM CDockControlTreeCtrl::AddNewControl(xml_node node, HTREEITEM hInertAft
 
 HTREEITEM CDockControlTreeCtrl::AddNewControl(xml_node nodeNewContrl, xml_node nodeCurrentControl, HTREEITEM htiAfter)
 {
+	HTREEITEM hItemNew = NULL;
+
+	HTREEITEM hItemCurrent = FindXmlNode(nodeCurrentControl);
+	if(!hItemCurrent)	return NULL;
+	HTREEITEM hItemParent = GetParentItem(hItemCurrent);
+	if(hItemParent == NULL)	return NULL;
+
+	if(htiAfter == TVI_BEFORE)
+	{
+		HTREEITEM hPrev = GetNextItem(hItemCurrent, TVGN_PREVIOUS);
+		if(hPrev) //插入到前一个兄弟项的后面
+		{
+			hItemNew = AddNewControl(nodeNewContrl, hItemParent, hPrev);
+		}
+		else //插入到第一个
+		{
+			hItemNew = AddNewControl(nodeNewContrl, hItemParent, TVI_FIRST);
+		}
+		return hItemNew;
+	}
+	else if(htiAfter == TVI_NEXT)
+	{
+		return AddNewControl(nodeNewContrl, hItemParent, hItemCurrent);
+	}
+
+	return AddNewControl(nodeNewContrl, hItemCurrent, TVI_LAST);
+/*
 	HTREEITEM hItemParent = FindXmlNode(nodeNewContrl.parent());
 	if(hItemParent == NULL)	return NULL;
 
 	if(htiAfter == TVI_BEFORE)
 	{
+		HTREEITEM hPrev = GetNextItem(hItemParent)
 		return AddNewControl(nodeNewContrl, hItemParent, TVI_SORT);
 	}
 
 	HTREEITEM hItemInsert = FindXmlNode(nodeCurrentControl);
 	return AddNewControl(nodeNewContrl, hItemParent, hItemInsert);
+	*/
 }
 
 void CDockControlTreeCtrl::UpdateXmlNode(xml_node node)

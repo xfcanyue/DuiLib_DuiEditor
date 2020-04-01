@@ -9,6 +9,7 @@
 #include "MainFrm.h"
 
 #include "ChildFrm.h"
+#include "DuiEditorDocTemplate.h"
 #include "DuiEditorDoc.h"
 #include "DuiEditorTabView.h"
 #include "DuiEditorViewDesign.h"
@@ -28,6 +29,7 @@ AFX_STATIC_DATA const TCHAR _afxPreviewEntry[] = _T("PreviewPages");
 
 CString g_strAppPath;
 CString g_strAttachTestCommand;		//附加测试窗体程序
+COLORREF g_crBkDesign = 0xFFFFFFFF;
 CDuiPropertyFile g_duiProp;
 HWND g_hWndMsg = NULL;
 
@@ -44,10 +46,8 @@ BEGIN_MESSAGE_MAP(CDuiEditorApp, CWinAppEx)
 	ON_COMMAND(ID_FILE_NEW, &CDuiEditorApp::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, &CDuiEditorApp::OnFileOpen)
 	ON_COMMAND(ID_FILE_NEW_XML, &CDuiEditorApp::OnFileNewXml)
+	ON_COMMAND(ID_FILE_LOAD_TEMPLATE, &CDuiEditorApp::OnFileNewXmlFromTemplate)
 	ON_COMMAND(ID_FILE_NEW_AS_SCRIPT, &CDuiEditorApp::OnFileNewAsScript)
-	ON_COMMAND(ID_FILE_OPEN_XML, &CDuiEditorApp::OnFileOpenXml)
-	ON_COMMAND(ID_FILE_OPEN_AS_SCRIPT, &CDuiEditorApp::OnFileOpenAsScript)
-	ON_UPDATE_COMMAND_UI(ID_FILE_NEW_AS_SCRIPT, &CDuiEditorApp::OnUpdateFileNewAsScript)
 END_MESSAGE_MAP()
 
 
@@ -96,7 +96,7 @@ BOOL CDuiEditorApp::InitInstance()
 	CWinAppEx::InitInstance();
 	AfxInitRichEdit2();
 
-	//_CrtSetBreakAlloc(3297);
+	_CrtSetBreakAlloc(66);
 
 	// 初始化 OLE 库
 	if (!AfxOleInit())
@@ -150,6 +150,7 @@ BOOL CDuiEditorApp::InitInstance()
 
 	g_strAttachTestCommand = AfxGetApp()->GetProfileString(_T("Options"), _T("TestCommand"), _T(""));
 
+	g_crBkDesign = AfxGetApp()->GetProfileInt(_T("Options"), _T("DegsignBackColor"), RGB(255,255,255));
 	
 #ifdef _DEBUG
 	CPaintManagerUI::LoadPlugin(g_strAppPath + _T("DuiPlugins_ud.dll"));
@@ -158,19 +159,20 @@ BOOL CDuiEditorApp::InitInstance()
 #endif
 	
 	DuiPluginsRegister();
+	CPaintManagerUI::SetAdjustDPIRecource(false);
 //	CPaintManagerUI::EnableScript(false);
 
 	// 注册应用程序的文档模板。文档模板
 	// 将用作文档、框架窗口和视图之间的连接
 	CMultiDocTemplate* pDocTemplate;
-	pDocTemplate = new CMultiDocTemplate(IDR_DuiEditorTYPE,
+	pDocTemplate = new CDuiEditorDocTemplate(IDR_DuiEditorTYPE,
 		RUNTIME_CLASS(CDuiEditorDoc),
 		RUNTIME_CLASS(CChildFrame), // 自定义 MDI 子框架
 		RUNTIME_CLASS(CDuiEditorTabView));
 	if (!pDocTemplate)
 		return FALSE;
 	AddDocTemplate(pDocTemplate);
-/*
+
 	//CMultiDocTemplate* pDocTemplate;
 	pDocTemplate = new CMultiDocTemplate(IDR_DuiScriptTYPE,
 		RUNTIME_CLASS(CScriptEditorDoc),
@@ -179,7 +181,7 @@ BOOL CDuiEditorApp::InitInstance()
 	if (!pDocTemplate)
 		return FALSE;
 	AddDocTemplate(pDocTemplate);
-*/
+
 	// 创建主 MDI 框架窗口
 	CMainFrame* pMainFrame = new CMainFrame;
 	if (!pMainFrame || !pMainFrame->LoadFrame(IDR_MAINFRAME))
@@ -376,6 +378,25 @@ void CDuiEditorApp::OnFileNewXml()
 	}
 }
 
+void CDuiEditorApp::OnFileNewXmlFromTemplate()
+{
+	CDocTemplate* pTemplate;
+	POSITION pos = m_pDocManager->GetFirstDocTemplatePosition();
+	if(pos)
+	{
+		pTemplate = m_pDocManager->GetNextDocTemplate(pos);
+
+		CDuiEditorDocTemplate *pTemp = dynamic_cast<CDuiEditorDocTemplate *>(pTemplate);
+		if(pTemp != NULL)
+		{
+			pTemp->OpenDocumentFile(NULL, TRUE, TRUE, TRUE);
+		}
+		else
+		{
+			pTemplate->OpenDocumentFile(NULL);
+		}
+	}
+}
 
 void CDuiEditorApp::OnFileNewAsScript()
 {
@@ -387,21 +408,4 @@ void CDuiEditorApp::OnFileNewAsScript()
 		pTemplate = m_pDocManager->GetNextDocTemplate(pos);
 		pTemplate->OpenDocumentFile(NULL);
 	}
-}
-
-void CDuiEditorApp::OnUpdateFileNewAsScript(CCmdUI *pCmdUI)
-{
-	pCmdUI->Enable(FALSE);
-}
-
-
-void CDuiEditorApp::OnFileOpenXml()
-{
-	// TODO: 在此添加命令处理程序代码
-}
-
-
-void CDuiEditorApp::OnFileOpenAsScript()
-{
-	// TODO: 在此添加命令处理程序代码
 }

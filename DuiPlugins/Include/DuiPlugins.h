@@ -4,8 +4,8 @@
 #define UILIB_PLUGIN_API __declspec(dllimport)
 #endif
 
-#include "../CxImage/Include/image.h"
-#include "../GridControl/Include/GridControl.h"
+#include "../../3rd/CxImage/Include/image.h"
+#include "../../3rd/GridControl/Include/GridControl.h"
 
 #include "../ComboExUI.h"
 #include "../GridCtrlUI.h"

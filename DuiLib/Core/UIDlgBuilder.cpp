@@ -194,6 +194,40 @@ namespace DuiLib {
 						pManager->AddFontArray(pstrPath);
 					}
 				}
+				else if( _tcsicmp(pstrClass, _T("Script")) == 0 ) 
+				{
+					nAttributes = node.GetAttributeCount();
+					LPCTSTR pstrIncludeFile = NULL;
+					LPCTSTR pstrLanguage = NULL;
+					LPCTSTR pScriptCode = node.GetValue();
+					bool shared = false;
+					for( int i = 0; i < nAttributes; i++ ) 
+					{
+						pstrName = node.GetAttributeName(i);
+						pstrValue = node.GetAttributeValue(i);
+						if( _tcsicmp(pstrName, _T("include")) == 0 ) 
+						{
+							pstrIncludeFile = pstrValue;
+						}
+						else if( _tcsicmp(pstrName, _T("language")) == 0 ) 
+						{
+							pstrLanguage = pstrValue;
+						}
+						else if( _tcsicmp(pstrName, _T("shared")) == 0 ) 
+						{
+							shared = (_tcsicmp(pstrValue, _T("true")) == 0);
+						}
+					}
+
+					if(pstrIncludeFile)
+					{
+						pManager->AddScriptFile(pstrIncludeFile, pstrLanguage, shared);
+					}
+					if(pScriptCode && pScriptCode[0] != '\0')
+					{
+						pManager->AddScriptCode(pScriptCode, pstrLanguage, shared);
+					}
+				}
 			}
 
 			pstrClass = root.GetName();
