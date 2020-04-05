@@ -1,0 +1,10 @@
+
+都选择UnicodeDebug或UnicodeRelease
+
+第一步编译CxImage, 右键点击CxImageCrtDll单独编译
+
+第二步编译DuiLib_DuiEditor.sln
+
+第三步, 拷贝其他依赖文件到Exec目录
+
+第四部，运行DuiEditor.exe

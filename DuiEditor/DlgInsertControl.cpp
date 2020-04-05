@@ -47,12 +47,19 @@ BOOL CDlgInsertControl::OnInitDialog()
 	if( g_duiProp.IsBaseFromContainer(nodeControl.name()) || g_duiProp.IsWindowForm(nodeControl.name()))
 	{
 		pBtn1->SetCheck(TRUE);
+		return TRUE;
 	}
-	else
+
+	CControlUI *pControl = (CControlUI *)nodeControl.get_tag();
+	CContainerUI *pContainer = (CContainerUI *)pControl->GetInterface(DUI_CTR_CONTAINER);
+	if(pContainer)
 	{
-		pBtn1->EnableWindow(FALSE);
-		pBtn2->SetCheck(TRUE);
+		pBtn1->SetCheck(TRUE);
+		return TRUE;
 	}
+
+	pBtn1->EnableWindow(FALSE);
+	pBtn2->SetCheck(TRUE);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE

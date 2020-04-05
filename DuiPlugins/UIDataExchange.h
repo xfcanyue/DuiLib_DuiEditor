@@ -1,7 +1,7 @@
 #pragma once
 
 #define UI_BINDCONTROL(classname, pControl, controlname)  { pControl = static_cast<classname *>(FindControl(controlname)); ASSERT(pControl); }
-#define UI_COMMAND(controlname, fun) if(IsControl(msg, controlname)) fun()
+#define UI_COMMAND(controlname, fun) if(IsControl(msg, controlname)) { fun(); return; }
 
 class UILIB_PLUGIN_API CUIDataExchange
 {

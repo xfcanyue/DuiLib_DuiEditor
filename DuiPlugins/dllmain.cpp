@@ -60,7 +60,7 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 #include "ImageBoxUI.h"
 #include "PictureControlUI.h"
 
-extern "C" __declspec(dllexport) void DuiPluginsRegister()
+UILIB_PLUGIN_API void DuiPluginsRegister()
 {
 	REGIST_DUICONTROL(CGridCtrlUI);
 	REGIST_DUICONTROL(CMsgWndUI);
@@ -73,7 +73,7 @@ extern "C" __declspec(dllexport) void DuiPluginsRegister()
 	REGIST_DUICONTROL(CIconButtonUI);
 }
 
-extern "C" __declspec(dllexport) CControlUI *CreateControl(LPCTSTR pstrClass)
+extern "C" UILIB_PLUGIN_API CControlUI *CreateControl(LPCTSTR pstrClass)
 {
 	if( _tcscmp(pstrClass, _T("GridCtrl")) == 0 ) 
 	{
@@ -114,7 +114,7 @@ extern "C" __declspec(dllexport) CControlUI *CreateControl(LPCTSTR pstrClass)
 	return NULL;
 }
 
-extern "C" __declspec(dllexport) void InsertMsgUI(LPCTSTR pstring, COLORREF cr)
+UILIB_PLUGIN_API void InsertMsgUI(LPCTSTR pstring, COLORREF cr)
 {
 	CMsgWndUI::InsertMsg(pstring, cr);
 }

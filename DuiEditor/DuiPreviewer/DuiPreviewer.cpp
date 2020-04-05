@@ -86,6 +86,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 // 	}
 
 	CoInitialize(NULL);
+
 #ifdef _DEBUG
 	CPaintManagerUI::LoadPlugin(_T("DuiPlugins_ud.dll"));
 #else

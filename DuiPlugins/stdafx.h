@@ -39,5 +39,4 @@
 #define UILIB_PLUGIN_API __declspec(dllexport)
 
 #include "../Duilib/Duilib.h"
-#include "../3rd/GridControl/Include/GridControl.h"
-#include "../3rd/CxImage/Include/image.h"
+#include "Include/DuiPlugins.h"

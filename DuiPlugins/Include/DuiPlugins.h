@@ -1,7 +1,21 @@
 #pragma once
 
-#ifndef UILIB_PLUGIN_API
-#define UILIB_PLUGIN_API __declspec(dllimport)
+#ifdef UILIB_STATIC
+#define UILIB_PLUGIN_API 
+#else
+#if defined(UILIB_PLUGIN_API_EXPORTS)
+#	if defined(_MSC_VER)
+#		define UILIB_PLUGIN_API __declspec(dllexport)
+#	else
+#		define UILIB_PLUGIN_API 
+#	endif
+#else
+#	if defined(_MSC_VER)
+#		define UILIB_PLUGIN_API __declspec(dllimport)
+#	else
+#		define UILIB_PLUGIN_API 
+#	endif
+#endif
 #endif
 
 #include "../../3rd/CxImage/Include/image.h"
@@ -15,9 +29,16 @@
 #include "../UIDataExchange.h"
 #include "../PictureControlUI.h"
 
-extern "C" __declspec(dllimport) void DuiPluginsRegister();
+//extern "C" 
+UILIB_PLUGIN_API void DuiPluginsRegister();
 
-extern "C" __declspec(dllimport) void InsertMsgUI(LPCTSTR pstring, COLORREF cr=RGB(0,0,0));
+//extern "C" 
+UILIB_PLUGIN_API void InsertMsgUI(LPCTSTR pstring, COLORREF cr=RGB(0,0,0));
+
+extern "C" UILIB_PLUGIN_API CControlUI *CreateControl(LPCTSTR pstrClass);
+
+
+#ifndef UILIB_PLUGIN_API_EXPORTS
 
 #ifndef _LIBPATH_
 #define _LIBPATH_(p,f)   p##f
@@ -51,4 +72,6 @@ extern "C" __declspec(dllimport) void InsertMsgUI(LPCTSTR pstring, COLORREF cr=R
 #			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../../Lib/DuiPlugins.lib"))
 #		endif
 #	endif
+#endif
+
 #endif

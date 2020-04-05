@@ -1,3 +1,7 @@
+
+//#define UILIB_STATIC
+
+
 #ifdef UILIB_STATIC
 #define UILIB_API 
 #else

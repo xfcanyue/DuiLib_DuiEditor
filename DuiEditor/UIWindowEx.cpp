@@ -27,6 +27,11 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 {
 	//当前节点，从控件树获取
 	xml_node nodeCurrent = m_pManager->GetTreeView()->GetSelectXmlNode();					//树选中的控件
+	CControlUI   *pCurControl = (CControlUI *)nodeCurrent.get_tag();
+	if(!pCurControl)
+	{
+		pCurControl = m_pManager->GetUiFrom();
+	}
 
 	CRect rcClient;
 	::GetClientRect(m_hWnd, &rcClient);
@@ -35,36 +40,7 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 		return;
 	}
 
-	CControlUI *pNewControl = NULL;
-	xml_node nodeContainer;
-
-	CString strClass = nodeToolBox.name();
-
-	//当前节点是容器
-	if(g_duiProp.IsBaseFromContainer(nodeCurrent.name()))
-	{
-		nodeContainer = nodeCurrent;
-	}
-	else
-	{
-		//当前节点不是容器, 往上寻找
-		nodeContainer = m_pManager->FindContainer(nodeCurrent); //pControl;
-	}
-
-	CContainerUI *pParent = (CContainerUI *)nodeContainer.get_tag();
-	CControlUI   *pCurControl = (CControlUI *)nodeCurrent.get_tag();
-
-	//找到FORM那里了, 如果即将插入的控件不是容器, 报错
-	if(m_pManager->GetUiFrom() == pParent)
-	{
-		if(!g_duiProp.IsBaseFromContainer(strClass))
-		{
-			AfxMessageBox(_T("控件需要放置于容器内."));
-			return;
-		}
-	}
-
-
+	//拖动鼠标 设置控件的大小
 	CUITracker tracker;
 	CRect rc;
 	CWnd *pWnd = CWnd::FromHandle(m_hWnd);
@@ -76,7 +52,83 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 		rc.bottom = rc.top + tracker.m_rect.Height();
 	}
 
-	pNewControl = CUIBuilder::CreateControl(strClass);
+	CString strNewControlClass = nodeToolBox.name(); //准备插入控件的类名
+
+	//插入位置, 知道了插入位置，才能确定container
+	CDlgInsertControl dlg;
+	dlg.nodeControl = nodeCurrent;
+	if(dlg.DoModal() != IDOK)	return;
+
+	xml_node nodeContainer;
+	CContainerUI *pParentContainer = NULL;
+	switch(dlg.m_nPosition)
+	{
+	case INSERT_CHILD: //当前容器下方插入控件
+		{
+			pParentContainer = (CContainerUI *)pCurControl->GetInterface(DUI_CTR_CONTAINER);
+			if(!pParentContainer)
+			{
+				AfxMessageBox(_T("控件需要放置于容器内."));
+				return;
+			}
+
+			//选中控件树Window节点添加子控件
+			if(m_pManager->GetUiFrom() == pParentContainer) 
+			{ 
+				if(g_duiProp.IsBaseFromContainer(strNewControlClass)) //必须放置于容器内
+				{
+					if(pParentContainer->GetCount() > 0)
+					{
+						//不允许在Window下面插入第2个容器, 强制放到第一个容器里
+						pParentContainer = (CContainerUI *)m_pManager->GetUiFrom()->GetItemAt(0);
+						nodeCurrent = xml_node((xml_node_struct *)pParentContainer->GetTag());
+						pCurControl = pParentContainer;
+					}
+				}				
+				else
+				{
+					AfxMessageBox(_T("控件需要放置于容器内."));  return; 
+				}
+			}
+
+			nodeContainer = xml_node((xml_node_struct *)pParentContainer->GetTag());
+		}
+		break;
+	case INSERT_NEXT:	//当前控件下方插入兄弟控件
+		{
+			//企图给Form插入兄弟控件
+			if(m_pManager->GetUiFrom() == pCurControl)
+			{
+				AfxMessageBox(_T("控件需要放置于容器内."));  return;
+			}
+			pParentContainer = (CContainerUI *)pCurControl->GetParent()->GetInterface(DUI_CTR_CONTAINER);
+			if(!pParentContainer)
+			{
+				AfxMessageBox(_T("无法插入兄弟控件, 当前控件的父控件不是容器."));
+				return;
+			}
+			nodeContainer = xml_node((xml_node_struct *)pParentContainer->GetTag());
+		}
+		break;
+	case INSERT_BEFORE:	//当前控件上方插入兄弟控件
+		{
+			//企图给Form插入兄弟控件
+			if(m_pManager->GetUiFrom() == pCurControl)
+			{
+				AfxMessageBox(_T("控件需要放置于容器内."));  return;
+			}
+			pParentContainer = (CContainerUI *)pCurControl->GetParent()->GetInterface(DUI_CTR_CONTAINER);
+			if(!pParentContainer)
+			{
+				AfxMessageBox(_T("无法插入兄弟控件, 当前控件的父控件不是容器."));
+				return;
+			}
+			nodeContainer = xml_node((xml_node_struct *)pParentContainer->GetTag());
+		}
+		break;	
+	}
+
+	CControlUI *pNewControl = pNewControl = CUIBuilder::CreateControl(strNewControlClass);
 	BOOL bCustomControl = FALSE;
 	CString strCuscomControlParent;
 	if(!pNewControl) 
@@ -89,45 +141,37 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 		pNewControl = CUIBuilder::CreateControl(dlg.m_strParentControl);
 		if(!pNewControl)	return;
 
-		strClass = dlg.m_strClassName;
+		strNewControlClass = dlg.m_strClassName;
 		strCuscomControlParent = dlg.m_strParentControl;
 		bCustomControl = TRUE;
 	}
 
-	CDlgInsertControl dlg;
-	dlg.nodeParent = nodeContainer;
-	dlg.nodeControl = nodeCurrent;
-	if(dlg.DoModal() != IDOK)	return;
 
 	xml_node nodeNewControl;
 	switch (dlg.m_nPosition)
 	{
-	case 0: //当前容器下方插入控件
+	case INSERT_CHILD: //当前容器下方插入控件
 		{
-			if(!pParent->Add(pNewControl)) { delete pNewControl; return; }		
-			nodeNewControl = nodeContainer.append_child(strClass);	//写入文档
+			if(!pParentContainer->Add(pNewControl)) { delete pNewControl; return; }		
+			nodeNewControl = nodeContainer.append_child(strNewControlClass);	//写入文档
 		}
 		break;
-	case 1:	//当前控件下方插入兄弟控件
+	case INSERT_NEXT:	//当前控件下方插入兄弟控件
 		{
-			if(! pParent->AddAt(pNewControl, pParent->GetItemIndex(pCurControl) + 1) ) { delete pNewControl; return; }
-			nodeNewControl = nodeContainer.append_child(strClass);	//写入文档
+			if(! pParentContainer->AddAt(pNewControl, pParentContainer->GetItemIndex(pCurControl) + 1) ) 
+			{ 
+				delete pNewControl; return; 
+			}
+			nodeNewControl = nodeContainer.append_child(strNewControlClass);	//写入文档
 		}
 		break;
-	case 2:	//当前控件上方插入兄弟控件
+	case INSERT_BEFORE:	//当前控件上方插入兄弟控件
 		{
-// 			int nIndex = pParent->GetItemIndex(pCurControl);
-// 			if(nIndex == 0) //第一个
-// 			{
-// 				if(! pParent->AddAt(pNewControl, nIndex) ) { delete pNewControl; return; }
-// 				pParent->SetItemIndex(pNewControl, 0);
-// 			}
-// 			else
-// 			{
-// 				if(! pParent->AddAt(pNewControl, nIndex-1) ) { delete pNewControl; return; }
-			// 			}
-			if(! pParent->AddAt(pNewControl, pParent->GetItemIndex(pCurControl)) ) { delete pNewControl; return; }
-			nodeNewControl = nodeContainer.insert_child_before(strClass, nodeCurrent);	//写入文档
+			if(! pParentContainer->AddAt(pNewControl, pParentContainer->GetItemIndex(pCurControl)) ) 
+			{ 
+				delete pNewControl; return; 
+			}
+			nodeNewControl = nodeContainer.insert_child_before(strNewControlClass, nodeCurrent);	//写入文档
 		}
 		break;
 	}
@@ -157,7 +201,7 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 	}
 	else if(m_pManager->GetView()->m_nFormatInsert == 1)	//绝对定位
 	{
-		CRect rcParent = pParent->GetPos();
+		CRect rcParent = pParentContainer->GetPos();
 		CRect rcNew;
 		rcNew.left = rc.left - rcParent.left;
 		rcNew.right = rcNew.left + rc.right - rc.left;
@@ -192,7 +236,7 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 	g_duiProp.FilterDefaultValue(nodeNewControl);
 
 	//载入控件默认属性
-	LPCTSTR pDefaultAttributes = GetManager()->GetDefaultAttributeList(strClass);
+	LPCTSTR pDefaultAttributes = GetManager()->GetDefaultAttributeList(strNewControlClass);
 	if( pDefaultAttributes ) 
 	{
 		pNewControl->ApplyAttributeList(pDefaultAttributes);
@@ -201,9 +245,9 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 	//载入控件当前属性
 
 	//插入控件树
-	if(dlg.m_nPosition == 2)
+	if(dlg.m_nPosition == INSERT_BEFORE)
 		m_pManager->GetTreeView()->AddNewControl(nodeNewControl, nodeCurrent, TVI_BEFORE);
-	else if(dlg.m_nPosition == 1)
+	else if(dlg.m_nPosition == INSERT_NEXT)
 		m_pManager->GetTreeView()->AddNewControl(nodeNewControl, nodeCurrent, TVI_NEXT);
 	else
 		m_pManager->GetTreeView()->AddNewControl(nodeNewControl, nodeCurrent, TVI_CHILD);

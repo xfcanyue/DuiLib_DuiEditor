@@ -108,7 +108,6 @@ void CUIWindowMenu::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 	}
 
 	CDlgInsertControl dlg;
-	dlg.nodeParent = nodeContainer;
 	dlg.nodeControl = nodeCurrent;
 	if(dlg.DoModal() != IDOK)	return;
 
