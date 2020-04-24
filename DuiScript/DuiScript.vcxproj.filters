@@ -16,15 +16,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
+    <None Include="DuiScript.def">
+      <Filter>源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\DuiScript.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ScriptEngine.h">
@@ -37,6 +37,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\3rd\DuiAngelScript\DuiAngelScript\angelscript\add_on\scriptbuilder\scriptbuilder.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptRegister.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -60,6 +63,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\3rd\DuiAngelScript\DuiAngelScript\angelscript\add_on\scriptbuilder\scriptbuilder.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptRegister.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -50,7 +50,7 @@ public:
 	//获取一定长度的字符
 	SciDll_void sci_GetText(int length, CStringA &Text);
 	//设置字符到控件
-	SciDll_void sci_SetText(LPCTSTR pText);
+	SciDll_void sci_SetText(const char * pText);
 	//设置文档已保存的标志
 	SciDll_void sci_SetSavePoint();
 	//替换已选择字符,如果未选择,在当前光标插入
@@ -866,7 +866,7 @@ inline SciDll_void CSciWnd::sci_GetText(int length, CStringA &Text)
 }
 
 //设置字符到控件
-inline SciDll_void CSciWnd::sci_SetText(LPCTSTR pText)
+inline SciDll_void CSciWnd::sci_SetText(const char * pText)
 {
 	return SendEditor(SCI_SETTEXT, 0, (LPARAM)pText);
 }

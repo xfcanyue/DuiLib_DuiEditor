@@ -842,6 +842,15 @@ namespace DuiLib {
 	void CControlUI::Event(TEventUI& event)
 	{
 		if( OnEvent(&event) ) DoEvent(event);
+
+		if( event.Type == UIEVENT_SETFOCUS ) 
+		{
+			if(!m_asOnSetFocus.IsEmpty()) GetManager()->ExecuteScript(m_asOnSetFocus, this);
+		}
+		if( event.Type == UIEVENT_KILLFOCUS ) 
+		{
+			if(!m_asOnKillFocus.IsEmpty()) GetManager()->ExecuteScript(m_asOnKillFocus, this);
+		}
 	}
 
 	void CControlUI::DoEvent(TEventUI& event)
@@ -1208,6 +1217,13 @@ namespace DuiLib {
 				if( *pstrList++ != _T(' ') && *pstrList++ != _T(',') ) return;
 			}
 		}
+		else if( _tcscmp(pstrName, _T("OnInit"))		== 0 )		m_asOnInit	= pstrValue;
+		else if( _tcscmp(pstrName, _T("OnEvent"))		== 0 )		m_asOnEvent = pstrValue;
+		else if( _tcscmp(pstrName, _T("OnSetCursor"))	== 0 )		m_asOnSetCursor = pstrValue;
+		else if( _tcscmp(pstrName, _T("OnSetFocus"))	== 0 )		m_asOnSetFocus = pstrValue;
+		else if( _tcscmp(pstrName, _T("OnKillFocus"))	== 0 )		m_asOnKillFocus = pstrValue;
+		else if( _tcscmp(pstrName, _T("OnTimer"))		== 0 )		m_asOnTimer = pstrValue;
+		else if( _tcscmp(pstrName, _T("OnContextMenu")) == 0 )		m_asOnContextMenu = pstrValue;
 		else {
 			AddCustomAttribute(pstrName, pstrValue);
 		}

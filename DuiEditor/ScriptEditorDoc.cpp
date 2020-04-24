@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "DuiEditor.h"
 #include "ScriptEditorDoc.h"
-
+#include "ScriptEditorView.h"
 
 // CScriptEditorDoc
 
@@ -63,8 +63,21 @@ BOOL CScriptEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
 BOOL CScriptEditorDoc::OnSaveDocument(LPCTSTR lpszPathName)
 {
 	// TODO: 在此添加专用代码和/或调用基类
+	BOOL bRet = FALSE;
+	POSITION pos = GetFirstViewPosition();
+	CScriptEditorView *pFirstView = (CScriptEditorView*)GetNextView( pos ); // assume only one view
+	if (pFirstView != NULL)
+	{
+		bRet = pFirstView->sci.SaveFile(lpszPathName);
 
-	return CDocument::OnSaveDocument(lpszPathName);
+		if(bRet) 
+		{
+			SetModifiedFlag(FALSE);
+			pFirstView->sci.sci_SetSavePoint();
+		}
+	}
+	return TRUE;
+	//return CDocument::OnSaveDocument(lpszPathName);
 }
 
 

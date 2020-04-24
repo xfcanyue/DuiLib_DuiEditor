@@ -311,9 +311,6 @@ namespace DuiLib
 		// 添加Notify事件接口
 		m_pm.AddNotifier(this);
 
-		//编译脚本
-		m_pm.CompileScript();
-
 		// 窗口初始化完毕
 		__InitWindow();
 		return 0;

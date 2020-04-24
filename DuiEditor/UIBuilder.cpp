@@ -553,7 +553,7 @@ CControlUI* CUIBuilder::CreateControl(LPCTSTR pstrClass)
 
 CControlUI* CUIBuilder::CreateControl(xml_node node)
 {
-	CControlUI *pControl;
+	CControlUI *pControl = NULL;
 	pControl = CreateControl(node.name());
 	if(!pControl)
 	{
@@ -562,10 +562,10 @@ CControlUI* CUIBuilder::CreateControl(xml_node node)
 		{
 			pControl = CreateControl(attr.value());
 		}
-		else //不认识的控件，直接从CContainner创建
-		{
-			pControl = CreateControl(DUI_CTR_CONTROL);
-		}
+// 		else //不认识的控件，直接从CContainner创建, 不能这样子哦
+// 		{
+// 			pControl = CreateControl(DUI_CTR_CONTROL);
+// 		}
 	}
 
 	return pControl;

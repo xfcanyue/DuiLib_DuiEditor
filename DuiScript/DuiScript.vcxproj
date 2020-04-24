@@ -71,7 +71,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>Lib\</OutDir>
+    <OutDir>$(Configuration)\</OutDir>
     <TargetName>$(ProjectName)_ud</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -96,6 +96,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>../../Exec/DuiScript_d.dll</OutputFile>
+      <ModuleDefinitionFile>DuiScript.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">
@@ -110,6 +111,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>../../Exec/DuiScript_ud.dll</OutputFile>
+      <ModuleDefinitionFile>DuiScript.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -128,6 +130,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <OutputFile>../../Exec/DuiScript.dll</OutputFile>
+      <ModuleDefinitionFile>DuiScript.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">
@@ -146,17 +149,19 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <OutputFile>../../Exec/DuiScript_u.dll</OutputFile>
+      <ModuleDefinitionFile>DuiScript.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="DuiScript.def" />
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\3rd\DuiAngelScript\DuiAngelScript\angelscript\add_on\scriptbuilder\scriptbuilder.h" />
-    <ClInclude Include="Include\DuiScript.h" />
     <ClInclude Include="RegCControlUI.h" />
     <ClInclude Include="RegCDuiString.h" />
     <ClInclude Include="ScriptEngine.h" />
+    <ClInclude Include="ScriptRegister.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -185,6 +190,7 @@
     <ClCompile Include="RegCControlUI.cpp" />
     <ClCompile Include="RegCDuiString.cpp" />
     <ClCompile Include="ScriptEngine.cpp" />
+    <ClCompile Include="ScriptRegister.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">Create</PrecompiledHeader>

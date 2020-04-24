@@ -112,11 +112,11 @@ BOOL CSciWnd::LoadFile(LPCTSTR szPath)
 	if(!file.Open(szPath, CFile::modeRead))	return FALSE;
 	UINT buflen = (UINT)file.GetLength();
 
-	TCHAR *pBuffer = new TCHAR[buflen+1];
-	memset(pBuffer, 0, sizeof(TCHAR)*(buflen+1));
+	char *pBuffer = new char[buflen+1];
+	memset(pBuffer, 0, sizeof(char)*(buflen+1));
 	file.Read((void *)pBuffer, buflen);
 
-	sci_SetText((LPCTSTR)pBuffer);
+	sci_SetText(pBuffer);
 	sci_SetSavePoint();//这是未修改的文档
 
 	delete []pBuffer;
@@ -135,11 +135,14 @@ BOOL CSciWnd::SaveFile(LPCTSTR szPath)
 	if(!file.Open(szPath, CFile::modeCreate|CFile::modeWrite))	return FALSE;
 
 	int buflen = sci_GetLength();
-	TCHAR *pBuffer = new TCHAR[buflen];
+	char *pBuffer = new char[buflen+1];
+	pBuffer[buflen] = '\0';
+	LSSTRING_CONVERSION;
 	if (pBuffer != NULL)
 	{
 		SendEditor(SCI_GETTEXT, buflen,(long)pBuffer);
-		file.Write((void *)pBuffer, buflen);
+		const char *pWrite = LSUTF82A(pBuffer);
+		file.Write((void *)pWrite, strlen(pWrite));
 		delete [] pBuffer;
 	}
 	file.Close();

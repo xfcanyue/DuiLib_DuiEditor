@@ -268,6 +268,15 @@ namespace DuiLib {
 	    HINSTANCE m_instance;
 
 		CStdStringPtrMap m_mCustomAttrHash;
+
+	private:
+		CDuiString m_asOnInit;
+		CDuiString m_asOnEvent;
+		CDuiString m_asOnSetCursor;
+		CDuiString m_asOnSetFocus;
+		CDuiString m_asOnKillFocus;
+		CDuiString m_asOnTimer;
+		CDuiString m_asOnContextMenu;
 	};
 
 } // namespace DuiLib

@@ -501,7 +501,7 @@ void CDockFileViewCtrl::OnFileOpen()
 	int n = strName.ReverseFind('.');
 	if(n < 0) return;
 	CString strExtName = strName.Right(strName.GetLength() - n);
-	if(strExtName.CompareNoCase(_T(".xml")) != 0)
+	if((strExtName.CompareNoCase(_T(".xml")) != 0)  && (strExtName.CompareNoCase(_T(".as")) != 0))
 		return;
 
 	CString strPath = GetItemPath(ht);

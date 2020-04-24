@@ -86,16 +86,20 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 // 	}
 
 	CoInitialize(NULL);
+	CPaintManagerUI::SetInstance(hInstance);
 
 #ifdef _DEBUG
-	CPaintManagerUI::LoadPlugin(_T("DuiPlugins_ud.dll"));
+	CPaintManagerUI::LoadPlugin( CPaintManagerUI::GetInstancePath() + _T("DuiPlugins_ud.dll"));
 #else
-	CPaintManagerUI::LoadPlugin(_T("DuiPlugins_u.dll"));
+	CPaintManagerUI::LoadPlugin(CPaintManagerUI::GetInstancePath() + _T("DuiPlugins_u.dll"));
 #endif
 
-	DuiScriptRegister();
+#ifdef _DEBUG
+	CPaintManagerUI::LoadScriptPlugin(CPaintManagerUI::GetInstancePath() + _T("DuiScript_ud.dll"));
+#else
+	CPaintManagerUI::LoadScriptPlugin(CPaintManagerUI::GetInstancePath() + _T("DuiScript_u.dll"));
+#endif
 
-	CPaintManagerUI::SetInstance(hInstance);
 	CPaintManagerUI::SetResourcePath(strSkinPath);
 
 	try
@@ -116,8 +120,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 		
 	}
 
-	DuiScriptUnRegister();
-	
 	CoUninitialize();
 
 	if(bRunConsole)

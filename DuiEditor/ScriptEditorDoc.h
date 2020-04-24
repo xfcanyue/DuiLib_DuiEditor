@@ -13,6 +13,7 @@ public:
 	virtual void Serialize(CArchive& ar);   // ÎªÎÄµµ I/O ÖØÐ´
 #endif
 
+	CString m_strDOC;
 protected:
 	virtual BOOL OnNewDocument();
 

@@ -578,6 +578,12 @@ namespace DuiLib {
 		}
 		return dwSize;
 	}
+
+	void  CRenderEngine::FreeMemory(LPBYTE &pData)
+	{
+		delete []pData;
+		pData = NULL;
+	}
 #ifdef USE_XIMAGE_EFFECT
 	CxImage* CRenderEngine::LoadGifImageX(STRINGorID bitmap, LPCTSTR type , DWORD mask)
 	{

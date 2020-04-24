@@ -203,9 +203,6 @@ namespace DuiLib {
 	CStdPtrArray CPaintManagerUI::m_aPlugins;
 
 
-	CREATE_SCRIPT_ENGINE_INSTANCE CPaintManagerUI::m_funCreateScriptEngine = NULL;	//add by liqs99
-	DELETE_SCRIPT_ENGINE_INSTANCE CPaintManagerUI::m_funDeleteScriptEngine = NULL;	//add by liqs99
-	IScriptEngine* CPaintManagerUI::m_pSharedScriptEngine = NULL;					//add by liqs99
 
 	CPaintManagerUI::CPaintManagerUI() :
 	m_hWndPaint(NULL),
@@ -242,7 +239,7 @@ namespace DuiLib {
 		m_hDragBitmap(NULL),
 		m_pDPI(NULL),
 		m_iHoverTime(400UL),
-		m_pScriptEngine(NULL) // add by liqs99
+		m_pScriptEngine(NULL)
 	{
 		if (m_SharedResInfo.m_DefaultFontInfo.sFontName.IsEmpty())
 		{
@@ -4196,15 +4193,29 @@ namespace DuiLib {
 	//////////////////////////////////////////////////////////////////////////
 	// ½Å±¾
 	//////////////////////////////////////////////////////////////////////////
-	void CPaintManagerUI::RegisterScriptEngine(CREATE_SCRIPT_ENGINE_INSTANCE pFunCreate, DELETE_SCRIPT_ENGINE_INSTANCE pFunDelete)
-	{
-		m_funCreateScriptEngine = pFunCreate;
-		m_funDeleteScriptEngine = pFunDelete;
-	}
+	CREATE_SCRIPT_ENGINE_INSTANCE CPaintManagerUI::m_funCreateScriptEngine = NULL;	//add by liqs99
+	DELETE_SCRIPT_ENGINE_INSTANCE CPaintManagerUI::m_funDeleteScriptEngine = NULL;	//add by liqs99
+	IScriptEngine* CPaintManagerUI::m_pSharedScriptEngine = NULL;					//add by liqs99
 
+	bool CPaintManagerUI::LoadScriptPlugin(LPCTSTR pstrModuleName)
+	{
+		ASSERT( !::IsBadStringPtr(pstrModuleName,-1) || pstrModuleName == NULL );
+		if( pstrModuleName == NULL ) return false;
+		HMODULE hModule = ::LoadLibrary(pstrModuleName);
+		if( hModule != NULL ) 
+		{
+			m_funCreateScriptEngine = (CREATE_SCRIPT_ENGINE_INSTANCE)::GetProcAddress(hModule, "CreateScriptEngine");
+			m_funDeleteScriptEngine = (DELETE_SCRIPT_ENGINE_INSTANCE)::GetProcAddress(hModule, "DeleteScriptEngine");
+			if(m_funCreateScriptEngine != NULL || m_funDeleteScriptEngine != NULL)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	IScriptEngine *CPaintManagerUI::GetScriptEngine(bool bShared)
 	{
-		ASSERT(m_funCreateScriptEngine);
 		if(m_funCreateScriptEngine == NULL)	return NULL;
 
 		if(bShared)
@@ -4231,12 +4242,6 @@ namespace DuiLib {
 		IScriptEngine *pScriptEngine = GetScriptEngine(bShared);
 		if(pScriptEngine == NULL) return;
 		pScriptEngine->AddScriptFile(pstrFileName);
-	}
-
-	void CPaintManagerUI::CompileScript()
-	{
-		if(m_pScriptEngine) m_pScriptEngine->CompileScript();
-		if(m_pSharedScriptEngine) m_pSharedScriptEngine->CompileScript();
 	}
 
 	bool CPaintManagerUI::ExecuteScript(LPCTSTR funName, CControlUI *pControl)

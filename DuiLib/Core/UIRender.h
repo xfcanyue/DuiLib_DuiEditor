@@ -37,6 +37,7 @@ namespace DuiLib {
 		static TImageInfo* LoadImage(STRINGorID bitmap, LPCTSTR type = NULL, DWORD mask = 0, HINSTANCE instance = NULL);
 
 		static DWORD CRenderEngine::LoadImage2Memory(const STRINGorID &bitmap, LPCTSTR type,LPBYTE &pData);
+		static void  CRenderEngine::FreeMemory(LPBYTE &pData);
 #ifdef USE_XIMAGE_EFFECT
 		static CxImage *LoadGifImageX(STRINGorID bitmap, LPCTSTR type = NULL, DWORD mask = 0);
 #endif

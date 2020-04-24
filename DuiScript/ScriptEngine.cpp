@@ -1,35 +1,9 @@
 #include "stdafx.h"
 #include "ScriptEngine.h"
+#include "ScriptRegister.h"
 
 #include <mmsystem.h>
 #pragma comment( lib,"winmm.lib" )
-
-/*
-static asIScriptEngine *engine = NULL;
-asIScriptEngine *GetEngine()
-{
-	if(engine == NULL)
-	{
-		//创建AngelScript脚本引擎
-		engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
-
-		int r = 0;
-
-		//消息回调
-		r = engine->SetMessageCallback(asMETHOD(CScriptManager, MessageCallback), this, asCALL_THISCALL); assert( r >= 0 );
-
-		//脚本代码的字符编码  0 - ASCII, 1 - UTF8. Default: 1 (UTF8). 
-		r = engine->SetEngineProperty(asEP_SCRIPT_SCANNER, 0); assert( r >= 0 );
-
-#ifdef _UNICODE
-		//脚本内部字符串的字符编码 0 - UTF8/ASCII, 1 - UTF16. Default: 0 (UTF8) 
-		r = engine->SetEngineProperty(asEP_STRING_ENCODING, 1); assert( r >= 0 );
-#endif
-	}
-
-	return engine;
-}
-*/
 
 static void ScriptLineCallback(asIScriptContext *ctx, DWORD *timeOut)
 {
@@ -44,10 +18,29 @@ static void ScriptLineCallback(asIScriptContext *ctx, DWORD *timeOut)
 }
 
 //////////////////////////////////////////////////////////////////////////
-//CScriptMgr
-CScriptEngine::CScriptEngine(void) : m_nSectionCount(0)
+//CScriptEngine
+CScriptEngine::CScriptEngine(void) : m_nModuleCount(0)
 {
-	
+	ctx = NULL;
+
+	engine = asCreateScriptEngine();
+
+	int r = 0;
+	r = engine->SetMessageCallback(asMETHOD(CScriptEngine, MessageCallback), this, asCALL_THISCALL); assert( r >= 0 );
+
+	//初始化脚本引擎，源代码没有这个函数， 我添加的, 内部仅初始化脚本的数组, 不需要就删掉这行。
+	//	asInitScriptEngine(engine);
+
+	//脚本代码的字符编码  0 - ASCII, 1 - UTF8. Default: 1 (UTF8). 
+	r = engine->SetEngineProperty(asEP_SCRIPT_SCANNER, 0); assert( r >= 0 );
+
+#ifdef _UNICODE
+	//脚本内部字符串的字符编码 0 - UTF8/ASCII, 1 - UTF16. Default: 0 (UTF8) 
+	r = engine->SetEngineProperty(asEP_STRING_ENCODING, 1); assert( r >= 0 );
+#endif
+
+	CScriptRegister reg(engine);
+	reg.RegisterAll();
 }
 
 
@@ -60,59 +53,38 @@ CScriptEngine::~CScriptEngine(void)
 	}
 }
 
-void CScriptEngine::Init()
+void CScriptEngine::MessageCallback(const asSMessageInfo &msg)
 {
-	if(!m_builder.GetModule())
+	if( msg.type == asMSGTYPE_ERROR )
 	{
-		m_builder.StartNewModule(engine, "generic");
+		ATL::CStringA temp;
+		temp.Format("row = %d\r\ncol = %d\r\nsection=%s \r\nmessage = %s\r\n", 
+			msg.row, msg.col, msg.section, msg.message);
+		MessageBoxA(NULL, temp, "complie error", MB_OK);
 	}
 }
 
 bool CScriptEngine::AddScriptCode(LPCTSTR pScriptCode)
 {
-	if(!m_builder.GetModule())	Init();
-	if(!m_builder.GetModule())	return false;
+	m_nModuleCount++;
+	
+	char module[255];
+	sprintf(module, "module%d", m_nModuleCount);
 
-	m_nSectionCount++;
-
-	char sectionName[255];
-	sprintf(sectionName, "section%04d", m_nSectionCount);
+	int r = 0;
+	CScriptBuilder builder;
+	r = builder.StartNewModule(engine, module);
+	if( r < 0 )
+		return false;
 
 	LSSTRING_CONVERSION;
-	int r = m_builder.AddSectionFromMemory(LST2A(pScriptCode), sectionName);
-	//std::string str = "int main(){}";
-	//str += char(EOF);
-	//char str[11] = "int x = 0";
-	//str[10]= char(EOF);
-	//int r = m_builder.AddSectionFromMemory(str.c_str(), sectionName);
-	
-	if(r<0) return false;
-	return true;
-}
+	builder.AddSectionFromMemory("section1", LST2A(pScriptCode));
 
-bool CScriptEngine::AddScriptFile(LPCTSTR pstrFileName)
-{
-	if(!m_builder.GetModule())	Init();
-	if(!m_builder.GetModule())	return false;
-
-	LPBYTE pData = NULL;
-	DWORD dwSize = CRenderEngine::LoadImage2Memory(STRINGorID(pstrFileName), 0, pData);
-	if(dwSize == 0U || !pData)
-		return false;
-	bool rbool = AddScriptCode((LPCTSTR)pData);
-	delete []pData; pData = NULL;
-
-	return rbool;
-}
-
-bool CScriptEngine::CompileScript()
-{
-	if(!m_builder.GetModule())	return false;
-	int r = m_builder.BuildModule();
-	if(r<0)	return false;
+	r = builder.BuildModule();
+	if( r < 0 ) return false;
 
 	//保存脚本函数地址
-	asIScriptModule *pModule = m_builder.GetModule();
+	asIScriptModule *pModule = builder.GetModule();
 	int funCount = pModule->GetFunctionCount();
 	for (int i=0; i<funCount; i++)
 	{
@@ -120,13 +92,25 @@ bool CScriptEngine::CompileScript()
 		USES_CONVERSION;
 		m_mapContent.Set( A2T((LPSTR)pFun->GetName()),  pFun);
 	}
+
 	return true;
+}
+
+bool CScriptEngine::AddScriptFile(LPCTSTR pstrFileName)
+{
+	LPBYTE pData = NULL;
+	DWORD dwSize = CRenderEngine::LoadImage2Memory(STRINGorID(pstrFileName), 0, pData);
+	if(dwSize == 0U || !pData)
+		return false;
+	bool rbool = false;
+	rbool = AddScriptCode((LPCTSTR)pData);
+	CRenderEngine::FreeMemory(pData); 
+
+	return rbool;
 }
 
 bool CScriptEngine::ExecuteScript(LPCTSTR funName, CControlUI *pControl)
 {
-	if(!m_builder.GetModule())	return false;
-
 	asIScriptFunction *pFun = static_cast<asIScriptFunction *>(m_mapContent.Find(funName));
 	if(!pFun) return false;
 
@@ -162,8 +146,6 @@ bool CScriptEngine::ExecuteScript(LPCTSTR funName, CControlUI *pControl)
 
 bool CScriptEngine::ExecuteScript(LPCTSTR funName, CControlUI *pControl, TEventUI *ev)
 {
-	if(!m_builder.GetModule())	return false;
-
 	asIScriptFunction *pFun = static_cast<asIScriptFunction *>(m_mapContent.Find(funName));
 	if(!pFun) return false;
 

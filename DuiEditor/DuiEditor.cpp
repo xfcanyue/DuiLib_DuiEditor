@@ -160,7 +160,7 @@ BOOL CDuiEditorApp::InitInstance()
 	
 	DuiPluginsRegister();
 	CPaintManagerUI::SetAdjustDPIRecource(false);
-//	CPaintManagerUI::EnableScript(false);
+
 
 	// 注册应用程序的文档模板。文档模板
 	// 将用作文档、框架窗口和视图之间的连接

@@ -209,7 +209,6 @@ namespace DuiLib {
 	public:
 		virtual bool AddScriptCode(LPCTSTR pScriptCode) = 0;
 		virtual bool AddScriptFile(LPCTSTR pstrFileName) = 0;
-		virtual bool CompileScript() = 0;
 		virtual bool ExecuteScript(LPCTSTR funName, CControlUI *pControl) = 0;
 		virtual bool ExecuteScript(LPCTSTR funName, CControlUI *pControl, TEventUI *ev) = 0;
 	};
@@ -585,12 +584,11 @@ namespace DuiLib {
 	// ½Å±¾
 	//////////////////////////////////////////////////////////////////////////
 	public:
-		static void RegisterScriptEngine(CREATE_SCRIPT_ENGINE_INSTANCE pFunCreate, DELETE_SCRIPT_ENGINE_INSTANCE pFunDelete);
+		static bool LoadScriptPlugin(LPCTSTR pstrModuleName);
 
 		IScriptEngine *GetScriptEngine(bool bShared = false);
 		void AddScriptCode(LPCTSTR pScriptCode, LPCTSTR pLanguageType, bool bShared = false);
 		void AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pLanguageType, bool bShared = false);
-		void CompileScript();
 		bool ExecuteScript(LPCTSTR funName, CControlUI *pControl);
 		bool ExecuteScript(LPCTSTR funName, CControlUI *pControl, TEventUI *ev);
 	private:
