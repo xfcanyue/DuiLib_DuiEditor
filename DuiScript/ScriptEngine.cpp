@@ -10,11 +10,6 @@ static void ScriptLineCallback(asIScriptContext *ctx, DWORD *timeOut)
 	// If the time out is reached we abort the script
 	if( *timeOut < timeGetTime() )
 		ctx->Abort();
-
-	// It would also be possible to only suspend the script,
-	// instead of aborting it. That would allow the application
-	// to resume the execution where it left of at a later 
-	// time, by simply calling Execute() again.
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -27,9 +22,6 @@ CScriptEngine::CScriptEngine(void) : m_nModuleCount(0)
 
 	int r = 0;
 	r = engine->SetMessageCallback(asMETHOD(CScriptEngine, MessageCallback), this, asCALL_THISCALL); assert( r >= 0 );
-
-	//初始化脚本引擎，源代码没有这个函数， 我添加的, 内部仅初始化脚本的数组, 不需要就删掉这行。
-	//	asInitScriptEngine(engine);
 
 	//脚本代码的字符编码  0 - ASCII, 1 - UTF8. Default: 1 (UTF8). 
 	r = engine->SetEngineProperty(asEP_SCRIPT_SCANNER, 0); assert( r >= 0 );

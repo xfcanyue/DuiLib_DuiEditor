@@ -134,8 +134,7 @@ CString CImageEditor::GetAttributeValue()
 	xml_attribute attr = node.attribute(_T("source"));
 	if(attr)
 	{
-		CRect rc;
-		StringToRect(attr.value(), rc);
+		CDuiRect rc(attr.value());
 		if(m_rcImage == rc)
 			node.remove_attribute(attr);
 	}

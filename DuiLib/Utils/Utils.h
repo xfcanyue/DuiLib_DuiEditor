@@ -20,6 +20,7 @@ namespace DuiLib
 		LPCTSTR m_lpstr;
 	};
 
+	class CDuiString;
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
 
@@ -30,6 +31,9 @@ namespace DuiLib
 		CDuiPoint(const POINT& src);
 		CDuiPoint(int x, int y);
 		CDuiPoint(LPARAM lParam);
+		CDuiPoint(LPCTSTR pstrValue);
+		bool FromString(LPCTSTR pstrValue); //从"x,y"构造POINT
+		CDuiString ToString();				//输出字符串"x,y"
 	};
 
 
@@ -43,6 +47,9 @@ namespace DuiLib
 		CDuiSize(const SIZE& src);
 		CDuiSize(const RECT rc);
 		CDuiSize(int cx, int cy);
+		CDuiSize(LPCTSTR pstrValue);
+		bool FromString(LPCTSTR pstrValue); //从"cx,cy"构造SIZE
+		CDuiString ToString();				//输出字符串"cx,cy"
 	};
 
 
@@ -55,6 +62,9 @@ namespace DuiLib
 		CDuiRect();
 		CDuiRect(const RECT& src);
 		CDuiRect(int iLeft, int iTop, int iRight, int iBottom);
+		CDuiRect(LPCTSTR pstrValue);
+		bool FromString(LPCTSTR pstrValue); //从"left,top,right,bottom"构造RECT
+		CDuiString ToString();				//输出字符串"left,top,right,bottom"
 
 		int GetWidth() const;
 		int GetHeight() const;

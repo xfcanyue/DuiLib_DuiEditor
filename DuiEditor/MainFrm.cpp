@@ -32,6 +32,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_WM_CLOSE()
 	ON_MESSAGE(WM_REOPEN_FILE, &CMainFrame::OnReOpenFile)
 	ON_WM_TIMER()
+	ON_COMMAND(ID_VIEW_CONTROL_TREE, &CMainFrame::OnViewControlTree)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -179,7 +180,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	HICON hClassViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(IDI_ICON_CLASS_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
 	m_wndControl.SetIcon(hClassViewIcon, FALSE);
 
-	if (!m_wndToolBox.Create(_T("控件"), this, CRect(0, 0, 150, 200), TRUE, ID_TOOLBOX_WND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT))
+	if (!m_wndToolBox.Create(_T("duilib控件箱"), this, CRect(0, 0, 150, 200), TRUE, ID_TOOLBOX_WND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT))
 	{
 		return FALSE; // 未能创建
 	}
@@ -456,4 +457,17 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 	}
 
 	CMDIFrameWndEx::OnTimer(nIDEvent);
+}
+
+
+void CMainFrame::OnViewControlTree()
+{
+	if(m_wndControl.IsPaneVisible())
+	{
+		m_wndFileView.ShowPane(TRUE, FALSE,TRUE);
+	}
+	else
+	{
+		m_wndControl.ShowPane(TRUE, FALSE,TRUE);
+	}
 }

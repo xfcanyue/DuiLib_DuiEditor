@@ -77,5 +77,11 @@ protected:
 private:
 	CPaintManagerUI *m_pManager;
 	CStdPtrArray m_arrData;
+
+//////////////////////////////////////////////////////////////////////////
+//一些常用的转换，提供静态调用
+public:
+	static COleDateTime MergeCOleDateTime(const SYSTEMTIME &date, const SYSTEMTIME &time);
+	static COleDateTime MergeCOleDateTime(const COleDateTime &date, const COleDateTime &time);
 };
 

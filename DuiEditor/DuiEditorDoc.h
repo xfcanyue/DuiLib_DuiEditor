@@ -31,9 +31,7 @@ public:
 public:
 	virtual BOOL OnNewDocument();
 	virtual BOOL OnNewDocumentFromUiTemplate();
-	virtual void Serialize(CArchive& ar);
 #ifdef SHARED_HANDLERS
-	virtual void InitializeSearchContent();
 	virtual void OnDrawThumbnail(CDC& dc, LPRECT lprcBounds);
 #endif // SHARED_HANDLERS
 
@@ -47,20 +45,11 @@ protected:
 // 生成的消息映射函数
 protected:
 	DECLARE_MESSAGE_MAP()
-
-#ifdef SHARED_HANDLERS
-	// 用于为搜索处理程序设置搜索内容的 Helper 函数
-	void SetSearchContent(const CString& value);
-#endif // SHARED_HANDLERS
 public:
 	virtual void OnDocumentEvent(DocumentEvent deEvent);
 	virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
-	virtual BOOL DoFileSave();
 	virtual BOOL OnSaveDocument(LPCTSTR lpszPathName);
 	virtual void OnCloseDocument();
 	virtual void SetModifiedFlag(BOOL bModified = TRUE);
 	afx_msg void OnFileReopen();
-	afx_msg void OnEditXml();
-	afx_msg void OnUpdateEditXml(CCmdUI *pCmdUI);
-	afx_msg void OnUpdateFileReopen(CCmdUI *pCmdUI);
 };

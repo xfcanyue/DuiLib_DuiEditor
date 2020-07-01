@@ -66,6 +66,7 @@ public:
 	virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo);
 	afx_msg LRESULT OnReOpenFile(WPARAM wparam, LPARAM lparam);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnViewControlTree();
 };
 
 

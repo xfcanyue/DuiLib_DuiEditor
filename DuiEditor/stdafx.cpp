@@ -5,4 +5,4 @@
 
 #include "stdafx.h"
 
-pugi::xml_document g_proj;
+CDuiProject g_proj;

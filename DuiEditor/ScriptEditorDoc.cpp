@@ -29,23 +29,6 @@ CScriptEditorDoc::~CScriptEditorDoc()
 BEGIN_MESSAGE_MAP(CScriptEditorDoc, CDocument)
 END_MESSAGE_MAP()
 
-#ifndef _WIN32_WCE
-// CScriptEditorDoc 序列化
-
-void CScriptEditorDoc::Serialize(CArchive& ar)
-{
-	if (ar.IsStoring())
-	{
-		// TODO: 在此添加存储代码
-	}
-	else
-	{
-		// TODO: 在此添加加载代码
-	}
-}
-#endif
-
-
 // CScriptEditorDoc 命令
 
 

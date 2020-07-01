@@ -87,6 +87,9 @@ bool CKeyButtonUI::Activate()
 
 CDuiString CKeyButtonUI::GetText() const
 {
+	CDuiString sText = __super::GetText();
+	if(!sText.IsEmpty()) return sText;
+
 	if(IsControlKey())
 		return GetOwner()->GetKeyText(m_vkCode);
 
@@ -154,7 +157,7 @@ void CKeyButtonUI::PaintText(HDC hDC)
 		rc1.right = rc.right;
 		rc1.top = rc.bottom - (rc.bottom - rc.top)/2;
 		rc1.bottom =  rc.bottom;
-		CRenderEngine::DrawText(hDC, m_pManager, rc1, sText1, clrColor, m_pKeyBoard->GetFont(), uTextStyle);
+		CRenderEngine::DrawText(hDC, m_pManager, rc1, sText1, clrColor, m_pKeyBoard->GetFont(m_vkCode), uTextStyle);
 
 		CDuiString sText2 = m_chShift;
 		RECT rc2;
@@ -162,7 +165,7 @@ void CKeyButtonUI::PaintText(HDC hDC)
 		rc2.right = rc.right;
 		rc2.top = rc.top;
 		rc2.bottom =  rc.bottom - (rc.bottom - rc.top)/2;
-		CRenderEngine::DrawText(hDC, m_pManager, rc2, sText2, clrColor, m_pKeyBoard->GetFont(), uTextStyle);
+		CRenderEngine::DrawText(hDC, m_pManager, rc2, sText2, clrColor, m_pKeyBoard->GetFont(m_vkCode), uTextStyle);
 
 	}
 	else
@@ -170,7 +173,7 @@ void CKeyButtonUI::PaintText(HDC hDC)
 		CDuiString sText = GetText();
 		if( sText.IsEmpty() ) return;
 
-		CRenderEngine::DrawText(hDC, m_pManager, rc, sText, clrColor, m_pKeyBoard->GetFont(), m_uTextStyle);
+		CRenderEngine::DrawText(hDC, m_pManager, rc, sText, clrColor, m_pKeyBoard->GetFont(m_vkCode), m_uTextStyle);
 	}
 }
 
@@ -256,6 +259,7 @@ CKeyBoardUI::CKeyBoardUI(void)
 	m_nKeyWidth = 80;
 	m_nKeyHeight = 80;
 	m_iFont = -1;
+	m_iFontEnterControl = -1;
 	m_nKeyBorderSize = 1;
 	m_cxKeyBorderRound.cx = 5;
 	m_cxKeyBorderRound.cy = 5;
@@ -368,6 +372,14 @@ void CKeyBoardUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	else if( _tcsicmp(pstrName, _T("entercontrolname")) == 0 )
 	{
 		SetEnterControlName(pstrValue);
+	}
+	else if( _tcsicmp(pstrName, _T("entercontroltext")) == 0 )
+	{
+		SetEnterControlText(pstrValue);
+	}
+	else if( _tcsicmp(pstrName, _T("entercontrolfont")) == 0 )
+	{
+		SetEnterControlFont(_ttoi(pstrValue));
 	}
 	else __super::SetAttribute(pstrName, pstrValue);
 }
@@ -609,7 +621,12 @@ CDuiString CKeyBoardUI::GetKeyText(BYTE vkCode)
 		sText = _T("Caps");
 		break;
 	case  VK_RETURN: 
-		sText = _T("Enter");
+		{
+			if(!m_sEnterControlText.IsEmpty())
+				sText = m_sEnterControlText;
+			else
+				sText = _T("Enter");
+		}
 		break;
 	case  VK_SHIFT: 
 		sText = _T("Shift");
@@ -643,4 +660,18 @@ CDuiString CKeyBoardUI::GetKeyText(BYTE vkCode)
 	}
 
 	return sText;
+}
+
+
+int CKeyBoardUI::GetFont(BYTE vkCode)
+{
+	if(vkCode == VK_RETURN)
+	{
+		if(GetEnterControlFont() <= -1)
+			return GetFont();
+
+		return GetEnterControlFont();
+	}
+	
+	return GetFont();
 }

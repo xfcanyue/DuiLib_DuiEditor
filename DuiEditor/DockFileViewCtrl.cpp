@@ -76,13 +76,7 @@ BOOL CDockFileViewCtrl::InitFolder(LPCTSTR szFolderPath)
 	m_strCurrentPath = szFolderPath;
 
 	//ÔØÈëÏîÄ¿ÅäÖÃ
-	CString strPath = szFolderPath;
-	strPath += _T("project.dui");
-	g_proj.load_file(strPath);
-
-	xml_attribute attr = g_proj.child_auto(_T("Project")).attribute_auto(_T("path"));
-	attr.set_value(szFolderPath);
-	g_proj.save_to_default_file(PUGIXML_TEXT("\t"), format_default, encoding_utf8);
+	g_proj.InitProject(szFolderPath);
 
 	DeleteAllItems();
 
@@ -281,7 +275,7 @@ HRESULT CDockFileViewCtrl::EnumObjects(HTREEITEM hParentItem, LPSHELLFOLDER pPar
 
 		HTREEITEM htNew = InsertItem(&tvInsert);
 		
-		CString strStartupFile = g_proj.child(_T("Project")).child(_T("Startup")).attribute(_T("file")).as_string();
+		CString strStartupFile = g_proj.GetStartupFile();
 		if(strStartupFile.CompareNoCase(tvItem.pszText) == 0)
 		{
 			m_hStartupItem = htNew;
@@ -531,15 +525,13 @@ void CDockFileViewCtrl::OnEditDebugFile()
 	SHFILEINFO sfi;
 	HRESULT hr = SHGetFileInfo((LPCTSTR)pItem->pidlFQ, 0, &sfi, sizeof(sfi), SHGFI_PIDL | SHGFI_DISPLAYNAME);
 
-	xml_node node = g_proj.child_auto(_T("Project")).child_auto(_T("Startup"));
-	node.attribute_auto(_T("file")).set_value(sfi.szDisplayName);
+	g_proj.SetStartupFile(sfi.szDisplayName);
 
 	SetItemState(m_hStartupItem, 0, TVIS_BOLD);
 	m_hStartupItem = ht;
 	SetItemState(m_hStartupItem, TVIS_BOLD, TVIS_BOLD);
 
 
-	g_proj.save_to_default_file(PUGIXML_TEXT("\t"), format_default, encoding_utf8);
 }
 
 
@@ -562,6 +554,7 @@ void CDockFileViewCtrl::OnEditDebugRun()
 	if(ht == NULL)	return;
 
 	g_pThreadTest = new CThreadTest;
+	g_pThreadTest->m_nTestFrom = 1;
 	g_pThreadTest->m_strSpacialFile = GetItemPath(ht);
 	g_pThreadTest->CreateThread();
 }
@@ -604,9 +597,7 @@ void CDockFileViewCtrl::OnEditCopyFileName()
 
 void CDockFileViewCtrl::OnEditDebugNoFile()
 {
-	xml_node node = g_proj.child_auto(_T("Project")).child_auto(_T("Startup"));
-	node.attribute_auto(_T("file")).set_value(_T(""));
-	g_proj.save_to_default_file(PUGIXML_TEXT("\t"), format_default, encoding_utf8);
+	g_proj.SetStartupFile(_T(""));
 
 	if(m_hStartupItem)
 	{

@@ -1,6 +1,6 @@
 #pragma once
 
-class UILIB_PLUGIN_API CPictureControlUI : public CControlUI
+class UILIB_PLUGIN_API CPictureControlUI : public CVerticalLayoutUI
 {
 	DECLARE_DUICONTROL(CPictureControlUI)
 public:
@@ -12,8 +12,7 @@ public:
 
 	virtual void Init();
 	virtual void SetVisible(bool bVisible = true);
-	//virtual void SetInternVisible(bool bVisible = true);
-	virtual bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
+	virtual void PaintForeImage(HDC hDC);
 	virtual void DoEvent(TEventUI& event);
 	virtual bool Activate();
 	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);

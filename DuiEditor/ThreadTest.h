@@ -18,6 +18,8 @@ public:
 
 	PROCESS_INFORMATION m_piProcInfo; 
 	STARTUPINFO m_siStartInfo; 
+
+	int m_nTestFrom;
 public:
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();

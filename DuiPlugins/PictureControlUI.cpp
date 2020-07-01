@@ -143,30 +143,19 @@ void CPictureControlUI::SetVisible(bool bVisible/* = true*/)
 	__super::SetVisible(bVisible);
 	m_pImp->EventSetVisible(bVisible);
 }
-/*
-//奇怪了，这个加上之后，在Tab下面，如果不是TAB的第一页，可能会出错。
-void CPictureControlUI::SetInternVisible(bool bVisible)
-{
-	__super::SetInternVisible(bVisible);
-	m_pImp->EventSetVisible(bVisible);
-}
-*/
-bool CPictureControlUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
-{
-	if( !::IntersectRect( &m_rcPaint, &rcPaint, &m_rcItem ) ) return true;
-	if( !__super::DoPaint(hDC, rcPaint, pStopControl) ) return false;
 
+void CPictureControlUI::PaintForeImage(HDC hDC)
+{
 	if(m_pImage)
 	{
 		if(m_pImage->IsValid() && m_pImage->IsEnabled())
 		{
 			if(m_type == CXIMAGE_FORMAT_GIF)
-				m_pImp->DrawFrame( hDC,rcPaint,m_rcItem);
+				m_pImp->DrawFrame( hDC, m_rcPaint, m_rcItem);
 			else
-				m_pImage->Draw(hDC, m_rcItem);
+				m_pImage->Draw(hDC, m_rcPaint);
 		}
 	}
-	return true;
 }
 
 void CPictureControlUI::DoEvent(TEventUI& event)
@@ -210,7 +199,7 @@ void CPictureControlUI::DoEvent(TEventUI& event)
 
 bool CPictureControlUI::Activate()
 {
-	if( !CControlUI::Activate() ) return false;
+	if( !__super::Activate() ) return false;
 	if( m_pManager != NULL )
 	{
 		m_pManager->SendNotify(this, DUI_MSGTYPE_CLICK);
@@ -420,7 +409,7 @@ bool CPictureControlUI::LoadGifImageX(CxImage &img, STRINGorID bitmap, LPCTSTR t
 	img.Destroy();
 
 	img.SetRetreiveAllFrames(TRUE);
-	if(!img.Decode(pData,dwSize,CXIMAGE_FORMAT_GIF))
+	if(!img.Decode(pData,dwSize,CXIMAGE_FORMAT_UNKNOWN))
 	{
 		delete[] pData; pData = NULL;
 		return false;

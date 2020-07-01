@@ -72,6 +72,11 @@
 #define _WIN32_WINNT _WIN32_WINNT_WINXP//0x0501
 #endif
 
+#ifndef WINVER                 // Specify that the minimum required platform is Windows 7.
+#define WINVER 0x0601          //WIN7
+#endif
+#define MOUSEEVENTF_FROMTOUCH 0xFF515700
+
 //#define USE_XIMAGE_EFFECT //使用ximage的gif控件CGifAnimExUI开关，提升性能,默认不使用
 
 #include "UIlib.h"

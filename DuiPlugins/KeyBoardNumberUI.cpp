@@ -73,7 +73,13 @@ CDuiString CKeyBoardNumberUI::GetKeyText(BYTE vkCode)
 		sText = _T("Caps");
 		break;
 	case  VK_RETURN: 
-		sText = _T("En");
+		{
+			CDuiString temp = GetEnterControlText();
+			if(!temp.IsEmpty())
+				sText = temp;
+			else
+				sText = _T("En");
+		}
 		break;
 	case  VK_SHIFT: 
 		sText = _T("Shift");

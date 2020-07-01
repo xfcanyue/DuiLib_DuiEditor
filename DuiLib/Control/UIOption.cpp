@@ -12,7 +12,7 @@ namespace DuiLib
 	{
 		if( !m_sGroupName.IsEmpty() && m_pManager ) m_pManager->RemoveOptionGroup(m_sGroupName, this);
 	}
-
+	 
 	LPCTSTR COptionUI::GetClass() const
 	{
 		return _T("OptionUI");
@@ -64,7 +64,7 @@ namespace DuiLib
 		return m_bSelected;
 	}
 
-	void COptionUI::Selected(bool bSelected)
+	void COptionUI::Selected(bool bSelected, bool bTriggerEvent)
 	{
 		if(m_bSelected == bSelected) return;
 
@@ -82,11 +82,11 @@ namespace DuiLib
 							pControl->Selected(false);
 						}
 					}
-					m_pManager->SendNotify(this, DUI_MSGTYPE_SELECTCHANGED);
+					if (bTriggerEvent) m_pManager->SendNotify(this, DUI_MSGTYPE_SELECTCHANGED);
 				}
 			}
 			else {
-				m_pManager->SendNotify(this, DUI_MSGTYPE_SELECTCHANGED);
+				if (bTriggerEvent) m_pManager->SendNotify(this, DUI_MSGTYPE_SELECTCHANGED);
 			}
 		}
 
@@ -484,7 +484,7 @@ namespace DuiLib
 		}
 		COptionUI::DoEvent(event);
 	}
-	void CCheckBoxUI::Selected(bool bSelected)
+	void CCheckBoxUI::Selected(bool bSelected, bool bTriggerEvent)
 	{
 		if( m_bSelected == bSelected ) return;
 		m_bSelected = bSelected;
@@ -501,11 +501,11 @@ namespace DuiLib
 							pControl->Selected(FALSE);
 						}
 					}
-					m_pManager->SendNotify(this, DUI_MSGTYPE_SELECTCHANGED, m_bSelected, 0);
+					if (bTriggerEvent) m_pManager->SendNotify(this, DUI_MSGTYPE_SELECTCHANGED, m_bSelected, 0);
 				}
 			}
 			else {
-				m_pManager->SendNotify(this, DUI_MSGTYPE_SELECTCHANGED, m_bSelected, 0);
+				if (bTriggerEvent) m_pManager->SendNotify(this, DUI_MSGTYPE_SELECTCHANGED, m_bSelected, 0);
 			}
 		}
 

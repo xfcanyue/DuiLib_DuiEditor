@@ -80,4 +80,5 @@ using namespace pugi;
 
 #define WM_CREATE_UIWINDOW		WM_USER + 1
 
-extern pugi::xml_document g_proj;
+#include "DuiProject.h"
+extern CDuiProject g_proj;

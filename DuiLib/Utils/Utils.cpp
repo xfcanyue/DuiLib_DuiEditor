@@ -31,6 +31,27 @@ namespace DuiLib
 		y = GET_Y_LPARAM(lParam);
 	}
 
+	CDuiPoint::CDuiPoint(LPCTSTR pstrValue)
+	{
+		FromString(pstrValue);
+	}
+
+	bool CDuiPoint::FromString(LPCTSTR pstrValue) //从"x,y"构造POINT
+	{
+		x = y = 0; 
+		if (pstrValue == NULL || *pstrValue == _T('\0')) return false;
+		LPTSTR pstr = NULL;
+		x = _tcstol(pstrValue, &pstr, 10); if(!pstr) return false;
+		y = _tcstol(pstr + 1, &pstr, 10);  if(!pstr) return false;
+		return true;
+	}
+
+	CDuiString CDuiPoint::ToString()				//输出字符串"x,y"
+	{
+		CDuiString sPoint;
+		sPoint.SmallFormat(_T("%ld,%ld"), x, y);
+		return sPoint;
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
@@ -59,6 +80,27 @@ namespace DuiLib
 		cy = _cy;
 	}
 
+	CDuiSize::CDuiSize(LPCTSTR pstrValue)
+	{
+		FromString(pstrValue);
+	}
+
+	bool CDuiSize::FromString(LPCTSTR pstrValue) //从"cx,cy"构造SIZE
+	{
+		cx = cy = 0;
+		if (pstrValue == NULL || *pstrValue == _T('\0')) return false;
+		LPTSTR pstr = NULL;
+		cx = _tcstol(pstrValue, &pstr, 10);		if(!pstr) return false;
+		cy = _tcstol(pstr + 1, &pstr, 10);      if(!pstr) return false;
+		return true;
+	}
+
+	CDuiString CDuiSize::ToString()				//输出字符串"cx,cy"
+	{
+		CDuiString sSize;
+		sSize.SmallFormat(_T("%ld,%ld"), cx, cy);
+		return sSize;
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
@@ -83,6 +125,30 @@ namespace DuiLib
 		top = iTop;
 		right = iRight;
 		bottom = iBottom;
+	}
+
+	CDuiRect::CDuiRect(LPCTSTR pstrValue)
+	{
+		FromString(pstrValue);
+	}
+
+	bool CDuiRect::FromString(LPCTSTR pstrValue) //从"left,top,right,bottom"构造RECT
+	{
+		if (pstrValue == NULL || *pstrValue == _T('\0')) return false;
+		left = top = right = bottom = 0;
+		LPTSTR pstr = NULL;
+		left	= _tcstol(pstrValue, &pstr, 10);	if(!pstr) return false;
+		top		= _tcstol(pstr + 1, &pstr, 10);		if(!pstr) return false;
+		right	= _tcstol(pstr + 1, &pstr, 10);		if(!pstr) return false;
+		bottom	= _tcstol(pstr + 1, &pstr, 10);		if(!pstr) return false;
+		return true;
+	}
+
+	CDuiString CDuiRect::ToString()				//输出字符串"left,top,right,bottom"
+	{
+		CDuiString sRect;
+		sRect.SmallFormat(_T("%ld,%ld,%ld,%ld"), left, top, right, bottom);
+		return sRect;
 	}
 
 	int CDuiRect::GetWidth() const

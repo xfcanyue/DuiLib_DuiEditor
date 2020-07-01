@@ -19,6 +19,7 @@ public:
 	virtual HWND CreateUiWindow(HWND hwndParent, LPCTSTR pstrWindowName,DWORD dwStyle, DWORD dwExStyle) { return CreateDuiWindow(hwndParent, pstrWindowName, dwStyle, dwExStyle); }
 public:
 	CUITrackerMuliti m_tracker;
+	bool m_bOpenConfigFile;
 
 public:
 	void AddNewControlFromToolBox(xml_node nodeToolBox, CPoint pt);

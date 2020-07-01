@@ -48,43 +48,11 @@ inline BOOL SplitCString(CStringArray &arrstr, LPCTSTR strtemp)
 	return TRUE;
 }
 
-inline BOOL StringToRect(LPCTSTR str, LPRECT rc)
-{
-	LPTSTR pstr = NULL;
-	rc->left = _tcstol(str, &pstr, 10);			ASSERT(pstr);    
-	rc->top = _tcstol(pstr + 1, &pstr, 10);		ASSERT(pstr);    
-	rc->right = _tcstol(pstr + 1, &pstr, 10);	ASSERT(pstr);    
-	rc->bottom = _tcstol(pstr + 1, &pstr, 10);	ASSERT(pstr);    
-	return TRUE;
-};
-
 inline CString RectToString(LPRECT rc)
 {
 	CString temp;
 	temp.Format(_T("%d,%d,%d,%d"), rc->left, rc->top, rc->right, rc->bottom);
 	return temp;
-}
-
-inline BOOL StringToSize(LPCTSTR str, int &cx, int &cy)
-{
-	LPCTSTR pstrValue = str;
-	LPTSTR pstr = NULL;
-
-	cx = _tcstol(pstrValue, &pstr, 10); 
-	if(!pstr)
-	{
-		cx = 0;
-		cy = 0;
-		return FALSE;
-	}
-
-	cy = _tcstol(pstr + 1, &pstr, 10); 
-	if(!pstr)
-	{
-		cy = 0;
-		return FALSE;
-	}
-	return TRUE;
 }
 
 extern HWND g_hWndMsg;

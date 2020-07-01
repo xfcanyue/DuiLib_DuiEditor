@@ -2688,7 +2688,7 @@ err:
 			UINT uReadonly = IsReadOnly() ? MF_GRAYED : 0;
 			EnableMenuItem(hPopMenu, ID_RICH_CUT, MF_BYCOMMAND | uSel | uReadonly);
 			EnableMenuItem(hPopMenu, ID_RICH_COPY, MF_BYCOMMAND | uSel);
-			EnableMenuItem(hPopMenu, ID_RICH_CLEAR, MF_BYCOMMAND | uSel | uReadonly);
+			EnableMenuItem(hPopMenu, ID_RICH_CLEAR, MF_BYCOMMAND | uReadonly);
 			EnableMenuItem(hPopMenu, ID_RICH_PASTE, MF_BYCOMMAND | uReadonly);
 			::ClientToScreen(GetManager()->GetPaintWindow(), &pt);
 			TrackPopupMenu(hPopMenu, TPM_RIGHTBUTTON, pt.x, pt.y, 0, GetManager()->GetPaintWindow(), NULL);
@@ -2726,6 +2726,7 @@ err:
 				}
 			case ID_RICH_CLEAR:
 				{
+					SetSel(0,-1);
 					Clear();
 					break;
 				}

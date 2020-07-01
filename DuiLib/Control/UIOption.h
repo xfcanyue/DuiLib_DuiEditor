@@ -52,7 +52,7 @@ namespace DuiLib
 		LPCTSTR GetGroup() const;
 		void SetGroup(LPCTSTR pStrGroupName = NULL);
 		bool IsSelected() const;
-		virtual void Selected(bool bSelected);
+		virtual void Selected(bool bSelected, bool bTriggerEvent=true);
 
 		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 
@@ -100,7 +100,7 @@ namespace DuiLib
 		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 		void SetAutoCheck(bool bEnable);
 		virtual void DoEvent(TEventUI& event);
-		virtual void Selected(bool bSelected);
+		virtual void Selected(bool bSelected, bool bTriggerEvent=true);
 	};
 } // namespace DuiLib
 

@@ -25,6 +25,8 @@
 #include "../GridCtrlUI.h"
 #include "../MsgWndUI.h"
 #include "../KeyBoardUI.h"
+#include "../KeyBoardNumberUI.h"
+#include "../KeyBoardSimpleUI.h"
 #include "../ImageBoxUI.h"
 #include "../UIDataExchange.h"
 #include "../PictureControlUI.h"

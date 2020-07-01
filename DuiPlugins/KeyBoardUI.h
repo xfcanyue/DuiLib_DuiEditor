@@ -96,6 +96,11 @@ public:
 	void SetEnterControlName(LPCTSTR pstrName)  { m_sEnterControlName = pstrName; } //设置回车键的控件名字
 	LPCTSTR GetEnterControlName()				{ return m_sEnterControlName; }		//获取回车键的控件名字
 
+	void SetEnterControlText(LPCTSTR pstrName)  { m_sEnterControlText = pstrName; } //设置回车键的文本
+	LPCTSTR GetEnterControlText()				{ return m_sEnterControlText; }		//获取回车键的文本
+
+	void SetEnterControlFont(int iFont)	{ m_iFontEnterControl = iFont; }
+	int  GetEnterControlFont()			{ return m_iFontEnterControl; }
 protected:
 	virtual int CalcKeyBoardWidth();
 	virtual int CalcKeyBoardHeight();
@@ -121,6 +126,7 @@ public:
 	virtual bool IsCtrlON()		{ return m_bCtrlOn; }
 	virtual bool IsAltON()		{ return m_bAltOn;	}
 	virtual CDuiString GetKeyText(BYTE vkCode);
+	virtual int GetFont(BYTE vkCode);
 private:
 	CHorizontalLayoutUI *m_pLine[6];
 	int m_nlines;
@@ -128,6 +134,7 @@ private:
 	int m_nKeyHeight;
 	int m_nKeyPadding;
 	int	m_iFont;
+	int m_iFontEnterControl;
 	int m_nKeyBorderSize;
 	SIZE m_cxKeyBorderRound;
 	DWORD m_dwKeyTextColor;
@@ -140,7 +147,8 @@ private:
 	CDuiString m_sBindFocusControlName;
 	CDuiString m_sBindEnterControlName;
 
-	CDuiString m_sEnterControlName;
+	CDuiString m_sEnterControlName;		//回车键控件的名字
+	CDuiString m_sEnterControlText;		//回车键的文字
 
 	CControlUI *m_pFocus;		//输入窗口
 	CControlUI *m_pBindEnterButton; //接收回车事件的按钮

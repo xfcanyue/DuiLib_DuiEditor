@@ -11,7 +11,7 @@ CUIFrameWnd::CUIFrameWnd(void) : m_pApplication(NULL)
 
 CUIFrameWnd::~CUIFrameWnd(void)
 {
-	m_listForm.clear();
+	
 }
 
 void CUIFrameWnd::OnFinalMessage( HWND hWnd )
@@ -47,13 +47,16 @@ void CUIFrameWnd::DetachForm(CUIForm *pForm)
 {
 	//RemoveVirtualWnd(pForm->GetWindowClassName());
 
-	std::list<CUIForm *>::iterator it;
-	for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
+	if(m_listForm.size() > 0)
 	{
-		if(*it == pForm)
+		std::list<CUIForm *>::iterator it;
+		for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
 		{
-			m_listForm.erase(it);
-			return;
+			if(*it == pForm)
+			{
+				m_listForm.erase(it);
+				return;
+			}
 		}
 	}
 }
@@ -129,13 +132,16 @@ LRESULT CUIFrameWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam
 		return 0;
 	}
 
-	std::list<CUIForm *>::iterator it;
-	for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
+	if(m_listForm.size() > 0)
 	{
-		if((*it)->OnCustomMessage(uMsg, wParam, lParam))
+		std::list<CUIForm *>::iterator it;
+		for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
 		{
-			bHandled = TRUE;
-			return 0; 
+			if((*it)->OnCustomMessage(uMsg, wParam, lParam))
+			{
+				bHandled = TRUE;
+				return 0; 
+			}
 		}
 	}
 
@@ -158,14 +164,17 @@ LRESULT CUIFrameWnd::HandleMenuCommandMessage(UINT uMsg, WPARAM wParam, LPARAM l
 				return 0;
 			}
 
-			std::list<CUIForm *>::iterator it;
-			for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
+			if(m_listForm.size() > 0)
 			{
-				if((*it)->OnMenuCommand(pMenuCmd))
+				std::list<CUIForm *>::iterator it;
+				for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
 				{
-					delete pMenuCmd;
-					bHandled = TRUE;
-					return 0; 
+					if((*it)->OnMenuCommand(pMenuCmd))
+					{
+						delete pMenuCmd;
+						bHandled = TRUE;
+						return 0; 
+					}
 				}
 			}
 
@@ -212,10 +221,13 @@ void CUIFrameWnd::Notify(TNotifyUI& msg)
 		}
 	}
 
-	std::list<CUIForm *>::iterator it;
-	for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
+	if(m_listForm.size() > 0)
 	{
-		(*it)->Notify(msg);
+		std::list<CUIForm *>::iterator it;
+		for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
+		{
+			(*it)->Notify(msg);
+		}
 	}
 
 	CUIFrmBase::Notify(msg);
@@ -256,11 +268,15 @@ void CUIFrameWnd::__InitWindow()
 {
 	__super::__InitWindow();
 
-	std::list<CUIForm *>::iterator it;
-	for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
+	if(m_listForm.size() > 0)
 	{
-		(*it)->InitWindow();
+		std::list<CUIForm *>::iterator it;
+		for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
+		{
+			(*it)->InitWindow();
+		}
 	}
+	
 
 	InitWindow();
 }

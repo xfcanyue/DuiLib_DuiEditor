@@ -46,3 +46,6 @@
 // TODO: 在此处引用程序需要的其他头文件
 #include "../../DuiLib/DuiLib.h"
 using namespace DuiLib;
+
+#include "../pugixml/pugixml.hpp"
+	using namespace pugi;

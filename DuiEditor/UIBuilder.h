@@ -18,11 +18,14 @@ public:
 
 public:
 	void SetWindowAttribute(CPaintManagerUI *pManager, xml_node node);
+
 public:
 	xml_document m_xml;
 	IDialogBuilderCallback* m_pCallback;
 	LPCTSTR m_pstrtype;
 	HINSTANCE m_instance;
+
+	bool m_bOpenConfigFile;
 private:
 };
 

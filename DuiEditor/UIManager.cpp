@@ -136,23 +136,20 @@ BOOL CUIManager::UpdateControlPos(xml_node node, CRect rect, BOOL bUpdateWithHei
 	}
 
 	//非float控件比较特殊, UI库自动布局.
-	CRect rcDoc;
-	LPCTSTR strDocValue = node.attribute(_T("pos")).as_string(_T("0,0,0,0"));
-	StringToRect(strDocValue, rcDoc);
-
+	CDuiRect rcDoc(node.attribute(_T("pos")).as_string(_T("0,0,0,0")));
 	rcDoc.left = 0;
 	rcDoc.right = rect.Width();
 	rcDoc.top = 0;
 	rcDoc.bottom = rect.Height();
 
-	pControl->SetAttribute(_T("pos"), RectToString(rcDoc));	//不能调用pControl->SetPos();
+	pControl->SetAttribute(_T("pos"), rcDoc.ToString());	//不能调用pControl->SetPos();
 	UpdateControlUI(pControl);
 
 	if(bUpdateWithHeight)
 	{
 		g_duiProp.AddAttribute(node, _T("pos"), rcDoc, m_pView);
-		g_duiProp.AddAttribute(node, _T("width"), rcDoc.Width(), NULL);
-		g_duiProp.AddAttribute(node, _T("height"), rcDoc.Height(), NULL);
+		g_duiProp.AddAttribute(node, _T("width"), rcDoc.GetWidth(), NULL);
+		g_duiProp.AddAttribute(node, _T("height"), rcDoc.GetHeight(), NULL);
 	}
 	return TRUE;
 }
@@ -185,18 +182,15 @@ BOOL CUIManager::UpdateControlWidth(xml_node node, int width)
 	}
 
 	//非float控件比较特殊, UI库自动布局.
-	CRect rcDoc;
-	LPCTSTR strDocValue = node.attribute(_T("pos")).as_string(_T("0,0,0,0"));
-	StringToRect(strDocValue, rcDoc);
-
+	CDuiRect rcDoc(node.attribute(_T("pos")).as_string(_T("0,0,0,0")));
 	rcDoc.right = width;
 
-	pControl->SetAttribute(_T("pos"), RectToString(rcDoc));	//不能调用pControl->SetPos();
+	pControl->SetAttribute(_T("pos"), rcDoc.ToString());	//不能调用pControl->SetPos();
 	UpdateControlUI(pControl);
 
 	g_duiProp.AddAttribute(node, _T("pos"), rcDoc, m_pView);
-	g_duiProp.AddAttribute(node, _T("width"), rcDoc.Width(), NULL);
-	g_duiProp.AddAttribute(node, _T("height"), rcDoc.Height(), NULL);
+	g_duiProp.AddAttribute(node, _T("width"), rcDoc.GetWidth(), NULL);
+	g_duiProp.AddAttribute(node, _T("height"), rcDoc.GetHeight(), NULL);
 	return TRUE;
 }
 
@@ -227,18 +221,15 @@ BOOL CUIManager::UpdateControlHeight(xml_node node, int height)
 	}
 
 	//非float控件比较特殊, UI库自动布局.
-	CRect rcDoc;
-	LPCTSTR strDocValue = node.attribute(_T("pos")).as_string(_T("0,0,0,0"));
-	StringToRect(strDocValue, rcDoc);
-
+	CDuiRect rcDoc(node.attribute(_T("pos")).as_string(_T("0,0,0,0")));
 	rcDoc.bottom = height;
 
-	pControl->SetAttribute(_T("pos"), RectToString(rcDoc));	//不能调用pControl->SetPos();
+	pControl->SetAttribute(_T("pos"), rcDoc.ToString());	//不能调用pControl->SetPos();
 	UpdateControlUI(pControl);
 
 	g_duiProp.AddAttribute(node, _T("pos"), rcDoc, m_pView);
-	g_duiProp.AddAttribute(node, _T("width"), rcDoc.Width(),	NULL);
-	g_duiProp.AddAttribute(node, _T("height"), rcDoc.Height(),	NULL);
+	g_duiProp.AddAttribute(node, _T("width"), rcDoc.GetWidth(),	NULL);
+	g_duiProp.AddAttribute(node, _T("height"), rcDoc.GetHeight(),	NULL);
 	return TRUE;
 }
 
@@ -327,17 +318,15 @@ BOOL CUIManager::UpdateControlUI(xml_node node, xml_attribute attr)
 		{
 			if(_tcscmp(attr.name(), _T("size")) == 0)
 			{
-				int cx, cy;
-				StringToSize(attr.value(), cx, cy);
-				GetUiFrom()->SetInitSize(cx, cy);
+				CDuiSize sz(attr.value());
+				GetUiFrom()->SetInitSize(sz.cx, sz.cy);
 				SetScrollSize();
 			}
 		}
 		else if(_tcscmp(attr.name(), _T("pos")) == 0)
 		{
 			BOOL bUpdateSizeWhenModifyPos = AfxGetApp()->GetProfileInt(_T("Options"), _T("UpdateSizeWhenModifyPos"), 1);
-			CRect rc;
-			StringToRect(attr.value(), &rc);
+			CDuiRect rc(attr.value());
 			return UpdateControlPos(node, rc, bUpdateSizeWhenModifyPos);
 		}
 		else if(_tcscmp(attr.name(), _T("width")) == 0)

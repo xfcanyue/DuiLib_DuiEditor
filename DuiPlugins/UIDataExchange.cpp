@@ -132,12 +132,22 @@ bool CUIDataExchange::_UpdateCheckBox(_ddx_data *pData, bool bSaveAndValidate)
 
 bool CUIDataExchange::_UpdateCombo(_ddx_data *pData, bool bSaveAndValidate)
 {
+	CComboUI *pCombo = static_cast<CComboUI *>(pData->pControl->GetInterface(DUI_CTR_COMBO));
+	if(!pCombo)	return false;
+
 	if(bSaveAndValidate)
 	{
+		if(pData->valueType == _value_int)
+		{
+			*((int *)(pData->pValue)) = pCombo->GetCurSel();
+		}
 	}
 	else
 	{
-
+		if(pData->valueType == _value_int)
+		{
+			pCombo->SelectItem(*((int *)(pData->pValue)));
+		}
 	}
 	return true;
 }
@@ -219,6 +229,7 @@ bool CUIDataExchange::ddxText(LPCTSTR pControlName, COleCurrency &va)
 
 bool CUIDataExchange::ddxCheckBox(CControlUI *pControl, bool &va)
 {
+	ASSERT(pControl);
 	ASSERT(pControl->GetInterface(DUI_CTR_OPTION));
 
 	if(pControl->GetInterface(DUI_CTR_OPTION) == NULL)
@@ -241,6 +252,7 @@ bool CUIDataExchange::ddxCheckBox(LPCTSTR pControlName, bool &va)
 
 bool CUIDataExchange::ddxCheckBox(CControlUI *pControl, BOOL &va)
 {
+	ASSERT(pControl);
 	ASSERT(pControl->GetInterface(DUI_CTR_OPTION));
 
 	if(pControl->GetInterface(DUI_CTR_OPTION) == NULL)
@@ -264,6 +276,7 @@ bool CUIDataExchange::ddxCheckBox(LPCTSTR pControlName, BOOL &va)
 
 bool CUIDataExchange::ddxCombo(CControlUI *pControl, int &va)
 {
+	ASSERT(pControl);
 	ASSERT(pControl->GetInterface(DUI_CTR_COMBO));
 
 	if(pControl->GetInterface(DUI_CTR_COMBO) == NULL)
@@ -282,4 +295,20 @@ bool CUIDataExchange::ddxCombo(LPCTSTR pControlName, int &va)
 {
 	CControlUI *pControl = m_pManager->FindControl(pControlName);
 	return ddxCombo(pControl, va);
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+COleDateTime CUIDataExchange::MergeCOleDateTime(const SYSTEMTIME &date, const SYSTEMTIME &time)
+{
+	COleDateTime dt;
+	dt.SetDateTime(date.wYear, date.wMonth, date.wDay, time.wHour, time.wMinute, time.wSecond);
+	return dt;
+}
+
+COleDateTime CUIDataExchange::MergeCOleDateTime(const COleDateTime &date, const COleDateTime &time)
+{
+	COleDateTime dt;
+	dt.SetDateTime(date.GetYear(), date.GetMonth(), date.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond());
+	return dt;
 }

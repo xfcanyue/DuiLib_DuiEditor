@@ -15,7 +15,7 @@
 
 CUIWindowEx::CUIWindowEx()
 {
-
+	m_bOpenConfigFile = false;
 }
 
 CUIWindowEx::~CUIWindowEx()
@@ -412,13 +412,18 @@ LRESULT CUIWindowEx::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHa
 	GetManager()->SetResourcePath(pDoc->GetSkinPath());
 
 	CUIBuilder builder;
+	CString skinFile = pDoc->GetSkinFileName();
+	if(skinFile.CompareNoCase(_T("config.xml")) == 0)
+	{
+		m_bOpenConfigFile = true;
+	}
 
 	CControlUI* pRoot=NULL;
 	pRoot = builder.Create(pDoc->m_doc, this, GetManager());
-	if (pRoot==NULL)
+	if (pRoot==NULL && !m_bOpenConfigFile)
 	{
-		MessageBox(m_hWnd, _T("Loading resource files error."), _T("Duilib"), MB_OK|MB_ICONERROR);
-		return 0;
+		//MessageBox(m_hWnd, _T("Loading resource files error."), _T("Duilib"), MB_OK|MB_ICONERROR);
+		//return 0;
 	}
 
 	//先在根部放一个containner, 设计器内部把它当成窗口对象。

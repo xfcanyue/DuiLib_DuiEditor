@@ -9,6 +9,7 @@
 CUIBuilder::CUIBuilder()  : m_pCallback(NULL), m_pstrtype(NULL)
 {
 	m_instance = NULL;
+	m_bOpenConfigFile = false;
 }
 
 
@@ -79,6 +80,11 @@ CControlUI* CUIBuilder::Create(pugi::xml_node xmldoc, IDialogBuilderCallback* pC
 		}
 	}
 	if( !root) return NULL;
+
+	if(!g_proj.IsLoadedConfig())
+	{
+		g_proj.LoadConfig(pManager);
+	}
 
 	if( pManager ) {
 		LPCTSTR pstrClass = NULL;

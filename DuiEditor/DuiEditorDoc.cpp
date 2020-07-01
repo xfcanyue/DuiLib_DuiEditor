@@ -30,9 +30,6 @@ IMPLEMENT_DYNCREATE(CDuiEditorDoc, CDocument)
 
 BEGIN_MESSAGE_MAP(CDuiEditorDoc, CDocument)
 	ON_COMMAND(ID_FILE_REOPEN, &CDuiEditorDoc::OnFileReopen)
-	ON_COMMAND(ID_EDIT_XML, &CDuiEditorDoc::OnEditXml)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_XML, &CDuiEditorDoc::OnUpdateEditXml)
-	ON_UPDATE_COMMAND_UI(ID_FILE_REOPEN, &CDuiEditorDoc::OnUpdateFileReopen)
 END_MESSAGE_MAP()
 
 
@@ -56,36 +53,13 @@ CDuiEditorDoc::~CDuiEditorDoc()
 
 BOOL CDuiEditorDoc::OnNewDocument()
 {
-/*
-	CDlgCreateDuiDocument dlg;
-	if(dlg.DoModal() == IDOK)
-	{
-		CString strFile = g_strAppPath + _T("DuiTemplate\\") + dlg.m_strModuleName + _T("\\skin.xml");
-		if(!m_doc.load_file(strFile))
-		{
-			AfxMessageBox(_T("载入模板页失败!"));
-			xml_node nodeWindow = m_doc.root().append_child(_T("Window"));
-			nodeWindow.append_attribute(_T("size")).set_value(_T("400,300"));
-			nodeWindow.append_child(_T("VerticalLayout"));
-		}
-	}
-	else
-	{
-		xml_node nodeWindow = m_doc.child_auto(_T("Window"));
-		nodeWindow.append_attribute(_T("size")).set_value(_T("400,300"));
-		nodeWindow.append_child(_T("VerticalLayout"));
-	}
-	*/
-
-	xml_node nodeWindow = m_doc.child_auto(_T("Window"));
-	nodeWindow.append_attribute(_T("size")).set_value(_T("400,300"));
-	nodeWindow.append_child(_T("VerticalLayout"));
-
 	if (!CDocument::OnNewDocument())
 		return FALSE;
 
 	// TODO: 在此添加重新初始化代码
-	// (SDI 文档将重用该文档)
+	xml_node nodeWindow = m_doc.child_auto(_T("Window"));
+	nodeWindow.append_attribute(_T("size")).set_value(_T("400,300"));
+	nodeWindow.append_child(_T("VerticalLayout"));
 
 	GetTreeView()->InitTreeContent();
 	m_strDefaultTitle = m_strTitle;
@@ -96,7 +70,7 @@ BOOL CDuiEditorDoc::OnNewDocumentFromUiTemplate()
 {
 	CDlgCreateDuiDocument dlg;
 	if(dlg.DoModal() != IDOK) return FALSE;
-	
+
 	CString strFile = g_strAppPath + _T("DuiTemplate\\") + dlg.m_strModuleName + _T("\\skin.xml");
 	if(!m_doc.load_file(strFile))
 	{
@@ -105,78 +79,35 @@ BOOL CDuiEditorDoc::OnNewDocumentFromUiTemplate()
 		nodeWindow.append_attribute(_T("size")).set_value(_T("400,300"));
 		nodeWindow.append_child(_T("VerticalLayout"));
 	}	
-	
+
 	GetTreeView()->InitTreeContent();
 	m_strDefaultTitle = m_strTitle;
 	return TRUE;
 }
 
-// CDuiEditorDoc 序列化
-
-void CDuiEditorDoc::Serialize(CArchive& ar)
-{
-	if (ar.IsStoring())
-	{
-		// TODO: 在此添加存储代码
-	}
-	else
-	{
-		// TODO: 在此添加加载代码
-	}
-}
-
 #ifdef SHARED_HANDLERS
-
 // 缩略图的支持
 void CDuiEditorDoc::OnDrawThumbnail(CDC& dc, LPRECT lprcBounds)
 {
-	// 修改此代码以绘制文档数据
-	dc.FillSolidRect(lprcBounds, RGB(255, 255, 255));
-
-	CString strText = _T("TODO: implement thumbnail drawing here");
-	LOGFONT lf;
-
-	CFont* pDefaultGUIFont = CFont::FromHandle((HFONT) GetStockObject(DEFAULT_GUI_FONT));
-	pDefaultGUIFont->GetLogFont(&lf);
-	lf.lfHeight = 36;
-
-	CFont fontDraw;
-	fontDraw.CreateFontIndirect(&lf);
-
-	CFont* pOldFont = dc.SelectObject(&fontDraw);
-	dc.DrawText(strText, lprcBounds, DT_CENTER | DT_WORDBREAK);
-	dc.SelectObject(pOldFont);
-}
-
-// 搜索处理程序的支持
-void CDuiEditorDoc::InitializeSearchContent()
-{
-	CString strSearchContent;
-	// 从文档数据设置搜索内容。
-	// 内容部分应由“;”分隔
-
-	// 例如:  strSearchContent = _T("point;rectangle;circle;ole object;")；
-	SetSearchContent(strSearchContent);
-}
-
-void CDuiEditorDoc::SetSearchContent(const CString& value)
-{
-	if (value.IsEmpty())
+	CView *pView;
+	for (POSITION pos = GetFirstViewPosition(); pos != NULL;)
 	{
-		RemoveChunk(PKEY_Search_Contents.fmtid, PKEY_Search_Contents.pid);
-	}
-	else
-	{
-		CMFCFilterChunkValueImpl *pChunk = NULL;
-		ATLTRY(pChunk = new CMFCFilterChunkValueImpl);
-		if (pChunk != NULL)
+		pView = GetNextView(pos);
+		if(pView->IsKindOf(RUNTIME_CLASS(CDuiEditorViewDesign)))
 		{
-			pChunk->SetTextValue(PKEY_Search_Contents, value, CHUNK_TEXT);
-			SetChunkValue(pChunk);
-		}
-	}
-}
+			CDuiEditorViewDesign *pViewDesign = (CDuiEditorViewDesign *)pView;
 
+			CImage image;
+			CControlUI *pRoot = pViewDesign->m_Manager.GetManager()->GetRoot();
+			CSize szForm = pViewDesign->m_Manager.GetManager()->GetInitSize();
+			image.Create(szForm.cx, szForm.cy, 32);
+			CRect rcPaint(0,0,szForm.cx,szForm.cy);
+			pRoot->DoPaint(image.GetDC(), rcPaint, NULL);
+			image.Draw(dc.m_hDC, rcPaint);
+			image.ReleaseDC();
+		}
+	}	
+}
 #endif // SHARED_HANDLERS
 
 // CDuiEditorDoc 命令
@@ -263,13 +194,8 @@ BOOL CDuiEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
 	return TRUE;
 }
 
-
-BOOL CDuiEditorDoc::DoFileSave()
+BOOL CDuiEditorDoc::OnSaveDocument(LPCTSTR lpszPathName)
 {
-	if(!__super::DoFileSave())	return FALSE;
-
-	//InsertMsg(_T("CDuiEditorDoc::OnSaveDocument"));
-
 	//过滤默认属性
 	xml_node root = m_doc.root().child(_T("Window"));
 	FilterDefaultValue(root);
@@ -277,43 +203,11 @@ BOOL CDuiEditorDoc::DoFileSave()
 	//创建一个拷贝, 然后保存拷贝
 	xml_document doc;
 	doc.root().append_copy(root);
-	bool bSave = doc.save_file(GetPathName(), PUGIXML_TEXT("\t"), format_default, encoding_utf8);
+	bool bSave = doc.save_file(lpszPathName, PUGIXML_TEXT("\t"), format_default, encoding_utf8);
 	if(!bSave)	return FALSE;
 
 	SetModifiedFlag(FALSE);
 	return TRUE;
-}
-
-
-BOOL CDuiEditorDoc::OnSaveDocument(LPCTSTR lpszPathName)
-{
-// 	InsertMsg(_T("CDuiEditorDoc::OnSaveDocument"));
-// 
-// 	//过滤默认属性
-// 	xml_node root = m_doc.root().child(_T("Window"));
-// 	FilterDefaultValue(root);
-// 
-// 	//创建一个拷贝, 然后保存拷贝
-// 	xml_document doc;
-// 	doc.root().append_copy(root);
-// 	bool bSave = doc.save_file(lpszPathName, PUGIXML_TEXT("\t"), format_default, encoding_utf8);
-// 	if(!bSave)	return FALSE;
-// 
-// 	SetModifiedFlag(FALSE);
-
-// 	CString strTemp;
-// 	strTemp = lpszPathName;
-// 	int nPos = strTemp.ReverseFind(_T('\\'));
-// 	if(nPos != -1)
-// 	{
-// 		m_strSkinDir = strTemp.Left(nPos + 1);
-// 		m_strFileName = strTemp.Right(strTemp.GetLength() - nPos - 1);
-// 	}
-
-//	GetDesignView()->m_Manager.GetManager()->SetResourcePath(m_strSkinDir);
-
-//	return TRUE;
-	return CDocument::OnSaveDocument(lpszPathName);
 }
 
 
@@ -446,23 +340,4 @@ void CDuiEditorDoc::OnFileReopen()
 
 	OnFileClose();
 	return;
-}
-
-void CDuiEditorDoc::OnUpdateFileReopen(CCmdUI *pCmdUI)
-{
-	//pCmdUI->Enable(FALSE);
-}
-
-
-
-void CDuiEditorDoc::OnEditXml()
-{
-	
-}
-
-
-void CDuiEditorDoc::OnUpdateEditXml(CCmdUI *pCmdUI)
-{
-	// TODO: 在此添加命令更新用户界面处理程序代码
-}
-
+}	

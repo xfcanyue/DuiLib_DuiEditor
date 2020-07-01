@@ -16,6 +16,7 @@ IMPLEMENT_DYNCREATE(CThreadTest, CWinThread)
 
 CThreadTest::CThreadTest()
 {
+	m_nTestFrom = 0;
 }
 
 CThreadTest::~CThreadTest()
@@ -35,31 +36,32 @@ BOOL CThreadTest::InitInstance()
 	m_siStartInfo.hStdOutput = hChildStdoutWr;//GetStdHandle(STD_OUTPUT_HANDLE);
 	m_siStartInfo.wShowWindow=SW_SHOW;
 
-	CString strPath, strFileName;
-	strPath = g_proj.child(_T("Project")).attribute(_T("path")).as_string();
-	strFileName = g_proj.child(_T("Project")).child(_T("Startup")).attribute(_T("file")).as_string();
-	if(strPath.IsEmpty() || strFileName.IsEmpty())
-	{
-		strPath = m_pDoc->GetSkinPath();
-		strFileName = m_pDoc->GetSkinFileName();
-	}
-
 	CString strCmd;
-	if(!m_strSpacialFile.IsEmpty())
+	if(m_nTestFrom == 0)
+	{
+		CString strPath, strFileName;
+		strPath = g_proj.GetProjectPath();
+		strFileName = g_proj.GetStartupFile();
+		if(strPath.IsEmpty() || strFileName.IsEmpty())
+		{
+			strPath = m_pDoc->GetSkinPath();
+			strFileName = m_pDoc->GetSkinFileName();
+		}
+
+		strCmd.Format(_T("%sDuiPreviewer.exe \"-f %s%s\" \"-o %d\""), 
+			g_strAppPath, strPath, strFileName, hChildStdoutWr);
+	}
+	else if(m_nTestFrom == 1)
 	{
 		strCmd.Format(_T("%sDuiPreviewer.exe \"-f %s\" \"-o %d\""), 
 			g_strAppPath, m_strSpacialFile, hChildStdoutWr);
-	}
-	else if(g_strAttachTestCommand.IsEmpty())
-	{
-		strCmd.Format(_T("%sDuiPreviewer.exe \"-f %s%s\" \"-o %d\""), 
-			g_strAppPath, strPath, strFileName, hChildStdoutWr);
 	}
 	else
 	{
 		strCmd = g_strAttachTestCommand;
 	}
 
+	InsertMsg(_T("command: " + strCmd));
 	InsertMsg(_T("start duilib process."));
 
 	BOOL bCreate = CreateProcess(NULL, 

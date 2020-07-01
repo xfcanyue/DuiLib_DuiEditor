@@ -566,7 +566,7 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 
 	if(CompareString(attrType.value(), _T("INT")))
 	{
-		pProperty = new CMFCPropertyGridProperty(attrName.value(), (_variant_t)(INT)attrDefValue.as_int(),  attrComment.value());
+		pProperty = new CMFCPropertyGridProperty(attrName.value(), _variant_t((long)attrDefValue.as_int(), VT_I4),  attrComment.value());
 		pProperty->SetData((DWORD)attrNode.internal_object());
 		pProperty->AllowEdit(TRUE);
 		pProperty->EnableSpinControl(TRUE, 0, 9999);
@@ -575,7 +575,7 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 		xml_attribute attr = TreeNode.attribute(attrName.value());
 		if(attr)
 		{
-			pProperty->SetValue((_variant_t)attr.as_int());
+			pProperty->SetValue(_variant_t((long)attr.as_int(), VT_I4));
 		}
 	}
 	else if(CompareString(attrType.value(), _T("DWORD")))
@@ -660,11 +660,11 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 			if(strArray.GetSize() > 1) nHeight = _tstoi(strArray[1]);
 		}
 
-		pProperty = new CMFCPropertyGridProperty(_T("width"), (_variant_t)(INT) nWidth, attrComment.value());
+		pProperty = new CMFCPropertyGridProperty(_T("width"), _variant_t((long)nWidth, VT_I4), attrComment.value());
 		pProperty->EnableSpinControl(TRUE, 0, 9999);
 		pSize->AddSubItem(pProperty);
  
-		pProperty = new CMFCPropertyGridProperty( _T("height"), (_variant_t)(INT) nHeight, attrComment.value());
+		pProperty = new CMFCPropertyGridProperty( _T("height"), _variant_t((long)nHeight, VT_I4), attrComment.value());
 		pProperty->EnableSpinControl(TRUE, 0, 9999);
 		pSize->AddSubItem(pProperty);
 	}
@@ -697,19 +697,19 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 			if(strArray.GetSize() > 3) nBottom = _tstoi(strArray[3]);
 		}
 
-		pProperty = new CMFCPropertyGridProperty(_T("left"), (_variant_t)(INT) nLeft, attrComment.value());
+		pProperty = new CMFCPropertyGridProperty(_T("left"), _variant_t((long)nLeft, VT_I4), attrComment.value());
 		pProperty->EnableSpinControl(TRUE, 0, 9999);
 		pRect->AddSubItem(pProperty);
 
-		pProperty = new CMFCPropertyGridProperty( _T("top"), (_variant_t)(INT) nTop, attrComment.value());
+		pProperty = new CMFCPropertyGridProperty( _T("top"), _variant_t((long)nTop, VT_I4), attrComment.value());
 		pProperty->EnableSpinControl(TRUE, 0, 9999);
 		pRect->AddSubItem(pProperty);
 
-		pProperty = new CMFCPropertyGridProperty( _T("right"), (_variant_t)(INT) nRight, attrComment.value());
+		pProperty = new CMFCPropertyGridProperty( _T("right"), _variant_t((long)nRight, VT_I4), attrComment.value());
 		pProperty->EnableSpinControl(TRUE, 0, 9999);
 		pRect->AddSubItem(pProperty);
 
-		pProperty = new CMFCPropertyGridProperty( _T("bottom"), (_variant_t)(INT) nBottom, attrComment.value());
+		pProperty = new CMFCPropertyGridProperty( _T("bottom"), _variant_t((long)nBottom, VT_I4), attrComment.value());
 		pProperty->EnableSpinControl(TRUE, 0, 9999);
 		pRect->AddSubItem(pProperty);
 
@@ -912,7 +912,7 @@ void CUIPropertyGridCtrl::OnPropertyFontChangedFromFontDialog(CUIPropertyGridFon
 			if( CompareString(strName, _T("size")) ) 
 			{
 				int size = pProp->GetFontSize();
-				pProp2->SetValue((_variant_t)(INT)size);
+				pProp2->SetValue(_variant_t((long)size, VT_I4));
 			}
 			else if( CompareString(strName, _T("bold")) )
 			{
@@ -976,12 +976,7 @@ void CUIPropertyGridCtrl::OnGridpropertyCopyValue()
 
 
 	CString strText;
-// 	int nLevel = pProp->GetHierarchyLevel();
-// 	if(nLevel > 1)
-// 	{
-// 		pProp = pProp->GetParent();
-// 	}
-	if(pProp->GetSubItemsCount() > 0) //有子项, 直接修改父项
+	if(pProp->GetSubItemsCount() > 0) //有子项
 	{
 		CString str, temp;
 		for (int i=0; i<pProp->GetSubItemsCount(); i++)
@@ -1149,11 +1144,106 @@ void CUIPropertyGridCtrl::OnUpdateGridpropertyCopyValueEx(CCmdUI *pCmdUI)
 
 void CUIPropertyGridCtrl::OnGridpropertySetDefaultValue()
 {
-	
+	CMFCPropertyGridProperty *pProp = m_pPropFocused;
+
+	xml_node duiNode((xml_node_struct *)pProp->GetData()); //属性文件
+	xml_attribute attrType		= duiNode.attribute(_T("type"));
+	xml_attribute attrDefault	= duiNode.attribute(_T("default"));
+
+	int nLevel = pProp->GetHierarchyLevel();
+	if(nLevel > 1) //重置子项，比如 RECT SIZE
+	{
+		CMFCPropertyGridProperty *pPropParent = pProp->GetParent();
+		duiNode = xml_node((xml_node_struct *)pPropParent->GetData());
+		attrType = duiNode.attribute(_T("type"));
+		attrDefault	= duiNode.attribute(_T("default"));
+
+		if(CompareString(attrType.value(), _T("SIZE")))
+		{
+			CDuiSize szDefault(attrDefault.as_string(_T("0,0")));
+
+			CString strName = pProp->GetName();
+			if(CompareString(strName, _T("width")))
+			{
+				pProp->SetValue(_variant_t((long)szDefault.cx, VT_I4));
+			}
+			else if(CompareString(strName, _T("height")))
+			{
+				pProp->SetValue(_variant_t((long)szDefault.cy, VT_I4));
+			}
+		}
+		else if(CompareString(attrType.value(), _T("RECT")))
+		{
+			CDuiRect rcDefault(attrDefault.as_string(_T("0,0,0,0")));
+			CString strName = pProp->GetName();
+			if(CompareString(strName, _T("left")))
+			{
+				pProp->SetValue(_variant_t((long)rcDefault.left, VT_I4));
+			}
+			else if(CompareString(strName, _T("top")))
+			{
+				pProp->SetValue(_variant_t((long)rcDefault.top, VT_I4));
+			}
+			else if(CompareString(strName, _T("right")))
+			{
+				pProp->SetValue(_variant_t((long)rcDefault.top, VT_I4));
+			}
+			else if(CompareString(strName, _T("bottom")))
+			{
+				pProp->SetValue(_variant_t((long)rcDefault.top, VT_I4));
+			}
+		}
+	}
+	else if(CompareString(attrType.value(), _T("INT")))
+	{
+		pProp->SetValue(_variant_t((long)attrDefault.as_int(), VT_I4));
+	}
+	else if(CompareString(attrType.value(), _T("DWORD")))
+	{
+		CUIPropertyGridColorProperty *pPropColor = (CUIPropertyGridColorProperty *)pProp;
+		pPropColor->SetUIColor(attrDefault.as_string());
+	}
+	else if(CompareString(attrType.value(), _T("STRING")))
+	{
+		pProp->SetValue((_variant_t)attrDefault.as_string());
+	}
+	else if(CompareString(attrType.value(), _T("BOOL")))
+	{
+		pProp->SetValue((_variant_t)attrDefault.as_bool());
+	}
+	else if(CompareString(attrType.value(), _T("SIZE")))
+	{
+		CDuiSize szDefault(attrDefault.as_string(_T("0,0")));
+		if(pProp->GetSubItem(0)) pProp->GetSubItem(0)->SetValue(_variant_t((long)szDefault.cx, VT_I4));
+		if(pProp->GetSubItem(1)) pProp->GetSubItem(1)->SetValue(_variant_t((long)szDefault.cy, VT_I4));
+	}
+	else if(CompareString(attrType.value(), _T("RECT")))
+	{
+		CDuiRect rcDefault(attrDefault.as_string(_T("0,0,0,0")));	
+		if(pProp->GetSubItem(0)) pProp->GetSubItem(0)->SetValue(_variant_t((long)rcDefault.left, VT_I4));
+		if(pProp->GetSubItem(1)) pProp->GetSubItem(1)->SetValue(_variant_t((long)rcDefault.top, VT_I4));
+		if(pProp->GetSubItem(2)) pProp->GetSubItem(2)->SetValue(_variant_t((long)rcDefault.right, VT_I4));
+		if(pProp->GetSubItem(3)) pProp->GetSubItem(3)->SetValue(_variant_t((long)rcDefault.bottom, VT_I4));
+
+	}
+	else if(CompareString(attrType.value(), _T("CHAR")))
+	{
+		pProp->SetValue((_variant_t)attrDefault.as_string());
+	}
+	else if(CompareString(attrType.value(), _T("IMAGE")))
+	{
+		pProp->SetValue((_variant_t)attrDefault.as_string());
+	}
+	else if(CompareString(attrType.value(), _T("ATTRIBUTELIST")))
+	{
+		pProp->SetValue((_variant_t)attrDefault.as_string());
+	}
+
+	OnPropertyChanged(pProp);
 }
 
 
 void CUIPropertyGridCtrl::OnUpdateGridpropertySetDefaultValue(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(FALSE);//(m_pPropFocused!=NULL);
+	pCmdUI->Enable(m_pPropFocused!=NULL);
 }

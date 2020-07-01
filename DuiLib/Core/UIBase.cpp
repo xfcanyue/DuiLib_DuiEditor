@@ -432,7 +432,11 @@ LRESULT CALLBACK CWindowWnd::__WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
             pThis->OnFinalMessage(hWnd);
             return lRes;
         }
-    }
+	}
+
+	if(DoTouchInformation(hWnd, uMsg, wParam, lParam))
+		return ::DefWindowProc(hWnd, uMsg, wParam, lParam);
+
     if( pThis != NULL ) {
         return pThis->HandleMessage(uMsg, wParam, lParam);
     } 
@@ -460,13 +464,81 @@ LRESULT CALLBACK CWindowWnd::__ControlProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
             pThis->OnFinalMessage(hWnd);
             return lRes;
         }
-    }
+	}
+
+	if(DoTouchInformation(hWnd, uMsg, wParam, lParam))
+		return ::DefWindowProc(hWnd, uMsg, wParam, lParam);
+
     if( pThis != NULL ) {
         return pThis->HandleMessage(uMsg, wParam, lParam);
     } 
     else {
         return ::DefWindowProc(hWnd, uMsg, wParam, lParam);
     }
+}
+
+BOOL CWindowWnd::DoTouchInformation(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	return FALSE;
+	if(uMsg == WM_CREATE)
+	{
+		::RegisterTouchWindow(hWnd, TWF_FINETOUCH); //注册触屏消息 add by liqs99
+		return FALSE;
+	}
+	else if(uMsg == WM_CLOSE)
+	{
+		::UnregisterTouchWindow(hWnd); //反注册触屏消息 add by liqs99
+		return FALSE;
+	}
+	//不要处理由触屏产生的鼠标事件
+	else if(uMsg == WM_LBUTTONDOWN || uMsg == WM_LBUTTONUP || uMsg == WM_LBUTTONDOWN || 
+		uMsg == WM_RBUTTONDOWN || uMsg == WM_RBUTTONUP || uMsg == WM_RBUTTONDBLCLK ||
+		uMsg == WM_MOUSEMOVE || uMsg == WM_MOUSEHOVER )
+	{
+		if ((GetMessageExtraInfo() & MOUSEEVENTF_FROMTOUCH) == MOUSEEVENTF_FROMTOUCH)
+			return TRUE;
+	}
+	if(uMsg != WM_TOUCH) return FALSE;
+
+	unsigned int numInputs = (int)wParam; //Number　of　actual　contact　 messages
+	TOUCHINPUT* ti = new TOUCHINPUT[numInputs]; //　Allocate　the　storage　for
+	if(GetTouchInputInfo((HTOUCHINPUT)lParam, numInputs, ti, sizeof(TOUCHINPUT)))
+	{
+		for (unsigned int i = 0; i < numInputs; i++)
+		{
+			if (ti[i].dwFlags & TOUCHEVENTF_DOWN)
+			{
+				POINT pt = { 0 };						
+				pt.x = TOUCH_COORD_TO_PIXEL(ti[i].x);
+				pt.y = TOUCH_COORD_TO_PIXEL(ti[i].y);
+				::ScreenToClient(hWnd, &pt);
+				LPARAM exLParam = MAKELPARAM(pt.x, pt.y);
+				break;
+			}
+			else if(ti[i].dwFlags & TOUCHEVENTF_MOVE)
+			{
+				POINT pt = { 0 };						
+				pt.x = TOUCH_COORD_TO_PIXEL(ti[i].x);
+				pt.y = TOUCH_COORD_TO_PIXEL(ti[i].y);
+				::ScreenToClient(hWnd, &pt);
+				LPARAM exLParam = MAKELPARAM(pt.x, pt.y);
+				::SendMessage(hWnd, WM_MOUSEMOVE, wParam, exLParam);
+				break;
+			}
+			else if(ti[i].dwFlags & TOUCHEVENTF_UP)
+			{
+				POINT pt = { 0 };						
+				pt.x = TOUCH_COORD_TO_PIXEL(ti[i].x);
+				pt.y = TOUCH_COORD_TO_PIXEL(ti[i].y);
+				::ScreenToClient(hWnd, &pt);
+				LPARAM exLParam = MAKELPARAM(pt.x, pt.y);
+				::SendMessage(hWnd, WM_LBUTTONUP, wParam, exLParam);
+				break;
+			}
+		}
+	}
+	CloseTouchInputHandle((HTOUCHINPUT)lParam);
+	return TRUE;
 }
 
 LRESULT CWindowWnd::SendMessage(UINT uMsg, WPARAM wParam /*= 0*/, LPARAM lParam /*= 0*/)

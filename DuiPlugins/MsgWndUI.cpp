@@ -71,6 +71,12 @@ bool CMsgWndUI::OnInsertMsg(void* param)
 	TNotifyUI* pMsg = (TNotifyUI*)param;
 	if(_tcsicmp(pMsg->sType, _T("CMsgWndUI::InsertMsg")) == 0) 
 	{
+		if(GetLineCount() >= 5000)
+		{
+			SetSel(0,-1);
+			Clear();
+		}
+
 		CDuiString *pString = (CDuiString *)(pMsg->lParam);
 		InsertText(-1, *pString);
 		InsertText(-1, _T("\r\n"));

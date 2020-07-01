@@ -263,6 +263,7 @@
     <ClInclude Include="DuiEditorViewCode.h" />
     <ClInclude Include="DuiEditorCommandHistory.h" />
     <ClInclude Include="DuiEditorTabView.h" />
+    <ClInclude Include="DuiProject.h" />
     <ClInclude Include="ImageEditor.h" />
     <ClInclude Include="ImageEditorFrame.h" />
     <ClInclude Include="ImageEditorTreeWnd.h" />
@@ -321,6 +322,7 @@
     <ClCompile Include="DuiEditorViewCode.cpp" />
     <ClCompile Include="DuiEditorCommandHistory.cpp" />
     <ClCompile Include="DuiEditorTabView.cpp" />
+    <ClCompile Include="DuiProject.cpp" />
     <ClCompile Include="ImageEditor.cpp" />
     <ClCompile Include="ImageEditorFrame.cpp" />
     <ClCompile Include="ImageEditorTreeWnd.cpp" />

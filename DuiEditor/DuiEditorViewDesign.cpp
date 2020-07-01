@@ -514,6 +514,7 @@ void CDuiEditorViewDesign::OnUiformDebug()
 	AfxGetApp()->SaveAllModified();
 
 	g_pThreadTest = new CThreadTest;
+	g_pThreadTest->m_nTestFrom = 0;
 	g_pThreadTest->m_pDoc = GetDocument();
 	g_pThreadTest->CreateThread();
 	return;
