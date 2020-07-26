@@ -193,6 +193,7 @@
     <None Include="res\bmp00003.bmp" />
     <None Include="res\bmp00004.bmp" />
     <None Include="res\bmp00005.bmp" />
+    <None Include="res\bmp00006.bmp" />
     <None Include="res\class_view.ico" />
     <None Include="res\DuiEditor.ico" />
     <None Include="res\DuiEditor.rc2" />
@@ -259,6 +260,8 @@
     <ClInclude Include="DlgTemplateSave.h" />
     <ClInclude Include="DockFileViewCtrl.h" />
     <ClInclude Include="DockFileViewWnd.h" />
+    <ClInclude Include="DockXmlView.h" />
+    <ClInclude Include="DockXmlWnd.h" />
     <ClInclude Include="DuiEditorDocTemplate.h" />
     <ClInclude Include="DuiEditorViewCode.h" />
     <ClInclude Include="DuiEditorCommandHistory.h" />
@@ -272,6 +275,7 @@
     <ClInclude Include="MenuElementExUI.h" />
     <ClInclude Include="MenuExUI.h" />
     <ClInclude Include="SciFind.h" />
+    <ClInclude Include="SciXmlWriter.h" />
     <ClInclude Include="ScriptEditorDoc.h" />
     <ClInclude Include="ScriptEditorView.h" />
     <ClInclude Include="StaticImageView.h" />
@@ -318,6 +322,8 @@
     <ClCompile Include="DlgTemplateSave.cpp" />
     <ClCompile Include="DockFileViewCtrl.cpp" />
     <ClCompile Include="DockFileViewWnd.cpp" />
+    <ClCompile Include="DockXmlView.cpp" />
+    <ClCompile Include="DockXmlWnd.cpp" />
     <ClCompile Include="DuiEditorDocTemplate.cpp" />
     <ClCompile Include="DuiEditorViewCode.cpp" />
     <ClCompile Include="DuiEditorCommandHistory.cpp" />
@@ -330,6 +336,7 @@
     <ClCompile Include="MenuElementExUI.cpp" />
     <ClCompile Include="MenuExUI.cpp" />
     <ClCompile Include="SciFind.cpp" />
+    <ClCompile Include="SciXmlWriter.cpp" />
     <ClCompile Include="ScriptEditorDoc.cpp" />
     <ClCompile Include="ScriptEditorView.cpp" />
     <ClCompile Include="StaticImageView.cpp" />

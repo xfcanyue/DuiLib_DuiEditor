@@ -636,6 +636,7 @@ LRESULT CUIWindowEx::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 	{
 		m_tracker.Add(nodeClick, pControl->GetPos());
 		m_pManager->GetTreeView()->SelectXmlNode(nodeClick);
+		m_pManager->GetXmlPane()->SelectXmlNode(nodeClick);
 	}
 	else
 		m_tracker.SetFocus(nodeClick);

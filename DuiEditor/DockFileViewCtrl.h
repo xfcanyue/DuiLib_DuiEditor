@@ -7,21 +7,6 @@ class CDockFileViewCtrl : public CTreeCtrl
 {
 	DECLARE_DYNAMIC(CDockFileViewCtrl)
 
-	class CLockWindowUpdate
-	{
-	public:
-		CLockWindowUpdate(CWnd *pWnd) 
-		{ 
-			m_pWnd = pWnd;
-			m_pWnd->LockWindowUpdate(); 
-		}
-		~CLockWindowUpdate() 
-		{ 
-			m_pWnd->UnlockWindowUpdate(); 
-		}
-	private:
-		CWnd *m_pWnd;
-	};
 public:
 	CDockFileViewCtrl();
 	virtual ~CDockFileViewCtrl();

@@ -68,6 +68,7 @@ void CChildFrame::OnMDIActivate(BOOL bActivate, CWnd* pActivateWnd, CWnd* pDeact
 	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
 	CDuiEditorDoc* pDoc = (CDuiEditorDoc *)GetActiveDocument();
 	pMain->m_wndControl.SetActiveTreeView(pDoc->GetTreeView());
+	pMain->m_wndDockXml.SetActiveSciWnd(pDoc->GetXmlPane());
 }
 
 

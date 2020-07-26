@@ -77,8 +77,24 @@ using namespace pugi;
 #define RULEBAR_SIZE_X	20
 #define RULEBAR_SIZE_Y	20
 
-
 #define WM_CREATE_UIWINDOW		WM_USER + 1
+
+
+class CLockWindowUpdate
+{
+public:
+	CLockWindowUpdate(CWnd *pWnd) 
+	{ 
+		m_pWnd = pWnd;
+		m_pWnd->LockWindowUpdate(); 
+	}
+	~CLockWindowUpdate() 
+	{ 
+		m_pWnd->UnlockWindowUpdate(); 
+	}
+private:
+	CWnd *m_pWnd;
+};
 
 #include "DuiProject.h"
 extern CDuiProject g_proj;

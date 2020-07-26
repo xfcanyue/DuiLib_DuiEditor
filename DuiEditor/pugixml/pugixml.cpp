@@ -1048,7 +1048,7 @@ namespace pugi
 
 	struct xml_node_struct
 	{
-		xml_node_struct(impl::xml_memory_page* page, xml_node_type type): header(page, type - 1), namevalue_base(0), tag(0)
+		xml_node_struct(impl::xml_memory_page* page, xml_node_type type): header(page, type - 1), namevalue_base(0), tag(0), row(0), col(0)
 		{
 			PUGI__STATIC_ASSERT(sizeof(xml_node_struct) == 12);
 		}
@@ -1070,6 +1070,8 @@ namespace pugi
 		impl::compact_pointer<xml_attribute_struct, 11, 0> first_attribute;
 
 		UINT_PTR tag;
+		int row;
+		int col;
 	};
 }
 #else
@@ -1094,7 +1096,7 @@ namespace pugi
 
 	struct xml_node_struct
 	{
-		xml_node_struct(impl::xml_memory_page* page, xml_node_type type): header(reinterpret_cast<uintptr_t>(page) | (type - 1)), name(0), value(0), parent(0), first_child(0), prev_sibling_c(0), next_sibling(0), first_attribute(0), tag(0)
+		xml_node_struct(impl::xml_memory_page* page, xml_node_type type): header(reinterpret_cast<uintptr_t>(page) | (type - 1)), name(0), value(0), parent(0), first_child(0), prev_sibling_c(0), next_sibling(0), first_attribute(0), tag(0), row(0), col(0)
 		{
 		}
 
@@ -1113,6 +1115,8 @@ namespace pugi
 		xml_attribute_struct* first_attribute;
 
 		UINT_PTR tag;
+		int row;
+		int col;
 	};
 }
 #endif
@@ -5526,6 +5530,23 @@ namespace pugi
 	PUGI__FN UINT_PTR xml_node::get_tag()
 	{
 		return _root ? _root->tag : NULL;
+	}
+
+	PUGI__FN void xml_node::set_row(int n)
+	{
+		if(_root) _root->row = n;
+	}
+	PUGI__FN int xml_node::get_row()
+	{
+		return _root ? _root->row : 0;
+	}
+	PUGI__FN void xml_node::set_column(int n)
+	{
+		if(_root) _root->col = n;
+	}
+	PUGI__FN int xml_node::get_column()
+	{
+		return _root ? _root->col : 0;
 	}
 
 	PUGI__FN xml_attribute xml_node::append_attribute(const char_t* name_)

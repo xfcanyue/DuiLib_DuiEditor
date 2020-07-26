@@ -10,6 +10,7 @@
 #endif
 
 #include "DuiEditorDoc.h"
+#include "DuiEditorTabView.h"
 #include "DuiEditorViewDesign.h"
 #include "DuiEditorViewCode.h"
 
@@ -42,6 +43,9 @@ CDuiEditorDoc::CDuiEditorDoc()
 	m_pTreeView = pMain->m_wndControl.CreateTreeView();
 	m_pTreeView->m_pDoc = this;
 	m_bMenuWnd = FALSE;
+
+	m_pSciWnd = pMain->m_wndDockXml.CreateSciWnd();
+	m_pSciWnd->m_pDoc = this;
 }
 
 CDuiEditorDoc::~CDuiEditorDoc()
@@ -49,6 +53,8 @@ CDuiEditorDoc::~CDuiEditorDoc()
 	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
 	pMain->m_wndControl.RemoveTreeView(m_pTreeView);
 	InitFileView(this);
+
+	pMain->m_wndDockXml.RemoveSciWnd(m_pSciWnd);
 }
 
 BOOL CDuiEditorDoc::OnNewDocument()
@@ -270,6 +276,18 @@ CView *CDuiEditorDoc::GetCodeView() const
 		pView = GetNextView(pos);
 		if(pView->IsKindOf(RUNTIME_CLASS(CDuiEditorViewCode)))
 			return pView;
+	}
+	return NULL;
+}
+
+CDuiEditorTabView *CDuiEditorDoc::GetTabView() const
+{
+	CView *pView;
+	for (POSITION pos = GetFirstViewPosition(); pos != NULL;)
+	{
+		pView = GetNextView(pos);
+		if(pView->IsKindOf(RUNTIME_CLASS(CDuiEditorTabView)))
+			return (CDuiEditorTabView *)pView;
 	}
 	return NULL;
 }

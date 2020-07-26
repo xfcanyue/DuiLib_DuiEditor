@@ -51,13 +51,15 @@ public: //统一管理各种指针
 	CUIFormView *GetUiFrom()	{ return (CUIFormView *)GetManager()->GetRoot(); }
 	CUITrackerMuliti *GetUiTracker() { return m_pUiTracker; }
 	CDockControlTreeCtrl *GetTreeView() { return m_pTreeView; }
+	CDockXmlView *GetXmlPane() { return m_pSciPane; }
 private:
 	CDuiEditorDoc *m_pDoc;
 	CDuiEditorCommandHistory *m_pCmdHistory;
 	CDuiEditorViewDesign *m_pView;
 	CPaintManagerUI *m_pManager;
 	CUIWindow *m_pUiWindow;
-	CDockControlTreeCtrl *m_pTreeView;
 	CUITrackerMuliti *m_pUiTracker;
+	CDockControlTreeCtrl *m_pTreeView;
+	CDockXmlView *m_pSciPane;
 };
 

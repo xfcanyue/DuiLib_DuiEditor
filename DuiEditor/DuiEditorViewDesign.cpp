@@ -36,6 +36,7 @@ BEGIN_MESSAGE_MAP(CDuiEditorViewDesign, CScrollView)
 	ON_WM_ERASEBKGND()
 	ON_WM_DESTROY()
 	ON_WM_LBUTTONDOWN()
+	ON_MESSAGE(WM_INIT_VIEW_DESIGN, OnInitViewDesign)
 	ON_COMMAND(ID_EDIT_CUT, &CDuiEditorViewDesign::OnEditCut)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &CDuiEditorViewDesign::OnUpdateEditCut)
 	ON_COMMAND(ID_EDIT_COPY, &CDuiEditorViewDesign::OnEditCopy)
@@ -164,6 +165,7 @@ void CDuiEditorViewDesign::InitView()
 	m_Manager.m_pDoc = GetDocument();
 	m_Manager.m_pCmdHistory = &m_cmdHistory;
 	m_Manager.m_pTreeView = GetDocument()->GetTreeView();
+	m_Manager.m_pSciPane  = GetDocument()->GetXmlPane();
 
 // 	CPoint pos = GetScrollPosition();
 // 	CString temp;
@@ -195,6 +197,9 @@ void CDuiEditorViewDesign::InitView()
 
 	m_Manager.GetTreeView()->m_pManager = &m_Manager;
 	m_Manager.GetTreeView()->InitTreeContent();
+
+	m_Manager.GetXmlPane()->m_pManager = &m_Manager;
+	m_Manager.GetXmlPane()->Init();
 
 	//((CMainFrame *)AfxGetMainWnd())->ShowAllPane();
 }
@@ -237,7 +242,8 @@ BOOL CDuiEditorViewDesign::OnEraseBkgnd(CDC* pDC)
 	rectClient.OffsetRect(point);
 
 	CRect rcUiWnd;
-	m_Manager.GetUiWindow()->GetWindowRect(rcUiWnd);
+	if(m_Manager.GetUiWindow())
+		m_Manager.GetUiWindow()->GetWindowRect(rcUiWnd);
 	if(rectClient.Width() - rcUiWnd.Width() > 0) //刷新UI窗口右边的空白区域
 	{
 		CRect rc;
@@ -289,6 +295,12 @@ BOOL CDuiEditorViewDesign::OnEraseBkgnd(CDC* pDC)
 	return CScrollView::OnEraseBkgnd(pDC);
 }
 
+LRESULT CDuiEditorViewDesign::OnInitViewDesign(WPARAM WParam, LPARAM LParam)
+{
+	InitView();
+	return 0;
+}
+
 void CDuiEditorViewDesign::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView)
 {
 	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
@@ -296,6 +308,7 @@ void CDuiEditorViewDesign::OnActivateView(BOOL bActivate, CView* pActivateView, 
 	if(bActivate && pActivateView==this && pDeactiveView!=this)
 	{
 		pMain->m_wndControl.SetActiveTreeView(m_Manager.GetTreeView());
+		pMain->m_wndDockXml.SetActiveSciWnd(m_Manager.GetXmlPane());
 		pMain->ShowAllPane();
 
 		//切换页面时, 也需要刷新属性窗口
@@ -324,6 +337,7 @@ void CDuiEditorViewDesign::OnLButtonDown(UINT nFlags, CPoint pt)
 	g_pPropWnd->InitProp(node);
 	m_Manager.SelectItem(node);
 	m_Manager.GetTreeView()->SelectXmlNode(node);
+	m_Manager.GetXmlPane()->SelectXmlNode(node);
 }
 
 void CDuiEditorViewDesign::OnEditCut()

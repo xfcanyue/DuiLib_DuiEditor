@@ -3,7 +3,9 @@
 //
 #pragma once
 #include "DockControlTreeCtrl.h"
+#include "DockXmlView.h"
 
+class CDuiEditorTabView;
 class CDuiEditorViewDesign;
 class CDuiEditorDoc : public CDocument
 {
@@ -20,8 +22,10 @@ public:
 public:
 	void FilterDefaultValue(xml_node nodeDoc);	//过滤文档默认属性
 	CDockControlTreeCtrl *GetTreeView() { return m_pTreeView; }
+	CDockXmlView *GetXmlPane() const { return m_pSciWnd; }
 	CDuiEditorViewDesign *GetDesignView() const;
 	CView *GetCodeView() const;
+	CDuiEditorTabView *GetTabView() const;
 
 	CString GetSkinPath();
 	CString GetSkinFileName();
@@ -41,6 +45,7 @@ public:
 
 protected:
 	CDockControlTreeCtrl *m_pTreeView;
+	CDockXmlView *m_pSciWnd;
 	CString m_strDefaultTitle;
 // 生成的消息映射函数
 protected:

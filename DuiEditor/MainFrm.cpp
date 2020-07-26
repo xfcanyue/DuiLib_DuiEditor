@@ -193,11 +193,17 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	g_pPropWnd = &m_wndProperty;
 	g_pPropWnd->m_wndPropList.m_bMainFrame = TRUE;
 
-	if (!m_wndOutput.Create(_T("输出"), this, CRect(0, 0, 100, 100), TRUE, ID_OUTPUT_WND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM))
+	if (!m_wndOutput.Create(_T(" 输出 "), this, CRect(0, 0, 100, 100), TRUE, ID_OUTPUT_WND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM))
 	{
 		return FALSE; // 未能创建
 	}
+	m_wndOutput.SetIcon(hClassViewIcon, FALSE);
 
+	if (!m_wndDockXml.Create(_T(" 代码 "), this, CRect(0, 0, 100, 100), TRUE, ID_XML_WND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM))
+	{
+		return FALSE; // 未能创建
+	}
+	m_wndDockXml.SetIcon(hClassViewIcon, FALSE);
 
 	// 启用增强的窗口管理对话框
 	EnableWindowsDialog(ID_WINDOW_MANAGER, ID_WINDOW_MANAGER, TRUE);
@@ -222,6 +228,10 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	CDockablePane* pTabbedBar = NULL;
 	m_wndControl.AttachToTabWnd(&m_wndFileView, DM_SHOW, TRUE, &pTabbedBar);
+
+	
+	CDockablePane* pTabbedBar2 = NULL;
+	m_wndDockXml.AttachToTabWnd(&m_wndOutput, DM_SHOW, TRUE, &pTabbedBar2);
 
 	// 启用 Visual Studio 2005 样式停靠窗口行为
 	CDockingManager::SetDockingMode(DT_SMART);
@@ -364,7 +374,7 @@ void CMainFrame::ShowAllPane()
 	m_wndFileView.ShowPane(TRUE, TRUE, TRUE);
 	m_wndControl.ShowPane(TRUE, TRUE, TRUE);
 
-	m_wndOutput.ShowPane(TRUE, TRUE, TRUE);
+	//m_wndOutput.ShowPane(TRUE, TRUE, TRUE);
 	m_wndToolBox.ShowPane(TRUE, TRUE, TRUE);
 	m_wndProperty.ShowPane(TRUE, TRUE, TRUE);
 	SendMessage(WM_SIZE);

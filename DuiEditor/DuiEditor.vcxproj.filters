@@ -185,6 +185,9 @@
     <None Include="res\project.ico">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="res\bmp00006.bmp">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -358,6 +361,15 @@
     <ClInclude Include="DuiProject.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="SciXmlWriter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DockXmlWnd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DockXmlView.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -520,6 +532,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DuiProject.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SciXmlWriter.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DockXmlWnd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DockXmlView.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

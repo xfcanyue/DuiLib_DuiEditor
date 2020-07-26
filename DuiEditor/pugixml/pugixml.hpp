@@ -502,7 +502,13 @@ namespace pugi
 		//Set Node tag, it is UINT_PTR for userdata, added by liqs99
 		void set_tag(UINT_PTR uptr);
 		UINT_PTR get_tag();
-		
+
+		void set_row(int n);
+		int get_row();
+
+		void set_column(int n);
+		int get_column();
+
 		// Add attribute with specified name. Returns added attribute, or empty attribute on errors.
 		xml_attribute append_attribute(const char_t* name);
 		xml_attribute prepend_attribute(const char_t* name);

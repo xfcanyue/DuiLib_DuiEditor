@@ -65,7 +65,8 @@ inline void InsertMsg(LPCTSTR strLog)
 	}
 }
 
-#define WM_REOPEN_FILE	WM_USER + 221
+#define WM_REOPEN_FILE			WM_USER + 221
+#define WM_INIT_VIEW_DESIGN		WM_USER + 222
 // CDuiEditorApp:
 // 有关此类的实现，请参阅 DuiEditor.cpp
 //

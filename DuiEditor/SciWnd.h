@@ -1,7 +1,10 @@
 #pragma once
 
 
-#define WM_SCIWND_RBUTTONUP	WM_USER+987
+#define WM_SCIWND_RBUTTONUP		WM_USER+987
+#define WM_SCIWND_LBUTTONDOWN	WM_USER+988
+#define WM_SCIWND_LBUTTONUP		WM_USER+989
+#define WM_SCIWND_CLICK			WM_USER+990
 
 // CSciWnd
 typedef  int SciDll_void;
@@ -31,15 +34,14 @@ public:
 
 protected:
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	DECLARE_MESSAGE_MAP()
 protected:
+	HMODULE m_hSciLexer;
 	SEND_EDITOR m_sendeditor;
 	void *m_pSendEditor;
 
-	HMODULE m_hSciLexer;
-
-	char m_arrSpace[1024];
-	char m_arrTab[1024];
 public:
 	/*----ÎÄ×Ö±à¼­¹¦ÄÜText retrieval and modification----*/
 

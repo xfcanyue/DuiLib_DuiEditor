@@ -89,26 +89,30 @@ void CDuiEditorViewCode::Init()
 {
 	CDuiEditorDoc *pDoc = (CDuiEditorDoc *)GetDocument();
 
-	sci.sci_ClearTextAll();
+	CSciXmlWriter writer(&sci);
+	writer.print(pDoc->m_doc.child(_T("Window")));
 
-	xml_string_writer writer;
-	writer.pSciWnd = &sci;
-	pDoc->m_doc.child(_T("Window")).print(writer);
-	sci.sci_SetSavePoint();
-	//sci.sci_EmptyUndoBuffer(); //不清理这个哦
+	//切换到行，设计界面中选中的控件
+	xml_node node = pDoc->GetDesignView()->m_Manager.GetUiTracker()->m_node;
+	if(node)
+	{
+		int line = node.get_row();
+		int lineposbegin = sci.sci_PositionFromLine(line);
+		int lineposend = sci.sci_GetLineEndPosition(line);
+		CString temp;
+		temp.Format(_T("line=%d, lineposbegin=%d, lineposend=%d"), line, lineposbegin, lineposend);
+		InsertMsg(temp);
+		sci.sci_SetSel(lineposend, lineposbegin);
+	}
 
-	/*
-	CXmlEditorFrame *pFrame = (CXmlEditorFrame *)GetParent();
-	CXmlEditor *pEditor = (CXmlEditor *)pFrame->GetParent();
 
-	xml_string_writer writer;
-	writer.pSciWnd = &sci;
-	pEditor->m_pDoc->m_doc.child(_T("Window")).print(writer);
-	sci.sci_SetSavePoint();
-	sci.sci_EmptyUndoBuffer();
-
-	UpdateFrameStatus();
-	*/
+// 	sci.sci_ClearTextAll();
+// 
+// 	xml_string_writer writer;
+// 	writer.pSciWnd = &sci;
+// 	pDoc->m_doc.child(_T("Window")).print(writer);
+// 	sci.sci_SetSavePoint();
+	//sci.sci_EmptyUndoBuffer(); //不清理历史记录，写错时，就可以无限后退了
 }
 
 BOOL CDuiEditorViewCode::ApplyDocument()
@@ -265,11 +269,7 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 		UpdateFrameStatus();
 		break;
 	}	
-
-	// 	CString temp;
-	// 	temp.Format(_T("sciwnd msg=%d"), pMsg->nmhdr.code);
-	// 	InsertMsg(temp);
-	return CWnd::OnNotify(wParam, lParam, pResult);
+	return __super::OnNotify(wParam, lParam, pResult);
 }
 
 CString CDuiEditorViewCode::GetNodeName()
@@ -385,6 +385,7 @@ void CDuiEditorViewCode::OnActivateView(BOOL bActivate, CView* pActivateView, CV
 	if(bActivate && pActivateView==this && pDeactiveView!=this)
 	{
 		pMain->m_wndControl.SetActiveTreeView(((CDuiEditorDoc *)GetDocument())->GetTreeView());
+		pMain->m_wndDockXml.SetActiveSciWnd(((CDuiEditorDoc *)GetDocument())->GetXmlPane());
 		pMain->HideAllPane();
 
 		//InsertMsg(_T("OnActivateCode"));

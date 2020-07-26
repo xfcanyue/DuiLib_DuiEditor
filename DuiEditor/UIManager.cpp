@@ -13,8 +13,9 @@ CUIManager::CUIManager(void)
 	m_pView			= NULL;
 	m_pManager		= NULL;
 	m_pUiWindow		= NULL;
-	m_pTreeView		= NULL;
 	m_pUiTracker	= NULL;
+	m_pTreeView		= NULL;
+	m_pSciPane		= NULL;
 }
 
 
@@ -89,6 +90,14 @@ BOOL CUIManager::UpdateControlUI(CControlUI *pControl)
 	}
 	GetUiTracker()->UpdateRect(nodeControl);
 	GetUiWindow()->Invalidate();
+
+	//改动属性之后，即时刷新xmlpane
+	if(GetXmlPane())
+	{
+		CLockWindowUpdate lock(GetXmlPane());
+		GetXmlPane()->Init();
+		GetXmlPane()->SelectXmlNode(pControl);
+	}
 	return TRUE;
 }
 

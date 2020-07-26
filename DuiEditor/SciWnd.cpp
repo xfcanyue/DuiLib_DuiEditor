@@ -75,8 +75,6 @@ IMPLEMENT_DYNAMIC(CSciWnd, CWnd)
 CSciWnd::CSciWnd()
 {
 	m_hSciLexer = ::LoadLibrary(_T("SciLexer.dll"));
-	memset(m_arrSpace,' ', 1024);
-	memset(m_arrTab, '	', 1024);
 }
 
 CSciWnd::~CSciWnd()
@@ -86,6 +84,8 @@ CSciWnd::~CSciWnd()
 
 BEGIN_MESSAGE_MAP(CSciWnd, CWnd)
 	ON_WM_RBUTTONUP()
+	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONUP()
 END_MESSAGE_MAP()
 
 
@@ -157,7 +157,7 @@ void CSciWnd::InitXML()
 	sci_StyleSetFore(STYLE_DEFAULT,RGB(0,0,0));
 
 	//设置选中文本背景色
-	sci_SetSelBack(TRUE, RGB(0xC0,0xC0,0xC0));
+	sci_SetSelBack(TRUE, RGB(0xA0,0xCA,0xF0));
 
 	//编码	
 	sci_SetCodePage(SC_CP_UTF8);
@@ -436,6 +436,24 @@ void CSciWnd::OnRButtonUp(UINT nFlags, CPoint point)
 	CWnd::OnRButtonUp(nFlags, point);
 }
 
+void CSciWnd::OnLButtonDown(UINT nFlags, CPoint point)
+{
+
+	CWnd::OnLButtonDown(nFlags, point);
+}
+
+void CSciWnd::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	int line = sci_GetCurLine();
+
+	CWnd *pOwner = GetOwner();
+	if (pOwner && IsWindow(pOwner->m_hWnd))
+		pOwner->SendMessage(WM_SCIWND_CLICK, (WPARAM)line, 0);
+
+	CWnd::OnLButtonUp(nFlags, point);
+}
+
 BOOL CSciWnd::OnParentNotify(SCNotification *pMsg)
 {
 	switch (pMsg->nmhdr.code)
@@ -547,3 +565,6 @@ BOOL CSciWnd::OnParentNotify(SCNotification *pMsg)
 
 	return FALSE;
 }
+
+
+

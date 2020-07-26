@@ -54,6 +54,7 @@ protected:
 public:
 	afx_msg void OnDestroy();
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+	afx_msg LRESULT OnInitViewDesign(WPARAM WParam, LPARAM LParam);
 	virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 

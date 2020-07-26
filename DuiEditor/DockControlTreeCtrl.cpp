@@ -250,12 +250,7 @@ void CDockControlTreeCtrl::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 		g_pPropWnd->InitProp(node);
 
 		m_pManager->SelectItem(node);
-// 		CDuiEditorDoc *pDoc = (CDuiEditorDoc *)m_pDoc;
-// 		CDuiEditorViewDesign *pView = (CDuiEditorViewDesign *)pDoc->GetDesignView();
-// 		if(pView)
-// 		{
-// 			pView->m_pUiWindow->SelectItem(node);
-// 		}
+		m_pManager->GetXmlPane()->SelectXmlNode(node);
 	}
 }
 
@@ -274,6 +269,7 @@ void CDockControlTreeCtrl::OnNMRClick(NMHDR *pNMHDR, LRESULT *pResult)
 		g_pPropWnd->InitProp(node);
 
 		m_pManager->SelectItem(node);
+		m_pManager->GetXmlPane()->SelectXmlNode(node);
 	}
 
 //////////////////////////////////////////////////////////////////////////

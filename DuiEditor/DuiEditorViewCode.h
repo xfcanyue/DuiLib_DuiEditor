@@ -3,6 +3,7 @@
 
 
 #include "SciFind.h"
+#include "SciXmlWriter.h"
 // CDuiEditorCode йсм╪
 
 class CDuiEditorViewCode : public CView
