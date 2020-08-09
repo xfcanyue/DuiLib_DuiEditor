@@ -233,6 +233,7 @@ public:
 	/*-----------¹ö¶¯Ìõ--------*/
 	SciDll_void sci_LineScroll(int column, int line);
 	SciDll_void sci_ScrollCaret();
+	SciDll_void Sci_ScrollRange(int secondplace, int firstplace);
 	SciDll_void sci_SetXCaretPolicy(int caretPolicy, int caretSlop);
 	SciDll_void sci_SetYCaretPolicy(int caretPolicy, int caretSlop);
 	SciDll_void sci_SetVisiblePolicy(int caretPolicy, int caretSlop);
@@ -1527,6 +1528,12 @@ inline SciDll_void CSciWnd::sci_LineScroll(int column, int line)
 inline SciDll_void CSciWnd::sci_ScrollCaret()
 {
 	return SendEditor(SCI_SCROLLCARET);
+}
+
+inline SciDll_void Sci_ScrollRange(int secondplace, int firstplace)
+{
+	//return SendEditor(SCI_SCROLLRANGE);
+	return 0;
 }
 
 inline SciDll_void CSciWnd::sci_SetXCaretPolicy(int caretPolicy, int caretSlop)

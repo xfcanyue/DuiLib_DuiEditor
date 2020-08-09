@@ -31,6 +31,7 @@ LRESULT CDuiPreviewerWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		DuiWriteConsole(_T("WM_CREATE"));
 		{
 			//load config.xml
+#ifndef DUILIB_VERSION_ORIGINAL
 			CString sConfigFile = m_pm.GetResourcePath() + _T("config.xml");
 			xml_document xml;
 			CPaintManagerUI *pManager = &m_pm;
@@ -168,7 +169,7 @@ LRESULT CDuiPreviewerWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 					}
 				}
 			}
-
+#endif
 		}
 
 		break;
@@ -279,17 +280,22 @@ LRESULT CDuiPreviewerWnd::OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 #if defined(WIN32) && !defined(UNDER_CE)
 	BOOL bZoomed = ::IsZoomed(*this);
 	LRESULT lRes = CWindowWnd::HandleMessage(uMsg, wParam, lParam);
+#ifdef DUILIB_VERSION_ORIGINAL
+	CPaintManagerUI *pManager = &m_PaintManager;
+#else
+	CPaintManagerUI *pManager = &m_pm;
+#endif
 	if( ::IsZoomed(*this) != bZoomed ) {
 		if( !bZoomed ) {
-			CControlUI* pControl = static_cast<CControlUI*>(m_pm.FindControl(_T("windowmaxbtn")));
+			CControlUI* pControl = static_cast<CControlUI*>(pManager->FindControl(_T("windowmaxbtn")));
 			if( pControl ) pControl->SetVisible(false);
-			pControl = static_cast<CControlUI*>(m_pm.FindControl(_T("windowrestorebtn")));
+			pControl = static_cast<CControlUI*>(pManager->FindControl(_T("windowrestorebtn")));
 			if( pControl ) pControl->SetVisible(true);
 		}
 		else {
-			CControlUI* pControl = static_cast<CControlUI*>(m_pm.FindControl(_T("windowmaxbtn")));
+			CControlUI* pControl = static_cast<CControlUI*>(pManager->FindControl(_T("windowmaxbtn")));
 			if( pControl ) pControl->SetVisible(true);
-			pControl = static_cast<CControlUI*>(m_pm.FindControl(_T("windowrestorebtn")));
+			pControl = static_cast<CControlUI*>(pManager->FindControl(_T("windowrestorebtn")));
 			if( pControl ) pControl->SetVisible(false);
 		}
 	}

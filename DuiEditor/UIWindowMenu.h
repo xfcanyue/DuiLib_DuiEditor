@@ -3,6 +3,8 @@
 #include "UIManager.h"
 #include "UITrackerMuliti.h"
 
+#ifndef DUILIB_VERSION_ORIGINAL
+
 class CUIWindowMenu : public CUIWindow, public CMenuWnd
 {
 public:
@@ -32,4 +34,5 @@ public:
 	CUITrackerMuliti m_tracker;
 
 };
+#endif
 

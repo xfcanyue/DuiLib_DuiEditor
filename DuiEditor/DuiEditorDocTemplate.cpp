@@ -72,7 +72,11 @@ CDocument* CDuiEditorDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName, BOOL bC
 	else
 	{
 		// open an existing document
+#ifdef DUILIB_VERSION_ORIGINAL
+		DuiLib::CWaitCursor wait;
+#else
 		CWaitCursor wait;
+#endif
 		if (!pDocument->OnOpenDocument(lpszPathName))
 		{
 			// user has be alerted to what failed in OnOpenDocument

@@ -1,6 +1,6 @@
 #pragma once
 
-
+#ifndef DUILIB_VERSION_ORIGINAL
 namespace DuiLib {
 
 class CMenuExUI : public CMenuUI
@@ -12,3 +12,4 @@ public:
 
 
 }
+#endif

@@ -152,7 +152,7 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 	{
 	case INSERT_CHILD: //当前容器下方插入控件
 		{
-			if(!pParentContainer->Add(pNewControl)) { delete pNewControl; return; }		
+			if(!pParentContainer->Add(pNewControl)) { CUIBuilder::DeleteControl(pNewControl); return; }		
 			nodeNewControl = nodeContainer.append_child(strNewControlClass);	//写入文档
 		}
 		break;
@@ -160,7 +160,7 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 		{
 			if(! pParentContainer->AddAt(pNewControl, pParentContainer->GetItemIndex(pCurControl) + 1) ) 
 			{ 
-				delete pNewControl; return; 
+				CUIBuilder::DeleteControl(pNewControl); return; 
 			}
 			nodeNewControl = nodeContainer.append_child(strNewControlClass);	//写入文档
 		}
@@ -169,7 +169,7 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 		{
 			if(! pParentContainer->AddAt(pNewControl, pParentContainer->GetItemIndex(pCurControl)) ) 
 			{ 
-				delete pNewControl; return; 
+				CUIBuilder::DeleteControl(pNewControl); return; 
 			}
 			nodeNewControl = nodeContainer.insert_child_before(strNewControlClass, nodeCurrent);	//写入文档
 		}
@@ -239,7 +239,11 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 	LPCTSTR pDefaultAttributes = GetManager()->GetDefaultAttributeList(strNewControlClass);
 	if( pDefaultAttributes ) 
 	{
+#ifndef DUILIB_VERSION_ORIGINAL
 		pNewControl->ApplyAttributeList(pDefaultAttributes);
+#else
+		pNewControl->SetAttributeList(pDefaultAttributes);
+#endif
 	}
 
 	//载入控件当前属性
@@ -293,7 +297,7 @@ void CUIWindowEx::ResizeWindow()
 {
 	if(!m_pManager->GetDocument()->m_bMenuWnd)	return;
 
-	CUIFormView *pView = (CUIFormView *)m_pm.GetRoot();
+	CUIFormView *pView = (CUIFormView *)GetManager()->GetRoot();
 	CControlUI* pRoot = pView->GetItemAt(0);
 
 #if defined(WIN32) && !defined(UNDER_CE)
@@ -307,9 +311,9 @@ void CUIWindowEx::ResizeWindow()
 #endif
 	SIZE szAvailable = { rcWork.right - rcWork.left, rcWork.bottom - rcWork.top };
 	szAvailable = pRoot->EstimateSize(szAvailable);
-	m_pm.SetInitSize(szAvailable.cx, szAvailable.cy);
+	GetManager()->SetInitSize(szAvailable.cx, szAvailable.cy);
 
-	SIZE szInit = m_pm.GetInitSize();
+	SIZE szInit = GetManager()->GetInitSize();
 	CDuiRect rc;
 	CDuiPoint point;
 	rc.left = point.x;
@@ -376,14 +380,14 @@ LRESULT CUIWindowEx::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	if(m_pManager->GetView()->m_bShowUiPreview) //这个非常容易崩溃的
 	{
-		if (m_pm.MessageHandler(uMsg, wParam, lParam, lRes))
+		if (GetManager()->MessageHandler(uMsg, wParam, lParam, lRes))
 			return lRes;
 	}
 	else
 	{
 		if(uMsg == WM_PAINT)
 		{
-			if (m_pm.MessageHandler(uMsg, wParam, lParam, lRes))
+			if (GetManager()->MessageHandler(uMsg, wParam, lParam, lRes))
 				return lRes;
 		}
 	}
@@ -438,8 +442,10 @@ LRESULT CUIWindowEx::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHa
 
 	ResizeWindow();
 
+#ifndef DUILIB_VERSION_ORIGINAL
 	GetManager()->GetDPIObj()->SetDPIAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
 	GetManager()->SetDPI(CDPI::GetMainMonitorDPI());
+#endif
 	return 0;
 }
 
@@ -514,7 +520,7 @@ LRESULT CUIWindowEx::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHand
 LRESULT CUIWindowEx::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	LRESULT lRes = 0;
-	m_pm.MessageHandler(uMsg, wParam, lParam, lRes);
+	GetManager()->MessageHandler(uMsg, wParam, lParam, lRes);
 
 	HDC hDC = ::GetDC(m_hWnd);
 	CDC *pDC = CDC::FromHandle(hDC);
@@ -580,7 +586,7 @@ LRESULT CUIWindowEx::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 	if(m_pManager->GetView()->m_bShowUiPreview)
 	{
 		LRESULT lRes = 0;
-		m_pm.MessageHandler(uMsg, wParam, lParam, lRes);
+		GetManager()->MessageHandler(uMsg, wParam, lParam, lRes);
 	}
 
 	CWnd *pWnd = CWnd::FromHandle(m_hWnd);

@@ -3,6 +3,7 @@
 
 #include "UIWindowMenu.h"
 
+#ifndef DUILIB_VERSION_ORIGINAL
 namespace DuiLib {
 
 CMenuElementExUI::CMenuElementExUI(void)
@@ -171,3 +172,5 @@ void CMenuElementExUI::CreateMenuWnd()
 }
 
 }
+
+#endif

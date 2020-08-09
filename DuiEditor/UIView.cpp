@@ -34,7 +34,11 @@ void CUIFormView::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 		LPTSTR pstr = NULL;
 		int cx = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
 		int cy = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr); 
+#ifndef DUILIB_VERSION_ORIGINAL
 		pManager->SetInitSize(pManager->GetDPIObj()->Scale(cx), pManager->GetDPIObj()->Scale(cy));
+#else
+		pManager->SetInitSize(cx, cy);
+#endif
 	} 
 	else if( _tcsicmp(pstrName, _T("sizebox")) == 0 ) {
 		RECT rcSizeBox = { 0 };
@@ -121,6 +125,8 @@ void CUIFormView::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 		DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
 		pManager->SetDefaultSelectedBkColor(clrColor);
 	} 
+
+#ifndef DUILIB_VERSION_ORIGINAL
 	else if( _tcsicmp(pstrName, _T("shadowsize")) == 0 ) {
 		pManager->GetShadow()->SetSize(_ttoi(pstrValue));
 	}
@@ -163,6 +169,7 @@ void CUIFormView::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	else if( _tcsicmp(pstrName, _T("textrenderinghint")) == 0 ) {
 		pManager->SetGdiplusTextRenderingHint(_ttoi(pstrValue));
 	} 
+#endif
 	else if( _tcsicmp(pstrName, _T("tooltiphovertime")) == 0 ) {
 		pManager->SetHoverTime(_ttoi(pstrValue));
 	} 

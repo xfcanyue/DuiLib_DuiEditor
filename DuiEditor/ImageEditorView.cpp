@@ -71,8 +71,11 @@ void CImageEditorView::OnDraw(CDC* pDC)
 	memDC->Rectangle(rcBorder);
 	memDC->SelectObject(pOldBrush);
 
-	//CRenderEngine::DrawImage(memDC->m_hDC, m_pManager, rcImage, rcClient, m_drawInfo);
+#ifndef DUILIB_VERSION_ORIGINAL
 	CRenderEngine::DrawImageInfo(memDC->m_hDC, m_pManager, rcImage, rcClient, &m_drawInfo);
+#else
+	CRenderEngine::DrawImage(memDC->m_hDC, m_pManager, rcImage, rcClient, m_drawInfo);
+#endif
 }
 
 // CImageEditorView 消息处理程序
@@ -86,9 +89,12 @@ BOOL CImageEditorView::OnEraseBkgnd(CDC* pDC)
 void CImageEditorView::SetImage(LPCTSTR strImageInfo, CRect &rcImg)
 {
 	m_drawInfo.Clear();
-	//m_drawInfo.sDrawString = strImageInfo;
-	//m_drawInfo.bLoaded = false;
+#ifdef DUILIB_VERSION_ORIGINAL
+	m_drawInfo.sDrawString = strImageInfo;
+	m_drawInfo.bLoaded = false;
+#else
 	m_drawInfo.Parse(strImageInfo, NULL, m_pManager);
+#endif
 
 	m_rcImage = rcImg;
 	m_zoom = 1;

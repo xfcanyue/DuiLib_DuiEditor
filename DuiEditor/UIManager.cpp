@@ -259,6 +259,7 @@ BOOL CUIManager::UpdateControlUI(xml_node node)
 
 BOOL CUIManager::UpdateControlUI(xml_node node, xml_attribute attr)
 {
+#ifndef DUILIB_VERSION_ORIGINAL
 	//更新Style属性
 	if(CompareString(node.name(), _T("Style")))
 	{
@@ -268,6 +269,7 @@ BOOL CUIManager::UpdateControlUI(xml_node node, xml_attribute attr)
 		GetManager()->AddStyle(strStyleName, strStyleValue, bShared);
 		return TRUE;
 	}
+#endif
 
 	//更新Font属性
 	if( CompareString(node.name(), _T("Font")) )
@@ -315,7 +317,11 @@ BOOL CUIManager::UpdateControlUI(xml_node node, xml_attribute attr)
 		}
 		if( id >= 0 ) {
 			GetManager()->AddFont(id, pFontName, size, bold, underline, italic, shared);
+#ifdef DUILIB_VERSION_ORIGINAL
+			if( defaultfont ) GetManager()->SetDefaultFont(pFontName, size, bold, underline, italic, shared);
+#else
 			if( defaultfont ) GetManager()->SetDefaultFont(pFontName, GetManager()->GetDPIObj()->Scale(size), bold, underline, italic, shared);
+#endif
 		}
 	}
 
@@ -400,6 +406,7 @@ void CUIManager::SetScrollSize()
 
 void CUIManager::SetZoom(int zoom)
 {
+#ifndef DUILIB_VERSION_ORIGINAL
 	GetManager()->SetDPI(zoom);
 	GetManager()->ResetDPIAssets();
 
@@ -415,4 +422,5 @@ void CUIManager::SetZoom(int zoom)
 	SetScrollSize();
 
 	GetView()->SendMessage(WM_SIZE);
+#endif
 }

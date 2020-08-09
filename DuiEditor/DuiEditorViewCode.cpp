@@ -99,9 +99,19 @@ void CDuiEditorViewCode::Init()
 		int line = node.get_row();
 		int lineposbegin = sci.sci_PositionFromLine(line);
 		int lineposend = sci.sci_GetLineEndPosition(line);
-		CString temp;
-		temp.Format(_T("line=%d, lineposbegin=%d, lineposend=%d"), line, lineposbegin, lineposend);
-		InsertMsg(temp);
+
+		//想办法居中
+		int firstline = sci.sci_GetFirstVisibleLine();
+		int lastline = firstline + sci.sci_LineSonScreen();
+		int centerline = firstline + (lastline - firstline)/2;
+		if(line < centerline)
+			sci.sci_LineScroll(0, line - centerline);
+		else
+			sci.sci_LineScroll(0, line - centerline);
+
+// 		CString temp;
+// 		temp.Format(_T("line=%d, lineposbegin=%d, lineposend=%d"), line, lineposbegin, lineposend);
+// 		InsertMsg(temp);
 		sci.sci_SetSel(lineposend, lineposbegin);
 	}
 

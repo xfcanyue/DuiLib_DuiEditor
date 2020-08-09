@@ -20,6 +20,7 @@ public:
 	CDocument *m_pDoc;
 	CSciWnd sci;
 
+	int m_nTargetLine; //载入文档后滚动到目标行
 protected:
 	BOOL SelectControlUI(int line, xml_node node);
 

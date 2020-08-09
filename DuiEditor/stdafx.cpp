@@ -4,5 +4,3 @@
 // stdafx.obj 将包含预编译类型信息
 
 #include "stdafx.h"
-
-CDuiProject g_proj;

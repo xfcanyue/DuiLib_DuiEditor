@@ -533,6 +533,7 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 	}
 
 	//style字段,列出CPaintManager里面有的 
+#ifndef DUILIB_VERSION_ORIGINAL
 	if(CompareString(attrName.value(), _T("style")))
 	{
 		pProperty = new CMFCPropertyGridProperty(attrName.value(), (_variant_t)attrDefValue.value(),  attrComment.value());
@@ -563,6 +564,7 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 		pProperty->SetOriginalValue(pProperty->GetValue());	
 		return;
 	}
+#endif
 
 	if(CompareString(attrType.value(), _T("INT")))
 	{
@@ -799,6 +801,7 @@ void CUIPropertyGridCtrl::OnPropertyChanged(CMFCPropertyGridProperty* pProp) con
 	if(pProp->GetValue().vt == VT_EMPTY || pProp->GetValue().vt == VT_NULL)
 		return;
 
+#ifndef DUILIB_VERSION_ORIGINAL
 	//特别处理Style的修改
 	if( CompareString(m_TreeNode.name(), _T("Style")) )
 	{
@@ -816,6 +819,7 @@ void CUIPropertyGridCtrl::OnPropertyChanged(CMFCPropertyGridProperty* pProp) con
 			}
 		}
 	}
+#endif
 
 	if(CompareString(attrType.value(), _T("INT")))
 	{

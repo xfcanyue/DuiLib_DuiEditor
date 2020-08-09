@@ -381,7 +381,12 @@ void CDuiEditorCommandHistory::_add(xml_node nodeControl, xml_node nodeParent, x
 	if(!pNewControl) return;
 	if(!pContainer->Add(pNewControl))
 	{
+#ifdef DUILIB_VERSION_ORIGINAL
+		pNewControl->Delete();
+#else
 		delete pNewControl;
+#endif
+		pNewControl = NULL;
 		return;
 	}
 
@@ -389,7 +394,11 @@ void CDuiEditorCommandHistory::_add(xml_node nodeControl, xml_node nodeParent, x
 	LPCTSTR pDefaultAttributes = m_pManager->GetManager()->GetDefaultAttributeList(pstrClass);
 	if( pDefaultAttributes ) 
 	{
+#ifndef DUILIB_VERSION_ORIGINAL
 		pNewControl->ApplyAttributeList(pDefaultAttributes);
+#else
+		pNewControl->SetAttributeList(pDefaultAttributes);
+#endif
 	}
 
 	//载入控件当前属性
@@ -433,7 +442,7 @@ void CDuiEditorCommandHistory::_addChild(xml_node nodeDocument1, CControlUI *pPa
 		
 		if(!pContainer->Add(pNewControl))
 		{
-			delete pNewControl;
+			CUIBuilder::DeleteControl(pNewControl);
 			return;
 		}
 
@@ -441,7 +450,11 @@ void CDuiEditorCommandHistory::_addChild(xml_node nodeDocument1, CControlUI *pPa
 		LPCTSTR pDefaultAttributes = m_pManager->GetManager()->GetDefaultAttributeList(pstrClass);
 		if( pDefaultAttributes ) 
 		{
+#ifndef DUILIB_VERSION_ORIGINAL
 			pNewControl->ApplyAttributeList(pDefaultAttributes);
+#else
+			pNewControl->SetAttributeList(pDefaultAttributes);
+#endif
 		}
 
 		//载入控件当前属性

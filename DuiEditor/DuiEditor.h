@@ -11,6 +11,9 @@
 #include "DuiPropertyFile.h"
 #include "DuiEditorCommandHistory.h"
 
+#include "DuiProject.h"
+extern CDuiProject g_proj;
+
 extern CString g_strAppPath;							//应用程序路径
 extern CString g_strAttachTestCommand;					//附加测试窗体程序
 extern COLORREF g_crBkDesign;

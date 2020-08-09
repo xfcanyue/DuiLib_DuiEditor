@@ -417,7 +417,7 @@ void CUITrackerMuliti::OnChangedRect()
 		if(!pNewControl) continue;
 
 		//当前容器下方插入控件
-		if(!pParent->Add(pNewControl)) { delete pNewControl; continue; }	
+		if(!pParent->Add(pNewControl)) { CUIBuilder::DeleteControl(pNewControl); continue; }	
 
 		//写入文档
 		xml_node nodeNewControl = nodeParent.append_copy(nodeCurrentControl);
@@ -454,7 +454,11 @@ void CUITrackerMuliti::OnChangedRect()
 		LPCTSTR pDefaultAttributes = m_pManager->GetManager()->GetDefaultAttributeList(pstrClass);
 		if( pDefaultAttributes ) 
 		{
+#ifndef DUILIB_VERSION_ORIGINAL
 			pNewControl->ApplyAttributeList(pDefaultAttributes);
+#else
+			pNewControl->SetAttributeList(pDefaultAttributes);
+#endif
 		}
 
 		//载入控件当前属性

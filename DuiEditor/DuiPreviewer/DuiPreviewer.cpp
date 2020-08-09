@@ -94,10 +94,12 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	CPaintManagerUI::LoadPlugin(CPaintManagerUI::GetInstancePath() + _T("DuiPlugins_u.dll"));
 #endif
 
+#ifndef DUILIB_VERSION_ORIGINAL
 #ifdef _DEBUG
 	CPaintManagerUI::LoadScriptPlugin(CPaintManagerUI::GetInstancePath() + _T("DuiScript_ud.dll"));
 #else
 	CPaintManagerUI::LoadScriptPlugin(CPaintManagerUI::GetInstancePath() + _T("DuiScript_u.dll"));
+#endif
 #endif
 
 	CPaintManagerUI::SetResourcePath(strSkinPath);

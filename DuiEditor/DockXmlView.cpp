@@ -14,7 +14,7 @@ IMPLEMENT_DYNAMIC(CDockXmlView, CWnd)
 
 CDockXmlView::CDockXmlView()
 {
-
+	m_nTargetLine = -1;
 }
 
 CDockXmlView::~CDockXmlView()
@@ -95,6 +95,26 @@ void CDockXmlView::Init()
 
 	CSciXmlWriter writer(&sci);
 	writer.print(pDoc->m_doc.child(_T("Window")));
+
+	if(m_nTargetLine >= 0)
+	{
+		int line = m_nTargetLine;
+		int lineposbegin = sci.sci_PositionFromLine(line);
+		int lineposend = sci.sci_GetLineEndPosition(line);
+
+		//想办法居中
+		int firstline = sci.sci_GetFirstVisibleLine();
+		int lastline = firstline + sci.sci_LineSonScreen();
+		int centerline = firstline + (lastline - firstline)/2;
+		if(line < centerline)
+			sci.sci_LineScroll(0, line - centerline);
+		else
+			sci.sci_LineScroll(0, line - centerline);
+
+		sci.sci_SetSel(lineposend, lineposbegin);
+
+		m_nTargetLine = -1;
+	}
 }
 
 void CDockXmlView::SelectXmlNode(CControlUI *pControl)
@@ -117,10 +137,22 @@ void CDockXmlView::SelectXmlNode(xml_node node)
 		int line = node.get_row();
 		int lineposbegin = sci.sci_PositionFromLine(line);
 		int lineposend = sci.sci_GetLineEndPosition(line);
+
+		//想办法居中
+		int firstline = sci.sci_GetFirstVisibleLine();
+		int lastline = firstline + sci.sci_LineSonScreen();
+		int centerline = firstline + (lastline - firstline)/2;
+		if(line < centerline)
+			sci.sci_LineScroll(0, line - centerline);
+		else
+			sci.sci_LineScroll(0, line - centerline);
+
+		sci.sci_SetSel(lineposend, lineposbegin);
+
+
 // 		CString temp;
 // 		temp.Format(_T("line=%d, lineposbegin=%d, lineposend=%d"), line, lineposbegin, lineposend);
 // 		InsertMsg(temp);
-		sci.sci_SetSel(lineposend, lineposbegin);
 	}
 }
 
@@ -151,15 +183,8 @@ LRESULT CDockXmlView::OnSciClick(WPARAM WParam, LPARAM LParam)
 // 	InsertMsg(temp);
 
 	CDuiEditorDoc *pDoc = (CDuiEditorDoc *)m_pDoc;
+
 	//代码编辑界面，不能响应，直接返回 
-// 	CDuiEditorViewDesign *pDesign = pDoc->GetDesignView();
-// 	if(!pDesign) return 0;
-// 
-// 	CView *pWnd = (CView *)pDesign->GetParent();
-// 	if(!pWnd) return 0;
-// 
-// 	if(!pWnd->GetActiveView()->IsKindOf(RUNTIME_CLASS(CDuiEditorViewDesign)))
-// 		return 0;
 	if(!pDoc->GetTabView()->GetActiveView()->IsKindOf(RUNTIME_CLASS(CDuiEditorViewDesign)))
 		return 0;
 
@@ -438,6 +463,7 @@ void CDockXmlView::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 
 void CDockXmlView::OnSciUpdateDesign()
 {
+	m_nTargetLine = sci.sci_GetCurLine();
 	ApplyDocument();
 }
 

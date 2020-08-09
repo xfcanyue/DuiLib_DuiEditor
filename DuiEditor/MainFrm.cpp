@@ -255,7 +255,11 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 // CMainFrame 消息处理程序
 void CMainFrame::OnApplicationLook(UINT id)
 {
+#ifdef DUILIB_VERSION_ORIGINAL
+	DuiLib::CWaitCursor wait;
+#else
 	CWaitCursor wait;
+#endif
 
 	theApp.m_nAppLook = id;
 

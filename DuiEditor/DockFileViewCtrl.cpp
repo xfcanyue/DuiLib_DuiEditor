@@ -145,7 +145,11 @@ BOOL CDockFileViewCtrl::GetChildItems(HTREEITEM hParentItem)
 {
 	ASSERT_VALID(this);
 
+#ifdef DUILIB_VERSION_ORIGINAL
+	DuiLib::CWaitCursor wait;
+#else
 	CWaitCursor wait;
+#endif
 
 	// Get the parent item's pidl:
 	TVITEM tvItem;

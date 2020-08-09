@@ -27,6 +27,8 @@ AFX_STATIC_DATA const TCHAR _afxFileEntry[] = _T("File%d");
 AFX_STATIC_DATA const TCHAR _afxPreviewSection[] = _T("Settings");
 AFX_STATIC_DATA const TCHAR _afxPreviewEntry[] = _T("PreviewPages");
 
+CDuiProject g_proj;
+
 CString g_strAppPath;
 CString g_strAttachTestCommand;		//附加测试窗体程序
 COLORREF g_crBkDesign = 0xFFFFFFFF;
@@ -151,7 +153,9 @@ BOOL CDuiEditorApp::InitInstance()
 	g_strAttachTestCommand = AfxGetApp()->GetProfileString(_T("Options"), _T("TestCommand"), _T(""));
 
 	g_crBkDesign = AfxGetApp()->GetProfileInt(_T("Options"), _T("DegsignBackColor"), RGB(255,255,255));
-	
+
+#ifndef DUILIB_VERSION_ORIGINAL
+
 #ifdef _DEBUG
 	CPaintManagerUI::LoadPlugin(g_strAppPath + _T("DuiPlugins_ud.dll"));
 #else
@@ -160,6 +164,8 @@ BOOL CDuiEditorApp::InitInstance()
 	
 	DuiPluginsRegister();
 	CPaintManagerUI::SetAdjustDPIRecource(false);
+
+#endif
 
 
 	// 注册应用程序的文档模板。文档模板

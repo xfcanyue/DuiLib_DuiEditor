@@ -9,6 +9,8 @@
 #include "MenuExUI.h"
 #include "MenuElementExUI.h"
 
+#ifndef DUILIB_VERSION_ORIGINAL
+
 CUIWindowMenu::CUIWindowMenu(void)
 {
 }
@@ -639,3 +641,5 @@ LRESULT CUIWindowMenu::OnSetCursor(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 	::SetCursor(LoadCursor(NULL, IDC_ARROW));
 	return 0;
 }
+
+#endif
