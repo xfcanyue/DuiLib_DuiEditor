@@ -120,8 +120,13 @@ namespace DuiLib
 		int cyNeeded = 0;
 		int iChildPadding = m_iChildPadding;
 		if (m_nColumnsFixed == 0) { 
-			if (rc.right - rc.left >= m_szItem.cx) {
-				m_nColumns = (rc.right - rc.left)/m_szItem.cx;
+			if (rc.right - rc.left >= m_szItem.cx) 
+			{
+				if(m_szItem.cx <= 0)
+					m_nColumns = 1;
+				else
+					m_nColumns = (rc.right - rc.left)/m_szItem.cx;
+				//m_nColumns = (rc.right - rc.left)/m_szItem.cx; //modify by liqs99
 				cxNeeded = rc.right - rc.left;
 				if (m_nColumns > 1) {
 					if (iChildPadding <= 0) {

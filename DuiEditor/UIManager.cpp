@@ -57,6 +57,16 @@ BOOL CUIManager::SelectItem(CControlUI *pControl)
 {
 	if(!pControl)	return FALSE;
 
+	CControlUI *pParent = pControl->GetParent();
+	if(pParent && _tcsicmp(pParent->GetClass(), _T("TabLayoutUI"))==0)
+	{
+		CTabLayoutUI *pTabLayout = static_cast<CTabLayoutUI*>(pParent->GetInterface(DUI_CTR_TABLAYOUT));
+		if(pTabLayout)
+		{
+			pTabLayout->SelectItem(pControl);
+		}
+	}
+
 	if(pControl)
 	{
 		GetUiTracker()->RemoveAll();
