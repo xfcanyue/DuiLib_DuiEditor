@@ -17,6 +17,9 @@ extern CDuiProject g_proj;
 extern CString g_strAppPath;							//应用程序路径
 extern CString g_strAttachTestCommand;					//附加测试窗体程序
 extern COLORREF g_crBkDesign;
+
+extern tagXmlEditorOpt g_xmlEditorOptions;
+
 extern CDuiPropertyFile g_duiProp;
 
 inline BOOL CompareString(LPCTSTR str1, LPCTSTR str2)

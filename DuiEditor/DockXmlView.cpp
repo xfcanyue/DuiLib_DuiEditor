@@ -43,6 +43,8 @@ BEGIN_MESSAGE_MAP(CDockXmlView, CWnd)
 	ON_UPDATE_COMMAND_UI(ID_SCI_DELETE, &CDockXmlView::OnUpdateSciDelete)
 	ON_COMMAND(ID_SCI_SELECT_ALL, &CDockXmlView::OnSciSelectAll)
 	ON_UPDATE_COMMAND_UI(ID_SCI_SELECT_ALL, &CDockXmlView::OnUpdateSciSelectAll)
+	ON_COMMAND(ID_SCI_REFRESH, &CDockXmlView::OnSciRefresh)
+	ON_UPDATE_COMMAND_UI(ID_SCI_REFRESH, &CDockXmlView::OnUpdateSciRefresh)
 END_MESSAGE_MAP()
 
 
@@ -66,7 +68,7 @@ int CDockXmlView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		AfxMessageBox(_T("create SciLexer window error."));
 		return NULL;      // 未能创建
 	}
-	sci.InitXML();
+	sci.InitXML(g_xmlEditorOptions);
 	sci.sci_UsePopup(FALSE);
 	sci.sci_ClearTextAll();
 
@@ -565,4 +567,17 @@ BOOL CDockXmlView::ApplyDocument()
 	m_pManager->GetView()->PostMessage(WM_INIT_VIEW_DESIGN, 0, 0);
 
 	return TRUE;
+}
+
+
+void CDockXmlView::OnSciRefresh()
+{
+	m_nTargetLine = sci.sci_GetCurLine();
+	Init();
+}
+
+
+void CDockXmlView::OnUpdateSciRefresh(CCmdUI *pCmdUI)
+{
+	// TODO: 在此添加命令更新用户界面处理程序代码
 }

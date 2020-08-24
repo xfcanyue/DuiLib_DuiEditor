@@ -14,6 +14,9 @@ public:
 // 对话框数据
 	enum { IDD = IDD_DLG_OPTIONS };
 
+	tagXmlEditorOpt m_xmlEditorOpt;
+	void SetXmlOptions(const tagXmlEditorOpt &opt);
+	void SetXmlOptions(CSciWnd *pSciWnd, const tagXmlEditorOpt &opt);
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -26,4 +29,15 @@ public:
 	afx_msg void OnBnClickedButton1();
 	CString m_strAttachTestCommand;
 	CMFCColorButton m_ctrlBkColor;
+	CMFCFontComboBox m_cbFont;
+	CMFCColorButton m_ctrlBkColor2;
+	CMFCColorButton m_ctrlBkColor3;
+	CMFCColorButton m_ctrlBkColor4;
+	afx_msg void OnDestroy();
+	afx_msg void OnSelchangeMfcfontcombo1();
+	afx_msg void OnChangeEdit4();
+	afx_msg void OnChangeEdit5();
+	afx_msg void OnClickedMfccolorbutton2();
+	afx_msg void OnClickedMfccolorbutton3();
+	afx_msg void OnClickedMfccolorbutton4();
 };

@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+#include "DuiEditor.h"
 #include "SciWnd.h"
 
 static const char *minus_xpm[] = { 
@@ -86,6 +87,7 @@ BEGIN_MESSAGE_MAP(CSciWnd, CWnd)
 	ON_WM_RBUTTONUP()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
+	ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
 
@@ -150,14 +152,28 @@ BOOL CSciWnd::SaveFile(LPCTSTR szPath)
 }
 
 
-void CSciWnd::InitXML()
+void CSciWnd::InitXML(const tagXmlEditorOpt &opt)
 {
-	SendEditor(SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)"微软雅黑");
-	sci_StyleSetSize(STYLE_DEFAULT, 15);
+	LSSTRING_CONVERSION;
+
+	SendEditor(SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)LST2UTF8(opt.strEditorFontName));//(LPARAM)"Courier New");//"微软雅黑");
+	sci_StyleSetSize(STYLE_DEFAULT, opt.nEditorFontSize);//14);
 	sci_StyleSetFore(STYLE_DEFAULT,RGB(0,0,0));
 
+	sci_StyleSetBack(STYLE_DEFAULT, opt.crEditorBkColor);
+	sci_StyleSetBack(STYLE_LINENUMBER, opt.crEditorBkColor);
+	sci_StyleSetBack(STYLE_INDENTGUIDE, opt.crEditorBkColor);
+
+	for (int i = SCE_H_DEFAULT; i <= SCE_HPHP_OPERATOR; i++)
+	{
+		sci_StyleSetBack(i,	opt.crEditorBkColor);
+	}
+
 	//设置选中文本背景色
-	sci_SetSelBack(TRUE, RGB(0xA0,0xCA,0xF0));
+	sci_SetSelBack(STYLE_DEFAULT, opt.crEditorSelBkColor);//RGB(0xA0,0xCA,0xF0));
+
+	sci_SetExtraDescent(opt.nEditorLineSpace);
+	sci_SetExtraAscent(opt.nEditorLineSpace);
 
 	//编码	
 	sci_SetCodePage(SC_CP_UTF8);
@@ -182,9 +198,13 @@ void CSciWnd::InitXML()
 
 	COLORREF crForce = RGB(0,0,255);
  	sci_StyleSetFore(SCE_C_NUMBER,		crForce);
- 	sci_StyleSetFore(SCE_C_STRING,		crForce);
+	sci_StyleSetFore(SCE_C_STRING,		crForce);
 //	sci_StyleSetFore(SCE_C_CHARACTER,	crForce);
 // 	sci_StyleSetFore(SCE_C_UUID,		crForce);
+
+	//属性值设置为粗体
+// 	sci_StyleSetBold(SCE_C_NUMBER, 1);
+// 	sci_StyleSetBold(SCE_C_STRING, 1);
 
 	//预处理，宏定义
 	sci_StyleSetFore(SCE_C_PREPROCESSOR,	RGB(99,128,0));//RGB(160,0,160));
@@ -282,11 +302,12 @@ void CSciWnd::InitXML()
 
 	//当前行高亮显示
 	sci_SetCaretLineVisible(TRUE);
-	sci_SetCaretLineBack(RGB(215,215,247));
+	sci_SetCaretLineBack(opt.crEditorCaretLineBkColor);//RGB(215,215,247));
 
 	//自动调整滚动条宽度
 	sci_SetScrollWidthTracking(TRUE);
 }
+
 
 void CSciWnd::InitCPP()
 {
@@ -568,3 +589,11 @@ BOOL CSciWnd::OnParentNotify(SCNotification *pMsg)
 
 
 
+
+
+BOOL CSciWnd::OnEraseBkgnd(CDC* pDC)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	return TRUE;
+	return CWnd::OnEraseBkgnd(pDC);
+}

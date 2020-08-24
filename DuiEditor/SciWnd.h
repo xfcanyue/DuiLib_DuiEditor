@@ -27,7 +27,7 @@ public:
 	BOOL LoadFile(LPCTSTR szPath);
 	BOOL SaveFile(LPCTSTR szPath);
 
-	void InitXML();
+	void InitXML(const tagXmlEditorOpt &opt);
 	void InitCPP();
 
 	BOOL OnParentNotify(SCNotification *pMsg);
@@ -814,6 +814,7 @@ public:
 	SciDll_void sci_SetKeyWords(int keyWordSet, const char * keyWordList);
 
 	int  sci_GetStyleBitsNeeded();
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 };
 
 /////////////////////////////////////////////////////////////////////////////

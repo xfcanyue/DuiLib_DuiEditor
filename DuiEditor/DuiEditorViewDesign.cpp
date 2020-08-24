@@ -490,6 +490,7 @@ void CDuiEditorViewDesign::OnEditInsertFont()
 
 	m_Manager.GetTreeView()->AddNewControl(nodeFont, TVI_FIRST);
 	g_pPropWnd->InitProp(nodeFont);
+	m_Manager.GetXmlPane()->Init();
 }
 
 void CDuiEditorViewDesign::OnEditInsertDefault()
@@ -503,6 +504,7 @@ void CDuiEditorViewDesign::OnEditInsertDefault()
 
 	m_Manager.GetTreeView()->AddNewControl(nodeDefult, TVI_FIRST);
 	g_pPropWnd->InitProp(nodeDefult);
+	m_Manager.GetXmlPane()->Init();
 }
 
 void CDuiEditorViewDesign::OnEditInsertStyleNode()
@@ -521,6 +523,7 @@ void CDuiEditorViewDesign::OnEditInsertStyleNode()
 
 	m_Manager.GetTreeView()->AddNewControl(nodeStyle, TVI_FIRST);
 	g_pPropWnd->InitProp(nodeStyle);
+	m_Manager.GetXmlPane()->Init();
 }
 
 void CDuiEditorViewDesign::OnUiformDebug()

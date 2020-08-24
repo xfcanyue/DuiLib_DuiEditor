@@ -54,6 +54,8 @@ public:
 	afx_msg void OnSciSelectAll();
 	afx_msg void OnUpdateSciSelectAll(CCmdUI *pCmdUI);
 	BOOL ApplyDocument();
+	afx_msg void OnSciRefresh();
+	afx_msg void OnUpdateSciRefresh(CCmdUI *pCmdUI);
 };
 
 

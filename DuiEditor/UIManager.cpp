@@ -49,13 +49,18 @@ xml_node CUIManager::FindContainer(xml_node node) //获取控件对应的容器
 BOOL CUIManager::SelectItem(xml_node node)
 {
 	CControlUI *pControlUI = (CControlUI *)node.get_tag();
-	if(!pControlUI)	return FALSE;
+//	if(!pControlUI)	return FALSE;
 	return SelectItem(pControlUI);
 }
 
 BOOL CUIManager::SelectItem(CControlUI *pControl)
 {
-	if(!pControl)	return FALSE;
+	if(!pControl)	
+	{
+		GetUiTracker()->RemoveAll();
+		GetUiWindow()->Invalidate();
+		return FALSE;
+	}
 
 	CControlUI *pParent = pControl->GetParent();
 	if(pParent && _tcsicmp(pParent->GetClass(), _T("TabLayoutUI"))==0)

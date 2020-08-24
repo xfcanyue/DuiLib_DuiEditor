@@ -36,6 +36,7 @@ protected:
 
 	int		m_nLastActiveTab;	//上一次选择的标签序号
 
+public:
 	CDuiEditorViewDesign *m_pFormDesign;
 	CDuiEditorViewCode *m_pFormCode;
 
