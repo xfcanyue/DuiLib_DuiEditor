@@ -50,7 +50,7 @@ int CScriptEditorView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	{
 		return -1;      // Î´ÄÜ´´½¨
 	}
-	sci.InitCPP();
+	//sci.InitCPP();
 	InitLexer();
 	sci.sci_ClearTextAll();
 

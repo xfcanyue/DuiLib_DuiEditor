@@ -4,107 +4,123 @@
  *
  * Created by Mike Lischke.
  *
- * Copyright 2009 Sun Microsystems, Inc. All rights reserved.
+ * Copyright 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright 2009, 2011 Sun Microsystems, Inc. All rights reserved.
  * This file is dual licensed under LGPL v2.1 and the Scintilla license (http://www.scintilla.org/License.txt).
  */
 
 #import <Cocoa/Cocoa.h>
 
-#import "Platform.h"
 #import "Scintilla.h"
 #import "SciLexer.h"
 
 #import "InfoBarCommunicator.h"
-#import "ScintillaCocoa.h"
-
-@class ScintillaView;
-
-extern NSString *SCIUpdateUINotification;
 
 /**
- * InnerView is the Cocoa interface to the Scintilla backend. It handles text input and
- * provides a canvas for painting the output.
+ * Scintilla sends these two messages to the notify handler. Please refer
+ * to the Windows API doc for details about the message format.
  */
-@interface InnerView : NSView <NSTextInput>
-{
-@private
-  ScintillaView* mOwner;
-  NSCursor* mCurrentCursor;
-  NSTrackingRectTag mCurrentTrackingRect;
+#define WM_COMMAND 1001
+#define WM_NOTIFY 1002
 
-  // Set when we are in composition mode and partial input is displayed.
-  NSRange mMarkedTextRange;
-}
+/**
+ * On the Mac, there is no WM_COMMAND or WM_NOTIFY message that can be sent
+ * back to the parent. Therefore, there must be a callback handler that acts
+ * like a Windows WndProc, where Scintilla can send notifications to. Use
+ * ScintillaView registerNotifyCallback() to register such a handler.
+ * Message format is:
+ * <br>
+ * WM_COMMAND: HIWORD (wParam) = notification code, LOWORD (wParam) = control ID, lParam = ScintillaCocoa*
+ * <br>
+ * WM_NOTIFY: wParam = control ID, lParam = ptr to SCNotification structure, with hwndFrom set to ScintillaCocoa*
+ */
+typedef void(*SciNotifyFunc)(intptr_t windowid, unsigned int iMessage, uintptr_t wParam, uintptr_t lParam);
 
-- (void) dealloc;
-- (void) removeMarkedText;
-- (void) setCursor: (Scintilla::Window::Cursor) cursor;
+extern NSString *const SCIUpdateUINotification;
 
-- (BOOL) canUndo;
-- (BOOL) canRedo;
-
-@property (retain) ScintillaView* owner;
+@protocol ScintillaNotificationProtocol
+- (void) notification: (SCNotification *) notification;
 @end
 
-@interface ScintillaView : NSView <InfoBarCommunicator>
-{
-@private
-  // The back end is kind of a controller and model in one.
-  // It uses the content view for display.
-  Scintilla::ScintillaCocoa* mBackend;
-  
-  // The object (eg NSDocument) that controls the ScintillaView.
-  NSObject* mOwner;
-  
-  // This is the actual content to which the backend renders itself.
-  InnerView* mContent;
-  
-  NSScroller* mHorizontalScroller;
-  NSScroller* mVerticalScroller;
-  
-  // Area to display additional controls (e.g. zoom info, caret position, status info).
-  NSView <InfoBarCommunicator>* mInfoBar;
-  BOOL mInfoBarAtTop;
-  int mInitialInfoBarWidth;
-}
+/**
+ * SCIScrollView provides pre-macOS 10.14 tiling behavior.
+ */
+@interface SCIScrollView : NSScrollView;
 
-- (void) dealloc;
-- (void) layout;
+@end
 
-- (void) sendNotification: (NSString*) notificationName;
-- (void) notify: (NotificationType) type message: (NSString*) message location: (NSPoint) location
-          value: (float) value;
+/**
+ * SCIMarginView draws line numbers and other margins next to the text view.
+ */
+@interface SCIMarginView : NSRulerView;
+
+@end
+
+/**
+ * SCIContentView is the Cocoa interface to the Scintilla backend. It handles text input and
+ * provides a canvas for painting the output.
+ */
+@interface SCIContentView : NSView <
+	NSTextInputClient,
+	NSUserInterfaceValidations,
+	NSDraggingSource,
+	NSDraggingDestination,
+	NSAccessibilityStaticText>;
+
+- (void) setCursor: (int) cursor; // Needed by ScintillaCocoa
+
+@end
+
+/**
+ * ScintillaView is the class instantiated by client code.
+ * It contains an NSScrollView which contains a SCIMarginView and a SCIContentView.
+ * It is responsible for providing an API and communicating to a delegate.
+ */
+@interface ScintillaView : NSView <InfoBarCommunicator, ScintillaNotificationProtocol>;
+
+@property(nonatomic, unsafe_unretained) id<ScintillaNotificationProtocol> delegate;
+@property(nonatomic, readonly) NSScrollView *scrollView;
+
++ (Class) contentViewClass;
+
+- (void) notify: (NotificationType) type message: (NSString *) message location: (NSPoint) location
+	  value: (float) value;
 - (void) setCallback: (id <InfoBarCommunicator>) callback;
 
 - (void) suspendDrawing: (BOOL) suspend;
+- (void) notification: (SCNotification *) notification;
+
+- (void) updateIndicatorIME;
 
 // Scroller handling
-- (BOOL) setVerticalScrollRange: (int) range page: (int) page;
-- (void) setVerticalScrollPosition: (float) position;
-- (BOOL) setHorizontalScrollRange: (int) range page: (int) page;
-- (void) setHorizontalScrollPosition: (float) position;
-
-- (void) scrollerAction: (id) sender;
-- (InnerView*) content;
+- (void) setMarginWidth: (int) width;
+- (SCIContentView *) content;
+- (void) updateMarginCursors;
 
 // NSTextView compatibility layer.
-- (NSString*) string;
-- (void) setString: (NSString*) aString;
-- (void) insertText: (NSString*) aString;
+- (NSString *) string;
+- (void) setString: (NSString *) aString;
+- (void) insertText: (id) aString;
 - (void) setEditable: (BOOL) editable;
 - (BOOL) isEditable;
 - (NSRange) selectedRange;
+- (NSRange) selectedRangePositions;
 
-- (NSString*) selectedString;
+- (NSString *) selectedString;
 
-- (void)setFontName: (NSString*) font
-               size: (int) size
-               bold: (BOOL) bold
-             italic: (BOOL) italic;
+- (void) deleteRange: (NSRange) range;
+
+- (void) setFontName: (NSString *) font
+		size: (int) size
+		bold: (BOOL) bold
+	      italic: (BOOL) italic;
 
 // Native call through to the backend.
-+ (sptr_t) directCall: (ScintillaView*) sender message: (unsigned int) message wParam: (uptr_t) wParam
-               lParam: (sptr_t) lParam;
++ (sptr_t) directCall: (ScintillaView *) sender message: (unsigned int) message wParam: (uptr_t) wParam
+	       lParam: (sptr_t) lParam;
+- (sptr_t) message: (unsigned int) message wParam: (uptr_t) wParam lParam: (sptr_t) lParam;
+- (sptr_t) message: (unsigned int) message wParam: (uptr_t) wParam;
+- (sptr_t) message: (unsigned int) message;
 
 // Back end properties getters and setters.
 - (void) setGeneralProperty: (int) property parameter: (long) parameter value: (long) value;
@@ -113,28 +129,40 @@ extern NSString *SCIUpdateUINotification;
 - (long) getGeneralProperty: (int) property;
 - (long) getGeneralProperty: (int) property parameter: (long) parameter;
 - (long) getGeneralProperty: (int) property parameter: (long) parameter extra: (long) extra;
-- (long) getGeneralProperty: (int) property ref: (const void*) ref;
-- (void) setColorProperty: (int) property parameter: (long) parameter value: (NSColor*) value;
-- (void) setColorProperty: (int) property parameter: (long) parameter fromHTML: (NSString*) fromHTML;
-- (NSColor*) getColorProperty: (int) property parameter: (long) parameter;
-- (void) setReferenceProperty: (int) property parameter: (long) parameter value: (const void*) value;
-- (const void*) getReferenceProperty: (int) property parameter: (long) parameter;
-- (void) setStringProperty: (int) property parameter: (long) parameter value: (NSString*) value;
-- (NSString*) getStringProperty: (int) property parameter: (long) parameter;
-- (void) setLexerProperty: (NSString*) name value: (NSString*) value;
-- (NSString*) getLexerProperty: (NSString*) name;
+- (long) getGeneralProperty: (int) property ref: (const void *) ref;
+- (void) setColorProperty: (int) property parameter: (long) parameter value: (NSColor *) value;
+- (void) setColorProperty: (int) property parameter: (long) parameter fromHTML: (NSString *) fromHTML;
+- (NSColor *) getColorProperty: (int) property parameter: (long) parameter;
+- (void) setReferenceProperty: (int) property parameter: (long) parameter value: (const void *) value;
+- (const void *) getReferenceProperty: (int) property parameter: (long) parameter;
+- (void) setStringProperty: (int) property parameter: (long) parameter value: (NSString *) value;
+- (NSString *) getStringProperty: (int) property parameter: (long) parameter;
+- (void) setLexerProperty: (NSString *) name value: (NSString *) value;
+- (NSString *) getLexerProperty: (NSString *) name;
 
-- (void) registerNotifyCallback: (intptr_t) windowid value: (Scintilla::SciNotifyFunc) callback;
+// The delegate property should be used instead of registerNotifyCallback which is deprecated.
+- (void) registerNotifyCallback: (intptr_t) windowid value: (SciNotifyFunc) callback __attribute__ ( (deprecated)) ;
 
-- (void) setInfoBar: (NSView <InfoBarCommunicator>*) aView top: (BOOL) top;
-- (void) setStatusText: (NSString*) text;
+- (void) setInfoBar: (NSView <InfoBarCommunicator> *) aView top: (BOOL) top;
+- (void) setStatusText: (NSString *) text;
 
-- (void) findAndHighlightText: (NSString*) searchText
-                    matchCase: (BOOL) matchCase
-                    wholeWord: (BOOL) wholeWord
-                     scrollTo: (BOOL) scrollTo
-                         wrap: (BOOL) wrap;
+- (BOOL) findAndHighlightText: (NSString *) searchText
+		    matchCase: (BOOL) matchCase
+		    wholeWord: (BOOL) wholeWord
+		     scrollTo: (BOOL) scrollTo
+			 wrap: (BOOL) wrap;
 
-@property Scintilla::ScintillaCocoa* backend;
-@property (retain) NSObject* owner;
+- (BOOL) findAndHighlightText: (NSString *) searchText
+		    matchCase: (BOOL) matchCase
+		    wholeWord: (BOOL) wholeWord
+		     scrollTo: (BOOL) scrollTo
+			 wrap: (BOOL) wrap
+		    backwards: (BOOL) backwards;
+
+- (int) findAndReplaceText: (NSString *) searchText
+		    byText: (NSString *) newText
+		 matchCase: (BOOL) matchCase
+		 wholeWord: (BOOL) wholeWord
+		     doAll: (BOOL) doAll;
+
 @end

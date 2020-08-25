@@ -2,8 +2,9 @@
 //
 
 #include "stdafx.h"
-#include "DuiEditor.h"
 #include "SciWnd.h"
+#include "colors.h"
+#include "xmlMatchedTagsHighlighter.h"
 
 static const char *minus_xpm[] = { 
 	"     9     9       16            1", 
@@ -63,6 +64,7 @@ static const char *plus_xpm[] = {
 	"mkd.ghdkm"
 }; 
 
+
 #define VIEW_MARGIN_LINENUMBER 0
 #define VIEW_MARGIN_BREAK	1
 //#define VIEW_MARGIN_MARKER	2
@@ -87,15 +89,13 @@ BEGIN_MESSAGE_MAP(CSciWnd, CWnd)
 	ON_WM_RBUTTONUP()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
-	ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
 
 // CSciWnd 消息处理程序
 BOOL CSciWnd::Create (DWORD dwExStyle, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID)
 {
-	if(CreateEx(dwExStyle, _T("Scintilla"), _T(""), dwStyle, rect,
-		pParentWnd, nID, NULL))
+	if(CreateEx(0, _T("Scintilla"), _T(""), dwStyle, rect, pParentWnd, nID, NULL))
 	{	
 		m_sendeditor = (int (__cdecl *)(void *,int,int,int))SendMessage(SCI_GETDIRECTFUNCTION,0,0);
 		m_pSendEditor = (void *)SendMessage(SCI_GETDIRECTPOINTER,0,0);
@@ -114,10 +114,9 @@ BOOL CSciWnd::LoadFile(LPCTSTR szPath)
 	if(!file.Open(szPath, CFile::modeRead))	return FALSE;
 	UINT buflen = (UINT)file.GetLength();
 
-	char *pBuffer = new char[buflen+1];
-	memset(pBuffer, 0, sizeof(char)*(buflen+1));
+	CHAR *pBuffer = new CHAR[buflen + 1];
 	file.Read((void *)pBuffer, buflen);
-
+	pBuffer[buflen] = 0;
 	sci_SetText(pBuffer);
 	sci_SetSavePoint();//这是未修改的文档
 
@@ -137,23 +136,22 @@ BOOL CSciWnd::SaveFile(LPCTSTR szPath)
 	if(!file.Open(szPath, CFile::modeCreate|CFile::modeWrite))	return FALSE;
 
 	int buflen = sci_GetLength();
-	char *pBuffer = new char[buflen+1];
-	pBuffer[buflen] = '\0';
-	LSSTRING_CONVERSION;
+	TCHAR *pBuffer = new TCHAR[buflen + 1];
 	if (pBuffer != NULL)
 	{
-		SendEditor(SCI_GETTEXT, buflen,(long)pBuffer);
-		const char *pWrite = LSUTF82A(pBuffer);
-		file.Write((void *)pWrite, strlen(pWrite));
+		execute(SCI_GETTEXT, buflen + 1,(long)pBuffer);
+		file.Write((void *)pBuffer, buflen);
 		delete [] pBuffer;
 	}
 	file.Close();
 	return TRUE;
 }
 
-
 void CSciWnd::InitXML(const tagXmlEditorOpt &opt)
 {
+	sci_SetLexer(SCLEX_XML);		//设定词法解析器
+	sci_SetCodePage(SC_CP_UTF8);	//编码	
+
 	LSSTRING_CONVERSION;
 
 	SendEditor(SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)LST2UTF8(opt.strEditorFontName));//(LPARAM)"Courier New");//"微软雅黑");
@@ -175,63 +173,20 @@ void CSciWnd::InitXML(const tagXmlEditorOpt &opt)
 	sci_SetExtraDescent(opt.nEditorLineSpace);
 	sci_SetExtraAscent(opt.nEditorLineSpace);
 
-	//编码	
-	sci_SetCodePage(SC_CP_UTF8);
-
-	//////////////////////////////////////////////////////////////////////////
-	sci_SetLexer(SCLEX_XML);
-	for (int i=0; i<4; i++)
-	{
-		SendEditor(SCI_SETKEYWORDS, i, reinterpret_cast<LPARAM>(""));
-	}
-
-	sci_StyleSetFore(SCE_C_WORD, RGB(0,0,80));
-	sci_StyleSetFore(SCE_C_WORD2, RGB(136,0,0));
-
-	COLORREF crfComment = RGB(0,0,255);
-	sci_StyleSetFore(SCE_C_COMMENT,				RGB(0,0,255)); //节点颜色
- 	sci_StyleSetFore(SCE_C_COMMENTLINE,			crfComment); //?
- 	sci_StyleSetFore(SCE_C_COMMENTDOC,			RGB(255,0,0)); //属性颜色
-// 	sci_StyleSetFore(SCE_C_COMMENTLINEDOC,		RGB(255,0,0)); //
-// 	sci_StyleSetFore(SCE_C_COMMENTDOCKEYWORD,	RGB(255,0,0));
-// 	sci_StyleSetFore(SCE_C_COMMENTDOCKEYWORDERROR, crfComment);
-
-	COLORREF crForce = RGB(0,0,255);
- 	sci_StyleSetFore(SCE_C_NUMBER,		crForce);
-	sci_StyleSetFore(SCE_C_STRING,		crForce);
-//	sci_StyleSetFore(SCE_C_CHARACTER,	crForce);
-// 	sci_StyleSetFore(SCE_C_UUID,		crForce);
-
-	//属性值设置为粗体
-// 	sci_StyleSetBold(SCE_C_NUMBER, 1);
-// 	sci_StyleSetBold(SCE_C_STRING, 1);
-
-	//预处理，宏定义
-	sci_StyleSetFore(SCE_C_PREPROCESSOR,	RGB(99,128,0));//RGB(160,0,160));
-
-	//操作符,包括 ( ) { } = ; + - * / % < > <= >= == && || 
-	sci_StyleSetFore(SCE_C_OPERATOR,		RGB(0,0,0));
-
-	//标志符
-	sci_StyleSetFore(SCE_C_IDENTIFIER,		RGB(0,0,0));
-
+	//XML
+	COLORREF crfComment = RGB(0,150,0);
+	sci_StyleSetFore(SCE_H_COMMENT,				crfComment);
+	sci_StyleSetFore(SCE_H_ATTRIBUTEUNKNOWN,	crfComment);
 	//字符串双引号未封闭时
-	sci_StyleSetFore(SCE_C_STRINGEOL,		RGB(255,0,0));
-
-	//???
-	sci_StyleSetFore(SCE_C_VERBATIM,		RGB(0,128,0));
-
-	//???
-	sci_StyleSetFore(SCE_C_REGEX,			RGB(0,128,0));	
-
-	//???
-	sci_StyleSetFore(SCE_C_GLOBALCLASS,	RGB(255,0,0));
-
-	//???
-	sci_StyleSetFore(SCE_C_STRINGRAW,		RGB(255,0,0));
-
-	//???
-	sci_StyleSetFore(SCE_C_TRIPLEVERBATIM, RGB(0,128,0));
+	sci_StyleSetFore(SCE_H_DOUBLESTRING,	RGB(128,0,255));
+	sci_StyleSetFore(SCE_H_SINGLESTRING,	RGB(128,0,255));
+	//标签未配对时颜色
+	sci_StyleSetFore(SCE_H_TAGUNKNOWN,		RGB(0,0,255));
+	sci_StyleSetFore(SCE_H_TAGEND,			RGB(0,0,255));
+	//标签配对时颜色
+	sci_StyleSetFore(SCE_H_TAG,				RGB(0,0,255));
+	//属性颜色
+	sci_StyleSetFore(SCE_H_ATTRIBUTE,		RGB(255,0,0));
 
 	//////////////////////////////////////////////////////////////////////////
 	//行号
@@ -257,17 +212,12 @@ void CSciWnd::InitXML(const tagXmlEditorOpt &opt)
 	sci_SetMarginWidthN(VIEW_MARGIN_FOLD,20);				//页边宽度
 	sci_SetMarginSensitiveN(VIEW_MARGIN_FOLD, TRUE);		//页边响应鼠标点击
 
-	sci_SetProperty("fold","1");
+	sci_SetProperty("fold", "1");
 	sci_SetProperty("fold.html", "1");
-	sci_SetProperty("fold.html.preprocessor", "1");
-	sci_SetProperty("fold.comment", "1");
-	sci_SetProperty("fold.at.else", "1");
-	sci_SetProperty("fold.flags", "1");
-	sci_SetProperty("fold.preprocessor", "1");
-	sci_SetProperty("styling.within.preprocessor","1");
-	sci_SetProperty("asp.default.language", "1");
+	sci_SetProperty("fold.compact", "0");
+	sci_SetProperty("fold.hypertext.comment", "1");
 
-	// 	// 折叠标签样式      
+	// 折叠标签样式      
 	SendEditor(SCI_MARKERDEFINE, SC_MARKNUM_FOLDER, SC_MARK_PIXMAP);  
 	SendEditor(SCI_MARKERDEFINE, SC_MARKNUM_FOLDEROPEN, SC_MARK_PIXMAP);  
 	SendEditor(SCI_MARKERDEFINE, SC_MARKNUM_FOLDEREND,  SC_MARK_PIXMAP);  
@@ -306,147 +256,61 @@ void CSciWnd::InitXML(const tagXmlEditorOpt &opt)
 
 	//自动调整滚动条宽度
 	sci_SetScrollWidthTracking(TRUE);
-}
 
+	//高亮格式
+	sci_IndicSetFore(SCE_UNIVERSAL_FOUND_STYLE, red);
+	sci_IndicSetFore(SCE_UNIVERSAL_FOUND_STYLE_SMART, liteGreen);
+	sci_IndicSetFore(SCE_UNIVERSAL_FOUND_STYLE_INC, blue);
+	sci_IndicSetFore(SCE_UNIVERSAL_TAGMATCH, purple);
+	sci_IndicSetFore(SCE_UNIVERSAL_TAGATTR, yellow);
+	sci_IndicSetFore(SCE_UNIVERSAL_FOUND_STYLE_EXT1, cyan);
+	sci_IndicSetFore(SCE_UNIVERSAL_FOUND_STYLE_EXT2, orange);
+	sci_IndicSetFore(SCE_UNIVERSAL_FOUND_STYLE_EXT3, yellow);
+	sci_IndicSetFore(SCE_UNIVERSAL_FOUND_STYLE_EXT4, purple);
+	sci_IndicSetFore(SCE_UNIVERSAL_FOUND_STYLE_EXT5, darkGreen);
 
-void CSciWnd::InitCPP()
-{
-	//sci_UsePopup(FALSE);
+	execute(SCI_INDICSETSTYLE, SCE_UNIVERSAL_FOUND_STYLE_SMART, INDIC_ROUNDBOX);
+	execute(SCI_INDICSETSTYLE, SCE_UNIVERSAL_FOUND_STYLE, INDIC_ROUNDBOX);
+	execute(SCI_INDICSETSTYLE, SCE_UNIVERSAL_FOUND_STYLE_INC, INDIC_ROUNDBOX);
+	execute(SCI_INDICSETSTYLE, SCE_UNIVERSAL_TAGMATCH, INDIC_ROUNDBOX);
+	execute(SCI_INDICSETSTYLE, SCE_UNIVERSAL_TAGATTR, INDIC_ROUNDBOX);
+	execute(SCI_INDICSETSTYLE, SCE_UNIVERSAL_FOUND_STYLE_EXT1, INDIC_ROUNDBOX);
+	execute(SCI_INDICSETSTYLE, SCE_UNIVERSAL_FOUND_STYLE_EXT2, INDIC_ROUNDBOX);
+	execute(SCI_INDICSETSTYLE, SCE_UNIVERSAL_FOUND_STYLE_EXT3, INDIC_ROUNDBOX);
+	execute(SCI_INDICSETSTYLE, SCE_UNIVERSAL_FOUND_STYLE_EXT4, INDIC_ROUNDBOX);
+	execute(SCI_INDICSETSTYLE, SCE_UNIVERSAL_FOUND_STYLE_EXT5, INDIC_ROUNDBOX);	
 
-	sci_StyleSetFont( STYLE_DEFAULT, "微软雅黑");
-	sci_StyleSetSize(STYLE_DEFAULT,12);
-	sci_StyleSetFore(STYLE_DEFAULT,RGB(0,0,0));
-	sci_StyleSetCharacterSet(SCE_C_STRING, SC_CHARSET_GB2312);
-	sci_StyleClearAll();
+	int aplpa = 80;
+	execute(SCI_INDICSETALPHA, SCE_UNIVERSAL_FOUND_STYLE_SMART, aplpa);
+	execute(SCI_INDICSETALPHA, SCE_UNIVERSAL_FOUND_STYLE, aplpa);
+	execute(SCI_INDICSETALPHA, SCE_UNIVERSAL_FOUND_STYLE_INC, aplpa);
+	execute(SCI_INDICSETALPHA, SCE_UNIVERSAL_TAGMATCH, aplpa);
+	execute(SCI_INDICSETALPHA, SCE_UNIVERSAL_TAGATTR, aplpa);
+	execute(SCI_INDICSETALPHA, SCE_UNIVERSAL_FOUND_STYLE_EXT1, aplpa);
+	execute(SCI_INDICSETALPHA, SCE_UNIVERSAL_FOUND_STYLE_EXT2, aplpa);
+	execute(SCI_INDICSETALPHA, SCE_UNIVERSAL_FOUND_STYLE_EXT3, aplpa);
+	execute(SCI_INDICSETALPHA, SCE_UNIVERSAL_FOUND_STYLE_EXT4, aplpa);
+	execute(SCI_INDICSETALPHA, SCE_UNIVERSAL_FOUND_STYLE_EXT5, aplpa);	
 
-	//设置选中文本背景色
-	sci_SetSelBack(TRUE, RGB(0xC0,0xC0,0xC0));
+	execute(SCI_INDICSETUNDER, SCE_UNIVERSAL_FOUND_STYLE_SMART, true);
+	execute(SCI_INDICSETUNDER, SCE_UNIVERSAL_FOUND_STYLE, true);
+	execute(SCI_INDICSETUNDER, SCE_UNIVERSAL_FOUND_STYLE_INC, true);
+	execute(SCI_INDICSETUNDER, SCE_UNIVERSAL_TAGMATCH, true);
+	execute(SCI_INDICSETUNDER, SCE_UNIVERSAL_TAGATTR, true);
+	execute(SCI_INDICSETUNDER, SCE_UNIVERSAL_FOUND_STYLE_EXT1, true);
+	execute(SCI_INDICSETUNDER, SCE_UNIVERSAL_FOUND_STYLE_EXT2, true);
+	execute(SCI_INDICSETUNDER, SCE_UNIVERSAL_FOUND_STYLE_EXT3, true);
+	execute(SCI_INDICSETUNDER, SCE_UNIVERSAL_FOUND_STYLE_EXT4, true);
+	execute(SCI_INDICSETUNDER, SCE_UNIVERSAL_FOUND_STYLE_EXT5, true);
 
-	//编码	
-	sci_SetCodePage(936);
+	//快捷键不再显示乱码
+	execute(SCI_CLEARCMDKEY, (WPARAM)('F'+(SCMOD_CTRL<<16)), SCI_NULL);
+	execute(SCI_CLEARCMDKEY, (WPARAM)('H'+(SCMOD_CTRL<<16)), SCI_NULL);
+	execute(SCI_CLEARCMDKEY, (WPARAM)('Z'+((SCMOD_CTRL|SCMOD_SHIFT)<<16)), SCI_NULL);
+	execute(SCI_CLEARCMDKEY, (WPARAM)('Y'+(SCMOD_CTRL<<16)), SCI_NULL);
+	execute(SCI_CLEARCMDKEY, (WPARAM)SCK_ESCAPE, SCI_NULL);
+	//execute(SCI_CLEARALLCMDKEYS);
 
-	//////////////////////////////////////////////////////////////////////////
-	sci_SetLexer(SCLEX_CPP);
-
-	sci_StyleSetFore(SCE_C_WORD, RGB(0,0,255));
-	sci_StyleSetFore(SCE_C_WORD2, RGB(136,0,0));
-
-	COLORREF crfComment = RGB(0,150,0);
-	sci_StyleSetFore(SCE_C_COMMENT,			crfComment); //块注释  /*...*/
-	sci_StyleSetFore(SCE_C_COMMENTLINE,		crfComment); //行注释  //...
-	sci_StyleSetFore(SCE_C_COMMENTDOC,			crfComment); //文档注释  /**...*/
-	sci_StyleSetFore(SCE_C_COMMENTLINEDOC,		RGB(255,0,0)); //
-	sci_StyleSetFore(SCE_C_COMMENTDOCKEYWORD,	RGB(255,0,0));
-	sci_StyleSetFore(SCE_C_COMMENTDOCKEYWORDERROR, crfComment);
-
-
-	sci_StyleSetFore(SCE_C_NUMBER, RGB(100,100,100));
-
-	sci_StyleSetFore(SCE_C_STRING,			RGB(100,100,100));
-	sci_StyleSetFore(SCE_C_CHARACTER,		RGB(100,100,100));
-	sci_StyleSetFore(SCE_C_UUID,			RGB(100,100,100));
-
-	//预处理，宏定义
-	sci_StyleSetFore(SCE_C_PREPROCESSOR,	RGB(160,0,160));
-
-	//操作符,包括 ( ) { } = ; + - * / % < > <= >= == && || 
-	sci_StyleSetFore(SCE_C_OPERATOR,		RGB(0,0,0));
-
-	//标志符
-	sci_StyleSetFore(SCE_C_IDENTIFIER,		RGB(0,0,0));
-
-	//字符串双引号未封闭时
-	sci_StyleSetFore(SCE_C_STRINGEOL,		RGB(255,0,0));
-
-	//???
-	sci_StyleSetFore(SCE_C_VERBATIM,		RGB(0,128,0));
-
-	//???
-	sci_StyleSetFore(SCE_C_REGEX,			RGB(0,128,0));	
-
-	//???
-	sci_StyleSetFore(SCE_C_GLOBALCLASS,	RGB(255,0,0));
-
-	//???
-	sci_StyleSetFore(SCE_C_STRINGRAW,		RGB(255,0,0));
-
-	//???
-	sci_StyleSetFore(SCE_C_TRIPLEVERBATIM, RGB(0,128,0));
-
-	//////////////////////////////////////////////////////////////////////////
-
-	//行号
-	sci_SetMarginTypeN(VIEW_MARGIN_LINENUMBER, SC_MARGIN_NUMBER);
-	int lineNumber = sci_GetLineCount();
-	int charWidth = sci_TextWidth(STYLE_LINENUMBER, "9");
-	CStringA tempLine;
-	tempLine.Format("%d", lineNumber);
-	sci_SetMarginWidthN(VIEW_MARGIN_LINENUMBER,tempLine.GetLength()*charWidth+4);
-
-	//断点
-	sci_SetMarginTypeN(VIEW_MARGIN_BREAK, SC_MARGIN_SYMBOL);
-	sci_SetMarginWidthN(VIEW_MARGIN_BREAK, 10);
-	sci_SetMarginMaskN(VIEW_MARGIN_BREAK, 1);
-	//sci_MarkerEnableHighlight(TRUE);
-	sci_MarkerSetFore(BREAK_TYPEN, RGB(255,0,0));
-	sci_MarkerSetBack(BREAK_TYPEN, RGB(255,0,0));
-
-	//代码折叠
-	sci_SetMarginWidthN(VIEW_MARGIN_FOLD, SC_MARGIN_SYMBOL);
-	sci_SetMarginWidthN(VIEW_MARGIN_FOLD,15);
-	sci_SetMarginMaskN(VIEW_MARGIN_FOLD, SC_MASK_FOLDERS);
-	sci_SetMarginSensitiveN(VIEW_MARGIN_FOLD, TRUE);
-	sci_MarkerDefine(SC_MASK_FOLDERS, SC_MARK_CIRCLEMINUSCONNECTED);
-
-	sci_SetProperty("fold","1");
-	sci_SetProperty("fold.html", "1");
-	sci_SetProperty("fold.html.preprocessor", "1");
-	sci_SetProperty("fold.comment", "1");
-	sci_SetProperty("fold.at.else", "1");
-	sci_SetProperty("fold.flags", "1");
-	sci_SetProperty("fold.preprocessor", "1");
-	sci_SetProperty("styling.within.preprocessor","1");
-	sci_SetProperty("asp.default.language", "1");
-
-	// 折叠标签样式      
-	SendEditor(SCI_MARKERDEFINE, SC_MARKNUM_FOLDER, SC_MARK_PIXMAP);  
-	SendEditor(SCI_MARKERDEFINE, SC_MARKNUM_FOLDEROPEN, SC_MARK_PIXMAP);  
-	SendEditor(SCI_MARKERDEFINE, SC_MARKNUM_FOLDEREND,  SC_MARK_PIXMAP);  
-	SendEditor(SCI_MARKERDEFINE, SC_MARKNUM_FOLDEROPENMID, SC_MARK_PIXMAP);  
-	SendEditor(SCI_MARKERDEFINE, SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNERCURVE);  
-	SendEditor(SCI_MARKERDEFINE, SC_MARKNUM_FOLDERSUB, SC_MARK_VLINE);  
-	SendEditor(SCI_MARKERDEFINE, SC_MARKNUM_FOLDERTAIL, SC_MARK_LCORNERCURVE); 
-
-	SendEditor(SCI_MARKERDEFINEPIXMAP, SC_MARKNUM_FOLDER, (sptr_t)plus_xpm);  
-	SendEditor(SCI_MARKERDEFINEPIXMAP, SC_MARKNUM_FOLDEROPEN, (sptr_t)minus_xpm);  
-	SendEditor(SCI_MARKERDEFINEPIXMAP, SC_MARKNUM_FOLDEREND, (sptr_t)plus_xpm);  
-	SendEditor(SCI_MARKERDEFINEPIXMAP, SC_MARKNUM_FOLDEROPENMID, (sptr_t)minus_xpm); 
-
-	// 折叠标签颜色       
-	sci_MarkerSetFore(SC_MARKNUM_FOLDEROPEN,	RGB(0,0,255));
-	sci_MarkerSetFore(SC_MARKNUM_FOLDER,		RGB(0,0,255));
-	SendEditor(SCI_MARKERSETBACK, SC_MARKNUM_FOLDERSUB, 0xa0a0a0);  
-	SendEditor(SCI_MARKERSETBACK, SC_MARKNUM_FOLDERMIDTAIL, 0xa0a0a0);  
-	SendEditor(SCI_MARKERSETBACK, SC_MARKNUM_FOLDERTAIL, 0xa0a0a0); 
-
-	//如果折叠就在折叠行的下面画一条横线  }  
-	sci_SetFoldFlags(SC_FOLDFLAG_LINEAFTER_CONTRACTED); 
-
-	sci_SetTabWidth(4);	//制表符宽度
-	sci_SetIndentationGuides(SC_IV_LOOKBOTH);	//缩进提示线
-	sci_SetIndent(4);	//缩进提示线的字符宽度
-	sci_SetUseTabs(TRUE);
-
-
-	//括号匹配的颜色
-	sci_StyleSetBack(STYLE_BRACELIGHT, RGB(0,255,0));
-
-	//当前行高亮显示
-	sci_SetCaretLineVisible(TRUE);
-	sci_SetCaretLineBack(RGB(215,215,247));
-
-	//自动调整滚动条宽度
-	sci_SetScrollWidthTracking(TRUE);
 }
 
 void CSciWnd::OnRButtonUp(UINT nFlags, CPoint point) 
@@ -459,7 +323,6 @@ void CSciWnd::OnRButtonUp(UINT nFlags, CPoint point)
 
 void CSciWnd::OnLButtonDown(UINT nFlags, CPoint point)
 {
-
 	CWnd::OnLButtonDown(nFlags, point);
 }
 
@@ -474,7 +337,6 @@ void CSciWnd::OnLButtonUp(UINT nFlags, CPoint point)
 
 	CWnd::OnLButtonUp(nFlags, point);
 }
-
 BOOL CSciWnd::OnParentNotify(SCNotification *pMsg)
 {
 	switch (pMsg->nmhdr.code)
@@ -494,7 +356,11 @@ BOOL CSciWnd::OnParentNotify(SCNotification *pMsg)
 	case SCN_DOUBLECLICK:
 		break;
 	case SCN_UPDATEUI:
-		//m_SciWnd.BraceHighlight();
+		{
+			braceMatch();
+			XmlMatchedTagsHighlighter xmlTagMatchHiliter(this);
+			xmlTagMatchHiliter.tagMatch(false);
+		}
 		break;
 	case SCN_MODIFIED:
 		{
@@ -588,12 +454,59 @@ BOOL CSciWnd::OnParentNotify(SCNotification *pMsg)
 }
 
 
-
-
-
-BOOL CSciWnd::OnEraseBkgnd(CDC* pDC)
+void CSciWnd::findMatchingBracePos(int & braceAtCaret, int & braceOpposite)
 {
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	return TRUE;
-	return CWnd::OnEraseBkgnd(pDC);
+	int caretPos = sci_GetCurrentPos();
+	braceAtCaret = -1;
+	braceOpposite = -1;
+	TCHAR charBefore = '\0';
+
+	int lengthDoc = sci_GetLength();
+
+	if ((lengthDoc > 0) && (caretPos > 0))
+	{
+		charBefore = sci_GetCharAt(caretPos - 1);
+	}
+	// Priority goes to character before caret
+	if (charBefore && _tcschr(TEXT("[](){}\"\""), charBefore))
+	{
+		braceAtCaret = caretPos - 1;
+	}
+
+	if (lengthDoc > 0  && (braceAtCaret < 0))
+	{
+		// No brace found so check other side
+		TCHAR charAfter = sci_GetCharAt(caretPos);
+		if (charAfter && _tcschr(TEXT("[](){}\"\""), charAfter))
+		{
+			braceAtCaret = caretPos;
+		}
+	}
+	if (braceAtCaret >= 0)
+		braceOpposite = sci_BraceMatch(braceAtCaret, 0);
+}
+
+bool CSciWnd::braceMatch()
+{
+	int braceAtCaret = -1;
+	int braceOpposite = -1;
+	findMatchingBracePos(braceAtCaret, braceOpposite);
+
+	if ((braceAtCaret != -1) && (braceOpposite == -1))
+	{
+		sci_BraceBadLight(braceAtCaret);
+		sci_SetHighlightGuide(0);
+	}
+	else
+	{
+		sci_BraceHighlight(braceAtCaret, braceOpposite);
+
+		if (sci_GetIndentationGuides())
+		{
+			int columnAtCaret = sci_GetColumn(braceAtCaret);
+			int columnOpposite = sci_GetColumn(braceOpposite);
+			sci_SetHighlightGuide((columnAtCaret < columnOpposite)?columnAtCaret:columnOpposite);
+		}
+	}
+	return (braceAtCaret != -1);
 }

@@ -1,7 +1,8 @@
 // Scintilla source code edit control
+// Encoding: UTF-8
 /** @file LexCSS.cxx
  ** Lexer for Cascading Style Sheets
- ** Written by Jakub Vr·na
+ ** Written by Jakub Vr√°na
  ** Improved by Philippe Lhoste (CSS2)
  ** Improved by Ross McKay (SCSS mode; see http://sass-lang.com/ )
  **/
@@ -31,9 +32,7 @@
 #include "CharacterSet.h"
 #include "LexerModule.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 
 static inline bool IsAWordChar(const unsigned int ch) {
@@ -58,11 +57,11 @@ inline bool IsCssOperator(const int ch) {
 }
 
 // look behind (from start of document to our start position) to determine current nesting level
-inline int NestingLevelLookBehind(unsigned int startPos, Accessor &styler) {
+inline int NestingLevelLookBehind(Sci_PositionU startPos, Accessor &styler) {
 	int ch;
 	int nestingLevel = 0;
 
-	for (unsigned int i = 0; i < startPos; i++) {
+	for (Sci_PositionU i = 0; i < startPos; i++) {
 		ch = styler.SafeGetCharAt(i);
 		if (ch == '{')
 			nestingLevel++;
@@ -73,7 +72,7 @@ inline int NestingLevelLookBehind(unsigned int startPos, Accessor &styler) {
 	return nestingLevel;
 }
 
-static void ColouriseCssDoc(unsigned int startPos, int length, int initStyle, WordList *keywordlists[], Accessor &styler) {
+static void ColouriseCssDoc(Sci_PositionU startPos, Sci_Position length, int initStyle, WordList *keywordlists[], Accessor &styler) {
 	WordList &css1Props = *keywordlists[0];
 	WordList &pseudoClasses = *keywordlists[1];
 	WordList &css2Props = *keywordlists[2];
@@ -98,18 +97,29 @@ static void ColouriseCssDoc(unsigned int startPos, int length, int initStyle, Wo
 	//	Set to 1 for Sassy CSS (.scss)
 	bool isScssDocument = styler.GetPropertyInt("lexer.css.scss.language") != 0;
 
-	// TODO: implement Less support
-	bool isLessDocument = false;
+	// property lexer.css.less.language
+	// Set to 1 for Less CSS (.less)
+	bool isLessDocument = styler.GetPropertyInt("lexer.css.less.language") != 0;
 
-	// SCSS and Less both support single-line comments
+	// property lexer.css.hss.language
+	// Set to 1 for HSS (.hss)
+	bool isHssDocument = styler.GetPropertyInt("lexer.css.hss.language") != 0;
+
+	// SCSS/LESS/HSS have the concept of variable
+	bool hasVariables = isScssDocument || isLessDocument || isHssDocument;
+	char varPrefix = 0;
+	if (hasVariables)
+		varPrefix = isLessDocument ? '@' : '$';
+
+	// SCSS/LESS/HSS support single-line comments
 	typedef enum _CommentModes { eCommentBlock = 0, eCommentLine = 1} CommentMode;
 	CommentMode comment_mode = eCommentBlock;
-	bool hasSingleLineComments = isScssDocument || isLessDocument;
+	bool hasSingleLineComments = isScssDocument || isLessDocument || isHssDocument;
 
-	// must keep track of nesting level in document types that support it (SCSS, Less)
+	// must keep track of nesting level in document types that support it (SCSS/LESS/HSS)
 	bool hasNesting = false;
 	int nestingLevel = 0;
-	if (isScssDocument || isLessDocument) {
+	if (isScssDocument || isLessDocument || isHssDocument) {
 		hasNesting = true;
 		nestingLevel = NestingLevelLookBehind(startPos, styler);
 	}
@@ -120,7 +130,7 @@ static void ColouriseCssDoc(unsigned int startPos, int length, int initStyle, Wo
 			if (lastStateC == -1) {
 				// backtrack to get last state:
 				// comments are like whitespace, so we must return to the previous state
-				unsigned int i = startPos;
+				Sci_PositionU i = startPos;
 				for (; i > 0; i--) {
 					if ((lastStateC = styler.StyleAt(i-1)) != SCE_CSS_COMMENT) {
 						if (lastStateC == SCE_CSS_OPERATOR) {
@@ -154,7 +164,7 @@ static void ColouriseCssDoc(unsigned int startPos, int length, int initStyle, Wo
 		if (sc.state == SCE_CSS_DOUBLESTRING || sc.state == SCE_CSS_SINGLESTRING) {
 			if (sc.ch != (sc.state == SCE_CSS_DOUBLESTRING ? '\"' : '\''))
 				continue;
-			unsigned int i = sc.currentPos;
+			Sci_PositionU i = sc.currentPos;
 			while (i && styler[i-1] == '\\')
 				i--;
 			if ((sc.currentPos - i) % 2 == 1)
@@ -164,7 +174,7 @@ static void ColouriseCssDoc(unsigned int startPos, int length, int initStyle, Wo
 
 		if (sc.state == SCE_CSS_OPERATOR) {
 			if (op == ' ') {
-				unsigned int i = startPos;
+				Sci_PositionU i = startPos;
 				op = styler.SafeGetCharAt(i-1);
 				opPrev = styler.SafeGetCharAt(i-2);
 				while (--i) {
@@ -329,11 +339,14 @@ static void ColouriseCssDoc(unsigned int startPos, int length, int initStyle, Wo
 			insideParentheses = false;
 
 		// SCSS special modes
-		if (isScssDocument) {
+		if (hasVariables) {
 			// variable name
-			if (sc.ch == '$') {
+			if (sc.ch == varPrefix) {
 				switch (sc.state) {
 				case SCE_CSS_DEFAULT:
+					if (isLessDocument) // give priority to pseudo elements
+						break;
+					// Falls through.
 				case SCE_CSS_VALUE:
 					lastStateVar = sc.state;
 					sc.SetState(SCE_CSS_VARIABLE);
@@ -367,10 +380,10 @@ static void ColouriseCssDoc(unsigned int startPos, int length, int initStyle, Wo
 			// check for nested rule selector
 			if (sc.state == SCE_CSS_IDENTIFIER && (IsAWordChar(sc.ch) || sc.ch == ':' || sc.ch == '.' || sc.ch == '#')) {
 				// look ahead to see whether { comes before next ; and }
-				unsigned int endPos = startPos + length;
+				Sci_PositionU endPos = startPos + length;
 				int ch;
 
-				for (unsigned int i = sc.currentPos; i < endPos; i++) {
+				for (Sci_PositionU i = sc.currentPos; i < endPos; i++) {
 					ch = styler.SafeGetCharAt(i);
 					if (ch == ';' || ch == '}')
 						break;
@@ -489,17 +502,17 @@ static void ColouriseCssDoc(unsigned int startPos, int length, int initStyle, Wo
 	sc.Complete();
 }
 
-static void FoldCSSDoc(unsigned int startPos, int length, int, WordList *[], Accessor &styler) {
+static void FoldCSSDoc(Sci_PositionU startPos, Sci_Position length, int, WordList *[], Accessor &styler) {
 	bool foldComment = styler.GetPropertyInt("fold.comment") != 0;
 	bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
-	unsigned int endPos = startPos + length;
+	Sci_PositionU endPos = startPos + length;
 	int visibleChars = 0;
-	int lineCurrent = styler.GetLine(startPos);
+	Sci_Position lineCurrent = styler.GetLine(startPos);
 	int levelPrev = styler.LevelAt(lineCurrent) & SC_FOLDLEVELNUMBERMASK;
 	int levelCurrent = levelPrev;
 	char chNext = styler[startPos];
 	bool inComment = (styler.StyleAt(startPos-1) == SCE_CSS_COMMENT);
-	for (unsigned int i = startPos; i < endPos; i++) {
+	for (Sci_PositionU i = startPos; i < endPos; i++) {
 		char ch = chNext;
 		chNext = styler.SafeGetCharAt(i + 1);
 		int style = styler.StyleAt(i);

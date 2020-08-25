@@ -370,6 +370,9 @@
     <ClInclude Include="DockXmlView.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="xmlMatchedTagsHighlighter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -541,6 +544,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DockXmlView.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="xmlMatchedTagsHighlighter.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -9,16 +9,18 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "ScintillaView.h"
-#import "InfoBar.h"
+#import "Scintilla/ScintillaView.h"
+#import "Scintilla/InfoBar.h"
 
 @interface AppController : NSObject {
   IBOutlet NSBox *mEditHost;
   ScintillaView* mEditor;
+  ScintillaView* sciExtra;	// For testing Scintilla tear-down
 }
 
 - (void) awakeFromNib;
 - (void) setupEditor;
 - (IBAction) searchText: (id) sender;
+- (IBAction) addRemoveExtra: (id) sender;
 
 @end

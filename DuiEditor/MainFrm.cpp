@@ -193,7 +193,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	g_pPropWnd = &m_wndProperty;
 	g_pPropWnd->m_wndPropList.m_bMainFrame = TRUE;
 
-	if (!m_wndOutput.Create(_T(" 输出 "), this, CRect(0, 0, 100, 100), TRUE, ID_OUTPUT_WND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM))
+	if (!m_wndOutput.Create(_T(" 输出 "), this, CRect(0, 0, 100, 600), TRUE, ID_OUTPUT_WND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM))
 	{
 		return FALSE; // 未能创建
 	}

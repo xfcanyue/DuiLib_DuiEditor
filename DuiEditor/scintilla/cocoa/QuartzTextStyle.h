@@ -10,84 +10,81 @@
 
 #include "QuartzTextStyleAttribute.h"
 
-class QuartzTextStyle
-{
+class QuartzTextStyle {
 public:
-    QuartzTextStyle()
-    {
+	QuartzTextStyle() {
 		fontRef = NULL;
 		styleDict = CFDictionaryCreateMutable(kCFAllocatorDefault, 2,
-						   &kCFTypeDictionaryKeyCallBacks, 
-						   &kCFTypeDictionaryValueCallBacks);
+						      &kCFTypeDictionaryKeyCallBacks,
+						      &kCFTypeDictionaryValueCallBacks);
 
 		characterSet = 0;
-    }
+	}
 
-    ~QuartzTextStyle()
-    {
-		if (styleDict != NULL)
-		{
+	QuartzTextStyle(const QuartzTextStyle &other) {
+		// Does not copy font colour attribute
+		fontRef = static_cast<CTFontRef>(CFRetain(other.fontRef));
+		styleDict = CFDictionaryCreateMutable(kCFAllocatorDefault, 2,
+						      &kCFTypeDictionaryKeyCallBacks,
+						      &kCFTypeDictionaryValueCallBacks);
+		CFDictionaryAddValue(styleDict, kCTFontAttributeName, fontRef);
+		characterSet = other.characterSet;
+	}
+
+	~QuartzTextStyle() {
+		if (styleDict != NULL) {
 			CFRelease(styleDict);
 			styleDict = NULL;
 		}
 
-		if (fontRef)
-		{
+		if (fontRef) {
 			CFRelease(fontRef);
 			fontRef = NULL;
 		}
-    }
-	
-	CFMutableDictionaryRef getCTStyle() const
-	{
+	}
+
+	CFMutableDictionaryRef getCTStyle() const {
 		return styleDict;
 	}
-	 
-	void setCTStyleColor(CGColor* inColor )
-	{
-		CFDictionarySetValue(styleDict, kCTForegroundColorAttributeName, inColor);
+
+	void setCTStyleColour(CGColor *inColour) {
+		CFDictionarySetValue(styleDict, kCTForegroundColorAttributeName, inColour);
 	}
-	
-	float getAscent() const
-	{
-		return ::CTFontGetAscent(fontRef);
+
+	float getAscent() const {
+		return static_cast<float>(::CTFontGetAscent(fontRef));
 	}
-	
-	float getDescent() const
-	{
-		return ::CTFontGetDescent(fontRef);
+
+	float getDescent() const {
+		return static_cast<float>(::CTFontGetDescent(fontRef));
 	}
-	
-	float getLeading() const
-	{
-		return ::CTFontGetLeading(fontRef);
+
+	float getLeading() const {
+		return static_cast<float>(::CTFontGetLeading(fontRef));
 	}
-	
-	void setFontRef(CTFontRef inRef, int characterSet_)
-	{
+
+	void setFontRef(CTFontRef inRef, int characterSet_) {
 		fontRef = inRef;
 		characterSet = characterSet_;
-		
+
 		if (styleDict != NULL)
 			CFRelease(styleDict);
 
 		styleDict = CFDictionaryCreateMutable(kCFAllocatorDefault, 2,
-						      &kCFTypeDictionaryKeyCallBacks, 
+						      &kCFTypeDictionaryKeyCallBacks,
 						      &kCFTypeDictionaryValueCallBacks);
-		
+
 		CFDictionaryAddValue(styleDict, kCTFontAttributeName, fontRef);
 	}
-	
-	CTFontRef getFontRef()
-	{
+
+	CTFontRef getFontRef() {
 		return fontRef;
 	}
-	
-	int getCharacterSet()
-	{
+
+	int getCharacterSet() {
 		return characterSet;
 	}
-	
+
 private:
 	CFMutableDictionaryRef styleDict;
 	CTFontRef fontRef;

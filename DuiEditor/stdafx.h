@@ -71,11 +71,9 @@
 	#include "../DuiPlugins/Include/DuiPlugins.h"
 #endif
 //////////////////////////////////////////////////////////////////////////
-
-
-
-#include "scintilla/include/Scintilla.h"
+#define INCLUDE_DEPRECATED_FEATURES
 #include "scintilla/include/SciLexer.h"
+#include "scintilla/include/Scintilla.h"
 
 #include "pugixml/pugiconfig.hpp"
 #include "pugixml/pugixml.hpp"

@@ -6,19 +6,20 @@
         Partitioning
         RunStyles
         ContractionState
-
-    To do:
+        CharClassify
         Decoration
         DecorationList
+        CellBuffer
+        UniConversion
+
+    To do:
         PerLine *
-        CellBuffer *
         Range
         StyledText
         CaseFolder ...
         Document
         RESearch
         Selection
-        UniConversion
         Style
 
         lexlib:
@@ -31,11 +32,29 @@
         WordList
 */
 
-#include <stdio.h>
+#include <cstdio>
+#include <cstdarg>
+
+#include <string_view>
+#include <vector>
+#include <memory>
 
 #include "Platform.h"
 
-#include <gtest/gtest.h>
+#if defined(__GNUC__)
+// Want to avoid misleading indentation warnings in catch.hpp but the pragma
+// may not be available so protect by turning off pragma warnings
+#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+#pragma GCC diagnostic ignored "-Wpragmas"
+#if !defined(__clang__)
+#pragma GCC diagnostic ignored "-Wmisleading-indentation"
+#endif
+#endif
+
+#define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
+#include "catch.hpp"
+
+using namespace Scintilla;
 
 // Needed for PLATFORM_ASSERT in code being tested
 
@@ -44,7 +63,11 @@ void Platform::Assert(const char *c, const char *file, int line) {
 	abort();
 }
 
-int main(int argc, char **argv) {
-	testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
+void Platform::DebugPrintf(const char *format, ...) {
+	char buffer[2000];
+	va_list pArguments;
+	va_start(pArguments, format);
+	vsprintf(buffer, format, pArguments);
+	va_end(pArguments);
+	fprintf(stderr, "%s", buffer);
 }

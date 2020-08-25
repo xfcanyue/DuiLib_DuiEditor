@@ -16,36 +16,34 @@
 /**
  * Extended text cell for vertically aligned text.
  */
-@interface VerticallyCenteredTextFieldCell : NSTextFieldCell
-{
+@interface VerticallyCenteredTextFieldCell : NSTextFieldCell {
 	BOOL mIsEditingOrSelecting;
 }
 
 @end
 
-@interface InfoBar : NSView <InfoBarCommunicator>
-{
+@interface InfoBar : NSView <InfoBarCommunicator> {
 @private
-  NSImage* mBackground;
-  IBDisplay mDisplayMask;
-  
-  float mScaleFactor;
-  NSPopUpButton* mZoomPopup;
-  
-  int mCurrentCaretX;
-  int mCurrentCaretY;
-  NSTextField* mCaretPositionLabel;
-  NSTextField* mStatusTextLabel;
-  
-  id <InfoBarCommunicator> mCallback;
+	NSImage *mBackground;
+	IBDisplay mDisplayMask;
+
+	float mScaleFactor;
+	NSPopUpButton *mZoomPopup;
+
+	int mCurrentCaretX;
+	int mCurrentCaretY;
+	NSTextField *mCaretPositionLabel;
+	NSTextField *mStatusTextLabel;
+
+	id <InfoBarCommunicator> mCallback;
 }
 
-- (void) notify: (NotificationType) type message: (NSString*) message location: (NSPoint) location
-          value: (float) value;
+- (void) notify: (NotificationType) type message: (NSString *) message location: (NSPoint) location
+	  value: (float) value;
 - (void) setCallback: (id <InfoBarCommunicator>) callback;
 
 - (void) createItems;
-- (void) layout;
+- (void) positionSubViews;
 - (void) setDisplay: (IBDisplay) display;
 - (void) zoomItemAction: (id) sender;
 - (void) setScaleFactor: (float) newScaleFactor adjustPopup: (BOOL) flag;

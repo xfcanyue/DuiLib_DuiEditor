@@ -8,3 +8,7 @@
 第三步, 拷贝其他依赖文件到Exec目录
 
 第四部，运行DuiEditor.exe
+
+
+DuiAngelScript，DuiScript是关于脚本的。
+DuiPlugin是本人编写一些扩展类。

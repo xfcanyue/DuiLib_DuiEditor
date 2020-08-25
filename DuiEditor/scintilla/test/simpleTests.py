@@ -1,30 +1,48 @@
 # -*- coding: utf-8 -*-
+# Requires Python 2.7 or later
 
 from __future__ import with_statement
 from __future__ import unicode_literals
 
-import ctypes, os, sys, unittest
+import codecs, ctypes, os, sys, unittest
 
-import XiteWin
+if sys.platform == "win32":
+	import XiteWin as Xite
+else:
+	import XiteQt as Xite
 
 class TestSimple(unittest.TestCase):
 
 	def setUp(self):
-		self.xite = XiteWin.xiteFrame
+		self.xite = Xite.xiteFrame
 		self.ed = self.xite.ed
 		self.ed.ClearAll()
 		self.ed.EmptyUndoBuffer()
+
+	def testStatus(self):
+		self.assertEquals(self.ed.GetStatus(), 0)
+		self.ed.SetStatus(1)
+		self.assertEquals(self.ed.GetStatus(), 1)
+		self.ed.SetStatus(0)
+		self.assertEquals(self.ed.GetStatus(), 0)
 
 	def testLength(self):
 		self.assertEquals(self.ed.Length, 0)
 
 	def testAddText(self):
-		self.ed.AddText(1, "x")
+		self.ed.AddText(1, b"x")
 		self.assertEquals(self.ed.Length, 1)
 		self.assertEquals(self.ed.GetCharAt(0), ord("x"))
 		self.assertEquals(self.ed.GetStyleAt(0), 0)
 		self.ed.ClearAll()
 		self.assertEquals(self.ed.Length, 0)
+
+	def testDeleteRange(self):
+		self.ed.AddText(5, b"abcde")
+		self.assertEquals(self.ed.Length, 5)
+		self.ed.DeleteRange(1, 2)
+		self.assertEquals(self.ed.Length, 3)
+		self.assertEquals(self.ed.Contents(), b"ade")
 
 	def testAddStyledText(self):
 		self.assertEquals(self.ed.EndStyled, 0)
@@ -46,10 +64,6 @@ class TestSimple(unittest.TestCase):
 		self.ed.StartStyling(0,0xf)
 		self.ed.SetStyling(1, 5)
 		self.assertEquals(self.ed.StyledTextRange(0, 2), b"x\005y\003")
-		# Set the mask so 0 bit changed but not 2 bit
-		self.ed.StartStyling(0,0x1)
-		self.ed.SetStyling(1, 0)
-		self.assertEquals(self.ed.StyledTextRange(0, 2), b"x\004y\003")
 
 		self.ed.StartStyling(0,0xff)
 		self.ed.SetStylingEx(2, b"\100\101")
@@ -58,7 +72,7 @@ class TestSimple(unittest.TestCase):
 	def testPosition(self):
 		self.assertEquals(self.ed.CurrentPos, 0)
 		self.assertEquals(self.ed.Anchor, 0)
-		self.ed.AddText(1, "x")
+		self.ed.AddText(1, b"x")
 		# Caret has automatically moved
 		self.assertEquals(self.ed.CurrentPos, 1)
 		self.assertEquals(self.ed.Anchor, 1)
@@ -76,12 +90,18 @@ class TestSimple(unittest.TestCase):
 		self.assertEquals(self.ed.Anchor, 0)
 		self.assertEquals(self.ed.CurrentPos, 1)
 
+	def testBeyonEnd(self):
+		self.ed.AddText(1, b"x")
+		self.assertEquals(self.ed.GetLineEndPosition(0), 1)
+		self.assertEquals(self.ed.GetLineEndPosition(1), 1)
+		self.assertEquals(self.ed.GetLineEndPosition(2), 1)
+
 	def testSelection(self):
 		self.assertEquals(self.ed.CurrentPos, 0)
 		self.assertEquals(self.ed.Anchor, 0)
 		self.assertEquals(self.ed.SelectionStart, 0)
 		self.assertEquals(self.ed.SelectionEnd, 0)
-		self.ed.AddText(1, "x")
+		self.ed.AddText(1, b"x")
 		self.ed.SelectionStart = 0
 		self.assertEquals(self.ed.CurrentPos, 1)
 		self.assertEquals(self.ed.Anchor, 0)
@@ -102,10 +122,8 @@ class TestSimple(unittest.TestCase):
 		self.ed.SetSel(1, 3)
 		self.assertEquals(self.ed.SelectionStart, 1)
 		self.assertEquals(self.ed.SelectionEnd, 3)
-		result = b"\0" * 5
-		length = self.ed.GetSelText(0, result)
-		self.assertEquals(length, 3)
-		self.assertEquals(result[:length], b"bc\0")
+		result = self.ed.GetSelText(0)
+		self.assertEquals(result, b"bc\0")
 		self.ed.ReplaceSel(0, b"1234")
 		self.assertEquals(self.ed.Length, 6)
 		self.assertEquals(self.ed.Contents(), b"a1234d")
@@ -128,7 +146,6 @@ class TestSimple(unittest.TestCase):
 		data = b"x" * 70 + b"\n"
 		for i in range(5):
 			self.ed.AddText(len(data), data)
-			self.xite.DoEvents()
 			self.assertEquals(self.ed.LineCount, i + 2)
 		self.assert_(self.ed.Length > 0)
 
@@ -211,10 +228,12 @@ class TestSimple(unittest.TestCase):
 				self.assertEquals(self.ed.FindColumn(0, col), 0)
 			elif col == 1:
 				self.assertEquals(self.ed.FindColumn(0, col), 1)
+			elif col == 8:
+				self.assertEquals(self.ed.FindColumn(0, col), 2)
 			elif col == 9:
 				self.assertEquals(self.ed.FindColumn(0, col), 3)
 			else:
-				self.assertEquals(self.ed.FindColumn(0, col), 2)
+				self.assertEquals(self.ed.FindColumn(0, col), 1)
 		self.ed.TabWidth = 4
 		self.assertEquals(self.ed.TabWidth, 4)
 		self.assertEquals(self.ed.GetColumn(0), 0)
@@ -244,19 +263,16 @@ class TestSimple(unittest.TestCase):
 
 	def testGetCurLine(self):
 		self.ed.AddText(1, b"x")
-		data = b"\0" * 100
+		data = ctypes.create_string_buffer(b"\0" * 100)
 		caret = self.ed.GetCurLine(len(data), data)
-		data = data.rstrip(b"\0")
 		self.assertEquals(caret, 1)
-		self.assertEquals(data, b"x")
+		self.assertEquals(data.value, b"x")
 
 	def testGetLine(self):
 		self.ed.AddText(1, b"x")
-		data = b"\0" * 100
-		length = self.ed.GetLine(0, data)
-		self.assertEquals(length, 1)
-		data = data[:length]
-		self.assertEquals(data, b"x")
+		data = ctypes.create_string_buffer(b"\0" * 100)
+		self.ed.GetLine(0, data)
+		self.assertEquals(data.value, b"x")
 
 	def testLineEnds(self):
 		self.ed.AddText(3, b"x\ny")
@@ -264,7 +280,13 @@ class TestSimple(unittest.TestCase):
 		self.assertEquals(self.ed.GetLineEndPosition(1), 3)
 		self.assertEquals(self.ed.LineLength(0), 2)
 		self.assertEquals(self.ed.LineLength(1), 1)
-		self.assertEquals(self.ed.EOLMode, self.ed.SC_EOL_CRLF)
+		# Test lines out of range.
+		self.assertEquals(self.ed.LineLength(2), 0)
+		self.assertEquals(self.ed.LineLength(-1), 0)
+		if sys.platform == "win32":
+			self.assertEquals(self.ed.EOLMode, self.ed.SC_EOL_CRLF)
+		else:
+			self.assertEquals(self.ed.EOLMode, self.ed.SC_EOL_LF)
 		lineEnds = [b"\r\n", b"\r", b"\n"]
 		for lineEndType in [self.ed.SC_EOL_CR, self.ed.SC_EOL_LF, self.ed.SC_EOL_CRLF]:
 			self.ed.EOLMode = lineEndType
@@ -272,6 +294,202 @@ class TestSimple(unittest.TestCase):
 			self.ed.ConvertEOLs(lineEndType)
 			self.assertEquals(self.ed.Contents(), b"x" + lineEnds[lineEndType] + b"y")
 			self.assertEquals(self.ed.LineLength(0), 1 + len(lineEnds[lineEndType]))
+
+	# Several tests for unicode line ends U+2028 and U+2029
+
+	def testUnicodeLineEnds(self):
+		# Add two lines separated with U+2028 and ensure it is seen as two lines
+		# Then remove U+2028 and should be just 1 lines
+		self.ed.Lexer = self.ed.SCLEX_CPP
+		self.ed.SetCodePage(65001)
+		self.ed.SetLineEndTypesAllowed(1)
+		self.ed.AddText(5, b"x\xe2\x80\xa8y")
+		self.assertEquals(self.ed.LineCount, 2)
+		self.assertEquals(self.ed.GetLineEndPosition(0), 1)
+		self.assertEquals(self.ed.GetLineEndPosition(1), 5)
+		self.assertEquals(self.ed.LineLength(0), 4)
+		self.assertEquals(self.ed.LineLength(1), 1)
+		self.ed.TargetStart = 1
+		self.ed.TargetEnd = 4
+		self.ed.ReplaceTarget(0, b"")
+		self.assertEquals(self.ed.LineCount, 1)
+		self.assertEquals(self.ed.LineLength(0), 2)
+		self.assertEquals(self.ed.GetLineEndPosition(0), 2)
+		self.assertEquals(self.ed.LineEndTypesSupported, 1)
+
+	def testUnicodeLineEndsWithCodePage0(self):
+		# Try the Unicode line ends when not in Unicode mode -> should remain 1 line
+		self.ed.SetCodePage(0)
+		self.ed.AddText(5, b"x\xe2\x80\xa8y")
+		self.assertEquals(self.ed.LineCount, 1)
+		self.ed.AddText(4, b"x\xc2\x85y")
+		self.assertEquals(self.ed.LineCount, 1)
+
+	def testUnicodeLineEndsSwitchToUnicodeAndBack(self):
+		# Add the Unicode line ends when not in Unicode mode
+		self.ed.SetCodePage(0)
+		self.ed.AddText(5, b"x\xe2\x80\xa8y")
+		self.assertEquals(self.ed.LineCount, 1)
+		# Into UTF-8 mode - should now be interpreting as two lines
+		self.ed.Lexer = self.ed.SCLEX_CPP
+		self.ed.SetCodePage(65001)
+		self.ed.SetLineEndTypesAllowed(1)
+		self.assertEquals(self.ed.LineCount, 2)
+		# Back to code page 0 and 1 line
+		self.ed.SetCodePage(0)
+		self.assertEquals(self.ed.LineCount, 1)
+
+	def testUFragmentedEOLCompletion(self):
+		# Add 2 starting bytes of UTF-8 line end then complete it
+		self.ed.ClearAll()
+		self.ed.AddText(4, b"x\xe2\x80y")
+		self.assertEquals(self.ed.LineCount, 1)
+		self.assertEquals(self.ed.GetLineEndPosition(0), 4)
+		self.ed.SetSel(3,3)
+		self.ed.AddText(1, b"\xa8")
+		self.assertEquals(self.ed.Contents(), b"x\xe2\x80\xa8y")
+		self.assertEquals(self.ed.LineCount, 2)
+
+		# Add 1 starting bytes of UTF-8 line end then complete it
+		self.ed.ClearAll()
+		self.ed.AddText(3, b"x\xe2y")
+		self.assertEquals(self.ed.LineCount, 1)
+		self.assertEquals(self.ed.GetLineEndPosition(0), 3)
+		self.ed.SetSel(2,2)
+		self.ed.AddText(2, b"\x80\xa8")
+		self.assertEquals(self.ed.Contents(), b"x\xe2\x80\xa8y")
+		self.assertEquals(self.ed.LineCount, 2)
+
+	def testUFragmentedEOLStart(self):
+		# Add end of UTF-8 line end then insert start
+		self.ed.Lexer = self.ed.SCLEX_CPP
+		self.ed.SetCodePage(65001)
+		self.ed.SetLineEndTypesAllowed(1)
+		self.assertEquals(self.ed.LineCount, 1)
+		self.ed.AddText(4, b"x\x80\xa8y")
+		self.assertEquals(self.ed.LineCount, 1)
+		self.ed.SetSel(1,1)
+		self.ed.AddText(1, b"\xe2")
+		self.assertEquals(self.ed.LineCount, 2)
+
+	def testUBreakApartEOL(self):
+		# Add two lines separated by U+2029 then remove and add back each byte ensuring
+		# only one line after each removal of any byte in line end and 2 lines after reinsertion
+		self.ed.Lexer = self.ed.SCLEX_CPP
+		self.ed.SetCodePage(65001)
+		self.ed.SetLineEndTypesAllowed(1)
+		text = b"x\xe2\x80\xa9y";
+		self.ed.AddText(5, text)
+		self.assertEquals(self.ed.LineCount, 2)
+
+		for i in range(len(text)):
+			self.ed.TargetStart = i
+			self.ed.TargetEnd = i + 1
+			self.ed.ReplaceTarget(0, b"")
+			if i in [0, 4]:
+				# Removing text characters does not change number of lines
+				self.assertEquals(self.ed.LineCount, 2)
+			else:
+				# Removing byte from line end, removes 1 line
+				self.assertEquals(self.ed.LineCount, 1)
+
+			self.ed.TargetEnd = i
+			self.ed.ReplaceTarget(1, text[i:i+1])
+			self.assertEquals(self.ed.LineCount, 2)
+
+	def testURemoveEOLFragment(self):
+		# Add UTF-8 line end then delete each byte causing line end to disappear
+		self.ed.Lexer = self.ed.SCLEX_CPP
+		self.ed.SetCodePage(65001)
+		self.ed.SetLineEndTypesAllowed(1)
+		for i in range(3):
+			self.ed.ClearAll()
+			self.ed.AddText(5, b"x\xe2\x80\xa8y")
+			self.assertEquals(self.ed.LineCount, 2)
+			self.ed.TargetStart = i+1
+			self.ed.TargetEnd = i+2
+			self.ed.ReplaceTarget(0, b"")
+			self.assertEquals(self.ed.LineCount, 1)
+
+	# Several tests for unicode NEL line ends U+0085
+
+	def testNELLineEnds(self):
+		# Add two lines separated with U+0085 and ensure it is seen as two lines
+		# Then remove U+0085 and should be just 1 lines
+		self.ed.Lexer = self.ed.SCLEX_CPP
+		self.ed.SetCodePage(65001)
+		self.ed.SetLineEndTypesAllowed(1)
+		self.ed.AddText(4, b"x\xc2\x85y")
+		self.assertEquals(self.ed.LineCount, 2)
+		self.assertEquals(self.ed.GetLineEndPosition(0), 1)
+		self.assertEquals(self.ed.GetLineEndPosition(1), 4)
+		self.assertEquals(self.ed.LineLength(0), 3)
+		self.assertEquals(self.ed.LineLength(1), 1)
+		self.ed.TargetStart = 1
+		self.ed.TargetEnd = 3
+		self.ed.ReplaceTarget(0, b"")
+		self.assertEquals(self.ed.LineCount, 1)
+		self.assertEquals(self.ed.LineLength(0), 2)
+		self.assertEquals(self.ed.GetLineEndPosition(0), 2)
+
+	def testNELFragmentedEOLCompletion(self):
+		# Add starting byte of UTF-8 NEL then complete it
+		self.ed.AddText(3, b"x\xc2y")
+		self.assertEquals(self.ed.LineCount, 1)
+		self.assertEquals(self.ed.GetLineEndPosition(0), 3)
+		self.ed.SetSel(2,2)
+		self.ed.AddText(1, b"\x85")
+		self.assertEquals(self.ed.Contents(), b"x\xc2\x85y")
+		self.assertEquals(self.ed.LineCount, 2)
+
+	def testNELFragmentedEOLStart(self):
+		# Add end of UTF-8 NEL then insert start
+		self.ed.Lexer = self.ed.SCLEX_CPP
+		self.ed.SetCodePage(65001)
+		self.ed.SetLineEndTypesAllowed(1)
+		self.assertEquals(self.ed.LineCount, 1)
+		self.ed.AddText(4, b"x\x85y")
+		self.assertEquals(self.ed.LineCount, 1)
+		self.ed.SetSel(1,1)
+		self.ed.AddText(1, b"\xc2")
+		self.assertEquals(self.ed.LineCount, 2)
+
+	def testNELBreakApartEOL(self):
+		# Add two lines separated by U+0085 then remove and add back each byte ensuring
+		# only one line after each removal of any byte in line end and 2 lines after reinsertion
+		self.ed.Lexer = self.ed.SCLEX_CPP
+		self.ed.SetCodePage(65001)
+		self.ed.SetLineEndTypesAllowed(1)
+		text = b"x\xc2\x85y";
+		self.ed.AddText(4, text)
+		self.assertEquals(self.ed.LineCount, 2)
+
+		for i in range(len(text)):
+			self.ed.TargetStart = i
+			self.ed.TargetEnd = i + 1
+			self.ed.ReplaceTarget(0, b"")
+			if i in [0, 3]:
+				# Removing text characters does not change number of lines
+				self.assertEquals(self.ed.LineCount, 2)
+			else:
+				# Removing byte from line end, removes 1 line
+				self.assertEquals(self.ed.LineCount, 1)
+
+			self.ed.TargetEnd = i
+			self.ed.ReplaceTarget(1, text[i:i+1])
+			self.assertEquals(self.ed.LineCount, 2)
+
+	def testNELRemoveEOLFragment(self):
+		# Add UTF-8 NEL then delete each byte causing line end to disappear
+		self.ed.SetCodePage(65001)
+		for i in range(2):
+			self.ed.ClearAll()
+			self.ed.AddText(4, b"x\xc2\x85y")
+			self.assertEquals(self.ed.LineCount, 2)
+			self.ed.TargetStart = i+1
+			self.ed.TargetEnd = i+2
+			self.ed.ReplaceTarget(0, b"")
+			self.assertEquals(self.ed.LineCount, 1)
 
 	def testGoto(self):
 		self.ed.AddText(5, b"a\nb\nc")
@@ -285,12 +503,15 @@ class TestSimple(unittest.TestCase):
 		self.ed.AddText(5, b"a1b2c")
 		self.ed.SetSel(1,3)
 		self.ed.Cut()
+		# Clipboard = "1b"
+		self.assertEquals(self.ed.Contents(), b"a2c")
 		self.assertEquals(self.ed.CanPaste(), 1)
 		self.ed.SetSel(0, 0)
 		self.ed.Paste()
 		self.assertEquals(self.ed.Contents(), b"1ba2c")
 		self.ed.SetSel(4,5)
 		self.ed.Copy()
+		# Clipboard = "c"
 		self.ed.SetSel(1,3)
 		self.ed.Paste()
 		self.assertEquals(self.ed.Contents(), b"1c2c")
@@ -298,16 +519,45 @@ class TestSimple(unittest.TestCase):
 		self.ed.Clear()
 		self.assertEquals(self.ed.Contents(), b"1c")
 
+	def testCopyAllowLine(self):
+		lineEndType = self.ed.EOLMode
+		self.ed.EOLMode = self.ed.SC_EOL_LF
+		self.ed.AddText(5, b"a1\nb2")
+		self.ed.SetSel(1,1)
+		self.ed.CopyAllowLine()
+		# Clipboard = "a1\n"
+		self.assertEquals(self.ed.CanPaste(), 1)
+		self.ed.SetSel(0, 0)
+		self.ed.Paste()
+		self.ed.EOLMode = lineEndType
+		self.assertEquals(self.ed.Contents(), b"a1\na1\nb2")
+
+	def testDuplicate(self):
+		self.ed.AddText(3, b"1b2")
+		self.ed.SetSel(1,2)
+		self.ed.SelectionDuplicate()
+		self.assertEquals(self.ed.Contents(), b"1bb2")
+
+	def testTransposeLines(self):
+		self.ed.AddText(8, b"a1\nb2\nc3")
+		self.ed.SetSel(3,3)
+		self.ed.LineTranspose()
+		self.assertEquals(self.ed.Contents(), b"b2\na1\nc3")
+
 	def testGetSet(self):
-		self.ed.SetText(0, b"abc")
+		self.ed.SetContents(b"abc")
 		self.assertEquals(self.ed.TextLength, 3)
-		result = b"\0" * 5
+		# String buffer containing exactly 5 digits
+		result = ctypes.create_string_buffer(b"12345", 5)
+		self.assertEquals(result.raw, b"12345")
 		length = self.ed.GetText(4, result)
-		result = result[:length]
-		self.assertEquals(result, b"abc")
+		self.assertEquals(length, 3)
+		self.assertEquals(result.value, b"abc")
+		# GetText has written the 3 bytes of text and a terminating NUL but left the final digit 5
+		self.assertEquals(result.raw, b"abc\x005")
 
 	def testAppend(self):
-		self.ed.SetText(0, b"abc")
+		self.ed.SetContents(b"abc")
 		self.assertEquals(self.ed.SelectionStart, 0)
 		self.assertEquals(self.ed.SelectionEnd, 0)
 		text = b"12"
@@ -317,7 +567,7 @@ class TestSimple(unittest.TestCase):
 		self.assertEquals(self.ed.Contents(), b"abc12")
 
 	def testTarget(self):
-		self.ed.SetText(0, b"abcd")
+		self.ed.SetContents(b"abcd")
 		self.ed.TargetStart = 1
 		self.ed.TargetEnd = 3
 		self.assertEquals(self.ed.TargetStart, 1)
@@ -330,9 +580,7 @@ class TestSimple(unittest.TestCase):
 		searchString = b"\([1-9]+\)"
 		pos = self.ed.SearchInTarget(len(searchString), searchString)
 		self.assertEquals(1, pos)
-		tagString = b"abcdefghijklmnop"
-		lenTag = self.ed.GetTag(1, tagString)
-		tagString = tagString[:lenTag]
+		tagString = self.ed.GetTag(1)
 		self.assertEquals(tagString, b"321")
 		rep = b"\\1"
 		self.ed.TargetStart = 0
@@ -344,9 +592,17 @@ class TestSimple(unittest.TestCase):
 		self.assertEquals(self.ed.TargetStart, 4)
 		self.assertEquals(self.ed.TargetEnd, 5)
 
+	def testTargetWhole(self):
+		self.ed.SetContents(b"abcd")
+		self.ed.TargetStart = 1
+		self.ed.TargetEnd = 3
+		self.ed.TargetWholeDocument()
+		self.assertEquals(self.ed.TargetStart, 0)
+		self.assertEquals(self.ed.TargetEnd, 4)
+
 	def testTargetEscape(self):
 		# Checks that a literal \ can be in the replacement. Bug #2959876
-		self.ed.SetText(0, b"abcd")
+		self.ed.SetContents(b"abcd")
 		self.ed.TargetStart = 1
 		self.ed.TargetEnd = 3
 		rep = b"\\\\n"
@@ -387,6 +643,18 @@ class TestSimple(unittest.TestCase):
 		self.assertEquals(self.ed.WordEndPosition(5, 0), 6)
 		self.assertEquals(self.ed.WordEndPosition(6, 0), 8)
 
+	def testWordRange(self):
+		text = b"ab cd\t++"
+		self.ed.AddText(len(text), text)
+		self.assertEquals(self.ed.IsRangeWord(0, 0), 0)
+		self.assertEquals(self.ed.IsRangeWord(0, 1), 0)
+		self.assertEquals(self.ed.IsRangeWord(0, 2), 1)
+		self.assertEquals(self.ed.IsRangeWord(0, 3), 0)
+		self.assertEquals(self.ed.IsRangeWord(0, 4), 0)
+		self.assertEquals(self.ed.IsRangeWord(0, 5), 1)
+		self.assertEquals(self.ed.IsRangeWord(6, 7), 0)
+		self.assertEquals(self.ed.IsRangeWord(6, 8), 1)
+
 MODI = 1
 UNDO = 2
 REDO = 4
@@ -394,7 +662,7 @@ REDO = 4
 class TestContainerUndo(unittest.TestCase):
 
 	def setUp(self):
-		self.xite = XiteWin.xiteFrame
+		self.xite = Xite.xiteFrame
 		self.ed = self.xite.ed
 		self.ed.ClearAll()
 		self.ed.EmptyUndoBuffer()
@@ -549,7 +817,7 @@ class TestKeyCommands(unittest.TestCase):
 	""" These commands are normally assigned to keys and take no arguments """
 
 	def setUp(self):
-		self.xite = XiteWin.xiteFrame
+		self.xite = Xite.xiteFrame
 		self.ed = self.xite.ed
 		self.ed.ClearAll()
 		self.ed.EmptyUndoBuffer()
@@ -630,7 +898,7 @@ class TestKeyCommands(unittest.TestCase):
 class TestMarkers(unittest.TestCase):
 
 	def setUp(self):
-		self.xite = XiteWin.xiteFrame
+		self.xite = Xite.xiteFrame
 		self.ed = self.xite.ed
 		self.ed.ClearAll()
 		self.ed.EmptyUndoBuffer()
@@ -641,6 +909,16 @@ class TestMarkers(unittest.TestCase):
 		self.assertEquals(self.ed.MarkerLineFromHandle(handle), 1)
 		self.ed.MarkerDelete(1,1)
 		self.assertEquals(self.ed.MarkerLineFromHandle(handle), -1)
+
+	def testTwiceAddedDelete(self):
+		handle = self.ed.MarkerAdd(1,1)
+		self.assertEquals(self.ed.MarkerGet(1), 2)
+		handle2 = self.ed.MarkerAdd(1,1)
+		self.assertEquals(self.ed.MarkerGet(1), 2)
+		self.ed.MarkerDelete(1,1)
+		self.assertEquals(self.ed.MarkerGet(1), 2)
+		self.ed.MarkerDelete(1,1)
+		self.assertEquals(self.ed.MarkerGet(1), 0)
 
 	def testMarkerDeleteAll(self):
 		h1 = self.ed.MarkerAdd(0,1)
@@ -705,7 +983,7 @@ class TestMarkers(unittest.TestCase):
 class TestIndicators(unittest.TestCase):
 
 	def setUp(self):
-		self.xite = XiteWin.xiteFrame
+		self.xite = Xite.xiteFrame
 		self.ed = self.xite.ed
 		self.ed.ClearAll()
 		self.ed.EmptyUndoBuffer()
@@ -718,15 +996,48 @@ class TestIndicators(unittest.TestCase):
 		self.assertEquals(self.ed.IndicGetStyle(0), 2)
 		self.assertEquals(self.ed.IndicGetFore(0), 0xff0080)
 
+	def testIndicatorFill(self):
+		self.ed.InsertText(0, b"abc")
+		self.ed.IndicatorCurrent = 3
+		self.ed.IndicatorFillRange(1,1)
+		self.assertEquals(self.ed.IndicatorValueAt(3, 0), 0)
+		self.assertEquals(self.ed.IndicatorValueAt(3, 1), 1)
+		self.assertEquals(self.ed.IndicatorValueAt(3, 2), 0)
+		self.assertEquals(self.ed.IndicatorStart(3, 0), 0)
+		self.assertEquals(self.ed.IndicatorEnd(3, 0), 1)
+		self.assertEquals(self.ed.IndicatorStart(3, 1), 1)
+		self.assertEquals(self.ed.IndicatorEnd(3, 1), 2)
+		self.assertEquals(self.ed.IndicatorStart(3, 2), 2)
+		self.assertEquals(self.ed.IndicatorEnd(3, 2), 3)
+
+	def testIndicatorAtEnd(self):
+		self.ed.InsertText(0, b"ab")
+		self.ed.IndicatorCurrent = 3
+		self.ed.IndicatorFillRange(1,1)
+		self.assertEquals(self.ed.IndicatorValueAt(3, 0), 0)
+		self.assertEquals(self.ed.IndicatorValueAt(3, 1), 1)
+		self.assertEquals(self.ed.IndicatorStart(3, 0), 0)
+		self.assertEquals(self.ed.IndicatorEnd(3, 0), 1)
+		self.assertEquals(self.ed.IndicatorStart(3, 1), 1)
+		self.assertEquals(self.ed.IndicatorEnd(3, 1), 2)
+		self.ed.DeleteRange(1, 1)
+		# Now only one character left and does not have indicator so indicator 3 is null
+		self.assertEquals(self.ed.IndicatorValueAt(3, 0), 0)
+		# Since null, remaining calls return 0
+		self.assertEquals(self.ed.IndicatorStart(3, 0), 0)
+		self.assertEquals(self.ed.IndicatorEnd(3, 0), 0)
+		self.assertEquals(self.ed.IndicatorStart(3, 1), 0)
+		self.assertEquals(self.ed.IndicatorEnd(3, 1), 0)
+
 class TestScrolling(unittest.TestCase):
 
 	def setUp(self):
-		self.xite = XiteWin.xiteFrame
+		self.xite = Xite.xiteFrame
 		self.ed = self.xite.ed
 		self.ed.ClearAll()
 		self.ed.EmptyUndoBuffer()
 		# 150 should be enough lines
-		self.ed.InsertText(0, b"a\n" * 150)
+		self.ed.InsertText(0, b"a" * 150 + b"\n" * 150)
 
 	def testTop(self):
 		self.ed.GotoLine(0)
@@ -736,6 +1047,14 @@ class TestScrolling(unittest.TestCase):
 		self.ed.GotoLine(0)
 		self.ed.LineScroll(0, 3)
 		self.assertEquals(self.ed.FirstVisibleLine, 3)
+		self.ed.LineScroll(0, -2)
+		self.assertEquals(self.ed.FirstVisibleLine, 1)
+		self.assertEquals(self.ed.XOffset, 0)
+		self.ed.LineScroll(10, 0)
+		self.assertGreater(self.ed.XOffset, 0)
+		scroll_width = float(self.ed.XOffset) / 10
+		self.ed.LineScroll(-2, 0)
+		self.assertEquals(self.ed.XOffset, scroll_width * 8)
 
 	def testVisibleLine(self):
 		self.ed.FirstVisibleLine = 7
@@ -744,7 +1063,7 @@ class TestScrolling(unittest.TestCase):
 class TestSearch(unittest.TestCase):
 
 	def setUp(self):
-		self.xite = XiteWin.xiteFrame
+		self.xite = Xite.xiteFrame
 		self.ed = self.xite.ed
 		self.ed.ClearAll()
 		self.ed.EmptyUndoBuffer()
@@ -808,18 +1127,86 @@ class TestSearch(unittest.TestCase):
 	def testPhilippeREFind(self):
 		# Requires 1.,72
 		flags = self.ed.SCFIND_REGEXP
-		self.assertEquals(0, self.ed.FindBytes(0, self.ed.Length, "\w", flags))
-		self.assertEquals(1, self.ed.FindBytes(0, self.ed.Length, "\W", flags))
-		self.assertEquals(-1, self.ed.FindBytes(0, self.ed.Length, "\d", flags))
-		self.assertEquals(0, self.ed.FindBytes(0, self.ed.Length, "\D", flags))
-		self.assertEquals(1, self.ed.FindBytes(0, self.ed.Length, "\s", flags))
-		self.assertEquals(0, self.ed.FindBytes(0, self.ed.Length, "\S", flags))
-		self.assertEquals(2, self.ed.FindBytes(0, self.ed.Length, "\x62", flags))
+		self.assertEquals(0, self.ed.FindBytes(0, self.ed.Length, b"\w", flags))
+		self.assertEquals(1, self.ed.FindBytes(0, self.ed.Length, b"\W", flags))
+		self.assertEquals(-1, self.ed.FindBytes(0, self.ed.Length, b"\d", flags))
+		self.assertEquals(0, self.ed.FindBytes(0, self.ed.Length, b"\D", flags))
+		self.assertEquals(1, self.ed.FindBytes(0, self.ed.Length, b"\s", flags))
+		self.assertEquals(0, self.ed.FindBytes(0, self.ed.Length, b"\S", flags))
+		self.assertEquals(2, self.ed.FindBytes(0, self.ed.Length, b"\x62", flags))
+
+	def testRENonASCII(self):
+		self.ed.InsertText(0, b"\xAD")
+		flags = self.ed.SCFIND_REGEXP
+		self.assertEquals(-1, self.ed.FindBytes(0, self.ed.Length, b"\\x10", flags))
+		self.assertEquals(2, self.ed.FindBytes(0, self.ed.Length, b"\\x09", flags))
+		self.assertEquals(-1, self.ed.FindBytes(0, self.ed.Length, b"\\xAB", flags))
+		self.assertEquals(0, self.ed.FindBytes(0, self.ed.Length, b"\\xAD", flags))
+
+	def testMultipleAddSelection(self):
+		# Find both 'a'
+		self.assertEquals(self.ed.MultipleSelection, 0)
+		self.ed.MultipleSelection = 1
+		self.assertEquals(self.ed.MultipleSelection, 1)
+		self.ed.TargetWholeDocument()
+		self.ed.SearchFlags = 0
+		self.ed.SetSelection(1, 0)
+		self.assertEquals(self.ed.Selections, 1)
+		self.ed.MultipleSelectAddNext()
+		self.assertEquals(self.ed.Selections, 2)
+		self.assertEquals(self.ed.GetSelectionNAnchor(0), 0)
+		self.assertEquals(self.ed.GetSelectionNCaret(0), 1)
+		self.assertEquals(self.ed.GetSelectionNAnchor(1), 8)
+		self.assertEquals(self.ed.GetSelectionNCaret(1), 9)
+		self.ed.MultipleSelection = 0
+
+	def testMultipleAddEachSelection(self):
+		# Find each 'b'
+		self.assertEquals(self.ed.MultipleSelection, 0)
+		self.ed.MultipleSelection = 1
+		self.assertEquals(self.ed.MultipleSelection, 1)
+		self.ed.TargetWholeDocument()
+		self.ed.SearchFlags = 0
+		self.ed.SetSelection(3, 2)
+		self.assertEquals(self.ed.Selections, 1)
+		self.ed.MultipleSelectAddEach()
+		self.assertEquals(self.ed.Selections, 2)
+		self.assertEquals(self.ed.GetSelectionNAnchor(0), 2)
+		self.assertEquals(self.ed.GetSelectionNCaret(0), 3)
+		self.assertEquals(self.ed.GetSelectionNAnchor(1), 6)
+		self.assertEquals(self.ed.GetSelectionNCaret(1), 7)
+		self.ed.MultipleSelection = 0
+
+class TestRepresentations(unittest.TestCase):
+
+	def setUp(self):
+		self.xite = Xite.xiteFrame
+		self.ed = self.xite.ed
+		self.ed.ClearAll()
+		self.ed.EmptyUndoBuffer()
+
+	def testGetControl(self):
+		result = self.ed.GetRepresentation(b"\001")
+		self.assertEquals(result, b"SOH")
+
+	def testClearControl(self):
+		result = self.ed.GetRepresentation(b"\002")
+		self.assertEquals(result, b"STX")
+		self.ed.ClearRepresentation(b"\002")
+		result = self.ed.GetRepresentation(b"\002")
+		self.assertEquals(result, b"")
+
+	def testSetOhm(self):
+		ohmSign = b"\xe2\x84\xa6"
+		ohmExplained = b"U+2126 \xe2\x84\xa6"
+		self.ed.SetRepresentation(ohmSign, ohmExplained)
+		result = self.ed.GetRepresentation(ohmSign)
+		self.assertEquals(result, ohmExplained)
 
 class TestProperties(unittest.TestCase):
 
 	def setUp(self):
-		self.xite = XiteWin.xiteFrame
+		self.xite = Xite.xiteFrame
 		self.ed = self.xite.ed
 		self.ed.ClearAll()
 		self.ed.EmptyUndoBuffer()
@@ -827,20 +1214,16 @@ class TestProperties(unittest.TestCase):
 	def testSet(self):
 		self.ed.SetProperty(b"test", b"12")
 		self.assertEquals(self.ed.GetPropertyInt(b"test"), 12)
-		result = b"\0" * 10
-		length = self.ed.GetProperty(b"test", result)
-		result = result[:length]
+		result = self.ed.GetProperty(b"test")
 		self.assertEquals(result, b"12")
 		self.ed.SetProperty(b"test.plus", b"[$(test)]")
-		result = b"\0" * 10
-		length = self.ed.GetPropertyExpanded(b"test.plus", result)
-		result = result[:length]
+		result = self.ed.GetPropertyExpanded(b"test.plus")
 		self.assertEquals(result, b"[12]")
 
 class TestTextMargin(unittest.TestCase):
 
 	def setUp(self):
-		self.xite = XiteWin.xiteFrame
+		self.xite = Xite.xiteFrame
 		self.ed = self.xite.ed
 		self.ed.ClearAll()
 		self.ed.EmptyUndoBuffer()
@@ -849,23 +1232,18 @@ class TestTextMargin(unittest.TestCase):
 
 	def testAscent(self):
 		lineHeight = self.ed.TextHeight(0)
-		self.ed.ExtraAscent
 		self.assertEquals(self.ed.ExtraAscent, 0)
 		self.assertEquals(self.ed.ExtraDescent, 0)
 		self.ed.ExtraAscent = 1
 		self.assertEquals(self.ed.ExtraAscent, 1)
 		self.ed.ExtraDescent = 2
 		self.assertEquals(self.ed.ExtraDescent, 2)
-		# Allow line height to recalculate
-		self.xite.DoEvents()
 		lineHeightIncreased = self.ed.TextHeight(0)
 		self.assertEquals(lineHeightIncreased, lineHeight + 2 + 1)
 
 	def testTextMargin(self):
 		self.ed.MarginSetText(0, self.txt)
-		result = b"\0" * 10
-		length = self.ed.MarginGetText(0, result)
-		result = result[:length]
+		result = self.ed.MarginGetText(0)
 		self.assertEquals(result, self.txt)
 		self.ed.MarginTextClearAll()
 
@@ -879,9 +1257,7 @@ class TestTextMargin(unittest.TestCase):
 		styles = b"\001\002\003\004"
 		self.ed.MarginSetText(0, self.txt)
 		self.ed.MarginSetStyles(0, styles)
-		result = b"\0" * 10
-		length = self.ed.MarginGetStyles(0, result)
-		result = result[:length]
+		result = self.ed.MarginGetStyles(0)
 		self.assertEquals(result, styles)
 		self.ed.MarginTextClearAll()
 
@@ -892,7 +1268,7 @@ class TestTextMargin(unittest.TestCase):
 class TestAnnotation(unittest.TestCase):
 
 	def setUp(self):
-		self.xite = XiteWin.xiteFrame
+		self.xite = Xite.xiteFrame
 		self.ed = self.xite.ed
 		self.ed.ClearAll()
 		self.ed.EmptyUndoBuffer()
@@ -903,10 +1279,8 @@ class TestAnnotation(unittest.TestCase):
 		self.assertEquals(self.ed.AnnotationGetLines(), 0)
 		self.ed.AnnotationSetText(0, self.txt)
 		self.assertEquals(self.ed.AnnotationGetLines(), 1)
-		result = b"\0" * 10
-		length = self.ed.AnnotationGetText(0, result)
-		self.assertEquals(length, 4)
-		result = result[:length]
+		result = self.ed.AnnotationGetText(0)
+		self.assertEquals(len(result), 4)
 		self.assertEquals(result, self.txt)
 		self.ed.AnnotationClearAll()
 
@@ -920,11 +1294,21 @@ class TestAnnotation(unittest.TestCase):
 		styles = b"\001\002\003\004"
 		self.ed.AnnotationSetText(0, self.txt)
 		self.ed.AnnotationSetStyles(0, styles)
-		result = b"\0" * 10
-		length = self.ed.AnnotationGetStyles(0, result)
-		result = result[:length]
+		result = self.ed.AnnotationGetStyles(0)
 		self.assertEquals(result, styles)
 		self.ed.AnnotationClearAll()
+
+	def testExtendedStyles(self):
+		start0 = self.ed.AllocateExtendedStyles(0)
+		self.assertEquals(start0, 256)
+		start1 = self.ed.AllocateExtendedStyles(10)
+		self.assertEquals(start1, 256)
+		start2 = self.ed.AllocateExtendedStyles(20)
+		self.assertEquals(start2, start1 + 10)
+		# Reset by changing lexer
+		self.ed.ReleaseAllExtendedStyles()
+		start0 = self.ed.AllocateExtendedStyles(0)
+		self.assertEquals(start0, 256)
 
 	def testTextAnnotationStyleOffset(self):
 		self.ed.AnnotationSetStyleOffset(300)
@@ -939,7 +1323,7 @@ class TestAnnotation(unittest.TestCase):
 class TestMultiSelection(unittest.TestCase):
 
 	def setUp(self):
-		self.xite = XiteWin.xiteFrame
+		self.xite = Xite.xiteFrame
 		self.ed = self.xite.ed
 		self.ed.ClearAll()
 		self.ed.EmptyUndoBuffer()
@@ -1063,9 +1447,366 @@ class TestMultiSelection(unittest.TestCase):
 		self.assertEquals(self.ed.GetSelectionNCaret(0), 3)
 		self.assertEquals(self.ed.GetSelectionNCaretVirtualSpace(0), 0)
 
+	def testDropSelectionN(self):
+		self.ed.SetSelection(1, 2)
+		# Only one so dropping has no effect
+		self.ed.DropSelectionN(0)
+		self.assertEquals(self.ed.Selections, 1)
+		self.ed.AddSelection(4, 5)
+		self.assertEquals(self.ed.Selections, 2)
+		# Outside bounds so no effect
+		self.ed.DropSelectionN(2)
+		self.assertEquals(self.ed.Selections, 2)
+		# Dropping before main so main decreases
+		self.ed.DropSelectionN(0)
+		self.assertEquals(self.ed.Selections, 1)
+		self.assertEquals(self.ed.MainSelection, 0)
+		self.assertEquals(self.ed.GetSelectionNCaret(0), 4)
+		self.assertEquals(self.ed.GetSelectionNAnchor(0), 5)
+
+		self.ed.AddSelection(10, 11)
+		self.ed.AddSelection(20, 21)
+		self.assertEquals(self.ed.Selections, 3)
+		self.assertEquals(self.ed.MainSelection, 2)
+		self.ed.MainSelection = 1
+		# Dropping after main so main does not change
+		self.ed.DropSelectionN(2)
+		self.assertEquals(self.ed.MainSelection, 1)
+
+		# Dropping first selection so wraps around to new last.
+		self.ed.AddSelection(30, 31)
+		self.ed.AddSelection(40, 41)
+		self.assertEquals(self.ed.Selections, 4)
+		self.ed.MainSelection = 0
+		self.ed.DropSelectionN(0)
+		self.assertEquals(self.ed.MainSelection, 2)
+
+class TestModalSelection(unittest.TestCase):
+
+	def setUp(self):
+		self.xite = Xite.xiteFrame
+		self.ed = self.xite.ed
+		self.ed.ClearAll()
+		self.ed.EmptyUndoBuffer()
+		# 3 lines of 3 characters
+		t = b"xxx\nxxx\nxxx"
+		self.ed.AddText(len(t), t)
+
+	def testCharacterSelection(self):
+		self.ed.SetSelection(1, 1)
+		self.assertEquals(self.ed.Selections, 1)
+		self.assertEquals(self.ed.MainSelection, 0)
+		self.assertEquals(self.ed.GetSelectionNCaret(0), 1)
+		self.assertEquals(self.ed.GetSelectionNAnchor(0), 1)
+		self.ed.SelectionMode = self.ed.SC_SEL_STREAM
+		self.assertEquals(self.ed.Selections, 1)
+		self.assertEquals(self.ed.MainSelection, 0)
+		self.assertEquals(self.ed.GetSelectionNCaret(0), 1)
+		self.assertEquals(self.ed.GetSelectionNAnchor(0), 1)
+		self.ed.CharRight()
+		self.assertEquals(self.ed.Selections, 1)
+		self.assertEquals(self.ed.MainSelection, 0)
+		self.assertEquals(self.ed.GetSelectionNCaret(0), 2)
+		self.assertEquals(self.ed.GetSelectionNAnchor(0), 1)
+		self.ed.LineDown()
+		self.assertEquals(self.ed.Selections, 1)
+		self.assertEquals(self.ed.MainSelection, 0)
+		self.assertEquals(self.ed.GetSelectionNCaret(0), 6)
+		self.assertEquals(self.ed.GetSelectionNAnchor(0), 1)
+		self.ed.ClearSelections()
+
+	def testRectangleSelection(self):
+		self.ed.SetSelection(1, 1)
+		self.assertEquals(self.ed.Selections, 1)
+		self.assertEquals(self.ed.MainSelection, 0)
+		self.assertEquals(self.ed.GetSelectionNCaret(0), 1)
+		self.assertEquals(self.ed.GetSelectionNAnchor(0), 1)
+		self.ed.SelectionMode = self.ed.SC_SEL_RECTANGLE
+		self.assertEquals(self.ed.Selections, 1)
+		self.assertEquals(self.ed.MainSelection, 0)
+		self.assertEquals(self.ed.GetSelectionNCaret(0), 1)
+		self.assertEquals(self.ed.GetSelectionNAnchor(0), 1)
+		self.ed.CharRight()
+		self.assertEquals(self.ed.Selections, 1)
+		self.assertEquals(self.ed.MainSelection, 0)
+		self.assertEquals(self.ed.GetSelectionNCaret(0), 2)
+		self.assertEquals(self.ed.GetSelectionNAnchor(0), 1)
+		self.ed.LineDown()
+		self.assertEquals(self.ed.Selections, 2)
+		self.assertEquals(self.ed.MainSelection, 1)
+		self.assertEquals(self.ed.GetSelectionNCaret(0), 2)
+		self.assertEquals(self.ed.GetSelectionNAnchor(0), 1)
+		self.assertEquals(self.ed.GetSelectionNCaret(1), 6)
+		self.assertEquals(self.ed.GetSelectionNAnchor(1), 5)
+		self.ed.ClearSelections()
+
+	def testLinesSelection(self):
+		self.ed.SetSelection(1, 1)
+		self.assertEquals(self.ed.Selections, 1)
+		self.assertEquals(self.ed.MainSelection, 0)
+		self.assertEquals(self.ed.GetSelectionNCaret(0), 1)
+		self.assertEquals(self.ed.GetSelectionNAnchor(0), 1)
+		self.ed.SelectionMode = self.ed.SC_SEL_LINES
+		self.assertEquals(self.ed.Selections, 1)
+		self.assertEquals(self.ed.MainSelection, 0)
+		self.assertEquals(self.ed.GetSelectionNCaret(0), 0)
+		self.assertEquals(self.ed.GetSelectionNAnchor(0), 3)
+		self.ed.CharRight()
+		self.assertEquals(self.ed.Selections, 1)
+		self.assertEquals(self.ed.MainSelection, 0)
+		self.assertEquals(self.ed.GetSelectionNCaret(0), 0)
+		self.assertEquals(self.ed.GetSelectionNAnchor(0), 3)
+		self.ed.LineDown()
+		self.assertEquals(self.ed.Selections, 1)
+		self.assertEquals(self.ed.MainSelection, 0)
+		self.assertEquals(self.ed.GetSelectionNCaret(0), 7)
+		self.assertEquals(self.ed.GetSelectionNAnchor(0), 0)
+		self.ed.ClearSelections()
+
+class TestStyleAttributes(unittest.TestCase):
+	""" These tests are just to ensure that the calls set and retrieve values.
+	They do not check the visual appearance of the style attributes.
+	"""
+	def setUp(self):
+		self.xite = Xite.xiteFrame
+		self.ed = self.xite.ed
+		self.ed.ClearAll()
+		self.ed.EmptyUndoBuffer()
+		self.testColour = 0x171615
+		self.testFont = b"Georgia"
+
+	def tearDown(self):
+		self.ed.StyleResetDefault()
+
+	def testFont(self):
+		self.ed.StyleSetFont(self.ed.STYLE_DEFAULT, self.testFont)
+		self.assertEquals(self.ed.StyleGetFont(self.ed.STYLE_DEFAULT), self.testFont)
+
+	def testSize(self):
+		self.ed.StyleSetSize(self.ed.STYLE_DEFAULT, 12)
+		self.assertEquals(self.ed.StyleGetSize(self.ed.STYLE_DEFAULT), 12)
+		self.assertEquals(self.ed.StyleGetSizeFractional(self.ed.STYLE_DEFAULT), 12*self.ed.SC_FONT_SIZE_MULTIPLIER)
+		self.ed.StyleSetSizeFractional(self.ed.STYLE_DEFAULT, 1234)
+		self.assertEquals(self.ed.StyleGetSizeFractional(self.ed.STYLE_DEFAULT), 1234)
+
+	def testBold(self):
+		self.ed.StyleSetBold(self.ed.STYLE_DEFAULT, 1)
+		self.assertEquals(self.ed.StyleGetBold(self.ed.STYLE_DEFAULT), 1)
+		self.assertEquals(self.ed.StyleGetWeight(self.ed.STYLE_DEFAULT), self.ed.SC_WEIGHT_BOLD)
+		self.ed.StyleSetWeight(self.ed.STYLE_DEFAULT, 530)
+		self.assertEquals(self.ed.StyleGetWeight(self.ed.STYLE_DEFAULT), 530)
+
+	def testItalic(self):
+		self.ed.StyleSetItalic(self.ed.STYLE_DEFAULT, 1)
+		self.assertEquals(self.ed.StyleGetItalic(self.ed.STYLE_DEFAULT), 1)
+
+	def testUnderline(self):
+		self.assertEquals(self.ed.StyleGetUnderline(self.ed.STYLE_DEFAULT), 0)
+		self.ed.StyleSetUnderline(self.ed.STYLE_DEFAULT, 1)
+		self.assertEquals(self.ed.StyleGetUnderline(self.ed.STYLE_DEFAULT), 1)
+
+	def testFore(self):
+		self.assertEquals(self.ed.StyleGetFore(self.ed.STYLE_DEFAULT), 0)
+		self.ed.StyleSetFore(self.ed.STYLE_DEFAULT, self.testColour)
+		self.assertEquals(self.ed.StyleGetFore(self.ed.STYLE_DEFAULT), self.testColour)
+
+	def testBack(self):
+		self.assertEquals(self.ed.StyleGetBack(self.ed.STYLE_DEFAULT), 0xffffff)
+		self.ed.StyleSetBack(self.ed.STYLE_DEFAULT, self.testColour)
+		self.assertEquals(self.ed.StyleGetBack(self.ed.STYLE_DEFAULT), self.testColour)
+
+	def testEOLFilled(self):
+		self.assertEquals(self.ed.StyleGetEOLFilled(self.ed.STYLE_DEFAULT), 0)
+		self.ed.StyleSetEOLFilled(self.ed.STYLE_DEFAULT, 1)
+		self.assertEquals(self.ed.StyleGetEOLFilled(self.ed.STYLE_DEFAULT), 1)
+
+	def testCharacterSet(self):
+		self.ed.StyleSetCharacterSet(self.ed.STYLE_DEFAULT, self.ed.SC_CHARSET_RUSSIAN)
+		self.assertEquals(self.ed.StyleGetCharacterSet(self.ed.STYLE_DEFAULT), self.ed.SC_CHARSET_RUSSIAN)
+
+	def testCase(self):
+		self.assertEquals(self.ed.StyleGetCase(self.ed.STYLE_DEFAULT), self.ed.SC_CASE_MIXED)
+		self.ed.StyleSetCase(self.ed.STYLE_DEFAULT, self.ed.SC_CASE_UPPER)
+		self.assertEquals(self.ed.StyleGetCase(self.ed.STYLE_DEFAULT), self.ed.SC_CASE_UPPER)
+		self.ed.StyleSetCase(self.ed.STYLE_DEFAULT, self.ed.SC_CASE_LOWER)
+		self.assertEquals(self.ed.StyleGetCase(self.ed.STYLE_DEFAULT), self.ed.SC_CASE_LOWER)
+
+	def testVisible(self):
+		self.assertEquals(self.ed.StyleGetVisible(self.ed.STYLE_DEFAULT), 1)
+		self.ed.StyleSetVisible(self.ed.STYLE_DEFAULT, 0)
+		self.assertEquals(self.ed.StyleGetVisible(self.ed.STYLE_DEFAULT), 0)
+
+	def testChangeable(self):
+		self.assertEquals(self.ed.StyleGetChangeable(self.ed.STYLE_DEFAULT), 1)
+		self.ed.StyleSetChangeable(self.ed.STYLE_DEFAULT, 0)
+		self.assertEquals(self.ed.StyleGetChangeable(self.ed.STYLE_DEFAULT), 0)
+
+	def testHotSpot(self):
+		self.assertEquals(self.ed.StyleGetHotSpot(self.ed.STYLE_DEFAULT), 0)
+		self.ed.StyleSetHotSpot(self.ed.STYLE_DEFAULT, 1)
+		self.assertEquals(self.ed.StyleGetHotSpot(self.ed.STYLE_DEFAULT), 1)
+
+	def testFoldDisplayTextStyle(self):
+		self.assertEquals(self.ed.FoldDisplayTextGetStyle(), 0)
+		self.ed.FoldDisplayTextSetStyle(self.ed.SC_FOLDDISPLAYTEXT_BOXED)
+		self.assertEquals(self.ed.FoldDisplayTextGetStyle(), self.ed.SC_FOLDDISPLAYTEXT_BOXED)
+
+	def testDefaultFoldDisplayText(self):
+		self.assertEquals(self.ed.GetDefaultFoldDisplayText(), b"")
+		self.ed.SetDefaultFoldDisplayText(0, b"...")
+		self.assertEquals(self.ed.GetDefaultFoldDisplayText(), b"...")
+
+class TestIndices(unittest.TestCase):
+	def setUp(self):
+		self.xite = Xite.xiteFrame
+		self.ed = self.xite.ed
+		self.ed.ClearAll()
+		self.ed.EmptyUndoBuffer()
+		self.ed.SetCodePage(65001)
+		# Text includes one non-BMP character
+		t = "aå\U00010348ﬂﬔ-\n"
+		self.tv = t.encode("UTF-8")
+
+	def tearDown(self):
+		self.ed.SetCodePage(0)
+
+	def testAllocation(self):
+		self.assertEquals(self.ed.GetLineCharacterIndex(), self.ed.SC_LINECHARACTERINDEX_NONE)
+		self.ed.AllocateLineCharacterIndex(self.ed.SC_LINECHARACTERINDEX_UTF32)
+		self.assertEquals(self.ed.GetLineCharacterIndex(), self.ed.SC_LINECHARACTERINDEX_UTF32)
+		self.ed.ReleaseLineCharacterIndex(self.ed.SC_LINECHARACTERINDEX_UTF32)
+		self.assertEquals(self.ed.GetLineCharacterIndex(), self.ed.SC_LINECHARACTERINDEX_NONE)
+
+	def testUTF32(self):
+		self.assertEquals(self.ed.GetLineCharacterIndex(), self.ed.SC_LINECHARACTERINDEX_NONE)
+		self.ed.SetContents(self.tv)
+		self.ed.AllocateLineCharacterIndex(self.ed.SC_LINECHARACTERINDEX_UTF32)
+		self.assertEquals(self.ed.IndexPositionFromLine(0, self.ed.SC_LINECHARACTERINDEX_UTF32), 0)
+		self.assertEquals(self.ed.IndexPositionFromLine(1, self.ed.SC_LINECHARACTERINDEX_UTF32), 7)
+		self.ed.ReleaseLineCharacterIndex(self.ed.SC_LINECHARACTERINDEX_UTF32)
+		self.assertEquals(self.ed.GetLineCharacterIndex(), self.ed.SC_LINECHARACTERINDEX_NONE)
+
+	def testUTF16(self):
+		self.assertEquals(self.ed.GetLineCharacterIndex(), self.ed.SC_LINECHARACTERINDEX_NONE)
+		t = "aå\U00010348ﬂﬔ-"
+		tv = t.encode("UTF-8")
+		self.ed.SetContents(self.tv)
+		self.ed.AllocateLineCharacterIndex(self.ed.SC_LINECHARACTERINDEX_UTF16)
+		self.assertEquals(self.ed.IndexPositionFromLine(0, self.ed.SC_LINECHARACTERINDEX_UTF16), 0)
+		self.assertEquals(self.ed.IndexPositionFromLine(1, self.ed.SC_LINECHARACTERINDEX_UTF16), 8)
+		self.ed.ReleaseLineCharacterIndex(self.ed.SC_LINECHARACTERINDEX_UTF16)
+		self.assertEquals(self.ed.GetLineCharacterIndex(), self.ed.SC_LINECHARACTERINDEX_NONE)
+
+	def testBoth(self):
+		# Set text before turning indices on
+		self.assertEquals(self.ed.GetLineCharacterIndex(), self.ed.SC_LINECHARACTERINDEX_NONE)
+		self.ed.SetContents(self.tv)
+		self.ed.AllocateLineCharacterIndex(self.ed.SC_LINECHARACTERINDEX_UTF32+self.ed.SC_LINECHARACTERINDEX_UTF16)
+		self.assertEquals(self.ed.IndexPositionFromLine(0, self.ed.SC_LINECHARACTERINDEX_UTF32), 0)
+		self.assertEquals(self.ed.IndexPositionFromLine(1, self.ed.SC_LINECHARACTERINDEX_UTF32), 7)
+		self.assertEquals(self.ed.IndexPositionFromLine(0, self.ed.SC_LINECHARACTERINDEX_UTF16), 0)
+		self.assertEquals(self.ed.IndexPositionFromLine(1, self.ed.SC_LINECHARACTERINDEX_UTF16), 8)
+		# Test the inverse: position->line
+		self.assertEquals(self.ed.LineFromIndexPosition(0, self.ed.SC_LINECHARACTERINDEX_UTF32), 0)
+		self.assertEquals(self.ed.LineFromIndexPosition(7, self.ed.SC_LINECHARACTERINDEX_UTF32), 1)
+		self.assertEquals(self.ed.LineFromIndexPosition(0, self.ed.SC_LINECHARACTERINDEX_UTF16), 0)
+		self.assertEquals(self.ed.LineFromIndexPosition(8, self.ed.SC_LINECHARACTERINDEX_UTF16), 1)
+		self.ed.ReleaseLineCharacterIndex(self.ed.SC_LINECHARACTERINDEX_UTF32+self.ed.SC_LINECHARACTERINDEX_UTF16)
+		self.assertEquals(self.ed.GetLineCharacterIndex(), self.ed.SC_LINECHARACTERINDEX_NONE)
+
+	def testMaintenance(self):
+		# Set text after turning indices on
+		self.assertEquals(self.ed.GetLineCharacterIndex(), self.ed.SC_LINECHARACTERINDEX_NONE)
+		self.ed.AllocateLineCharacterIndex(self.ed.SC_LINECHARACTERINDEX_UTF32+self.ed.SC_LINECHARACTERINDEX_UTF16)
+		self.ed.SetContents(self.tv)
+		self.assertEquals(self.ed.IndexPositionFromLine(0, self.ed.SC_LINECHARACTERINDEX_UTF32), 0)
+		self.assertEquals(self.ed.IndexPositionFromLine(1, self.ed.SC_LINECHARACTERINDEX_UTF32), 7)
+		self.assertEquals(self.ed.IndexPositionFromLine(0, self.ed.SC_LINECHARACTERINDEX_UTF16), 0)
+		self.assertEquals(self.ed.IndexPositionFromLine(1, self.ed.SC_LINECHARACTERINDEX_UTF16), 8)
+		self.ed.ReleaseLineCharacterIndex(self.ed.SC_LINECHARACTERINDEX_UTF32+self.ed.SC_LINECHARACTERINDEX_UTF16)
+		self.assertEquals(self.ed.GetLineCharacterIndex(), self.ed.SC_LINECHARACTERINDEX_NONE)
+
+class TestCharacterNavigation(unittest.TestCase):
+	def setUp(self):
+		self.xite = Xite.xiteFrame
+		self.ed = self.xite.ed
+		self.ed.ClearAll()
+		self.ed.EmptyUndoBuffer()
+		self.ed.SetCodePage(65001)
+
+	def tearDown(self):
+		self.ed.SetCodePage(0)
+
+	def testBeforeAfter(self):
+		t = "aåﬂﬔ-"
+		tv = t.encode("UTF-8")
+		self.ed.SetContents(tv)
+		pos = 0
+		for i in range(len(t)-1):
+			after = self.ed.PositionAfter(pos)
+			self.assert_(after > i)
+			back = self.ed.PositionBefore(after)
+			self.assertEquals(pos, back)
+			pos = after
+
+	def testRelative(self):
+		# \x61  \xc3\xa5  \xef\xac\x82   \xef\xac\x94   \x2d
+		t = "aåﬂﬔ-"
+		tv = t.encode("UTF-8")
+		self.ed.SetContents(tv)
+		self.assertEquals(self.ed.PositionRelative(1, 2), 6)
+		self.assertEquals(self.ed.CountCharacters(1, 6), 2)
+		self.assertEquals(self.ed.PositionRelative(6, -2), 1)
+		pos = 0
+		previous = 0
+		for i in range(1, len(t)):
+			after = self.ed.PositionRelative(pos, i)
+			self.assert_(after > pos)
+			self.assert_(after > previous)
+			previous = after
+		pos = len(t)
+		previous = pos
+		for i in range(1, len(t)-1):
+			after = self.ed.PositionRelative(pos, -i)
+			self.assert_(after < pos)
+			self.assert_(after < previous)
+			previous = after
+
+	def testRelativeNonBOM(self):
+		# \x61  \xF0\x90\x8D\x88  \xef\xac\x82   \xef\xac\x94   \x2d
+		t = "a\U00010348ﬂﬔ-"
+		tv = t.encode("UTF-8")
+		self.ed.SetContents(tv)
+		self.assertEquals(self.ed.PositionRelative(1, 2), 8)
+		self.assertEquals(self.ed.CountCharacters(1, 8), 2)
+		self.assertEquals(self.ed.CountCodeUnits(1, 8), 3)
+		self.assertEquals(self.ed.PositionRelative(8, -2), 1)
+		self.assertEquals(self.ed.PositionRelativeCodeUnits(8, -3), 1)
+		pos = 0
+		previous = 0
+		for i in range(1, len(t)):
+			after = self.ed.PositionRelative(pos, i)
+			self.assert_(after > pos)
+			self.assert_(after > previous)
+			previous = after
+		pos = len(t)
+		previous = pos
+		for i in range(1, len(t)-1):
+			after = self.ed.PositionRelative(pos, -i)
+			self.assert_(after < pos)
+			self.assert_(after <= previous)
+			previous = after
+
+	def testLineEnd(self):
+		t = "a\r\nb\nc"
+		tv = t.encode("UTF-8")
+		self.ed.SetContents(tv)
+		for i in range(0, len(t)):
+			self.assertEquals(self.ed.CountCharacters(0, i), i)
+
 class TestCaseMapping(unittest.TestCase):
 	def setUp(self):
-		self.xite = XiteWin.xiteFrame
+		self.xite = Xite.xiteFrame
 		self.ed = self.xite.ed
 		self.ed.ClearAll()
 		self.ed.EmptyUndoBuffer()
@@ -1077,13 +1818,13 @@ class TestCaseMapping(unittest.TestCase):
 	def testEmpty(self):
 		# Trying to upper case an empty string caused a crash at one stage
 		t = b"x"
-		self.ed.SetText(len(t), t)
+		self.ed.SetContents(t)
 		self.ed.UpperCase()
 		self.assertEquals(self.ed.Contents(), b"x")
 
 	def testASCII(self):
 		t = b"x"
-		self.ed.SetText(len(t), t)
+		self.ed.SetContents(t)
 		self.ed.SetSel(0,1)
 		self.ed.UpperCase()
 		self.assertEquals(self.ed.Contents(), b"X")
@@ -1091,16 +1832,19 @@ class TestCaseMapping(unittest.TestCase):
 	def testLatin1(self):
 		t = "å".encode("Latin-1")
 		r = "Å".encode("Latin-1")
-		self.ed.SetText(len(t), t)
+		self.ed.SetContents(t)
 		self.ed.SetSel(0,1)
 		self.ed.UpperCase()
 		self.assertEquals(self.ed.Contents(), r)
 
 	def testRussian(self):
-		self.ed.StyleSetCharacterSet(self.ed.STYLE_DEFAULT, self.ed.SC_CHARSET_RUSSIAN)
+		if sys.platform == "win32":
+			self.ed.StyleSetCharacterSet(self.ed.STYLE_DEFAULT, self.ed.SC_CHARSET_RUSSIAN)
+		else:
+			self.ed.StyleSetCharacterSet(self.ed.STYLE_DEFAULT, self.ed.SC_CHARSET_CYRILLIC)
 		t = "Б".encode("Windows-1251")
 		r = "б".encode("Windows-1251")
-		self.ed.SetText(len(t), t)
+		self.ed.SetContents(t)
 		self.ed.SetSel(0,1)
 		self.ed.LowerCase()
 		self.assertEquals(self.ed.Contents(), r)
@@ -1109,7 +1853,7 @@ class TestCaseMapping(unittest.TestCase):
 		self.ed.SetCodePage(65001)
 		t = "å".encode("UTF-8")
 		r = "Å".encode("UTF-8")
-		self.ed.SetText(len(t), t)
+		self.ed.SetContents(t)
 		self.ed.SetSel(0,2)
 		self.ed.UpperCase()
 		self.assertEquals(self.ed.Contents(), r)
@@ -1118,16 +1862,47 @@ class TestCaseMapping(unittest.TestCase):
 		self.ed.SetCodePage(65001)
 		t = "ı".encode("UTF-8")
 		r = "I".encode("UTF-8")
-		self.ed.SetText(len(t), t)
+		self.ed.SetContents(t)
 		self.assertEquals(self.ed.Length, 2)
 		self.ed.SetSel(0,2)
 		self.ed.UpperCase()
 		self.assertEquals(self.ed.Length, 1)
 		self.assertEquals(self.ed.Contents(), r)
 
+	def testUTFGrows(self):
+		# This crashed at one point in debug builds due to looking past end of shorter string
+		self.ed.SetCodePage(65001)
+		# ﬖ is a single character ligature taking 3 bytes in UTF8: EF AC 96
+		t = 'ﬖﬖ'.encode("UTF-8")
+		self.ed.SetContents(t)
+		self.assertEquals(self.ed.Length, 6)
+		self.ed.SetSel(0,self.ed.Length)
+		self.ed.UpperCase()
+		# To convert to upper case the ligature is separated into վ and ն then uppercased to Վ and Ն
+		# each of which takes 2 bytes in UTF-8: D5 8E D5 86
+		r = 'ՎՆՎՆ'.encode("UTF-8")
+		self.assertEquals(self.ed.Length, 8)
+		self.assertEquals(self.ed.Contents(), r)
+		self.assertEquals(self.ed.SelectionEnd, self.ed.Length)
+
+	def testUTFShrinks(self):
+		self.ed.SetCodePage(65001)
+		# ﬁ is a single character ligature taking 3 bytes in UTF8: EF AC 81
+		t = 'ﬁﬁ'.encode("UTF-8")
+		self.ed.SetContents(t)
+		self.assertEquals(self.ed.Length, 6)
+		self.ed.SetSel(0,self.ed.Length)
+		self.ed.UpperCase()
+		# To convert to upper case the ligature is separated into f and i then uppercased to F and I
+		# each of which takes 1 byte in UTF-8: 46 49
+		r = 'FIFI'.encode("UTF-8")
+		self.assertEquals(self.ed.Length, 4)
+		self.assertEquals(self.ed.Contents(), r)
+		self.assertEquals(self.ed.SelectionEnd, self.ed.Length)
+
 class TestCaseInsensitiveSearch(unittest.TestCase):
 	def setUp(self):
-		self.xite = XiteWin.xiteFrame
+		self.xite = Xite.xiteFrame
 		self.ed = self.xite.ed
 		self.ed.ClearAll()
 		self.ed.EmptyUndoBuffer()
@@ -1139,7 +1914,7 @@ class TestCaseInsensitiveSearch(unittest.TestCase):
 	def testEmpty(self):
 		text = b" x X"
 		searchString = b""
-		self.ed.SetText(len(text), text)
+		self.ed.SetContents(text)
 		self.ed.TargetStart = 0
 		self.ed.TargetEnd = self.ed.Length-1
 		self.ed.SearchFlags = 0
@@ -1149,7 +1924,7 @@ class TestCaseInsensitiveSearch(unittest.TestCase):
 	def testASCII(self):
 		text = b" x X"
 		searchString = b"X"
-		self.ed.SetText(len(text), text)
+		self.ed.SetContents(text)
 		self.ed.TargetStart = 0
 		self.ed.TargetEnd = self.ed.Length-1
 		self.ed.SearchFlags = 0
@@ -1159,7 +1934,7 @@ class TestCaseInsensitiveSearch(unittest.TestCase):
 	def testLatin1(self):
 		text = "Frånd Åå".encode("Latin-1")
 		searchString = "Å".encode("Latin-1")
-		self.ed.SetText(len(text), text)
+		self.ed.SetContents(text)
 		self.ed.TargetStart = 0
 		self.ed.TargetEnd = self.ed.Length-1
 		self.ed.SearchFlags = 0
@@ -1170,7 +1945,7 @@ class TestCaseInsensitiveSearch(unittest.TestCase):
 		self.ed.StyleSetCharacterSet(self.ed.STYLE_DEFAULT, self.ed.SC_CHARSET_RUSSIAN)
 		text = "=(Б tex б)".encode("Windows-1251")
 		searchString = "б".encode("Windows-1251")
-		self.ed.SetText(len(text), text)
+		self.ed.SetContents(text)
 		self.ed.TargetStart = 0
 		self.ed.TargetEnd = self.ed.Length-1
 		self.ed.SearchFlags = 0
@@ -1181,7 +1956,7 @@ class TestCaseInsensitiveSearch(unittest.TestCase):
 		self.ed.SetCodePage(65001)
 		text = "Frånd Åå".encode("UTF-8")
 		searchString = "Å".encode("UTF-8")
-		self.ed.SetText(len(text), text)
+		self.ed.SetContents(text)
 		self.ed.TargetStart = 0
 		self.ed.TargetEnd = self.ed.Length-1
 		self.ed.SearchFlags = 0
@@ -1189,13 +1964,14 @@ class TestCaseInsensitiveSearch(unittest.TestCase):
 		self.assertEquals(2, pos)
 
 	def testUTFDifferentLength(self):
-		# Searching for a two byte string "ı" finds a single byte "I"
+		# Searching for a two byte string finds a single byte
 		self.ed.SetCodePage(65001)
-		text = "Fråndi Ååİ $".encode("UTF-8")
+		# two byte string "ſ" single byte "s"
+		text = "Frånds Ååſ $".encode("UTF-8")
+		searchString = "ſ".encode("UTF-8")
 		firstPosition = len("Frånd".encode("UTF-8"))
-		searchString = "İ".encode("UTF-8")
 		self.assertEquals(len(searchString), 2)
-		self.ed.SetText(len(text), text)
+		self.ed.SetContents(text)
 		self.ed.TargetStart = 0
 		self.ed.TargetEnd = self.ed.Length-1
 		self.ed.SearchFlags = 0
@@ -1205,7 +1981,7 @@ class TestCaseInsensitiveSearch(unittest.TestCase):
 
 class TestLexer(unittest.TestCase):
 	def setUp(self):
-		self.xite = XiteWin.xiteFrame
+		self.xite = Xite.xiteFrame
 		self.ed = self.xite.ed
 		self.ed.ClearAll()
 		self.ed.EmptyUndoBuffer()
@@ -1217,19 +1993,103 @@ class TestLexer(unittest.TestCase):
 	def testLexerName(self):
 		self.ed.LexerLanguage = b"cpp"
 		self.assertEquals(self.ed.GetLexer(), self.ed.SCLEX_CPP)
-		name = b"-" * 100
-		length = self.ed.GetLexerLanguage(0, name)
-		name = name[:length]
+		name = self.ed.GetLexerLanguage(0)
 		self.assertEquals(name, b"cpp")
+
+	def testPropertyNames(self):
+		propertyNames = self.ed.PropertyNames()
+		self.assertNotEquals(propertyNames, b"")
+		# The cpp lexer has a boolean property named lexer.cpp.allow.dollars
+		propNameDollars = b"lexer.cpp.allow.dollars"
+		propertyType = self.ed.PropertyType(propNameDollars)
+		self.assertEquals(propertyType, self.ed.SC_TYPE_BOOLEAN)
+		propertyDescription = self.ed.DescribeProperty(propNameDollars)
+		self.assertNotEquals(propertyDescription, b"")
+
+	def testWordListDescriptions(self):
+		wordSet = self.ed.DescribeKeyWordSets()
+		self.assertNotEquals(wordSet, b"")
+
+class TestSubStyles(unittest.TestCase):
+	''' These tests include knowledge of the current implementation in the cpp lexer
+	and may have to change when that implementation changes.
+	Currently supports subStyles for IDENTIFIER 11 and COMMENTDOCKEYWORD 17 '''
+	def setUp(self):
+		self.xite = Xite.xiteFrame
+		self.ed = self.xite.ed
+		self.ed.ClearAll()
+		self.ed.EmptyUndoBuffer()
+
+	def testInfo(self):
+		self.ed.Lexer = self.ed.SCLEX_CPP
+		bases = self.ed.GetSubStyleBases()
+		self.assertEquals(bases, b"\x0b\x11")	# 11, 17
+		self.assertEquals(self.ed.DistanceToSecondaryStyles(), 0x40)
+
+	def testAllocate(self):
+		firstSubStyle = 0x80	# Current implementation
+		self.ed.Lexer = self.ed.SCLEX_CPP
+		self.assertEquals(self.ed.GetStyleFromSubStyle(firstSubStyle), firstSubStyle)
+		self.assertEquals(self.ed.GetSubStylesStart(self.ed.SCE_C_IDENTIFIER), 0)
+		self.assertEquals(self.ed.GetSubStylesLength(self.ed.SCE_C_IDENTIFIER), 0)
+		numSubStyles = 5
+		subs = self.ed.AllocateSubStyles(self.ed.SCE_C_IDENTIFIER, numSubStyles)
+		self.assertEquals(subs, firstSubStyle)
+		self.assertEquals(self.ed.GetSubStylesStart(self.ed.SCE_C_IDENTIFIER), firstSubStyle)
+		self.assertEquals(self.ed.GetSubStylesLength(self.ed.SCE_C_IDENTIFIER), numSubStyles)
+		self.assertEquals(self.ed.GetStyleFromSubStyle(subs), self.ed.SCE_C_IDENTIFIER)
+		self.assertEquals(self.ed.GetStyleFromSubStyle(subs+numSubStyles-1), self.ed.SCE_C_IDENTIFIER)
+		self.assertEquals(self.ed.GetStyleFromSubStyle(self.ed.SCE_C_IDENTIFIER), self.ed.SCE_C_IDENTIFIER)
+		# Now free and check same as start
+		self.ed.FreeSubStyles()
+		self.assertEquals(self.ed.GetStyleFromSubStyle(subs), subs)
+		self.assertEquals(self.ed.GetSubStylesStart(self.ed.SCE_C_IDENTIFIER), 0)
+		self.assertEquals(self.ed.GetSubStylesLength(self.ed.SCE_C_IDENTIFIER), 0)
+
+	def testInactive(self):
+		firstSubStyle = 0x80	# Current implementation
+		inactiveDistance = self.ed.DistanceToSecondaryStyles()
+		self.ed.Lexer = self.ed.SCLEX_CPP
+		numSubStyles = 5
+		subs = self.ed.AllocateSubStyles(self.ed.SCE_C_IDENTIFIER, numSubStyles)
+		self.assertEquals(subs, firstSubStyle)
+		self.assertEquals(self.ed.GetStyleFromSubStyle(subs), self.ed.SCE_C_IDENTIFIER)
+		self.assertEquals(self.ed.GetStyleFromSubStyle(subs+inactiveDistance), self.ed.SCE_C_IDENTIFIER+inactiveDistance)
+		self.ed.FreeSubStyles()
+
+	def testSecondary(self):
+		inactiveDistance = self.ed.DistanceToSecondaryStyles()
+		self.assertEquals(self.ed.GetPrimaryStyleFromStyle(self.ed.SCE_C_IDENTIFIER+inactiveDistance), self.ed.SCE_C_IDENTIFIER)
+
+class TestCallTip(unittest.TestCase):
+
+	def setUp(self):
+		self.xite = Xite.xiteFrame
+		self.ed = self.xite.ed
+		self.ed.ClearAll()
+		self.ed.EmptyUndoBuffer()
+		# 1 line of 4 characters
+		t = b"fun("
+		self.ed.AddText(len(t), t)
+
+	def testBasics(self):
+		self.assertEquals(self.ed.CallTipActive(), 0)
+		self.ed.CallTipShow(1, "fun(int x)")
+		self.assertEquals(self.ed.CallTipActive(), 1)
+		self.assertEquals(self.ed.CallTipPosStart(), 4)
+		self.ed.CallTipSetPosStart(1)
+		self.assertEquals(self.ed.CallTipPosStart(), 1)
+		self.ed.CallTipCancel()
+		self.assertEquals(self.ed.CallTipActive(), 0)
 
 class TestAutoComplete(unittest.TestCase):
 
 	def setUp(self):
-		self.xite = XiteWin.xiteFrame
+		self.xite = Xite.xiteFrame
 		self.ed = self.xite.ed
 		self.ed.ClearAll()
 		self.ed.EmptyUndoBuffer()
-		# 3 lines of 3 characters
+		# 1 line of 3 characters
 		t = b"xxx\n"
 		self.ed.AddText(len(t), t)
 
@@ -1280,10 +2140,9 @@ class TestAutoComplete(unittest.TestCase):
 		#~ time.sleep(2)
 		self.assertEquals(self.ed.AutoCPosStart(), 0)
 		self.assertEquals(self.ed.AutoCGetCurrent(), 0)
-		t = b"xxx"
-		l = self.ed.AutoCGetCurrentText(5, t)
+		t = self.ed.AutoCGetCurrentText(5)
 		#~ self.assertEquals(l, 3)
-		self.assertEquals(t, b"za\0")
+		self.assertEquals(t, b"za")
 		self.ed.AutoCCancel()
 		self.assertEquals(self.ed.AutoCActive(), 0)
 
@@ -1308,14 +2167,224 @@ class TestAutoComplete(unittest.TestCase):
 
 		self.assertEquals(self.ed.AutoCActive(), 0)
 
+	def testWriteOnly(self):
+		""" Checks that setting attributes doesn't crash or change tested behaviour
+		but does not check that the changed attributes are effective. """
+		self.ed.AutoCStops(0, b"abcde")
+		self.ed.AutoCSetFillUps(0, b"1234")
 
-#~ import os
-#~ for x in os.getenv("PATH").split(";"):
-	#~ n = "scilexer.dll"
-	#~ nf = x + "\\" + n
-	#~ print os.access(nf, os.R_OK), nf
+class TestDirectAccess(unittest.TestCase):
+
+	def setUp(self):
+		self.xite = Xite.xiteFrame
+		self.ed = self.xite.ed
+		self.ed.ClearAll()
+		self.ed.EmptyUndoBuffer()
+
+	def testGapPosition(self):
+		text = b"abcd"
+		self.ed.SetContents(text)
+		self.assertEquals(self.ed.GapPosition, 4)
+		self.ed.TargetStart = 1
+		self.ed.TargetEnd = 1
+		rep = b"-"
+		self.ed.ReplaceTarget(len(rep), rep)
+		self.assertEquals(self.ed.GapPosition, 2)
+
+	def testCharacterPointerAndRangePointer(self):
+		text = b"abcd"
+		self.ed.SetContents(text)
+		characterPointer = self.ed.CharacterPointer
+		rangePointer = self.ed.GetRangePointer(0,3)
+		self.assertEquals(characterPointer, rangePointer)
+		cpBuffer = ctypes.c_char_p(characterPointer)
+		self.assertEquals(cpBuffer.value, text)
+		# Gap will not be moved as already moved for CharacterPointer call
+		rangePointer = self.ed.GetRangePointer(1,3)
+		cpBuffer = ctypes.c_char_p(rangePointer)
+		self.assertEquals(cpBuffer.value, text[1:])
+
+class TestWordChars(unittest.TestCase):
+	def setUp(self):
+		self.xite = Xite.xiteFrame
+		self.ed = self.xite.ed
+		self.ed.ClearAll()
+		self.ed.EmptyUndoBuffer()
+
+	def tearDown(self):
+		self.ed.SetCharsDefault()
+
+	def _setChars(self, charClass, chars):
+		""" Wrapper to call self.ed.Set*Chars with the right type
+		@param charClass {str} the character class, "word", "space", etc.
+		@param chars {iterable of int} characters to set
+		"""
+		if sys.version_info.major == 2:
+			# Python 2, use latin-1 encoded str
+			unichars = (unichr(x) for x in chars if x != 0)
+			# can't use literal u"", that's a syntax error in Py3k
+			# uncode() doesn't exist in Py3k, but we never run it there
+			result = unicode("").join(unichars).encode("latin-1")
+		else:
+			# Python 3, use bytes()
+			result = bytes(x for x in chars if x != 0)
+		meth = getattr(self.ed, "Set%sChars" % (charClass.capitalize()))
+		return meth(None, result)
+
+	def assertCharSetsEqual(self, first, second, *args, **kwargs):
+		""" Assert that the two character sets are equal.
+		If either set are an iterable of numbers, convert them to chars
+		first. """
+		first_set = set()
+		for c in first:
+			first_set.add(chr(c) if isinstance(c, int) else c)
+		second_set = set()
+		for c in second:
+			second_set.add(chr(c) if isinstance(c, int) else c)
+		return self.assertEqual(first_set, second_set, *args, **kwargs)
+
+	def testDefaultWordChars(self):
+		# check that the default word chars are as expected
+		import string
+		data = self.ed.GetWordChars(None)
+		expected = set(string.digits + string.ascii_letters + '_') | \
+			set(chr(x) for x in range(0x80, 0x100))
+		self.assertCharSetsEqual(data, expected)
+
+	def testDefaultWhitespaceChars(self):
+		# check that the default whitespace chars are as expected
+		import string
+		data = self.ed.GetWhitespaceChars(None)
+		expected = (set(chr(x) for x in (range(0, 0x20))) | set(' ')) - \
+			set(['\r', '\n'])
+		self.assertCharSetsEqual(data, expected)
+
+	def testDefaultPunctuationChars(self):
+		# check that the default punctuation chars are as expected
+		import string
+		data = self.ed.GetPunctuationChars(None)
+		expected = set(chr(x) for x in range(0x20, 0x80)) - \
+			set(string.ascii_letters + string.digits + "\r\n_ ")
+		self.assertCharSetsEqual(data, expected)
+
+	def testCustomWordChars(self):
+		# check that setting things to whitespace chars makes them not words
+		self._setChars("whitespace", range(1, 0x100))
+		data = self.ed.GetWordChars(None)
+		expected = set()
+		self.assertCharSetsEqual(data, expected)
+		# and now set something to make sure that works too
+		expected = set(range(1, 0x100, 2))
+		self._setChars("word", expected)
+		data = self.ed.GetWordChars(None)
+		self.assertCharSetsEqual(data, expected)
+
+	def testCustomWhitespaceChars(self):
+		# check setting whitespace chars to non-default values
+		self._setChars("word", range(1, 0x100))
+		# we can't change chr(0) from being anything but whitespace
+		expected = set([0])
+		data = self.ed.GetWhitespaceChars(None)
+		self.assertCharSetsEqual(data, expected)
+		# now try to set it to something custom
+		expected = set(range(1, 0x100, 2)) | set([0])
+		self._setChars("whitespace", expected)
+		data = self.ed.GetWhitespaceChars(None)
+		self.assertCharSetsEqual(data, expected)
+
+	def testCustomPunctuationChars(self):
+		# check setting punctuation chars to non-default values
+		self._setChars("word", range(1, 0x100))
+		expected = set()
+		data = self.ed.GetPunctuationChars(0)
+		self.assertEquals(set(data), expected)
+		# now try to set it to something custom
+		expected = set(range(1, 0x100, 1))
+		self._setChars("punctuation", expected)
+		data = self.ed.GetPunctuationChars(None)
+		self.assertCharSetsEqual(data, expected)
+
+	def testCharacterCategoryOptimization(self):
+		self.assertEquals(self.ed.CharacterCategoryOptimization, 0x100)
+		self.ed.CharacterCategoryOptimization = 0x1000
+		self.assertEquals(self.ed.CharacterCategoryOptimization, 0x1000)
+
+class TestExplicitTabStops(unittest.TestCase):
+
+	def setUp(self):
+		self.xite = Xite.xiteFrame
+		self.ed = self.xite.ed
+		self.ed.ClearAll()
+		self.ed.EmptyUndoBuffer()
+		# 2 lines of 4 characters
+		self.t = b"fun(\nint)"
+		self.ed.AddText(len(self.t), self.t)
+
+	def testAddingAndClearing(self):
+		self.assertEquals(self.ed.GetNextTabStop(0,0), 0)
+
+		# Add a tab stop at 7
+		self.ed.AddTabStop(0, 7)
+		# Check added
+		self.assertEquals(self.ed.GetNextTabStop(0,0), 7)
+		# Check does not affect line 1
+		self.assertEquals(self.ed.GetNextTabStop(1,0), 0)
+
+		# Add a tab stop at 18
+		self.ed.AddTabStop(0, 18)
+		# Check added
+		self.assertEquals(self.ed.GetNextTabStop(0,0), 7)
+		self.assertEquals(self.ed.GetNextTabStop(0,7), 18)
+		# Check does not affect line 1
+		self.assertEquals(self.ed.GetNextTabStop(1,0), 0)
+		self.assertEquals(self.ed.GetNextTabStop(1,7), 0)
+
+		# Add a tab stop between others at 13
+		self.ed.AddTabStop(0, 13)
+		# Check added
+		self.assertEquals(self.ed.GetNextTabStop(0,0), 7)
+		self.assertEquals(self.ed.GetNextTabStop(0,7), 13)
+		self.assertEquals(self.ed.GetNextTabStop(0,13), 18)
+		# Check does not affect line 1
+		self.assertEquals(self.ed.GetNextTabStop(1,0), 0)
+		self.assertEquals(self.ed.GetNextTabStop(1,7), 0)
+
+		self.ed.ClearTabStops(0)
+		# Check back to original state
+		self.assertEquals(self.ed.GetNextTabStop(0,0), 0)
+
+	def testLineInsertionDeletion(self):
+		# Add a tab stop at 7 on line 1
+		self.ed.AddTabStop(1, 7)
+		# Check added
+		self.assertEquals(self.ed.GetNextTabStop(1,0), 7)
+
+		# More text at end
+		self.ed.AddText(len(self.t), self.t)
+		self.assertEquals(self.ed.GetNextTabStop(0,0), 0)
+		self.assertEquals(self.ed.GetNextTabStop(1,0), 7)
+		self.assertEquals(self.ed.GetNextTabStop(2,0), 0)
+		self.assertEquals(self.ed.GetNextTabStop(3,0), 0)
+
+		# Another 2 lines before explicit line moves the explicit tab stop
+		data = b"x\ny\n"
+		self.ed.InsertText(4, data)
+		self.assertEquals(self.ed.GetNextTabStop(0,0), 0)
+		self.assertEquals(self.ed.GetNextTabStop(1,0), 0)
+		self.assertEquals(self.ed.GetNextTabStop(2,0), 0)
+		self.assertEquals(self.ed.GetNextTabStop(3,0), 7)
+		self.assertEquals(self.ed.GetNextTabStop(4,0), 0)
+		self.assertEquals(self.ed.GetNextTabStop(5,0), 0)
+
+		# Undo moves the explicit tab stop back
+		self.ed.Undo()
+		self.assertEquals(self.ed.GetNextTabStop(0,0), 0)
+		self.assertEquals(self.ed.GetNextTabStop(1,0), 7)
+		self.assertEquals(self.ed.GetNextTabStop(2,0), 0)
+		self.assertEquals(self.ed.GetNextTabStop(3,0), 0)
+
 if __name__ == '__main__':
-	uu = XiteWin.main("simpleTests")
+	uu = Xite.main("simpleTests")
 	#~ for x in sorted(uu.keys()):
 		#~ print(x, uu[x])
 	#~ print()

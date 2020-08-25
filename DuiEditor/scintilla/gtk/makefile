@@ -6,15 +6,22 @@
 # Builds for GTK+ 2 and no longer supports GTK+ 1.
 # Also works with ming32-make on Windows.
 
-.SUFFIXES: .cxx .c .o .h .a
+.SUFFIXES: .cxx .c .o .h .a .list
+
+srcdir ?= .
+
 ifdef CLANG
+CXX = clang++
+CXXWARNFLAGS = -Wall -pedantic -Wno-deprecated-register -Wno-missing-braces
 CC = clang
-CCOMP = clang
+# Can choose aspect to sanitize: address and undefined can simply change SANITIZE but for
+# thread also need to create Position Independent Executable -> search online documentation
+SANITIZE = address
+#SANITIZE = undefined
 else
-CC = g++
-CCOMP = gcc
+CXXWARNFLAGS = -Wall -pedantic
 endif
-AR = ar
+ARFLAGS = rc
 RANLIB = touch
 
 ifdef GTK3
@@ -31,22 +38,26 @@ RANLIB = ranlib
 endif
 endif
 
+# Enable Position Independent Code except on Windows where it is the default so the flag produces a warning
+ifndef windir
+PICFLAGS = -fPIC
+endif
+
 ifdef windir
+CC = gcc
 DEL = del /q
-COMPLIB=..\bin\scintilla.a
+COMPLIB=$(srcdir)\..\bin\scintilla.a
 else
 DEL = rm -f
-COMPLIB=../bin/scintilla.a
+COMPLIB=$(srcdir)/../bin/scintilla.a
 endif
 
-vpath %.h ../src ../include ../lexlib
-vpath %.cxx ../src ../lexlib ../lexers
+vpath %.h $(srcdir) $(srcdir)/../src $(srcdir)/../include $(srcdir)/../lexlib
+vpath %.c $(srcdir)
+vpath %.cxx $(srcdir) $(srcdir)/../src $(srcdir)/../lexlib $(srcdir)/../lexers
 
-INCLUDEDIRS=-I ../include -I ../src -I ../lexlib
-ifdef CHECK_DEPRECATED
-DEPRECATED=-DGDK_PIXBUF_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED -DDISABLE_GDK_FONT
-endif
-CXXBASEFLAGS=-Wall -Wno-missing-braces -Wno-char-subscripts -Wno-long-long -pedantic -DGTK -DSCI_LEXER $(INCLUDEDIRS) $(DEPRECATED)
+INCLUDEDIRS=-I $(srcdir)/../include -I $(srcdir)/../src -I $(srcdir)/../lexlib
+CXXBASEFLAGS=$(CXXWARNFLAGS) $(PICFLAGS) -DGTK -DSCI_LEXER $(INCLUDEDIRS)
 
 ifdef NOTHREADS
 THREADFLAGS=-DG_THREADS_IMPL_NONE
@@ -54,39 +65,59 @@ else
 THREADFLAGS=
 endif
 
-ifdef DEBUG
-CXXTFLAGS=-DDEBUG -g $(CXXFLAGS) $(CXXBASEFLAGS) $(THREADFLAGS)
-else
-CXXTFLAGS=-DNDEBUG -Os $(CXXFLAGS) $(CXXBASEFLAGS) $(THREADFLAGS)
+ifdef NO_CXX11_REGEX
+REFLAGS=-DNO_CXX11_REGEX
 endif
 
-CFLAGS:=$(CXXTFLAGS)
+ifdef DEBUG
+ifdef CLANG
+CTFLAGS=-DDEBUG -g -fsanitize=$(SANITIZE) $(CXXBASEFLAGS) $(THREADFLAGS)
+else
+CTFLAGS=-DDEBUG -g $(CXXBASEFLAGS) $(THREADFLAGS)
+endif
+else
+CTFLAGS=-DNDEBUG -Os $(CXXBASEFLAGS) $(THREADFLAGS)
+endif
+
+CXXTFLAGS:=--std=gnu++17 $(CTFLAGS) $(REFLAGS)
 
 CONFIGFLAGS:=$(shell pkg-config --cflags $(GTKVERSION))
 MARSHALLER=scintilla-marshal.o
 
-.cxx.o:
-	$(CC) $(CONFIGFLAGS) $(CXXTFLAGS) -c $<
-.c.o:
-	$(CCOMP) $(CONFIGFLAGS) $(CFLAGS) -w -c $<
-
-LEXOBJS:=$(addsuffix .o,$(basename $(notdir $(wildcard ../lexers/Lex*.cxx))))
-
 all: $(COMPLIB)
 
 clean:
-	$(DEL) *.o $(COMPLIB)
+	$(DEL) *.o $(COMPLIB) *.plist
 
-deps:
-	$(CC) -MM $(CONFIGFLAGS) $(CXXTFLAGS) *.cxx ../src/*.cxx | sed -e 's/\/usr.* //' | grep [a-zA-Z] >deps.mak
+.cxx.o:
+	$(CXX) $(CONFIGFLAGS) $(CXXTFLAGS) $(CXXFLAGS) -c $<
+.c.o:
+	$(CC) $(CONFIGFLAGS) $(CTFLAGS) $(CFLAGS) -w -c $<
 
-$(COMPLIB): Accessor.o CharacterSet.o LexerBase.o LexerModule.o LexerSimple.o StyleContext.o WordList.o \
-	CharClassify.o Decoration.o Document.o PerLine.o Catalogue.o CallTip.o \
-	ScintillaBase.o ContractionState.o Editor.o ExternalLexer.o PropSetSimple.o PlatGTK.o \
-	KeyMap.o LineMarker.o PositionCache.o ScintillaGTK.o CellBuffer.o ViewStyle.o \
-	RESearch.o RunStyles.o Selection.o Style.o Indicator.o AutoComplete.o UniConversion.o XPM.o \
+GLIB_GENMARSHAL = glib-genmarshal
+GLIB_GENMARSHAL_FLAGS = --prefix=scintilla_marshal
+
+.list.h:
+	$(GLIB_GENMARSHAL) --header $(GLIB_GENMARSHAL_FLAGS) $< > $@
+.list.c:
+	$(GLIB_GENMARSHAL) --body $(GLIB_GENMARSHAL_FLAGS) $< > $@
+
+LEXOBJS:=$(addsuffix .o,$(basename $(sort $(notdir $(wildcard $(srcdir)/../lexers/Lex*.cxx)))))
+
+analyze:
+	clang --analyze $(CONFIGFLAGS) $(CXXTFLAGS) $(CXXFLAGS) $(srcdir)/*.cxx $(srcdir)/../src/*.cxx $(srcdir)/../lexlib/*.cxx $(srcdir)/../lexers/*.cxx
+
+depend deps.mak:
+	python DepGen.py
+
+$(COMPLIB): Accessor.o CharacterSet.o DefaultLexer.o LexerBase.o LexerModule.o LexerSimple.o StyleContext.o WordList.o \
+	CharClassify.o Decoration.o Document.o PerLine.o Catalogue.o CallTip.o CaseConvert.o CaseFolder.o \
+	ScintillaBase.o ContractionState.o EditModel.o Editor.o EditView.o ExternalLexer.o MarginView.o \
+	PropSetSimple.o PlatGTK.o \
+	KeyMap.o LineMarker.o PositionCache.o ScintillaGTK.o ScintillaGTKAccessible.o CellBuffer.o CharacterCategory.o ViewStyle.o \
+	RESearch.o RunStyles.o Selection.o Style.o Indicator.o AutoComplete.o UniConversion.o UniqueString.o XPM.o \
 	$(MARSHALLER) $(LEXOBJS)
-	$(AR) rc $@ $^
+	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
 
 # Automatically generate header dependencies with "make deps"

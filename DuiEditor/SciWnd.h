@@ -10,6 +10,7 @@
 typedef  int SciDll_void;
 typedef int (*SEND_EDITOR)(void*,int,int,int);
 
+enum folderStyle {FOLDER_TYPE, FOLDER_STYLE_SIMPLE, FOLDER_STYLE_ARROW, FOLDER_STYLE_CIRCLE, FOLDER_STYLE_BOX, FOLDER_STYLE_NONE};
 class CSciWnd : public CWnd
 {
 	DECLARE_DYNAMIC(CSciWnd)
@@ -23,57 +24,71 @@ public:
 	{
 		return m_sendeditor(m_pSendEditor, msg, wParam, lParam);
 	}
+	LRESULT execute(UINT msg, WPARAM wParam=0, LPARAM lParam=0)
+	{
+		return m_sendeditor(m_pSendEditor, msg, wParam, lParam);
+	}
 
 	BOOL LoadFile(LPCTSTR szPath);
 	BOOL SaveFile(LPCTSTR szPath);
 
 	void InitXML(const tagXmlEditorOpt &opt);
-	void InitCPP();
 
 	BOOL OnParentNotify(SCNotification *pMsg);
 
+	void findMatchingBracePos(int & braceAtCaret, int & braceOpposite);
+	bool braceMatch();
 protected:
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	DECLARE_MESSAGE_MAP()
 protected:
-	HMODULE m_hSciLexer;
+	void defineMarker(int marker, int markerType, COLORREF fore, COLORREF back, COLORREF foreActive) {
+		execute(SCI_MARKERDEFINE, marker, markerType);
+		execute(SCI_MARKERSETFORE, marker, fore);
+		execute(SCI_MARKERSETBACK, marker, back);
+		execute(SCI_MARKERSETBACKSELECTED, marker, foreActive);
+	}
+	LRESULT execute(UINT Msg, WPARAM wParam=0, LPARAM lParam=0) const {
+		return m_sendeditor(m_pSendEditor, static_cast<int>(Msg), static_cast<int>(wParam), static_cast<int>(lParam));
+	}
 	SEND_EDITOR m_sendeditor;
 	void *m_pSendEditor;
 
+	HMODULE m_hSciLexer;
 public:
 	/*----文字编辑功能Text retrieval and modification----*/
 
 	//获取所有字符
 	SciDll_void sci_GetTextAll(CStringA &Text);
 	//获取一行字符
-	SciDll_void sci_GetTextLine(int line, CString &Text);
+	SciDll_void sci_GetTextLine(int line, CStringA &Text);
 	//获取一定长度的字符
 	SciDll_void sci_GetText(int length, CStringA &Text);
 	//设置字符到控件
-	SciDll_void sci_SetText(const char * pText);
+	SciDll_void sci_SetText(LPCSTR pText);
 	//设置文档已保存的标志
 	SciDll_void sci_SetSavePoint();
 	//替换已选择字符,如果未选择,在当前光标插入
-	SciDll_void sci_ReplaceSel(const char *pText);
+	SciDll_void sci_ReplaceSel(LPCSTR pText);
 	//设置只读模式
 	SciDll_void sci_SetReadOnly(BOOL bReadOnly=TRUE);
 	//获取是否只读模式
 	BOOL sci_GetReadOnly();
 	//获取范围内的字符,返回字符的长度
 	int  sci_GetTextRange(int cpMin, int cpMax, CStringA &pTextRange);
-	SciDll_void sci_GetStyledText(int cpMin, int cpMax, CString &pText);
+	SciDll_void sci_GetStyledText(int cpMin, int cpMax, CStringA &pText);
 	//设置文档缓冲区大小, 使创建的文档不会小于当前的文档
 	SciDll_void sci_Allocate(int bytes);
 	//在光标位置插入字符串
-	SciDll_void sci_AddText(int length, LPCTSTR pText);
+	SciDll_void sci_AddText(int length, LPCSTR pText);
 	//在光标位置插入包含字符格式的字符串
-	SciDll_void sci_AddStyledText(int length, LPCTSTR pText);
+	SciDll_void sci_AddStyledText(int length, LPCSTR pText);
 	//在文档末尾插入字符串
-	SciDll_void sci_AppendText(int length, LPCTSTR pText);
+	SciDll_void sci_AppendText(int length, LPCSTR pText);
 	//在某个位置插入字符串.如果pos=-1,直接在光标位置插入
-	SciDll_void sci_InsertText(int pos, LPCTSTR pText);
+	SciDll_void sci_InsertText(int pos, LPCVOID pText);
 	//清空文档所有字符
 	SciDll_void sci_ClearTextAll();
 	//清空文档字符的所有格式();
@@ -88,7 +103,7 @@ public:
 	int sci_GetStyleBits();
 
 	int sci_TargetAsUTF8(LPTSTR pText);
-	int sci_EncodedFromUTF8(LPCTSTR pUTF8, LPTSTR pText);
+	int sci_EncodedFromUTF8(LPCSTR pUTF8, LPTSTR pText);
 	SciDll_void sci_SetLengthForEncode(int bits);
 
 	/*----查找----*/
@@ -100,8 +115,8 @@ public:
 	//FLAG = SCFIND_POSIX
 	int  sci_FindText(int searchFlags, Sci_TextToFind &ttf);	
 	SciDll_void sci_SearchAnchor();
-	int  sci_SearchNext(int searchFlags, LPCTSTR pText);
-	int  sci_SearchPrev(int searchFlags, LPCTSTR pText);
+	int  sci_SearchNext(int searchFlags, LPCSTR pText);
+	int  sci_SearchPrev(int searchFlags, LPCSTR pText);
 
 	/*----查找和替换----*/
 	SciDll_void sci_SetTargetStart(int pos);
@@ -111,11 +126,11 @@ public:
 	SciDll_void sci_TargetFromSelection();
 	SciDll_void sci_SetSearchFlags(int searchFlags);
 	int  sci_GetSearchFlags();
-	int  sci_SearchInTarget(int length, LPCTSTR pText);
+	int  sci_SearchInTarget(int length, LPCSTR pText);
 	//替换内容不包含注释部分
 	int sci_ReplaceTarget(int length, const char *pText);
 	//替换内容包含了注释部分
-	int sci_ReplaceTargetRe(int length, LPCTSTR pText);
+	int sci_ReplaceTargetRe(int length, LPCSTR pText);
 	SciDll_void sci_GetTag(int tagNumber, LPTSTR pText);
 
 	/*----覆盖模式(相反的是插入模式)----*/
@@ -140,7 +155,7 @@ public:
 	SciDll_void sci_CopyAllowLine();
 
 	SciDll_void sci_CopyRange(int start, int end);
-	SciDll_void sci_CopyText(int length, LPCTSTR pText);
+	SciDll_void sci_CopyText(int length, LPCSTR pText);
 
 	SciDll_void sci_SetPasteConvertEndings(BOOL convert);
 	BOOL sci_GetPasteConvertEndings();
@@ -194,10 +209,10 @@ public:
 	int  sci_PositionFromLine(int line);
 	int  sci_GetLineEndPosition(int line);
 	int  sci_LineLength(int line);
-	SciDll_void sci_GetSelText(CString &Text);
+	SciDll_void sci_GetSelText(CStringA &Text);
 
 	//原来的函数没搞明白,我实现的函数,返回当前行号和当前行的字符内容,
-	int  sci_GetCurLine(CString &Text);
+	int  sci_GetCurLine(CStringA &Text);
 	//返回当前的行号
 	int  sci_GetCurLine();
 	//返回选中内容是不是一个矩形区域
@@ -213,7 +228,7 @@ public:
 	int  sci_PositionBefore(int postion);
 	int  sci_PostionAfter(int postion);
 	int  sci_CountCharacters(int startPos, int endPos);
-	int  sci_TextWidth(int styleNumber, const char * pText);
+	int  sci_TextWidth(int styleNumber, LPCSTR pText);
 	int  sci_TextHeight(int line);
 	int  sci_GetColumn(int pos);
 	int  sci_FindColumn(int line, int column);
@@ -233,7 +248,6 @@ public:
 	/*-----------滚动条--------*/
 	SciDll_void sci_LineScroll(int column, int line);
 	SciDll_void sci_ScrollCaret();
-	SciDll_void Sci_ScrollRange(int secondplace, int firstplace);
 	SciDll_void sci_SetXCaretPolicy(int caretPolicy, int caretSlop);
 	SciDll_void sci_SetYCaretPolicy(int caretPolicy, int caretSlop);
 	SciDll_void sci_SetVisiblePolicy(int caretPolicy, int caretSlop);
@@ -261,11 +275,9 @@ public:
 	SciDll_void sci_SetWhiteSpaceSize(int size);
 	int  sci_GetWhiteSpaceSize();
 
-	//设置行上方间距
 	SciDll_void sci_SetExtraAscent(int extraAscent);
 	BOOL sci_GetExtraAscent();
 
-	//设置行下方间距
 	SciDll_void sci_SetExtraDescent(int extraDescent);
 	BOOL sci_GetExtraDescent();
 
@@ -287,7 +299,7 @@ public:
 	int sci_GetEndStyled();
 	SciDll_void sci_StartStyling(int pos, int mask);
 	SciDll_void sci_SetStyling(int length, int style);
-	SciDll_void sci_SetStylingEx(int length, LPCTSTR styles);
+	SciDll_void sci_SetStylingEx(int length, LPCSTR styles);
 	SciDll_void sci_SetLineState(int line, int value);
 	int  sci_GetLineState(int line);
 	int  sci_GetMaxLineState();
@@ -297,7 +309,7 @@ public:
 	SciDll_void sci_StyleClearAll();
 
 	//设置字体
-	SciDll_void sci_StyleSetFont(int styleNumer, const char * fontName);
+	SciDll_void sci_StyleSetFont(int styleNumer, LPCSTR fontName);
 	SciDll_void sci_StyleGetFont(int styleNumer, CString &fontName);
 
 	//设置字体大小
@@ -514,9 +526,9 @@ public:
 	BOOL sci_GetKeysUnicode();
 
 	//设置控件中允许出现的字符
-	SciDll_void sci_SetWordChars(LPCTSTR pText);
+	SciDll_void sci_SetWordChars(LPCSTR pText);
 	//设置控件不处理的字符,就是当成空白了.
-	SciDll_void sci_SetWhiteSpaceChars(LPCTSTR pText);
+	SciDll_void sci_SetWhiteSpaceChars(LPCSTR pText);
 	//使用默认的字符和空白字符
 	SciDll_void sci_SetCharsDefault();
 
@@ -573,11 +585,11 @@ public:
 	SciDll_void sci_MarkerDefine(int markerNumber, int markerSymbols);
 
 	//自定义书签样式
-	SciDll_void sci_MarkerDefinePixmap(int markerNumber, LPCTSTR pXPM);
+	SciDll_void sci_MarkerDefinePixmap(int markerNumber, LPCSTR pXPM);
 
 	SciDll_void sci_RGBAImageSetWidth(int width);
 	SciDll_void sci_RGBAImageSetHeight(int height);
-	SciDll_void sci_MarkerDefineRGBAImage(int markerNumber, LPCTSTR pPixels);
+	SciDll_void sci_MarkerDefineRGBAImage(int markerNumber, LPCSTR pPixels);
 
 	SciDll_void sci_MarkerSymbolDefined(int markerNumber);
 
@@ -636,10 +648,10 @@ public:
 	SciDll_void sci_AutocActive();
 	SciDll_void sci_AutocPosStart();
 	SciDll_void sci_AutocComplete();
-	SciDll_void sci_AutocStops(LPCTSTR pText);
+	SciDll_void sci_AutocStops(LPCSTR pText);
 	SciDll_void sci_AutocSetSeparator(char separator);
 	char sci_AutocGetSeparator();
-	SciDll_void sci_AutocSelect(LPCTSTR pSelect);
+	SciDll_void sci_AutocSelect(LPCSTR pSelect);
 
 	int sci_AutocGetCurrent();
 	SciDll_void sci_AutocGetCurrentText(CStringA &Text);
@@ -647,7 +659,7 @@ public:
 	SciDll_void sci_AutocSetCancelAtStart(BOOL cancel);
 	BOOL sci_AutocGetCancelAtStart();
 
-	SciDll_void sci_AutocSetFillups(LPCTSTR pText);
+	SciDll_void sci_AutocSetFillups(LPCSTR pText);
 
 	SciDll_void sci_AutocSetChooseSingle(BOOL chooseSingle);
 	BOOL sci_AutocGetChooseSingle();
@@ -662,8 +674,8 @@ public:
 	SciDll_void sci_AutocSetDropRestOfWord(BOOL dropRestOfWord);
 	BOOL sci_AutocGetDropRestOfWord();
 
-	SciDll_void sci_RegisterImage(int type, LPCTSTR pXmpData);
-	SciDll_void sci_RegisterRGBAImage(int type, LPCTSTR pPixels);
+	SciDll_void sci_RegisterImage(int type, LPCSTR pXmpData);
+	SciDll_void sci_RegisterRGBAImage(int type, LPCSTR pPixels);
 	SciDll_void sci_ClearRegisteredImages();
 	SciDll_void sci_AutocSetTypeSeparator(char separatorCharacter);
 	char sci_AutocGetTypeSeparator();
@@ -675,9 +687,9 @@ public:
 	int sci_AutocGetMaxWidth();
 
 	/*----------User lists------------*/
-	SciDll_void sci_UserListShow(int listType, LPCTSTR pList);
+	SciDll_void sci_UserListShow(int listType, LPCSTR pList);
 	/*----------Call tips------------*/
-	SciDll_void sci_CallTipShow(int posStart, LPCTSTR pDefinition);
+	SciDll_void sci_CallTipShow(int posStart, LPCSTR pDefinition);
 	SciDll_void sci_CallTipCancel();
 	SciDll_void sci_CallTipActive();
 	SciDll_void sci_CallTipPosStart();
@@ -787,10 +799,10 @@ public:
 	SciDll_void sci_SetLexer(int lexer);
 	int  sci_GetLexer();
 
-	SciDll_void sci_SetLexerLanguage(LPCTSTR name);
+	SciDll_void sci_SetLexerLanguage(LPCSTR name);
 	SciDll_void sci_GetLexerLanguage(CString &Text);
 
-	SciDll_void sci_LoadLexerLibrary(LPCTSTR path);
+	SciDll_void sci_LoadLexerLibrary(LPCSTR path);
 
 	SciDll_void sci_ColourIse(int start, int end);
 
@@ -800,21 +812,20 @@ public:
 
 	SciDll_void sci_PropertyType(LPTSTR name);
 
-	SciDll_void sci_DescribeProperty(LPCTSTR name, LPTSTR description);
+	SciDll_void sci_DescribeProperty(LPCSTR name, LPTSTR description);
 
-	SciDll_void sci_SetProperty(const char *key, const char *value);
-	SciDll_void sci_GetProperty(LPCTSTR key, CString &Value);
+	SciDll_void sci_SetProperty(LPCSTR key, LPCSTR value);
+	SciDll_void sci_GetProperty(LPCSTR key, CString &Value);
 
-	SciDll_void sci_GetPropertyExpanded(LPCTSTR key, CString &Value);
+	SciDll_void sci_GetPropertyExpanded(LPCSTR key, CString &Value);
 
-	int  sci_GetPropertyInt(LPCTSTR key, int ndefault);
+	int  sci_GetPropertyInt(LPCSTR key, int ndefault);
 
 	SciDll_void sci_DescribeKeywordSets(CString &descriptions);
 
-	SciDll_void sci_SetKeyWords(int keyWordSet, const char * keyWordList);
+	SciDll_void sci_SetKeyWords(int keyWordSet, LPCSTR keyWordList);
 
 	int  sci_GetStyleBitsNeeded();
-	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -834,18 +845,18 @@ inline SciDll_void CSciWnd::sci_GetTextAll(CStringA &Text)
 }
 
 //获取一行字符
-inline SciDll_void CSciWnd::sci_GetTextLine(int line, CString &Text)
+inline SciDll_void CSciWnd::sci_GetTextLine(int line, CStringA &Text)
 {
 	int nRet = -1;
 	int length = sci_LineLength(line)+1;
 	if(length>0)
 	{
-		TCHAR *pReturn = new TCHAR[length];
+		CHAR *pReturn = new CHAR[length];
 		pReturn[length-1] = 0;
 		if (pReturn != NULL)
 		{
 			*pReturn = '\0';
-			nRet = SendEditor(SCI_GETLINE, line, (LPARAM)pReturn);
+			nRet = execute(SCI_GETLINE, line, (LPARAM)pReturn);
 			Text = pReturn;
 			delete []pReturn;
 		}
@@ -858,11 +869,11 @@ inline SciDll_void CSciWnd::sci_GetTextLine(int line, CString &Text)
 inline SciDll_void CSciWnd::sci_GetText(int length, CStringA &Text)
 {
 	int nRet = -1;
-	char *pReturn = new char[length];
+	char *pReturn = new char[length + 1];
 	if (pReturn != NULL)
 	{
 		*pReturn = '\0';
-		nRet = SendEditor(SCI_GETTEXT, length, (LPARAM)pReturn);
+		nRet = execute(SCI_GETTEXT, length + 1, (LPARAM)pReturn);
 		Text = pReturn;
 		delete []pReturn;
 	}
@@ -870,33 +881,33 @@ inline SciDll_void CSciWnd::sci_GetText(int length, CStringA &Text)
 }
 
 //设置字符到控件
-inline SciDll_void CSciWnd::sci_SetText(const char * pText)
+inline SciDll_void CSciWnd::sci_SetText(LPCSTR pText)
 {
-	return SendEditor(SCI_SETTEXT, 0, (LPARAM)pText);
+	return execute(SCI_SETTEXT, 0, (LPARAM)pText);
 }
 
 //设置文档已保存的标志
 inline SciDll_void CSciWnd::sci_SetSavePoint()
 {
-	return SendEditor(SCI_SETSAVEPOINT,0,0);
+	return execute(SCI_SETSAVEPOINT,0,0);
 }
 
 //替换已选择字符
-inline SciDll_void CSciWnd::sci_ReplaceSel(const char *pText)
+inline SciDll_void CSciWnd::sci_ReplaceSel(LPCSTR pText)
 {
-	return SendEditor(SCI_REPLACESEL,0,(LPARAM)pText);
+	return execute(SCI_REPLACESEL,0,(LPARAM)pText);
 }
 
 //设置只读模式
 inline SciDll_void CSciWnd::sci_SetReadOnly(BOOL bReadOnly)
 {
-	return SendEditor(SCI_SETREADONLY,bReadOnly,0);
+	return execute(SCI_SETREADONLY,bReadOnly,0);
 }
 
 //获取是否只读模式
 inline BOOL CSciWnd::sci_GetReadOnly()
 {
-	return SendEditor(SCI_GETREADONLY,0,0);
+	return execute(SCI_GETREADONLY,0,0);
 }
 
 //获取范围内的字符
@@ -907,21 +918,21 @@ inline int CSciWnd::sci_GetTextRange(int cpMin, int cpMax, CStringA &pTextRange)
 	tr.chrg.cpMax = cpMax;
 	tr.lpstrText = new char[cpMax-cpMin+2];
 
-	int len = SendEditor(SCI_GETTEXTRANGE,0,(LPARAM)&tr);
+	int len = execute(SCI_GETTEXTRANGE,0,(LPARAM)&tr);
 	pTextRange = tr.lpstrText;
 
 	delete []tr.lpstrText;
 	return len;
 }
 
-inline SciDll_void CSciWnd::sci_GetStyledText(int cpMin, int cpMax, CString &pText)
+inline SciDll_void CSciWnd::sci_GetStyledText(int cpMin, int cpMax, CStringA &pText)
 {
 	Sci_TextRange tr;
 	tr.chrg.cpMin = cpMin;
 	tr.chrg.cpMax = cpMax;
 	tr.lpstrText = new char[2*(cpMax-cpMin)+2];
 
-	SendEditor(SCI_GETTEXTRANGE,0,(LPARAM)&tr);
+	execute(SCI_GETTEXTRANGE,0,(LPARAM)&tr);
 	pText = tr.lpstrText;
 
 	delete []tr.lpstrText;
@@ -930,103 +941,103 @@ inline SciDll_void CSciWnd::sci_GetStyledText(int cpMin, int cpMax, CString &pTe
 //设置文档缓冲区大小, 使创建的文档不会小于当前的文档
 inline SciDll_void CSciWnd::sci_Allocate(int bytes)
 {
-	return SendEditor(SCI_ALLOCATE, bytes,0);
+	return execute(SCI_ALLOCATE, bytes,0);
 }
 
 //在光标位置插入字符串
-inline SciDll_void CSciWnd::sci_AddText(int length, LPCTSTR pText)
+inline SciDll_void CSciWnd::sci_AddText(int length, LPCSTR pText)
 {
-	return SendEditor(SCI_ADDTEXT,length,(LPARAM)pText);
+	return execute(SCI_ADDTEXT,length,(LPARAM)pText);
 }
 
 //在光标位置插入包含字符格式的字符串
-inline SciDll_void CSciWnd::sci_AddStyledText(int length, LPCTSTR pText)
+inline SciDll_void CSciWnd::sci_AddStyledText(int length, LPCSTR pText)
 {
-	return SendEditor(SCI_ADDSTYLEDTEXT,length,(LPARAM)pText);
+	return execute(SCI_ADDSTYLEDTEXT,length,(LPARAM)pText);
 }
 
 //在文档末尾插入字符串
-inline SciDll_void CSciWnd::sci_AppendText(int length, LPCTSTR pText)
+inline SciDll_void CSciWnd::sci_AppendText(int length, LPCSTR pText)
 {
-	return SendEditor(SCI_APPENDTEXT,length,(LPARAM)pText);
+	return execute(SCI_APPENDTEXT,length,(LPARAM)pText);
 }
 
 //在某个位置插入字符串.如果pos=-1,直接在光标位置插入
-inline SciDll_void CSciWnd::sci_InsertText(int pos, LPCTSTR pText)
+inline SciDll_void CSciWnd::sci_InsertText(int pos, LPCVOID pText)
 {
-	return SendEditor(SCI_INSERTTEXT,pos,(LPARAM)pText);
+	return execute(SCI_INSERTTEXT,pos,(LPARAM)pText);
 }
 
 //清空文档所有字符
 inline SciDll_void CSciWnd::sci_ClearTextAll()
 {
-	return SendEditor(SCI_CLEARALL,0,0);
+	return execute(SCI_CLEARALL,0,0);
 }
 
 //清空文档字符的所有格式()
 inline SciDll_void CSciWnd::sci_ClearDocunmentStyle()
 {
-	return SendEditor(SCI_CLEARDOCUMENTSTYLE,0,0);
+	return execute(SCI_CLEARDOCUMENTSTYLE,0,0);
 }
 
 //获取某个位置的字符
 inline char CSciWnd::sci_GetCharAt(int pos)
 {
-	return (char)SendEditor(SCI_GETCHARAT,pos,0);
+	return (char)execute(SCI_GETCHARAT,pos,0);
 }
 
 //获取某个位置的字符字体风格
 inline int CSciWnd::sci_GetStyleAt(int pos)
 {
-	return SendEditor(SCI_GETSTYLEAT,pos,0);
+	return execute(SCI_GETSTYLEAT,pos,0);
 }
 
 //设置字符字体风格
 inline SciDll_void CSciWnd::sci_SetStyleBits(int bits)
 {
-	return SendEditor(SCI_SETSTYLEBITS,bits,0);
+	return execute(SCI_SETSTYLEBITS,bits,0);
 }
 
 //获取字符字体风格
 inline int CSciWnd::sci_GetStyleBits()
 {
-	return SendEditor(SCI_GETSTYLEBITS,0,0);	
+	return execute(SCI_GETSTYLEBITS,0,0);	
 }
 
 inline int CSciWnd::sci_TargetAsUTF8(LPTSTR pText)
 {
-	return SendEditor(SCI_TARGETASUTF8,0,(LPARAM)pText);	
+	return execute(SCI_TARGETASUTF8,0,(LPARAM)pText);	
 }
 
-inline int CSciWnd::sci_EncodedFromUTF8(LPCTSTR pUTF8, LPTSTR pText)
+inline int CSciWnd::sci_EncodedFromUTF8(LPCSTR pUTF8, LPTSTR pText)
 {
-	return SendEditor(SCI_ENCODEDFROMUTF8,(LPARAM)pUTF8,(LPARAM)pText);	
+	return execute(SCI_ENCODEDFROMUTF8,(LPARAM)pUTF8,(LPARAM)pText);	
 }
 
 inline SciDll_void CSciWnd::sci_SetLengthForEncode(int bits)
 {
-	return SendEditor(SCI_SETLENGTHFORENCODE,bits,0);
+	return execute(SCI_SETLENGTHFORENCODE,bits,0);
 }
 //////////////////////////////////////////////////////////////////////////
 /*--------------查找-----------------*/
 inline int CSciWnd::sci_FindText(int searchFlags, Sci_TextToFind &ttf)
 {
-	return SendEditor(SCI_FINDTEXT,searchFlags,(LPARAM)&ttf);
+	return execute(SCI_FINDTEXT,searchFlags,(LPARAM)&ttf);
 }
 
 inline SciDll_void CSciWnd::sci_SearchAnchor()
 {
-	return SendEditor(SCI_SEARCHANCHOR,0,0);
+	return execute(SCI_SEARCHANCHOR,0,0);
 }
 
-inline int CSciWnd::sci_SearchNext(int searchFlags, LPCTSTR pText)
+inline int CSciWnd::sci_SearchNext(int searchFlags, LPCSTR pText)
 {
-	return SendEditor(SCI_SEARCHNEXT,searchFlags,(LPARAM)pText);
+	return execute(SCI_SEARCHNEXT,searchFlags,(LPARAM)pText);
 }
 
-inline int CSciWnd::sci_SearchPrev(int searchFlags, LPCTSTR pText)
+inline int CSciWnd::sci_SearchPrev(int searchFlags, LPCSTR pText)
 {
-	return SendEditor(SCI_SEARCHPREV,searchFlags,(LPARAM)pText);	
+	return execute(SCI_SEARCHPREV,searchFlags,(LPARAM)pText);	
 }
 
 
@@ -1034,57 +1045,57 @@ inline int CSciWnd::sci_SearchPrev(int searchFlags, LPCTSTR pText)
 /*----查找和替换----*/
 inline SciDll_void CSciWnd::sci_SetTargetStart(int pos)
 {
-	return SendEditor(SCI_SETTARGETSTART,pos,0);
+	return execute(SCI_SETTARGETSTART,pos,0);
 }
 
 inline int  CSciWnd::sci_GetTargetStart()
 {
-	return SendEditor(SCI_GETTARGETSTART,0,0);
+	return execute(SCI_GETTARGETSTART,0,0);
 }
 
 inline SciDll_void CSciWnd::sci_SetTargetEnd(int pos)
 {
-	return SendEditor(SCI_SETTARGETEND,pos,0);	
+	return execute(SCI_SETTARGETEND,pos,0);	
 }
 
 inline int CSciWnd::sci_GetTargetEnd()
 {
-	return SendEditor(SCI_GETTARGETEND,0,0);	
+	return execute(SCI_GETTARGETEND,0,0);	
 }
 
 inline SciDll_void CSciWnd::sci_TargetFromSelection()
 {
-	return SendEditor(SCI_TARGETFROMSELECTION,0,0);	
+	return execute(SCI_TARGETFROMSELECTION,0,0);	
 }
 
 inline SciDll_void CSciWnd::sci_SetSearchFlags(int searchFlags)
 {
-	return SendEditor(SCI_SETSEARCHFLAGS,searchFlags,0);	
+	return execute(SCI_SETSEARCHFLAGS,searchFlags,0);	
 }
 
 inline int  CSciWnd::sci_GetSearchFlags()
 {
-	return SendEditor(SCI_GETSEARCHFLAGS,0,0);;	
+	return execute(SCI_GETSEARCHFLAGS,0,0);;	
 }
 
-inline int CSciWnd::sci_SearchInTarget(int length, LPCTSTR pText)
+inline int CSciWnd::sci_SearchInTarget(int length, LPCSTR pText)
 {
-	return SendEditor(SCI_SEARCHINTARGET,length,(LPARAM)pText);	
+	return execute(SCI_SEARCHINTARGET,length,(LPARAM)pText);	
 }
 
 inline int CSciWnd::sci_ReplaceTarget(int length, const char *pText)
 {
-	return SendEditor(SCI_REPLACETARGET,length,(LPARAM)pText);	
+	return execute(SCI_REPLACETARGET,length,(LPARAM)pText);	
 }
 
-inline int CSciWnd::sci_ReplaceTargetRe(int length, LPCTSTR pText)
+inline int CSciWnd::sci_ReplaceTargetRe(int length, LPCSTR pText)
 {
-	return SendEditor(SCI_REPLACETARGETRE,length,(LPARAM)pText);	
+	return execute(SCI_REPLACETARGETRE,length,(LPARAM)pText);	
 }
 
 inline SciDll_void CSciWnd::sci_GetTag(int tagNumber, LPTSTR pText)
 {
-	return SendEditor(SCI_GETTAG,tagNumber,(LPARAM)pText);
+	return execute(SCI_GETTAG,tagNumber,(LPARAM)pText);
 }
 
 
@@ -1093,13 +1104,13 @@ inline SciDll_void CSciWnd::sci_GetTag(int tagNumber, LPTSTR pText)
 //设置是否覆盖模式
 inline SciDll_void CSciWnd::sci_OverType_SetOverType(BOOL bOverType)
 {
-	return SendEditor(SCI_SETOVERTYPE,bOverType,0);
+	return execute(SCI_SETOVERTYPE,bOverType,0);
 }
 
 //获取是否覆盖模式
 inline BOOL CSciWnd::sci_OverType_GetOverType()
 {
-	return SendEditor(SCI_GETOVERTYPE,0,0);
+	return execute(SCI_GETOVERTYPE,0,0);
 }
 
 
@@ -1107,17 +1118,17 @@ inline BOOL CSciWnd::sci_OverType_GetOverType()
 /*----剪切,复制,粘贴,Redo,Undo----*/
 inline SciDll_void CSciWnd::sci_Cut()
 {
-	return SendEditor(SCI_CUT,0,0);
+	return execute(SCI_CUT,0,0);
 }
 
 inline SciDll_void CSciWnd::sci_Copy()
 {
-	return SendEditor(SCI_COPY,0,0);	
+	return execute(SCI_COPY,0,0);	
 }
 
 inline SciDll_void CSciWnd::sci_Paste()
 {
-	return SendEditor(SCI_PASTE,0,0);	
+	return execute(SCI_PASTE,0,0);	
 }
 
 //返回是否可以复制
@@ -1135,89 +1146,89 @@ inline BOOL CSciWnd::sci_CanCut()
 //返回是否可以粘贴
 inline BOOL CSciWnd::sci_CanPaste()
 {
-	return SendEditor(SCI_CANPASTE,0,0);
+	return execute(SCI_CANPASTE,0,0);
 }
 
 //删除选中内容
 inline SciDll_void CSciWnd::sci_Clear()
 {
-	return SendEditor(SCI_CLEAR,0,0);
+	return execute(SCI_CLEAR,0,0);
 }
 
 //类似Copy,区别是当选择内容为空时,复制当前整行内容
 inline SciDll_void CSciWnd::sci_CopyAllowLine()
 {
-	return SendEditor(SCI_COPYALLOWLINE,0,0);
+	return execute(SCI_COPYALLOWLINE,0,0);
 }
 
 inline SciDll_void CSciWnd::sci_CopyRange(int start, int end)
 {
-	return SendEditor(SCI_COPYRANGE,start,end);
+	return execute(SCI_COPYRANGE,start,end);
 }
 
-inline SciDll_void CSciWnd::sci_CopyText(int length, LPCTSTR pText)
+inline SciDll_void CSciWnd::sci_CopyText(int length, LPCSTR pText)
 {
-	return SendEditor(SCI_COPYTEXT,length,(LPARAM)pText);
+	return execute(SCI_COPYTEXT,length,(LPARAM)pText);
 }
 
 inline SciDll_void CSciWnd::sci_SetPasteConvertEndings(BOOL convert)
 {
-	return SendEditor(SCI_SETPASTECONVERTENDINGS,convert,0);
+	return execute(SCI_SETPASTECONVERTENDINGS,convert,0);
 }
 
 inline BOOL CSciWnd::sci_GetPasteConvertEndings()
 {
-	return SendEditor(SCI_GETPASTECONVERTENDINGS,0,0);
+	return execute(SCI_GETPASTECONVERTENDINGS,0,0);
 }
 
 inline SciDll_void CSciWnd::sci_Undo()
 {
-	return SendEditor(SCI_UNDO,0,0);
+	return execute(SCI_UNDO,0,0);
 }
 
 inline BOOL CSciWnd::sci_CanUndo()
 {
-	return SendEditor(SCI_CANUNDO,0,0);;
+	return execute(SCI_CANUNDO,0,0);;
 }
 
 inline SciDll_void CSciWnd::sci_EmptyUndoBuffer()
 {
-	return SendEditor(SCI_EMPTYUNDOBUFFER,0,0);
+	return execute(SCI_EMPTYUNDOBUFFER,0,0);
 }
 
 inline SciDll_void CSciWnd::sci_Redo()
 {
-	return SendEditor(SCI_REDO,0,0);
+	return execute(SCI_REDO,0,0);
 }
 
 inline BOOL CSciWnd::sci_CanRedo()
 {
-	return SendEditor(SCI_CANREDO,0,0);
+	return execute(SCI_CANREDO,0,0);
 }
 
 inline SciDll_void CSciWnd::sci_SetUndoCollection(BOOL collectUndo)
 {
-	return SendEditor(SCI_SETUNDOCOLLECTION,collectUndo,0);
+	return execute(SCI_SETUNDOCOLLECTION,collectUndo,0);
 }
 
 inline BOOL CSciWnd::sci_GetUndoCollection()
 {
-	return SendEditor(SCI_GETUNDOCOLLECTION,0,0);;
+	return execute(SCI_GETUNDOCOLLECTION,0,0);;
 }
 
 inline SciDll_void CSciWnd::sci_BeginUndoAction()
 {
-	return SendEditor(SCI_BEGINUNDOACTION,0,0);
+	return execute(SCI_BEGINUNDOACTION,0,0);
 }
 
 inline SciDll_void CSciWnd::sci_EndUndoAction()
 {
-	return SendEditor(SCI_ENDUNDOACTION,0,0);
+	return execute(SCI_ENDUNDOACTION,0,0);
 }
 
 inline SciDll_void CSciWnd::sci_AddUndoAction(int token, int flags)
 {
-	return SendEditor(SCI_ADDUNDOACTION,token,flags);
+	return execute(SCI_ADDUNDOACTION,token,flags);
 }
 
 
@@ -1225,145 +1236,145 @@ inline SciDll_void CSciWnd::sci_AddUndoAction(int token, int flags)
 /*----Error Handing----*/ 
 inline SciDll_void CSciWnd::sci_SetStatus(int status)
 {
-	return SendEditor(SCI_SETSTATUS,status,0);
+	return execute(SCI_SETSTATUS,status,0);
 }
 
 inline int  CSciWnd::sci_GetStatus()
 {
-	return SendEditor(SCI_GETSTATUS,0,0);
+	return execute(SCI_GETSTATUS,0,0);
 }
 
 //////////////////////////////////////////////////////////////////////////
 /*----选中内容信息----*/
 inline int  CSciWnd::sci_GetTextLength()
 {
-	return SendEditor(SCI_GETTEXTLENGTH,0,0)+1;
+	return execute(SCI_GETTEXTLENGTH,0,0);
 }
 
 inline int  CSciWnd::sci_GetLength()
 {
-	return SendEditor(SCI_GETLENGTH,0,0)+1;
+	return execute(SCI_GETLENGTH,0,0);
 }
 
 inline int  CSciWnd::sci_GetLineCount()
 {
-	return SendEditor(SCI_GETLINECOUNT,0,0);
+	return execute(SCI_GETLINECOUNT,0,0);
 }
 
 inline SciDll_void CSciWnd::sci_SetFirstVisibleLine(int lineDisplay)
 {
-	return SendEditor(SCI_SETFIRSTVISIBLELINE,lineDisplay,0);
+	return execute(SCI_SETFIRSTVISIBLELINE,lineDisplay,0);
 }
 
 inline int  CSciWnd::sci_GetFirstVisibleLine()
 {
-	return SendEditor(SCI_GETFIRSTVISIBLELINE,0,0);;	
+	return execute(SCI_GETFIRSTVISIBLELINE,0,0);;	
 }
 
 inline int  CSciWnd::sci_LineSonScreen()
 {
-	return SendEditor(SCI_LINESONSCREEN,0,0);;	
+	return execute(SCI_LINESONSCREEN,0,0);;	
 }
 
 inline BOOL  CSciWnd::sci_GetModify()
 {
-	return SendEditor(SCI_GETMODIFY,0,0);;
+	return execute(SCI_GETMODIFY,0,0);;
 }
 
 inline SciDll_void CSciWnd::sci_SetSel(int anchorPos, int currentPos)
 {
-	return SendEditor(SCI_SETSEL,anchorPos,currentPos);
+	return execute(SCI_SETSEL,anchorPos,currentPos);
 }
 
 inline SciDll_void CSciWnd::sci_GoToPos(int pos)
 {
-	return SendEditor(SCI_GOTOPOS,pos,0);
+	return execute(SCI_GOTOPOS,pos,0);
 }
 
 inline SciDll_void CSciWnd::sci_GoToLine(int line)
 {
-	return SendEditor(SCI_GOTOLINE,line,0);
+	return execute(SCI_GOTOLINE,line,0);
 }
 
 inline SciDll_void CSciWnd::sci_SetCurrentPos(int pos)
 {
-	return SendEditor(SCI_SETCURRENTPOS,pos,0);
+	return execute(SCI_SETCURRENTPOS,pos,0);
 }
 
 inline int  CSciWnd::sci_GetCurrentPos()
 {
-	return SendEditor(SCI_GETCURRENTPOS,0,0);
+	return execute(SCI_GETCURRENTPOS,0,0);
 }
 
 inline SciDll_void CSciWnd::sci_SetAnchor(int pos)
 {
-	return SendEditor(SCI_SETANCHOR,pos,0);
+	return execute(SCI_SETANCHOR,pos,0);
 }
 
 inline int  CSciWnd::sci_GetAnchor()
 {
-	return SendEditor(SCI_GETANCHOR,0,0);
+	return execute(SCI_GETANCHOR,0,0);
 }
 
 inline SciDll_void CSciWnd::sci_SetSelectionStart(int pos)
 {
-	return SendEditor(SCI_SETSELECTIONSTART,pos,0);
+	return execute(SCI_SETSELECTIONSTART,pos,0);
 }
 
 
 inline SciDll_void CSciWnd::sci_SetSelectionEnd(int pos)
 {
-	return SendEditor(SCI_SETSELECTIONEND,pos,0);
+	return execute(SCI_SETSELECTIONEND,pos,0);
 }
 
 inline int  CSciWnd::sci_GetSelectionStart()
 {
-	return SendEditor(SCI_GETSELECTIONSTART,0,0);
+	return execute(SCI_GETSELECTIONSTART,0,0);
 }
 
 inline int  CSciWnd::sci_GetSelectionEnd()
 {
-	return SendEditor(SCI_GETSELECTIONEND,0,0);
+	return execute(SCI_GETSELECTIONEND,0,0);
 }
 
 inline SciDll_void CSciWnd::sci_SetEmptySelection(int pos)
 {
-	return SendEditor(SCI_SETEMPTYSELECTION,pos,0);
+	return execute(SCI_SETEMPTYSELECTION,pos,0);
 }
 
 inline SciDll_void CSciWnd::sci_SelectAll()
 {
-	return SendEditor(SCI_SELECTALL,0,0);
+	return execute(SCI_SELECTALL,0,0);
 }
 
 inline int  CSciWnd::sci_LineFromPosition(int pos)
 {
-	return SendEditor(SCI_LINEFROMPOSITION,pos,0);
+	return execute(SCI_LINEFROMPOSITION,pos,0);
 }
 
 inline int  CSciWnd::sci_PositionFromLine(int line)
 {
-	return SendEditor(SCI_POSITIONFROMLINE,line,0);
+	return execute(SCI_POSITIONFROMLINE,line,0);
 }
 
 inline int  CSciWnd::sci_GetLineEndPosition(int line)
 {
-	return SendEditor(SCI_GETLINEENDPOSITION,line,0);
+	return execute(SCI_GETLINEENDPOSITION,line,0);
 }
 
 inline int  CSciWnd::sci_LineLength(int line)
 {
-	return SendEditor(SCI_LINELENGTH,line,0);
+	return execute(SCI_LINELENGTH,line,0);
 }
 
-inline SciDll_void CSciWnd::sci_GetSelText(CString &Text)
+inline SciDll_void CSciWnd::sci_GetSelText(CStringA &Text)
 {
 	int nRet = -1;
-	nRet = SendEditor(SCI_GETSELTEXT,0,0);
+	nRet = execute(SCI_GETSELTEXT,0,0);
 	if(nRet>0)
 	{
 		char *p = new char[nRet];
-		nRet = SendEditor(SCI_GETSELTEXT,0,(LPARAM)p);
+		nRet = execute(SCI_GETSELTEXT,0,(LPARAM)p);
 		Text = p;
 		delete []p;
 	}
@@ -1371,13 +1382,15 @@ inline SciDll_void CSciWnd::sci_GetSelText(CString &Text)
 	return nRet;
 }
 
-inline int  CSciWnd::sci_GetCurLine(CString &Text)
+inline int  CSciWnd::sci_GetCurLine(CStringA &Text)
 {
 	int pos = sci_GetCurrentPos();
-	if(pos < 0)	return -1;
+	if(pos < 0)
+		return -1;
 
 	int line = sci_LineFromPosition(pos);
-	if(line<0)	return -1;
+	if(line < 0)
+		return -1;
 
 	sci_GetTextLine(line, Text);
 
@@ -1394,127 +1407,127 @@ inline int  CSciWnd::sci_GetCurLine()
 
 inline BOOL CSciWnd::sci_GetSelectionIsRectangle()
 {
-	return SendEditor(SCI_SELECTIONISRECTANGLE,0,0);
+	return execute(SCI_SELECTIONISRECTANGLE,0,0);
 }
 
 inline SciDll_void CSciWnd::sci_SetSelectionMode(int mode)
 {
-	SendEditor(SCI_SETSELECTIONMODE,mode,0);
+	execute(SCI_SETSELECTIONMODE,mode,0);
 }
 
 inline int  CSciWnd::sci_GetSelectionMode()
 {
-	return SendEditor(SCI_GETSELECTIONMODE,0,0);
+	return execute(SCI_GETSELECTIONMODE,0,0);
 }
 
 inline int  CSciWnd::sci_GetLineSelStartPosition(int line)
 {
-	return SendEditor(SCI_GETLINESELSTARTPOSITION,line,0);
+	return execute(SCI_GETLINESELSTARTPOSITION,line,0);
 }
 
 inline int  CSciWnd::sci_GetLineSelEndPosition(int line)
 {
-	return SendEditor(SCI_GETLINESELENDPOSITION,line,0);
+	return execute(SCI_GETLINESELENDPOSITION,line,0);
 }
 
 inline SciDll_void CSciWnd::sci_MoveCaretinSideView()
 {
-	SendEditor(SCI_MOVECARETINSIDEVIEW,0,0);
+	execute(SCI_MOVECARETINSIDEVIEW,0,0);
 }
 
 inline int  CSciWnd::sci_WordEndPosition(int position, BOOL onlyWordCharacters)
 {
-	return SendEditor(SCI_WORDENDPOSITION,position,onlyWordCharacters);
+	return execute(SCI_WORDENDPOSITION,position,onlyWordCharacters);
 }
 
 inline int  CSciWnd::sci_WordStartPosition(int position, BOOL onlyWordCharacters)
 {
-	return SendEditor(SCI_WORDSTARTPOSITION,position,onlyWordCharacters);
+	return execute(SCI_WORDSTARTPOSITION,position,onlyWordCharacters);
 }
 
 inline int  CSciWnd::sci_PositionBefore(int postion)
 {
-	return SendEditor(SCI_POSITIONBEFORE,postion,0);
+	return execute(SCI_POSITIONBEFORE,postion,0);
 }
 
 inline int  CSciWnd::sci_PostionAfter(int postion)
 {
-	return SendEditor(SCI_POSITIONAFTER,postion,0);
+	return execute(SCI_POSITIONAFTER,postion,0);
 }
 
 inline int  CSciWnd::sci_CountCharacters(int startPos, int endPos)
 {
-	return SendEditor(SCI_COUNTCHARACTERS,startPos,endPos);
+	return execute(SCI_COUNTCHARACTERS,startPos,endPos);
 }
 
-inline int  CSciWnd::sci_TextWidth(int styleNumber, const char * pText)
+inline int  CSciWnd::sci_TextWidth(int styleNumber, LPCSTR pText)
 {
-	return SendEditor(SCI_TEXTWIDTH,styleNumber,(LPARAM)pText);
+	return execute(SCI_TEXTWIDTH,styleNumber,(LPARAM)pText);
 }
 
 inline int  CSciWnd::sci_TextHeight(int line)
 {
-	return SendEditor(SCI_TEXTHEIGHT,line,0);
+	return execute(SCI_TEXTHEIGHT,line,0);
 }
 
 inline int  CSciWnd::sci_GetColumn(int pos)
 {
-	return SendEditor(SCI_GETCOLUMN,pos,0);
+	return execute(SCI_GETCOLUMN,pos,0);
 }
 
 inline int  CSciWnd::sci_FindColumn(int line, int column)
 {
-	return SendEditor(SCI_FINDCOLUMN,line,column);
+	return execute(SCI_FINDCOLUMN,line,column);
 }
 
 inline int  CSciWnd::sci_PostionFromPoint(int x, int y)
 {
-	return SendEditor(SCI_POSITIONFROMPOINT,x,y);
+	return execute(SCI_POSITIONFROMPOINT,x,y);
 }
 
 inline int  CSciWnd::sci_PostionFromPointClose(int x, int y)
 {
-	return SendEditor(SCI_POSITIONFROMPOINTCLOSE,x,y);
+	return execute(SCI_POSITIONFROMPOINTCLOSE,x,y);
 }
 
 inline int  CSciWnd::sci_CharPositionFromPoint(int x, int y)
 {
-	return SendEditor(SCI_CHARPOSITIONFROMPOINT,x,y);
+	return execute(SCI_CHARPOSITIONFROMPOINT,x,y);
 }
 
 inline int  CSciWnd::sci_CharPositionFromPointClose(int x, int y)
 {
-	return SendEditor(SCI_CHARPOSITIONFROMPOINTCLOSE,x,y);
+	return execute(SCI_CHARPOSITIONFROMPOINTCLOSE,x,y);
 }
 
 inline int  CSciWnd::sci_PointXFromPosition(int pos)
 {
-	return SendEditor(SCI_POINTXFROMPOSITION,pos,0);
+	return execute(SCI_POINTXFROMPOSITION,pos,0);
 }
 
 inline int  CSciWnd::sci_PointYFromPosition(int pos)
 {
-	return SendEditor(SCI_POINTYFROMPOSITION,pos,0);
+	return execute(SCI_POINTYFROMPOSITION,pos,0);
 }
 
 inline SciDll_void CSciWnd::sci_HideSelection(BOOL hide)
 {
-	SendEditor(SCI_HIDESELECTION,hide,0);
+	execute(SCI_HIDESELECTION,hide,0);
 }
 
 inline SciDll_void CSciWnd::sci_ChooseCaretX()
 {
-	SendEditor(SCI_CHOOSECARETX,0,0);
+	execute(SCI_CHOOSECARETX,0,0);
 }
 
 inline SciDll_void CSciWnd::sci_MoveSelectedLinesUp()
 {
-	SendEditor(SCI_MOVESELECTEDLINESUP,0,0);
+	execute(SCI_MOVESELECTEDLINESUP,0,0);
 }
 
 inline SciDll_void CSciWnd::sci_MoveSlectionLinesDown()
 {
-	SendEditor(SCI_MOVESELECTEDLINESDOWN,0,0);
+	execute(SCI_MOVESELECTEDLINESDOWN,0,0);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1523,93 +1536,87 @@ inline SciDll_void CSciWnd::sci_MoveSlectionLinesDown()
 /*-----------滚动条--------*/
 inline SciDll_void CSciWnd::sci_LineScroll(int column, int line)
 {
-	return SendEditor(SCI_LINESCROLL,column,line);
+	return execute(SCI_LINESCROLL,column,line);
 }
 
 inline SciDll_void CSciWnd::sci_ScrollCaret()
 {
-	return SendEditor(SCI_SCROLLCARET);
-}
-
-inline SciDll_void Sci_ScrollRange(int secondplace, int firstplace)
-{
-	//return SendEditor(SCI_SCROLLRANGE);
-	return 0;
+	return execute(SCI_SCROLLCARET);
 }
 
 inline SciDll_void CSciWnd::sci_SetXCaretPolicy(int caretPolicy, int caretSlop)
 {
-	return SendEditor(SCI_SETXCARETPOLICY,caretPolicy,caretSlop);
+	return execute(SCI_SETXCARETPOLICY,caretPolicy,caretSlop);
 }
 
 inline SciDll_void CSciWnd::sci_SetYCaretPolicy(int caretPolicy, int caretSlop)
 {
-	return SendEditor(SCI_SETYCARETPOLICY, caretPolicy, caretSlop);
+	return execute(SCI_SETYCARETPOLICY, caretPolicy, caretSlop);
 }
 
 inline SciDll_void CSciWnd::sci_SetVisiblePolicy(int caretPolicy, int caretSlop)
 {
-	return SendEditor(SCI_SETVISIBLEPOLICY, caretPolicy, caretSlop);
+	return execute(SCI_SETVISIBLEPOLICY, caretPolicy, caretSlop);
 }
 
 inline SciDll_void CSciWnd::sci_SetHScrollBar(BOOL visible)
 {
-	return SendEditor(SCI_SETHSCROLLBAR, visible, 0);
+	return execute(SCI_SETHSCROLLBAR, visible, 0);
 }
 
 inline BOOL CSciWnd::sci_GetHScrollBar()
 {
-	return SendEditor(SCI_GETHSCROLLBAR);
+	return execute(SCI_GETHSCROLLBAR);
 }
 
 inline SciDll_void CSciWnd::sci_SetVScrollBar(BOOL visible)
 {
-	return SendEditor(SCI_SETVSCROLLBAR,visible,0);
+	return execute(SCI_SETVSCROLLBAR,visible,0);
 }
 
 inline BOOL CSciWnd::sci_GetVScrollBar()
 {
-	return SendEditor(SCI_GETVSCROLLBAR);
+	return execute(SCI_GETVSCROLLBAR);
 }
 
 inline SciDll_void CSciWnd::sci_SetXOffset(int xOffset)
 {
-	return SendEditor(SCI_SETXOFFSET,xOffset,0);
+	return execute(SCI_SETXOFFSET,xOffset,0);
 }
 
 inline int  CSciWnd::sci_GetXOffset()
 {
-	return SendEditor(SCI_GETXOFFSET);
+	return execute(SCI_GETXOFFSET);
 }
 
 inline SciDll_void CSciWnd::sci_SetScrollWidth(int pixelWidth)
 {
-	return SendEditor(SCI_SETSCROLLWIDTH,pixelWidth,0);
+	return execute(SCI_SETSCROLLWIDTH,pixelWidth,0);
 }
 
 inline int  CSciWnd::sci_GetScrollWidth()
 {
-	return SendEditor(SCI_GETSCROLLWIDTH);
+	return execute(SCI_GETSCROLLWIDTH);
 }
 
 inline SciDll_void CSciWnd::sci_SetScrollWidthTracking(BOOL tracking)
 {
-	return SendEditor(SCI_SETSCROLLWIDTHTRACKING,tracking,0);
+	return execute(SCI_SETSCROLLWIDTHTRACKING,tracking,0);
 }
 
 inline BOOL CSciWnd::sci_GetScrollWidthTracking()
 {
-	return SendEditor(SCI_GETSCROLLWIDTHTRACKING);
+	return execute(SCI_GETSCROLLWIDTHTRACKING);
 }
 
 inline SciDll_void CSciWnd::sci_SetEndAtLastLine(BOOL endAtLastLine)
 {
-	return SendEditor(SCI_SETENDATLASTLINE);
+	return execute(SCI_SETENDATLASTLINE);
 }
 
 inline BOOL CSciWnd::sci_GetEndAtLastLine()
 {
-	return SendEditor(SCI_GETENDATLASTLINE);
+	return execute(SCI_GETENDATLASTLINE);
 }
 
 
@@ -1617,66 +1624,64 @@ inline BOOL CSciWnd::sci_GetEndAtLastLine()
 /*------White space-------*/
 inline SciDll_void CSciWnd::sci_SetViewWs(int wsMode)
 {
-	return SendEditor(SCI_SETVIEWWS,wsMode,0);
+	return execute(SCI_SETVIEWWS,wsMode,0);
 }
 
 inline BOOL CSciWnd::sci_GetViewWs()
 {
-	return SendEditor(SCI_GETVIEWWS);
+	return execute(SCI_GETVIEWWS);
 }
 
 inline SciDll_void CSciWnd::sci_SetWhiteSpaceFore(BOOL useWhitespaceForeColour, COLORREF colour)
 {
-	return SendEditor(SCI_SETWHITESPACEFORE,useWhitespaceForeColour,colour);
+	return execute(SCI_SETWHITESPACEFORE,useWhitespaceForeColour,colour);
 }
 
 inline SciDll_void CSciWnd::sci_SetWhiteSpaceBack(BOOL useWhitespaceBackColour, COLORREF colour)
 {
-	return SendEditor(SCI_SETWHITESPACEBACK,useWhitespaceBackColour,colour);
+	return execute(SCI_SETWHITESPACEBACK,useWhitespaceBackColour,colour);
 }
 
 inline SciDll_void CSciWnd::sci_SetWhiteSpaceSize(int size)
 {
-	return SendEditor(SCI_SETWHITESPACESIZE,size,0);
+	return execute(SCI_SETWHITESPACESIZE,size,0);
 }
 
 inline int  CSciWnd::sci_GetWhiteSpaceSize()
 {
-	return SendEditor(SCI_GETWHITESPACESIZE);
+	return execute(SCI_GETWHITESPACESIZE);
 }
 
-//设置行上方的间距
 inline SciDll_void CSciWnd::sci_SetExtraAscent(int extraAscent)
 {
-	return SendEditor(SCI_SETEXTRAASCENT,extraAscent,0);
+	return execute(SCI_SETEXTRAASCENT,extraAscent,0);
 }
 
 inline BOOL CSciWnd::sci_GetExtraAscent()
 {
-	return SendEditor(SCI_GETEXTRAASCENT);
+	return execute(SCI_GETEXTRAASCENT);
 }
 
-//设置行下方间距
 inline SciDll_void CSciWnd::sci_SetExtraDescent(int extraDescent)
 {
-	return SendEditor(SCI_SETEXTRADESCENT,extraDescent,extraDescent);
+	return execute(SCI_SETEXTRADESCENT,extraDescent,extraDescent);
 }
 
 inline BOOL CSciWnd::sci_GetExtraDescent()
 {
-	return SendEditor(SCI_GETEXTRAASCENT);
+	return execute(SCI_GETEXTRAASCENT);
 }
 
 //////////////////////////////////////////////////////////////////////////
 /*---------鼠标指针------*/
 inline SciDll_void CSciWnd::sci_SetCursor(int curType)
 {
-	return SendEditor(SCI_SETCURSOR);
+	return execute(SCI_SETCURSOR);
 }
 
 inline int  CSciWnd::sci_GetCursor()
 {
-	return SendEditor(SCI_GETCURSOR);
+	return execute(SCI_GETCURSOR);
 }
 
 
@@ -1684,39 +1689,39 @@ inline int  CSciWnd::sci_GetCursor()
 /*---------Mouse capture-------*/
 inline SciDll_void CSciWnd::sci_SetMouseDownCaptures(BOOL captures)
 {
-	return SendEditor(SCI_SETMOUSEDOWNCAPTURES,captures,0);
+	return execute(SCI_SETMOUSEDOWNCAPTURES,captures,0);
 }
 
 inline BOOL CSciWnd::sci_GetMouseDownCaptures()
 {
-	return SendEditor(SCI_GETMOUSEDOWNCAPTURES);
+	return execute(SCI_GETMOUSEDOWNCAPTURES);
 }
 
 //////////////////////////////////////////////////////////////////////////
 /*----------Line Endings-------*/
 inline SciDll_void CSciWnd::sci_SetEolMode(int eolMode)
 {
-	return SendEditor(SCI_SETEOLMODE,eolMode,0);
+	return execute(SCI_SETEOLMODE,eolMode,0);
 }
 
 inline int  CSciWnd::sci_GetEolMode()
 {
-	return SendEditor(SCI_GETEOLMODE);
+	return execute(SCI_GETEOLMODE);
 }
 
 inline SciDll_void CSciWnd::sci_ConvertEols(int eolMode)
 {
-	return SendEditor(SCI_CONVERTEOLS,eolMode,0);
+	return execute(SCI_CONVERTEOLS,eolMode,0);
 }
 
 inline SciDll_void CSciWnd::sci_SetViewEol(BOOL visible)
 {
-	return SendEditor(SCI_SETVIEWEOL,visible,0);
+	return execute(SCI_SETVIEWEOL,visible,0);
 }
 
 inline BOOL CSciWnd::sci_GetViewEol()
 {
-	return SendEditor(SCI_GETVIEWEOL);
+	return execute(SCI_GETVIEWEOL);
 }
 
 
@@ -1724,63 +1729,63 @@ inline BOOL CSciWnd::sci_GetViewEol()
 /*----------Styling------------*/
 inline int CSciWnd::sci_GetEndStyled()
 {
-	return SendEditor(SCI_GETENDSTYLED);
+	return execute(SCI_GETENDSTYLED);
 }
 
 inline SciDll_void CSciWnd::sci_StartStyling(int pos, int mask)
 {
-	return SendEditor(SCI_STARTSTYLING,pos,mask);
+	return execute(SCI_STARTSTYLING,pos,mask);
 }
 
 inline SciDll_void CSciWnd::sci_SetStyling(int length, int style)
 {
-	return SendEditor(SCI_SETSTYLING,length,style);
+	return execute(SCI_SETSTYLING,length,style);
 }
 
-inline SciDll_void CSciWnd::sci_SetStylingEx(int length, LPCTSTR styles)
+inline SciDll_void CSciWnd::sci_SetStylingEx(int length, LPCSTR styles)
 {
-	return SendEditor(SCI_SETSTYLINGEX,length,(LPARAM)styles);
+	return execute(SCI_SETSTYLINGEX,length,(LPARAM)styles);
 }
 
 inline SciDll_void CSciWnd::sci_SetLineState(int line, int value)
 {
-	return SendEditor(SCI_SETLINESTATE,line,value);
+	return execute(SCI_SETLINESTATE,line,value);
 }
 
 inline int  CSciWnd::sci_GetLineState(int line)
 {
-	return SendEditor(SCI_GETLINESTATE,line,0);
+	return execute(SCI_GETLINESTATE,line,0);
 }
 
 inline int  CSciWnd::sci_GetMaxLineState()
 {
-	return SendEditor(SCI_GETMAXLINESTATE);
+	return execute(SCI_GETMAXLINESTATE);
 }
 
 //////////////////////////////////////////////////////////////////////////
 /*----------Style definition---*/
 inline SciDll_void CSciWnd::sci_StyleResetDefault()
 {
-	return SendEditor(SCI_STYLERESETDEFAULT);	
+	return execute(SCI_STYLERESETDEFAULT);	
 }
 
 //把所有格式设置成STYLE_DEFAULT
 inline SciDll_void CSciWnd::sci_StyleClearAll()
 {
-	return SendEditor(SCI_STYLECLEARALL);
+	return execute(SCI_STYLECLEARALL);
 }
 
 //设置字体
-inline SciDll_void CSciWnd::sci_StyleSetFont(int styleNumer, const char * fontName)
+inline SciDll_void CSciWnd::sci_StyleSetFont(int styleNumer, LPCSTR fontName)
 {
-	return SendEditor(SCI_STYLESETFONT,styleNumer,(LPARAM)fontName);	
+	return execute(SCI_STYLESETFONT,styleNumer,(LPARAM)fontName);	
 }
 
 inline SciDll_void CSciWnd::sci_StyleGetFont(int styleNumer, CString &fontName)
 {
 	int nRet = -1;
 	char *p = new char[33];
-	nRet = SendEditor(SCI_STYLEGETFONT,styleNumer,(LPARAM)p);
+	nRet = execute(SCI_STYLEGETFONT,styleNumer,(LPARAM)p);
 	fontName = p;
 	delete []p;
 	return nRet;
@@ -1789,155 +1794,155 @@ inline SciDll_void CSciWnd::sci_StyleGetFont(int styleNumer, CString &fontName)
 //设置字体大小
 inline SciDll_void CSciWnd::sci_StyleSetSize(int styleNumber, int sizeInPoints)
 {
-	return SendEditor(SCI_STYLESETSIZE,styleNumber,sizeInPoints);
+	return execute(SCI_STYLESETSIZE,styleNumber,sizeInPoints);
 }
 
 inline int  CSciWnd::sci_StyleGetSize(int styleNumber)
 {
-	return SendEditor(SCI_STYLEGETSIZE,styleNumber,0);
+	return execute(SCI_STYLEGETSIZE,styleNumber,0);
 }
 
 //字体大小包含小数点的
 inline SciDll_void CSciWnd::sci_StyleSetSizeFractional(int styleNumber, int sizeInHundredthPoints)
 {
-	return SendEditor(SCI_STYLESETSIZEFRACTIONAL,styleNumber,sizeInHundredthPoints);
+	return execute(SCI_STYLESETSIZEFRACTIONAL,styleNumber,sizeInHundredthPoints);
 }
 
 inline int  CSciWnd::sci_StyleGetSizeFractional(int styleNumber)
 {
-	return SendEditor(SCI_STYLEGETSIZEFRACTIONAL,styleNumber,0);
+	return execute(SCI_STYLEGETSIZEFRACTIONAL,styleNumber,0);
 }
 
 //粗体
 inline SciDll_void CSciWnd::sci_StyleSetBold(int styleNumber, BOOL bold)
 {
-	return SendEditor(SCI_STYLESETBOLD,styleNumber,bold);
+	return execute(SCI_STYLESETBOLD,styleNumber,bold);
 }
 
 inline BOOL  CSciWnd::sci_StyleGetBold(int styleNumber)
 {
-	return SendEditor(SCI_STYLEGETBOLD,styleNumber,0);
+	return execute(SCI_STYLEGETBOLD,styleNumber,0);
 }
 
 //字体粗细
 inline SciDll_void CSciWnd::sci_StyleSetWeight(int styleNumber, int weight)
 {
-	return SendEditor(SCI_STYLESETWEIGHT,styleNumber,weight);
+	return execute(SCI_STYLESETWEIGHT,styleNumber,weight);
 }
 
 inline int  CSciWnd::sci_StyleGetWeight(int styleNumber)
 {
-	return SendEditor(SCI_STYLEGETWEIGHT,styleNumber,0);	
+	return execute(SCI_STYLEGETWEIGHT,styleNumber,0);	
 }
 
 //斜体
 inline SciDll_void CSciWnd::sci_StyleSetItalic(int styleNumber, BOOL italic)
 {
-	return SendEditor(SCI_STYLESETITALIC,styleNumber,italic);
+	return execute(SCI_STYLESETITALIC,styleNumber,italic);
 }
 
 inline BOOL CSciWnd::sci_StyleSetItalic(int styleNumber)
 {
-	return SendEditor(SCI_STYLEGETITALIC,styleNumber,0);
+	return execute(SCI_STYLEGETITALIC,styleNumber,0);
 }
 
 //下划线
 inline SciDll_void CSciWnd::sci_StyleSetUnderline(int styleNumber, BOOL underline)
 {
-	return SendEditor(SCI_STYLESETUNDERLINE,styleNumber,underline);
+	return execute(SCI_STYLESETUNDERLINE,styleNumber,underline);
 }
 
 inline BOOL CSciWnd::sci_StyleGetUnderline(int styleNumber)
 {
-	return SendEditor(SCI_STYLEGETUNDERLINE,styleNumber,0);
+	return execute(SCI_STYLEGETUNDERLINE,styleNumber,0);
 }
 
 //字符前景色
 inline SciDll_void CSciWnd::sci_StyleSetFore(int styleNumber, COLORREF colour)
 {
-	return SendEditor(SCI_STYLESETFORE,styleNumber,colour);
+	return execute(SCI_STYLESETFORE,styleNumber,colour);
 }
 
 inline COLORREF  CSciWnd::sci_StyleGetFore(int styleNumber)
 {
-	return SendEditor(SCI_STYLEGETFORE,styleNumber,0);
+	return execute(SCI_STYLEGETFORE,styleNumber,0);
 }
 
 //字符背景色
 inline SciDll_void CSciWnd::sci_StyleSetBack(int styleNumber, COLORREF colour)
 {
-	return SendEditor(SCI_STYLESETBACK,styleNumber,colour);
+	return execute(SCI_STYLESETBACK,styleNumber,colour);
 }
 
 inline COLORREF  CSciWnd::sci_StyleGetBack(int styleNumber)
 {
-	return SendEditor(SCI_STYLEGETBACK,styleNumber,0);
+	return execute(SCI_STYLEGETBACK,styleNumber,0);
 }
 
 //行尾的格式
 inline SciDll_void CSciWnd::sci_StyleSetEolFilled(int styleNumber, BOOL eolFilled)
 {
-	return SendEditor(SCI_STYLESETEOLFILLED,styleNumber,eolFilled);
+	return execute(SCI_STYLESETEOLFILLED,styleNumber,eolFilled);
 }
 
 inline int  CSciWnd::sci_StyleGetEolFilled(int styleNumber)
 {
-	return SendEditor(SCI_STYLEGETEOLFILLED,styleNumber,0);
+	return execute(SCI_STYLEGETEOLFILLED,styleNumber,0);
 }
 
 //设置字符集
 inline SciDll_void CSciWnd::sci_StyleSetCharacterSet(int styleNumber, int charSet)
 {
-	return SendEditor(SCI_STYLESETCHARACTERSET,styleNumber,charSet);
+	return execute(SCI_STYLESETCHARACTERSET,styleNumber,charSet);
 }
 
 inline int  CSciWnd::sci_StyleGetCharacterSet(int styleNumber)
 {
-	return SendEditor(SCI_STYLEGETCHARACTERSET,styleNumber,0);
+	return execute(SCI_STYLEGETCHARACTERSET,styleNumber,0);
 }
 
 //设置大小写,caseMode=SC_CASE_UPPER,SC_CASE_LOWER,SC_CASE_MIXED
 inline SciDll_void CSciWnd::sci_StyleSetCase(int styleNumber, int caseMode)
 {
-	return SendEditor(SCI_STYLESETCASE,styleNumber,caseMode);
+	return execute(SCI_STYLESETCASE,styleNumber,caseMode);
 }
 
 inline int  CSciWnd::sci_StyleGetCase(int styleNumber)
 {
-	return SendEditor(SCI_STYLEGETCASE,styleNumber,0);
+	return execute(SCI_STYLEGETCASE,styleNumber,0);
 }
 
 //是否可见
 inline SciDll_void CSciWnd::sci_StyleSetVisible(int styleNumber, BOOL visible)
 {
-	return SendEditor(SCI_STYLESETVISIBLE,styleNumber,visible);
+	return execute(SCI_STYLESETVISIBLE,styleNumber,visible);
 }
 
 inline BOOL CSciWnd::sci_StyleGetVisible(int styleNumber)
 {
-	return SendEditor(SCI_STYLEGETVISIBLE,styleNumber);
+	return execute(SCI_STYLEGETVISIBLE,styleNumber);
 }
 
 //不允许修改
 inline SciDll_void CSciWnd::sci_StyleSetChangeable(int styleNumber, BOOL changeable)
 {
-	return SendEditor(SCI_STYLESETCHANGEABLE,styleNumber,changeable);
+	return execute(SCI_STYLESETCHANGEABLE,styleNumber,changeable);
 }
 
 inline BOOL CSciWnd::sci_StyleGetChangeable(int styleNumber)
 {
-	return SendEditor(SCI_STYLEGETCHANGEABLE,styleNumber,0);
+	return execute(SCI_STYLEGETCHANGEABLE,styleNumber,0);
 }
 
 //设置热点区域，类似于HTML的超链接，鼠标移过去时，鼠标变成手型，前景色和背景色可以改变，并且有下划线，允许被点击
 inline SciDll_void CSciWnd::sci_StyleSetHotspot(int styleNumber, BOOL hotspot)
 {
-	return SendEditor(SCI_STYLESETHOTSPOT,styleNumber,hotspot);
+	return execute(SCI_STYLESETHOTSPOT,styleNumber,hotspot);
 }
 
 inline BOOL CSciWnd::sci_StyleGetHotspot(int styleNumber)
 {
-	return SendEditor(SCI_STYLEGETHOTSPOT,styleNumber,0);
+	return execute(SCI_STYLEGETHOTSPOT,styleNumber,0);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1945,363 +1950,363 @@ inline BOOL CSciWnd::sci_StyleGetHotspot(int styleNumber)
 //设置当前选中内容的前景色
 inline SciDll_void CSciWnd::sci_SetSelFore(BOOL useSelForeColour, COLORREF colour)
 {
-	return SendEditor(SCI_SETSELFORE, useSelForeColour,colour);
+	return execute(SCI_SETSELFORE, useSelForeColour,colour);
 }
 
 //设置当前选中内容的背景色
 inline SciDll_void CSciWnd::sci_SetSelBack(BOOL useSelBackColour, COLORREF colour)
 {
-	return SendEditor(SCI_SETSELBACK,useSelBackColour,colour);
+	return execute(SCI_SETSELBACK,useSelBackColour,colour);
 }
 
 //设置当前选中内容的通明度
 inline SciDll_void CSciWnd::sci_SetSelAlpha(int alpha)
 {
-	return SendEditor(SCI_SETSELALPHA,alpha,0);
+	return execute(SCI_SETSELALPHA,alpha,0);
 }
 
 inline int CSciWnd::sci_GetSelAlpha()
 {
-	return SendEditor(SCI_GETSELALPHA);
+	return execute(SCI_GETSELALPHA);
 }
 
 inline SciDll_void CSciWnd::sci_SetSelEolFilled(BOOL filled)
 {
-	return SendEditor(SCI_SETSELEOLFILLED,filled,0);
+	return execute(SCI_SETSELEOLFILLED,filled,0);
 }
 
 inline BOOL CSciWnd::sci_GetSelEolFilled()
 {
-	return SendEditor(SCI_GETSELEOLFILLED);
+	return execute(SCI_GETSELEOLFILLED);
 }
 
 //???
 inline SciDll_void CSciWnd::sci_SetCaretFore(COLORREF colour)
 {
-	return SendEditor(SCI_SETCARETFORE,colour,0);
+	return execute(SCI_SETCARETFORE,colour,0);
 }
 
 inline COLORREF CSciWnd::sci_GetCaretFore()
 {
-	return SendEditor(SCI_GETCARETFORE);
+	return execute(SCI_GETCARETFORE);
 }
 
 inline SciDll_void CSciWnd::sci_SetCaretLineVisible(BOOL show)
 {
-	return SendEditor(SCI_SETCARETLINEVISIBLE,show,0);
+	return execute(SCI_SETCARETLINEVISIBLE,show,0);
 }
 
 inline BOOL CSciWnd::sci_GetCaretLineVisible()
 {
-	return SendEditor(SCI_GETCARETLINEVISIBLE);
+	return execute(SCI_GETCARETLINEVISIBLE);
 }
 
 inline SciDll_void CSciWnd::sci_SetCaretLineBack(COLORREF colour)
 {
-	return SendEditor(SCI_SETCARETLINEBACK,colour,0);
+	return execute(SCI_SETCARETLINEBACK,colour,0);
 }
 
 inline COLORREF CSciWnd::sci_GetCaretLineBack()
 {
-	return SendEditor(SCI_GETCARETLINEBACK);
+	return execute(SCI_GETCARETLINEBACK);
 }
 
 inline SciDll_void CSciWnd::sci_SetCaretLineBackAlpha(int alpha)
 {
-	return SendEditor(SCI_SETCARETLINEBACKALPHA,alpha,0);
+	return execute(SCI_SETCARETLINEBACKALPHA,alpha,0);
 }
 
 inline int CSciWnd::sci_GetCaretLineAlpha()
 {
-	return SendEditor(SCI_GETCARETLINEBACKALPHA);
+	return execute(SCI_GETCARETLINEBACKALPHA);
 }
 
 //设置符号的闪动，millsends是可见和隐藏的切换时间,默认500
 inline SciDll_void CSciWnd::sci_SetCaretPeriod(int millseconds)
 {
-	return SendEditor(SCI_SETCARETPERIOD, millseconds, 0);
+	return execute(SCI_SETCARETPERIOD, millseconds, 0);
 }
 
 inline int CSciWnd::sci_GetCaretPeriod()
 {
-	return SendEditor(SCI_GETCARETPERIOD);
+	return execute(SCI_GETCARETPERIOD);
 }
 
 inline SciDll_void CSciWnd::sci_SetCaretStyle(int style)
 {
-	return SendEditor(SCI_SETCARETSTYLE, style, 0);
+	return execute(SCI_SETCARETSTYLE, style, 0);
 }
 
 inline int CSciWnd::sci_GetCaretStyle()
 {
-	return SendEditor(SCI_GETCARETSTYLE);
+	return execute(SCI_GETCARETSTYLE);
 }
 
 inline SciDll_void CSciWnd::sci_SetCaretWidth(int pixels)
 {
-	return SendEditor(SCI_SETCARETWIDTH, pixels, 0);
+	return execute(SCI_SETCARETWIDTH, pixels, 0);
 }
 
 inline int CSciWnd::sci_GetCaretWidth()
 {
-	return SendEditor(SCI_GETCARETWIDTH);
+	return execute(SCI_GETCARETWIDTH);
 }
 
 inline SciDll_void CSciWnd::sci_SetHotSpotActiveFore(BOOL useHotSpotForeColour, COLORREF colour)
 {
-	return SendEditor(SCI_SETHOTSPOTACTIVEFORE,useHotSpotForeColour,colour);
+	return execute(SCI_SETHOTSPOTACTIVEFORE,useHotSpotForeColour,colour);
 }
 
 inline COLORREF CSciWnd::sci_GetHotSpotActiveFore()
 {
-	return SendEditor(SCI_GETHOTSPOTACTIVEFORE);
+	return execute(SCI_GETHOTSPOTACTIVEFORE);
 }
 
 inline SciDll_void CSciWnd::sci_SetHotSpotActiveBack(BOOL useHotSpotBackColour, COLORREF colour)
 {
-	return SendEditor(SCI_SETHOTSPOTACTIVEBACK,useHotSpotBackColour,colour);
+	return execute(SCI_SETHOTSPOTACTIVEBACK,useHotSpotBackColour,colour);
 }
 
 inline COLORREF CSciWnd::sci_GetHotSpotActiveBack()
 {
-	return SendEditor(SCI_GETHOTSPOTACTIVEBACK);
+	return execute(SCI_GETHOTSPOTACTIVEBACK);
 }
 
 inline SciDll_void CSciWnd::sci_SetHotSpotActiveUnderline(BOOL underLine)
 {
-	return SendEditor(SCI_SETHOTSPOTACTIVEUNDERLINE,underLine,0);
+	return execute(SCI_SETHOTSPOTACTIVEUNDERLINE,underLine,0);
 }
 
 inline BOOL CSciWnd::sci_GetHotSpotActiveUnderline()
 {
-	return SendEditor(SCI_GETHOTSPOTACTIVEUNDERLINE);
+	return execute(SCI_GETHOTSPOTACTIVEUNDERLINE);
 }
 
 inline SciDll_void CSciWnd::sci_SetHotSpotSingleLine(BOOL singelLine)
 {
-	return SendEditor(SCI_SETHOTSPOTSINGLELINE,singelLine,0);
+	return execute(SCI_SETHOTSPOTSINGLELINE,singelLine,0);
 }
 
 inline BOOL CSciWnd::sci_GetHotSpotSingleLine()
 {
-	return SendEditor(SCI_GETHOTSPOTSINGLELINE);
+	return execute(SCI_GETHOTSPOTSINGLELINE);
 }
 
 inline SciDll_void CSciWnd::sci_SetControlCharSymbol(int symbol)
 {
-	return SendEditor(SCI_SETCONTROLCHARSYMBOL,symbol,0);
+	return execute(SCI_SETCONTROLCHARSYMBOL,symbol,0);
 }
 
 inline int CSciWnd::sci_GetControlCharSymbol()
 {
-	return SendEditor(SCI_GETCONTROLCHARSYMBOL);
+	return execute(SCI_GETCONTROLCHARSYMBOL);
 }
 
 //参数: SC_CARETSTICKY_OFF(0),SC_CARETSTICKY_ON(1),SC_CARETSTICKY_WHITESPACE(2),
 inline SciDll_void CSciWnd::sci_SetCaretSticky(int useCaretStickyBehaviour)
 {
-	return SendEditor(SCI_SETCARETSTICKY, useCaretStickyBehaviour, 0);
+	return execute(SCI_SETCARETSTICKY, useCaretStickyBehaviour, 0);
 }
 
 inline int CSciWnd::sci_GetCaretSticky()
 {
-	return SendEditor(SCI_GETCARETSTICKY);
+	return execute(SCI_GETCARETSTICKY);
 }
 
 inline SciDll_void CSciWnd::sci_ToggleCaretSticky()
 {
-	return SendEditor(SCI_TOGGLECARETSTICKY);
+	return execute(SCI_TOGGLECARETSTICKY);
 }
 
 //////////////////////////////////////////////////////////////////////////
 /*----------Margins------------*/
 inline SciDll_void CSciWnd::sci_SetMarginTypeN(int margin, int iType)
 {
-	return SendEditor(SCI_SETMARGINTYPEN,margin,iType);
+	return execute(SCI_SETMARGINTYPEN,margin,iType);
 }
 
 inline int CSciWnd::sci_GetMarginTypeN(int margin)
 {
-	return SendEditor(SCI_GETMARGINTYPEN, margin, 0);
+	return execute(SCI_GETMARGINTYPEN, margin, 0);
 }
 
 
 inline SciDll_void CSciWnd::sci_SetMarginWidthN(int margin, int PixelWidth)
 {
-	return SendEditor(SCI_SETMARGINWIDTHN,margin,PixelWidth);	
+	return execute(SCI_SETMARGINWIDTHN,margin,PixelWidth);	
 }
 
 inline int CSciWnd::sci_GetMarginWidthN(int margin)
 {
-	return SendEditor(SCI_GETMARGINWIDTHN,margin,0);
+	return execute(SCI_GETMARGINWIDTHN,margin,0);
 }
 
 inline SciDll_void CSciWnd::sci_SetMarginMaskN(int margin, int mask)
 {
-	return SendEditor(SCI_SETMARGINMASKN,margin,mask);
+	return execute(SCI_SETMARGINMASKN,margin,mask);
 }
 
 inline int CSciWnd::sci_GetMarginMaskN(int margin)
 {
-	return SendEditor(SCI_GETMARGINMASKN,margin,0);
+	return execute(SCI_GETMARGINMASKN,margin,0);
 }
 
 inline SciDll_void CSciWnd::sci_SetMarginSensitiveN(int margin, BOOL sensitive)
 {
-	return SendEditor(SCI_SETMARGINSENSITIVEN,margin,sensitive);
+	return execute(SCI_SETMARGINSENSITIVEN,margin,sensitive);
 }
 
 inline BOOL CSciWnd::sci_GetMarginSensitiveN(int margin)
 {
-	return SendEditor(SCI_GETMARGINSENSITIVEN, margin, 0);
+	return execute(SCI_GETMARGINSENSITIVEN, margin, 0);
 }
 
 inline SciDll_void CSciWnd::sci_SetMarginCursorN(int margin, int cursor)
 {
-	return SendEditor(SCI_SETMARGINCURSORN,margin,cursor);
+	return execute(SCI_SETMARGINCURSORN,margin,cursor);
 }
 
 inline int CSciWnd::sci_GetMarginCursorN(int margin)
 {
-	return SendEditor(SCI_GETMARGINCURSORN,margin,0);
+	return execute(SCI_GETMARGINCURSORN,margin,0);
 }
 
 inline SciDll_void CSciWnd::sci_SetMarginLeft(int pixels)
 {
-	return SendEditor(SCI_SETMARGINLEFT,pixels,0);
+	return execute(SCI_SETMARGINLEFT,pixels,0);
 }
 
 inline int CSciWnd::sci_GetMarginLeft()
 {
-	return SendEditor(SCI_GETMARGINLEFT);
+	return execute(SCI_GETMARGINLEFT);
 }
 
 inline SciDll_void CSciWnd::sci_SetMarginRight(int pixels)
 {
-	return SendEditor(SCI_SETMARGINRIGHT,pixels,0);
+	return execute(SCI_SETMARGINRIGHT,pixels,0);
 }
 
 inline int CSciWnd::sci_GetMarginRight()
 {
-	return SendEditor(SCI_GETMARGINRIGHT);
+	return execute(SCI_GETMARGINRIGHT);
 }
 
 
 inline SciDll_void CSciWnd::sci_SetFoldMarginColour(BOOL useSetting, COLORREF colour)
 {
-	return SendEditor(SCI_SETFOLDMARGINCOLOUR,useSetting,colour);
+	return execute(SCI_SETFOLDMARGINCOLOUR,useSetting,colour);
 }
 
 inline SciDll_void CSciWnd::sci_SetFoldMarginHiColour(BOOL useSetting, COLORREF colour)
 {
-	return SendEditor(SCI_SETFOLDMARGINHICOLOUR,useSetting,colour);
+	return execute(SCI_SETFOLDMARGINHICOLOUR,useSetting,colour);
 }
 
 inline SciDll_void CSciWnd::sci_MarginSetText(int line, LPTSTR pText)
 {
-	return SendEditor(SCI_MARGINSETTEXT,line,(LPARAM)pText);
+	return execute(SCI_MARGINSETTEXT,line,(LPARAM)pText);
 }
 
 inline SciDll_void CSciWnd::sci_MarginGetText(int line, LPTSTR pText)
 {
-	return SendEditor(SCI_MARGINGETTEXT,line,(LPARAM)pText);
+	return execute(SCI_MARGINGETTEXT,line,(LPARAM)pText);
 }
 
 inline SciDll_void CSciWnd::sci_MarginSetStyle(int line, int style)
 {
-	return SendEditor(SCI_MARGINSETSTYLE,line,style);
+	return execute(SCI_MARGINSETSTYLE,line,style);
 }
 
 inline int CSciWnd::sci_MarginGetStyle(int line)
 {
-	return SendEditor(SCI_MARGINGETSTYLE,line,0);
+	return execute(SCI_MARGINGETSTYLE,line,0);
 }
 
 inline SciDll_void CSciWnd::sci_MarginSetStyles(int line, LPTSTR pStyle)
 {
-	return SendEditor(SCI_MARGINSETSTYLE, line, (LPARAM)pStyle);
+	return execute(SCI_MARGINSETSTYLE, line, (LPARAM)pStyle);
 }
 
 inline SciDll_void CSciWnd::sci_MarginGetStyles(int line, LPTSTR pStyle)
 {
-	return SendEditor(SCI_MARGINGETSTYLES,line,(LPARAM)pStyle);
+	return execute(SCI_MARGINGETSTYLES,line,(LPARAM)pStyle);
 }
 
 inline SciDll_void CSciWnd::sci_MarginTextClearAll()
 {
-	return SendEditor(SCI_MARGINTEXTCLEARALL);
+	return execute(SCI_MARGINTEXTCLEARALL);
 }
 
 inline SciDll_void CSciWnd::sci_MarginSetStyleOffset(int style)
 {
-	return SendEditor(SCI_MARGINSETSTYLEOFFSET,style,0);
+	return execute(SCI_MARGINSETSTYLEOFFSET,style,0);
 }
 
 inline int CSciWnd::sci_MarginGetStyleOffset()
 {
-	return SendEditor(SCI_MARGINGETSTYLEOFFSET);
+	return execute(SCI_MARGINGETSTYLEOFFSET);
 }
 
 inline SciDll_void CSciWnd::sci_SetMarginOptions(int marginOptions)
 {
-	return SendEditor(SCI_SETMARGINOPTIONS,marginOptions,0);
+	return execute(SCI_SETMARGINOPTIONS,marginOptions,0);
 }
 
 inline int CSciWnd::sci_GetMarginOptions()
 {
-	return SendEditor(SCI_GETMARGINOPTIONS);
+	return execute(SCI_GETMARGINOPTIONS);
 }
 
 
 /*----------Annotations 注释--------*/
 inline SciDll_void CSciWnd::sci_AnnotationSetText(int line, LPTSTR pText)
 {
-	return SendEditor(SCI_ANNOTATIONSETTEXT,line,(LPARAM)pText);
+	return execute(SCI_ANNOTATIONSETTEXT,line,(LPARAM)pText);
 }
 
 inline SciDll_void CSciWnd::sci_AnnotationGetText(int line , LPTSTR pText)
 {
-	return SendEditor(SCI_ANNOTATIONGETTEXT,line,(LPARAM)pText);
+	return execute(SCI_ANNOTATIONGETTEXT,line,(LPARAM)pText);
 }
 
 inline SciDll_void CSciWnd::sci_AnnotationSetStyle(int line, LPTSTR pStyle)
 {
-	return SendEditor(SCI_ANNOTATIONSETSTYLE, line,(LPARAM)pStyle);
+	return execute(SCI_ANNOTATIONSETSTYLE, line,(LPARAM)pStyle);
 }
 
 inline SciDll_void CSciWnd::sci_AnnotationGetStyle(int line, LPTSTR pStyle)
 {
-	return SendEditor(SCI_ANNOTATIONGETSTYLE,line,(LPARAM)pStyle);
+	return execute(SCI_ANNOTATIONGETSTYLE,line,(LPARAM)pStyle);
 }
 
 inline BOOL CSciWnd::sci_AnnotationGetLines(int line)
 {
-	return SendEditor(SCI_ANNOTATIONGETLINES,line,0);
+	return execute(SCI_ANNOTATIONGETLINES,line,0);
 }
 
 inline SciDll_void CSciWnd::sci_AnnotationClearAll()
 {
-	return SendEditor(SCI_ANNOTATIONCLEARALL);
+	return execute(SCI_ANNOTATIONCLEARALL);
 }
 
 inline SciDll_void CSciWnd::sci_AnnotationSetVisible(int visible)
 {
-	return SendEditor(SCI_ANNOTATIONSETVISIBLE,visible,0);
+	return execute(SCI_ANNOTATIONSETVISIBLE,visible,0);
 }
 
 inline int CSciWnd::sci_AnnotationGetVisible()
 {
-	return SendEditor(SCI_ANNOTATIONGETVISIBLE);
+	return execute(SCI_ANNOTATIONGETVISIBLE);
 }
 
 inline SciDll_void CSciWnd::sci_AnnotationSetStyleOffset(int style)
 {
-	return SendEditor(SCI_ANNOTATIONSETSTYLEOFFSET,style,0);
+	return execute(SCI_ANNOTATIONSETSTYLEOFFSET,style,0);
 }
 
 inline int CSciWnd::sci_AnnotationGetStyleOffset()
 {
-	return SendEditor(SCI_ANNOTATIONGETSTYLEOFFSET);
+	return execute(SCI_ANNOTATIONGETSTYLEOFFSET);
 }
 
 
@@ -2321,52 +2326,52 @@ inline BOOL CSciWnd::sci_GetUsePalette()
 
 inline SciDll_void CSciWnd::sci_SetBufferedDraw(BOOL isBuffered)
 {
-	return SendEditor(SCI_SETBUFFEREDDRAW,isBuffered,0);
+	return execute(SCI_SETBUFFEREDDRAW,isBuffered,0);
 }
 
 inline BOOL CSciWnd::sci_GetBufferedDraw()
 {
-	return SendEditor(SCI_GETBUFFEREDDRAW);
+	return execute(SCI_GETBUFFEREDDRAW);
 }
 
 inline SciDll_void CSciWnd::sci_SetTwoPhaseDraw(BOOL twoPhase)
 {
-	return SendEditor(SCI_SETTWOPHASEDRAW,twoPhase,0);
+	return execute(SCI_SETTWOPHASEDRAW,twoPhase,0);
 }
 
 inline BOOL CSciWnd::sci_GetTwoPhaseDraw()
 {
-	return SendEditor(SCI_GETTWOPHASEDRAW);
+	return execute(SCI_GETTWOPHASEDRAW);
 }
 
 inline SciDll_void CSciWnd::sci_SetTechnology(int technology)
 {
-	return SendEditor(SCI_SETTECHNOLOGY,technology,0);
+	return execute(SCI_SETTECHNOLOGY,technology,0);
 }
 
 inline BOOL CSciWnd::sci_GetTechnology()
 {
-	return SendEditor(SCI_GETTECHNOLOGY);
+	return execute(SCI_GETTECHNOLOGY);
 }
 
 inline SciDll_void CSciWnd::sci_SetFontQuality(int fontQuality)
 {
-	return SendEditor(SCI_SETFONTQUALITY,fontQuality,0);
+	return execute(SCI_SETFONTQUALITY,fontQuality,0);
 }
 
 inline int CSciWnd::sci_GetFontQuality()
 {
-	return SendEditor(SCI_GETFONTQUALITY);
+	return execute(SCI_GETFONTQUALITY);
 }
 
 inline SciDll_void CSciWnd::sci_SetCodePage(int codePage)
 {
-	return SendEditor(SCI_SETCODEPAGE, codePage, 0);
+	return execute(SCI_SETCODEPAGE, codePage, 0);
 }
 
 inline int CSciWnd::sci_GetCodePage()
 {
-	return SendEditor(SCI_GETCODEPAGE);
+	return execute(SCI_GETCODEPAGE);
 }
 
 // inline SciDll_void CSciWnd::sci_SetKeysUnicode(BOOL KeysUnicode)
@@ -2380,405 +2385,405 @@ inline int CSciWnd::sci_GetCodePage()
 // }
 
 //设置控件中允许出现的字符
-inline SciDll_void CSciWnd::sci_SetWordChars(LPCTSTR pText)
+inline SciDll_void CSciWnd::sci_SetWordChars(LPCSTR pText)
 {
-	return SendEditor(SCI_SETWORDCHARS,0,(LPARAM)pText);
+	return execute(SCI_SETWORDCHARS,0,(LPARAM)pText);
 }
 
 //设置控件不处理的字符,就是当成空白了.
-inline SciDll_void CSciWnd::sci_SetWhiteSpaceChars(LPCTSTR pText)
+inline SciDll_void CSciWnd::sci_SetWhiteSpaceChars(LPCSTR pText)
 {
-	return SendEditor(SCI_SETWHITESPACECHARS,0,(LPARAM)pText);
+	return execute(SCI_SETWHITESPACECHARS,0,(LPARAM)pText);
 }
 
 //使用默认的字符和空白字符
 inline SciDll_void CSciWnd::sci_SetCharsDefault()
 {
-	return SendEditor(SCI_SETCHARSDEFAULT);
+	return execute(SCI_SETCHARSDEFAULT);
 }
 
 inline SciDll_void CSciWnd::sci_GrabFocus()
 {
-	return SendEditor(SCI_GRABFOCUS);
+	return execute(SCI_GRABFOCUS);
 }
 
 inline SciDll_void CSciWnd::sci_SetFocus(BOOL bfocus)
 {
-	return SendEditor(SCI_SETFOCUS, bfocus, 0);
+	return execute(SCI_SETFOCUS, bfocus, 0);
 }
 
 inline BOOL CSciWnd::sci_GetFocus()
 {
-	return SendEditor(SCI_GETFOCUS);
+	return execute(SCI_GETFOCUS);
 }
 
 //////////////////////////////////////////////////////////////////////////
 /*-------Brace highlighting----*/
 inline SciDll_void CSciWnd::sci_BraceHighlight(int pos1, int pos2)
 {
-	return SendEditor(SCI_BRACEHIGHLIGHT, pos1, pos2);
+	return execute(SCI_BRACEHIGHLIGHT, pos1, pos2);
 }
 
 inline SciDll_void CSciWnd::sci_BraceBadLight(int pos1)
 {
-	return SendEditor(SCI_BRACEBADLIGHT,pos1,0);
+	return execute(SCI_BRACEBADLIGHT,pos1,0);
 }
 
 //高亮指示器
 inline SciDll_void CSciWnd::sci_BraceHighlightIndicator(BOOL useBraceHighlightIndicator, int indicatorNumber)
 {
-	return SendEditor(SCI_BRACEHIGHLIGHTINDICATOR, useBraceHighlightIndicator,indicatorNumber);
+	return execute(SCI_BRACEHIGHLIGHTINDICATOR, useBraceHighlightIndicator,indicatorNumber);
 }
 
 inline SciDll_void CSciWnd::sci_BraceBadLightIndicator(BOOL useBraceHighlightIndicator, int indicatorNumber)
 {
-	return SendEditor(SCI_BRACEBADLIGHTINDICATOR,useBraceHighlightIndicator, indicatorNumber);
+	return execute(SCI_BRACEBADLIGHTINDICATOR,useBraceHighlightIndicator, indicatorNumber);
 }
 
 inline SciDll_void CSciWnd::sci_BraceMatch(int pos, int maxReStyle)
 {
-	return SendEditor(SCI_BRACEMATCH,pos,maxReStyle);
+	return execute(SCI_BRACEMATCH,pos,maxReStyle);
 }
 
 //////////////////////////////////////////////////////////////////////////
 /*--Tabs and Indentation Guides 自动缩排-*/
 inline SciDll_void CSciWnd::sci_SetTabWidth(int widthInChars)
 {
-	return SendEditor(SCI_SETTABWIDTH, widthInChars, 0);
+	return execute(SCI_SETTABWIDTH, widthInChars, 0);
 }
 
 inline int CSciWnd::sci_GetTabWidth()
 {
-	return SendEditor(SCI_GETTABWIDTH);
+	return execute(SCI_GETTABWIDTH);
 }
 
 inline SciDll_void CSciWnd::sci_SetUseTabs(BOOL useTabs)
 {
-	return SendEditor(SCI_SETUSETABS,useTabs,0);
+	return execute(SCI_SETUSETABS,useTabs,0);
 }
 
 inline BOOL CSciWnd::sci_GetUseTabs()
 {
-	return SendEditor(SCI_GETUSETABS);
+	return execute(SCI_GETUSETABS);
 }
 
 inline SciDll_void CSciWnd::sci_SetIndent(int widthInChars)
 {
-	return SendEditor(SCI_SETINDENT, widthInChars, 0);
+	return execute(SCI_SETINDENT, widthInChars, 0);
 }
 
 inline int CSciWnd::sci_GetIndent()
 {
-	return SendEditor(SCI_GETINDENT);
+	return execute(SCI_GETINDENT);
 }
 
 inline SciDll_void CSciWnd::sci_SetTabIndents(BOOL tabIndents)
 {
-	return SendEditor(SCI_SETTABINDENTS, tabIndents, 0);
+	return execute(SCI_SETTABINDENTS, tabIndents, 0);
 }
 
 inline BOOL CSciWnd::sci_GetTabIndents()
 {
-	return SendEditor(SCI_GETTABINDENTS);
+	return execute(SCI_GETTABINDENTS);
 }
 
 inline SciDll_void CSciWnd::sci_SetBackSpaceUnIndents(BOOL bsUnIndents)
 {
-	return SendEditor(SCI_SETBACKSPACEUNINDENTS, bsUnIndents, 0);
+	return execute(SCI_SETBACKSPACEUNINDENTS, bsUnIndents, 0);
 }
 
 inline BOOL CSciWnd::sci_GetBackSpaceUnIndents()
 {
-	return SendEditor(SCI_GETBACKSPACEUNINDENTS);
+	return execute(SCI_GETBACKSPACEUNINDENTS);
 }
 
 inline SciDll_void CSciWnd::sci_SetLineIndentation(int line, int indentation)
 {
-	return SendEditor(SCI_GETLINEINDENTATION, line, indentation);
+	return execute(SCI_GETLINEINDENTATION, line, indentation);
 }
 
 inline int CSciWnd::sci_GetLineIndentation(int line)
 {
-	return SendEditor(SCI_GETLINEINDENTATION, line, 0);
+	return execute(SCI_GETLINEINDENTATION, line, 0);
 }
 
 inline int CSciWnd::sci_GetLineIndentPosition(int line)
 {
-	return SendEditor(SCI_GETLINEINDENTPOSITION, line, 0);
+	return execute(SCI_GETLINEINDENTPOSITION, line, 0);
 }
 
 inline SciDll_void CSciWnd::sci_SetIndentationGuides(int indentView)
 {
-	return SendEditor(SCI_SETINDENTATIONGUIDES, indentView, 0);
+	return execute(SCI_SETINDENTATIONGUIDES, indentView, 0);
 }
 
 inline int CSciWnd::sci_GetIndentationGuides()
 {
-	return SendEditor(SCI_GETINDENTATIONGUIDES);
+	return execute(SCI_GETINDENTATIONGUIDES);
 }
 
 inline SciDll_void CSciWnd::sci_SetHighlightGuide(int column)
 {
-	return SendEditor(SCI_SETHIGHLIGHTGUIDE, column, 0);
+	return execute(SCI_SETHIGHLIGHTGUIDE, column, 0);
 }
 
 inline int CSciWnd::sci_GetHighlightGuide()
 {
-	return SendEditor(SCI_GETHIGHLIGHTGUIDE);
+	return execute(SCI_GETHIGHLIGHTGUIDE);
 }
 
 //////////////////////////////////////////////////////////////////////////
 /*----------Markers------------*/
 inline SciDll_void CSciWnd::sci_MarkerDefine(int markerNumber, int markerSymbols)
 {
-	return SendEditor(SCI_MARKERDEFINE, markerNumber, markerSymbols);
+	return execute(SCI_MARKERDEFINE, markerNumber, markerSymbols);
 }
 
-inline SciDll_void CSciWnd::sci_MarkerDefinePixmap(int markerNumber, LPCTSTR pXPM)
+inline SciDll_void CSciWnd::sci_MarkerDefinePixmap(int markerNumber, LPCSTR pXPM)
 {
-	return SendEditor(SCI_MARKERDEFINEPIXMAP, markerNumber, (LPARAM)pXPM);
+	return execute(SCI_MARKERDEFINEPIXMAP, markerNumber, (LPARAM)pXPM);
 }
 
 inline SciDll_void CSciWnd::sci_RGBAImageSetWidth(int width)
 {
-	return SendEditor(SCI_RGBAIMAGESETWIDTH, width, 0);
+	return execute(SCI_RGBAIMAGESETWIDTH, width, 0);
 }
 
 inline SciDll_void CSciWnd::sci_RGBAImageSetHeight(int height)
 {
-	return SendEditor(SCI_RGBAIMAGESETHEIGHT, height, 0);
+	return execute(SCI_RGBAIMAGESETHEIGHT, height, 0);
 }
 
-inline SciDll_void CSciWnd::sci_MarkerDefineRGBAImage(int markerNumber, LPCTSTR pPixels)
+inline SciDll_void CSciWnd::sci_MarkerDefineRGBAImage(int markerNumber, LPCSTR pPixels)
 {
-	return SendEditor(SCI_MARKERDEFINERGBAIMAGE, markerNumber, (LPARAM)pPixels);
+	return execute(SCI_MARKERDEFINERGBAIMAGE, markerNumber, (LPARAM)pPixels);
 }
 
 inline SciDll_void CSciWnd::sci_MarkerSymbolDefined(int markerNumber)
 {
-	return SendEditor(SCI_MARKERSYMBOLDEFINED, markerNumber, 0);
+	return execute(SCI_MARKERSYMBOLDEFINED, markerNumber, 0);
 }
 
 inline SciDll_void CSciWnd::sci_MarkerSetFore(int markerNumber, COLORREF colour)
 {
-	return SendEditor(SCI_MARKERSETFORE, markerNumber, colour);
+	return execute(SCI_MARKERSETFORE, markerNumber, colour);
 }
 
 inline SciDll_void CSciWnd::sci_MarkerSetBack(int markerNumber, COLORREF colour)
 {
-	return SendEditor(SCI_MARKERSETBACK, markerNumber, colour);
+	return execute(SCI_MARKERSETBACK, markerNumber, colour);
 }
 
 inline SciDll_void CSciWnd::sci_MarkerSetBackSelected(int markerNumber, COLORREF colour)
 {
-	return SendEditor(SCI_MARKERSETBACKSELECTED, markerNumber, colour);
+	return execute(SCI_MARKERSETBACKSELECTED, markerNumber, colour);
 }
 
 inline SciDll_void CSciWnd::sci_MarkerEnableHighlight(BOOL enable)
 {
-	return SendEditor(SCI_MARKERENABLEHIGHLIGHT, enable, 0);
+	return execute(SCI_MARKERENABLEHIGHLIGHT, enable, 0);
 }
 
 inline SciDll_void CSciWnd::sci_MarkerSetAlpha(int markerNumber, int alpha)
 {
-	return SendEditor(SCI_MARKERSETALPHA, markerNumber, alpha);
+	return execute(SCI_MARKERSETALPHA, markerNumber, alpha);
 }
 
 inline SciDll_void CSciWnd::sci_MarkerAdd(int line, int markerMask)
 {
-	return SendEditor(SCI_MARKERADD, line, markerMask);
+	return execute(SCI_MARKERADD, line, markerMask);
 }
 
 inline SciDll_void CSciWnd::sci_MarkerAddSet(int line, int markerMask)
 {
-	return SendEditor(SCI_MARKERADDSET, line, markerMask);
+	return execute(SCI_MARKERADDSET, line, markerMask);
 }
 
 inline SciDll_void CSciWnd::sci_MarkerDelete(int line, int markerNumber)
 {
-	return SendEditor(SCI_MARKERDELETE, line, markerNumber);
+	return execute(SCI_MARKERDELETE, line, markerNumber);
 }
 
 inline SciDll_void CSciWnd::sci_MarkerDeleteAll(int markerNumber)
 {
-	return SendEditor(SCI_MARKERDELETEALL, markerNumber, 0);
+	return execute(SCI_MARKERDELETEALL, markerNumber, 0);
 }
 
 inline int CSciWnd::sci_MarkerGet(int line)
 {
-	return SendEditor(SCI_MARKERGET, line, 0);
+	return execute(SCI_MARKERGET, line, 0);
 }
 
 inline SciDll_void CSciWnd::sci_MarkerNext(int lineStart, int markerMask)
 {
-	return SendEditor(SCI_MARKERNEXT,lineStart,markerMask);
+	return execute(SCI_MARKERNEXT,lineStart,markerMask);
 }
 
 inline SciDll_void CSciWnd::sci_MarkerPrevious(int lineStart, int markerMask)
 {
-	return SendEditor(SCI_MARKERPREVIOUS,lineStart,markerMask);
+	return execute(SCI_MARKERPREVIOUS,lineStart,markerMask);
 }
 
 inline SciDll_void CSciWnd::sci_MarkerLineFromHandle(int markerHandle)
 {
-	return SendEditor(SCI_MARKERLINEFROMHANDLE, markerHandle, 0);
+	return execute(SCI_MARKERLINEFROMHANDLE, markerHandle, 0);
 }
 
 inline SciDll_void CSciWnd::sci_MarkerDeleteHandle(int markerHandle)
 {
-	return SendEditor(SCI_MARKERDELETEHANDLE, markerHandle, 0);
+	return execute(SCI_MARKERDELETEHANDLE, markerHandle, 0);
 }
 
 //////////////////////////////////////////////////////////////////////////
 /*----------Indicators---------*/
 inline SciDll_void CSciWnd::sci_IndicSetStyle(int indicatorNumber, int indicatorStyle)
 {
-	return SendEditor(SCI_INDICSETSTYLE, indicatorNumber, indicatorStyle);
+	return execute(SCI_INDICSETSTYLE, indicatorNumber, indicatorStyle);
 }
 
 inline int CSciWnd::sci_IndicGetStyle(int indicatorNumber)
 {
-	return SendEditor(SCI_INDICGETSTYLE, indicatorNumber, 0);
+	return execute(SCI_INDICGETSTYLE, indicatorNumber, 0);
 }
 
 inline SciDll_void CSciWnd::sci_IndicSetFore(int indicatorNumber, COLORREF colour)
 {
-	return SendEditor(SCI_INDICSETFORE, indicatorNumber, colour);
+	return execute(SCI_INDICSETFORE, indicatorNumber, colour);
 }
 
 inline COLORREF CSciWnd::sci_IndicGetFore(int indicatorNumber)
 {
-	return SendEditor(SCI_INDICGETFORE, indicatorNumber, 0);
+	return execute(SCI_INDICGETFORE, indicatorNumber, 0);
 }
 
 inline SciDll_void CSciWnd::sci_IndicSetAlpha(int indicatorNumber, int alpha)
 {
-	return SendEditor(SCI_INDICSETALPHA, indicatorNumber, alpha);	
+	return execute(SCI_INDICSETALPHA, indicatorNumber, alpha);	
 }
 
 inline int CSciWnd::sci_IndicGetAlpha(int indicatorNumber)
 {
-	return SendEditor(SCI_INDICGETALPHA, indicatorNumber, 0);
+	return execute(SCI_INDICGETALPHA, indicatorNumber, 0);
 }
 
 inline SciDll_void CSciWnd::sci_IndicSetUnder(int indicatorNumber, BOOL under)
 {
-	return SendEditor(SCI_INDICSETUNDER, indicatorNumber, under);
+	return execute(SCI_INDICSETUNDER, indicatorNumber, under);
 }
 
 inline BOOL CSciWnd::sci_IndicGetUnder(int indicatorNumber)
 {
-	return SendEditor(SCI_INDICGETUNDER, indicatorNumber, 0);
+	return execute(SCI_INDICGETUNDER, indicatorNumber, 0);
 }
 
 
 /*----------Modern Indicators--------*/
 inline SciDll_void CSciWnd::sci_SetIndicatorCurrent(int indicator)
 {
-	return SendEditor(SCI_SETINDICATORCURRENT, indicator, 0);
+	return execute(SCI_SETINDICATORCURRENT, indicator, 0);
 }
 
 inline int CSciWnd::sci_GetIndicatorCurrent()
 {
-	return SendEditor(SCI_GETINDICATORCURRENT);
+	return execute(SCI_GETINDICATORCURRENT);
 }
 
 inline SciDll_void CSciWnd::sci_SetIndicatorValue(int value)
 {
-	return SendEditor(SCI_SETINDICATORVALUE, value, 0);
+	return execute(SCI_SETINDICATORVALUE, value, 0);
 }
 
 inline int CSciWnd::sci_GetIndicatorValue()
 {
-	return SendEditor(SCI_GETINDICATORVALUE);
+	return execute(SCI_GETINDICATORVALUE);
 }
 
 inline SciDll_void CSciWnd::sci_IndicatorFillRange(int position, int fillLength)
 {
-	return SendEditor(SCI_INDICATORFILLRANGE, position, fillLength);
+	return execute(SCI_INDICATORFILLRANGE, position, fillLength);
 }
 
 inline SciDll_void CSciWnd::sci_IndicatorClearRange(int position, int clearLength)
 {
-	return SendEditor(SCI_INDICATORCLEARRANGE, position, clearLength);
+	return execute(SCI_INDICATORCLEARRANGE, position, clearLength);
 }
 
 inline SciDll_void CSciWnd::sci_IndicatorAllOnFor(int position)
 {
-	return SendEditor(SCI_INDICATORALLONFOR, position, 0);
+	return execute(SCI_INDICATORALLONFOR, position, 0);
 }
 
 inline SciDll_void CSciWnd::sci_IndicatorValueAt(int indicator, int postion)
 {
-	return SendEditor(SCI_INDICATORVALUEAT, indicator, postion);
+	return execute(SCI_INDICATORVALUEAT, indicator, postion);
 }
 
 inline SciDll_void CSciWnd::sci_IndicatorStart(int indicator, int postion)
 {
-	return SendEditor(SCI_INDICATORSTART, indicator, postion);
+	return execute(SCI_INDICATORSTART, indicator, postion);
 }
 
 inline SciDll_void CSciWnd::sci_IndicatorEnd(int indicator, int postion)
 {
-	return SendEditor(SCI_INDICATOREND, indicator, postion);	
+	return execute(SCI_INDICATOREND, indicator, postion);	
 }
 
 
 /*----------Autocompletion-----*/
 inline SciDll_void CSciWnd::sci_AutocShow(int lenEntered, const char *pList)
 {
-	return SendEditor(SCI_AUTOCSHOW, lenEntered, (LPARAM)pList);
+	return execute(SCI_AUTOCSHOW, lenEntered, (LPARAM)pList);
 }
 
 inline SciDll_void CSciWnd::sci_AutocCancel()
 {
-	return SendEditor(SCI_AUTOCCANCEL);
+	return execute(SCI_AUTOCCANCEL);
 }
 
 inline SciDll_void CSciWnd::sci_AutocActive()
 {
-	return SendEditor(SCI_AUTOCACTIVE);
+	return execute(SCI_AUTOCACTIVE);
 }
 
 inline SciDll_void CSciWnd::sci_AutocPosStart()
 {
-	return SendEditor(SCI_AUTOCPOSSTART);
+	return execute(SCI_AUTOCPOSSTART);
 }
 
 inline SciDll_void CSciWnd::sci_AutocComplete()
 {
-	return SendEditor(SCI_AUTOCCOMPLETE);
+	return execute(SCI_AUTOCCOMPLETE);
 }
 
-inline SciDll_void CSciWnd::sci_AutocStops(LPCTSTR pText)
+inline SciDll_void CSciWnd::sci_AutocStops(LPCSTR pText)
 {
-	return SendEditor(SCI_AUTOCSTOPS, 0, (LPARAM)pText);
+	return execute(SCI_AUTOCSTOPS, 0, (LPARAM)pText);
 }
 
 inline SciDll_void CSciWnd::sci_AutocSetSeparator(char separator)
 {
-	return SendEditor(SCI_AUTOCSETSEPARATOR, separator, 0);	
+	return execute(SCI_AUTOCSETSEPARATOR, separator, 0);	
 }
 
 inline char CSciWnd::sci_AutocGetSeparator()
 {
-	return (char)SendEditor(SCI_AUTOCGETSEPARATOR);
+	return (char)execute(SCI_AUTOCGETSEPARATOR);
 }
 
-inline SciDll_void CSciWnd::sci_AutocSelect(LPCTSTR pSelect)
+inline SciDll_void CSciWnd::sci_AutocSelect(LPCSTR pSelect)
 {
-	return SendEditor(SCI_AUTOCSELECT, 0, (LPARAM)pSelect);
+	return execute(SCI_AUTOCSELECT, 0, (LPARAM)pSelect);
 }
 
 inline int CSciWnd::sci_AutocGetCurrent()
 {
-	return SendEditor(SCI_AUTOCGETCURRENT);
+	return execute(SCI_AUTOCGETCURRENT);
 }
 
 inline SciDll_void CSciWnd::sci_AutocGetCurrentText(CStringA &Text)
 {
 	char *pText = new char[256];
-	int nRet = SendEditor(SCI_AUTOCGETCURRENTTEXT, 0, (LPARAM)pText);
+	int nRet = execute(SCI_AUTOCGETCURRENTTEXT, 0, (LPARAM)pText);
 	pText[nRet] = '\0';
 	Text = pText;
 	return nRet;
@@ -2786,237 +2791,237 @@ inline SciDll_void CSciWnd::sci_AutocGetCurrentText(CStringA &Text)
 
 inline SciDll_void CSciWnd::sci_AutocSetCancelAtStart(BOOL cancel)
 {
-	return SendEditor(SCI_AUTOCSETCANCELATSTART, cancel, 0);
+	return execute(SCI_AUTOCSETCANCELATSTART, cancel, 0);
 }
 
 inline BOOL CSciWnd::sci_AutocGetCancelAtStart()
 {
-	return SendEditor(SCI_AUTOCGETCANCELATSTART);
+	return execute(SCI_AUTOCGETCANCELATSTART);
 }
 
-inline SciDll_void CSciWnd::sci_AutocSetFillups(LPCTSTR pText)
+inline SciDll_void CSciWnd::sci_AutocSetFillups(LPCSTR pText)
 {
-	return SendEditor(SCI_AUTOCSETFILLUPS, 0, (LPARAM)pText);
+	return execute(SCI_AUTOCSETFILLUPS, 0, (LPARAM)pText);
 }
 
 inline SciDll_void CSciWnd::sci_AutocSetChooseSingle(BOOL chooseSingle)
 {
-	return SendEditor(SCI_AUTOCSETCHOOSESINGLE, chooseSingle, 0);
+	return execute(SCI_AUTOCSETCHOOSESINGLE, chooseSingle, 0);
 }
 
 inline BOOL CSciWnd::sci_AutocGetChooseSingle()
 {
-	return SendEditor(SCI_AUTOCGETCHOOSESINGLE);
+	return execute(SCI_AUTOCGETCHOOSESINGLE);
 }
 
 //是否忽略大小写
 inline SciDll_void CSciWnd::sci_AutocSetIgnoreCase(BOOL ignoreCase)
 {
-	return SendEditor(SCI_AUTOCSETIGNORECASE, ignoreCase, 0);	
+	return execute(SCI_AUTOCSETIGNORECASE, ignoreCase, 0);	
 }
 
 inline BOOL CSciWnd::sci_AutocGetIgnoreCase()
 {
-	return SendEditor(SCI_AUTOCGETIGNORECASE);
+	return execute(SCI_AUTOCGETIGNORECASE);
 }
 
 inline SciDll_void CSciWnd::sci_AutocSetAutoHide(BOOL autoHide)
 {
-	return SendEditor(SCI_AUTOCSETAUTOHIDE, autoHide, 0);
+	return execute(SCI_AUTOCSETAUTOHIDE, autoHide, 0);
 }
 
 inline BOOL CSciWnd::sci_AutocGetAutoHide()
 {
-	return SendEditor(SCI_AUTOCGETAUTOHIDE);
+	return execute(SCI_AUTOCGETAUTOHIDE);
 }
 
 inline SciDll_void CSciWnd::sci_AutocSetDropRestOfWord(BOOL dropRestOfWord)
 {
-	return SendEditor(SCI_AUTOCSETDROPRESTOFWORD, dropRestOfWord, 0);
+	return execute(SCI_AUTOCSETDROPRESTOFWORD, dropRestOfWord, 0);
 }
 
 inline BOOL CSciWnd::sci_AutocGetDropRestOfWord()
 {
-	return SendEditor(SCI_AUTOCGETDROPRESTOFWORD);
+	return execute(SCI_AUTOCGETDROPRESTOFWORD);
 }
 
-inline SciDll_void CSciWnd::sci_RegisterImage(int type, LPCTSTR pXmpData)
+inline SciDll_void CSciWnd::sci_RegisterImage(int type, LPCSTR pXmpData)
 {
-	return SendEditor(SCI_REGISTERIMAGE, type, (LPARAM)pXmpData);
+	return execute(SCI_REGISTERIMAGE, type, (LPARAM)pXmpData);
 }
 
-inline SciDll_void CSciWnd::sci_RegisterRGBAImage(int type, LPCTSTR pPixels)
+inline SciDll_void CSciWnd::sci_RegisterRGBAImage(int type, LPCSTR pPixels)
 {
-	return SendEditor(SCI_REGISTERRGBAIMAGE, type, (LPARAM)pPixels);
+	return execute(SCI_REGISTERRGBAIMAGE, type, (LPARAM)pPixels);
 }
 
 inline SciDll_void CSciWnd::sci_ClearRegisteredImages()
 {
-	return SendEditor(SCI_CLEARREGISTEREDIMAGES);
+	return execute(SCI_CLEARREGISTEREDIMAGES);
 }
 
 inline SciDll_void CSciWnd::sci_AutocSetTypeSeparator(char separatorCharacter)
 {
-	return SendEditor(SCI_AUTOCSETTYPESEPARATOR, separatorCharacter, 0);
+	return execute(SCI_AUTOCSETTYPESEPARATOR, separatorCharacter, 0);
 }
 
 inline char CSciWnd::sci_AutocGetTypeSeparator()
 {
-	return (char)SendEditor(SCI_AUTOCGETTYPESEPARATOR);
+	return (char)execute(SCI_AUTOCGETTYPESEPARATOR);
 }
 
 inline SciDll_void CSciWnd::sci_AutocSetMaxHeight(int rowCount)
 {
-	return SendEditor(SCI_AUTOCSETMAXHEIGHT, rowCount, 0);
+	return execute(SCI_AUTOCSETMAXHEIGHT, rowCount, 0);
 }
 
 inline int CSciWnd::sci_AutocGetMaxHeight()
 {
-	return SendEditor(SCI_AUTOCGETMAXHEIGHT);
+	return execute(SCI_AUTOCGETMAXHEIGHT);
 }
 
 inline SciDll_void CSciWnd::sci_AutocSetMaxWidth(int characterCount)
 {
-	return SendEditor(SCI_AUTOCSETMAXWIDTH, characterCount);
+	return execute(SCI_AUTOCSETMAXWIDTH, characterCount);
 }
 
 inline int CSciWnd::sci_AutocGetMaxWidth()
 {
-	return SendEditor(SCI_AUTOCGETMAXWIDTH);
+	return execute(SCI_AUTOCGETMAXWIDTH);
 }
 
 //////////////////////////////////////////////////////////////////////////
 /*----------User lists------------*/
-inline SciDll_void CSciWnd::sci_UserListShow(int listType, LPCTSTR pList)
+inline SciDll_void CSciWnd::sci_UserListShow(int listType, LPCSTR pList)
 {
-	return SendEditor(SCI_USERLISTSHOW, listType, (LPARAM)pList);
+	return execute(SCI_USERLISTSHOW, listType, (LPARAM)pList);
 }
 
 /*----------Call tips------------*/
-inline SciDll_void CSciWnd::sci_CallTipShow(int posStart, LPCTSTR pDefinition)
+inline SciDll_void CSciWnd::sci_CallTipShow(int posStart, LPCSTR pDefinition)
 {
-	return SendEditor(SCI_CALLTIPSHOW, posStart, (LPARAM)pDefinition);
+	return execute(SCI_CALLTIPSHOW, posStart, (LPARAM)pDefinition);
 }
 
 inline SciDll_void CSciWnd::sci_CallTipCancel()
 {
-	return SendEditor(SCI_CALLTIPCANCEL);
+	return execute(SCI_CALLTIPCANCEL);
 }
 
 inline SciDll_void CSciWnd::sci_CallTipActive()
 {
-	return SendEditor(SCI_CALLTIPACTIVE);
+	return execute(SCI_CALLTIPACTIVE);
 }
 
 inline SciDll_void CSciWnd::sci_CallTipPosStart()
 {
-	return SendEditor(SCI_CALLTIPPOSSTART);
+	return execute(SCI_CALLTIPPOSSTART);
 }
 
 inline SciDll_void CSciWnd::sci_CallTipSetHlt(int hlStart, int hlEnd)
 {
-	return SendEditor(SCI_CALLTIPSETHLT, hlStart, hlEnd);
+	return execute(SCI_CALLTIPSETHLT, hlStart, hlEnd);
 }
 
 inline SciDll_void CSciWnd::sci_CallTipSetBack(COLORREF colour)
 {
-	return SendEditor(SCI_CALLTIPSETBACK, colour, 0);
+	return execute(SCI_CALLTIPSETBACK, colour, 0);
 }
 
 inline SciDll_void CSciWnd::sci_CallTipSetFore(COLORREF colour)
 {
-	return SendEditor(SCI_CALLTIPSETFORE, colour, 0);
+	return execute(SCI_CALLTIPSETFORE, colour, 0);
 }
 
 inline SciDll_void CSciWnd::sci_CallTipSetForeHlt(COLORREF colour)
 {
-	return SendEditor(SCI_CALLTIPSETFOREHLT, colour, 0);
+	return execute(SCI_CALLTIPSETFOREHLT, colour, 0);
 }
 
 inline SciDll_void CSciWnd::sci_CallTipUseStyle(int tabsize)
 {
-	return SendEditor(SCI_CALLTIPUSESTYLE, tabsize, 0);
+	return execute(SCI_CALLTIPUSESTYLE, tabsize, 0);
 }
 
 inline SciDll_void CSciWnd::sci_CallTipSetPosition(BOOL above)
 {
-	return SendEditor(SCI_CALLTIPSETPOSITION, above, 0);
+	return execute(SCI_CALLTIPSETPOSITION, above, 0);
 }
 
 /*----------Keyboard commands------------*/
 /*----------Key bindings------------*/
 inline SciDll_void CSciWnd::sci_AssignCmdKey(int keyDefinition, int sciCommand)
 {
-	return SendEditor(SCI_ASSIGNCMDKEY, keyDefinition, sciCommand);
+	return execute(SCI_ASSIGNCMDKEY, keyDefinition, sciCommand);
 }
 
 inline SciDll_void CSciWnd::sci_ClearCmdKey(int keyDefinition)
 {
-	return SendEditor(SCI_CLEARCMDKEY, keyDefinition, 0);
+	return execute(SCI_CLEARCMDKEY, keyDefinition, 0);
 }
 
 inline SciDll_void CSciWnd::sci_ClearAllCmdKeys()
 {
-	return SendEditor(SCI_CLEARALLCMDKEYS);
+	return execute(SCI_CLEARALLCMDKEYS);
 }
 
 inline SciDll_void CSciWnd::sci_NullCmdKey()
 {
-	return SendEditor(SCI_NULL);
+	return execute(SCI_NULL);
 }
 
 /*----------Popup edit menu------------*/
 inline SciDll_void CSciWnd::sci_UsePopup(BOOL bEnablePopup)
 {
-	return SendEditor(SCI_USEPOPUP, bEnablePopup, 0);
+	return execute(SCI_USEPOPUP, bEnablePopup, 0);
 }
 
 /*----------Macro recording------------*/
 inline SciDll_void CSciWnd::sci_StartRecord()
 {
-	return SendEditor(SCI_STARTRECORD);
+	return execute(SCI_STARTRECORD);
 }
 
 inline SciDll_void CSciWnd::sci_StopRecord()
 {
-	return SendEditor(SCI_STOPRECORD);
+	return execute(SCI_STOPRECORD);
 }
 
 //////////////////////////////////////////////////////////////////////////
 /*----------Printing------------*/
 inline SciDll_void CSciWnd::sci_FormatRange(BOOL bDraw, Sci_RangeToFormat *pfr)
 {
-	return SendEditor(SCI_FORMATRANGE, bDraw, (LPARAM)pfr);
+	return execute(SCI_FORMATRANGE, bDraw, (LPARAM)pfr);
 }
 
 inline SciDll_void CSciWnd::sci_SetPrintMagnification(BOOL magnification)
 {
-	return SendEditor(SCI_SETPRINTMAGNIFICATION, magnification, 0);
+	return execute(SCI_SETPRINTMAGNIFICATION, magnification, 0);
 }
 
 inline BOOL CSciWnd::sci_GetPrintMagnification()
 {
-	return SendEditor(SCI_GETPRINTMAGNIFICATION);
+	return execute(SCI_GETPRINTMAGNIFICATION);
 }
 
 inline SciDll_void CSciWnd::sci_SetPrintColourMode(int mode)
 {
-	return SendEditor(SCI_SETPRINTCOLOURMODE, mode, 0);
+	return execute(SCI_SETPRINTCOLOURMODE, mode, 0);
 }
 
 inline int CSciWnd::sci_GetPrintColourMode()
 {
-	return SendEditor(SCI_GETPRINTCOLOURMODE);
+	return execute(SCI_GETPRINTCOLOURMODE);
 }
 
 inline SciDll_void CSciWnd::sci_SetPrintWrapMode(int wrapMode)
 {
-	return SendEditor(SCI_SETPRINTWRAPMODE, wrapMode, 0);
+	return execute(SCI_SETPRINTWRAPMODE, wrapMode, 0);
 }
 
 inline BOOL CSciWnd::sci_GetPrintWrapMode()
 {
-	return SendEditor(SCI_GETPRINTWRAPMODE);
+	return execute(SCI_GETPRINTWRAPMODE);
 }
 
 
@@ -3029,27 +3034,27 @@ inline BOOL CSciWnd::sci_GetPrintWrapMode()
 /*----------Multiple views------------*/
 inline void *CSciWnd::sci_GetDocPointer()
 {
-	return (void *)SendEditor(SCI_GETDOCPOINTER,0,0);
+	return (void *)execute(SCI_GETDOCPOINTER,0,0);
 }
 
 inline SciDll_void CSciWnd::sci_SetDocPointer(void *pDoc)
 {
-	SendEditor(SCI_SETDOCPOINTER,0,(LPARAM)pDoc);
+	execute(SCI_SETDOCPOINTER,0,(LPARAM)pDoc);
 }
 
 inline void *CSciWnd::sci_CreateDocument()
 {
-	return (void *)SendEditor(SCI_CREATEDOCUMENT,0,0);
+	return (void *)execute(SCI_CREATEDOCUMENT,0,0);
 }
 
 inline SciDll_void CSciWnd::sci_AddRefDocument(void *pDoc)
 {
-	SendEditor(SCI_ADDREFDOCUMENT,0,(LPARAM)pDoc);
+	execute(SCI_ADDREFDOCUMENT,0,(LPARAM)pDoc);
 }
 
 inline SciDll_void CSciWnd::sci_ReleaseDocument(void *pDoc)
 {
-	SendEditor(SCI_RELEASEDOCUMENT,0,(LPARAM)pDoc);
+	execute(SCI_RELEASEDOCUMENT,0,(LPARAM)pDoc);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3058,87 +3063,87 @@ inline SciDll_void CSciWnd::sci_ReleaseDocument(void *pDoc)
 /*----------Folding-----------*/	
 inline SciDll_void CSciWnd::sci_VisibleFromDocLine(int docLine)
 {
-	return SendEditor(SCI_VISIBLEFROMDOCLINE, docLine, 0);
+	return execute(SCI_VISIBLEFROMDOCLINE, docLine, 0);
 }
 
 inline SciDll_void CSciWnd::sci_DocLineFromVisible(int displayLine)
 {
-	return SendEditor(SCI_DOCLINEFROMVISIBLE, displayLine, 0);
+	return execute(SCI_DOCLINEFROMVISIBLE, displayLine, 0);
 }
 
 inline SciDll_void CSciWnd::sci_ShowLines(int lineStart, int lineEnd)
 {
-	return SendEditor(SCI_SHOWLINES, lineStart, lineEnd);
+	return execute(SCI_SHOWLINES, lineStart, lineEnd);
 }
 
 inline SciDll_void CSciWnd::sci_HideLines(int lineStart, int lineEnd)
 {
-	return SendEditor(SCI_HIDELINES, lineStart, lineEnd);
+	return execute(SCI_HIDELINES, lineStart, lineEnd);
 }
 
 inline BOOL CSciWnd::sci_GetLineVisible(int line)
 {
-	return SendEditor(SCI_GETLINEVISIBLE, line, 0);
+	return execute(SCI_GETLINEVISIBLE, line, 0);
 }
 
 inline BOOL CSciWnd::sci_GetAllLinesVisible()
 {
-	return SendEditor(SCI_GETALLLINESVISIBLE);
+	return execute(SCI_GETALLLINESVISIBLE);
 }
 
 inline SciDll_void CSciWnd::sci_SetFoldLevel(int line, int level)
 {
-	return SendEditor(SCI_SETFOLDLEVEL, line, level);
+	return execute(SCI_SETFOLDLEVEL, line, level);
 }
 
 inline int  CSciWnd::sci_GetFoldLevel(int line)
 {
-	return SendEditor(SCI_GETFOLDLEVEL, line, 0);
+	return execute(SCI_GETFOLDLEVEL, line, 0);
 }
 
 inline SciDll_void CSciWnd::sci_SetFoldFlags(int flags)
 {
-	return SendEditor(SCI_SETFOLDFLAGS, flags, 0);
+	return execute(SCI_SETFOLDFLAGS, flags, 0);
 }
 
 inline int  CSciWnd::sci_GetLastChild(int line, int level)
 {
-	return SendEditor(SCI_GETLASTCHILD, line, level);
+	return execute(SCI_GETLASTCHILD, line, level);
 }
 
 inline int  CSciWnd::sci_GetFoldParent(int line)
 {
-	return SendEditor(SCI_GETFOLDPARENT, line, 0);
+	return execute(SCI_GETFOLDPARENT, line, 0);
 }
 
 inline SciDll_void CSciWnd::sci_SetFoldExpanded(int line, BOOL expanded)
 {
-	return SendEditor(SCI_SETFOLDEXPANDED, line, expanded);
+	return execute(SCI_SETFOLDEXPANDED, line, expanded);
 }
 
 inline BOOL CSciWnd::sci_GetFoldExpanded(int line)
 {
-	return SendEditor(SCI_GETFOLDEXPANDED, line, 0);
+	return execute(SCI_GETFOLDEXPANDED, line, 0);
 }
 
 inline int CSciWnd::sci_ContractedFoldNext(int lineStart)
 {
-	return SendEditor(SCI_CONTRACTEDFOLDNEXT, lineStart, 0);
+	return execute(SCI_CONTRACTEDFOLDNEXT, lineStart, 0);
 }
 
 inline SciDll_void CSciWnd::sci_ToggleFold(int line)
 {
-	return SendEditor(SCI_TOGGLEFOLD, line, 0);
+	return execute(SCI_TOGGLEFOLD, line, 0);
 }
 
 inline SciDll_void CSciWnd::sci_EnsureVisible(int line)
 {
-	return SendEditor(SCI_ENSUREVISIBLE, line, 0);
+	return execute(SCI_ENSUREVISIBLE, line, 0);
 }
 
 inline SciDll_void CSciWnd::sci_EnsureVisibleEnforcePolicy(int line)
 {
-	return SendEditor(SCI_ENSUREVISIBLEENFORCEPOLICY, line, 0);
+	return execute(SCI_ENSUREVISIBLEENFORCEPOLICY, line, 0);
 }
 
 
@@ -3146,109 +3151,109 @@ inline SciDll_void CSciWnd::sci_EnsureVisibleEnforcePolicy(int line)
 /*----------Line wrapping------------*/	
 inline SciDll_void CSciWnd::sci_SetWrapMode(int wrapMode)
 {
-	return SendEditor(SCI_SETWRAPMODE, wrapMode, 0);
+	return execute(SCI_SETWRAPMODE, wrapMode, 0);
 }
 
 inline int  CSciWnd::sci_GetWrapMode()
 {
-	return SendEditor(SCI_GETWRAPMODE);
+	return execute(SCI_GETWRAPMODE);
 }
 
 inline SciDll_void CSciWnd::sci_SetWrapVisualFlags(int wrapVisualFlags)
 {
-	return SendEditor(SCI_SETWRAPVISUALFLAGS, wrapVisualFlags, 0);
+	return execute(SCI_SETWRAPVISUALFLAGS, wrapVisualFlags, 0);
 }
 
 inline int  CSciWnd::sci_GetWrapVisualFlags()
 {
-	return SendEditor(SCI_GETWRAPVISUALFLAGS);
+	return execute(SCI_GETWRAPVISUALFLAGS);
 }
 
 inline SciDll_void CSciWnd::sci_SetWrapVisualFlagsLocation(int wrapVisualFlagsLocation)
 {
-	return SendEditor(SCI_SETWRAPVISUALFLAGSLOCATION, wrapVisualFlagsLocation, 0);
+	return execute(SCI_SETWRAPVISUALFLAGSLOCATION, wrapVisualFlagsLocation, 0);
 }
 
 inline int  CSciWnd::sci_GetWrapVisualFlagsLocation()
 {
-	return SendEditor(SCI_GETWRAPVISUALFLAGSLOCATION);
+	return execute(SCI_GETWRAPVISUALFLAGSLOCATION);
 }
 
 inline SciDll_void CSciWnd::sci_SetWrapIndentMode(int indentMode)
 {
-	return SendEditor(SCI_SETWRAPINDENTMODE, indentMode, 0);
+	return execute(SCI_SETWRAPINDENTMODE, indentMode, 0);
 }
 
 inline int  CSciWnd::sci_GetWrapIndentMode()
 {
-	return SendEditor(SCI_GETWRAPINDENTMODE);
+	return execute(SCI_GETWRAPINDENTMODE);
 }
 
 inline SciDll_void CSciWnd::sci_SetWrapStartIndent(int indent)
 {
-	return SendEditor(SCI_SETWRAPSTARTINDENT, indent, 0);
+	return execute(SCI_SETWRAPSTARTINDENT, indent, 0);
 }
 
 inline int  CSciWnd::sci_GetWrapStartIndent()
 {
-	return SendEditor(SCI_GETWRAPSTARTINDENT);
+	return execute(SCI_GETWRAPSTARTINDENT);
 }
 
 inline SciDll_void CSciWnd::sci_SetLayoutCache(int cacheMode)
 {
-	return SendEditor(SCI_SETLAYOUTCACHE, cacheMode, 0);
+	return execute(SCI_SETLAYOUTCACHE, cacheMode, 0);
 }
 
 inline int  CSciWnd::sci_GetLayoutCache()
 {
-	return SendEditor(SCI_GETLAYOUTCACHE);
+	return execute(SCI_GETLAYOUTCACHE);
 }
 
 inline SciDll_void CSciWnd::sci_SetPositionCache(int size)
 {
-	return SendEditor(SCI_SETPOSITIONCACHE, size, 0);
+	return execute(SCI_SETPOSITIONCACHE, size, 0);
 }
 
 inline int  CSciWnd::sci_GetPositionCache()
 {
-	return SendEditor(SCI_GETPOSITIONCACHE);
+	return execute(SCI_GETPOSITIONCACHE);
 }
 
 inline SciDll_void CSciWnd::sci_LinesSplit(int pixelWidth)
 {
-	return SendEditor(SCI_LINESSPLIT, pixelWidth, 0);
+	return execute(SCI_LINESSPLIT, pixelWidth, 0);
 }
 
 inline SciDll_void CSciWnd::sci_LinesJoin()
 {
-	return SendEditor(SCI_LINESJOIN);
+	return execute(SCI_LINESJOIN);
 }
 
 inline SciDll_void CSciWnd::sci_WrapCount(int docLine)
 {
-	return SendEditor(SCI_WRAPCOUNT, docLine, 0);
+	return execute(SCI_WRAPCOUNT, docLine, 0);
 }
 
 //////////////////////////////////////////////////////////////////////////
 /*----------Zooming------------*/
 inline SciDll_void CSciWnd::sci_ZoomIn()
 {
-	return SendEditor(SCI_ZOOMIN);
+	return execute(SCI_ZOOMIN);
 }
 
 inline SciDll_void CSciWnd::sci_ZoomOut()
 {
-	return SendEditor(SCI_ZOOMOUT);
+	return execute(SCI_ZOOMOUT);
 }
 
 inline SciDll_void CSciWnd::sci_SetZoom(int zoomInPoints)
 {
-	return SendEditor(SCI_SETZOOM, zoomInPoints, 0);
+	return execute(SCI_SETZOOM, zoomInPoints, 0);
 }
 
 inline int  CSciWnd::sci_GetZoom()
 {
-	return SendEditor(SCI_GETZOOM);
+	return execute(SCI_GETZOOM);
 }
 
 
@@ -3256,101 +3261,101 @@ inline int  CSciWnd::sci_GetZoom()
 /*----------Long lines------------*/
 inline SciDll_void CSciWnd::sci_SetEdgeMode(int mode)
 {
-	return SendEditor(SCI_SETEDGEMODE, mode, 0);
+	return execute(SCI_SETEDGEMODE, mode, 0);
 }
 
 inline int  CSciWnd::sci_GetEdgeMode()
 {
-	return SendEditor(SCI_GETEDGEMODE);
+	return execute(SCI_GETEDGEMODE);
 }
 
 inline SciDll_void CSciWnd::sci_SetEdgeColumn(int column)
 {
-	return SendEditor(SCI_SETEDGECOLUMN, column, 0);
+	return execute(SCI_SETEDGECOLUMN, column, 0);
 }
 
 inline int  CSciWnd::sci_GetEdgeColumn()
 {
-	return SendEditor(SCI_GETEDGECOLUMN);
+	return execute(SCI_GETEDGECOLUMN);
 }
 
 inline SciDll_void CSciWnd::sci_SetEdgeColour(int colour)
 {
-	return SendEditor(SCI_SETEDGECOLOUR, colour, 0);
+	return execute(SCI_SETEDGECOLOUR, colour, 0);
 }
 
 inline int  CSciWnd::sci_GetEdgeColour()
 {
-	return SendEditor(SCI_GETEDGECOLOUR);
+	return execute(SCI_GETEDGECOLOUR);
 }
 
 //////////////////////////////////////////////////////////////////////////
 /*----------Lexer------------*/
 inline SciDll_void CSciWnd::sci_SetLexer(int lexer)
 {
-	return SendEditor(SCI_SETLEXER, lexer, 0);
+	return execute(SCI_SETLEXER, lexer, 0);
 }
 
 inline int  CSciWnd::sci_GetLexer()
 {
-	return SendEditor(SCI_GETLEXER);
+	return execute(SCI_GETLEXER);
 }
 
-inline SciDll_void CSciWnd::sci_SetLexerLanguage(LPCTSTR name)
+inline SciDll_void CSciWnd::sci_SetLexerLanguage(LPCSTR name)
 {
-	return SendEditor(SCI_SETLEXERLANGUAGE, 0, (LPARAM)name);
+	return execute(SCI_SETLEXERLANGUAGE, 0, (LPARAM)name);
 }
 
 inline SciDll_void CSciWnd::sci_GetLexerLanguage(CString &Text)
 {
 	int nRet = -1;
 	char *p = new char[256];
-	nRet = SendEditor(SCI_GETLEXERLANGUAGE, 0, (LPARAM)p);
+	nRet = execute(SCI_GETLEXERLANGUAGE, 0, (LPARAM)p);
 	Text = p;
 	delete []p;
 	return nRet;
 }
 
-inline SciDll_void CSciWnd::sci_LoadLexerLibrary(LPCTSTR path)
+inline SciDll_void CSciWnd::sci_LoadLexerLibrary(LPCSTR path)
 {
-	return SendEditor(SCI_LOADLEXERLIBRARY, 0, (LPARAM)path);
+	return execute(SCI_LOADLEXERLIBRARY, 0, (LPARAM)path);
 }
 
 inline SciDll_void CSciWnd::sci_ColourIse(int start, int end)
 {
-	return SendEditor(SCI_COLOURISE, start, end);
+	return execute(SCI_COLOURISE, start, end);
 }
 
 inline SciDll_void CSciWnd::sci_ChangeLexerState(int start, int end)
 {
-	return SendEditor(SCI_CHANGELEXERSTATE, start, end);
+	return execute(SCI_CHANGELEXERSTATE, start, end);
 }
 
 inline SciDll_void CSciWnd::sci_PropertyNames(LPTSTR names)
 {
-	return SendEditor(SCI_PROPERTYNAMES, 0, (LPARAM)names);
+	return execute(SCI_PROPERTYNAMES, 0, (LPARAM)names);
 }
 
 inline SciDll_void CSciWnd::sci_PropertyType(LPTSTR name)
 {
-	return SendEditor(SCI_PROPERTYTYPE, 0, (LPARAM)name);
+	return execute(SCI_PROPERTYTYPE, 0, (LPARAM)name);
 }
 
-inline SciDll_void CSciWnd::sci_DescribeProperty(LPCTSTR name, LPTSTR description)
+inline SciDll_void CSciWnd::sci_DescribeProperty(LPCSTR name, LPTSTR description)
 {
-	return SendEditor(SCI_DESCRIBEPROPERTY, (LPARAM)name, (LPARAM)description);
+	return execute(SCI_DESCRIBEPROPERTY, (LPARAM)name, (LPARAM)description);
 }
 
-inline SciDll_void CSciWnd::sci_SetProperty(const char *key, const char *value)
+inline SciDll_void CSciWnd::sci_SetProperty(LPCSTR key, LPCSTR value)
 {
-	return SendEditor(SCI_SETPROPERTY, (LPARAM)key, (LPARAM)value);
+	return execute(SCI_SETPROPERTY, (LPARAM)key, (LPARAM)value);
 }
 
-inline SciDll_void CSciWnd::sci_GetProperty(LPCTSTR key, CString &Value)
+inline SciDll_void CSciWnd::sci_GetProperty(LPCSTR key, CString &Value)
 {
 	int nRet = -1;
 	char *p = new char[256];
-	nRet = SendEditor(SCI_GETPROPERTY, (LPARAM)key, (LPARAM)p);
+	nRet = execute(SCI_GETPROPERTY, (LPARAM)key, (LPARAM)p);
 	if(nRet>0)
 	{
 		p[nRet-1] = 0;
@@ -3360,11 +3365,11 @@ inline SciDll_void CSciWnd::sci_GetProperty(LPCTSTR key, CString &Value)
 	return nRet;
 }
 
-inline SciDll_void CSciWnd::sci_GetPropertyExpanded(LPCTSTR key, CString &Value)
+inline SciDll_void CSciWnd::sci_GetPropertyExpanded(LPCSTR key, CString &Value)
 {
 	int nRet = -1;
 	char *p = new char[256];
-	nRet = SendEditor(SCI_GETPROPERTYEXPANDED, (LPARAM)key, (LPARAM)p);
+	nRet = execute(SCI_GETPROPERTYEXPANDED, (LPARAM)key, (LPARAM)p);
 	if(nRet>0)
 	{
 		p[nRet-1] = 0;
@@ -3374,16 +3379,16 @@ inline SciDll_void CSciWnd::sci_GetPropertyExpanded(LPCTSTR key, CString &Value)
 	return nRet;
 }
 
-inline int  CSciWnd::sci_GetPropertyInt(LPCTSTR key, int ndefault)
+inline int  CSciWnd::sci_GetPropertyInt(LPCSTR key, int ndefault)
 {
-	return SendEditor(SCI_GETPROPERTYINT, (LPARAM)key, ndefault);
+	return execute(SCI_GETPROPERTYINT, (LPARAM)key, ndefault);
 }
 
 inline SciDll_void CSciWnd::sci_DescribeKeywordSets(CString &descriptions)
 {
 	int nRet = -1;
 	char *p = new char[1024];
-	nRet = SendEditor(SCI_DESCRIBEKEYWORDSETS, 0, (LPARAM)p);
+	nRet = execute(SCI_DESCRIBEKEYWORDSETS, 0, (LPARAM)p);
 	if(nRet>0)
 	{
 		p[nRet-1] = 0;
@@ -3393,15 +3398,12 @@ inline SciDll_void CSciWnd::sci_DescribeKeywordSets(CString &descriptions)
 	return nRet;
 }
 
-inline SciDll_void CSciWnd::sci_SetKeyWords(int keyWordSet, const char * keyWordList)
+inline SciDll_void CSciWnd::sci_SetKeyWords(int keyWordSet, LPCSTR keyWordList)
 {
-	return SendEditor(SCI_SETKEYWORDS, keyWordSet, (LPARAM)keyWordList);
+	return execute(SCI_SETKEYWORDS, keyWordSet, (LPARAM)keyWordList);
 }
 
 inline int CSciWnd::sci_GetStyleBitsNeeded()
 {
-	return SendEditor(SCI_GETSTYLEBITSNEEDED);
+	return execute(SCI_GETSTYLEBITSNEEDED);
 }
-
-
-

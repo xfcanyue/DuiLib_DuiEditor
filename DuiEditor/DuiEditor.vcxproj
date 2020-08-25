@@ -307,6 +307,7 @@
     <ClInclude Include="UIWindow.h" />
     <ClInclude Include="UIWindowEx.h" />
     <ClInclude Include="UIWindowMenu.h" />
+    <ClInclude Include="xmlMatchedTagsHighlighter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp" />
@@ -371,6 +372,7 @@
     <ClCompile Include="UIWindow.cpp" />
     <ClCompile Include="UIWindowEx.cpp" />
     <ClCompile Include="UIWindowMenu.cpp" />
+    <ClCompile Include="xmlMatchedTagsHighlighter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DuiEditor.rc" />

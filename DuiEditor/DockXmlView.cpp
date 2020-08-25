@@ -293,7 +293,6 @@ BOOL CDockXmlView::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
 		}
 		break;
 	case SCN_UPDATEUI:
-		//UpdateFrameStatus();
 		break;
 	}	
 	return __super::OnNotify(wParam, lParam, pResult);

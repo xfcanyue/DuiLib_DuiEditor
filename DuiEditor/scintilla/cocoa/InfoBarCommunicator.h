@@ -8,11 +8,11 @@
  * This file is dual licensed under LGPL v2.1 and the Scintilla license (http://www.scintilla.org/License.txt).
  */
 
-enum IBDisplay {
-  IBShowZoom          = 0x01,
-  IBShowCaretPosition = 0x02,
-  IBShowStatusText    = 0x04,
-  IBShowAll           = 0xFF
+typedef NS_OPTIONS(NSUInteger, IBDisplay) {
+	IBShowZoom          = 0x01,
+	IBShowCaretPosition = 0x02,
+	IBShowStatusText    = 0x04,
+	IBShowAll           = 0xFF
 };
 
 /**
@@ -21,15 +21,15 @@ enum IBDisplay {
  * ScintillaView implementation. The protocol is used two-way.
  */
 
-enum NotificationType {
-  IBNZoomChanged,    // The user selected another zoom value.
-  IBNCaretChanged,   // The caret in the editor changed.
-  IBNStatusChanged,  // The application set a new status message.
+typedef NS_ENUM(NSInteger, NotificationType) {
+	IBNZoomChanged,    // The user selected another zoom value.
+	IBNCaretChanged,   // The caret in the editor changed.
+	IBNStatusChanged,  // The application set a new status message.
 };
 
 @protocol InfoBarCommunicator
-- (void) notify: (NotificationType) type message: (NSString*) message location: (NSPoint) location
-          value: (float) value;
+- (void) notify: (NotificationType) type message: (NSString *) message location: (NSPoint) location
+	  value: (float) value;
 - (void) setCallback: (id <InfoBarCommunicator>) callback;
 @end
 

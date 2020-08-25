@@ -208,7 +208,7 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 	{
 	case SCK_BACK:
 		{
-			InsertMsg(_T("SCK_BACK"));
+			//InsertMsg(_T("SCK_BACK"));
 		}
 		break;
 	case SCN_CHARADDED:	//ÊäÈë×Ö·û
