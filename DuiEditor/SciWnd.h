@@ -1,5 +1,5 @@
 #pragma once
-
+#include "xmlMatchedTagsHighlighter.h"
 
 #define WM_SCIWND_RBUTTONUP		WM_USER+987
 #define WM_SCIWND_LBUTTONDOWN	WM_USER+988
@@ -38,6 +38,7 @@ public:
 
 	void findMatchingBracePos(int & braceAtCaret, int & braceOpposite);
 	bool braceMatch();
+	bool BraceHighLightAttributes(int first, int second, int openTagTailLen);
 protected:
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
@@ -321,7 +322,7 @@ public:
 	int  sci_StyleGetSizeFractional(int styleNumber);
 
 	//¥÷ÃÂ
-	SciDll_void sci_StyleSetBold(int styleNumber, BOOL bold);
+	SciDll_void sci_StyleSetBold(int styleNumber, bool bold);
 	BOOL  sci_StyleGetBold(int styleNumber);
 
 	//◊÷ÃÂ¥÷œ∏
@@ -1814,7 +1815,7 @@ inline int  CSciWnd::sci_StyleGetSizeFractional(int styleNumber)
 }
 
 //¥÷ÃÂ
-inline SciDll_void CSciWnd::sci_StyleSetBold(int styleNumber, BOOL bold)
+inline SciDll_void CSciWnd::sci_StyleSetBold(int styleNumber, bool bold)
 {
 	return execute(SCI_STYLESETBOLD,styleNumber,bold);
 }

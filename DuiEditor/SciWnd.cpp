@@ -2,9 +2,9 @@
 //
 
 #include "stdafx.h"
+#include "DuiEditor.h"
 #include "SciWnd.h"
 #include "colors.h"
-#include "xmlMatchedTagsHighlighter.h"
 
 static const char *minus_xpm[] = { 
 	"     9     9       16            1", 
@@ -181,12 +181,13 @@ void CSciWnd::InitXML(const tagXmlEditorOpt &opt)
 	sci_StyleSetFore(SCE_H_DOUBLESTRING,	RGB(128,0,255));
 	sci_StyleSetFore(SCE_H_SINGLESTRING,	RGB(128,0,255));
 	//标签未配对时颜色
-	sci_StyleSetFore(SCE_H_TAGUNKNOWN,		RGB(0,0,255));
-	sci_StyleSetFore(SCE_H_TAGEND,			RGB(0,0,255));
+	sci_StyleSetFore(SCE_H_TAGUNKNOWN,		RGB(255,0,255));
 	//标签配对时颜色
 	sci_StyleSetFore(SCE_H_TAG,				RGB(0,0,255));
+	sci_StyleSetFore(SCE_H_TAGEND,			RGB(0,0,255));
 	//属性颜色
 	sci_StyleSetFore(SCE_H_ATTRIBUTE,		RGB(255,0,0));
+	sci_StyleSetBold(SCE_H_ATTRIBUTE,		true);
 
 	//////////////////////////////////////////////////////////////////////////
 	//行号
@@ -211,7 +212,8 @@ void CSciWnd::InitXML(const tagXmlEditorOpt &opt)
 	sci_SetMarginMaskN(VIEW_MARGIN_FOLD, SC_MASK_FOLDERS);	//页边掩码
 	sci_SetMarginWidthN(VIEW_MARGIN_FOLD,20);				//页边宽度
 	sci_SetMarginSensitiveN(VIEW_MARGIN_FOLD, TRUE);		//页边响应鼠标点击
-
+	
+	sci_SetProperty("lexer.xml.allow.scripts", "1");
 	sci_SetProperty("fold", "1");
 	sci_SetProperty("fold.html", "1");
 	sci_SetProperty("fold.compact", "0");
@@ -249,6 +251,8 @@ void CSciWnd::InitXML(const tagXmlEditorOpt &opt)
 
 	//括号匹配的颜色
 	sci_StyleSetBack(STYLE_BRACELIGHT, RGB(0,255,0));
+	//括号未匹配的
+	sci_StyleSetBack(STYLE_BRACEBAD, RGB(255,0,0));
 
 	//当前行高亮显示
 	sci_SetCaretLineVisible(TRUE);
@@ -359,7 +363,7 @@ BOOL CSciWnd::OnParentNotify(SCNotification *pMsg)
 		{
 			braceMatch();
 			XmlMatchedTagsHighlighter xmlTagMatchHiliter(this);
-			xmlTagMatchHiliter.tagMatch(false);
+			xmlTagMatchHiliter.tagMatch(true);
 		}
 		break;
 	case SCN_MODIFIED:
@@ -509,4 +513,120 @@ bool CSciWnd::braceMatch()
 		}
 	}
 	return (braceAtCaret != -1);
+}
+
+
+bool CSciWnd::BraceHighLightAttributes(int attrbegin, int attrend, int openTagTailLen)
+{
+	bool highlightAttr = false;
+
+	int pos = sci_GetCurrentPos();
+
+	//当前光标点击在某个属性上
+#ifdef _DEBUG
+	LSSTRING_CONVERSION;
+	CStringA temp;
+	sci_GetTextRange(attrbegin, attrend, temp);
+	InsertMsg(LSA2T(temp));
+#endif
+	//先找双引号，然后在双引号里面寻找单引号
+	int findpos1 = 0; 
+	int findpos2 = 0;
+	sci_SetTargetStart(attrbegin);
+	sci_SetTargetEnd(attrend);
+	findpos1 = sci_SearchInTarget(1, "\"");
+
+	sci_SetTargetStart(findpos1+1);
+	sci_SetTargetEnd(attrend);
+	findpos2 = sci_SearchInTarget(1, "\"");
+
+	if(findpos1 >= 0 && findpos2 >= 0)
+	{
+		sci_BraceHighlight(findpos1, findpos2);
+		highlightAttr = true;
+	}
+	else if((findpos1 >=0 && findpos2 < 0) || (findpos1 <0 && findpos2 >= 0) )
+	{
+		if(findpos1 > 0) sci_BraceBadLight(findpos1);
+		if(findpos2 > 0) sci_BraceBadLight(findpos2);
+		highlightAttr = true;
+		return highlightAttr;
+	}
+
+#ifdef _DEBUG
+	sci_GetTextRange(findpos1+1, findpos2, temp);
+	InsertMsg(LSA2T(temp));
+#endif
+
+	//检查双引号内部的单引号匹配
+	int findpos3 = findpos1+1; 
+	int findpos4 = 0;
+	int bracebegin = -1;
+	int braceend = -1;
+	while (true)
+	{
+		sci_SetTargetStart(findpos3);
+		sci_SetTargetEnd(findpos2);
+		findpos3 = sci_SearchInTarget(1, "\'");
+		if(findpos3 < 0)
+			break;
+
+		sci_SetTargetStart(findpos3+1);
+		sci_SetTargetEnd(findpos2);
+		findpos4 = sci_SearchInTarget(1, "\'");
+		if(findpos4 < 0) //匹配失败
+		{
+			sci_BraceBadLight(findpos3);
+			bracebegin = -1;
+			braceend = -1;
+			highlightAttr = true;
+			break;
+		}
+
+		if(pos >= findpos3 && pos <= findpos4)
+		{
+			bracebegin = findpos3;
+			braceend = findpos4;
+		}
+
+		findpos3 = findpos4+1;
+	}
+
+	if(bracebegin >= 0 && braceend >= 0)
+	{
+		sci_BraceHighlight(bracebegin, braceend);
+		highlightAttr = true;
+	}
+	
+
+	/*
+	//寻找单引号
+	int findpos3 = 0; 
+	int findpos4 = 0;
+	sci_SetTargetStart(findpos1+1);
+	sci_SetTargetEnd(pos);
+	findpos3 = sci_SearchInTarget(1, "\'");
+
+	if(findpos3 > 0)
+	{
+		sci_SetTargetStart(findpos3+1);
+		sci_SetTargetEnd(findpos2);
+		findpos4 = sci_SearchInTarget(1, "\'");
+		if(findpos3 >= 0 && findpos4 >= 0)
+		{
+			if(pos >= findpos3 && pos <= findpos4)
+			{
+				sci_BraceHighlight(findpos3, findpos4);
+				highlightAttr = true;
+			}
+		}
+		else if((findpos3 >=0 && findpos4 < 0) || (findpos3 <0 && findpos4 >= 0) )
+		{
+			if(findpos3 > 0) sci_BraceBadLight(findpos3);
+			if(findpos4 > 0) sci_BraceBadLight(findpos4);
+			highlightAttr = true;
+		}
+	}	
+	*/
+	return highlightAttr;
 }

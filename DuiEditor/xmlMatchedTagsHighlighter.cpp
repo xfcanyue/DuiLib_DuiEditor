@@ -616,17 +616,30 @@ XmlMatchedTagsHighlighter::XmlMatchedTagsPos XmlMatchedTagsHighlighter::tagMatch
 
         
         // Colouising its attributs
+		bool highlightAttr = false;
         if (doHiliteAttr)
 		{
+			int pos = _pEditView->sci_GetCurrentPos();
 			vector< pair<int, int> > attributes = getAttributesPos(xmlTags.tagNameEnd, xmlTags.tagOpenEnd - openTagTailLen);
-			_pEditView->execute(SCI_SETINDICATORCURRENT,  SCE_UNIVERSAL_TAGATTR);
 			for (size_t i = 0, len = attributes.size(); i < len ; ++i)
 			{
-				_pEditView->execute(SCI_INDICATORFILLRANGE,  attributes[i].first, attributes[i].second - attributes[i].first);
+				if(pos >= attributes[i].first && pos <= attributes[i].second)
+				{
+					highlightAttr = _pEditView->BraceHighLightAttributes(attributes[i].first, attributes[i].second, openTagTailLen);
+					break;
+				}
 			}
+// 			vector< pair<int, int> > attributes = getAttributesPos(xmlTags.tagNameEnd, xmlTags.tagOpenEnd - openTagTailLen);
+// 			_pEditView->execute(SCI_SETINDICATORCURRENT,  SCE_UNIVERSAL_TAGATTR);
+// 			for (size_t i = 0, len = attributes.size(); i < len ; ++i)
+// 			{
+// 				_pEditView->execute(SCI_INDICATORFILLRANGE,  attributes[i].first, attributes[i].second - attributes[i].first);
+// 			}
         }
+		
 
         // Colouising indent guide line position
+		if(!highlightAttr)//如果没有对属性值引号高亮，则对节点封闭标签高亮
 		if (_pEditView->sci_GetIndentationGuides())
 		{
 			int columnAtCaret  = int(_pEditView->execute(SCI_GETCOLUMN, xmlTags.tagOpenStart));
@@ -641,6 +654,7 @@ XmlMatchedTagsHighlighter::XmlMatchedTagsPos XmlMatchedTagsHighlighter::tagMatch
 				_pEditView->execute(SCI_SETHIGHLIGHTGUIDE, (columnAtCaret < columnOpposite)?columnAtCaret:columnOpposite);
 			}
 		}
+		
 	}
 
 	// restore the original targets and search options to avoid the conflit with search/replace function
