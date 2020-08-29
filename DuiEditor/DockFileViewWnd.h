@@ -10,6 +10,7 @@ class CDockFileViewWnd : public CDockablePane
 public:
 	CDockFileViewWnd();
 	virtual ~CDockFileViewWnd();
+	virtual BOOL CanBeClosed() const { return FALSE; }
 
 	CDockFileViewCtrl m_wndFileView;
 protected:

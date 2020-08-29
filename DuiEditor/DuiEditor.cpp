@@ -111,7 +111,7 @@ BOOL CDuiEditorApp::InitInstance()
 	}
 
 	AfxEnableControlContainer();
-	EnableTaskbarInteraction();
+	EnableTaskbarInteraction(FALSE);
 
 	CoInitialize(NULL);
 	// 使用 RichEdit 控件需要  AfxInitRichEdit2()	

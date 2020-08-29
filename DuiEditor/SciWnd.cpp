@@ -524,10 +524,10 @@ bool CSciWnd::BraceHighLightAttributes(int attrbegin, int attrend, int openTagTa
 
 	//当前光标点击在某个属性上
 #ifdef _DEBUG
-	LSSTRING_CONVERSION;
-	CStringA temp;
-	sci_GetTextRange(attrbegin, attrend, temp);
-	InsertMsg(LSA2T(temp));
+// 	LSSTRING_CONVERSION;
+// 	CStringA temp;
+// 	sci_GetTextRange(attrbegin, attrend, temp);
+// 	InsertMsg(LSA2T(temp));
 #endif
 	//先找双引号，然后在双引号里面寻找单引号
 	int findpos1 = 0; 
@@ -554,8 +554,8 @@ bool CSciWnd::BraceHighLightAttributes(int attrbegin, int attrend, int openTagTa
 	}
 
 #ifdef _DEBUG
-	sci_GetTextRange(findpos1+1, findpos2, temp);
-	InsertMsg(LSA2T(temp));
+// 	sci_GetTextRange(findpos1+1, findpos2, temp);
+// 	InsertMsg(LSA2T(temp));
 #endif
 
 	//检查双引号内部的单引号匹配

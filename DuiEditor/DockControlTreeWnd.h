@@ -13,6 +13,7 @@ class CDockControlTreeWnd : public CDockablePane
 public:
 	CDockControlTreeWnd();
 	virtual ~CDockControlTreeWnd();
+	virtual BOOL CanBeClosed() const { return FALSE; }
 
 	CDockControlTreeCtrl *CreateTreeView();
 	void RemoveTreeView(CDockControlTreeCtrl *pTreeView);

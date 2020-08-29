@@ -6,6 +6,7 @@
 #include "DockXmlView.h"
 #include "SciXmlWriter.h"
 #include "DuiEditorTabView.h"
+#include "MainFrm.h"
 
 #include "TinyXml2/tinyxml2.h"
 // CDockXmlView
@@ -165,6 +166,13 @@ BOOL CDockXmlView::SelectControlUI(int line, xml_node node)
 		CControlUI *pControl = (CControlUI *)node.get_tag();
 		m_pManager->SelectItem(pControl);
 		m_pManager->GetTreeView()->SelectXmlNode(node);
+
+		//ÇÐ»»×ó±ß¿Ø¼þÊ÷
+		CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
+		if(!pMain->m_wndControl.IsPaneVisible())
+		{
+			pMain->m_wndControl.ShowPane(TRUE, TRUE, TRUE);
+		}
 		return TRUE;
 	}
 

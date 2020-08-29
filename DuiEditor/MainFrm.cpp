@@ -24,6 +24,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_COMMAND_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnApplicationLook)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)
 	ON_REGISTERED_MESSAGE(AFX_WM_ON_GET_TAB_TOOLTIP, &CMainFrame::OnGetTabTooltip)
+	ON_REGISTERED_MESSAGE(AFX_WM_CHANGE_ACTIVE_TAB, &CMainFrame::OnChangeActiveTab)
 	ON_COMMAND(ID_FILE_CLOSE_ALL, &CMainFrame::OnFileCloseAll)
 	ON_UPDATE_COMMAND_UI(ID_FILE_CLOSE_ALL, &CMainFrame::OnUpdateFileCloseAll)
 	ON_COMMAND(ID_FILE_SAVE_ALL, &CMainFrame::OnFileSaveAll)
@@ -193,7 +194,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	g_pPropWnd = &m_wndProperty;
 	g_pPropWnd->m_wndPropList.m_bMainFrame = TRUE;
 
-	if (!m_wndOutput.Create(_T(" 输出 "), this, CRect(0, 0, 100, 600), TRUE, ID_OUTPUT_WND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM))
+	if (!m_wndOutput.Create(_T(" 输出 "), this, CRect(0, 0, 100, 100), TRUE, ID_OUTPUT_WND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM))
 	{
 		return FALSE; // 未能创建
 	}
@@ -356,6 +357,11 @@ LRESULT CMainFrame::OnGetTabTooltip(WPARAM wparam, LPARAM lparam)
 	return 0;
 }
 
+LRESULT CMainFrame::OnChangeActiveTab(WPARAM wparam, LPARAM lparam)
+{
+	return 0;
+}
+
 void CMainFrame::OnClose()
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
@@ -376,9 +382,8 @@ CDuiEditorViewDesign *CMainFrame::GetActiveUIView()
 void CMainFrame::ShowAllPane()
 {
 	m_wndFileView.ShowPane(TRUE, TRUE, TRUE);
-	m_wndControl.ShowPane(TRUE, TRUE, TRUE);
+	//m_wndControl.ShowPane(TRUE, TRUE, TRUE);
 
-	//m_wndOutput.ShowPane(TRUE, TRUE, TRUE);
 	m_wndToolBox.ShowPane(TRUE, TRUE, TRUE);
 	m_wndProperty.ShowPane(TRUE, TRUE, TRUE);
 	SendMessage(WM_SIZE);
@@ -389,7 +394,6 @@ void CMainFrame::HideAllPane()
 	m_wndFileView.ShowPane(FALSE, TRUE, TRUE);
 	m_wndControl.ShowPane(FALSE, TRUE, TRUE);
 
-	//m_wndOutput.ShowPane(FALSE, TRUE, TRUE);
 	m_wndToolBox.ShowPane(FALSE, TRUE, TRUE);
 	m_wndProperty.ShowPane(FALSE, TRUE, TRUE);
 	SendMessage(WM_SIZE);

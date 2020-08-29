@@ -580,8 +580,12 @@ LRESULT CUIWindowEx::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 	SetFocus(GetSafeHwnd());
 
 	//ÇÐ»»×ó±ß¿Ø¼þÊ÷
-//	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
-//	pMain->m_wndControl.SetActiveTreeView(m_pManager->GetTreeView());
+ 	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
+	if(!pMain->m_wndControl.IsPaneVisible())
+	{
+		pMain->m_wndControl.ShowPane(TRUE, TRUE, TRUE);
+	}
+// 	pMain->m_wndControl.SetActiveTreeView(m_pManager->GetTreeView());
 
 	if(m_pManager->GetView()->m_bShowUiPreview)
 	{
@@ -653,7 +657,7 @@ LRESULT CUIWindowEx::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
  	{
  		CRect rcFocusControl = pFocusControl->GetPos();
  		BOOL b = ::SetCaretPos(rcFocusControl.left, rcFocusControl.bottom);
-		if(!b) InsertMsg(_T("::SetCaretPos failed."));
+		//if(!b) InsertMsg(_T("::SetCaretPos failed."));
  	}
 
 	if(nHit > 0 && (g_duiProp.IsBaseFromControlUI(nodeClick.name()) || g_duiProp.IsWindowForm(nodeClick.name())))

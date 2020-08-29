@@ -311,14 +311,7 @@ void CDuiEditorViewDesign::OnActivateView(BOOL bActivate, CView* pActivateView, 
 		pMain->m_wndDockXml.SetActiveSciWnd(m_Manager.GetXmlPane());
 		pMain->ShowAllPane();
 
-		//切换页面时, 也需要刷新属性窗口
-// 		if(m_Manager.m_pUiTracker && m_Manager.m_pUiTracker->m_node)
-// 		{
-// 			g_pPropWnd->InitProp(m_Manager.m_pUiTracker->m_node);
-// 		}
-
 		//InsertMsg(_T("OnActivateDesign"));
-
 
 		//主要是为了更新DuiLib的窗口阴影
 		if(m_Manager.m_pUiWindow && m_Manager.m_pUiWindow->GetSafeHwnd())

@@ -62,14 +62,18 @@ BOOL CUIManager::SelectItem(CControlUI *pControl)
 		return FALSE;
 	}
 
+	//往上回溯，碰到TabLayout都切换过来
+	CControlUI *pControlTemp = pControl;
 	CControlUI *pParent = pControl->GetParent();
-	if(pParent && _tcsicmp(pParent->GetClass(), _T("TabLayoutUI"))==0)
+	while(pParent)
 	{
 		CTabLayoutUI *pTabLayout = static_cast<CTabLayoutUI*>(pParent->GetInterface(DUI_CTR_TABLAYOUT));
 		if(pTabLayout)
 		{
-			pTabLayout->SelectItem(pControl);
+			pTabLayout->SelectItem(pControlTemp);
 		}
+		pControlTemp = pParent;
+		pParent = pParent->GetParent();
 	}
 
 	if(pControl)
