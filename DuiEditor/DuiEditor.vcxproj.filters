@@ -188,6 +188,15 @@
     <None Include="res\bmp00006.bmp">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="res\ico_close.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ico_stop.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\00290.bmp">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -373,6 +382,12 @@
     <ClInclude Include="xmlMatchedTagsHighlighter.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="EditSearchCtrl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorConfig.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -547,6 +562,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="xmlMatchedTagsHighlighter.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="EditSearchCtrl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

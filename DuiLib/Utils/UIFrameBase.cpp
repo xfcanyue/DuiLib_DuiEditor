@@ -47,7 +47,7 @@ DUI_BEGIN_MESSAGE_MAP(CUIFrmBase,CNotifyPump)
 	DUI_ON_MSGTYPE(DUI_MSGTYPE_ITEMCOLLAPSE,	OnNotifyItemCollapse)	//(_T("itemcollapse"))
 	DUI_ON_MSGTYPE(DUI_MSGTYPE_ITEMACTIVATE,	OnNotifyItemActivate)	//(_T("itemactivate"))
 	DUI_ON_MSGTYPE(DUI_MSGTYPE_VALUECHANGED,	OnNotifyValueChanged)	//(_T("valuechanged"))
-	DUI_ON_MSGTYPE(DUI_MSGTYPE_SELECTCHANGED,	OnNotifyitemse)	//(_T("selectchanged"))
+	DUI_ON_MSGTYPE(DUI_MSGTYPE_SELECTCHANGED,	OnNotifySelectChanged)	//(_T("selectchanged"))
 
 	DUI_ON_MSGTYPE(DUI_MSGTYPE_GRID_STARTEDIT,	OnNotityGridStartEdit)
 	DUI_ON_MSGTYPE(DUI_MSGTYPE_GRID_ENDEDIT,	OnNotityGridEndEdit)

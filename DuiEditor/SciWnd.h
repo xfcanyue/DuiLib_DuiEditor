@@ -32,7 +32,7 @@ public:
 	BOOL LoadFile(LPCTSTR szPath);
 	BOOL SaveFile(LPCTSTR szPath);
 
-	void InitXML(const tagXmlEditorOpt &opt);
+	void InitXML(const tagEditorConfig &opt);
 
 	BOOL OnParentNotify(SCNotification *pMsg);
 

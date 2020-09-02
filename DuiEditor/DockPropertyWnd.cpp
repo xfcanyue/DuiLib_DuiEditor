@@ -33,10 +33,8 @@ BEGIN_MESSAGE_MAP(CDockPropertyWnd, CDockablePane)
 	ON_COMMAND(ID_SORTPROPERTIES, OnSortProperties)
 	ON_UPDATE_COMMAND_UI(ID_SORTPROPERTIES, OnUpdateSortProperties)
 	ON_COMMAND(ID_PROPERTIES_FIND_TEXT, &CDockPropertyWnd::OnPropertiesFindText)
-	ON_COMMAND(ID_PROPERTIES_FIND_BUTTON, &CDockPropertyWnd::OnPropertiesFindButton)
+	ON_BN_CLICKED(ID_PROPERTIES_FIND_BUTTON, &CDockPropertyWnd::OnPropertiesFindButton)
 	ON_UPDATE_COMMAND_UI(ID_PROPERTIES_FIND_BUTTON, &CDockPropertyWnd::OnUpdatePropertiesFindButton)
-	ON_COMMAND(ID_PROPERTIES_FIND_BUTTON2, &CDockPropertyWnd::OnPropertiesFindButton2)
-	ON_UPDATE_COMMAND_UI(ID_PROPERTIES_FIND_BUTTON2, &CDockPropertyWnd::OnUpdatePropertiesFindButton2)
 	ON_EN_CHANGE(IDC_EDIT1, &CDockPropertyWnd::OnChangeEdit1)
 END_MESSAGE_MAP()
 
@@ -74,16 +72,18 @@ int CDockPropertyWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// 所有命令将通过此控件路由，而不是通过主框架路由:
 	m_wndToolBar.SetRouteCommandsViaFrame(FALSE);
 
-	const DWORD dwViewStyle = WS_CHILD | WS_VISIBLE | WS_BORDER | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+	const DWORD dwViewStyle = WS_CHILD | WS_VISIBLE | ES_MULTILINE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 	if (!m_wndFindText.Create(dwViewStyle, rectDummy, this, IDC_EDIT1))
 	{
 		TRACE0("未能创建属性组合 \n");
 		return -1;      // 未能创建
 	}
 	m_wndFindText.SetFont(&afxGlobalData.fontRegular);
+	m_wndFindText.EnableFolderBrowseButton();
+	m_wndFindText.SetImage();
 
-	//m_wndFind.Create(_T("1"), WS_CHILD|WS_VISIBLE, rectDummy, this, 1);
-	//m_wndFind.SetFont(&afxGlobalData.fontRegular);
+// 	m_btnFind.Create(_T(""), WS_CHILD | WS_VISIBLE| BS_PUSHBUTTON , rectDummy, this, ID_PROPERTIES_FIND_BUTTON);
+// 	m_btnFind.SetFont(&afxGlobalData.fontRegular);
 
 	SetPropListFont();
 	m_wndPropList.EnableHeaderCtrl(FALSE);
@@ -112,11 +112,26 @@ void CDockPropertyWnd::OnSize(UINT nType, int cx, int cy)
 	GetClientRect(rectClient);
 
 	int cyTlb = m_wndToolBar.CalcFixedLayout(FALSE, TRUE).cy;
-
 	m_wndToolBar.SetWindowPos(NULL, rectClient.left, rectClient.top, rectClient.Width(), cyTlb, SWP_NOACTIVATE | SWP_NOZORDER);
-	m_wndFindText.SetWindowPos(NULL, rectClient.left, rectClient.top + cyTlb, rectClient.Width(), cyTlb*2, SWP_NOACTIVATE | SWP_NOZORDER);
+	
+	int top = cyTlb;
+	m_wndFindText.SetWindowPos(NULL, rectClient.left, rectClient.top + cyTlb, rectClient.Width(), cyTlb, SWP_NOACTIVATE | SWP_NOZORDER);
 
-	//m_wndFind.SetWindowPos(NULL, rectClient.left, rectClient.top + cyTlb, rectClient.Width(), cyTlb*2, SWP_NOACTIVATE | SWP_NOZORDER);
+	CRect rc = CRect(0,0,0,0);
+	m_wndFindText.GetClientRect(&rc);
+	CDC* pDC = m_wndFindText.GetDC();
+	TEXTMETRIC tm;
+	pDC->GetTextMetrics(&tm);
+	int nFontHeight  = tm.tmHeight + tm.tmExternalLeading;
+	int nTopBottom  = (rc.Height() - nFontHeight) / 2;
+	int nLeftRight     = 5;
+	rc.DeflateRect(nLeftRight, nTopBottom);
+	m_wndFindText.SetRectNP(&rc);
+	ReleaseDC(pDC);
+
+//	int btnWidth = cyTlb;
+// 	m_btnFind.SetWindowPos(NULL, rectClient.right-btnWidth, top, btnWidth, btnWidth, SWP_NOACTIVATE | SWP_NOZORDER);
+// 	m_wndFindText.SetWindowPos(NULL, rectClient.left, top, rectClient.Width()-bthWidth, cyTlb+2, SWP_NOACTIVATE | SWP_NOZORDER);
 
 	m_wndPropList.SetWindowPos(NULL, rectClient.left, rectClient.top + cyTlb*2, rectClient.Width(), rectClient.Height()-cyTlb*2, 
 		SWP_NOACTIVATE | SWP_NOZORDER);
@@ -158,7 +173,12 @@ void CDockPropertyWnd::InitProp(xml_node TreeNode, LPCTSTR strFilter)
 	strText += TreeNode.name();
 	SetWindowText(strText);
 
-	m_wndPropList.m_strFilter = strFilter;
+	CString strFilterEx = strFilter;
+	if(strFilterEx.IsEmpty())
+		m_wndFindText.GetWindowText(strFilterEx);
+
+	m_wndPropList.m_strFilter = strFilterEx;
+	//m_wndPropList.m_strFilter = strFilter;
 	m_wndPropList.InitProp(TreeNode);
 	return;
 }
@@ -200,23 +220,16 @@ void CDockPropertyWnd::OnPropertiesFindText()
 
 void CDockPropertyWnd::OnPropertiesFindButton()
 {
-	// TODO: 在此添加命令处理程序代码
+	CString strFilter;
+	m_wndFindText.GetWindowText(strFilter);
+	if(strFilter.IsEmpty()) return;
+
+	m_wndFindText.SetWindowText(_T(""));
+	InitProp(m_wndPropList.m_TreeNode, NULL);
 }
 
 
 void CDockPropertyWnd::OnUpdatePropertiesFindButton(CCmdUI *pCmdUI)
-{
-	// TODO: 在此添加命令更新用户界面处理程序代码
-}
-
-
-void CDockPropertyWnd::OnPropertiesFindButton2()
-{
-	// TODO: 在此添加命令处理程序代码
-}
-
-
-void CDockPropertyWnd::OnUpdatePropertiesFindButton2(CCmdUI *pCmdUI)
 {
 	// TODO: 在此添加命令更新用户界面处理程序代码
 }

@@ -56,6 +56,7 @@ public:
 protected:
 	virtual void OnDraw(CDC* pDC);      // overridden to draw this view
 
+	virtual void OnActivateFrame(UINT nState, CFrameWnd* pDeactivateFrame);
 	virtual void OnActivateView(CView* pView);
 	virtual BOOL IsScrollBar() const { return FALSE; }
 

@@ -200,6 +200,7 @@
     <None Include="res\DuiPlugins.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ComboEditWnd.cpp" />
     <ClCompile Include="ComboExUI.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
@@ -234,6 +235,7 @@
     <ClCompile Include="UIDataExchange.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ComboEditWnd.h" />
     <ClInclude Include="ComboExUI.h" />
     <ClInclude Include="GridCtrlUI.h" />
     <ClInclude Include="GridCtrlWnd.h" />

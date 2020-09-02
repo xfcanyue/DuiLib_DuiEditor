@@ -37,12 +37,12 @@ namespace DuiLib
 		virtual LPCTSTR GetStateImage();
 		virtual void SetStateImage(LPCTSTR pStrImage);
 
-		void BindTabIndex(int _BindTabIndex);
-		void BindTabLayoutName(LPCTSTR _TabLayoutName);
-		void BindTriggerTabSel(int _SetSelectIndex = -1);
-		void RemoveBindTabIndex();
-		int	 GetBindTabLayoutIndex();
-		LPCTSTR GetBindTabLayoutName();
+		virtual void BindTabIndex(int _BindTabIndex);
+		virtual void BindTabLayoutName(LPCTSTR _TabLayoutName);
+		virtual void BindTriggerTabSel(int _SetSelectIndex = -1);
+		virtual void RemoveBindTabIndex();
+		virtual int	 GetBindTabLayoutIndex();
+		virtual LPCTSTR GetBindTabLayoutName();
 
 		void SetHotFont(int index);
 		int GetHotFont() const;

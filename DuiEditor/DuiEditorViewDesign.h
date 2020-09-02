@@ -41,6 +41,7 @@ protected:
 	virtual void OnDraw(CDC* pDC);  // 重写以绘制该视图
 	virtual void OnInitialUpdate(); // 构造后第一次调用
 
+	void ShowShadowUI(CDuiEditorViewDesign *pView, BOOL bShow);
 // 实现
 public:
 	virtual ~CDuiEditorViewDesign();
@@ -55,6 +56,7 @@ public:
 	afx_msg void OnDestroy();
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg LRESULT OnInitViewDesign(WPARAM WParam, LPARAM LParam);
+	virtual void OnActivateFrame(UINT nState, CFrameWnd* pDeactivateFrame);
 	virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 

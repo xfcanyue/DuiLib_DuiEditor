@@ -51,7 +51,7 @@ namespace DuiLib
 
 		LPCTSTR GetGroup() const;
 		void SetGroup(LPCTSTR pStrGroupName = NULL);
-		bool IsSelected() const;
+		virtual bool IsSelected() const;
 		virtual void Selected(bool bSelected, bool bTriggerEvent=true);
 
 		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);

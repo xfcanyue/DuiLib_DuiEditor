@@ -105,23 +105,5 @@ private:
 	CWnd *m_pWnd;
 };
 
-
-//XML编辑器的设置参数
-struct tagXmlEditorOpt 
-{
-	tagXmlEditorOpt()
-	{
-		strEditorFontName = _T("Courier New");
-		nEditorFontSize = 14;
-		nEditorLineSpace = 1;
-		crEditorBkColor = RGB(255,255,255);
-		crEditorSelBkColor = RGB(0xA0,0xCA,0xF0);
-		crEditorCaretLineBkColor = RGB(215,215,247);
-	}
-	CString strEditorFontName;
-	int		nEditorFontSize;
-	int		nEditorLineSpace;
-	COLORREF crEditorBkColor;
-	COLORREF crEditorSelBkColor;
-	COLORREF crEditorCaretLineBkColor;
-};
+#include "EditorConfig.h"
+extern tagEditorConfig g_cfg;

@@ -188,6 +188,7 @@
   <ItemGroup>
     <None Include="DuiEditor.reg" />
     <None Include="ReadMe.txt" />
+    <None Include="res\00290.bmp" />
     <None Include="res\bmp00001.bmp" />
     <None Include="res\bmp00002.bmp" />
     <None Include="res\bmp00003.bmp" />
@@ -199,6 +200,8 @@
     <None Include="res\DuiEditor.rc2" />
     <None Include="res\DuiEditorDoc.ico" />
     <None Include="res\file_view.ico" />
+    <None Include="res\ico_close.ico" />
+    <None Include="res\ico_stop.ico" />
     <None Include="res\movehandle.bmp" />
     <None Include="res\project.ico" />
     <None Include="res\properties.bmp" />
@@ -267,6 +270,8 @@
     <ClInclude Include="DuiEditorCommandHistory.h" />
     <ClInclude Include="DuiEditorTabView.h" />
     <ClInclude Include="DuiProject.h" />
+    <ClInclude Include="EditorConfig.h" />
+    <ClInclude Include="EditSearchCtrl.h" />
     <ClInclude Include="ImageEditor.h" />
     <ClInclude Include="ImageEditorFrame.h" />
     <ClInclude Include="ImageEditorTreeWnd.h" />
@@ -330,6 +335,7 @@
     <ClCompile Include="DuiEditorCommandHistory.cpp" />
     <ClCompile Include="DuiEditorTabView.cpp" />
     <ClCompile Include="DuiProject.cpp" />
+    <ClCompile Include="EditSearchCtrl.cpp" />
     <ClCompile Include="ImageEditor.cpp" />
     <ClCompile Include="ImageEditorFrame.cpp" />
     <ClCompile Include="ImageEditorTreeWnd.cpp" />

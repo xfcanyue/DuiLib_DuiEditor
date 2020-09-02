@@ -66,7 +66,7 @@ int CDuiEditorViewCode::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		AfxMessageBox(_T("create SciLexer window error."));
 		return -1;      // Î´ÄÜ´´½¨
 	}
-	sci.InitXML(g_xmlEditorOptions);
+	sci.InitXML(g_cfg);
 	sci.sci_ClearTextAll();
 
 	return 0;

@@ -1,5 +1,6 @@
 #pragma once
 #include "UIPropertyGridCtrl.h"
+#include "EditSearchCtrl.h"
 
 // CPropertyWnd
 
@@ -23,9 +24,8 @@ public:
 
 	CFont m_fntPropList;
 	CPropertiesToolBar m_wndToolBar;
-	CEdit m_wndFindText;
-// 	CButton m_wndFind;
-// 	CButton m_wndFindEnd;
+	CEditSearchCtrl m_wndFindText;
+//	CButton m_btnFind;
 	CUIPropertyGridCtrl m_wndPropList;
 
 	void SetPropListFont();
@@ -44,8 +44,6 @@ public:
 	afx_msg void OnPropertiesFindText();
 	afx_msg void OnPropertiesFindButton();
 	afx_msg void OnUpdatePropertiesFindButton(CCmdUI *pCmdUI);
-	afx_msg void OnPropertiesFindButton2();
-	afx_msg void OnUpdatePropertiesFindButton2(CCmdUI *pCmdUI);
 	afx_msg void OnChangeEdit1();
 };
 

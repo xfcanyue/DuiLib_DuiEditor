@@ -27,6 +27,8 @@ public:
 
 	BOOL SelectItem(xml_node node);
 	BOOL SelectItem(CControlUI *pControl);
+// 	BOOL SetControlCaretPos(xml_node node);
+// 	BOOL SetControlCaretPos(CControlUI *pControl);
 
 	BOOL UpdateControlPos(xml_node node, CRect rect, BOOL bUpdateWithHeight=TRUE);
 	BOOL UpdateControlWidth(xml_node node, int width);

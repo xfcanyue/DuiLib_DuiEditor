@@ -21,6 +21,7 @@ public:
 // 操作
 public:
 	void FilterDefaultValue(xml_node nodeDoc);	//过滤文档默认属性
+	void FilterPosWidthHeight(xml_node nodeDoc);
 	CDockControlTreeCtrl *GetTreeView() { return m_pTreeView; }
 	CDockXmlView *GetXmlPane() const { return m_pSciWnd; }
 	CDuiEditorViewDesign *GetDesignView() const;

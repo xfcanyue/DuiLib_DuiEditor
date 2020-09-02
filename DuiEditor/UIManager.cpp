@@ -76,21 +76,48 @@ BOOL CUIManager::SelectItem(CControlUI *pControl)
 		pParent = pParent->GetParent();
 	}
 
-	if(pControl)
+	//判断当前按钮是否绑定了TabLayout 和 BindTabIndex
+	if(pControl->GetInterface(DUI_CTR_BUTTON))
 	{
-		GetUiTracker()->RemoveAll();
-		GetUiTracker()->Add(xml_node((xml_node_struct *)pControl->GetTag()), pControl->GetPos());
-		GetUiWindow()->Invalidate();
-		return TRUE;
+		CButtonUI *pButton = static_cast<CButtonUI*>(pControl->GetInterface(DUI_CTR_BUTTON));
+		CString strTabLayoutName = pButton->GetBindTabLayoutName();
+		int nBindIndex = pButton->GetBindTabLayoutIndex();
+		if(!strTabLayoutName.IsEmpty() && nBindIndex >= 0)
+		{
+			CTabLayoutUI *pTabLayout = dynamic_cast<CTabLayoutUI *>(GetManager()->FindControl(strTabLayoutName));
+			if(pTabLayout)
+			{
+				pTabLayout->SelectItem(nBindIndex);
+			}
+		}
 	}
 
-	GetUiTracker()->RemoveAll();
-	//m_pUiWindow->m_tracker.Add(xml_node((xml_node_struct *)m_pFormUI->GetTag()), m_pFormUI->GetPos());
-
-	m_pUiWindow->Invalidate();
-	return FALSE;
+	if(::GetKeyState(VK_CONTROL)>=0) GetUiTracker()->RemoveAll();
+	GetUiTracker()->Add(xml_node((xml_node_struct *)pControl->GetTag()), pControl->GetPos());
+	GetUiWindow()->Invalidate();
+	return TRUE;
+}
+/*
+BOOL CUIManager::SetControlCaretPos(xml_node node)
+{
+	CControlUI *pControlUI = (CControlUI *)node.get_tag();
+	if(!pControlUI)	return FALSE;
+	return SetControlCaretPos(pControlUI);
 }
 
+BOOL CUIManager::SetControlCaretPos(CControlUI *pControl)
+{
+	if(!pControl)	return FALSE;
+	if(!GetView()) return FALSE;
+	GetView()->SetFocus();
+
+	//设置键盘输入光标位置, 选中控件时，直接键盘输入设置text属性
+	CRect rcFocusControl = pControl->GetPos();
+	BOOL b = ::SetCaretPos(rcFocusControl.left, rcFocusControl.bottom);
+	if(!b) InsertMsg(_T("::SetCaretPos failed."));
+	return b;
+}
+*/
 BOOL CUIManager::UpdateControlUI(CControlUI *pControl)
 {
 	xml_node nodeControl((xml_node_struct *)pControl->GetTag());
@@ -359,9 +386,8 @@ BOOL CUIManager::UpdateControlUI(xml_node node, xml_attribute attr)
 		}
 		else if(_tcscmp(attr.name(), _T("pos")) == 0)
 		{
-			BOOL bUpdateSizeWhenModifyPos = AfxGetApp()->GetProfileInt(_T("Options"), _T("UpdateSizeWhenModifyPos"), 1);
 			CDuiRect rc(attr.value());
-			return UpdateControlPos(node, rc, bUpdateSizeWhenModifyPos);
+			return UpdateControlPos(node, rc, TRUE);
 		}
 		else if(_tcscmp(attr.name(), _T("width")) == 0)
 		{

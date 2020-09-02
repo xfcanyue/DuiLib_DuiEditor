@@ -118,3 +118,17 @@ UILIB_PLUGIN_API void InsertMsgUI(LPCTSTR pstring, COLORREF cr)
 {
 	CMsgWndUI::InsertMsg(pstring, cr);
 }
+
+UILIB_PLUGIN_API void InsertMsgUiV(LPCTSTR lpszFormat, ...)
+{
+	ASSERT(AfxIsValidString(lpszFormat));
+
+	CString strText;
+
+	va_list argList;
+	va_start(argList, lpszFormat);
+	strText.FormatV(lpszFormat, argList);
+	va_end(argList);
+
+	CMsgWndUI::InsertMsg(strText, RGB(0,0,0));
+}

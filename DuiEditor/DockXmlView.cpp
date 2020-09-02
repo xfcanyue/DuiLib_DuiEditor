@@ -69,7 +69,7 @@ int CDockXmlView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		AfxMessageBox(_T("create SciLexer window error."));
 		return NULL;      // Î´ÄÜ´´½¨
 	}
-	sci.InitXML(g_xmlEditorOptions);
+	sci.InitXML(g_cfg);
 	sci.sci_UsePopup(FALSE);
 	sci.sci_ClearTextAll();
 

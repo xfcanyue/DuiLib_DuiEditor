@@ -22,7 +22,8 @@ namespace DuiLib {
 		void DoInit();
 		UINT GetControlFlags() const;
 
-		virtual CDuiString GetText() const;
+		//modify by liqs99
+		//virtual CDuiString GetText() const;
 		void SetEnabled(bool bEnable = true);
 
 		void SetTextStyle(UINT uStyle);

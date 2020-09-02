@@ -146,15 +146,20 @@ namespace DuiLib {
 			if( pDefaultAttributes ) {
 				m_pLayout->ApplyAttributeList(pDefaultAttributes);
 			}
-			m_pLayout->SetInset(CDuiRect(1, 1, 1, 1));
+			m_pLayout->SetInset(CDuiRect(2, 1, 2, 1));
 			m_pLayout->SetBkColor(0xFFFFFFFF);
 			m_pLayout->SetBorderColor(0xFFC6C7D2);
 			m_pLayout->SetBorderSize(1);
 			m_pLayout->SetAutoDestroy(false);
 			m_pLayout->EnableScrollBar();
 			m_pLayout->ApplyAttributeList(m_pOwner->GetDropBoxAttributeList());
+			RECT rcOwner = m_pOwner->GetPos(); //modify by liqs99
 			for( int i = 0; i < m_pOwner->GetCount(); i++ ) {
-				m_pLayout->Add(static_cast<CControlUI*>(m_pOwner->GetItemAt(i)));
+				//modify by liqs99, set child control to owner's width
+				CControlUI *pControl = static_cast<CControlUI*>(m_pOwner->GetItemAt(i));
+				pControl->SetFixedWidth(rcOwner.right - rcOwner.left);
+				m_pLayout->Add(pControl);
+				//m_pLayout->Add(static_cast<CControlUI*>(m_pOwner->GetItemAt(i)));
 			}
 			CShadowUI *pShadow = m_pOwner->GetManager()->GetShadow();
 			pShadow->CopyShadow(m_pm.GetShadow());
@@ -356,6 +361,9 @@ namespace DuiLib {
 		pListItem->Select(true);
 		if( m_pManager != NULL ) m_pManager->SendNotify(this, DUI_MSGTYPE_ITEMSELECT, m_iCurSel, iOldSel);
 		Invalidate();
+
+		//modify by liqs99
+		SetText(pControl->GetText());
 
 		return true;
 	}
@@ -588,12 +596,14 @@ namespace DuiLib {
 		return true;
 	}
 
-	CDuiString CComboUI::GetText() const
-	{
-		if( m_iCurSel < 0 ) return _T("");
-		CControlUI* pControl = static_cast<CControlUI*>(m_items[m_iCurSel]);
-		return pControl->GetText();
-	}
+
+	//modify by liqs99
+// 	CDuiString CComboUI::GetText() const
+// 	{
+// 		if( m_iCurSel < 0 ) return _T("");
+// 		CControlUI* pControl = static_cast<CControlUI*>(m_items[m_iCurSel]);
+// 		return pControl->GetText();
+// 	}
 
 	void CComboUI::SetEnabled(bool bEnable)
 	{

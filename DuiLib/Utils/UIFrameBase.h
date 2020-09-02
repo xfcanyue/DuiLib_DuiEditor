@@ -51,7 +51,7 @@ public:
 	virtual void OnNotifyItemCollapse(TNotifyUI& msg) {}
 	virtual void OnNotifyItemActivate(TNotifyUI& msg) {}
 	virtual void OnNotifyValueChanged(TNotifyUI& msg) {}
-	virtual void OnNotifyitemse(TNotifyUI& msg) {}
+	virtual void OnNotifySelectChanged(TNotifyUI& msg) {}
 
 	virtual void OnNotityGridStartEdit(TNotifyUI &msg) {}
 	virtual void OnNotityGridEndEdit(TNotifyUI &msg) {}

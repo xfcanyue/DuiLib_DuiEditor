@@ -235,8 +235,14 @@ void CDuiEditorTabView::OnInitialUpdate()
 	OnChangedActiveTab(m_nFirstActiveTab, 0);
 }
 
+void CDuiEditorTabView::OnActivateFrame(UINT nState, CFrameWnd* pDeactivateFrame)
+{
+	//InsertMsg(_T("CDuiEditorTabView::OnActivateFrame"));
+}
+
 void CDuiEditorTabView::OnActivateView(CView* pView)
 {
+	//InsertMsg(_T("CDuiEditorTabView::OnActivateView"));
 	if(pView == m_pFormCode)
 	{
 		//InsertMsg(_T("active view code"));

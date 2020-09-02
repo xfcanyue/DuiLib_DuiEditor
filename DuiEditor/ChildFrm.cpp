@@ -65,10 +65,41 @@ void CChildFrame::OnMDIActivate(BOOL bActivate, CWnd* pActivateWnd, CWnd* pDeact
 	CMDIChildWndEx::OnMDIActivate(bActivate, pActivateWnd, pDeactivateWnd);
 
 	// TODO: 在此处添加消息处理程序代码
-	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
-	CDuiEditorDoc* pDoc = (CDuiEditorDoc *)GetActiveDocument();
-	pMain->m_wndControl.SetActiveTreeView(pDoc->GetTreeView());
-	pMain->m_wndDockXml.SetActiveSciWnd(pDoc->GetXmlPane());
+	if(bActivate)
+	{
+		CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
+		CDuiEditorDoc* pDoc = (CDuiEditorDoc *)GetActiveDocument();
+		pMain->m_wndControl.SetActiveTreeView(pDoc->GetTreeView());
+		pMain->m_wndDockXml.SetActiveSciWnd(pDoc->GetXmlPane());
+	}
+
+/*	
+	CChildFrame *pChildFrame = DYNAMIC_DOWNCAST(CChildFrame, pActivateWnd);
+	if(!pChildFrame) return;
+	CDuiEditorViewDesign *pVeiw = DYNAMIC_DOWNCAST(CDuiEditorViewDesign, pChildFrame->GetActiveView());
+	if(!pVeiw) return;
+	
+	if(pVeiw->m_Manager.GetUiWindow() && pVeiw->m_Manager.GetUiWindow()->GetSafeHwnd())
+	{
+		CShadowUI *pShadowUI = pVeiw->m_Manager.GetManager()->GetShadow();
+		if(bActivate)
+		{
+			if(pShadowUI->IsShowShadow() && pShadowUI->IsDisableShadow() )
+			{
+				pShadowUI->DisableShadow(false);
+			}
+		}
+		else
+		{
+			if(pShadowUI->IsShowShadow() && !pShadowUI->IsDisableShadow() )
+			{
+				pShadowUI->DisableShadow(true);
+			}
+		}
+	}
+*/	
+	
+// 	InsertMsg(_T("CChildFrame::OnMDIActivate"));
 }
 
 

@@ -28,13 +28,7 @@ AFX_STATIC_DATA const TCHAR _afxPreviewSection[] = _T("Settings");
 AFX_STATIC_DATA const TCHAR _afxPreviewEntry[] = _T("PreviewPages");
 
 CDuiProject g_proj;
-
 CString g_strAppPath;
-CString g_strAttachTestCommand;		//¸½¼Ó²âÊÔ´°Ìå³ÌÐò
-COLORREF g_crBkDesign = 0xFFFFFFFF;
-
-tagXmlEditorOpt g_xmlEditorOptions;
-
 CDuiPropertyFile g_duiProp;
 HWND g_hWndMsg = NULL;
 
@@ -153,15 +147,7 @@ BOOL CDuiEditorApp::InitInstance()
 		return FALSE;
 	}
 
-	g_strAttachTestCommand = AfxGetApp()->GetProfileString(_T("Options"), _T("TestCommand"), _T(""));
-	g_crBkDesign = AfxGetApp()->GetProfileInt(_T("Options"), _T("DegsignBackColor"), RGB(255,255,255));
-	
-	g_xmlEditorOptions.strEditorFontName	= AfxGetApp()->GetProfileString(_T("Options"), _T("EditorFontName"), _T("Courier New"));
-	g_xmlEditorOptions.nEditorFontSize		= AfxGetApp()->GetProfileInt(_T("Options"), _T("EditorFontSize"), 14);
-	g_xmlEditorOptions.nEditorLineSpace		= AfxGetApp()->GetProfileInt(_T("Options"), _T("EditorLineSpace"), 1);
-	g_xmlEditorOptions.crEditorBkColor		= AfxGetApp()->GetProfileInt(_T("Options"), _T("EditorBkColor"), RGB(255,255,255));
-	g_xmlEditorOptions.crEditorSelBkColor	= AfxGetApp()->GetProfileInt(_T("Options"), _T("EditorSelBkColor"), RGB(0xA0,0xCA,0xF0));
-	g_xmlEditorOptions.crEditorCaretLineBkColor = AfxGetApp()->GetProfileInt(_T("Options"), _T("EditorCaretLineBkColor"), RGB(215,215,247));
+	g_cfg.LoadConfig(g_strAppPath + _T("DuiEditor.xml"));
 
 #ifndef DUILIB_VERSION_ORIGINAL
 

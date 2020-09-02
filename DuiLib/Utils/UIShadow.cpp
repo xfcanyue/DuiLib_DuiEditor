@@ -81,7 +81,7 @@ void CShadowUI::Create(CPaintManagerUI* pPaintManager)
 	// Create the shadow window
 	LONG styleValue = lParentStyle & WS_CAPTION;
 	m_hWnd = CreateWindowEx(WS_EX_LAYERED | WS_EX_TRANSPARENT, strWndClassName, NULL,
-		/*WS_VISIBLE | */styleValue | WS_POPUPWINDOW,
+		/*WS_VISIBLE | */styleValue,// | WS_POPUPWINDOW,
 		CW_USEDEFAULT, 0, 0, 0, hParentWnd, NULL, CPaintManagerUI::GetInstance(), NULL);
 
 	if(!(WS_VISIBLE & lParentStyle))	// Parent invisible

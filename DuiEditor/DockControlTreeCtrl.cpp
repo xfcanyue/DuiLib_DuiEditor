@@ -81,7 +81,7 @@ void CDockControlTreeCtrl::InitTreeContent()
 	int type = CDuiPropertyFile::GetControlIconIndex(root);
 	SetItemImage(hRootItem, type, type);
 
-	m_nMaxDeep = AfxGetApp()->GetProfileInt(_T("Options"), _T("TreeDeep"), 3);
+	m_nMaxDeep = g_cfg.nControlTreeDeep;
 	m_nCurrentDeep = 0;
 	OpenXmlDocument(root, hRootItem);
 
@@ -250,6 +250,7 @@ void CDockControlTreeCtrl::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 		g_pPropWnd->InitProp(node);
 
 		m_pManager->SelectItem(node);
+		//m_pManager->SetControlCaretPos(node);
 		m_pManager->GetXmlPane()->SelectXmlNode(node);
 	}
 }

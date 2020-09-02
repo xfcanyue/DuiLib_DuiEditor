@@ -16,13 +16,14 @@ namespace DuiLib
 		LPVOID GetInterface(LPCTSTR pstrName);
 
 		bool Activate();
+		virtual bool IsSelected() const;
 
-		void BindTabIndex(int _BindTabIndex);
-		void BindTabLayoutName(LPCTSTR _TabLayoutName);
-		void BindTriggerTabSel(int _SetSelectIndex = -1);
-		void RemoveBindTabIndex();
-		int	 GetBindTabLayoutIndex();
-		LPCTSTR GetBindTabLayoutName();
+		virtual void BindTabIndex(int _BindTabIndex);
+		virtual void BindTabLayoutName(LPCTSTR _TabLayoutName);
+		virtual void BindTriggerTabSel(int _SetSelectIndex = -1);
+		virtual void RemoveBindTabIndex();
+		virtual int	 GetBindTabLayoutIndex();
+		virtual LPCTSTR GetBindTabLayoutName();
 
 		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 

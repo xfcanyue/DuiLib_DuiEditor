@@ -201,6 +201,10 @@ void CDuiEditorViewDesign::InitView()
 	m_Manager.GetXmlPane()->m_pManager = &m_Manager;
 	m_Manager.GetXmlPane()->Init();
 
+	if(!g_cfg.bDesignerShowShadow)
+	{
+		m_Manager.GetManager()->GetShadow()->DisableShadow(true);
+	}
 	//((CMainFrame *)AfxGetMainWnd())->ShowAllPane();
 }
 
@@ -253,7 +257,7 @@ BOOL CDuiEditorViewDesign::OnEraseBkgnd(CDC* pDC)
 			rc.SetRect(rcUiWnd.Width(), 0, rectClient.Width(), rectClient.Height());
 
 
-		pDC->FillSolidRect(rc, g_crBkDesign);
+		pDC->FillSolidRect(rc, g_cfg.crDesignerBkColor);
 	}
 
 	if(rectClient.Height() - rcUiWnd.Height())	//刷新UI窗口下边的空白区域
@@ -264,16 +268,16 @@ BOOL CDuiEditorViewDesign::OnEraseBkgnd(CDC* pDC)
 		else
 			rc.SetRect(0, rcUiWnd.Height(), rectClient.Width(), rectClient.Height());
 
-		pDC->FillSolidRect(rc, g_crBkDesign);
+		pDC->FillSolidRect(rc, g_cfg.crDesignerBkColor);
 	}
 
 	if(m_bViewRuleBar)
 	{
 		CRect rc1(0,0, rectClient.Width(), RULEBAR_SIZE_Y);
-		pDC->FillSolidRect(rc1,g_crBkDesign);
+		pDC->FillSolidRect(rc1,g_cfg.crDesignerBkColor);
 
 		CRect rc2(0,0, RULEBAR_SIZE_Y, rectClient.Height());
-		pDC->FillSolidRect(rc2,g_crBkDesign);
+		pDC->FillSolidRect(rc2,g_cfg.crDesignerBkColor);
 
 		for (int i=0; i<=200; i++)
 		{
@@ -301,8 +305,41 @@ LRESULT CDuiEditorViewDesign::OnInitViewDesign(WPARAM WParam, LPARAM LParam)
 	return 0;
 }
 
+void CDuiEditorViewDesign::ShowShadowUI(CDuiEditorViewDesign *pView, BOOL bShow)
+{
+// 	CString temp;
+// 	temp.Format(_T("%s, show=%s"), pView->GetDocument()->GetSkinFileName(), bShow?_T("是"):_T("否"));
+// 	InsertMsg(temp);
+
+// 	if(pView->m_Manager.m_pUiWindow && m_Manager.m_pUiWindow->GetSafeHwnd())
+// 	{
+// 		CShadowUI *pShadowUI = pView->m_Manager.GetManager()->GetShadow();
+// 		if(bShow)
+// 		{
+// 			if(pShadowUI->IsShowShadow() && pShadowUI->IsDisableShadow() )
+// 			{
+// 				pShadowUI->DisableShadow(false);
+// 			}
+// 		}
+// 		else
+// 		{
+// 			if(pShadowUI->IsShowShadow() && !pShadowUI->IsDisableShadow() )
+// 			{
+// 				pShadowUI->DisableShadow(true);
+// 			}
+// 		}
+// 	}
+}
+
+void CDuiEditorViewDesign::OnActivateFrame(UINT nState, CFrameWnd* pDeactivateFrame)
+{
+	//InsertMsg(_T("CDuiEditorViewDesign::OnActivateFrame"));
+}
+
 void CDuiEditorViewDesign::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView)
 {
+	//InsertMsg(_T("OnActivateDesign"));
+
 	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
 
 	if(bActivate && pActivateView==this && pDeactiveView!=this)
@@ -311,14 +348,20 @@ void CDuiEditorViewDesign::OnActivateView(BOOL bActivate, CView* pActivateView, 
 		pMain->m_wndDockXml.SetActiveSciWnd(m_Manager.GetXmlPane());
 		pMain->ShowAllPane();
 
-		//InsertMsg(_T("OnActivateDesign"));
-
 		//主要是为了更新DuiLib的窗口阴影
 		if(m_Manager.m_pUiWindow && m_Manager.m_pUiWindow->GetSafeHwnd())
 		{
 			::PostMessage(m_Manager.m_pUiWindow->GetSafeHwnd(), WM_SHOWWINDOW, bActivate, 0);
 		}
 	}
+
+// 	CString temp;
+// 	temp.Format(_T("%s, show=%s"), GetDocument()->GetSkinFileName(), bActivate?_T("是"):_T("否"));
+// 	InsertMsg(temp);
+
+// 	CDuiEditorViewDesign *pView = DYNAMIC_DOWNCAST(CDuiEditorViewDesign, pActivateView);
+// 	if(!pView) return;
+// 	ShowShadowUI(pView, bActivate);
 
 	CScrollView::OnActivateView(bActivate, pActivateView, pDeactiveView);
 }
@@ -331,6 +374,13 @@ void CDuiEditorViewDesign::OnLButtonDown(UINT nFlags, CPoint pt)
 	m_Manager.SelectItem(node);
 	m_Manager.GetTreeView()->SelectXmlNode(node);
 	m_Manager.GetXmlPane()->SelectXmlNode(node);
+
+	//切换左边控件树
+	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
+	if(!pMain->m_wndControl.IsPaneVisible())
+	{
+		pMain->m_wndControl.ShowPane(TRUE, TRUE, TRUE);
+	}
 }
 
 void CDuiEditorViewDesign::OnEditCut()
@@ -1027,10 +1077,6 @@ void CDuiEditorViewDesign::OnSize(UINT nType, int cx, int cy)
 	CScrollView::OnSize(nType, cx, cy);
 
 	// TODO: 在此处添加消息处理程序代码
-// 	if(m_Manager.GetManager())
-// 	{
-// 		m_Manager.GetUiWindow()->SendMessage(WM_SIZE);
-// 	}
 }
 
 

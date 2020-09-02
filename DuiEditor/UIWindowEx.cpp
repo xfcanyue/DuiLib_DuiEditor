@@ -585,7 +585,6 @@ LRESULT CUIWindowEx::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 	{
 		pMain->m_wndControl.ShowPane(TRUE, TRUE, TRUE);
 	}
-// 	pMain->m_wndControl.SetActiveTreeView(m_pManager->GetTreeView());
 
 	if(m_pManager->GetView()->m_bShowUiPreview)
 	{
@@ -640,18 +639,27 @@ LRESULT CUIWindowEx::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 
 	int nHit = m_tracker.HitTest(pt);
 	m_tracker.m_nHitTest = nHit;
-	if(::GetKeyState(VK_CONTROL)>=0  && nHit==CUITracker::hitNothing)
-		m_tracker.RemoveAll();
+// 	if(::GetKeyState(VK_CONTROL)>=0  && nHit==CUITracker::hitNothing)
+// 		m_tracker.RemoveAll();
 	if(nHit==CUITracker::hitNothing)
 	{
-		m_tracker.Add(nodeClick, pControl->GetPos());
+// 		if(::GetKeyState(VK_CONTROL)>=0)
+// 			m_tracker.RemoveAll();
+// 		m_tracker.Add(nodeClick, pControl->GetPos());
+
+		m_pManager->SelectItem(nodeClick);
 		m_pManager->GetTreeView()->SelectXmlNode(nodeClick);
 		m_pManager->GetXmlPane()->SelectXmlNode(nodeClick);
 	}
 	else
+	{
 		m_tracker.SetFocus(nodeClick);
+		m_pManager->SelectItem(nodeClick);
+		m_pManager->GetTreeView()->SelectXmlNode(nodeClick);
+		m_pManager->GetXmlPane()->SelectXmlNode(nodeClick);
+	}
 
-	//设置键盘输入光标位置
+	//设置键盘输入光标位置, 选中控件时，直接键盘输入设置text属性
  	CControlUI *pFocusControl = (CControlUI *)m_tracker.m_pFocused->m_node.get_tag();
  	if(pFocusControl)
  	{

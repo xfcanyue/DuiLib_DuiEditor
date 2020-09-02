@@ -58,7 +58,7 @@ BOOL CThreadTest::InitInstance()
 	}
 	else
 	{
-		strCmd = g_strAttachTestCommand;
+		strCmd = g_cfg.strAttachTestCommand;
 	}
 
 	InsertMsg(_T("command: " + strCmd));

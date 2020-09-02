@@ -147,31 +147,31 @@ BOOL CSciWnd::SaveFile(LPCTSTR szPath)
 	return TRUE;
 }
 
-void CSciWnd::InitXML(const tagXmlEditorOpt &opt)
+void CSciWnd::InitXML(const tagEditorConfig &opt)
 {
 	sci_SetLexer(SCLEX_XML);		//设定词法解析器
 	sci_SetCodePage(SC_CP_UTF8);	//编码	
 
 	LSSTRING_CONVERSION;
 
-	SendEditor(SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)LST2UTF8(opt.strEditorFontName));//(LPARAM)"Courier New");//"微软雅黑");
-	sci_StyleSetSize(STYLE_DEFAULT, opt.nEditorFontSize);//14);
+	SendEditor(SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)LST2UTF8(opt.strXmlFontName));//(LPARAM)"Courier New");//"微软雅黑");
+	sci_StyleSetSize(STYLE_DEFAULT, opt.nXmlFontSize);//14);
 	sci_StyleSetFore(STYLE_DEFAULT,RGB(0,0,0));
 
-	sci_StyleSetBack(STYLE_DEFAULT, opt.crEditorBkColor);
-	sci_StyleSetBack(STYLE_LINENUMBER, opt.crEditorBkColor);
-	sci_StyleSetBack(STYLE_INDENTGUIDE, opt.crEditorBkColor);
+	sci_StyleSetBack(STYLE_DEFAULT, opt.crXmlBkColor);
+	sci_StyleSetBack(STYLE_LINENUMBER, opt.crXmlBkColor);
+	sci_StyleSetBack(STYLE_INDENTGUIDE, opt.crXmlBkColor);
 
 	for (int i = SCE_H_DEFAULT; i <= SCE_HPHP_OPERATOR; i++)
 	{
-		sci_StyleSetBack(i,	opt.crEditorBkColor);
+		sci_StyleSetBack(i,	opt.crXmlBkColor);
 	}
 
 	//设置选中文本背景色
-	sci_SetSelBack(STYLE_DEFAULT, opt.crEditorSelBkColor);//RGB(0xA0,0xCA,0xF0));
+	sci_SetSelBack(STYLE_DEFAULT, opt.crXmlSelBkColor);//RGB(0xA0,0xCA,0xF0));
 
-	sci_SetExtraDescent(opt.nEditorLineSpace);
-	sci_SetExtraAscent(opt.nEditorLineSpace);
+	sci_SetExtraDescent(opt.nXmlLineSpace);
+	sci_SetExtraAscent(opt.nXmlLineSpace);
 
 	//XML
 	COLORREF crfComment = RGB(0,150,0);
@@ -256,7 +256,7 @@ void CSciWnd::InitXML(const tagXmlEditorOpt &opt)
 
 	//当前行高亮显示
 	sci_SetCaretLineVisible(TRUE);
-	sci_SetCaretLineBack(opt.crEditorCaretLineBkColor);//RGB(215,215,247));
+	sci_SetCaretLineBack(opt.crXmlCaretLineBkColor);//RGB(215,215,247));
 
 	//自动调整滚动条宽度
 	sci_SetScrollWidthTracking(TRUE);

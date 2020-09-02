@@ -205,6 +205,7 @@ BOOL CDuiEditorDoc::OnSaveDocument(LPCTSTR lpszPathName)
 	//过滤默认属性
 	xml_node root = m_doc.root().child(_T("Window"));
 	FilterDefaultValue(root);
+	FilterPosWidthHeight(root);
 
 	//创建一个拷贝, 然后保存拷贝
 	xml_document doc;
@@ -335,7 +336,6 @@ void CDuiEditorDoc::FilterDefaultValue(xml_node nodeDoc)
 				nodeDoc.remove_attribute(attr);
 			}
 		}
-
 	}
 
 	for (pugi::xml_node node = nodeDoc.first_child(); node; node = node.next_sibling())
@@ -344,6 +344,39 @@ void CDuiEditorDoc::FilterDefaultValue(xml_node nodeDoc)
 	}
 }
 
+void CDuiEditorDoc::FilterPosWidthHeight(xml_node nodeDoc)
+{
+	if(!g_cfg.bFilterPosWidthHeight) return;
+
+	//float控件不处理
+	if(!nodeDoc.attribute(_T("float")).as_bool())
+	{
+		//如果没有pos属性，不处理。
+		xml_attribute attrPos = nodeDoc.attribute(_T("pos"));
+		if(attrPos) 
+		{
+			xml_attribute attrWidth = nodeDoc.attribute(_T("width"));
+			xml_attribute attrHeight = nodeDoc.attribute(_T("height"));
+
+			//pos属性无法转换成rect，不处理
+			CDuiRect rc;
+			if(rc.FromString(attrPos.as_string()))
+			{
+				//pos属性的大小 不等于 width或height属性，不处理。 因为手写的同学可能写错了，不要擅自处理。
+				if(rc.GetWidth() == attrWidth.as_int() && rc.GetHeight() == attrHeight.as_int())
+				{
+					//好了，把pos属性去掉吧
+					nodeDoc.remove_attribute(attrPos);
+				}	
+			}	
+		}
+	}
+
+	for (pugi::xml_node node = nodeDoc.first_child(); node; node = node.next_sibling())
+	{
+		FilterPosWidthHeight(node);
+	}
+}
 
 void CDuiEditorDoc::OnFileReopen()
 {

@@ -36,6 +36,7 @@ UILIB_PLUGIN_API void DuiPluginsRegister();
 
 //extern "C" 
 UILIB_PLUGIN_API void InsertMsgUI(LPCTSTR pstring, COLORREF cr=RGB(0,0,0));
+UILIB_PLUGIN_API void InsertMsgUiV(LPCTSTR lpszFormat, ...);
 
 extern "C" UILIB_PLUGIN_API CControlUI *CreateControl(LPCTSTR pstrClass);
 

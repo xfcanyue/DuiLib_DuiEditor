@@ -194,13 +194,13 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	g_pPropWnd = &m_wndProperty;
 	g_pPropWnd->m_wndPropList.m_bMainFrame = TRUE;
 
-	if (!m_wndOutput.Create(_T(" 输出 "), this, CRect(0, 0, 100, 100), TRUE, ID_OUTPUT_WND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM))
+	if (!m_wndOutput.Create(_T(" 输出 "), this, CRect(0, 0, 100, 150), TRUE, ID_OUTPUT_WND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM))
 	{
 		return FALSE; // 未能创建
 	}
 	m_wndOutput.SetIcon(hClassViewIcon, FALSE);
 
-	if (!m_wndDockXml.Create(_T(" 代码 "), this, CRect(0, 0, 100, 100), TRUE, ID_XML_WND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM))
+	if (!m_wndDockXml.Create(_T(" 代码 "), this, CRect(0, 0, 100, 150), TRUE, ID_XML_WND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM))
 	{
 		return FALSE; // 未能创建
 	}
@@ -359,6 +359,17 @@ LRESULT CMainFrame::OnGetTabTooltip(WPARAM wparam, LPARAM lparam)
 
 LRESULT CMainFrame::OnChangeActiveTab(WPARAM wparam, LPARAM lparam)
 {
+	CMFCBaseTabCtrl * pTabCtrl = ((CMFCBaseTabCtrl*)lparam);
+	if (pTabCtrl && pTabCtrl->GetSafeHwnd() == GetMDITabs().GetSafeHwnd())
+	{
+		int nTabIdx=pTabCtrl->GetActiveTab();
+		CWnd * pWnd = pTabCtrl->GetActiveWnd();
+// 		if (pWnd && pWnd->GetSafeHwnd())
+// 		{
+// 			pWnd->SetForegroundWindow();//激活当前tab
+// 		}		
+	}
+
 	return 0;
 }
 

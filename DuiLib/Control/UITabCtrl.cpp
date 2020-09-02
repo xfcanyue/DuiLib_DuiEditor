@@ -35,6 +35,23 @@ namespace DuiLib
 		return true;
 	}
 
+	bool CTabCtrlUI::IsSelected() const
+	{
+		LPCTSTR pstrName = m_sBindTabLayoutName;
+		if(pstrName == NULL || m_iBindTabIndex < 0) 
+		{
+			return __super::IsSelected();
+		}
+
+		CTabLayoutUI* pTabLayout = static_cast<CTabLayoutUI*>(GetManager()->FindControl(pstrName));
+		if(!pTabLayout) return __super::IsSelected();
+
+		if(pTabLayout->GetCurSel() == m_iBindTabIndex)
+			return true;
+
+		return false;
+	}
+
 	void CTabCtrlUI::BindTabIndex(int _BindTabIndex )
 	{
 		if( _BindTabIndex >= 0)

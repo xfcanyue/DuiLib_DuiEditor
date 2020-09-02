@@ -66,6 +66,9 @@
     <ClCompile Include="IconButton.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ComboEditWnd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -111,6 +114,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="IconButton.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ComboEditWnd.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
