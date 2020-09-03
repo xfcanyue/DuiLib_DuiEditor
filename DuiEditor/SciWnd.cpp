@@ -416,8 +416,17 @@ BOOL CSciWnd::OnParentNotify(SCNotification *pMsg)
 	case SCN_AUTOCSELECTION:
 		{
 			int pos = sci_GetCurrentPos();
-			int startPos = sci_WordStartPosition(pos-1, TRUE);
-			int endPos = sci_WordEndPosition(pos-1, TRUE);
+			int charpos = pos - 1;
+
+			//如果直空格，在弹出的选择框里面直接选取，pos不能减一。
+			char ch = sci_GetCharAt(pos);
+			if(ch == ' ' || ch == '	')
+			{
+				charpos = pos;
+			}
+
+			int startPos = sci_WordStartPosition(charpos, TRUE);
+			int endPos = sci_WordEndPosition(charpos, TRUE);
 			CStringA strSelected;
 			sci_AutocGetCurrentText(strSelected);
 
@@ -425,6 +434,20 @@ BOOL CSciWnd::OnParentNotify(SCNotification *pMsg)
 			sci_SetTargetEnd(endPos);
 			sci_ReplaceTarget(-1, strSelected);
 			sci_GoToPos(startPos + strSelected.GetLength());
+
+			//判断当前编辑的是不是属性。 如果是属性，考虑把 ="" 自动补全。
+			char ch2 = sci_GetCharAt(startPos-1);
+			if(ch2 != '<' && ch2 != '/')
+			{
+				pos = sci_GetCurrentPos();
+				if(sci_GetCharAt(pos+1) != '=') //如果属性后面没有 “=”，自动补上
+				{
+					sci_SetTargetStart(pos);
+					sci_SetTargetEnd(pos);
+					sci_ReplaceTarget(-1, "=\"\"");
+					sci_GoToPos(pos+2);
+				}
+			}
 
 			sci_AutocCancel(); //不使用默认的插人
 			return TRUE;

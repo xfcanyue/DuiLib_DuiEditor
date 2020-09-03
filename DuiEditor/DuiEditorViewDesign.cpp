@@ -846,7 +846,7 @@ void CDuiEditorViewDesign::OnFormatAlignSameSpaceVert()
 	//控件的间隔
 	int nSpace = (rcElemLast.bottom - rcElemFirst.top - nHeightAll) / (arrTracker.GetSize()-1);
 
-	//调整中间控件的位置
+	//调整中间控件的位置, 最后一个控件也要调整位置，因为控件间隔余数的问题。
 	for (int i=1; i<arrTracker.GetSize()-1; i++)
 	{
 		CControlUI *pControlParent = arrTracker[i-1]->m_pControl;
