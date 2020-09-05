@@ -418,7 +418,7 @@ BOOL CSciWnd::OnParentNotify(SCNotification *pMsg)
 			int pos = sci_GetCurrentPos();
 			int charpos = pos - 1;
 
-			//如果直空格，在弹出的选择框里面直接选取，pos不能减一。
+			//如果只按空格，在弹出的选择框里面直接选取，pos不能减一。
 			char ch = sci_GetCharAt(pos);
 			if(ch == ' ' || ch == '	')
 			{

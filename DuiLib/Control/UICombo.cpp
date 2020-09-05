@@ -359,11 +359,13 @@ namespace DuiLib {
 		m_iCurSel = iIndex;
 		if( m_pWindow != NULL || bTakeFocus ) pControl->SetFocus();
 		pListItem->Select(true);
-		if( m_pManager != NULL ) m_pManager->SendNotify(this, DUI_MSGTYPE_ITEMSELECT, m_iCurSel, iOldSel);
-		Invalidate();
 
 		//modify by liqs99
 		SetText(pControl->GetText());
+
+		if( m_pManager != NULL ) m_pManager->SendNotify(this, DUI_MSGTYPE_ITEMSELECT, m_iCurSel, iOldSel);
+		Invalidate();
+
 
 		return true;
 	}

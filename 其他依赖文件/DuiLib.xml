@@ -388,6 +388,64 @@
 		<Attribute name="showbutton1" default="true" type="BOOL" comment="是否显示左或上按钮,如(true)" />
 		<Attribute name="showbutton2" default="true" type="BOOL" comment="是否显示右或下按钮,如(true)" />
 	</ScrollBar>
+	<VScrollBar parent="Control" notifies="timer menu scrolled windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
+		<Attribute name="button1normalimage" default="" type="IMAGE" comment="左或上按钮普通状态图片" />
+		<Attribute name="button1hotimage" default="" type="IMAGE" comment="左或上按钮鼠标悬浮状态图片" />
+		<Attribute name="button1pushedimage" default="" type="IMAGE" comment="左或上按钮鼠标按下状态图片" />
+		<Attribute name="button1disabledimage" default="" type="IMAGE" comment="左或上按钮禁用状态图片" />
+		<Attribute name="button2normalimage" default="" type="IMAGE" comment="右或下按钮普通状态图片" />
+		<Attribute name="button2hotimage" default="" type="IMAGE" comment="右或下按钮鼠标悬浮状态图片" />
+		<Attribute name="button2pushedimage" default="" type="IMAGE" comment="右或下按钮鼠标按下状态图片" />
+		<Attribute name="button2disabledimage" default="" type="IMAGE" comment="右或下按钮禁用状态图片" />
+		<Attribute name="thumbnormalimage" default="" type="IMAGE" comment="滑块普通状态图片" />
+		<Attribute name="thumbhotimage" default="" type="IMAGE" comment="滑块鼠标悬浮状态图片" />
+		<Attribute name="thumbpushedimage" default="" type="IMAGE" comment="滑块鼠标按下状态图片" />
+		<Attribute name="thumbdisabledimage" default="" type="IMAGE" comment="滑块禁用状态图片" />
+		<Attribute name="railnormalimage" default="" type="IMAGE" comment="滑块中间标识普通状态图片" />
+		<Attribute name="railhotimage" default="" type="IMAGE" comment="滑块中间标识鼠标悬浮状态图片" />
+		<Attribute name="railpushedimage" default="" type="IMAGE" comment="滑块中间标识鼠标按下状态图片" />
+		<Attribute name="raildisabledimage" default="" type="IMAGE" comment="滑块中间标识禁用状态图片" />
+		<Attribute name="bknormalimage" default="" type="IMAGE" comment="背景普通状态图片" />
+		<Attribute name="bkhotimage" default="" type="IMAGE" comment="背景鼠标悬浮状态图片" />
+		<Attribute name="bkpushedimage" default="" type="IMAGE" comment="背景鼠标按下状态图片" />
+		<Attribute name="bkdisabledimage" default="" type="IMAGE" comment="背景禁用状态图片" />
+		<Attribute name="hor" default="true" type="BOOL" comment="水平或垂直,如(true)" />
+		<Attribute name="linesize" default="8" type="INT" comment="滚动一行的大小，如(8)" />
+		<Attribute name="range" default="100" type="INT" comment="滚动范围，如(100)" />
+		<Attribute name="value" default="0" type="INT" comment="滚动位置，如(0)" />
+		<Attribute name="showbutton1" default="true" type="BOOL" comment="是否显示左或上按钮,如(true)" />
+		<Attribute name="showbutton2" default="true" type="BOOL" comment="是否显示右或下按钮,如(true)" />
+	</VScrollBar>
+	<HScrollBar parent="Control" notifies="timer menu scrolled windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
+		<Attribute name="button1normalimage" default="" type="IMAGE" comment="左或上按钮普通状态图片" />
+		<Attribute name="button1hotimage" default="" type="IMAGE" comment="左或上按钮鼠标悬浮状态图片" />
+		<Attribute name="button1pushedimage" default="" type="IMAGE" comment="左或上按钮鼠标按下状态图片" />
+		<Attribute name="button1disabledimage" default="" type="IMAGE" comment="左或上按钮禁用状态图片" />
+		<Attribute name="button2normalimage" default="" type="IMAGE" comment="右或下按钮普通状态图片" />
+		<Attribute name="button2hotimage" default="" type="IMAGE" comment="右或下按钮鼠标悬浮状态图片" />
+		<Attribute name="button2pushedimage" default="" type="IMAGE" comment="右或下按钮鼠标按下状态图片" />
+		<Attribute name="button2disabledimage" default="" type="IMAGE" comment="右或下按钮禁用状态图片" />
+		<Attribute name="thumbnormalimage" default="" type="IMAGE" comment="滑块普通状态图片" />
+		<Attribute name="thumbhotimage" default="" type="IMAGE" comment="滑块鼠标悬浮状态图片" />
+		<Attribute name="thumbpushedimage" default="" type="IMAGE" comment="滑块鼠标按下状态图片" />
+		<Attribute name="thumbdisabledimage" default="" type="IMAGE" comment="滑块禁用状态图片" />
+		<Attribute name="railnormalimage" default="" type="IMAGE" comment="滑块中间标识普通状态图片" />
+		<Attribute name="railhotimage" default="" type="IMAGE" comment="滑块中间标识鼠标悬浮状态图片" />
+		<Attribute name="railpushedimage" default="" type="IMAGE" comment="滑块中间标识鼠标按下状态图片" />
+		<Attribute name="raildisabledimage" default="" type="IMAGE" comment="滑块中间标识禁用状态图片" />
+		<Attribute name="bknormalimage" default="" type="IMAGE" comment="背景普通状态图片" />
+		<Attribute name="bkhotimage" default="" type="IMAGE" comment="背景鼠标悬浮状态图片" />
+		<Attribute name="bkpushedimage" default="" type="IMAGE" comment="背景鼠标按下状态图片" />
+		<Attribute name="bkdisabledimage" default="" type="IMAGE" comment="背景禁用状态图片" />
+		<Attribute name="hor" default="true" type="BOOL" comment="水平或垂直,如(true)" />
+		<Attribute name="linesize" default="8" type="INT" comment="滚动一行的大小，如(8)" />
+		<Attribute name="range" default="100" type="INT" comment="滚动范围，如(100)" />
+		<Attribute name="value" default="0" type="INT" comment="滚动位置，如(0)" />
+		<Attribute name="showbutton1" default="true" type="BOOL" comment="是否显示左或上按钮,如(true)" />
+		<Attribute name="showbutton2" default="true" type="BOOL" comment="是否显示右或下按钮,如(true)" />
+	</HScrollBar>
 	<List parent="VerticalLayout" notifies="setfocus killfocus timer menu itemselect windowinit(root)">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
@@ -564,6 +622,7 @@
 		<Attribute name="dropbuttonpushedimage" default="" type="IMAGE" comment="下拉按钮,鼠标按下的状态图片" />
 		<Attribute name="dropbuttonfocusedimage" default="" type="IMAGE" comment="下拉按钮,获得焦点时的状态图片" />
 		<Attribute name="dropbuttondisabledimage" default="" type="IMAGE" comment="下拉按钮,禁用的状态图片" />
+		<Attribute name="type" default="droplist" type="STRING" value="dropdown,droplist" comment="Combo类型" />		
 	</ComboEx>
 	<IconButton parent="Button" notifies="setfocus killfocus timer menu dropdown itemselect windowinit(root)">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
@@ -624,13 +683,16 @@
 		
 		<Attribute name="bindfocuscontrolname" default="" type="STRING" comment="绑定输入焦点,有时候需要固定键盘焦点到某个控件.不绑定则用当前焦点"/>
 		<Attribute name="bindentercontrolname" default="" type="STRING" comment="绑定绑定键盘回车事件到一个控件，一般是某个按钮."/>
-		<Attribute name="entercontrolname" default="" type="STRING" comment="回车键的控件名字"/>			
+		<Attribute name="entercontrolname" default="" type="STRING" comment="回车键的控件名字"/>
+		<Attribute name="entercontroltext" default="Enter" type="STRING" comment="回车键的显示的文字"/>
+		<Attribute name="entercontrolfont" default="-1" type="INT" comment="回车键的字体"/>		
 	</KeyBoard>
 	<KeyBoardSimple parent="KeyBoard" comment="简易键盘">
 		<Attribute name="name" default="" type="STRING" comment="控件名字"/>	
 	</KeyBoardSimple>
 	<KeyBoardNumber parent="KeyBoard" comment="数字键盘">
 		<Attribute name="name" default="" type="STRING" comment="控件名字"/>	
+		<Attribute name="entercontroltext" default="En" type="STRING" comment="回车键的显示的文字"/>
 	</KeyBoardNumber>
 	
 	<PictureControl parent="VerticalLayout" >
