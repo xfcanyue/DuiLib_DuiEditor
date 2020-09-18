@@ -3,13 +3,10 @@
 //
 
 #pragma once
-#include "DockControlTreeCtrl.h"
-#include "UIManager.h"
-#include "UITrackerMuliti.h"
-#include "DuiEditorCommandHistory.h"
+#include "DuiEditorDoc.h"
 #include <list>
 
-#include "UIWindowEx.h"
+class CUIManager;
 class CDuiEditorViewDesign : public CScrollView
 {
 protected: // 仅从序列化创建
@@ -20,10 +17,7 @@ protected: // 仅从序列化创建
 public:
 	CDuiEditorDoc* GetDocument() const;
 
-	CUIManager m_Manager;
 	int m_zoom;
-	CDuiEditorCommandHistory m_cmdHistory;
-
 	int m_nFormatInsert;	//插入模式普通的或者绝对定位的
 	BOOL m_bShowUiPreview;	//是否在编辑界面显示UI效果
 	BOOL m_bViewRuleBar;	//是否显示标尺
@@ -33,6 +27,12 @@ public:
 
 	PROCESS_INFORMATION m_piProcInfo; 
 	STARTUPINFO m_siStartInfo; 
+
+public:
+	CUIManager *GetUIManager() const { return m_pUIManager; }
+	void SetUIManager(CUIManager *pManager) { m_pUIManager = pManager; }
+private:
+	CUIManager *m_pUIManager;
 // 操作
 public:
 	void InitView();
@@ -56,7 +56,6 @@ public:
 	afx_msg void OnDestroy();
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg LRESULT OnInitViewDesign(WPARAM WParam, LPARAM LParam);
-	virtual void OnActivateFrame(UINT nState, CFrameWnd* pDeactivateFrame);
 	virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 
@@ -133,6 +132,8 @@ public:
 	afx_msg void OnUpdateSetDPI(CCmdUI *pCmdUI);
 	afx_msg void OnFileSaveTemplate();
 	afx_msg void OnUpdateFileSaveTemplate(CCmdUI *pCmdUI);
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 };
 
 #ifndef _DEBUG  // DuiEditorView.cpp 中的调试版本

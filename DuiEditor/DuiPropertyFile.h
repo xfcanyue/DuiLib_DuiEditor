@@ -55,7 +55,6 @@ public:
 	BOOL IsFontNode(xml_node nodeNode);
 	BOOL IsDefaultNode(xml_node node);
 	BOOL IsStyleNode(xml_node node);
-	BOOL IsTabLayoutNode(xml_node node);
 
 	//是否有定义text字段
 	BOOL IsNeedInputText(xml_node node);

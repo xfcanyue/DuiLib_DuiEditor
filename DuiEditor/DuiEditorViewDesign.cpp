@@ -12,13 +12,14 @@
 #include "MainFrm.h"
 #include "DuiEditorDoc.h"
 #include "DuiEditorViewDesign.h"
+#include "UITrackerMuliti.h"
 
 #include "DockControlTreeWnd.h"
 #include "ThreadTest.h"
 #include "ThreadPipe.h"
 
 #include "UIWindowEx.h"
-#include "UIWindowMenu.h"
+#include "UIManager.h"
 
 #include "DlgTemplateSave.h"
 
@@ -106,12 +107,15 @@ BEGIN_MESSAGE_MAP(CDuiEditorViewDesign, CScrollView)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_DPI, ID_EDIT_DPI_200, OnUpdateSetDPI)
 	ON_COMMAND(ID_FILE_SAVE_TEMPLATE, &CDuiEditorViewDesign::OnFileSaveTemplate)
 	ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_TEMPLATE, &CDuiEditorViewDesign::OnUpdateFileSaveTemplate)
+	ON_WM_CREATE()
+	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
 // CDuiEditorView 构造/析构
 
 CDuiEditorViewDesign::CDuiEditorViewDesign()
 {
+	m_pUIManager = NULL;
 	m_zoom = 100;
 
 	m_nFormatInsert = 0;
@@ -134,6 +138,23 @@ void CDuiEditorViewDesign::OnDraw(CDC* pDrawDC)
 {
 }
 
+
+int CDuiEditorViewDesign::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+	if (CScrollView::OnCreate(lpCreateStruct) == -1)
+		return -1;
+
+	// TODO:  在此添加您专用的创建代码
+
+	SetUIManager(GetDocument()->GetUIManager());
+	GetUIManager()->_setDesignView(this);
+
+// 	CUIWindow *pUiWindow = new CUIWindowEx;
+// 	pUiWindow->m_pDocumet = GetDocument();
+// 	pUiWindow->CreateUiWindow(this->m_hWnd, _T("ViewDesign"), UI_WNDSTYLE_CHILD, 0);
+	return 0;
+}
+
 void CDuiEditorViewDesign::OnInitialUpdate()
 {
 	CScrollView::OnInitialUpdate();
@@ -147,39 +168,23 @@ void CDuiEditorViewDesign::OnInitialUpdate()
 }
 
 void CDuiEditorViewDesign::InitView()
-{
-	if(m_Manager.GetUiWindow())
+{	
+	if(GetUIManager()->GetUiWindow())
 	{
-		m_Manager.GetUiWindow()->DestroyUiWindow();
-		delete m_Manager.m_pUiWindow;
-		m_Manager.m_pUiWindow = NULL;
+		GetUIManager()->GetUiWindow()->DestroyUiWindow();
+		delete GetUIManager()->GetUiWindow();
+		GetUIManager()->_setUIWindow(NULL);
+		GetUIManager()->_setManager(NULL);
 	}
 
+	GetUIManager()->GetCmdHistory()->Init();
 
 	SetScrollSizes(MM_TEXT, CSize(0,0));
 
-	m_cmdHistory.m_pManager = &m_Manager;
-	m_cmdHistory.Init(GetDocument());
+	CUIWindow *pUiWindow;
+	pUiWindow = new CUIWindowEx;
 
-	m_Manager.m_pView = this;
-	m_Manager.m_pDoc = GetDocument();
-	m_Manager.m_pCmdHistory = &m_cmdHistory;
-	m_Manager.m_pTreeView = GetDocument()->GetTreeView();
-	m_Manager.m_pSciPane  = GetDocument()->GetXmlPane();
-
-// 	CPoint pos = GetScrollPosition();
-// 	CString temp;
-// 	temp.Format(_T("GetScrollPosition(), x=%d, y=%d"), pos.x, pos.y);
-// 	InsertMsg(temp);
-
-	CUIWindow *pUiWindow;	
-//  	if(GetDocument()->m_bMenuWnd)
-//  		pUiWindow = new CUIWindowMenu;
-//  	else
-		pUiWindow = new CUIWindowEx;
-
-	pUiWindow->m_pManager = &m_Manager;
-	
+	pUiWindow->SetUIManager(GetUIManager());
 	pUiWindow->CreateUiWindow(this->m_hWnd, _T("ViewDesign"), UI_WNDSTYLE_CHILD, 0);
 
 	CRect rc;
@@ -189,34 +194,31 @@ void CDuiEditorViewDesign::InitView()
 	else
 		pUiWindow->MoveWindow(0, 0, rc.Width(), rc.Height(), TRUE);
 
-	m_Manager.m_pUiWindow = pUiWindow;
-	m_Manager.m_pManager = pUiWindow->GetManager();
-	m_Manager.m_pUiTracker = pUiWindow->GetUiTracker();
+	GetUIManager()->_setUIWindow(pUiWindow);
+	GetUIManager()->_setManager(pUiWindow->GetManager());
 
-	m_Manager.SetScrollSize();
+	GetUIManager()->SetScrollSize();
 
-	m_Manager.GetTreeView()->m_pManager = &m_Manager;
-	m_Manager.GetTreeView()->InitTreeContent();
-
-	m_Manager.GetXmlPane()->m_pManager = &m_Manager;
-	m_Manager.GetXmlPane()->Init();
+	GetUIManager()->GetTreeView()->InitTreeContent();
 
 	if(!g_cfg.bDesignerShowShadow)
 	{
-		m_Manager.GetManager()->GetShadow()->DisableShadow(true);
+		GetUIManager()->GetManager()->GetShadow()->DisableShadow(true);
 	}
 	//((CMainFrame *)AfxGetMainWnd())->ShowAllPane();
+	
 }
 
 void CDuiEditorViewDesign::OnDestroy()
 {
 	CScrollView::OnDestroy();
 
-	if(m_Manager.GetUiWindow())
+	if(GetUIManager()->GetUiWindow())
 	{
-		m_Manager.GetUiWindow()->DestroyUiWindow();
-		delete m_Manager.m_pUiWindow;
-		m_Manager.m_pUiWindow = NULL;
+		GetUIManager()->GetUiWindow()->DestroyUiWindow();
+		delete GetUIManager()->GetUiWindow();
+		GetUIManager()->_setUIWindow(NULL);
+		GetUIManager()->_setManager(NULL);
 	}
 }
 
@@ -246,8 +248,8 @@ BOOL CDuiEditorViewDesign::OnEraseBkgnd(CDC* pDC)
 	rectClient.OffsetRect(point);
 
 	CRect rcUiWnd;
-	if(m_Manager.GetUiWindow())
-		m_Manager.GetUiWindow()->GetWindowRect(rcUiWnd);
+	if(GetUIManager()->GetUiWindow())
+		GetUIManager()->GetUiWindow()->GetWindowRect(rcUiWnd);
 	if(rectClient.Width() - rcUiWnd.Width() > 0) //刷新UI窗口右边的空白区域
 	{
 		CRect rc;
@@ -331,30 +333,25 @@ void CDuiEditorViewDesign::ShowShadowUI(CDuiEditorViewDesign *pView, BOOL bShow)
 // 	}
 }
 
-void CDuiEditorViewDesign::OnActivateFrame(UINT nState, CFrameWnd* pDeactivateFrame)
-{
-	//InsertMsg(_T("CDuiEditorViewDesign::OnActivateFrame"));
-}
-
 void CDuiEditorViewDesign::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView)
 {
 	//InsertMsg(_T("OnActivateDesign"));
-
+	/*
 	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
 
 	if(bActivate && pActivateView==this && pDeactiveView!=this)
 	{
-		pMain->m_wndControl.SetActiveTreeView(m_Manager.GetTreeView());
-		pMain->m_wndDockXml.SetActiveSciWnd(m_Manager.GetXmlPane());
+		pMain->m_wndControl.SetActiveTreeView(GetUIManager()->GetTreeView());
+		pMain->m_wndProperty.SetActivePropList(GetUIManager()->GetPropList());
 		pMain->ShowAllPane();
 
 		//主要是为了更新DuiLib的窗口阴影
-		if(m_Manager.m_pUiWindow && m_Manager.m_pUiWindow->GetSafeHwnd())
+		if(GetUIManager()->GetUiWindow() && GetUIManager()->GetUiWindow()->GetSafeHwnd())
 		{
-			::PostMessage(m_Manager.m_pUiWindow->GetSafeHwnd(), WM_SHOWWINDOW, bActivate, 0);
+			::PostMessage(GetUIManager()->GetUiWindow()->GetSafeHwnd(), WM_SHOWWINDOW, bActivate, 0);
 		}
 	}
-
+	*/
 // 	CString temp;
 // 	temp.Format(_T("%s, show=%s"), GetDocument()->GetSkinFileName(), bActivate?_T("是"):_T("否"));
 // 	InsertMsg(temp);
@@ -368,12 +365,12 @@ void CDuiEditorViewDesign::OnActivateView(BOOL bActivate, CView* pActivateView, 
 
 void CDuiEditorViewDesign::OnLButtonDown(UINT nFlags, CPoint pt)
 {
-	xml_node node((xml_node_struct *)m_Manager.GetUiFrom()->GetTag());
+	xml_node node((xml_node_struct *)GetUIManager()->GetUiFrom()->GetTag());
 
-	g_pPropWnd->InitProp(node);
-	m_Manager.SelectItem(node);
-	m_Manager.GetTreeView()->SelectXmlNode(node);
-	m_Manager.GetXmlPane()->SelectXmlNode(node);
+	GetUIManager()->GetPropList()->InitProp(node);
+	GetUIManager()->SelectItem(node);
+	GetUIManager()->GetTreeView()->SelectXmlNode(node);
+	GetUIManager()->GetCodeView()->SelectXmlNode(node);
 
 	//切换左边控件树
 	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
@@ -415,25 +412,25 @@ void CDuiEditorViewDesign::OnUpdateEditPaste(CCmdUI *pCmdUI)
 
 void CDuiEditorViewDesign::OnEditClear()
 {
-	for (int i=0; i<m_Manager.GetUiTracker()->m_arrTracker.GetSize(); i++)
+	for (int i=0; i<GetUIManager()->GetUiTracker()->m_arrTracker.GetSize(); i++)
 	{
-		CUITrackerMuliti::CTrackerElement *pTrackElem = m_Manager.GetUiTracker()->m_arrTracker[i];
-		m_Manager.DeleteControl(pTrackElem->m_node);
+		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
+		GetUIManager()->DeleteControl(pTrackElem->m_node);
 	}
-	m_Manager.GetUiTracker()->RemoveAll();
+	GetUIManager()->GetUiTracker()->RemoveAll();
 	GetDocument()->SetModifiedFlag(TRUE);
 }
 
 void CDuiEditorViewDesign::OnUpdateEditClear(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(m_Manager.GetUiTracker()->GetSize()>0);
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
 }
 
 void CDuiEditorViewDesign::OnEditCopyName()
 {
-	for (int i=0; i<m_Manager.GetUiTracker()->m_arrTracker.GetSize(); i++)
+	for (int i=0; i<GetUIManager()->GetUiTracker()->m_arrTracker.GetSize(); i++)
 	{
-		CUITrackerMuliti::CTrackerElement *pTrackElem = m_Manager.GetUiTracker()->m_arrTracker[i];
+		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
 		CString strText = pTrackElem->m_node.attribute(_T("name")).as_string();
 
 		if(OpenClipboard())
@@ -458,14 +455,14 @@ void CDuiEditorViewDesign::OnEditCopyName()
 
 void CDuiEditorViewDesign::OnUpdateEditCopyName(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(m_Manager.GetUiTracker()->GetSize()>0);
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
 }
 
 void CDuiEditorViewDesign::OnEditCopyNameEx()
 {
-	for (int i=0; i<m_Manager.GetUiTracker()->m_arrTracker.GetSize(); i++)
+	for (int i=0; i<GetUIManager()->GetUiTracker()->m_arrTracker.GetSize(); i++)
 	{
-		CUITrackerMuliti::CTrackerElement *pTrackElem = m_Manager.GetUiTracker()->m_arrTracker[i];
+		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
 		//CString strText = pTrackElem->m_node.attribute(_T("name")).as_string();
 		CString strText = _T("_T(\"");
 		strText += pTrackElem->m_node.attribute(_T("name")).as_string();
@@ -493,28 +490,28 @@ void CDuiEditorViewDesign::OnEditCopyNameEx()
 
 void CDuiEditorViewDesign::OnUpdateEditCopyNameEx(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(m_Manager.GetUiTracker()->GetSize()>0);
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
 }
 
 void CDuiEditorViewDesign::OnEditUndo()
 {
-	m_cmdHistory.Undo();
+	GetUIManager()->GetCmdHistory()->Undo();
 }
 
 void CDuiEditorViewDesign::OnUpdateEditUndo(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(m_cmdHistory.CanUndo());
+	pCmdUI->Enable(GetUIManager()->GetCmdHistory()->CanUndo());
 	//pCmdUI->Enable(FALSE);
 }
 
 void CDuiEditorViewDesign::OnEditRedo()
 {
-	m_cmdHistory.Redo();
+	GetUIManager()->GetCmdHistory()->Redo();
 }
 
 void CDuiEditorViewDesign::OnUpdateEditRedo(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(m_cmdHistory.CanRedo());
+	pCmdUI->Enable(GetUIManager()->GetCmdHistory()->CanRedo());
 	//pCmdUI->Enable(FALSE);
 }
 
@@ -531,9 +528,10 @@ void CDuiEditorViewDesign::OnEditInsertFont()
 	g_duiProp.AddAttribute(nodeFont, _T("name"), _T("宋体"),	this);
 	g_duiProp.AddAttribute(nodeFont, _T("size"), 12,			this);
 
-	m_Manager.GetTreeView()->AddNewControl(nodeFont, TVI_FIRST);
-	g_pPropWnd->InitProp(nodeFont);
-	m_Manager.GetXmlPane()->Init();
+	GetUIManager()->GetTreeView()->AddNewControl(nodeFont, TVI_FIRST);
+	GetUIManager()->GetPropList()->InitProp(nodeFont);
+
+	GetUIManager()->GetCodeView()->LoadDocument();
 }
 
 void CDuiEditorViewDesign::OnEditInsertDefault()
@@ -545,9 +543,10 @@ void CDuiEditorViewDesign::OnEditInsertDefault()
 	else
 		nodeDefult = nodeWinodw.prepend_child(_T("Default"));
 
-	m_Manager.GetTreeView()->AddNewControl(nodeDefult, TVI_FIRST);
-	g_pPropWnd->InitProp(nodeDefult);
-	m_Manager.GetXmlPane()->Init();
+	GetUIManager()->GetTreeView()->AddNewControl(nodeDefult, TVI_FIRST);
+	GetUIManager()->GetPropList()->InitProp(nodeDefult);
+
+	GetUIManager()->GetCodeView()->LoadDocument();
 }
 
 void CDuiEditorViewDesign::OnEditInsertStyleNode()
@@ -564,9 +563,10 @@ void CDuiEditorViewDesign::OnEditInsertStyleNode()
 	g_duiProp.AddAttribute(nodeStyle, _T("name"), _T(""),	this);
 	g_duiProp.AddAttribute(nodeStyle, _T("class"), _T(""),	this);
 
-	m_Manager.GetTreeView()->AddNewControl(nodeStyle, TVI_FIRST);
-	g_pPropWnd->InitProp(nodeStyle);
-	m_Manager.GetXmlPane()->Init();
+	GetUIManager()->GetTreeView()->AddNewControl(nodeStyle, TVI_FIRST);
+	GetUIManager()->GetPropList()->InitProp(nodeStyle);
+
+	GetUIManager()->GetCodeView()->LoadDocument();
 }
 
 void CDuiEditorViewDesign::OnUiformDebug()
@@ -607,17 +607,17 @@ void CDuiEditorViewDesign::OnCommandTabLayoutSetSel(UINT nID)
 {
 	int nSel = nID - ID_TABLAYOUT_SETSEL_00;
 
-	HTREEITEM hItem = m_Manager.GetTreeView()->GetSelectedItem();
+	HTREEITEM hItem = GetUIManager()->GetTreeView()->GetSelectedItem();
 	if(hItem)
 	{
-		xml_node node((xml_node_struct *)m_Manager.GetTreeView()->GetItemData(hItem));
+		xml_node node((xml_node_struct *)GetUIManager()->GetTreeView()->GetItemData(hItem));
 		if(node)
 		{
 			CTabLayoutUI *pTab = (CTabLayoutUI *)node.get_tag();
 			if(pTab->GetInterface(DUI_CTR_TABLAYOUT))
 			{
 				g_duiProp.AddAttribute(node,  _T("selectedid"), nSel,	this);
-				m_Manager.UpdateControlUI(node, node.attribute(_T("selectedid")));
+				GetUIManager()->UpdateControlUI(node, node.attribute(_T("selectedid")));
 			}
 		}
 	}
@@ -626,12 +626,12 @@ void CDuiEditorViewDesign::OnCommandTabLayoutSetSel(UINT nID)
 
 void CDuiEditorViewDesign::OnFormatAlignLeft()
 {
-	CRect rcFocus = m_Manager.GetUiTracker()->m_pFocused->m_pControl->GetPos();
+	CRect rcFocus = GetUIManager()->GetUiTracker()->m_pFocused->m_pControl->GetPos();
 
-	for (int i=0; i<m_Manager.GetUiTracker()->GetSize(); i++)
+	for (int i=0; i<GetUIManager()->GetUiTracker()->GetSize(); i++)
 	{
-		CUITrackerMuliti::CTrackerElement *elem = m_Manager.GetUiTracker()->m_arrTracker[i];
-		if(elem != m_Manager.GetUiTracker()->m_pFocused)
+		CUITrackerMuliti::CTrackerElement *elem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
+		if(elem != GetUIManager()->GetUiTracker()->m_pFocused)
 		{
 			CRect rcElem = elem->m_pControl->GetPos();
 
@@ -641,7 +641,7 @@ void CDuiEditorViewDesign::OnFormatAlignLeft()
 			rc.top		= rcElem.top;
 			rc.bottom	= rcElem.bottom;
 			xml_attribute attr = g_duiProp.AddAttribute(elem->m_node, _T("pos"), RectToString(&rc),	this);
-			m_Manager.UpdateControlUI(elem->m_node,  attr);
+			GetUIManager()->UpdateControlUI(elem->m_node,  attr);
 		}
 	}
 }
@@ -649,18 +649,18 @@ void CDuiEditorViewDesign::OnFormatAlignLeft()
 
 void CDuiEditorViewDesign::OnUpdateFormatAlignLeft(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(m_Manager.GetUiTracker()->GetSize() > 1);
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize() > 1);
 }
 
 
 void CDuiEditorViewDesign::OnFormatAlignRight()
 {
-	CRect rcFocus = m_Manager.GetUiTracker()->m_pFocused->m_pControl->GetPos();
+	CRect rcFocus = GetUIManager()->GetUiTracker()->m_pFocused->m_pControl->GetPos();
 
-	for (int i=0; i<m_Manager.GetUiTracker()->GetSize(); i++)
+	for (int i=0; i<GetUIManager()->GetUiTracker()->GetSize(); i++)
 	{
-		CUITrackerMuliti::CTrackerElement *elem = m_Manager.GetUiTracker()->m_arrTracker[i];
-		if(elem != m_Manager.GetUiTracker()->m_pFocused)
+		CUITrackerMuliti::CTrackerElement *elem =GetUIManager()->GetUiTracker()->m_arrTracker[i];
+		if(elem != GetUIManager()->GetUiTracker()->m_pFocused)
 		{
 			CRect rcElem = elem->m_pControl->GetPos();
 
@@ -670,7 +670,7 @@ void CDuiEditorViewDesign::OnFormatAlignRight()
 			rc.top		= rcElem.top;
 			rc.bottom	= rcElem.bottom;
 			xml_attribute attr = g_duiProp.AddAttribute(elem->m_node, _T("pos"), RectToString(&rc),	this);
-			m_Manager.UpdateControlUI(elem->m_node,  attr);
+			GetUIManager()->UpdateControlUI(elem->m_node,  attr);
 		}
 	}
 }
@@ -678,18 +678,18 @@ void CDuiEditorViewDesign::OnFormatAlignRight()
 
 void CDuiEditorViewDesign::OnUpdateFormatAlignRight(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(m_Manager.GetUiTracker()->GetSize() > 1);
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize() > 1);
 }
 
 
 void CDuiEditorViewDesign::OnFormatAlignTop()
 {
-	CRect rcFocus = m_Manager.GetUiTracker()->m_pFocused->m_pControl->GetPos();
+	CRect rcFocus = GetUIManager()->GetUiTracker()->m_pFocused->m_pControl->GetPos();
 
-	for (int i=0; i<m_Manager.GetUiTracker()->GetSize(); i++)
+	for (int i=0; i<GetUIManager()->GetUiTracker()->GetSize(); i++)
 	{
-		CUITrackerMuliti::CTrackerElement *elem = m_Manager.GetUiTracker()->m_arrTracker[i];
-		if(elem != m_Manager.GetUiTracker()->m_pFocused)
+		CUITrackerMuliti::CTrackerElement *elem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
+		if(elem != GetUIManager()->GetUiTracker()->m_pFocused)
 		{
 			CRect rcElem = elem->m_pControl->GetPos();
 
@@ -699,7 +699,7 @@ void CDuiEditorViewDesign::OnFormatAlignTop()
 			rc.top		= rcFocus.top;
 			rc.bottom	= rcFocus.top + rcElem.Height();
 			xml_attribute attr = g_duiProp.AddAttribute(elem->m_node, _T("pos"), RectToString(&rc),	this);
-			m_Manager.UpdateControlUI(elem->m_node,  attr);
+			GetUIManager()->UpdateControlUI(elem->m_node,  attr);
 		}
 	}
 }
@@ -707,18 +707,18 @@ void CDuiEditorViewDesign::OnFormatAlignTop()
 
 void CDuiEditorViewDesign::OnUpdateFormatAlignTop(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(m_Manager.GetUiTracker()->GetSize() > 1);
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize() > 1);
 }
 
 
 void CDuiEditorViewDesign::OnFormatAlignBottom()
 {
-	CRect rcFocus = m_Manager.GetUiTracker()->m_pFocused->m_pControl->GetPos();
+	CRect rcFocus = GetUIManager()->GetUiTracker()->m_pFocused->m_pControl->GetPos();
 
-	for (int i=0; i<m_Manager.GetUiTracker()->GetSize(); i++)
+	for (int i=0; i<GetUIManager()->GetUiTracker()->GetSize(); i++)
 	{
-		CUITrackerMuliti::CTrackerElement *elem = m_Manager.GetUiTracker()->m_arrTracker[i];
-		if(elem != m_Manager.GetUiTracker()->m_pFocused)
+		CUITrackerMuliti::CTrackerElement *elem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
+		if(elem != GetUIManager()->GetUiTracker()->m_pFocused)
 		{
 			CRect rcElem = elem->m_pControl->GetPos();
 
@@ -728,7 +728,7 @@ void CDuiEditorViewDesign::OnFormatAlignBottom()
 			rc.top		= rcFocus.bottom - rcElem.Height();
 			rc.bottom	= rcFocus.bottom;
 			xml_attribute attr = g_duiProp.AddAttribute(elem->m_node, _T("pos"), RectToString(&rc),	this);
-			m_Manager.UpdateControlUI(elem->m_node,  attr);
+			GetUIManager()->UpdateControlUI(elem->m_node,  attr);
 		}
 	}
 }
@@ -736,14 +736,14 @@ void CDuiEditorViewDesign::OnFormatAlignBottom()
 
 void CDuiEditorViewDesign::OnUpdateFormatAlignBottom(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(m_Manager.GetUiTracker()->GetSize() > 1);
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize() > 1);
 }
 
 void CDuiEditorViewDesign::OnFormatAlignCenterVert()
 {
-	for (int i=0; i<m_Manager.GetUiTracker()->GetSize(); i++)
+	for (int i=0; i<GetUIManager()->GetUiTracker()->GetSize(); i++)
 	{
-		CUITrackerMuliti::CTrackerElement *elem = m_Manager.GetUiTracker()->m_arrTracker[i];
+		CUITrackerMuliti::CTrackerElement *elem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
 		CRect rcElem = elem->m_pControl->GetPos();
 
 		CControlUI *pParent = elem->m_pControl->GetParent();
@@ -756,7 +756,7 @@ void CDuiEditorViewDesign::OnFormatAlignCenterVert()
 		rc.top		= rcParent.top + (rcParent.Height() - rcElem.Height())/2;
 		rc.bottom	= rc.top + rcElem.Height();
 		xml_attribute attr = g_duiProp.AddAttribute(elem->m_node, _T("pos"), RectToString(&rc),	this);
-		m_Manager.UpdateControlUI(elem->m_node, attr);
+		GetUIManager()->UpdateControlUI(elem->m_node, attr);
 	}
 }
 
@@ -770,7 +770,7 @@ void CDuiEditorViewDesign::OnUpdateFormatAlignCenterVert(CCmdUI *pCmdUI)
 void CDuiEditorViewDesign::OnFormatAlignCenterHori()
 {
 	//多选和单选的居中, 是不一样的
-	if(m_Manager.GetUiTracker()->GetSize() > 1)
+	if(GetUIManager()->GetUiTracker()->GetSize() > 1)
 	{
 
 	}
@@ -779,9 +779,9 @@ void CDuiEditorViewDesign::OnFormatAlignCenterHori()
 
 	}
 
-	for (int i=0; i<m_Manager.GetUiTracker()->GetSize(); i++)
+	for (int i=0; i<GetUIManager()->GetUiTracker()->GetSize(); i++)
 	{
-		CUITrackerMuliti::CTrackerElement *elem = m_Manager.GetUiTracker()->m_arrTracker[i];
+		CUITrackerMuliti::CTrackerElement *elem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
 		CRect rcElem = elem->m_pControl->GetPos();
 
 		CControlUI *pParent = elem->m_pControl->GetParent();
@@ -794,7 +794,7 @@ void CDuiEditorViewDesign::OnFormatAlignCenterHori()
 		rc.top		= rcElem.top;
 		rc.bottom	= rc.top + rcElem.Height();
 		xml_attribute attr = g_duiProp.AddAttribute(elem->m_node, _T("pos"), RectToString(&rc),	this);
-		m_Manager.UpdateControlUI(elem->m_node,  attr);
+		GetUIManager()->UpdateControlUI(elem->m_node,  attr);
 	}
 }
 
@@ -806,11 +806,11 @@ void CDuiEditorViewDesign::OnUpdateFormatAlignCenterHori(CCmdUI *pCmdUI)
 
 void CDuiEditorViewDesign::OnFormatAlignSameSpaceVert()
 {
-	if(m_Manager.GetUiTracker()->GetSize() <= 2)	return;
+	if(GetUIManager()->GetUiTracker()->GetSize() <= 2)	return;
 
 	//创建一个从上到下的数组
 	CArray<CUITrackerMuliti::CTrackerElement*, CUITrackerMuliti::CTrackerElement*> arrTracker;
-	arrTracker.Copy(m_Manager.GetUiTracker()->m_arrTracker);
+	arrTracker.Copy(GetUIManager()->GetUiTracker()->m_arrTracker);
 	for (int i=0; i<arrTracker.GetSize(); i++)
 	{
 		for (int j=i+1; j<arrTracker.GetSize(); j++)
@@ -861,24 +861,24 @@ void CDuiEditorViewDesign::OnFormatAlignSameSpaceVert()
 		rc.top	 = rcPre.bottom + nSpace;
 		rc.bottom = rc.top + rcElem.Height();
 		xml_attribute attr = g_duiProp.AddAttribute(elem->m_node, _T("pos"), RectToString(&rc),	this);
-		m_Manager.UpdateControlUI(elem->m_node,  attr);
+		GetUIManager()->UpdateControlUI(elem->m_node,  attr);
 	}
 }
 
 
 void CDuiEditorViewDesign::OnUpdateFormatAlignSameSpaceVert(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(m_Manager.GetUiTracker()->GetSize() > 2);
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize() > 2);
 }
 
 
 void CDuiEditorViewDesign::OnFormatAlignSameSpaceHori()
 {
-	if(m_Manager.GetUiTracker()->GetSize() <= 2)	return;
+	if(GetUIManager()->GetUiTracker()->GetSize() <= 2)	return;
 
 	//创建一个从左到右的数组
 	CArray<CUITrackerMuliti::CTrackerElement*, CUITrackerMuliti::CTrackerElement*> arrTracker;
-	arrTracker.Copy(m_Manager.GetUiTracker()->m_arrTracker);
+	arrTracker.Copy(GetUIManager()->GetUiTracker()->m_arrTracker);
 	for (int i=0; i<arrTracker.GetSize(); i++)
 	{
 		for (int j=i+1; j<arrTracker.GetSize(); j++)
@@ -904,7 +904,7 @@ void CDuiEditorViewDesign::OnFormatAlignSameSpaceHori()
 
 	//计算控件占用的空间
 	int nWidthAll = 0;
-	for (int i=0; i<m_Manager.GetUiTracker()->GetSize(); i++)
+	for (int i=0; i<GetUIManager()->GetUiTracker()->GetSize(); i++)
 	{
 		CUITrackerMuliti::CTrackerElement *elem = arrTracker[i];
 		CRect rcElem = elem->m_pControl->GetPos();
@@ -915,7 +915,7 @@ void CDuiEditorViewDesign::OnFormatAlignSameSpaceHori()
 	int nSpace = (rcElemLast.right - rcElemFirst.left - nWidthAll) / (arrTracker.GetSize()-1);
 
 	//调整中间控件的位置
-	for (int i=1; i<m_Manager.GetUiTracker()->GetSize()-1; i++)
+	for (int i=1; i<GetUIManager()->GetUiTracker()->GetSize()-1; i++)
 	{
 		CRect rcPre = ((CControlUI *)arrTracker[i-1]->m_node.get_tag())->GetPos();
 
@@ -928,24 +928,24 @@ void CDuiEditorViewDesign::OnFormatAlignSameSpaceHori()
 		rc.top	 = rcElem.top;
 		rc.bottom = rcElem.bottom;
 		xml_attribute attr = g_duiProp.AddAttribute(elem->m_node, _T("pos"), RectToString(&rc),	this);
-		m_Manager.UpdateControlUI(elem->m_node,  attr);
+		GetUIManager()->UpdateControlUI(elem->m_node,  attr);
 	}
 }
 
 
 void CDuiEditorViewDesign::OnUpdateFormatAlignSameSpaceHori(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(m_Manager.GetUiTracker()->GetSize() > 2);
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize() > 2);
 }
 
 void CDuiEditorViewDesign::OnFormatSameWidth()
 {
-	CRect rcFocus = m_Manager.GetUiTracker()->m_pFocused->m_pControl->GetPos();
+	CRect rcFocus = GetUIManager()->GetUiTracker()->m_pFocused->m_pControl->GetPos();
 
-	for (int i=0; i<m_Manager.GetUiTracker()->GetSize(); i++)
+	for (int i=0; i<GetUIManager()->GetUiTracker()->GetSize(); i++)
 	{
-		CUITrackerMuliti::CTrackerElement *elem = m_Manager.GetUiTracker()->m_arrTracker[i];
-		if(elem != m_Manager.GetUiTracker()->m_pFocused)
+		CUITrackerMuliti::CTrackerElement *elem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
+		if(elem != GetUIManager()->GetUiTracker()->m_pFocused)
 		{
 			CRect rcElem = elem->m_pControl->GetPos();
 
@@ -955,7 +955,7 @@ void CDuiEditorViewDesign::OnFormatSameWidth()
 			rc.top		= rcElem.top;
 			rc.bottom	= rcElem.bottom;
 			xml_attribute attr = g_duiProp.AddAttribute(elem->m_node, _T("pos"), RectToString(&rc),	this);
-			m_Manager.UpdateControlUI(elem->m_node,  attr);
+			GetUIManager()->UpdateControlUI(elem->m_node,  attr);
 		}
 	}
 }
@@ -963,18 +963,18 @@ void CDuiEditorViewDesign::OnFormatSameWidth()
 
 void CDuiEditorViewDesign::OnUpdateFormatSameWidth(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(m_Manager.GetUiTracker()->GetSize() > 1);
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize() > 1);
 }
 
 
 void CDuiEditorViewDesign::OnFormatSameHeight()
 {
-	CRect rcFocus = m_Manager.GetUiTracker()->m_pFocused->m_pControl->GetPos();
+	CRect rcFocus = GetUIManager()->GetUiTracker()->m_pFocused->m_pControl->GetPos();
 
-	for (int i=0; i<m_Manager.GetUiTracker()->GetSize(); i++)
+	for (int i=0; i<GetUIManager()->GetUiTracker()->GetSize(); i++)
 	{
-		CUITrackerMuliti::CTrackerElement *elem = m_Manager.GetUiTracker()->m_arrTracker[i];
-		if(elem != m_Manager.GetUiTracker()->m_pFocused)
+		CUITrackerMuliti::CTrackerElement *elem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
+		if(elem != GetUIManager()->GetUiTracker()->m_pFocused)
 		{
 			CRect rcElem = elem->m_pControl->GetPos();
 
@@ -984,7 +984,7 @@ void CDuiEditorViewDesign::OnFormatSameHeight()
 			rc.top		= rcElem.top;
 			rc.bottom	= rc.top + rcFocus.Height();
 			xml_attribute attr = g_duiProp.AddAttribute(elem->m_node, _T("pos"), RectToString(&rc),	this);
-			m_Manager.UpdateControlUI(elem->m_node,  attr);
+			GetUIManager()->UpdateControlUI(elem->m_node,  attr);
 		}
 	}
 }
@@ -992,18 +992,18 @@ void CDuiEditorViewDesign::OnFormatSameHeight()
 
 void CDuiEditorViewDesign::OnUpdateFormatSameHeight(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(m_Manager.GetUiTracker()->GetSize() > 1);
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize() > 1);
 }
 
 
 void CDuiEditorViewDesign::OnFormatSameSize()
 {
-	CRect rcFocus = m_Manager.GetUiTracker()->m_pFocused->m_pControl->GetPos();
+	CRect rcFocus = GetUIManager()->GetUiTracker()->m_pFocused->m_pControl->GetPos();
 
-	for (int i=0; i<m_Manager.GetUiTracker()->GetSize(); i++)
+	for (int i=0; i<GetUIManager()->GetUiTracker()->GetSize(); i++)
 	{
-		CUITrackerMuliti::CTrackerElement *elem = m_Manager.GetUiTracker()->m_arrTracker[i];
-		if(elem != m_Manager.GetUiTracker()->m_pFocused)
+		CUITrackerMuliti::CTrackerElement *elem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
+		if(elem != GetUIManager()->GetUiTracker()->m_pFocused)
 		{
 			CRect rcElem = elem->m_pControl->GetPos();
 
@@ -1013,7 +1013,7 @@ void CDuiEditorViewDesign::OnFormatSameSize()
 			rc.top		= rcElem.top;
 			rc.bottom	= rc.top + rcFocus.Height();
 			xml_attribute attr = g_duiProp.AddAttribute(elem->m_node, _T("pos"), RectToString(&rc),	this);
-			m_Manager.UpdateControlUI(elem->m_node,  attr);
+			GetUIManager()->UpdateControlUI(elem->m_node,  attr);
 		}
 	}
 }
@@ -1021,7 +1021,7 @@ void CDuiEditorViewDesign::OnFormatSameSize()
 
 void CDuiEditorViewDesign::OnUpdateFormatSameSize(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(m_Manager.GetUiTracker()->GetSize() > 1);
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize() > 1);
 }
 
 
@@ -1031,7 +1031,7 @@ void CDuiEditorViewDesign::OnEditZoomIn()
 	m_zoom += 20;
 
 	int dpi = MulDiv(96, m_zoom, 100);
-	m_Manager.SetZoom(dpi);
+	GetUIManager()->SetZoom(dpi);
 }
 
 
@@ -1047,7 +1047,7 @@ void CDuiEditorViewDesign::OnEditZoomOut()
 	m_zoom -= 20;
 
 	int dpi = MulDiv(96, m_zoom, 100);
-	m_Manager.SetZoom(dpi);
+	GetUIManager()->SetZoom(dpi);
 }
 
 
@@ -1062,7 +1062,7 @@ void CDuiEditorViewDesign::OnEditZoomFull()
 	m_zoom = 100;
 
 	int dpi = 96;
-	m_Manager.SetZoom(dpi);
+	GetUIManager()->SetZoom(dpi);
 }
 
 
@@ -1086,9 +1086,9 @@ LRESULT CDuiEditorViewDesign::WindowProc(UINT message, WPARAM wParam, LPARAM lPa
 	if(message == WM_SIZE)
 	{
 		//InsertMsg(_T("WM_SIZE"));
-		if(m_Manager.m_pUiWindow && m_Manager.m_pUiWindow->GetSafeHwnd())
+		if(GetUIManager()->GetUiWindow() && GetUIManager()->GetUiWindow()->GetSafeHwnd())
 		{
-			::PostMessage(m_Manager.m_pUiWindow->GetSafeHwnd(), message, wParam, lParam);
+			::PostMessage(GetUIManager()->GetUiWindow()->GetSafeHwnd(), message, wParam, lParam);
 		}
 	}
 
@@ -1096,9 +1096,9 @@ LRESULT CDuiEditorViewDesign::WindowProc(UINT message, WPARAM wParam, LPARAM lPa
 	if(message == WM_WINDOWPOSCHANGED)
 	{
 		//InsertMsg(_T("WM_WINDOWPOSCHANGED"));
-		if(m_Manager.m_pUiWindow && m_Manager.m_pUiWindow->GetSafeHwnd())
+		if(GetUIManager()->GetUiWindow() && GetUIManager()->GetUiWindow()->GetSafeHwnd())
 		{
-			::PostMessage(m_Manager.m_pUiWindow->GetSafeHwnd(), message, wParam, lParam);
+			::PostMessage(GetUIManager()->GetUiWindow()->GetSafeHwnd(), message, wParam, lParam);
 		}
 	}
 
@@ -1106,9 +1106,9 @@ LRESULT CDuiEditorViewDesign::WindowProc(UINT message, WPARAM wParam, LPARAM lPa
 	if(message == WM_SHOWWINDOW)
 	{
 		//InsertMsg(_T("WM_SHOWWINDOW"));
-		if(m_Manager.m_pUiWindow && m_Manager.m_pUiWindow->GetSafeHwnd())
+		if(GetUIManager()->GetUiWindow() && GetUIManager()->GetUiWindow()->GetSafeHwnd())
 		{
-			::PostMessage(m_Manager.m_pUiWindow->GetSafeHwnd(), message, wParam, lParam);
+			::PostMessage(GetUIManager()->GetUiWindow()->GetSafeHwnd(), message, wParam, lParam);
 		}
 	}
 	return CScrollView::WindowProc(message, wParam, lParam);
@@ -1152,14 +1152,14 @@ void CDuiEditorViewDesign::OnFormatShowRulerbar()
 	m_bViewRuleBar = !m_bViewRuleBar;
 
 	CRect rc;
-	m_Manager.GetUiWindow()->GetWindowRect(rc);
+	GetUIManager()->GetUiWindow()->GetWindowRect(rc);
 
 	if(m_bViewRuleBar)
-		m_Manager.GetUiWindow()->MoveWindow(RULEBAR_SIZE_X, RULEBAR_SIZE_Y, rc.Width(), rc.Height(), TRUE);
+		GetUIManager()->GetUiWindow()->MoveWindow(RULEBAR_SIZE_X, RULEBAR_SIZE_Y, rc.Width(), rc.Height(), TRUE);
 	else
-		m_Manager.GetUiWindow()->MoveWindow(0, 0, rc.Width(), rc.Height(), TRUE);
+		GetUIManager()->GetUiWindow()->MoveWindow(0, 0, rc.Width(), rc.Height(), TRUE);
 
-	m_Manager.SetScrollSize();
+	GetUIManager()->SetScrollSize();
 	Invalidate();
 }
 
@@ -1206,7 +1206,7 @@ void CDuiEditorViewDesign::OnFormatShowUiPreview()
 	m_bShowUiPreview = !m_bShowUiPreview;
 	if(m_bShowUiPreview)
 	{
-		m_Manager.GetUiTracker()->RemoveAll();
+		GetUIManager()->GetUiTracker()->RemoveAll();
 		Invalidate();
 	}
 }
@@ -1223,19 +1223,19 @@ void CDuiEditorViewDesign::OnSetDPI(UINT id)
 	switch (id)
 	{
 	case ID_EDIT_DPI_100:
-		m_Manager.SetZoom(96);
+		GetUIManager()->SetZoom(96);
 		break;
 	case ID_EDIT_DPI_125:
-		m_Manager.SetZoom(120);
+		GetUIManager()->SetZoom(120);
 		break;
 	case ID_EDIT_DPI_150:
-		m_Manager.SetZoom(144);
+		GetUIManager()->SetZoom(144);
 		break;
 	case ID_EDIT_DPI_175:
-		m_Manager.SetZoom(168);
+		GetUIManager()->SetZoom(168);
 		break;
 	case ID_EDIT_DPI_200:
-		m_Manager.SetZoom(192);
+		GetUIManager()->SetZoom(192);
 		break;
 	}
 }
@@ -1248,15 +1248,15 @@ void CDuiEditorViewDesign::OnUpdateSetDPI(CCmdUI *pCmdUI)
 void CDuiEditorViewDesign::OnFileSaveTemplate()
 {
 	CImage image;
-	CControlUI *pRoot = m_Manager.m_pUiWindow->GetManager()->GetRoot();
-	CSize szForm = m_Manager.m_pUiWindow->GetManager()->GetInitSize();
+	CControlUI *pRoot = GetUIManager()->GetManager()->GetRoot();
+	CSize szForm = GetUIManager()->GetManager()->GetInitSize();
 	image.Create(szForm.cx, szForm.cy, 32);
 	CRect rcPaint(0,0,szForm.cx,szForm.cy);
 	pRoot->DoPaint(image.GetDC(), rcPaint, NULL);
 
 
 	CDlgTemplateSave dlg;
-	dlg.m_pDoc = m_Manager.GetDocument();
+	dlg.m_pDoc = GetUIManager()->GetDocument();
 	dlg.m_staPicture.SetPreviewImage(image);
 	image.ReleaseDC();
 
@@ -1268,4 +1268,21 @@ void CDuiEditorViewDesign::OnFileSaveTemplate()
 void CDuiEditorViewDesign::OnUpdateFileSaveTemplate(CCmdUI *pCmdUI)
 {
 	// TODO: 在此添加命令更新用户界面处理程序代码
+}
+
+
+
+void CDuiEditorViewDesign::OnMouseMove(UINT nFlags, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	CPoint pt;
+	::GetCursorPos(&pt);
+	::ScreenToClient(GetUIManager()->GetUiWindow()->GetSafeHwnd(), &pt);
+
+	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
+	CString temp;
+	temp.Format(_T("Cursor: %d, %d"), pt.x, pt.y);
+	pMain->m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_CURSOR_POS, temp);
+
+	CScrollView::OnMouseMove(nFlags, point);
 }

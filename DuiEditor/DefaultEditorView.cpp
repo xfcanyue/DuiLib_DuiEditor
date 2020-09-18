@@ -6,6 +6,7 @@
 #include "DefaultEditorView.h"
 
 #include "DefaultEditor.h"
+#include "UIBuilder.h"
 // CDefaultEditorView
 
 IMPLEMENT_DYNAMIC(CDefaultEditorView, CWnd)

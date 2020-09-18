@@ -3,7 +3,9 @@
 //
 
 #pragma once
+#include "MySplitterWnd.h"
 
+class CUIManager;
 class CChildFrame : public CMDIChildWndEx
 {
 	DECLARE_DYNCREATE(CChildFrame)
@@ -12,13 +14,14 @@ public:
 
 // 特性
 public:
-	CMFCToolBar			m_wndToolBar;
-	CMFCStatusBar	m_wndStatusBar;
 	CRect m_rcView;
+	CMySplitterWnd m_split;
 
-	int m_nCurrentView;
-// 操作
 public:
+	CUIManager *GetUIManager() const { return m_pUIManager; }
+	void SetUIManager(CUIManager *pManager) { m_pUIManager = pManager; }
+private:
+	CUIManager *m_pUIManager;
 
 // 重写
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
@@ -38,4 +41,9 @@ public:
 	afx_msg void OnUpdateDesignerView(CCmdUI *pCmdUI);
 	afx_msg void OnDesignerCode();
 	afx_msg void OnUpdateDesignerCode(CCmdUI *pCmdUI);
+	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
+	afx_msg void OnDesignerSplitUpdown();
+	afx_msg void OnUpdateDesignerSplitUpdown(CCmdUI *pCmdUI);
+	afx_msg void OnDesignerSplitLeftright();
+	afx_msg void OnUpdateDesignerSplitLeftright(CCmdUI *pCmdUI);
 };

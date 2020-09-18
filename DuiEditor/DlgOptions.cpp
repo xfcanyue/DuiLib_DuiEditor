@@ -7,7 +7,7 @@
 #include "afxdialogex.h"
 
 #include "MainFrm.h"
-#include "DuiEditorTabView.h"
+#include "UIManager.h"
 
 //////////////////////////////////////////////////////////////////////////
 // CDlgOptions ¶Ô»°¿ò
@@ -150,17 +150,8 @@ void CDlgOptions::SetXmlOptions(const tagEditorConfig &opt)
 			if(!pDoc->IsKindOf(RUNTIME_CLASS(CDuiEditorDoc)))
 				continue;
 
-			for (POSITION pos = pDoc->GetFirstViewPosition(); pos != NULL;)
-			{
-				CView *pView = pDoc->GetNextView(pos);
-				if(pView->IsKindOf(RUNTIME_CLASS(CDuiEditorTabView)))
-				{
-					CSciWnd *pSciWnd = NULL;
-					CDuiEditorTabView *pTabView = (CDuiEditorTabView *)pView;
-					SetXmlOptions(&pTabView->m_pFormCode->sci, opt);
-					SetXmlOptions(&pTabView->m_pFormDesign->m_Manager.GetXmlPane()->sci, opt);
-				}
-			}
+			CDuiEditorDoc *pDuiDoc = (CDuiEditorDoc *)pDoc;
+			SetXmlOptions(pDuiDoc->GetUIManager()->GetCodeView()->GetSciWnd(), opt);
 		}
 	}
 }

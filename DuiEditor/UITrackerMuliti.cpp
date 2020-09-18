@@ -3,6 +3,7 @@
 #include "DuiEditor.h"
 
 #include "MainFrm.h"
+#include "UIManager.h"
 
 CUITrackerMuliti::CUITrackerMuliti(void):m_pFocused(NULL)
 {
@@ -38,7 +39,7 @@ void CUITrackerMuliti::Draw(CDC* pDC, CSize *szOffset)
 		else
 			m_bFocus = FALSE;
 
-		if(m_pManager->GetView()->m_bShowUiPreview)
+		if(GetUIManager()->GetDesignView()->m_bShowUiPreview)
 		{
 			m_bDrawHandle = FALSE;
 			m_bDrawMoveHandle = FALSE;
@@ -398,7 +399,7 @@ void CUITrackerMuliti::OnChangedRect()
 		if(::GetKeyState(VK_CONTROL) >= 0)
 		{
 			pArrTracker->m_rect = rc;
-			m_pManager->UpdateControlPos(pArrTracker->m_node, rc);
+			GetUIManager()->UpdateControlPos(pArrTracker->m_node, rc);
 			continue;
 		}
 
@@ -451,7 +452,7 @@ void CUITrackerMuliti::OnChangedRect()
 		}
 
 		//载入控件默认属性
-		LPCTSTR pDefaultAttributes = m_pManager->GetManager()->GetDefaultAttributeList(pstrClass);
+		LPCTSTR pDefaultAttributes = GetUIManager()->GetManager()->GetDefaultAttributeList(pstrClass);
 		if( pDefaultAttributes ) 
 		{
 #ifndef DUILIB_VERSION_ORIGINAL
@@ -472,21 +473,21 @@ void CUITrackerMuliti::OnChangedRect()
 		nodeNewControl.set_tag((UINT_PTR)pNewControl);
 
 		//插入左边控件树
-		HTREEITEM hTreeSibling = m_pManager->GetTreeView()->FindXmlNode(nodeCurrentControl); 
+		HTREEITEM hTreeSibling = GetUIManager()->GetTreeView()->FindXmlNode(nodeCurrentControl); 
 		if(!hTreeSibling)	hTreeSibling = TVI_FIRST;
-		HTREEITEM hNewControl = m_pManager->GetTreeView()->AddNewControl(nodeNewControl, hTreeSibling);
+		HTREEITEM hNewControl = GetUIManager()->GetTreeView()->AddNewControl(nodeNewControl, hTreeSibling);
 	
 		//刷新属性窗口
-		g_pPropWnd->InitProp(nodeNewControl);
+		GetUIManager()->GetPropList()->InitProp(nodeNewControl);
 
 		//刷新控件
-		m_pManager->UpdateControlUI(nodeNewControl);
+		GetUIManager()->UpdateControlUI(nodeNewControl);
 
 		//插入command history
-		m_pManager->GetCmdHistory()->AddNewControl(nodeNewControl);
+		GetUIManager()->GetCmdHistory()->AddNewControl(nodeNewControl);
 
 		//保存文档修改标志
-		m_pManager->GetDocument()->SetModifiedFlag(TRUE);
+		GetUIManager()->GetDocument()->SetModifiedFlag(TRUE);
 
 		//缓存当前复制的控件
 		arrNewControl.Add(pNewControl);
@@ -528,7 +529,7 @@ void CUITrackerMuliti::OnChangedRect(const CRect& rectOld)
 
 				CRect rc = m_rect;
 				rc.NormalizeRect();
-				m_pManager->UpdateControlPos(pArrTracker->m_node, rc);
+				GetUIManager()->UpdateControlPos(pArrTracker->m_node, rc);
 				break;
 			}
 		}
@@ -545,7 +546,7 @@ void CUITrackerMuliti::OnChangedRect(const CRect& rectOld)
 
 				CRect rc = m_rect;
 				rc.NormalizeRect();
-				m_pManager->UpdateControlHeight(pArrTracker->m_node, rc.Height());
+				GetUIManager()->UpdateControlHeight(pArrTracker->m_node, rc.Height());
 				break;
 			}
 		}
@@ -562,7 +563,7 @@ void CUITrackerMuliti::OnChangedRect(const CRect& rectOld)
 
 				CRect rc = m_rect;
 				rc.NormalizeRect();
-				m_pManager->UpdateControlWidth(pArrTracker->m_node, rc.Width());
+				GetUIManager()->UpdateControlWidth(pArrTracker->m_node, rc.Width());
 				break;
 			}
 		}
@@ -578,7 +579,7 @@ void CUITrackerMuliti::OnkeyUp()
 	{
 		CTrackerElement* pArrTracker = m_arrTracker.GetAt(i);
 		pArrTracker->m_rect.OffsetRect(0, -1);
-		m_pManager->UpdateControlPos(pArrTracker->m_node, pArrTracker->m_rect);
+		GetUIManager()->UpdateControlPos(pArrTracker->m_node, pArrTracker->m_rect);
 	}
 }
 
@@ -588,7 +589,7 @@ void CUITrackerMuliti::OnkeyDown()
 	{
 		CTrackerElement* pArrTracker = m_arrTracker.GetAt(i);
 		pArrTracker->m_rect.OffsetRect(0, 1);
-		m_pManager->UpdateControlPos(pArrTracker->m_node, pArrTracker->m_rect);
+		GetUIManager()->UpdateControlPos(pArrTracker->m_node, pArrTracker->m_rect);
 	}
 }
 
@@ -598,7 +599,7 @@ void CUITrackerMuliti::OnkeyLeft()
 	{
 		CTrackerElement* pArrTracker = m_arrTracker.GetAt(i);
 		pArrTracker->m_rect.OffsetRect(-1, 0);
-		m_pManager->UpdateControlPos(pArrTracker->m_node, pArrTracker->m_rect);
+		GetUIManager()->UpdateControlPos(pArrTracker->m_node, pArrTracker->m_rect);
 	}
 }
 
@@ -608,7 +609,7 @@ void CUITrackerMuliti::OnkeyRight()
 	{
 		CTrackerElement* pArrTracker = m_arrTracker.GetAt(i);
 		pArrTracker->m_rect.OffsetRect(1, 0);
-		m_pManager->UpdateControlPos(pArrTracker->m_node, pArrTracker->m_rect);
+		GetUIManager()->UpdateControlPos(pArrTracker->m_node, pArrTracker->m_rect);
 	}
 }
 

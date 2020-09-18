@@ -1,27 +1,26 @@
 #include "StdAfx.h"
 #include "UIManager.h"
 
-#include "DuiEditorViewDesign.h"
 #include "DuiEditor.h"
-#include "DockControlTreeWnd.h"
-#include "UIWindowEx.h"
 
 CUIManager::CUIManager(void)
 {
+	m_nSplitterMode = SPLIT_UPDOWN;
+
 	m_pDoc			= NULL;
-	m_pCmdHistory	= NULL;
-	m_pView			= NULL;
+	m_pCmdHistory	= new CDuiEditorCommandHistory;
+	m_pCmdHistory->SetUIManager(this);
+	m_pDesignView	= NULL;
 	m_pManager		= NULL;
 	m_pUiWindow		= NULL;
 	m_pUiTracker	= NULL;
 	m_pTreeView		= NULL;
-	m_pSciPane		= NULL;
 }
 
 
 CUIManager::~CUIManager(void)
 {
-	
+	delete m_pCmdHistory; m_pCmdHistory = NULL;
 }
 
 BOOL CUIManager::IsUiWindow(xml_node node)
@@ -97,27 +96,7 @@ BOOL CUIManager::SelectItem(CControlUI *pControl)
 	GetUiWindow()->Invalidate();
 	return TRUE;
 }
-/*
-BOOL CUIManager::SetControlCaretPos(xml_node node)
-{
-	CControlUI *pControlUI = (CControlUI *)node.get_tag();
-	if(!pControlUI)	return FALSE;
-	return SetControlCaretPos(pControlUI);
-}
 
-BOOL CUIManager::SetControlCaretPos(CControlUI *pControl)
-{
-	if(!pControl)	return FALSE;
-	if(!GetView()) return FALSE;
-	GetView()->SetFocus();
-
-	//设置键盘输入光标位置, 选中控件时，直接键盘输入设置text属性
-	CRect rcFocusControl = pControl->GetPos();
-	BOOL b = ::SetCaretPos(rcFocusControl.left, rcFocusControl.bottom);
-	if(!b) InsertMsg(_T("::SetCaretPos failed."));
-	return b;
-}
-*/
 BOOL CUIManager::UpdateControlUI(CControlUI *pControl)
 {
 	xml_node nodeControl((xml_node_struct *)pControl->GetTag());
@@ -138,11 +117,11 @@ BOOL CUIManager::UpdateControlUI(CControlUI *pControl)
 	GetUiWindow()->Invalidate();
 
 	//改动属性之后，即时刷新xmlpane
-	if(GetXmlPane())
+	if(GetCodeView())
 	{
-		CLockWindowUpdate lock(GetXmlPane());
-		GetXmlPane()->Init();
-		GetXmlPane()->SelectXmlNode(pControl);
+		CLockWindowUpdate lock(GetCodeView());
+		GetCodeView()->LoadDocument();
+		GetCodeView()->SelectXmlNode(pControl);
 	}
 	return TRUE;
 }
@@ -160,7 +139,7 @@ BOOL CUIManager::UpdateControlPos(xml_node node, CRect rect, BOOL bUpdateWithHei
 
 		CString temp;
 		temp.Format(_T("%d,%d"), rect.Width(), rect.Height());
-		g_duiProp.AddAttribute(node, _T("size"), temp, m_pView);
+		g_duiProp.AddAttribute(node, _T("size"), temp, m_pDesignView);
 		return TRUE;
 	}
 
@@ -180,7 +159,7 @@ BOOL CUIManager::UpdateControlPos(xml_node node, CRect rect, BOOL bUpdateWithHei
 		UpdateControlUI(pControl);
 
 		CRect rcNewPos = rcControl; //pControl->GetPos();
-		g_duiProp.AddAttribute(node, _T("pos"), rcNewPos, m_pView);
+		g_duiProp.AddAttribute(node, _T("pos"), rcNewPos, m_pDesignView);
 		if(bUpdateWithHeight)
 		{
 			g_duiProp.AddAttribute(node, _T("width"), rcNewPos.Width(), NULL);
@@ -202,7 +181,7 @@ BOOL CUIManager::UpdateControlPos(xml_node node, CRect rect, BOOL bUpdateWithHei
 
 	if(bUpdateWithHeight)
 	{
-		g_duiProp.AddAttribute(node, _T("pos"), rcDoc, m_pView);
+		g_duiProp.AddAttribute(node, _T("pos"), rcDoc, m_pDesignView);
 		g_duiProp.AddAttribute(node, _T("width"), rcDoc.GetWidth(), NULL);
 		g_duiProp.AddAttribute(node, _T("height"), rcDoc.GetHeight(), NULL);
 	}
@@ -225,7 +204,7 @@ BOOL CUIManager::UpdateControlWidth(xml_node node, int width)
 
 		CString temp;
 		temp.Format(_T("%d,%d"), szForm.cx, szForm.cy);
-		g_duiProp.AddAttribute(node, _T("size"), temp, m_pView);
+		g_duiProp.AddAttribute(node, _T("size"), temp, m_pDesignView);
 		return TRUE;
 	}
 
@@ -243,7 +222,7 @@ BOOL CUIManager::UpdateControlWidth(xml_node node, int width)
 	pControl->SetAttribute(_T("pos"), rcDoc.ToString());	//不能调用pControl->SetPos();
 	UpdateControlUI(pControl);
 
-	g_duiProp.AddAttribute(node, _T("pos"), rcDoc, m_pView);
+	g_duiProp.AddAttribute(node, _T("pos"), rcDoc, m_pDesignView);
 	g_duiProp.AddAttribute(node, _T("width"), rcDoc.GetWidth(), NULL);
 	g_duiProp.AddAttribute(node, _T("height"), rcDoc.GetHeight(), NULL);
 	return TRUE;
@@ -264,7 +243,7 @@ BOOL CUIManager::UpdateControlHeight(xml_node node, int height)
 
 		CString temp;
 		temp.Format(_T("%d,%d"), szForm.cx, szForm.cy);
-		g_duiProp.AddAttribute(node, _T("size"), temp, m_pView);
+		g_duiProp.AddAttribute(node, _T("size"), temp, m_pDesignView);
 		return TRUE;
 	}
 
@@ -282,7 +261,7 @@ BOOL CUIManager::UpdateControlHeight(xml_node node, int height)
 	pControl->SetAttribute(_T("pos"), rcDoc.ToString());	//不能调用pControl->SetPos();
 	UpdateControlUI(pControl);
 
-	g_duiProp.AddAttribute(node, _T("pos"), rcDoc, m_pView);
+	g_duiProp.AddAttribute(node, _T("pos"), rcDoc, m_pDesignView);
 	g_duiProp.AddAttribute(node, _T("width"), rcDoc.GetWidth(),	NULL);
 	g_duiProp.AddAttribute(node, _T("height"), rcDoc.GetHeight(),	NULL);
 	return TRUE;
@@ -423,7 +402,7 @@ BOOL CUIManager::DeleteControl(xml_node node)
 
 	GetTreeView()->DeleteXmlNode(node);
 
-	m_pView->m_cmdHistory.AddDeleteControl(node);
+	GetCmdHistory()->AddDeleteControl(node);
 
 	if(nodeContainer)
 	{
@@ -440,13 +419,13 @@ void CUIManager::SetScrollSize()
 {
 	CSize szForm = GetManager()->GetInitSize();
 
-	if(GetView()->m_bViewRuleBar)
+	if(GetDesignView()->m_bViewRuleBar)
 	{
 		szForm.cx += RULEBAR_SIZE_X;
 		szForm.cy += RULEBAR_SIZE_Y;
 	}
-	m_pView->SetScrollSizes(MM_TEXT, szForm);
-	m_pView->GetParent()->SendMessage(WM_SIZE);
+	m_pDesignView->SetScrollSizes(MM_TEXT, szForm);
+	m_pDesignView->GetParent()->SendMessage(WM_SIZE);
 }
 
 void CUIManager::SetZoom(int zoom)
@@ -458,7 +437,7 @@ void CUIManager::SetZoom(int zoom)
 	CRect rc;
 	GetUiWindow()->GetWindowRect(rc);
 
-	if(GetView()->m_bViewRuleBar)
+	if(GetDesignView()->m_bViewRuleBar)
 		GetUiWindow()->MoveWindow(RULEBAR_SIZE_X, RULEBAR_SIZE_Y, rc.Width(), rc.Height(), TRUE);
 	else
 		GetUiWindow()->MoveWindow(0, 0, rc.Width(), rc.Height(), TRUE);
@@ -466,6 +445,16 @@ void CUIManager::SetZoom(int zoom)
 	GetUiFrom()->SetInitSize(rc.Width(), rc.Height());
 	SetScrollSize();
 
-	GetView()->SendMessage(WM_SIZE);
+	GetDesignView()->SendMessage(WM_SIZE);
 #endif
+}
+
+void CUIManager::SetSplitterMode(int nMode)
+{
+	m_nSplitterMode = nMode;
+}
+
+int  CUIManager::GetSplitterMode() const
+{
+	return m_nSplitterMode;
 }

@@ -76,11 +76,13 @@ public:
 	BOOL m_bOpenDialog;
 };
 
+class CDockPropertyWnd;
 // CUIPropertyGridCtrl
 class CUIPropertyGridCtrl : public CMFCPropertyGridCtrl
 {
 	DECLARE_DYNAMIC(CUIPropertyGridCtrl)
 
+	friend class CDockPropertyWnd;
 public:
 	CUIPropertyGridCtrl();
 	virtual ~CUIPropertyGridCtrl();
@@ -99,8 +101,15 @@ public:
 	xml_node GetXmlNode() const { return m_TreeNode; }
 	xml_node m_TreeNode;
 
+protected:
+	CDockPropertyWnd *m_pPropertyWnd;
+public:
 	CDuiEditorViewDesign *GetView() const;
-	BOOL m_bMainFrame; //是否主框架显示的GRID
+	CUIManager *GetUIManager() const { return m_pUIManager; }
+	void SetUIManager(CUIManager *pManager) { m_pUIManager = pManager; }
+private:
+	CUIManager *m_pUIManager;
+
 protected:
 	void _initProp(xml_node nodeProperty);
 	BOOL _isRepeatProperty(LPCTSTR propName);

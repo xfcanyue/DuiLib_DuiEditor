@@ -10,15 +10,14 @@
 #endif
 
 #include "DuiEditorDoc.h"
-#include "DuiEditorTabView.h"
+#include "DuiEditorView.h"
 #include "DuiEditorViewDesign.h"
 #include "DuiEditorViewCode.h"
 
 #include <propkey.h>
 
 #include "MainFrm.h"
-#include "DockControlTreeWnd.h"
-#include "DockOutputWnd.h"
+#include "UIManager.h"
 #include "DlgCreateDuiDocument.h"
 
 #ifdef _DEBUG
@@ -39,22 +38,40 @@ END_MESSAGE_MAP()
 CDuiEditorDoc::CDuiEditorDoc()
 {
 	// TODO: 在此添加一次性构造代码
-	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
-	m_pTreeView = pMain->m_wndControl.CreateTreeView();
-	m_pTreeView->m_pDoc = this;
 	m_bMenuWnd = FALSE;
 
-	m_pSciWnd = pMain->m_wndDockXml.CreateSciWnd();
-	m_pSciWnd->m_pDoc = this;
+	CUIManager *pManager = new CUIManager;
+	SetUIManager(pManager);
+
+	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
+	CDockControlTreeCtrl *pTreeView = pMain->m_wndControl.CreateTreeView();
+	pTreeView->SetUIManager(GetUIManager());
+
+	CUIPropertyGridCtrl *pPropList = pMain->m_wndProperty.CreatePropList();
+	pPropList->SetUIManager(GetUIManager());
+
+	GetUIManager()->_setPorpList(pPropList);
+	GetUIManager()->_setControllTree(pTreeView);
+	GetUIManager()->_setDocument(this);
 }
 
 CDuiEditorDoc::~CDuiEditorDoc()
 {
 	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
-	pMain->m_wndControl.RemoveTreeView(m_pTreeView);
+	pMain->m_wndProperty.RemovePropList(GetUIManager()->GetPropList());
+	GetUIManager()->_setPorpList(NULL);
+
+	pMain->m_wndControl.RemoveTreeView(GetUIManager()->GetTreeView());
+	GetUIManager()->_setControllTree(NULL);
+
 	InitFileView(this);
 
-	pMain->m_wndDockXml.RemoveSciWnd(m_pSciWnd);
+	CUIManager *pUIManager = GetUIManager();
+	if(pUIManager)
+	{
+		delete pUIManager;
+		SetUIManager(NULL);
+	}
 }
 
 BOOL CDuiEditorDoc::OnNewDocument()
@@ -67,7 +84,7 @@ BOOL CDuiEditorDoc::OnNewDocument()
 	nodeWindow.append_attribute(_T("size")).set_value(_T("400,300"));
 	nodeWindow.append_child(_T("VerticalLayout"));
 
-	GetTreeView()->InitTreeContent();
+	GetUIManager()->GetTreeView()->InitTreeContent();
 	m_strDefaultTitle = m_strTitle;
 	return TRUE;
 }
@@ -86,7 +103,7 @@ BOOL CDuiEditorDoc::OnNewDocumentFromUiTemplate()
 		nodeWindow.append_child(_T("VerticalLayout"));
 	}	
 
-	GetTreeView()->InitTreeContent();
+	GetUIManager()->GetTreeView()->InitTreeContent();
 	m_strDefaultTitle = m_strTitle;
 	return TRUE;
 }
@@ -95,24 +112,24 @@ BOOL CDuiEditorDoc::OnNewDocumentFromUiTemplate()
 // 缩略图的支持
 void CDuiEditorDoc::OnDrawThumbnail(CDC& dc, LPRECT lprcBounds)
 {
-	CView *pView;
-	for (POSITION pos = GetFirstViewPosition(); pos != NULL;)
-	{
-		pView = GetNextView(pos);
-		if(pView->IsKindOf(RUNTIME_CLASS(CDuiEditorViewDesign)))
-		{
-			CDuiEditorViewDesign *pViewDesign = (CDuiEditorViewDesign *)pView;
-
-			CImage image;
-			CControlUI *pRoot = pViewDesign->m_Manager.GetManager()->GetRoot();
-			CSize szForm = pViewDesign->m_Manager.GetManager()->GetInitSize();
-			image.Create(szForm.cx, szForm.cy, 32);
-			CRect rcPaint(0,0,szForm.cx,szForm.cy);
-			pRoot->DoPaint(image.GetDC(), rcPaint, NULL);
-			image.Draw(dc.m_hDC, rcPaint);
-			image.ReleaseDC();
-		}
-	}	
+// 	CView *pView;
+// 	for (POSITION pos = GetFirstViewPosition(); pos != NULL;)
+// 	{
+// 		pView = GetNextView(pos);
+// 		if(pView->IsKindOf(RUNTIME_CLASS(CDuiEditorViewDesign)))
+// 		{
+// 			CDuiEditorViewDesign *pViewDesign = (CDuiEditorViewDesign *)pView;
+// 
+// 			CImage image;
+// 			CControlUI *pRoot = pViewDesign->m_Manager.GetManager()->GetRoot();
+// 			CSize szForm = pViewDesign->m_Manager.GetManager()->GetInitSize();
+// 			image.Create(szForm.cx, szForm.cy, 32);
+// 			CRect rcPaint(0,0,szForm.cx,szForm.cy);
+// 			pRoot->DoPaint(image.GetDC(), rcPaint, NULL);
+// 			image.Draw(dc.m_hDC, rcPaint);
+// 			image.ReleaseDC();
+// 		}
+// 	}	
 }
 #endif // SHARED_HANDLERS
 
@@ -255,42 +272,6 @@ void CDuiEditorDoc::SetModifiedFlag(BOOL bModified)
 	}
 
 	__super::SetModifiedFlag(bModified);
-}
-
-CDuiEditorViewDesign *CDuiEditorDoc::GetDesignView() const
-{
-	CView *pView;
-	for (POSITION pos = GetFirstViewPosition(); pos != NULL;)
-	{
-		pView = GetNextView(pos);
-		if(pView->IsKindOf(RUNTIME_CLASS(CDuiEditorViewDesign)))
-			return (CDuiEditorViewDesign *)pView;
-	}
-	return NULL;
-}
-
-CView *CDuiEditorDoc::GetCodeView() const
-{
-	CView *pView;
-	for (POSITION pos = GetFirstViewPosition(); pos != NULL;)
-	{
-		pView = GetNextView(pos);
-		if(pView->IsKindOf(RUNTIME_CLASS(CDuiEditorViewCode)))
-			return pView;
-	}
-	return NULL;
-}
-
-CDuiEditorTabView *CDuiEditorDoc::GetTabView() const
-{
-	CView *pView;
-	for (POSITION pos = GetFirstViewPosition(); pos != NULL;)
-	{
-		pView = GetNextView(pos);
-		if(pView->IsKindOf(RUNTIME_CLASS(CDuiEditorTabView)))
-			return (CDuiEditorTabView *)pView;
-	}
-	return NULL;
 }
 
 CString CDuiEditorDoc::GetSkinPath()

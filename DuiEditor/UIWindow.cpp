@@ -4,13 +4,14 @@
 #include "stdafx.h"
 #include "DuiEditor.h"
 #include "UIWindow.h"
+#include "UIManager.h"
 
 #include "wm.c"
 
 // CUIWindow
 CUIWindow::CUIWindow()
 {
-
+	m_pUIManager = NULL;
 }
 
 CUIWindow::~CUIWindow()

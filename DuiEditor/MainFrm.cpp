@@ -34,11 +34,27 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_MESSAGE(WM_REOPEN_FILE, &CMainFrame::OnReOpenFile)
 	ON_WM_TIMER()
 	ON_COMMAND(ID_VIEW_CONTROL_TREE, &CMainFrame::OnViewControlTree)
+	ON_COMMAND(ID_INDICATOR_CURSOR_POS, NULL)
+	ON_COMMAND(ID_INDICATOR_LINE, NULL)
+	ON_COMMAND(ID_INDICATOR_COL, NULL)
+	ON_COMMAND(ID_INDICATOR_CURRENT_POS, NULL)
+	ON_COMMAND(ID_INDICATOR_LENGTH, NULL)
+	ON_COMMAND(ID_INDICATOR_TOTAL_LINE, NULL)
+	ON_COMMAND(ID_VIEW_OUTPUT_BAR, &CMainFrame::OnViewOutputBar)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_OUTPUT_BAR, &CMainFrame::OnUpdateViewOutputBar)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
 {
 	ID_SEPARATOR,           // 状态行指示器
+
+	ID_INDICATOR_CURSOR_POS,	//鼠标位置
+	ID_INDICATOR_LINE,			//行号
+	ID_INDICATOR_COL,			//列号
+	ID_INDICATOR_CURRENT_POS,	//当前位置
+	ID_INDICATOR_LENGTH,		//文档总长度
+	ID_INDICATOR_TOTAL_LINE,	//文档总行数
+
 	ID_INDICATOR_CAPS,
 	ID_INDICATOR_NUM,
 	ID_INDICATOR_SCRL,
@@ -152,6 +168,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	m_wndToolBar2.SetToolBarBtnText (m_wndToolBar2.CommandToIndex (ID_DESIGNER_VIEW), _T("设计"));
 	m_wndToolBar2.SetToolBarBtnText (m_wndToolBar2.CommandToIndex (ID_DESIGNER_CODE), _T("代码"));
+	m_wndToolBar2.SetToolBarBtnText (m_wndToolBar2.CommandToIndex (ID_DESIGNER_SPLIT_UPDOWN), _T("上下拆分"));
+	m_wndToolBar2.SetToolBarBtnText (m_wndToolBar2.CommandToIndex (ID_DESIGNER_SPLIT_LEFTRIGHT), _T("左右拆分"));
 
 	m_wndToolBar2.AdjustLayout(); 
 	//////////////////////////////////////////////////////////////////////////
@@ -162,6 +180,12 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;      // 未能创建
 	}
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
+	m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_CURSOR_POS, _T("Cursor: "));
+	m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_LINE, _T("row: "));
+	m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_COL, _T("col: "));
+	m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_CURRENT_POS, _T("pos: "));
+	m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_LENGTH, _T("TotalLength: "));
+	m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_TOTAL_LINE, _T("TotalLines: "));
 
 	if (!m_wndFileView.Create(_T("项目视图"), this, 
 		CRect(0, 0, 300, 200), TRUE, ID_VIEW_FILE, 
@@ -191,20 +215,13 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	{
 		return FALSE; // 未能创建
 	}
-	g_pPropWnd = &m_wndProperty;
-	g_pPropWnd->m_wndPropList.m_bMainFrame = TRUE;
 
-	if (!m_wndOutput.Create(_T(" 输出 "), this, CRect(0, 0, 100, 150), TRUE, ID_OUTPUT_WND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM))
+	if (!m_wndOutput.Create(_T(" 输出 "), this, CRect(0, 0, 100, 100), TRUE, ID_OUTPUT_WND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM))
 	{
 		return FALSE; // 未能创建
 	}
 	m_wndOutput.SetIcon(hClassViewIcon, FALSE);
 
-	if (!m_wndDockXml.Create(_T(" 代码 "), this, CRect(0, 0, 100, 150), TRUE, ID_XML_WND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM))
-	{
-		return FALSE; // 未能创建
-	}
-	m_wndDockXml.SetIcon(hClassViewIcon, FALSE);
 
 	// 启用增强的窗口管理对话框
 	EnableWindowsDialog(ID_WINDOW_MANAGER, ID_WINDOW_MANAGER, TRUE);
@@ -230,14 +247,15 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CDockablePane* pTabbedBar = NULL;
 	m_wndControl.AttachToTabWnd(&m_wndFileView, DM_SHOW, TRUE, &pTabbedBar);
 
-	
-	CDockablePane* pTabbedBar2 = NULL;
-	m_wndDockXml.AttachToTabWnd(&m_wndOutput, DM_SHOW, TRUE, &pTabbedBar2);
-
 	// 启用 Visual Studio 2005 样式停靠窗口行为
 	CDockingManager::SetDockingMode(DT_SMART);
 	// 启用 Visual Studio 2005 样式停靠窗口自动隐藏行为
 	EnableAutoHidePanes(CBRS_ALIGN_ANY);
+
+	//////////////////////////////////////////////////////////////////////////
+#ifndef _DEBUG
+	m_wndOutput.ShowPane(FALSE, FALSE, TRUE);
+#endif
 
 	CThreadPipe::CreatePipe();
 	return 0;
@@ -393,7 +411,7 @@ CDuiEditorViewDesign *CMainFrame::GetActiveUIView()
 void CMainFrame::ShowAllPane()
 {
 	m_wndFileView.ShowPane(TRUE, TRUE, TRUE);
-	//m_wndControl.ShowPane(TRUE, TRUE, TRUE);
+	m_wndControl.ShowPane(TRUE, TRUE, TRUE);
 
 	m_wndToolBox.ShowPane(TRUE, TRUE, TRUE);
 	m_wndProperty.ShowPane(TRUE, TRUE, TRUE);
@@ -499,4 +517,15 @@ void CMainFrame::OnViewControlTree()
 	{
 		m_wndControl.ShowPane(TRUE, FALSE,TRUE);
 	}
+}
+
+void CMainFrame::OnViewOutputBar()
+{
+	m_wndOutput.ShowPane(!m_wndOutput.IsPaneVisible(), FALSE, TRUE);
+}
+
+
+void CMainFrame::OnUpdateViewOutputBar(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(m_wndOutput.IsPaneVisible());
 }

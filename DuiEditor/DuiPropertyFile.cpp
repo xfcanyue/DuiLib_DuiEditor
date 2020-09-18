@@ -1,6 +1,8 @@
 #include "StdAfx.h"
 #include "DuiEditor.h"
 #include "DuiPropertyFile.h"
+#include "DuiEditorDoc.h"
+#include "UIManager.h"
 
 #include <typeinfo>
 
@@ -131,14 +133,6 @@ BOOL CDuiPropertyFile::IsStyleNode(xml_node node)
 {
 	if(CompareString(node.name(), _T("Style")))
 		return TRUE;
-	return FALSE;
-}
-
-BOOL CDuiPropertyFile::IsTabLayoutNode(xml_node node)
-{
-	if(CompareString(node.name(), _T("TabLayout")))
-		return TRUE;
-
 	return FALSE;
 }
 
@@ -502,7 +496,7 @@ xml_attribute CDuiPropertyFile::AddAttribute(xml_node nodeControl, LPCTSTR attrN
 {		
 	if(pView)
 	{
-		pView->m_cmdHistory.AddModifyControl(nodeControl);
+		pView->GetUIManager()->GetCmdHistory()->AddModifyControl(nodeControl);
 		pView->GetDocument()->SetModifiedFlag(TRUE);
 	}
 

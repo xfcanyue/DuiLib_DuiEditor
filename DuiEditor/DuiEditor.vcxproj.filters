@@ -310,9 +310,6 @@
     <ClInclude Include="DuiEditorDoc.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="DuiEditorTabView.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="DuiEditorViewCode.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -340,15 +337,6 @@
     <ClInclude Include="DlgInsertControl.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="UIWindowMenu.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuExUI.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuElementExUI.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="DlgCreateDuiDocument.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -373,12 +361,6 @@
     <ClInclude Include="SciXmlWriter.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="DockXmlWnd.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="DockXmlView.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="xmlMatchedTagsHighlighter.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -386,6 +368,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="EditorConfig.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DuiEditorView.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MySplitterWnd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MyStatusBar.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -495,9 +486,6 @@
     <ClCompile Include="DuiEditorDoc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="DuiEditorTabView.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="DuiEditorViewCode.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -525,15 +513,6 @@
     <ClCompile Include="DlgInsertControl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="UIWindowMenu.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="MenuExUI.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="MenuElementExUI.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="DlgCreateDuiDocument.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -555,16 +534,19 @@
     <ClCompile Include="SciXmlWriter.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="DockXmlWnd.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DockXmlView.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="xmlMatchedTagsHighlighter.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="EditSearchCtrl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiEditorView.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MySplitterWnd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MyStatusBar.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -9,6 +9,7 @@
 #include "ImageEditor.h"
 #include "DefaultEditor.h"
 #include "DlgStringEditor.h"
+#include "UIManager.h"
 
 //////////////////////////////////////////////////////////////////////////
 // CMFCPropertyGridImageProperty
@@ -385,7 +386,8 @@ IMPLEMENT_DYNAMIC(CUIPropertyGridCtrl, CMFCPropertyGridCtrl)
 
 CUIPropertyGridCtrl::CUIPropertyGridCtrl()
 {
-	m_bMainFrame = FALSE;
+	m_pUIManager = NULL;
+	m_pPropertyWnd = NULL;
 	m_pPropFocused = NULL;
 }
 
@@ -409,17 +411,22 @@ END_MESSAGE_MAP()
 // CUIPropertyGridCtrl 消息处理程序
 CDuiEditorViewDesign *CUIPropertyGridCtrl::GetView() const
 {
-	if(!m_bMainFrame)	return NULL;
-
-	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
-	CDuiEditorViewDesign *pView = (CDuiEditorViewDesign *)pMain->GetActiveUIView();
-	return pView;
+	if(!GetUIManager()) return NULL;
+	return GetUIManager()->GetDesignView();
 }
 
 void CUIPropertyGridCtrl::InitProp(xml_node TreeNode)
 {
-	m_TreeNode = TreeNode;
+	CLockWindowUpdate lockUpdate(this);
+	RemoveAll();
 
+	CString strText = _T("属性 -- ");
+	strText += TreeNode.name();
+	m_pPropertyWnd->SetWindowText(strText);
+
+	m_pPropertyWnd->m_wndFindText.GetWindowText(m_strFilter);
+
+	m_TreeNode = TreeNode;
 	pugi::xml_node root = g_duiProp.GetRoot();
 	if(!root)
 	{
@@ -540,9 +547,9 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 		pProperty->SetData((DWORD)attrNode.internal_object());
 		pGroupParent->AddSubItem(pProperty);
 
-		if(m_bMainFrame)
+		if(GetUIManager())
 		{
-			CPaintManagerUI *pManager = GetView()->m_Manager.GetManager();
+			CPaintManagerUI *pManager = GetUIManager()->GetManager();
 			for (int i=0; i<pManager->GetStyles(false).GetSize(); i++)
 			{
 				pProperty->AddOption(pManager->GetStyles(false).GetAt(i));
@@ -815,7 +822,7 @@ void CUIPropertyGridCtrl::OnPropertyChanged(CMFCPropertyGridProperty* pProp) con
 			{
 				CString strStyleName = m_TreeNode.attribute(_T("name")).as_string();
 				bool bShared = m_TreeNode.attribute(_T("shared")).as_bool();
-				pView->m_Manager.GetManager()->RemoveStyle(strStyleName, bShared);
+				pView->GetUIManager()->GetManager()->RemoveStyle(strStyleName, bShared);
 			}
 		}
 	}
@@ -842,7 +849,7 @@ void CUIPropertyGridCtrl::OnPropertyChanged(CMFCPropertyGridProperty* pProp) con
 		}
 
 		//是否设置Control的name?
-		if(m_bMainFrame)
+		if(GetUIManager())
 		{
 			if(CompareString(attrName.value(), _T("name")))
 				if(g_duiProp.IsBaseFromControlUI(m_TreeNode.name()))
@@ -891,7 +898,7 @@ void CUIPropertyGridCtrl::OnPropertyChanged(CMFCPropertyGridProperty* pProp) con
  	CDuiEditorViewDesign *pView = GetView();
 	if(pView)
 	{
-		pView->m_Manager.UpdateControlUI(m_TreeNode, attrTree);
+		pView->GetUIManager()->UpdateControlUI(m_TreeNode, attrTree);
 		pView->Invalidate();
 	}
 

@@ -10,6 +10,8 @@
 #include "DlgInsertControl.h"
 #include "DlgCustomControl.h"
 
+#include "UIManager.h"
+
 #include "wm.c"
 // CUIWindowEx
 
@@ -25,12 +27,13 @@ CUIWindowEx::~CUIWindowEx()
 // CUIWindowEx 消息处理程序
 void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 {
+	CUIManager *pManager = GetUIManager();
 	//当前节点，从控件树获取
-	xml_node nodeCurrent = m_pManager->GetTreeView()->GetSelectXmlNode();					//树选中的控件
+	xml_node nodeCurrent = pManager->GetTreeView()->GetSelectXmlNode();					//树选中的控件
 	CControlUI   *pCurControl = (CControlUI *)nodeCurrent.get_tag();
 	if(!pCurControl)
 	{
-		pCurControl = m_pManager->GetUiFrom();
+		pCurControl = pManager->GetUiFrom();
 	}
 
 	CRect rcClient;
@@ -73,14 +76,14 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 			}
 
 			//选中控件树Window节点添加子控件
-			if(m_pManager->GetUiFrom() == pParentContainer) 
+			if(pManager->GetUiFrom() == pParentContainer) 
 			{ 
 				if(g_duiProp.IsBaseFromContainer(strNewControlClass)) //必须放置于容器内
 				{
 					if(pParentContainer->GetCount() > 0)
 					{
 						//不允许在Window下面插入第2个容器, 强制放到第一个容器里
-						pParentContainer = (CContainerUI *)m_pManager->GetUiFrom()->GetItemAt(0);
+						pParentContainer = (CContainerUI *)pManager->GetUiFrom()->GetItemAt(0);
 						nodeCurrent = xml_node((xml_node_struct *)pParentContainer->GetTag());
 						pCurControl = pParentContainer;
 					}
@@ -97,7 +100,7 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 	case INSERT_NEXT:	//当前控件下方插入兄弟控件
 		{
 			//企图给Form插入兄弟控件
-			if(m_pManager->GetUiFrom() == pCurControl)
+			if(pManager->GetUiFrom() == pCurControl)
 			{
 				AfxMessageBox(_T("控件需要放置于容器内."));  return;
 			}
@@ -113,7 +116,7 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 	case INSERT_BEFORE:	//当前控件上方插入兄弟控件
 		{
 			//企图给Form插入兄弟控件
-			if(m_pManager->GetUiFrom() == pCurControl)
+			if(pManager->GetUiFrom() == pCurControl)
 			{
 				AfxMessageBox(_T("控件需要放置于容器内."));  return;
 			}
@@ -128,7 +131,7 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 		break;	
 	}
 
-	CControlUI *pNewControl = pNewControl = CUIBuilder::CreateControl(strNewControlClass);
+	CControlUI *pNewControl = CUIBuilder::CreateControl(strNewControlClass);
 	BOOL bCustomControl = FALSE;
 	CString strCuscomControlParent;
 	if(!pNewControl) 
@@ -185,7 +188,7 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 	pNewControl->SetTag((UINT_PTR)nodeNewControl.internal_object());
 	nodeNewControl.set_tag((UINT_PTR)pNewControl);
 
-	if(m_pManager->GetView()->m_nFormatInsert == 0)	//自动定位
+	if(pManager->GetDesignView()->m_nFormatInsert == 0)	//自动定位
 	{
 		RECT rcNew;
 		rcNew.left = 0;
@@ -199,7 +202,7 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 		g_duiProp.AddAttribute(nodeNewControl, _T("width"), rcNew.right-rcNew.left,		NULL);
 		g_duiProp.AddAttribute(nodeNewControl, _T("height"), rcNew.bottom-rcNew.top,	NULL);
 	}
-	else if(m_pManager->GetView()->m_nFormatInsert == 1)	//绝对定位
+	else if(pManager->GetDesignView()->m_nFormatInsert == 1)	//绝对定位
 	{
 		CRect rcParent = pParentContainer->GetPos();
 		CRect rcNew;
@@ -215,7 +218,7 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 		g_duiProp.AddAttribute(nodeNewControl, _T("width"), rcNew.right-rcNew.left,		NULL);
 		g_duiProp.AddAttribute(nodeNewControl, _T("height"), rcNew.bottom-rcNew.top,	NULL);
 	}
-	else if(m_pManager->GetView()->m_nFormatInsert == 2)	//相对定位
+	else if(pManager->GetDesignView()->m_nFormatInsert == 2)	//相对定位
 	{
 		CRect rcParent = pNewControl->GetParent()->GetPos();
 		CRect rcNew;
@@ -250,27 +253,27 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 
 	//插入控件树
 	if(dlg.m_nPosition == INSERT_BEFORE)
-		m_pManager->GetTreeView()->AddNewControl(nodeNewControl, nodeCurrent, TVI_BEFORE);
+		pManager->GetTreeView()->AddNewControl(nodeNewControl, nodeCurrent, TVI_BEFORE);
 	else if(dlg.m_nPosition == INSERT_NEXT)
-		m_pManager->GetTreeView()->AddNewControl(nodeNewControl, nodeCurrent, TVI_NEXT);
+		pManager->GetTreeView()->AddNewControl(nodeNewControl, nodeCurrent, TVI_NEXT);
 	else
-		m_pManager->GetTreeView()->AddNewControl(nodeNewControl, nodeCurrent, TVI_CHILD);
+		pManager->GetTreeView()->AddNewControl(nodeNewControl, nodeCurrent, TVI_CHILD);
 
 	//刷新属性窗口
-	g_pPropWnd->InitProp(nodeNewControl);
+	pManager->GetPropList()->InitProp(nodeNewControl);
 
 	//刷新控件
-	m_pManager->UpdateControlUI(nodeNewControl);
+	pManager->UpdateControlUI(nodeNewControl);
 
 	//只选中新添加的控件
 	m_tracker.RemoveAll();
 	m_tracker.Add(nodeNewControl, pNewControl->GetPos());
 
 	//插入command history
-	m_pManager->GetCmdHistory()->AddNewControl(nodeNewControl);
+	pManager->GetCmdHistory()->AddNewControl(nodeNewControl);
 
 	//保存文档修改标志
-	m_pManager->GetDocument()->SetModifiedFlag(TRUE);
+	pManager->GetDocument()->SetModifiedFlag(TRUE);
 }
 
 void CUIWindowEx::OnSelectingControl(CControlUI *pControl, const CRect &rcTracker)
@@ -295,7 +298,7 @@ void CUIWindowEx::OnSelectingControl(CControlUI *pControl, const CRect &rcTracke
 
 void CUIWindowEx::ResizeWindow()
 {
-	if(!m_pManager->GetDocument()->m_bMenuWnd)	return;
+	if(!GetUIManager()->GetDocument()->m_bMenuWnd)	return;
 
 	CUIFormView *pView = (CUIFormView *)GetManager()->GetRoot();
 	CControlUI* pRoot = pView->GetItemAt(0);
@@ -378,7 +381,8 @@ LRESULT CUIWindowEx::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	lRes = HandleCustomMessage(uMsg, wParam, lParam, bHandled);
 	if (bHandled) return lRes;
 
-	if(m_pManager->GetView()->m_bShowUiPreview) //这个非常容易崩溃的
+	CUIManager *pManager = GetUIManager();
+	if(pManager->GetDesignView()->m_bShowUiPreview) //这个非常容易崩溃的
 	{
 		if (GetManager()->MessageHandler(uMsg, wParam, lParam, lRes))
 			return lRes;
@@ -400,9 +404,12 @@ LRESULT CUIWindowEx::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 LRESULT CUIWindowEx::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
+	CUIManager *pManager = GetUIManager();
+	pManager->_setUITrackerMuliti(&m_tracker);
+
 	m_tracker.m_nHandleSize = 6;
 	m_tracker.m_nStyle = CUITracker::dottedLine|CUITracker::resizeInside;
-	m_tracker.m_pManager = m_pManager;
+	m_tracker.SetUIManager(GetUIManager());
 
 	//////////////////////////////////////////////////////////////////////////
 	// 调整窗口样式
@@ -410,7 +417,7 @@ LRESULT CUIWindowEx::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHa
 	styleValue &= ~WS_CAPTION;
 	::SetWindowLong(*this, GWL_STYLE, styleValue | WS_CLIPSIBLINGS | WS_CLIPCHILDREN);
 
-	CDuiEditorDoc *pDoc = m_pManager->GetDocument();
+	CDuiEditorDoc *pDoc = GetUIManager()->GetDocument();
 	GetManager()->Init(m_hWnd);
 	GetManager()->AddPreMessageFilter(this);
 	GetManager()->SetResourcePath(pDoc->GetSkinPath());
@@ -477,6 +484,7 @@ LRESULT CUIWindowEx::OnSetFocus(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPara
 
 LRESULT CUIWindowEx::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
+	CUIManager *pManager = GetUIManager();
 	bHandled = FALSE;
 
 	if( (::GetKeyState(VK_CONTROL) < 0) || (::GetKeyState(VK_MENU) < 0) )
@@ -509,7 +517,7 @@ LRESULT CUIWindowEx::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHand
 		temp.Format(_T("%c"), nChar);
 		strText += temp;
 	}
-	g_duiProp.AddAttribute(node, _T("text"), strText,	m_pManager->GetView());
+	g_duiProp.AddAttribute(node, _T("text"), strText,	pManager->GetDesignView());
 	CControlUI *pFocusControl = (CControlUI *)node.get_tag();
 	pFocusControl->SetText(strText);
 	pFocusControl->NeedParentUpdate();
@@ -519,6 +527,7 @@ LRESULT CUIWindowEx::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHand
 
 LRESULT CUIWindowEx::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
+	CUIManager *pManager = GetUIManager();
 	LRESULT lRes = 0;
 	GetManager()->MessageHandler(uMsg, wParam, lParam, lRes);
 
@@ -530,7 +539,7 @@ LRESULT CUIWindowEx::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHan
 	CRect rectClient;
 	::GetClientRect(m_hWnd, rectClient);
 
-	if(m_pManager->GetView()->m_bViewGrid)
+	if(pManager->GetDesignView()->m_bViewGrid)
 	{
 		for(int i=rectClient.left; i<rectClient.right; i+=10)
 		{
@@ -540,7 +549,7 @@ LRESULT CUIWindowEx::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHan
 	}
 
 
-	if(m_pManager->GetView()->m_bViewMouse)
+	if(pManager->GetDesignView()->m_bViewMouse)
 	{
 		CPoint point;
 		GetCursorPos(&point);
@@ -579,6 +588,8 @@ LRESULT CUIWindowEx::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 {
 	SetFocus(GetSafeHwnd());
 
+	CUIManager *pManager = GetUIManager();
+
 	//切换左边控件树
  	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
 	if(!pMain->m_wndControl.IsPaneVisible())
@@ -586,7 +597,7 @@ LRESULT CUIWindowEx::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 		pMain->m_wndControl.ShowPane(TRUE, TRUE, TRUE);
 	}
 
-	if(m_pManager->GetView()->m_bShowUiPreview)
+	if(GetUIManager()->GetDesignView()->m_bShowUiPreview)
 	{
 		LRESULT lRes = 0;
 		GetManager()->MessageHandler(uMsg, wParam, lParam, lRes);
@@ -647,16 +658,16 @@ LRESULT CUIWindowEx::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 // 			m_tracker.RemoveAll();
 // 		m_tracker.Add(nodeClick, pControl->GetPos());
 
-		m_pManager->SelectItem(nodeClick);
-		m_pManager->GetTreeView()->SelectXmlNode(nodeClick);
-		m_pManager->GetXmlPane()->SelectXmlNode(nodeClick);
+		pManager->SelectItem(nodeClick);
+		pManager->GetTreeView()->SelectXmlNode(nodeClick);
+		pManager->GetCodeView()->SelectXmlNode(nodeClick);
 	}
 	else
 	{
 		m_tracker.SetFocus(nodeClick);
-		m_pManager->SelectItem(nodeClick);
-		m_pManager->GetTreeView()->SelectXmlNode(nodeClick);
-		m_pManager->GetXmlPane()->SelectXmlNode(nodeClick);
+		pManager->SelectItem(nodeClick);
+		pManager->GetTreeView()->SelectXmlNode(nodeClick);
+		pManager->GetCodeView()->SelectXmlNode(nodeClick);
 	}
 
 	//设置键盘输入光标位置, 选中控件时，直接键盘输入设置text属性
@@ -704,7 +715,7 @@ LRESULT CUIWindowEx::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 
 LRESULT CUIWindowEx::OnRButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
-	if(m_pManager->GetView()->m_bShowUiPreview)
+	if(GetUIManager()->GetDesignView()->m_bShowUiPreview)
 	{
 		bHandled = FALSE;
 		return 0;
@@ -718,13 +729,26 @@ LRESULT CUIWindowEx::OnRButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 
 LRESULT CUIWindowEx::OnMouseMove(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
-	if(m_pManager && m_pManager->GetView()->m_bShowUiPreview)
+	CDuiEditorViewDesign *pDesignView = GetUIManager()->GetDesignView();
+	if(pDesignView && pDesignView->m_bShowUiPreview)
 	{
 		bHandled = FALSE;
 		return 0;
 	}
 
-	if(m_pManager && m_pManager->GetView()->m_bViewMouse)
+	if(pDesignView)
+	{
+		CPoint pt;
+		::GetCursorPos(&pt);
+		::ScreenToClient(m_hWnd, &pt);
+
+		CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
+		CString temp;
+		temp.Format(_T("Cursor: %d, %d"), pt.x, pt.y);
+		pMain->m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_CURSOR_POS, temp);
+	}
+
+	if(pDesignView && pDesignView->m_bViewMouse)
 	{
 		Invalidate();
 	}
@@ -734,7 +758,8 @@ LRESULT CUIWindowEx::OnMouseMove(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 
 LRESULT CUIWindowEx::OnSetCursor(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
-	if(m_pManager->GetView()->m_bShowUiPreview)
+	CDuiEditorViewDesign *pDesignView = GetUIManager()->GetDesignView();
+	if(pDesignView->m_bShowUiPreview)
 	{
 		bHandled = FALSE;
 		return 0;
@@ -742,7 +767,7 @@ LRESULT CUIWindowEx::OnSetCursor(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 
 	UINT nHittest = LOWORD(lParam); 
 
-	if(m_pManager->GetView()->m_bShowUiPreview)
+	if(pDesignView->m_bShowUiPreview)
 		return 0;
 
 	xml_node nodeToolBox((xml_node_struct *)g_pToolBox->GetCurSelTag());

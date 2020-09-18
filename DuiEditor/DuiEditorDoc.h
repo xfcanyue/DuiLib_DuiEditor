@@ -2,11 +2,8 @@
 // DuiEditorDoc.h : CDuiEditorDoc 类的接口
 //
 #pragma once
-#include "DockControlTreeCtrl.h"
-#include "DockXmlView.h"
 
-class CDuiEditorTabView;
-class CDuiEditorViewDesign;
+class CUIManager;
 class CDuiEditorDoc : public CDocument
 {
 protected: // 仅从序列化创建
@@ -18,15 +15,16 @@ public:
 	pugi::xml_document m_doc;
 	BOOL m_bMenuWnd;
 
+public:
+	CUIManager *GetUIManager() const { return m_pUIManager; }
+	void SetUIManager(CUIManager *pManager) { m_pUIManager = pManager; }
+private:
+	CUIManager *m_pUIManager;
+
 // 操作
 public:
 	void FilterDefaultValue(xml_node nodeDoc);	//过滤文档默认属性
 	void FilterPosWidthHeight(xml_node nodeDoc);
-	CDockControlTreeCtrl *GetTreeView() { return m_pTreeView; }
-	CDockXmlView *GetXmlPane() const { return m_pSciWnd; }
-	CDuiEditorViewDesign *GetDesignView() const;
-	CView *GetCodeView() const;
-	CDuiEditorTabView *GetTabView() const;
 
 	CString GetSkinPath();
 	CString GetSkinFileName();
@@ -44,9 +42,7 @@ public:
 public:
 	virtual ~CDuiEditorDoc();
 
-protected:
-	CDockControlTreeCtrl *m_pTreeView;
-	CDockXmlView *m_pSciWnd;
+private:
 	CString m_strDefaultTitle;
 // 生成的消息映射函数
 protected:

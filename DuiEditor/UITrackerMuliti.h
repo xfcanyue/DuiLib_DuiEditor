@@ -1,7 +1,7 @@
 #pragma once
 #include "UITracker.h"
-#include "UIManager.h"
 
+class CUIManager;
 class CUITrackerMuliti : public CUITracker
 {
 public:
@@ -34,6 +34,13 @@ public:
 	virtual ~CUITrackerMuliti(void);
 
 	int m_nHitTest;
+
+public:
+	CUIManager *GetUIManager() const { return m_pUIManager; }
+	void SetUIManager(CUIManager *pManager) { m_pUIManager = pManager; }
+private:
+	CUIManager *m_pUIManager;
+
 public:
 	void Draw(CDC* pDC, CSize *szOffset);
 
@@ -52,7 +59,6 @@ public:
 
 	virtual void OnChangedRect();
 	virtual void OnChangedRect(const CRect& rectOld);
-	CUIManager *m_pManager;
 
 	virtual void UpdateRect(xml_node node);
 	virtual void SetFocus(xml_node node);

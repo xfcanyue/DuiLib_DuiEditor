@@ -8,6 +8,10 @@ class CDockPropertyWnd : public CDockablePane
 {
 	DECLARE_DYNAMIC(CDockPropertyWnd)
 public:
+	class CClassTabCtrl : public CMFCTabCtrl
+	{
+		virtual int GetTabsHeight() const { return 0; }
+	};
 	class CPropertiesToolBar : public CMFCToolBar
 	{
 	public:
@@ -22,14 +26,16 @@ public:
 	CDockPropertyWnd();
 	virtual ~CDockPropertyWnd();
 
+	CUIPropertyGridCtrl *CreatePropList();
+	void RemovePropList(CUIPropertyGridCtrl *pTreeView);
+	void SetActivePropList(CUIPropertyGridCtrl *pTreeView);
+	CUIPropertyGridCtrl *GetPropList(int nTab);
+
+	CClassTabCtrl m_tabClass;
 	CFont m_fntPropList;
 	CPropertiesToolBar m_wndToolBar;
 	CEditSearchCtrl m_wndFindText;
-//	CButton m_btnFind;
-	CUIPropertyGridCtrl m_wndPropList;
 
-	void SetPropListFont();
-	void InitProp(xml_node TreeNode, LPCTSTR strFilter=NULL);
 	LRESULT OnPropertyChanged (WPARAM,LPARAM lParam);
 
 	afx_msg void OnExpandAllProperties();
@@ -46,6 +52,4 @@ public:
 	afx_msg void OnUpdatePropertiesFindButton(CCmdUI *pCmdUI);
 	afx_msg void OnChangeEdit1();
 };
-
-extern CDockPropertyWnd *g_pPropWnd;
 

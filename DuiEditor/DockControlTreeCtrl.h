@@ -23,8 +23,6 @@ class CDockControlTreeCtrl : public CTreeCtrl
 public:
 	CDockControlTreeCtrl();
 	virtual ~CDockControlTreeCtrl();
-	CUIManager *m_pManager;
-	CDocument *m_pDoc;
 
 	void InitTreeContent();
 	void OpenXmlDocument(pugi::xml_node elem, HTREEITEM hTreeParent);
@@ -41,6 +39,13 @@ public:
 	xml_node GetSelectXmlNode();
 
 	BOOL DeleteXmlNode(xml_node node);
+
+public:
+	CUIManager *GetUIManager() const { return m_pUIManager; }
+	void SetUIManager(CUIManager *pManager) { m_pUIManager = pManager; }
+private:
+	CUIManager *m_pUIManager;
+
 protected:
 	BOOL OnDragXmlNode(HTREEITEM src, HTREEITEM dest);
 

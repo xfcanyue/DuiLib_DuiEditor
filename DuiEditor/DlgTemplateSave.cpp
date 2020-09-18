@@ -6,7 +6,7 @@
 #include "DlgTemplateSave.h"
 #include "afxdialogex.h"
 
-
+#include "DuiEditorDoc.h"
 // CDlgTemplateSave ¶Ô»°¿ò
 
 IMPLEMENT_DYNAMIC(CDlgTemplateSave, CDialogEx)

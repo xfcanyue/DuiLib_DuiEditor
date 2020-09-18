@@ -18,6 +18,7 @@ IMPLEMENT_DYNAMIC(CDockControlTreeCtrl, CTreeCtrl)
 
 CDockControlTreeCtrl::CDockControlTreeCtrl()
 {
+	m_pUIManager = NULL;
 // 	m_hItemDragSrc = NULL;
 // 	m_hItemDragDest = NULL;
 // 
@@ -28,7 +29,6 @@ CDockControlTreeCtrl::CDockControlTreeCtrl()
 	m_nMaxDeep = 3;
 	m_nCurrentDeep = 0;
 
-	m_pDoc = NULL;
 }
 
 CDockControlTreeCtrl::~CDockControlTreeCtrl()
@@ -72,8 +72,7 @@ void CDockControlTreeCtrl::InitTreeContent()
 
 	DeleteAllItems();
 
-	CDuiEditorDoc *pDoc = (CDuiEditorDoc *)m_pDoc;
-	pugi::xml_node root = pDoc->m_doc.root().child(_T("Window"));
+	pugi::xml_node root = GetUIManager()->GetDocument()->m_doc.root().child(_T("Window"));
 
 	HTREEITEM hRootItem = InsertItem(root.name(), 0, 0, TVI_ROOT, TVI_LAST);
 	SetItemData(hRootItem, (DWORD)root.internal_object());
@@ -86,7 +85,7 @@ void CDockControlTreeCtrl::InitTreeContent()
 	OpenXmlDocument(root, hRootItem);
 
 	SelectItem(hRootItem);
-	g_pPropWnd->InitProp(root);
+	GetUIManager()->GetPropList()->InitProp(root);
 
 	UnlockWindowUpdate();
 }
@@ -247,11 +246,10 @@ void CDockControlTreeCtrl::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 		SelectItem(hItem);
 
 		xml_node node((xml_node_struct *)GetItemData(hItem));
-		g_pPropWnd->InitProp(node);
+		GetUIManager()->GetPropList()->InitProp(node);
 
-		m_pManager->SelectItem(node);
-		//m_pManager->SetControlCaretPos(node);
-		m_pManager->GetXmlPane()->SelectXmlNode(node);
+		GetUIManager()->SelectItem(node);
+		GetUIManager()->GetCodeView()->SelectXmlNode(node);
 	}
 }
 
@@ -267,10 +265,10 @@ void CDockControlTreeCtrl::OnNMRClick(NMHDR *pNMHDR, LRESULT *pResult)
 		SelectItem(hItem);
 
 		xml_node node((xml_node_struct *)GetItemData(hItem));
-		g_pPropWnd->InitProp(node);
+		GetUIManager()->GetPropList()->InitProp(node);
 
-		m_pManager->SelectItem(node);
-		m_pManager->GetXmlPane()->SelectXmlNode(node);
+		GetUIManager()->SelectItem(node);
+		GetUIManager()->GetCodeView()->SelectXmlNode(node);
 	}
 
 //////////////////////////////////////////////////////////////////////////
@@ -331,6 +329,8 @@ HTREEITEM CDockControlTreeCtrl::FindXmlNode(xml_node node)
 
 HTREEITEM CDockControlTreeCtrl::SelectXmlNode(xml_node node)
 {
+	CLockWindowUpdate lockUpdate(this);
+
 	HTREEITEM hItem = FindXmlNode(node);
 	if(hItem)
 	{
@@ -342,7 +342,7 @@ HTREEITEM CDockControlTreeCtrl::SelectXmlNode(xml_node node)
 		SelectItem(hItem);
 	}
 
-	g_pPropWnd->InitProp(node);
+	GetUIManager()->GetPropList()->InitProp(node);
 
 	return NULL;
 }
@@ -390,8 +390,7 @@ BOOL CDockControlTreeCtrl::OnDragXmlNode(HTREEITEM src, HTREEITEM dest)
 	//拖动节点之后, 刷新视图
 	if(nodeNew)
 	{
-		CDuiEditorDoc *pDoc = (CDuiEditorDoc *)m_pDoc;
-		CDuiEditorViewDesign *pView = (CDuiEditorViewDesign *)pDoc->GetDesignView();
+		CDuiEditorViewDesign *pView = GetUIManager()->GetDesignView();
 		if(pView)
 		{
 //			pView->InitView();

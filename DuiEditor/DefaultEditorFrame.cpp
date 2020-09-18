@@ -60,7 +60,8 @@ int CDefaultEditorFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	{
 		return FALSE; // Î´ÄÜ´´½¨
 	}
-	m_wndProperty.m_wndPropList.SetOwner(this);
+	CUIPropertyGridCtrl *pPropList = m_wndProperty.CreatePropList();
+	pPropList->SetOwner(this);
 
 	EnableDocking(CBRS_ALIGN_ANY);
 	m_wndProperty.EnableDocking(CBRS_ALIGN_RIGHT);
@@ -77,7 +78,7 @@ int CDefaultEditorFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	m_wndView.CreateControl(pDlgMain->m_strClassName);
 
-	m_wndProperty.InitProp(pDlgMain->m_nodeControl.child(pDlgMain->m_strClassName));
+	pPropList->InitProp(pDlgMain->m_nodeControl.child(pDlgMain->m_strClassName));
 	return 0;
 }
 

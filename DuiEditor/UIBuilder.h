@@ -7,8 +7,8 @@ public:
 	CUIBuilder();
 	virtual ~CUIBuilder(void);
 
-	CControlUI* Create(STRINGorID xml, LPCTSTR type = NULL, IDialogBuilderCallback* pCallback = NULL,
-		CPaintManagerUI* pManager = NULL, CControlUI* pParent = NULL);
+// 	CControlUI* Create(STRINGorID xml, LPCTSTR type = NULL, IDialogBuilderCallback* pCallback = NULL,
+// 		CPaintManagerUI* pManager = NULL, CControlUI* pParent = NULL);
 
 	CControlUI* Create(pugi::xml_node xmlnode, IDialogBuilderCallback* pCallback, CPaintManagerUI* pManager = NULL, CControlUI* pParent = NULL);
 

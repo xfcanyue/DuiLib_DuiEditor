@@ -7,21 +7,12 @@
 
 #include "ChildFrm.h"
 #include "MainFrm.h"
-#include "DuiEditorTabView.h"
+#include "DuiEditorViewCode.h"
+#include "UIManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
-static UINT indicators[] =
-{
-	ID_SEPARATOR,           // 状态行指示器
-	ID_INDICATOR_LINE,
-	ID_INDICATOR_COL,
-	ID_INDICATOR_CURRENT_POS,
-	ID_INDICATOR_LENGTH,
-	ID_INDICATOR_TOTAL_LINE,
-};
 
 // CChildFrame
 
@@ -35,13 +26,17 @@ BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWndEx)
 	ON_UPDATE_COMMAND_UI(ID_DESIGNER_VIEW, &CChildFrame::OnUpdateDesignerView)
 	ON_COMMAND(ID_DESIGNER_CODE, &CChildFrame::OnDesignerCode)
 	ON_UPDATE_COMMAND_UI(ID_DESIGNER_CODE, &CChildFrame::OnUpdateDesignerCode)
+	ON_COMMAND(ID_DESIGNER_SPLIT_UPDOWN, &CChildFrame::OnDesignerSplitUpdown)
+	ON_UPDATE_COMMAND_UI(ID_DESIGNER_SPLIT_UPDOWN, &CChildFrame::OnUpdateDesignerSplitUpdown)
+	ON_COMMAND(ID_DESIGNER_SPLIT_LEFTRIGHT, &CChildFrame::OnDesignerSplitLeftright)
+	ON_UPDATE_COMMAND_UI(ID_DESIGNER_SPLIT_LEFTRIGHT, &CChildFrame::OnUpdateDesignerSplitLeftright)
 END_MESSAGE_MAP()
 
 // CChildFrame 构造/析构
 
 CChildFrame::CChildFrame()
 {
-	m_nCurrentView = 0;
+	m_pUIManager = NULL;
 }
 
 CChildFrame::~CChildFrame()
@@ -67,39 +62,23 @@ void CChildFrame::OnMDIActivate(BOOL bActivate, CWnd* pActivateWnd, CWnd* pDeact
 	// TODO: 在此处添加消息处理程序代码
 	if(bActivate)
 	{
+		//InsertMsg(_T("CChildFrame::OnMDIActivate"));
+
 		CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
 		CDuiEditorDoc* pDoc = (CDuiEditorDoc *)GetActiveDocument();
-		pMain->m_wndControl.SetActiveTreeView(pDoc->GetTreeView());
-		pMain->m_wndDockXml.SetActiveSciWnd(pDoc->GetXmlPane());
-	}
+		pMain->m_wndControl.SetActiveTreeView(pDoc->GetUIManager()->GetTreeView());
+		pMain->m_wndProperty.SetActivePropList(pDoc->GetUIManager()->GetPropList());
 
-/*	
-	CChildFrame *pChildFrame = DYNAMIC_DOWNCAST(CChildFrame, pActivateWnd);
-	if(!pChildFrame) return;
-	CDuiEditorViewDesign *pVeiw = DYNAMIC_DOWNCAST(CDuiEditorViewDesign, pChildFrame->GetActiveView());
-	if(!pVeiw) return;
-	
-	if(pVeiw->m_Manager.GetUiWindow() && pVeiw->m_Manager.GetUiWindow()->GetSafeHwnd())
-	{
-		CShadowUI *pShadowUI = pVeiw->m_Manager.GetManager()->GetShadow();
-		if(bActivate)
+		CView *pActiveView = GetActiveView();
+		if(GetUIManager()->GetCodeView() == pActiveView && GetUIManager()->GetSplitterMode() == SPLIT_CODE)
 		{
-			if(pShadowUI->IsShowShadow() && pShadowUI->IsDisableShadow() )
-			{
-				pShadowUI->DisableShadow(false);
-			}
+			pMain->HideAllPane();
 		}
 		else
 		{
-			if(pShadowUI->IsShowShadow() && !pShadowUI->IsDisableShadow() )
-			{
-				pShadowUI->DisableShadow(true);
-			}
+			pMain->ShowAllPane();
 		}
 	}
-*/	
-	
-// 	InsertMsg(_T("CChildFrame::OnMDIActivate"));
 }
 
 
@@ -109,45 +88,21 @@ int CChildFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	// TODO:  在此添加您专用的创建代码
-	
-// 	m_wndToolBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, IDR_TB_UIDESIGNER_VIEW);
-// 	m_wndToolBar.LoadToolBar(IDR_TB_UIDESIGNER_VIEW, 0, 0, TRUE );
-// 	m_wndToolBar.SetPaneStyle(m_wndToolBar.GetPaneStyle() | CBRS_TOOLTIPS | CBRS_FLYBY);
-// 	m_wndToolBar.SetPaneStyle(m_wndToolBar.GetPaneStyle() & ~(CBRS_GRIPPER | CBRS_SIZE_DYNAMIC | CBRS_BORDER_TOP | CBRS_BORDER_BOTTOM | CBRS_BORDER_LEFT | CBRS_BORDER_RIGHT));
-// 
-// 	m_wndToolBar.SetOwner(this);
-// 	// 所有命令将通过此控件路由，而不是通过主框架路由:
-// 	m_wndToolBar.SetRouteCommandsViaFrame(FALSE);
-// 
-//   	m_wndToolBar.SetToolBarBtnText (m_wndToolBar.CommandToIndex (ID_DESIGNER_VIEW), _T("设计"));
-// 	m_wndToolBar.SetToolBarBtnText (m_wndToolBar.CommandToIndex (ID_DESIGNER_CODE), _T("代码"));
-	
-	//////////////////////////////////////////////////////////////////////////
-	if (!m_wndStatusBar.Create(this))
-	{
-		TRACE0("未能创建状态栏\n");
-		return -1;      // 未能创建
-	}
-	
-	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
-	m_wndStatusBar.SetPaneWidth(1, 100);
-	m_wndStatusBar.SetPaneText(1, _T("row: "));
-	m_wndStatusBar.SetPaneWidth(2, 100);
-	m_wndStatusBar.SetPaneText(2, _T("col: "));
-	m_wndStatusBar.SetPaneWidth(3, 100);
-	m_wndStatusBar.SetPaneText(3, _T("pos: "));
-	m_wndStatusBar.SetPaneWidth(4, 100);
-	m_wndStatusBar.SetPaneText(4, _T("length: "));
-	m_wndStatusBar.SetPaneWidth(5, 100);
-	m_wndStatusBar.SetPaneText(5, _T("lines: "));
-
-	m_wndStatusBar.ShowPane(FALSE, TRUE, TRUE);
-
-//	m_wndToolBar.EnableDocking(CBRS_ALIGN_TOP);
-	EnableDocking(CBRS_ALIGN_ANY);
-//	DockPane(&m_wndToolBar);
-
 	return 0;
+}
+
+BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	m_split.CreateStatic(this, 2, 1);
+	m_split.SetScrollStyle(m_split.GetScrollStyle() & (~(WS_HSCROLL|WS_VSCROLL)) );
+	m_split.CreateView(0,0, RUNTIME_CLASS(CDuiEditorViewDesign), CSize(0,300), pContext);
+	m_split.CreateView(1,0, RUNTIME_CLASS(CDuiEditorViewCode), CSize(0,0), pContext);
+
+	CDuiEditorDoc *pDoc = (CDuiEditorDoc *)pContext->m_pCurrentDoc;
+	SetUIManager(pDoc->GetUIManager());
+	return TRUE;
+	return CMDIChildWndEx::OnCreateClient(lpcs, pContext);
 }
 
 
@@ -156,70 +111,77 @@ void CChildFrame::OnSize(UINT nType, int cx, int cy)
 	CMDIChildWndEx::OnSize(nType, cx, cy);
 
 	// TODO: 在此处添加消息处理程序代码
-// 	if(!m_wndToolBar.GetSafeHwnd())
-// 		return;
+	
 }
 
 
 void CChildFrame::OnDesignerView()
 {
-	
-	CDuiEditorViewDesign *pView = (CDuiEditorViewDesign *)GetActiveView();
-	if(!pView)	return;
-	CDuiEditorDoc *pDoc = pView->GetDocument();
-	if(!pDoc)	return;
+	GetUIManager()->SetSplitterMode(SPLIT_DESIGN);
 
-	for (POSITION pos = pDoc->GetFirstViewPosition(); pos != NULL;)
-	{
-		CView *pView = pDoc->GetNextView(pos);
-		if(pView->IsKindOf(RUNTIME_CLASS(CDuiEditorTabView)))
-		{
-			CDuiEditorTabView *pTabView = (CDuiEditorTabView *)pView;
-			if(pTabView->SetActiveView(0))
-			{
-				m_nCurrentView = 0;
-				m_wndStatusBar.ShowPane(FALSE, TRUE, TRUE);
-				//((CMainFrame *)AfxGetMainWnd())->ShowAllPane();
-				SendMessage(WM_SIZE);
-			}
-		}
-	}
-	
+	m_split.SetViewMode(SPLIT_DESIGN);
+	m_split.RecalcLayout();
+
+	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
+	pMain->ShowAllPane();
 }
 
 
 void CChildFrame::OnUpdateDesignerView(CCmdUI *pCmdUI)
 {
-	pCmdUI->SetCheck(m_nCurrentView == 0);
+	pCmdUI->SetCheck(m_split.GetViewMode() == SPLIT_DESIGN);
 }
 
 
 void CChildFrame::OnDesignerCode()
 {
-	CDuiEditorViewDesign *pView = (CDuiEditorViewDesign *)GetActiveView();
-	if(!pView)	return;
-	CDuiEditorDoc *pDoc = pView->GetDocument();
-	if(!pDoc)	return;
+	GetUIManager()->SetSplitterMode(SPLIT_CODE);
 
-	for (POSITION pos = pDoc->GetFirstViewPosition(); pos != NULL;)
-	{
-		CView *pView = pDoc->GetNextView(pos);
-		if(pView->IsKindOf(RUNTIME_CLASS(CDuiEditorTabView)))
-		{
-			CDuiEditorTabView *pTabView = (CDuiEditorTabView *)pView;
-			if(pTabView->SetActiveView(1))
-			{
-				m_nCurrentView = 1;
-				m_wndStatusBar.ShowPane(TRUE, TRUE, TRUE);
-				//((CMainFrame *)AfxGetMainWnd())->HideAllPane();
-				SendMessage(WM_SIZE);
-			}
-		}
-	}
+	m_split.SetViewMode(SPLIT_CODE);
+	m_split.RecalcLayout();
+
+
+	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
+	pMain->HideAllPane();
 }
 
 
 void CChildFrame::OnUpdateDesignerCode(CCmdUI *pCmdUI)
 {
-	pCmdUI->SetCheck(m_nCurrentView == 1);
+	pCmdUI->SetCheck(m_split.GetViewMode() == SPLIT_CODE);
+}
+
+void CChildFrame::OnDesignerSplitUpdown()
+{
+	GetUIManager()->SetSplitterMode(SPLIT_UPDOWN);
+
+	m_split.SetViewMode(SPLIT_UPDOWN);
+	m_split.RecalcLayout();
+
+	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
+	pMain->ShowAllPane();
+}
+
+
+void CChildFrame::OnUpdateDesignerSplitUpdown(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(m_split.GetViewMode() == SPLIT_UPDOWN);
+}
+
+
+void CChildFrame::OnDesignerSplitLeftright()
+{
+	GetUIManager()->SetSplitterMode(SPLIT_LEFTRIGHT);
+
+	m_split.SetViewMode(SPLIT_LEFTRIGHT);
+	m_split.RecalcLayout();
+
+	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
+	pMain->ShowAllPane();
+}
+
+
+void CChildFrame::OnUpdateDesignerSplitLeftright(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(m_split.GetViewMode() == SPLIT_LEFTRIGHT);
 }

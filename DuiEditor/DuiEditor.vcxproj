@@ -263,12 +263,10 @@
     <ClInclude Include="DlgTemplateSave.h" />
     <ClInclude Include="DockFileViewCtrl.h" />
     <ClInclude Include="DockFileViewWnd.h" />
-    <ClInclude Include="DockXmlView.h" />
-    <ClInclude Include="DockXmlWnd.h" />
     <ClInclude Include="DuiEditorDocTemplate.h" />
+    <ClInclude Include="DuiEditorView.h" />
     <ClInclude Include="DuiEditorViewCode.h" />
     <ClInclude Include="DuiEditorCommandHistory.h" />
-    <ClInclude Include="DuiEditorTabView.h" />
     <ClInclude Include="DuiProject.h" />
     <ClInclude Include="EditorConfig.h" />
     <ClInclude Include="EditSearchCtrl.h" />
@@ -277,8 +275,8 @@
     <ClInclude Include="ImageEditorTreeWnd.h" />
     <ClInclude Include="ImageEditorView.h" />
     <ClInclude Include="LsStringConverter.h" />
-    <ClInclude Include="MenuElementExUI.h" />
-    <ClInclude Include="MenuExUI.h" />
+    <ClInclude Include="MySplitterWnd.h" />
+    <ClInclude Include="MyStatusBar.h" />
     <ClInclude Include="SciFind.h" />
     <ClInclude Include="SciXmlWriter.h" />
     <ClInclude Include="ScriptEditorDoc.h" />
@@ -311,7 +309,6 @@
     <ClInclude Include="UIView.h" />
     <ClInclude Include="UIWindow.h" />
     <ClInclude Include="UIWindowEx.h" />
-    <ClInclude Include="UIWindowMenu.h" />
     <ClInclude Include="xmlMatchedTagsHighlighter.h" />
   </ItemGroup>
   <ItemGroup>
@@ -328,20 +325,18 @@
     <ClCompile Include="DlgTemplateSave.cpp" />
     <ClCompile Include="DockFileViewCtrl.cpp" />
     <ClCompile Include="DockFileViewWnd.cpp" />
-    <ClCompile Include="DockXmlView.cpp" />
-    <ClCompile Include="DockXmlWnd.cpp" />
     <ClCompile Include="DuiEditorDocTemplate.cpp" />
+    <ClCompile Include="DuiEditorView.cpp" />
     <ClCompile Include="DuiEditorViewCode.cpp" />
     <ClCompile Include="DuiEditorCommandHistory.cpp" />
-    <ClCompile Include="DuiEditorTabView.cpp" />
     <ClCompile Include="DuiProject.cpp" />
     <ClCompile Include="EditSearchCtrl.cpp" />
     <ClCompile Include="ImageEditor.cpp" />
     <ClCompile Include="ImageEditorFrame.cpp" />
     <ClCompile Include="ImageEditorTreeWnd.cpp" />
     <ClCompile Include="ImageEditorView.cpp" />
-    <ClCompile Include="MenuElementExUI.cpp" />
-    <ClCompile Include="MenuExUI.cpp" />
+    <ClCompile Include="MySplitterWnd.cpp" />
+    <ClCompile Include="MyStatusBar.cpp" />
     <ClCompile Include="SciFind.cpp" />
     <ClCompile Include="SciXmlWriter.cpp" />
     <ClCompile Include="ScriptEditorDoc.cpp" />
@@ -377,7 +372,6 @@
     <ClCompile Include="UIView.cpp" />
     <ClCompile Include="UIWindow.cpp" />
     <ClCompile Include="UIWindowEx.cpp" />
-    <ClCompile Include="UIWindowMenu.cpp" />
     <ClCompile Include="xmlMatchedTagsHighlighter.cpp" />
   </ItemGroup>
   <ItemGroup>

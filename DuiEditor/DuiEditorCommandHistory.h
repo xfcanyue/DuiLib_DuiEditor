@@ -1,7 +1,6 @@
 #pragma once
-#include "UIManager.h"
-#include "UIWindowEx.h"
 
+class CUIManager;
 class CDuiEditorCommandHistory
 {
 public:
@@ -9,7 +8,7 @@ public:
 	virtual ~CDuiEditorCommandHistory(void);
 
 	void SetInitBOOL(BOOL bInit) { m_bInit = bInit; }
-	void Init(CDuiEditorDoc *pDoc);
+	void Init();
 	void UnInit();
 
 	void Undo();
@@ -22,8 +21,6 @@ public:
 	xml_node AddModifyControl(xml_node node);
 
 	BOOL AddDeleteControl(xml_node node);
-	
-	CUIManager *m_pManager;
 protected:
 	void PrepareAddCommand();
 	void _add(xml_node nodeControl, xml_node nodeParent, xml_node nodeSibling);
@@ -32,7 +29,6 @@ protected:
 	void _delete(xml_node nodeControl);
 private:
 	BOOL m_bInit;
-	CDuiEditorDoc *m_pDoc;
 	xml_node m_root;
 	xml_node m_nodeUndo;
 	xml_node m_nodeRedo;
@@ -40,5 +36,12 @@ private:
 
 	BOOL m_bCanRedo;
 	BOOL m_bCanUndo;
+
+
+public:
+	CUIManager *GetUIManager() const { return m_pUIManager; }
+	void SetUIManager(CUIManager *pManager) { m_pUIManager = pManager; }
+private:
+	CUIManager *m_pUIManager;
 };
 

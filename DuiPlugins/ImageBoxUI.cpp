@@ -36,8 +36,11 @@ bool CImageBoxUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl
 
 void CImageBoxUI::DrawFrame(HDC hDC)
 {
-	CxImage* pImage = (CxImage *)m_arrImages[m_nCurrentFrame];
-	pImage->Draw(hDC, m_rcItem);
+	if(m_arrImages.GetSize() > m_nCurrentFrame)
+	{
+		CxImage* pImage = (CxImage *)m_arrImages[m_nCurrentFrame];
+		pImage->Draw(hDC, m_rcItem);
+	}
 }
 
 void CImageBoxUI::DoEvent(TEventUI& event)

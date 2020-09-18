@@ -66,6 +66,19 @@ inline void InsertMsg(LPCTSTR strLog)
 		::SendMessage(g_hWndMsg, WM_INSERT_MSG, (WPARAM)strLog, 0);
 	}
 }
+inline void InsertMsgV(LPCTSTR lpszFormat, ...)
+{
+	ASSERT(AfxIsValidString(lpszFormat));
+
+	CString strText;
+
+	va_list argList;
+	va_start(argList, lpszFormat);
+	strText.FormatV(lpszFormat, argList);
+	va_end(argList);
+
+	InsertMsg(strText);
+}
 
 #define WM_REOPEN_FILE			WM_USER + 221
 #define WM_INIT_VIEW_DESIGN		WM_USER + 222

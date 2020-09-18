@@ -7,10 +7,11 @@
 #include "DockControlTreeWnd.h"
 #include "DockPropertyWnd.h"
 #include "DockOutputWnd.h"
-#include "DockXmlWnd.h"
 #include "ToolBoxWnd.h"
+#include "MyStatusBar.h"
 
 #include "DuiEditorViewDesign.h"
+#include "DuiEditorDoc.h"
 
 class CMainFrame : public CMDIFrameWndEx
 {
@@ -42,11 +43,11 @@ public:
 	CDockPropertyWnd	 m_wndProperty;
 	CDockControlTreeWnd	 m_wndControl;
 	CDockFileViewWnd	 m_wndFileView;
-	CDockXmlWnd			 m_wndDockXml;
+	CMyStatusBar		m_wndStatusBar;
+
 protected:  // 控件条嵌入成员
 	CMFCMenuBar       m_wndMenuBar;
 	CMFCToolBar       m_wndToolBar;
-	CMFCStatusBar     m_wndStatusBar;
 	CDockOutputWnd	  m_wndOutput;
 	CDockToolBoxWnd	  m_wndToolBox;
 
@@ -70,6 +71,8 @@ public:
 	afx_msg LRESULT OnReOpenFile(WPARAM wparam, LPARAM lparam);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnViewControlTree();
+	afx_msg void OnViewOutputBar();
+	afx_msg void OnUpdateViewOutputBar(CCmdUI *pCmdUI);
 };
 
 

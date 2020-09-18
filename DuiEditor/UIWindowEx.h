@@ -1,10 +1,9 @@
 #pragma once
 #include "UIWindow.h"
-#include "UIManager.h"
+#include "UITrackerMuliti.h"
 #include <list>
 // CUIWindowEx
 
-class CDuiEditorViewDesign;
 class CUIWindowEx : public CUIWindow, public WindowImplBase
 {
 public:
@@ -19,9 +18,9 @@ public:
 #else
 	virtual CPaintManagerUI *GetManager() { return &m_pm; }
 #endif
-	virtual CUITrackerMuliti *GetUiTracker() { return &m_tracker; }
 	virtual HWND GetSafeHwnd() { return GetHWND(); }
-	virtual HWND CreateUiWindow(HWND hwndParent, LPCTSTR pstrWindowName,DWORD dwStyle, DWORD dwExStyle) { return CreateDuiWindow(hwndParent, pstrWindowName, dwStyle, dwExStyle); }
+	virtual HWND CreateUiWindow(HWND hwndParent, LPCTSTR pstrWindowName,DWORD dwStyle, DWORD dwExStyle) 
+	{ return CreateDuiWindow(hwndParent, pstrWindowName, dwStyle, dwExStyle); }
 public:
 	CUITrackerMuliti m_tracker;
 	bool m_bOpenConfigFile;

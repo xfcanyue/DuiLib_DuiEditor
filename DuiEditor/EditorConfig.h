@@ -15,7 +15,14 @@ struct tagEditorConfig
 	CString strPropertyFile;		//指定duilib.xml的路径，这个设置允许设置其他目录的duilib.xml，必须是绝对路径。
 	CString strAttachTestCommand;	//附加测试窗体的程序，可以把项目中的执行程序引进来
 	int nControlTreeDeep;			//载入控件树时，默认展开的层数。
-	BOOL bFilterPosWidthHeight;
+	BOOL bFilterPosWidthHeight;		//是否过滤掉pos属性
+
+	int nFormatInsert;		//插入模式, 0=自动定位，1=绝对定位，2=相对定位
+	BOOL bViewUiPreview;	//是否在编辑界面显示UI效果
+	BOOL bViewRuleBar;		//是否显示标尺
+	BOOL bViewGrid;			//是否显示网格
+	BOOL bViewMouse;		//是否显示鼠标线
+
 
 	void CopyFrom(const tagEditorConfig &cfg)
 	{
@@ -32,6 +39,12 @@ struct tagEditorConfig
 		strAttachTestCommand = cfg.strAttachTestCommand;
 		nControlTreeDeep = cfg.nControlTreeDeep;
 		bFilterPosWidthHeight = cfg.bFilterPosWidthHeight;
+
+		nFormatInsert = cfg.nFormatInsert;
+		bViewUiPreview = cfg.bViewUiPreview;
+		bViewRuleBar = cfg.bViewRuleBar;
+		bViewGrid = cfg.bViewGrid;
+		bViewMouse = cfg.bViewMouse;
 	}
 
 	void LoadConfig(LPCTSTR filename)
@@ -52,6 +65,12 @@ struct tagEditorConfig
 		strAttachTestCommand = root.child(_T("AttachTestCommand")).text().as_string();
 		nControlTreeDeep = root.child(_T("ControlTreeDeep")).text().as_int(10);
 		bFilterPosWidthHeight = root.child(_T("FilterPosWidthHeight")).text().as_bool();
+
+		nFormatInsert = root.child(_T("FormatInsert")).text().as_int(0);
+		bViewUiPreview = root.child(_T("ViewUiPreview")).text().as_bool();
+		bViewRuleBar = root.child(_T("ViewRuleBar")).text().as_bool();
+		bViewGrid = root.child(_T("ViewGrid")).text().as_bool();
+		bViewMouse = root.child(_T("ViewMouse")).text().as_bool();
 	}
 
 	void SaveConfig()
@@ -71,6 +90,12 @@ struct tagEditorConfig
 		root.child_auto(_T("AttachTestCommand")).text().set(strAttachTestCommand);
 		root.child_auto(_T("ControlTreeDeep")).text().set(nControlTreeDeep);
 		root.child_auto(_T("FilterPosWidthHeight")).text().set(bFilterPosWidthHeight);
+
+		root.child_auto(_T("FormatInsert")).text().set(nFormatInsert);
+		root.child_auto(_T("ViewUiPreview")).text().set(bViewUiPreview);
+		root.child_auto(_T("ViewRuleBar")).text().set(bViewRuleBar);
+		root.child_auto(_T("ViewGrid")).text().set(bViewGrid);
+		root.child_auto(_T("ViewMouse")).text().set(bViewMouse);
 
 		xml.save_to_default_file();
 	}

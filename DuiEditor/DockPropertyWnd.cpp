@@ -8,8 +8,8 @@
 #include "MainFrm.h"
 #include "DockControlTreeWnd.h"
 #include "DockOutputWnd.h"
+#include "UIManager.h"
 
-CDockPropertyWnd *g_pPropWnd;
 // CPropertyWnd
 
 IMPLEMENT_DYNAMIC(CDockPropertyWnd, CDockablePane)
@@ -42,8 +42,60 @@ END_MESSAGE_MAP()
 
 // CPropertyWnd 消息处理程序
 
+CUIPropertyGridCtrl *CDockPropertyWnd::CreatePropList()
+{
+	CRect rectDummy;
+	rectDummy.SetRectEmpty();
 
+	CUIPropertyGridCtrl *pPropList = new CUIPropertyGridCtrl;
+	if (!pPropList->Create(WS_VISIBLE | WS_CHILD | WS_BORDER, rectDummy, &m_tabClass, 2))
+	{
+		TRACE0("未能创建属性网格\n");
+		return NULL;      // 未能创建
+	}
 
+	pPropList->EnableHeaderCtrl(FALSE);
+	pPropList->EnableDescriptionArea();
+	pPropList->SetVSDotNetLook();
+	pPropList->MarkModifiedProperties();
+	pPropList->SetFont(&afxGlobalData.fontRegular);
+
+	pPropList->m_pPropertyWnd = this;
+
+	m_tabClass.AddTab(pPropList, _T(""));
+	SetActivePropList(pPropList);
+	return pPropList;
+}
+
+void CDockPropertyWnd::RemovePropList(CUIPropertyGridCtrl *pTreeView)
+{
+	for (int i=0; i<m_tabClass.GetTabsNum(); i++)
+	{
+		if(m_tabClass.GetTabWnd(i) == pTreeView)
+		{
+			m_tabClass.RemoveTab(i);
+			delete pTreeView;
+			break;
+		}
+	}
+}
+
+void CDockPropertyWnd::SetActivePropList(CUIPropertyGridCtrl *pTreeView)
+{
+	for (int i=0; i<m_tabClass.GetTabsNum(); i++)
+	{
+		if(m_tabClass.GetTabWnd(i) == pTreeView)
+		{
+			m_tabClass.SetActiveTab(i);
+			break;
+		}
+	}
+}
+
+CUIPropertyGridCtrl *CDockPropertyWnd::GetPropList(int nTab)
+{
+	return (CUIPropertyGridCtrl *)m_tabClass.GetTabWnd(nTab);
+}
 
 int CDockPropertyWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
@@ -54,11 +106,6 @@ int CDockPropertyWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CRect rectDummy;
 	rectDummy.SetRectEmpty();
 
-	if (!m_wndPropList.Create(WS_VISIBLE | WS_CHILD | WS_BORDER, rectDummy, this, 2))
-	{
-		TRACE0("未能创建属性网格\n");
-		return -1;      // 未能创建
-	}
 
 	m_wndToolBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, IDR_PROPERTIES);
 	m_wndToolBar.LoadToolBar(IDR_PROPERTIES, 0, 0, TRUE /* 已锁定*/);
@@ -82,18 +129,8 @@ int CDockPropertyWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndFindText.EnableFolderBrowseButton();
 	m_wndFindText.SetImage();
 
-// 	m_btnFind.Create(_T(""), WS_CHILD | WS_VISIBLE| BS_PUSHBUTTON , rectDummy, this, ID_PROPERTIES_FIND_BUTTON);
-// 	m_btnFind.SetFont(&afxGlobalData.fontRegular);
-
-	SetPropListFont();
-	m_wndPropList.EnableHeaderCtrl(FALSE);
-	m_wndPropList.EnableDescriptionArea();
-	m_wndPropList.SetVSDotNetLook();
-	m_wndPropList.MarkModifiedProperties();
-	m_wndPropList.SetFont(&afxGlobalData.fontRegular);
-
-	//m_wndPropList.SetAlphabeticMode(TRUE);
-
+	m_tabClass.Create (CMFCTabCtrl::STYLE_3D_ONENOTE,
+		CRect(0,0,0,0), this, ID_VIEW_CONTROL_TAB, CMFCTabCtrl::LOCATION_TOP); 
 	return 0;
 }
 
@@ -129,58 +166,8 @@ void CDockPropertyWnd::OnSize(UINT nType, int cx, int cy)
 	m_wndFindText.SetRectNP(&rc);
 	ReleaseDC(pDC);
 
-//	int btnWidth = cyTlb;
-// 	m_btnFind.SetWindowPos(NULL, rectClient.right-btnWidth, top, btnWidth, btnWidth, SWP_NOACTIVATE | SWP_NOZORDER);
-// 	m_wndFindText.SetWindowPos(NULL, rectClient.left, top, rectClient.Width()-bthWidth, cyTlb+2, SWP_NOACTIVATE | SWP_NOZORDER);
-
-	m_wndPropList.SetWindowPos(NULL, rectClient.left, rectClient.top + cyTlb*2, rectClient.Width(), rectClient.Height()-cyTlb*2, 
+	m_tabClass.SetWindowPos(NULL, rectClient.left, rectClient.top + cyTlb*2, rectClient.Width(), rectClient.Height()-cyTlb*2, 
 		SWP_NOACTIVATE | SWP_NOZORDER);
-}
-
-void CDockPropertyWnd::SetPropListFont()
-{
-	::DeleteObject(m_fntPropList.Detach());
-
-	LOGFONT lf;
-	afxGlobalData.fontRegular.GetLogFont(&lf);
-
-	NONCLIENTMETRICS info;
-	info.cbSize = sizeof(info);
-
-	afxGlobalData.GetNonClientMetrics(info);
-
-	lf.lfHeight = info.lfMenuFont.lfHeight;
-	lf.lfWeight = info.lfMenuFont.lfWeight;
-	lf.lfItalic = info.lfMenuFont.lfItalic;
-
-	m_fntPropList.CreateFontIndirect(&lf);
-
-	m_wndPropList.SetFont(&m_fntPropList);
-}
-
-void CDockPropertyWnd::InitProp(xml_node TreeNode, LPCTSTR strFilter)
-{
-	m_wndPropList.RemoveAll();
-	SetPropListFont();
-	m_wndPropList.EnableHeaderCtrl(FALSE);
-	m_wndPropList.EnableDescriptionArea();
-	m_wndPropList.SetVSDotNetLook();
-	m_wndPropList.MarkModifiedProperties();
-	m_wndPropList.SetFont(&afxGlobalData.fontRegular);
-	//m_wndPropList.SetAlphabeticMode(TRUE);
-
-	CString strText = _T("属性 -- ");
-	strText += TreeNode.name();
-	SetWindowText(strText);
-
-	CString strFilterEx = strFilter;
-	if(strFilterEx.IsEmpty())
-		m_wndFindText.GetWindowText(strFilterEx);
-
-	m_wndPropList.m_strFilter = strFilterEx;
-	//m_wndPropList.m_strFilter = strFilter;
-	m_wndPropList.InitProp(TreeNode);
-	return;
 }
 
 LRESULT CDockPropertyWnd::OnPropertyChanged (WPARAM,LPARAM lParam)
@@ -189,13 +176,16 @@ LRESULT CDockPropertyWnd::OnPropertyChanged (WPARAM,LPARAM lParam)
 
 	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
 	CDuiEditorViewDesign *pView = pMain->GetActiveUIView();
-	pView->m_Manager.GetTreeView()->UpdateXmlNode(m_wndPropList.m_TreeNode);
+
+	CUIPropertyGridCtrl *pPropList = GetPropList(m_tabClass.GetActiveTab());
+	pView->GetUIManager()->GetTreeView()->UpdateXmlNode(pPropList->m_TreeNode);
 	return 0;
 }
 
 void CDockPropertyWnd::OnExpandAllProperties()
 {
-	m_wndPropList.ExpandAll();
+	CUIPropertyGridCtrl *pPropList = GetPropList(m_tabClass.GetActiveTab());
+	pPropList->ExpandAll();
 }
 
 void CDockPropertyWnd::OnUpdateExpandAllProperties(CCmdUI* /* pCmdUI */)
@@ -204,12 +194,16 @@ void CDockPropertyWnd::OnUpdateExpandAllProperties(CCmdUI* /* pCmdUI */)
 
 void CDockPropertyWnd::OnSortProperties()
 {
-	m_wndPropList.SetAlphabeticMode(!m_wndPropList.IsAlphabeticMode());
+	CUIPropertyGridCtrl *pPropList = GetPropList(m_tabClass.GetActiveTab());
+	if(pPropList)
+		pPropList->SetAlphabeticMode(!pPropList->IsAlphabeticMode());
 }
 
 void CDockPropertyWnd::OnUpdateSortProperties(CCmdUI* pCmdUI)
 {
-	pCmdUI->SetCheck(m_wndPropList.IsAlphabeticMode());
+	CUIPropertyGridCtrl *pPropList = GetPropList(m_tabClass.GetActiveTab());
+	if(pPropList)
+		pCmdUI->SetCheck(pPropList->IsAlphabeticMode());
 }
 
 void CDockPropertyWnd::OnPropertiesFindText()
@@ -220,12 +214,18 @@ void CDockPropertyWnd::OnPropertiesFindText()
 
 void CDockPropertyWnd::OnPropertiesFindButton()
 {
+
 	CString strFilter;
 	m_wndFindText.GetWindowText(strFilter);
 	if(strFilter.IsEmpty()) return;
 
 	m_wndFindText.SetWindowText(_T(""));
-	InitProp(m_wndPropList.m_TreeNode, NULL);
+
+	CUIPropertyGridCtrl *pPropList = GetPropList(m_tabClass.GetActiveTab());
+	if(pPropList)
+	{
+		pPropList->InitProp(pPropList->m_TreeNode);
+	}
 }
 
 
@@ -236,8 +236,9 @@ void CDockPropertyWnd::OnUpdatePropertiesFindButton(CCmdUI *pCmdUI)
 
 void CDockPropertyWnd::OnChangeEdit1()
 {
-	CString strFilter;
-	m_wndFindText.GetWindowText(strFilter);
-
-	InitProp(m_wndPropList.m_TreeNode, strFilter);
+	CUIPropertyGridCtrl *pPropList = GetPropList(m_tabClass.GetActiveTab());
+	if(pPropList)
+	{
+		pPropList->InitProp(pPropList->m_TreeNode);
+	}
 }

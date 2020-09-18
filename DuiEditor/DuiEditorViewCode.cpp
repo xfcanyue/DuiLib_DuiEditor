@@ -10,16 +10,17 @@
 #include "DuiEditorDoc.h"
 #include "MainFrm.h"
 #include "ChildFrm.h"
+#include "UIManager.h"
 // CDuiEditorCode
 
 IMPLEMENT_DYNCREATE(CDuiEditorViewCode, CView)
 
 CDuiEditorViewCode::CDuiEditorViewCode()
 {
+	m_pUIManager = NULL;
 	m_pDlgFind = NULL;
 	m_hDlgFind = NULL;
-
-	m_pManager = NULL;
+	m_nTargetLine = -1;
 }
 
 CDuiEditorViewCode::~CDuiEditorViewCode()
@@ -29,6 +30,7 @@ CDuiEditorViewCode::~CDuiEditorViewCode()
 BEGIN_MESSAGE_MAP(CDuiEditorViewCode, CView)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
+	ON_MESSAGE(WM_SCIWND_CLICK, OnSciClick)
 	ON_COMMAND(ID_EDIT_UNDO, &CDuiEditorViewCode::OnEditUndo)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &CDuiEditorViewCode::OnUpdateEditUndo)
 	ON_COMMAND(ID_EDIT_REDO, &CDuiEditorViewCode::OnEditRedo)
@@ -40,16 +42,32 @@ BEGIN_MESSAGE_MAP(CDuiEditorViewCode, CView)
 	ON_COMMAND(ID_EDIT_FIND, &CDuiEditorViewCode::OnEditFind)
 	ON_COMMAND(ID_EDIT_PASTE, &CDuiEditorViewCode::OnEditPaste)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &CDuiEditorViewCode::OnUpdateEditPaste)
+	ON_WM_CONTEXTMENU()
+	ON_COMMAND(ID_SCI_REFRESH, &CDuiEditorViewCode::OnEditRefresh)
+	ON_COMMAND(ID_SCI_SELECT_ALL, &CDuiEditorViewCode::OnEditSelectAll)
+	ON_COMMAND(ID_SCI_UPDATE_DESIGN, &CDuiEditorViewCode::OnSciUpdateDesign)
+	ON_UPDATE_COMMAND_UI(ID_SCI_UPDATE_DESIGN, &CDuiEditorViewCode::OnUpdateSciUpdateDesign)
+	ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
 
 // CDuiEditorCode 绘图
+inline CDuiEditorDoc* CDuiEditorViewCode::GetDocument() const
+{ return reinterpret_cast<CDuiEditorDoc*>(m_pDocument); }
 
 void CDuiEditorViewCode::OnDraw(CDC* pDC)
 {
 	CDocument* pDoc = GetDocument();
 	// TODO: 在此添加绘制代码
 }
+
+BOOL CDuiEditorViewCode::OnEraseBkgnd(CDC* pDC)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	return TRUE;
+	return CView::OnEraseBkgnd(pDC);
+}
+
 // CDuiEditorCode 消息处理程序
 
 
@@ -59,6 +77,8 @@ int CDuiEditorViewCode::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	// TODO:  在此添加您专用的创建代码
+	SetUIManager(GetDocument()->GetUIManager());
+	GetUIManager()->_setDesignCode(this);
 	CRect rectDummy;
 	rectDummy.SetRect(0,0,100,100);
 	if (!sci.Create(0, WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_CLIPCHILDREN, rectDummy, this, ID_SCI_WND))
@@ -67,9 +87,18 @@ int CDuiEditorViewCode::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;      // 未能创建
 	}
 	sci.InitXML(g_cfg);
-	sci.sci_ClearTextAll();
+	sci.sci_UsePopup(FALSE);
 
 	return 0;
+}
+
+void CDuiEditorViewCode::OnInitialUpdate()
+{
+	CView::OnInitialUpdate();
+
+	// TODO: 在此添加专用代码和/或调用基类
+	sci.sci_ClearTextAll();
+	LoadDocument();
 }
 
 void CDuiEditorViewCode::OnSize(UINT nType, int cx, int cy)
@@ -85,18 +114,16 @@ void CDuiEditorViewCode::OnSize(UINT nType, int cx, int cy)
 	sci.MoveWindow(rcClient);
 }
 
-void CDuiEditorViewCode::Init()
+void CDuiEditorViewCode::LoadDocument()
 {
 	CDuiEditorDoc *pDoc = (CDuiEditorDoc *)GetDocument();
 
 	CSciXmlWriter writer(&sci);
 	writer.print(pDoc->m_doc.child(_T("Window")));
 
-	//切换到行，设计界面中选中的控件
-	xml_node node = pDoc->GetDesignView()->m_Manager.GetUiTracker()->m_node;
-	if(node)
+	if(m_nTargetLine >= 0)
 	{
-		int line = node.get_row();
+		int line = m_nTargetLine;
 		int lineposbegin = sci.sci_PositionFromLine(line);
 		int lineposend = sci.sci_GetLineEndPosition(line);
 
@@ -109,20 +136,10 @@ void CDuiEditorViewCode::Init()
 		else
 			sci.sci_LineScroll(0, line - centerline);
 
-// 		CString temp;
-// 		temp.Format(_T("line=%d, lineposbegin=%d, lineposend=%d"), line, lineposbegin, lineposend);
-// 		InsertMsg(temp);
 		sci.sci_SetSel(lineposend, lineposbegin);
+
+		m_nTargetLine = -1;
 	}
-
-
-// 	sci.sci_ClearTextAll();
-// 
-// 	xml_string_writer writer;
-// 	writer.pSciWnd = &sci;
-// 	pDoc->m_doc.child(_T("Window")).print(writer);
-// 	sci.sci_SetSavePoint();
-	//sci.sci_EmptyUndoBuffer(); //不清理历史记录，写错时，就可以无限后退了
 }
 
 BOOL CDuiEditorViewCode::ApplyDocument()
@@ -150,37 +167,113 @@ BOOL CDuiEditorViewCode::ApplyDocument()
 	//更新到主框架
 	CDuiEditorDoc *pDoc = (CDuiEditorDoc *)GetDocument();
 	pDoc->m_doc.load_string(strText, XML_PARSER_OPTIONS);
-	pDoc->GetTreeView()->InitTreeContent();
+	GetUIManager()->GetTreeView()->InitTreeContent();
 	pDoc->SetModifiedFlag(TRUE);
-	((CDuiEditorViewDesign *)pDoc->GetDesignView())->InitView();
+	GetUIManager()->GetDesignView()->InitView();
 
 	return TRUE;
+}
+void CDuiEditorViewCode::SelectXmlNode(CControlUI *pControl)
+{
+	//切换到行，设计界面中选中的控件
+	xml_node node((xml_node_struct *)pControl->GetTag());
+	SelectXmlNode(node);
+}
+
+void CDuiEditorViewCode::SelectXmlNode(xml_node node)
+{
+	//文档有变动，重新载入一次
+	if(sci.sci_GetModify())
+	{
+		LoadDocument();
+	}
+
+	if(node)
+	{
+		int line = node.get_row();
+		int lineposbegin = sci.sci_PositionFromLine(line);
+		int lineposend = sci.sci_GetLineEndPosition(line);
+
+		//想办法居中
+		int firstline = sci.sci_GetFirstVisibleLine();
+		int lastline = firstline + sci.sci_LineSonScreen();
+		int centerline = firstline + (lastline - firstline)/2;
+		if(line < centerline)
+			sci.sci_LineScroll(0, line - centerline);
+		else
+			sci.sci_LineScroll(0, line - centerline);
+
+		sci.sci_SetSel(lineposend, lineposbegin);
+
+
+		// 		CString temp;
+		// 		temp.Format(_T("line=%d, lineposbegin=%d, lineposend=%d"), line, lineposbegin, lineposend);
+		// 		InsertMsg(temp);
+	}
+}
+
+BOOL CDuiEditorViewCode::SelectControlUI(int line, xml_node node)
+{
+	CUIManager *pManager = GetUIManager();
+	if(node.get_row() == line)
+	{
+		CControlUI *pControl = (CControlUI *)node.get_tag();
+		pManager->SelectItem(pControl);
+		pManager->GetTreeView()->SelectXmlNode(node);
+
+		//切换左边控件树
+		CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
+		if(!pMain->m_wndControl.IsPaneVisible())
+		{
+			pMain->m_wndControl.ShowPane(TRUE, TRUE, TRUE);
+		}
+		return TRUE;
+	}
+
+	for (xml_node nd=node.first_child(); nd; nd=nd.next_sibling())
+	{
+		if(SelectControlUI(line, nd))
+			return TRUE;
+	}
+	return FALSE;
+}
+
+LRESULT CDuiEditorViewCode::OnSciClick(WPARAM WParam, LPARAM LParam)
+{
+	if(GetUIManager()->GetSplitterMode() == SPLIT_CODE)
+		return 0;
+
+	//点击文档内容时，同时选中设计界面中的控件 以及 树控件
+	int line = (int)WParam;
+
+	xml_node root = GetDocument()->m_doc.child(_T("Window"));
+	SelectControlUI(line, root);
+
+	return 0;
 }
 
 void CDuiEditorViewCode::UpdateFrameStatus()
 {
-	CChildFrame *pFrame = (CChildFrame *)GetParent()->GetParent()->GetParent();
-
+	CMainFrame *pFrame = (CMainFrame *)AfxGetMainWnd();
 	int curLine = sci.sci_GetCurLine();
 	int curPos = sci.sci_GetCurrentPos();
 
 	CString temp;
 	temp.Format(_T("row: %d"), curLine+1);
-	pFrame->m_wndStatusBar.SetPaneText(1, temp);
+	pFrame->m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_LINE, temp);
 
 	int col = curPos - sci.sci_PositionFromLine(curLine);
 	temp.Format(_T("col: %d"), col+1);
-	pFrame->m_wndStatusBar.SetPaneText(2, temp);
+	pFrame->m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_COL, temp);
 
 	temp.Format(_T("pos: %d"), curPos);
-	pFrame->m_wndStatusBar.SetPaneText(3, temp);
+	pFrame->m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_CURRENT_POS, temp);
 
-	temp.Format(_T("length: %d"), sci.sci_GetLength());
-	pFrame->m_wndStatusBar.SetPaneText(4, temp);
+	temp.Format(_T("TotalLength: %d"), sci.sci_GetLength());
+	pFrame->m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_LENGTH, temp);
 
-	temp.Format(_T("lines: %d"), sci.sci_GetLineCount());
-	pFrame->m_wndStatusBar.SetPaneText(5, temp);
-	
+	temp.Format(_T("TotalLines: %d"), sci.sci_GetLineCount());
+	pFrame->m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_TOTAL_LINE, temp);
 }
 
 BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
@@ -391,20 +484,34 @@ BOOL CDuiEditorViewCode::PreCreateWindow(CREATESTRUCT& cs)
 void CDuiEditorViewCode::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView)
 {
 	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
-
+	/*
 	if(bActivate && pActivateView==this && pDeactiveView!=this)
 	{
-		pMain->m_wndControl.SetActiveTreeView(((CDuiEditorDoc *)GetDocument())->GetTreeView());
-		pMain->m_wndDockXml.SetActiveSciWnd(((CDuiEditorDoc *)GetDocument())->GetXmlPane());
-		pMain->HideAllPane();
+		pMain->m_wndControl.SetActiveTreeView(GetUIManager()->GetTreeView());
+		pMain->m_wndProperty.SetActivePropList(GetUIManager()->GetPropList());
+
+		if(GetUIManager()->GetSplitterMode() == SPLIT_CODE)
+		{
+			pMain->HideAllPane();
+		}
 
 		//InsertMsg(_T("OnActivateCode"));
 	}
-
+	*/
 	CView::OnActivateView(bActivate, pActivateView, pDeactiveView);
 }
 
 //////////////////////////////////////////////////////////////////////////
+void CDuiEditorViewCode::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
+{
+	CPoint pt = point;
+	ScreenToClient(&pt);
+
+	CMenu popmenu;
+	popmenu.LoadMenu(IDR_MENU_DESIGN_CODE);
+	theApp.GetContextMenuManager()->ShowPopupMenu(popmenu.GetSubMenu(0)->m_hMenu, point.x, point.y, this, TRUE);
+}
+
 void CDuiEditorViewCode::OnEditUndo()
 {
 	sci.sci_Undo();
@@ -478,5 +585,30 @@ void CDuiEditorViewCode::OnEditFind()
 	m_pDlgFind->ShowWindow(SW_SHOW);
 
 	m_hDlgFind = m_pDlgFind->m_hWnd;
+}
+
+
+void CDuiEditorViewCode::OnEditRefresh()
+{
+	LoadDocument();
+}
+
+
+void CDuiEditorViewCode::OnEditSelectAll()
+{
+	sci.sci_SelectAll();
+}
+
+
+void CDuiEditorViewCode::OnSciUpdateDesign()
+{
+	m_nTargetLine = sci.sci_GetCurLine();
+	ApplyDocument();
+}
+
+
+void CDuiEditorViewCode::OnUpdateSciUpdateDesign(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(sci.sci_GetModify());
 }
 

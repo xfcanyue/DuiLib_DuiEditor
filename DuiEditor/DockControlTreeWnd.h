@@ -19,7 +19,6 @@ public:
 	void RemoveTreeView(CDockControlTreeCtrl *pTreeView);
 	void SetActiveTreeView(CDockControlTreeCtrl *pTreeView);
 
-	//CDockControlTreeCtrl m_wndTree;
 	CClassTabCtrl m_tabClass;
 protected:
 	DECLARE_MESSAGE_MAP()

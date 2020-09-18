@@ -3,8 +3,6 @@
 #include "UIBuilder.h"
 
 #include "DlgCustomControl.h"
-#include "MenuExUI.h"
-#include "MenuElementExUI.h"
 
 #ifndef DUILIB_VERSION_ORIGINAL
 CUIBuilder::CUIBuilder()  : m_pCallback(NULL), m_pstrtype(NULL)
@@ -17,7 +15,7 @@ CUIBuilder::CUIBuilder()  : m_pCallback(NULL), m_pstrtype(NULL)
 CUIBuilder::~CUIBuilder(void)
 {
 }
-
+/*
 CControlUI* CUIBuilder::Create(STRINGorID xml, LPCTSTR type, IDialogBuilderCallback* pCallback,
 	CPaintManagerUI* pManager, CControlUI* pParent)
 {
@@ -64,7 +62,7 @@ CControlUI* CUIBuilder::Create(STRINGorID xml, LPCTSTR type, IDialogBuilderCallb
 
 	return Create(m_xml, pCallback, pManager, pParent);
 }
-
+*/
 CControlUI* CUIBuilder::Create(pugi::xml_node xmldoc, IDialogBuilderCallback* pCallback, CPaintManagerUI* pManager, CControlUI* pParent)
 {
 	m_pCallback = pCallback;

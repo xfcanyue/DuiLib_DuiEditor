@@ -7,7 +7,7 @@
 
 #include "ImageEditor.h"
 #include "MainFrm.h"
-
+#include "UIManager.h"
 //////////////////////////////////////////////////////////////////////////
 // CImageEditorFrame
 
@@ -78,7 +78,8 @@ int CImageEditorFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	{
 		return FALSE; // Î´ÄÜ´´½¨
 	}
-	m_wndProperty.m_wndPropList.SetOwner(this);
+	CUIPropertyGridCtrl *pPropList = m_wndProperty.CreatePropList();
+	pPropList->SetOwner(this);
 
 	EnableDocking(CBRS_ALIGN_ANY);
 	m_wndList.EnableDocking(CBRS_ALIGN_ANY);
@@ -90,9 +91,9 @@ int CImageEditorFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
 	CDuiEditorViewDesign *pView = (CDuiEditorViewDesign *)pMain->GetActiveUIView();
-	m_wndView.m_pManager = pView->m_Manager.GetManager();
+	m_wndView.m_pManager = pView->GetUIManager()->GetManager();
 
-	m_wndProperty.InitProp(pDlgMain->m_nodeImage.child(_T("IMAGE")));
+	pPropList->InitProp(pDlgMain->m_nodeImage.child(_T("IMAGE")));
 	m_wndProperty.OnExpandAllProperties();
 	//////////////////////////////////////////////////////////////////////////
 	//m_wndList.m_wndList.DisplayFolder(CPaintManagerUI::GetResourcePath().GetData());
@@ -181,14 +182,15 @@ void CImageEditorFrame::OnSelectedFile(LPCTSTR lpstrPathName)
 		return;
 	}
 
-	if(m_wndProperty.m_wndPropList.GetPropertyCount() > 0)
+	CUIPropertyGridCtrl *pPropList = m_wndProperty.GetPropList(0);
+	if(pPropList->GetPropertyCount() > 0)
 	{
-		if(m_wndProperty.m_wndPropList.GetProperty(0)->GetSubItemsCount() > 0)
+		if(pPropList->GetProperty(0)->GetSubItemsCount() > 0)
 		{
-			CMFCPropertyGridProperty *pProp = m_wndProperty.m_wndPropList.GetProperty(0)->GetSubItem(0);
+			CMFCPropertyGridProperty *pProp = pPropList->GetProperty(0)->GetSubItem(0);
 
 			pProp->SetValue((_variant_t)strFileName);
-			m_wndProperty.m_wndPropList.OnPropertyChanged(pProp);
+			pPropList->OnPropertyChanged(pProp);
 			m_wndView.SetFocus();
 		}
 	}
@@ -196,9 +198,10 @@ void CImageEditorFrame::OnSelectedFile(LPCTSTR lpstrPathName)
 
 void CImageEditorFrame::OnSetSourcePos(CRect &rc)
 {
-	for (int i=0; i<m_wndProperty.m_wndPropList.GetPropertyCount(); i++)
+	CUIPropertyGridCtrl *pPropList = m_wndProperty.GetPropList(0);
+	for (int i=0; i<pPropList->GetPropertyCount(); i++)
 	{
-		CMFCPropertyGridProperty *pProp1 = m_wndProperty.m_wndPropList.GetProperty(i);
+		CMFCPropertyGridProperty *pProp1 = pPropList->GetProperty(i);
 		for (int j=0; j<pProp1->GetSubItemsCount(); j++)
 		{
 			CMFCPropertyGridProperty *pProp2 = pProp1->GetSubItem(j);
@@ -231,7 +234,7 @@ void CImageEditorFrame::OnSetSourcePos(CRect &rc)
 					}
 				}
 
-				m_wndProperty.m_wndPropList.OnPropertyChanged(pProp2);
+				pPropList->OnPropertyChanged(pProp2);
 				break;
 			}
 		}

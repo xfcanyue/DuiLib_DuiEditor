@@ -11,7 +11,7 @@
 #include "ChildFrm.h"
 #include "DuiEditorDocTemplate.h"
 #include "DuiEditorDoc.h"
-#include "DuiEditorTabView.h"
+#include "DuiEditorView.h"
 #include "DuiEditorViewDesign.h"
 
 #include "ChildFrm2.h"
@@ -95,7 +95,7 @@ BOOL CDuiEditorApp::InitInstance()
 	CWinAppEx::InitInstance();
 	AfxInitRichEdit2();
 
-	_CrtSetBreakAlloc(66);
+	//_CrtSetBreakAlloc();
 
 	// 初始化 OLE 库
 	if (!AfxOleInit())
@@ -173,7 +173,7 @@ BOOL CDuiEditorApp::InitInstance()
 	pDocTemplate = new CDuiEditorDocTemplate(IDR_DuiEditorTYPE,
 		RUNTIME_CLASS(CDuiEditorDoc),
 		RUNTIME_CLASS(CChildFrame), // 自定义 MDI 子框架
-		RUNTIME_CLASS(CDuiEditorTabView));
+		RUNTIME_CLASS(CDuiEditorView));
 	if (!pDocTemplate)
 		return FALSE;
 	AddDocTemplate(pDocTemplate);

@@ -1,13 +1,10 @@
 #include "StdAfx.h"
 #include "DuiEditor.h"
-#include "DuiEditorCommandHistory.h"
+#include "UIManager.h"
 #include "DockPropertyWnd.h"
-#include "DockControlTreeWnd.h"
-#include "DuiEditorViewDesign.h"
 
 CDuiEditorCommandHistory::CDuiEditorCommandHistory(void)
 {
-	m_pDoc = NULL;
 	m_bCanUndo = FALSE;
 	m_bCanRedo = FALSE;
 	m_bInit = FALSE;
@@ -18,10 +15,9 @@ CDuiEditorCommandHistory::~CDuiEditorCommandHistory(void)
 {
 }
 
-void CDuiEditorCommandHistory::Init(CDuiEditorDoc *pDoc)
+void CDuiEditorCommandHistory::Init()
 {
-	m_pDoc = pDoc;
-	m_root = m_pDoc->m_doc.root().child(_T("History"));
+	m_root = GetUIManager()->GetDocument()->m_doc.root().child(_T("History"));
 	if(m_root)
 	{
 		m_nodeUndo = m_root.child(_T("UNDO"));
@@ -29,7 +25,7 @@ void CDuiEditorCommandHistory::Init(CDuiEditorDoc *pDoc)
 	}
 	else
 	{
-		m_root = m_pDoc->m_doc.root().append_child(_T("History"));
+		m_root = GetUIManager()->GetDocument()->m_doc.root().append_child(_T("History"));
 		m_nodeUndo = m_root.append_child(_T("UNDO"));
 		m_nodeRedo = m_root.append_child(_T("REDO"));
 	}
@@ -356,6 +352,8 @@ void CDuiEditorCommandHistory::PrepareAddCommand()
 
 void CDuiEditorCommandHistory::_add(xml_node nodeControl, xml_node nodeParent, xml_node nodeSibling)
 {
+	CUIManager *pManager = GetUIManager();
+
 	//获取原XML文档的节点
 	xml_node nodeDocument = nodeControl; //xml_node((xml_node_struct *)nodeControl.get_tag());
 
@@ -391,7 +389,7 @@ void CDuiEditorCommandHistory::_add(xml_node nodeControl, xml_node nodeParent, x
 	}
 
 	//载入控件默认属性
-	LPCTSTR pDefaultAttributes = m_pManager->GetManager()->GetDefaultAttributeList(pstrClass);
+	LPCTSTR pDefaultAttributes = pManager->GetManager()->GetDefaultAttributeList(pstrClass);
 	if( pDefaultAttributes ) 
 	{
 #ifndef DUILIB_VERSION_ORIGINAL
@@ -413,23 +411,24 @@ void CDuiEditorCommandHistory::_add(xml_node nodeControl, xml_node nodeParent, x
 	nodeDocument.set_tag((UINT_PTR)pNewControl);
 
 	//插入左边控件树
-	HTREEITEM hTreeSibling = m_pManager->GetTreeView()->FindXmlNode(nodeSibling); 
+	HTREEITEM hTreeSibling = pManager->GetTreeView()->FindXmlNode(nodeSibling); 
 	if(!hTreeSibling)	hTreeSibling = TVI_FIRST;
-	HTREEITEM hNewControl = m_pManager->GetTreeView()->AddNewControl(nodeDocument, hTreeSibling);
+	HTREEITEM hNewControl = pManager->GetTreeView()->AddNewControl(nodeDocument, hTreeSibling);
 
 	//清除选择，选中新控件
-	m_pManager->GetUiTracker()->RemoveAll();
-	m_pManager->GetUiTracker()->Add(nodeDocument, pNewControl->GetPos());
+	pManager->GetUiTracker()->RemoveAll();
+	pManager->GetUiTracker()->Add(nodeDocument, pNewControl->GetPos());
 
 	//接下来创建子控件
 	_addChild(nodeDocument, pNewControl, hNewControl);
 
-	g_pPropWnd->InitProp(nodeDocument);
-	m_pManager->UpdateControlUI(nodeDocument);
+	GetUIManager()->GetPropList()->InitProp(nodeDocument);
+	pManager->UpdateControlUI(nodeDocument);
 }
 
 void CDuiEditorCommandHistory::_addChild(xml_node nodeDocument1, CControlUI *pParent, HTREEITEM hTreeParent)
 {
+	CUIManager *pManager = GetUIManager();
 	for (xml_node node=nodeDocument1.first_child(); node; node=node.next_sibling())
 	{
 		//创建控件
@@ -447,7 +446,7 @@ void CDuiEditorCommandHistory::_addChild(xml_node nodeDocument1, CControlUI *pPa
 		}
 
 		//载入控件默认属性
-		LPCTSTR pDefaultAttributes = m_pManager->GetManager()->GetDefaultAttributeList(pstrClass);
+		LPCTSTR pDefaultAttributes = pManager->GetManager()->GetDefaultAttributeList(pstrClass);
 		if( pDefaultAttributes ) 
 		{
 #ifndef DUILIB_VERSION_ORIGINAL
@@ -469,10 +468,10 @@ void CDuiEditorCommandHistory::_addChild(xml_node nodeDocument1, CControlUI *pPa
 		node.set_tag((UINT_PTR)pNewControl);
 
 		//插入左边控件树
-		HTREEITEM hNewControl = m_pManager->GetTreeView()->AddNewControl(node, hTreeParent);
+		HTREEITEM hNewControl = pManager->GetTreeView()->AddNewControl(node, hTreeParent);
 
 		//选中新控件
-		m_pManager->GetUiTracker()->Add(node, pNewControl->GetPos());
+		pManager->GetUiTracker()->Add(node, pNewControl->GetPos());
 
 		_addChild(node, pNewControl, hNewControl);
 	}
@@ -480,6 +479,8 @@ void CDuiEditorCommandHistory::_addChild(xml_node nodeDocument1, CControlUI *pPa
 
 void CDuiEditorCommandHistory::_modify(xml_node nodeControl)
 {
+	CUIManager *pManager = GetUIManager();
+
 	//获取原XML文档的节点
 	xml_node nodeDocument = xml_node((xml_node_struct *)nodeControl.get_tag());
 
@@ -498,12 +499,14 @@ void CDuiEditorCommandHistory::_modify(xml_node nodeControl)
 	}
 
 	//更新视图
-	m_pManager->UpdateControlUI(nodeDocument);
-	m_pManager->GetTreeView()->UpdateXmlNode(nodeDocument);
+	pManager->UpdateControlUI(nodeDocument);
+	pManager->GetTreeView()->UpdateXmlNode(nodeDocument);
 }
 
 void CDuiEditorCommandHistory::_delete(xml_node nodeControl)
 {
+	CUIManager *pManager = GetUIManager();
+
 	//获得要删除的控件
 	CControlUI *pControl = (CControlUI *)nodeControl.get_tag();
 
@@ -515,5 +518,5 @@ void CDuiEditorCommandHistory::_delete(xml_node nodeControl)
 		pContainer->NeedUpdate();
 	}
 
-	m_pManager->GetTreeView()->DeleteXmlNode(nodeControl);
+	pManager->GetTreeView()->DeleteXmlNode(nodeControl);
 }

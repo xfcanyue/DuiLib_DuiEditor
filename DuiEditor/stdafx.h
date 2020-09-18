@@ -107,3 +107,4 @@ private:
 
 #include "EditorConfig.h"
 extern tagEditorConfig g_cfg;
+
