@@ -8,8 +8,6 @@ CUIManager::CUIManager(void)
 	m_nSplitterMode = SPLIT_UPDOWN;
 
 	m_pDoc			= NULL;
-	m_pCmdHistory	= new CDuiEditorCommandHistory;
-	m_pCmdHistory->SetUIManager(this);
 	m_pDesignView	= NULL;
 	m_pManager		= NULL;
 	m_pUiWindow		= NULL;
@@ -20,7 +18,7 @@ CUIManager::CUIManager(void)
 
 CUIManager::~CUIManager(void)
 {
-	delete m_pCmdHistory; m_pCmdHistory = NULL;
+	
 }
 
 BOOL CUIManager::IsUiWindow(xml_node node)
@@ -35,7 +33,7 @@ xml_node CUIManager::FindContainer(xml_node node) //获取控件对应的容器
 	xml_node nodeContainner = node.parent();
 	while (nodeContainner)
 	{
-		if(g_duiProp.IsBaseFromContainer(nodeContainner.name()))
+		if(g_duiProp.IsContainerUI(nodeContainner))
 		{
 			return nodeContainner;
 		}
@@ -116,13 +114,15 @@ BOOL CUIManager::UpdateControlUI(CControlUI *pControl)
 	GetUiTracker()->UpdateRect(nodeControl);
 	GetUiWindow()->Invalidate();
 
-	//改动属性之后，即时刷新xmlpane
+	//改动属性之后，即时刷新xml
+	/*
 	if(GetCodeView())
 	{
 		CLockWindowUpdate lock(GetCodeView());
 		GetCodeView()->LoadDocument();
 		GetCodeView()->SelectXmlNode(pControl);
 	}
+	*/
 	return TRUE;
 }
 
@@ -139,7 +139,7 @@ BOOL CUIManager::UpdateControlPos(xml_node node, CRect rect, BOOL bUpdateWithHei
 
 		CString temp;
 		temp.Format(_T("%d,%d"), rect.Width(), rect.Height());
-		g_duiProp.AddAttribute(node, _T("size"), temp, m_pDesignView);
+		g_duiProp.AddAttribute(node, _T("size"), temp, this);
 		return TRUE;
 	}
 
@@ -159,7 +159,7 @@ BOOL CUIManager::UpdateControlPos(xml_node node, CRect rect, BOOL bUpdateWithHei
 		UpdateControlUI(pControl);
 
 		CRect rcNewPos = rcControl; //pControl->GetPos();
-		g_duiProp.AddAttribute(node, _T("pos"), rcNewPos, m_pDesignView);
+		g_duiProp.AddAttribute(node, _T("pos"), rcNewPos, this);
 		if(bUpdateWithHeight)
 		{
 			g_duiProp.AddAttribute(node, _T("width"), rcNewPos.Width(), NULL);
@@ -170,7 +170,7 @@ BOOL CUIManager::UpdateControlPos(xml_node node, CRect rect, BOOL bUpdateWithHei
 	}
 
 	//非float控件比较特殊, UI库自动布局.
-	CDuiRect rcDoc(node.attribute(_T("pos")).as_string(_T("0,0,0,0")));
+	CDuiRect rcDoc(XML2T(node.attribute(XTEXT("pos")).as_string(XTEXT("0,0,0,0"))));
 	rcDoc.left = 0;
 	rcDoc.right = rect.Width();
 	rcDoc.top = 0;
@@ -181,9 +181,9 @@ BOOL CUIManager::UpdateControlPos(xml_node node, CRect rect, BOOL bUpdateWithHei
 
 	if(bUpdateWithHeight)
 	{
-		g_duiProp.AddAttribute(node, _T("pos"), rcDoc, m_pDesignView);
-		g_duiProp.AddAttribute(node, _T("width"), rcDoc.GetWidth(), NULL);
-		g_duiProp.AddAttribute(node, _T("height"), rcDoc.GetHeight(), NULL);
+		g_duiProp.AddAttribute(node, _T("pos"), rcDoc, this);
+		g_duiProp.AddAttribute(node, _T("width"), rcDoc.GetWidth(), this);
+		g_duiProp.AddAttribute(node, _T("height"), rcDoc.GetHeight(), this);
 	}
 	return TRUE;
 }
@@ -204,7 +204,7 @@ BOOL CUIManager::UpdateControlWidth(xml_node node, int width)
 
 		CString temp;
 		temp.Format(_T("%d,%d"), szForm.cx, szForm.cy);
-		g_duiProp.AddAttribute(node, _T("size"), temp, m_pDesignView);
+		g_duiProp.AddAttribute(node, _T("size"), temp, this);
 		return TRUE;
 	}
 
@@ -216,15 +216,25 @@ BOOL CUIManager::UpdateControlWidth(xml_node node, int width)
 	}
 
 	//非float控件比较特殊, UI库自动布局.
-	CDuiRect rcDoc(node.attribute(_T("pos")).as_string(_T("0,0,0,0")));
-	rcDoc.right = width;
+	CDuiRect rcDoc;
+	xml_attribute attrPos = node.attribute(XTEXT("pos"));
+	if(attrPos)
+	{
+		rcDoc = CDuiRect(XML2T(attrPos.as_string(XTEXT("0,0,0,0"))));
+		rcDoc.right = width;
+	}
+	else
+	{
+		rcDoc.left = 0; rcDoc.right = width;
+		rcDoc.top = 0;	rcDoc.bottom = pControl->GetFixedHeight();
+	}
 
 	pControl->SetAttribute(_T("pos"), rcDoc.ToString());	//不能调用pControl->SetPos();
 	UpdateControlUI(pControl);
 
-	g_duiProp.AddAttribute(node, _T("pos"), rcDoc, m_pDesignView);
-	g_duiProp.AddAttribute(node, _T("width"), rcDoc.GetWidth(), NULL);
-	g_duiProp.AddAttribute(node, _T("height"), rcDoc.GetHeight(), NULL);
+	g_duiProp.AddAttribute(node, _T("pos"), rcDoc, this);
+	g_duiProp.AddAttribute(node, _T("width"), rcDoc.GetWidth(), this);
+	g_duiProp.AddAttribute(node, _T("height"), rcDoc.GetHeight(), this);
 	return TRUE;
 }
 
@@ -243,7 +253,7 @@ BOOL CUIManager::UpdateControlHeight(xml_node node, int height)
 
 		CString temp;
 		temp.Format(_T("%d,%d"), szForm.cx, szForm.cy);
-		g_duiProp.AddAttribute(node, _T("size"), temp, m_pDesignView);
+		g_duiProp.AddAttribute(node, _T("size"), temp, this);
 		return TRUE;
 	}
 
@@ -255,15 +265,25 @@ BOOL CUIManager::UpdateControlHeight(xml_node node, int height)
 	}
 
 	//非float控件比较特殊, UI库自动布局.
-	CDuiRect rcDoc(node.attribute(_T("pos")).as_string(_T("0,0,0,0")));
-	rcDoc.bottom = height;
+	CDuiRect rcDoc;
+	xml_attribute attrPos = node.attribute(XTEXT("pos"));
+	if(attrPos)
+	{
+		rcDoc = CDuiRect(XML2T(attrPos.as_string(XTEXT("0,0,0,0"))));
+		rcDoc.bottom = height;
+	}
+	else
+	{
+		rcDoc.left = 0; rcDoc.right = pControl->GetFixedWidth();
+		rcDoc.top = 0;	rcDoc.bottom = height;
+	}
 
 	pControl->SetAttribute(_T("pos"), rcDoc.ToString());	//不能调用pControl->SetPos();
 	UpdateControlUI(pControl);
 
-	g_duiProp.AddAttribute(node, _T("pos"), rcDoc, m_pDesignView);
-	g_duiProp.AddAttribute(node, _T("width"), rcDoc.GetWidth(),	NULL);
-	g_duiProp.AddAttribute(node, _T("height"), rcDoc.GetHeight(),	NULL);
+	g_duiProp.AddAttribute(node, _T("pos"), rcDoc, this);
+	g_duiProp.AddAttribute(node, _T("width"), rcDoc.GetWidth(),	this);
+	g_duiProp.AddAttribute(node, _T("height"), rcDoc.GetHeight(),	this);
 	return TRUE;
 }
 
@@ -274,7 +294,7 @@ BOOL CUIManager::UpdateControlUI(xml_node node)
 	{
 		for (xml_attribute attr=node.first_attribute(); attr; attr=attr.next_attribute())
 		{
-			pControl->SetAttribute(attr.name(), attr.value());
+			pControl->SetAttribute(XML2T(attr.name()), XML2T(attr.value()));
 		}
 
 		return UpdateControlUI(pControl);
@@ -288,9 +308,9 @@ BOOL CUIManager::UpdateControlUI(xml_node node, xml_attribute attr)
 	//更新Style属性
 	if(CompareString(node.name(), _T("Style")))
 	{
-		CString strStyleName = node.attribute(_T("name")).as_string();
-		CString strStyleValue = node.attribute(_T("value")).as_string();
-		bool bShared = node.attribute(_T("shared")).as_bool();
+		CString strStyleName = XML2T(node.attribute(XTEXT("name")).as_string());
+		CString strStyleValue = XML2T(node.attribute(XTEXT("value")).as_string());
+		bool bShared = node.attribute(XTEXT("shared")).as_bool();
 		GetManager()->AddStyle(strStyleName, strStyleValue, bShared);
 		return TRUE;
 	}
@@ -299,53 +319,21 @@ BOOL CUIManager::UpdateControlUI(xml_node node, xml_attribute attr)
 	//更新Font属性
 	if( CompareString(node.name(), _T("Font")) )
 	{
-		int id = -1;
-		LPCTSTR pFontName = NULL;
-		int size = 12;
-		bool bold = false;
-		bool underline = false;
-		bool italic = false;
-		bool defaultfont = false;
-		bool shared = false;
+		int id			= node.attribute(XTEXT("id")).as_int(-1);
+		CString FontName = XML2T(node.attribute(XTEXT("name")).value());
+		int size		= node.attribute(XTEXT("size")).as_int(0);
+		bool bold		= node.attribute(XTEXT("bold")).as_bool();
+		bool underline	= node.attribute(XTEXT("underline")).as_bool();
+		bool italic		= node.attribute(XTEXT("italic")).as_bool();
+		bool defaultfont = node.attribute(XTEXT("default")).as_bool();
+		bool shared		= node.attribute(XTEXT("shared")).as_bool();
 
-		LPCTSTR pstrName = NULL;
-		LPCTSTR pstrValue = NULL;
-		LPTSTR pstr = NULL;
-
-		for( xml_attribute attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
-			pstrName = attr.name();
-			pstrValue = attr.value();
-			if( _tcsicmp(pstrName, _T("id")) == 0 ) {
-				id = _tcstol(pstrValue, &pstr, 10);
-			}
-			else if( _tcsicmp(pstrName, _T("name")) == 0 ) {
-				pFontName = pstrValue;
-			}
-			else if( _tcsicmp(pstrName, _T("size")) == 0 ) {
-				size = _tcstol(pstrValue, &pstr, 10);
-			}
-			else if( _tcsicmp(pstrName, _T("bold")) == 0 ) {
-				bold = (_tcsicmp(pstrValue, _T("true")) == 0);
-			}
-			else if( _tcsicmp(pstrName, _T("underline")) == 0 ) {
-				underline = (_tcsicmp(pstrValue, _T("true")) == 0);
-			}
-			else if( _tcsicmp(pstrName, _T("italic")) == 0 ) {
-				italic = (_tcsicmp(pstrValue, _T("true")) == 0);
-			}
-			else if( _tcsicmp(pstrName, _T("default")) == 0 ) {
-				defaultfont = (_tcsicmp(pstrValue, _T("true")) == 0);
-			}
-			else if( _tcsicmp(pstrName, _T("shared")) == 0 ) {
-				shared = (_tcsicmp(pstrValue, _T("true")) == 0);
-			}
-		}
 		if( id >= 0 ) {
-			GetManager()->AddFont(id, pFontName, size, bold, underline, italic, shared);
+			GetManager()->AddFont(id, FontName, size, bold, underline, italic, shared);
 #ifdef DUILIB_VERSION_ORIGINAL
-			if( defaultfont ) GetManager()->SetDefaultFont(pFontName, size, bold, underline, italic, shared);
+			if( defaultfont ) GetManager()->SetDefaultFont(FontName, size, bold, underline, italic, shared);
 #else
-			if( defaultfont ) GetManager()->SetDefaultFont(pFontName, GetManager()->GetDPIObj()->Scale(size), bold, underline, italic, shared);
+			if( defaultfont ) GetManager()->SetDefaultFont(FontName, GetManager()->GetDPIObj()->Scale(size), bold, underline, italic, shared);
 #endif
 		}
 	}
@@ -356,28 +344,28 @@ BOOL CUIManager::UpdateControlUI(xml_node node, xml_attribute attr)
 	{
 		if(pControl == GetUiFrom()) //改变窗口大小
 		{
-			if(_tcscmp(attr.name(), _T("size")) == 0)
+			if(CompareString(attr.name(), _T("size")))
 			{
-				CDuiSize sz(attr.value());
+				CDuiSize sz(XML2T(attr.value()));
 				GetUiFrom()->SetInitSize(sz.cx, sz.cy);
 				SetScrollSize();
 			}
 		}
-		else if(_tcscmp(attr.name(), _T("pos")) == 0)
+		else if(CompareString(attr.name(), _T("pos")))
 		{
-			CDuiRect rc(attr.value());
+			CDuiRect rc(XML2T(attr.value()));
 			return UpdateControlPos(node, rc, TRUE);
 		}
-		else if(_tcscmp(attr.name(), _T("width")) == 0)
+		else if(CompareString(attr.name(), _T("width")))
 		{
 			return UpdateControlWidth(node, attr.as_int());
 		}
-		else if(_tcscmp(attr.name(), _T("height")) == 0)
+		else if(CompareString(attr.name(), _T("height")))
 		{
 			return UpdateControlHeight(node, attr.as_int());
 		}
 		else
-			pControl->SetAttribute(attr.name(), attr.value());
+			pControl->SetAttribute(XML2T(attr.name()), XML2T(attr.value()));
 
 		return UpdateControlUI(pControl);
 	}
@@ -387,26 +375,27 @@ BOOL CUIManager::UpdateControlUI(xml_node node, xml_attribute attr)
 
 BOOL CUIManager::DeleteControl(xml_node node)
 {
-	if(g_duiProp.IsWindowForm(node.name()))
+	if(g_duiProp.IsWindowForm(node))
 		return FALSE;
 
 	CControlUI *pControl = (CControlUI *)node.get_tag();
-
 	xml_node nodeContainer = node.parent();
-	if(g_duiProp.IsBaseFromContainer(nodeContainer.name()))
-	{
-		CContainerUI *pContainer = (CContainerUI *)nodeContainer.get_tag();
-		pContainer->Remove(pControl);
-		pContainer->NeedUpdate();
-	}
 
+	GetCodeView()->DeleteNode(node);
 	GetTreeView()->DeleteXmlNode(node);
 
-	GetCmdHistory()->AddDeleteControl(node);
+//	GetCmdHistory()->AddDeleteControl(node);
 
 	if(nodeContainer)
 	{
 		nodeContainer.remove_child(node);
+	}
+
+	if(g_duiProp.IsContainerUI(nodeContainer))
+	{
+		CContainerUI *pContainer = (CContainerUI *)nodeContainer.get_tag();
+		pContainer->Remove(pControl);
+		pContainer->NeedUpdate();
 	}
 
 	

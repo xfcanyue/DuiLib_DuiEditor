@@ -238,13 +238,9 @@ void CMySplitterWnd::TrackColumnSize(int x, int col)
 	CPoint pt;
 	::GetCursorPos(&pt);
 	::ScreenToClient(m_hWnd, &pt);
-
-// 	CPoint pt(x, 0);
-// 	ClientToScreen(&pt);
-// 	m_pDesignView->ScreenToClient(&pt);
 	m_nLeftWidth = pt.x;      // new size
 
-	CString temp;
-	temp.Format(_T("LeftWidth=%d"), m_nLeftWidth);
-	InsertMsg(temp);
+// 	CString temp;
+// 	temp.Format(_T("LeftWidth=%d"), m_nLeftWidth);
+// 	InsertMsg(temp);
 }

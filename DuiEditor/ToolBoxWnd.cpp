@@ -82,11 +82,11 @@ void CDockToolBoxWnd::InitToolList()
 	pugi::xml_node root = g_duiProp.GetRoot();
 	for (pugi::xml_node node = root.first_child(); node; node = node.next_sibling())
 	{
-		if(g_duiProp.IsBaseFromControlUI(node.name()))
+		if(g_duiProp.IsControlUI(node))
 		{
-			LPCTSTR nodeName = node.name();
+			CString nodeName = XML2T(node.name());
 			UINT classID = CDuiPropertyFile::GetControlIconIndex(node);
-			CDockToolBoxElement *pTooElem = new CDockToolBoxElement(node.name(), classID, 0);
+			CDockToolBoxElement *pTooElem = new CDockToolBoxElement(XML2T(node.name()), classID, 0);
 
 			pTooElem->SetItemImage(classID);
 			pTooElem->SetTag((UINT_PTR)node.internal_object());

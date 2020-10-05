@@ -19,8 +19,8 @@ void CDuiProject::InitProject(LPCTSTR szFolderPath)
 	projFile.load_file(strPath);
 	m_bHasLoadConfig = FALSE;
 
-	xml_attribute attr = projFile.child_auto(_T("Project")).attribute_auto(_T("path"));
-	attr.set_value(szFolderPath);
+	xml_attribute attr = projFile.child_auto(XTEXT("Project")).attribute_auto(XTEXT("path"));
+	attr.set_value(T2XML(szFolderPath));
 	Save();
 }
 
@@ -31,18 +31,18 @@ void CDuiProject::Save()
 
 CString CDuiProject::GetProjectPath()
 {
-	return projFile.child(_T("Project")).attribute(_T("path")).as_string();
+	return XML2T(projFile.child(XTEXT("Project")).attribute(XTEXT("path")).as_string());
 }
 
 CString CDuiProject::GetStartupFile()
 {
-	return projFile.child(_T("Project")).child(_T("Startup")).attribute(_T("file")).as_string();
+	return XML2T(projFile.child(XTEXT("Project")).child(XTEXT("Startup")).attribute(XTEXT("file")).as_string());
 }
 
 void CDuiProject::SetStartupFile(LPCTSTR fileName)
 {
-	xml_node node = projFile.child_auto(_T("Project")).child_auto(_T("Startup"));
-	node.attribute_auto(_T("file")).set_value(_T(""));
+	xml_node node = projFile.child_auto(XTEXT("Project")).child_auto(XTEXT("Startup"));
+	node.attribute_auto(XTEXT("file")).set_value(T2XML(fileName));
 	Save();
 }
 
@@ -66,23 +66,23 @@ void CDuiProject::LoadConfig(CPaintManagerUI* pManager)
 	}
 	if( !root) return;
 
-	LPCTSTR pstrClass = NULL;
+	CString pstrClass = NULL;
 	int nAttributes = 0;
-	LPCTSTR pstrName = NULL;
-	LPCTSTR pstrValue = NULL;
+	CString pstrName = NULL;
+	CString pstrValue = NULL;
 	LPTSTR pstr = NULL;
 	for( xml_node node = root.first_child() ; node; node = node.next_sibling() ) 
 	{
 		if(node.type() != node_element)	continue;
-		pstrClass = node.name();
+		pstrClass = XML2T(node.name());
 		if( _tcsicmp(pstrClass, _T("Image")) == 0 ) {
-			LPCTSTR pImageName = NULL;
-			LPCTSTR pImageResType = NULL;
+			CString pImageName = NULL;
+			CString pImageResType = NULL;
 			bool shared = false;
 			DWORD mask = 0;
 			for( xml_attribute attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
-				pstrName = attr.name();
-				pstrValue = attr.value();
+				pstrName = XML2T(attr.name());
+				pstrValue = XML2T(attr.value());
 				if( _tcsicmp(pstrName, _T("name")) == 0 ) {
 					pImageName = pstrValue;
 				}
@@ -101,7 +101,7 @@ void CDuiProject::LoadConfig(CPaintManagerUI* pManager)
 		}
 		else if( _tcsicmp(pstrClass, _T("Font")) == 0 ) {
 			int id = -1;
-			LPCTSTR pFontName = NULL;
+			CString pFontName = NULL;
 			int size = 12;
 			bool bold = false;
 			bool underline = false;
@@ -109,8 +109,8 @@ void CDuiProject::LoadConfig(CPaintManagerUI* pManager)
 			bool defaultfont = false;
 			bool shared = false;
 			for( xml_attribute attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
-				pstrName = attr.name();
-				pstrValue = attr.value();
+				pstrName = XML2T(attr.name());
+				pstrValue = XML2T(attr.value());
 				if( _tcsicmp(pstrName, _T("id")) == 0 ) {
 					id = _tcstol(pstrValue, &pstr, 10);
 				}
@@ -146,12 +146,12 @@ void CDuiProject::LoadConfig(CPaintManagerUI* pManager)
 			}
 		}
 		else if( _tcsicmp(pstrClass, _T("Default")) == 0 ) {
-			LPCTSTR pControlName = NULL;
-			LPCTSTR pControlValue = NULL;
+			CString pControlName = NULL;
+			CString pControlValue = NULL;
 			bool shared = false;
 			for( xml_attribute attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
-				pstrName = attr.name();
-				pstrValue = attr.value();
+				pstrName = XML2T(attr.name());
+				pstrValue = XML2T(attr.value());
 				if( _tcsicmp(pstrName, _T("name")) == 0 ) {
 					pControlName = pstrValue;
 				}
@@ -167,12 +167,12 @@ void CDuiProject::LoadConfig(CPaintManagerUI* pManager)
 			}
 		}
 		else if( _tcsicmp(pstrClass, _T("Style")) == 0 ) {
-			LPCTSTR pName = NULL;
-			LPCTSTR pStyle = NULL;
+			CString pName = NULL;
+			CString pStyle = NULL;
 			bool shared = false;
 			for( xml_attribute attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
-				pstrName = attr.name();
-				pstrValue = attr.value();
+				pstrName = XML2T(attr.name());
+				pstrValue = XML2T(attr.value());
 				if( _tcsicmp(pstrName, _T("name")) == 0 ) {
 					pName = pstrValue;
 				}
@@ -190,10 +190,10 @@ void CDuiProject::LoadConfig(CPaintManagerUI* pManager)
 			}
 		}
 		else if (_tcsicmp(pstrClass, _T("Import")) == 0) {
-			LPCTSTR pstrPath = NULL;
+			CString pstrPath = NULL;
 			for( xml_attribute attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
-				pstrName = attr.name();
-				pstrValue = attr.value();
+				pstrName = XML2T(attr.name());
+				pstrValue = XML2T(attr.value());
 				if (_tcsicmp(pstrName, _T("fontfile")) == 0) {
 					pstrPath = pstrValue;
 				}

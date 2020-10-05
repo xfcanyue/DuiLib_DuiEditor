@@ -20,6 +20,9 @@
 #include "UIManager.h"
 #include "DlgCreateDuiDocument.h"
 
+#include "ThreadTest.h"
+#include "ThreadPipe.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -30,6 +33,17 @@ IMPLEMENT_DYNCREATE(CDuiEditorDoc, CDocument)
 
 BEGIN_MESSAGE_MAP(CDuiEditorDoc, CDocument)
 	ON_COMMAND(ID_FILE_REOPEN, &CDuiEditorDoc::OnFileReopen)
+	ON_COMMAND(ID_EDIT_INSERT_FONT_NODE, &CDuiEditorDoc::OnEditInsertFont)
+	ON_COMMAND(ID_EDIT_INSERT_STYLE_NODE, &CDuiEditorDoc::OnEditInsertStyleNode)
+	ON_COMMAND(ID_EDIT_INSERT_DEFAULT_NODE, &CDuiEditorDoc::OnEditInsertDefault)
+	ON_COMMAND(ID_EDIT_UNDO, &CDuiEditorDoc::OnEditUndo)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &CDuiEditorDoc::OnUpdateEditUndo)
+	ON_COMMAND(ID_EDIT_REDO, &CDuiEditorDoc::OnEditRedo)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &CDuiEditorDoc::OnUpdateEditRedo)
+	ON_COMMAND(ID_UIFORM_DEBUG, &CDuiEditorDoc::OnUiformDebug)
+	ON_UPDATE_COMMAND_UI(ID_UIFORM_DEBUG, &CDuiEditorDoc::OnUpdateUiformDebug)
+	ON_COMMAND(ID_UIFORM_DEBUG_END, &CDuiEditorDoc::OnUiformDebugEnd)
+	ON_UPDATE_COMMAND_UI(ID_UIFORM_DEBUG_END, &CDuiEditorDoc::OnUpdateUiformDebugEnd)
 END_MESSAGE_MAP()
 
 
@@ -80,11 +94,11 @@ BOOL CDuiEditorDoc::OnNewDocument()
 		return FALSE;
 
 	// TODO: 在此添加重新初始化代码
-	xml_node nodeWindow = m_doc.child_auto(_T("Window"));
-	nodeWindow.append_attribute(_T("size")).set_value(_T("400,300"));
-	nodeWindow.append_child(_T("VerticalLayout"));
+	xml_node nodeWindow = m_doc.child_auto(XTEXT("Window"));
+	nodeWindow.append_attribute(XTEXT("size")).set_value(XTEXT("400,300"));
+	nodeWindow.append_child(XTEXT("VerticalLayout"));
 
-	GetUIManager()->GetTreeView()->InitTreeContent();
+	//GetUIManager()->GetTreeView()->InitTreeContent();
 	m_strDefaultTitle = m_strTitle;
 	return TRUE;
 }
@@ -98,12 +112,12 @@ BOOL CDuiEditorDoc::OnNewDocumentFromUiTemplate()
 	if(!m_doc.load_file(strFile))
 	{
 		AfxMessageBox(_T("载入模板页失败!"));
-		xml_node nodeWindow = m_doc.root().append_child(_T("Window"));
-		nodeWindow.append_attribute(_T("size")).set_value(_T("400,300"));
-		nodeWindow.append_child(_T("VerticalLayout"));
+		xml_node nodeWindow = m_doc.root().append_child(XTEXT("Window"));
+		nodeWindow.append_attribute(XTEXT("size")).set_value(XTEXT("400,300"));
+		nodeWindow.append_child(XTEXT("VerticalLayout"));
 	}	
 
-	GetUIManager()->GetTreeView()->InitTreeContent();
+	//GetUIManager()->GetTreeView()->InitTreeContent();
 	m_strDefaultTitle = m_strTitle;
 	return TRUE;
 }
@@ -205,10 +219,10 @@ BOOL CDuiEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
 	// TODO:  在此添加您专用的创建代码
 	m_doc.load_file(lpszPathName, XML_PARSER_OPTIONS);
 
-	xml_node root = m_doc.child(_T("Window"));
+	xml_node root = m_doc.child(XTEXT("Window"));
 	if(root)
 	{
-		xml_node node = root.child(_T("Menu"));
+		xml_node node = root.child(XTEXT("Menu"));
 		if(node)
 		{
 			m_bMenuWnd = TRUE;
@@ -219,17 +233,23 @@ BOOL CDuiEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
 
 BOOL CDuiEditorDoc::OnSaveDocument(LPCTSTR lpszPathName)
 {
+	GetUIManager()->GetCodeView()->UpdateDocument();
+
 	//过滤默认属性
-	xml_node root = m_doc.root().child(_T("Window"));
+	xml_node root = m_doc.root().child(XTEXT("Window"));
 	FilterDefaultValue(root);
 	FilterPosWidthHeight(root);
 
+	bool bSave = m_doc.save_file(lpszPathName, PUGIXML_TEXT("\t"), format_default, encoding_utf8);
+	if(!bSave)	return FALSE;
+	/*
 	//创建一个拷贝, 然后保存拷贝
 	xml_document doc;
 	doc.root().append_copy(root);
 	bool bSave = doc.save_file(lpszPathName, PUGIXML_TEXT("\t"), format_default, encoding_utf8);
 	if(!bSave)	return FALSE;
-
+	*/
+	GetUIManager()->GetCodeView()->GetSciWnd()->sci_SetSavePoint();
 	SetModifiedFlag(FALSE);
 	return TRUE;
 }
@@ -238,6 +258,21 @@ BOOL CDuiEditorDoc::OnSaveDocument(LPCTSTR lpszPathName)
 void CDuiEditorDoc::OnCloseDocument()
 {
 	CDocument::OnCloseDocument();
+
+	POSITION pos = ((CDuiEditorApp *)AfxGetApp())->GetFirstDocTemplatePosition();
+	while (pos != NULL)
+	{
+		CDocTemplate *pDocTemplate = ((CDuiEditorApp *)AfxGetApp())->GetNextDocTemplate(pos);			
+		POSITION pos1 = pDocTemplate->GetFirstDocPosition();
+		if(pos1 != NULL)
+		{
+			return;
+		}
+	}
+
+	//如果没有打开任何文档，左侧切换到文件列表
+	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
+	pMain->m_wndFileView.ShowPane(TRUE, FALSE,TRUE);
 }
 
 void CDuiEditorDoc::SetModifiedFlag(BOOL bModified)
@@ -274,6 +309,11 @@ void CDuiEditorDoc::SetModifiedFlag(BOOL bModified)
 	__super::SetModifiedFlag(bModified);
 }
 
+BOOL CDuiEditorDoc::IsModified()
+{
+	return GetUIManager()->GetCodeView()->GetSciWnd()->sci_GetModify() || m_bModified;
+}
+
 CString CDuiEditorDoc::GetSkinPath()
 {
 	CString strTemp;
@@ -302,17 +342,17 @@ CString CDuiEditorDoc::GetSkinFileName()
 
 void CDuiEditorDoc::FilterDefaultValue(xml_node nodeDoc)
 {
-	xml_node nodeDuiProp = g_duiProp.FindControl(nodeDoc.name());
+	xml_node nodeDuiProp = g_duiProp.FindControl(XML2T(nodeDoc.name()));
 	for (xml_node nodeAttr=nodeDuiProp.first_child(); nodeAttr; nodeAttr=nodeAttr.next_sibling())
 	{
-		xml_attribute attr = nodeDoc.attribute(nodeAttr.attribute(_T("name")).value());
+		xml_attribute attr = nodeDoc.attribute(nodeAttr.attribute(XTEXT("name")).value());
 		if(attr)
 		{
 			if(attr.value() == '\0' || attr.value() == NULL)
 			{
 				nodeDoc.remove_attribute(attr);
 			}
-			else if(CompareString(attr.value(), nodeAttr.attribute(_T("default")).value()))
+			else if(CompareString(attr.value(), nodeAttr.attribute(XTEXT("default")).value()))
 			{
 				nodeDoc.remove_attribute(attr);
 			}
@@ -330,18 +370,18 @@ void CDuiEditorDoc::FilterPosWidthHeight(xml_node nodeDoc)
 	if(!g_cfg.bFilterPosWidthHeight) return;
 
 	//float控件不处理
-	if(!nodeDoc.attribute(_T("float")).as_bool())
+	if(!nodeDoc.attribute(XTEXT("float")).as_bool())
 	{
 		//如果没有pos属性，不处理。
-		xml_attribute attrPos = nodeDoc.attribute(_T("pos"));
+		xml_attribute attrPos = nodeDoc.attribute(XTEXT("pos"));
 		if(attrPos) 
 		{
-			xml_attribute attrWidth = nodeDoc.attribute(_T("width"));
-			xml_attribute attrHeight = nodeDoc.attribute(_T("height"));
+			xml_attribute attrWidth = nodeDoc.attribute(XTEXT("width"));
+			xml_attribute attrHeight = nodeDoc.attribute(XTEXT("height"));
 
 			//pos属性无法转换成rect，不处理
 			CDuiRect rc;
-			if(rc.FromString(attrPos.as_string()))
+			if(rc.FromString(XML2T(attrPos.as_string())))
 			{
 				//pos属性的大小 不等于 width或height属性，不处理。 因为手写的同学可能写错了，不要擅自处理。
 				if(rc.GetWidth() == attrWidth.as_int() && rc.GetHeight() == attrHeight.as_int())
@@ -373,3 +413,146 @@ void CDuiEditorDoc::OnFileReopen()
 	OnFileClose();
 	return;
 }	
+
+//////////////////////////////////////////////////////////////////////////
+
+void CDuiEditorDoc::OnEditInsertFont()
+{
+	xml_node nodeWinodw = m_doc.child(XTEXT("Window"));
+	xml_node nodeFont;
+	BOOL bAdd = FALSE;
+	for (xml_node node=nodeWinodw.last_child(); node; node=node.previous_sibling())
+	{
+		if(CompareString(XTEXT("Font"), node.name()))
+		{
+			nodeFont = nodeWinodw.insert_child_after(XTEXT("Font"), node);
+			GetUIManager()->GetTreeView()->AddNewControl(nodeFont, node, TVI_NEXT);
+			bAdd = TRUE;
+			break;
+		}
+	}
+	if(!bAdd)
+	{
+		nodeFont = nodeWinodw.prepend_child(XTEXT("Font"));
+		GetUIManager()->GetTreeView()->AddNewControl(nodeFont, TVI_FIRST);
+	}
+
+	GetUIManager()->GetCodeView()->AddNode(nodeFont);
+	g_duiProp.AddAttribute(nodeFont, _T("id"), 0,				GetUIManager());
+	g_duiProp.AddAttribute(nodeFont, _T("name"), _T("宋体"),	GetUIManager());
+	g_duiProp.AddAttribute(nodeFont, _T("size"), 12,			GetUIManager());
+
+	GetUIManager()->GetPropList()->InitProp(nodeFont);
+}
+
+void  CDuiEditorDoc::OnEditInsertDefault()
+{
+	xml_node nodeWinodw = m_doc.child(XTEXT("Window"));
+	xml_node nodeDefault;
+	BOOL bAdd = FALSE;
+	for (xml_node node=nodeWinodw.last_child(); node; node=node.previous_sibling())
+	{
+		if(CompareString(XTEXT("Default"), node.name()))
+		{
+			nodeDefault = nodeWinodw.insert_child_after(XTEXT("Default"), node);
+			GetUIManager()->GetTreeView()->AddNewControl(nodeDefault, node, TVI_NEXT);
+			bAdd = TRUE;
+			break;
+		}
+	}
+	if(!bAdd)
+	{
+		nodeDefault = nodeWinodw.prepend_child(XTEXT("Default"));
+		GetUIManager()->GetTreeView()->AddNewControl(nodeDefault, TVI_FIRST);
+	}
+
+	GetUIManager()->GetCodeView()->AddNode(nodeDefault);
+	GetUIManager()->GetPropList()->InitProp(nodeDefault);
+}
+
+void  CDuiEditorDoc::OnEditInsertStyleNode()
+{
+	xml_node nodeWinodw = m_doc.child(XTEXT("Window"));
+	xml_node nodeStyle;
+	BOOL bAdd = FALSE;
+	for (xml_node node=nodeWinodw.last_child(); node; node=node.previous_sibling())
+	{
+		if(CompareString(XTEXT("Style"), node.name()))
+		{
+			nodeStyle = nodeWinodw.insert_child_after(XTEXT("Style"), node);
+			GetUIManager()->GetTreeView()->AddNewControl(nodeStyle, node, TVI_NEXT);
+			bAdd = TRUE;
+			break;
+		}
+	}
+	if(!bAdd)
+	{
+		nodeStyle = nodeWinodw.prepend_child(XTEXT("Style"));
+		GetUIManager()->GetTreeView()->AddNewControl(nodeStyle, TVI_FIRST);
+	}
+
+	GetUIManager()->GetCodeView()->AddNode(nodeStyle);
+	g_duiProp.AddAttribute(nodeStyle, _T("name"), _T(""),	GetUIManager());
+	g_duiProp.AddAttribute(nodeStyle, _T("class"), _T(""),	GetUIManager());
+
+	GetUIManager()->GetPropList()->InitProp(nodeStyle);
+}
+
+
+void CDuiEditorDoc::OnEditUndo()
+{
+	GetUIManager()->GetCodeView()->GetSciWnd()->sci_Undo();
+}
+
+
+void CDuiEditorDoc::OnUpdateEditUndo(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(GetUIManager()->GetCodeView()->GetSciWnd()->sci_CanUndo());
+}
+
+
+void CDuiEditorDoc::OnEditRedo()
+{
+	GetUIManager()->GetCodeView()->GetSciWnd()->sci_Redo();
+}
+
+
+void CDuiEditorDoc::OnUpdateEditRedo(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(GetUIManager()->GetCodeView()->GetSciWnd()->sci_CanRedo());
+}
+
+
+void CDuiEditorDoc::OnUiformDebug()
+{
+	AfxGetApp()->SaveAllModified();
+
+	g_pThreadTest = new CThreadTest;
+	g_pThreadTest->m_nTestFrom = 0;
+	g_pThreadTest->m_pDoc = this;
+	g_pThreadTest->CreateThread();
+	return;
+}
+
+void CDuiEditorDoc::OnUpdateUiformDebug(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(g_hThreadTestHandle == NULL);
+}
+
+void CDuiEditorDoc::OnUiformDebugEnd()
+{
+	if(g_hThreadTestHandle == NULL)
+		return;
+
+	//	PostThreadMessage(g_pThreadTest->m_piProcInfo.dwThreadId, WM_QUIT, 0, 0);
+	//	if(WaitForSingleObject(g_pThreadTest->m_piProcInfo.hProcess, 1000) != WAIT_OBJECT_0)
+	//	{
+	TerminateProcess(g_pThreadTest->m_piProcInfo.hProcess, 0);
+	InsertMsg(_T("TerminateProcess"));
+	//	}
+}
+
+void CDuiEditorDoc::OnUpdateUiformDebugEnd(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(g_hThreadTestHandle != NULL);
+}

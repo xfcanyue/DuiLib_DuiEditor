@@ -5,7 +5,6 @@
 #include "DuiEditorDoc.h"
 #include "DuiEditorViewDesign.h"
 #include "DuiEditorViewCode.h"
-#include "DuiEditorCommandHistory.h"
 #include "UITrackerMuliti.h"
 #include "DockControlTreeCtrl.h"
 #include "UIPropertyGridCtrl.h"
@@ -51,7 +50,6 @@ private:
 
 public: //统一管理各种指针
 	CDuiEditorDoc *GetDocument() { return m_pDoc; }
-	CDuiEditorCommandHistory *GetCmdHistory() { return m_pCmdHistory; }
 	CDuiEditorViewDesign *GetDesignView() { return m_pDesignView; }
 	CDuiEditorViewCode *GetCodeView() { return m_pCodeView; }
 	CPaintManagerUI *GetManager() { return m_pManager; }
@@ -73,7 +71,6 @@ public:
 
 private:
 	CDuiEditorDoc *m_pDoc;
-	CDuiEditorCommandHistory *m_pCmdHistory;
 	CDuiEditorViewDesign *m_pDesignView;
 	CDuiEditorViewCode *m_pCodeView;
 	CPaintManagerUI *m_pManager;

@@ -172,13 +172,13 @@ void CDockPropertyWnd::OnSize(UINT nType, int cx, int cy)
 
 LRESULT CDockPropertyWnd::OnPropertyChanged (WPARAM,LPARAM lParam)
 {
-	CMFCPropertyGridProperty* pProp = (CMFCPropertyGridProperty*)lParam;
-
-	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
-	CDuiEditorViewDesign *pView = pMain->GetActiveUIView();
-
-	CUIPropertyGridCtrl *pPropList = GetPropList(m_tabClass.GetActiveTab());
-	pView->GetUIManager()->GetTreeView()->UpdateXmlNode(pPropList->m_TreeNode);
+// 	CMFCPropertyGridProperty* pProp = (CMFCPropertyGridProperty*)lParam;
+// 
+// 	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
+// 	CDuiEditorViewDesign *pView = pMain->GetActiveUIView();
+// 
+// 	CUIPropertyGridCtrl *pPropList = GetPropList(m_tabClass.GetActiveTab());
+//	pView->GetUIManager()->GetTreeView()->UpdateXmlNode(pPropList->m_TreeNode);
 	return 0;
 }
 

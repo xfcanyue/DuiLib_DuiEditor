@@ -275,7 +275,7 @@ namespace pugi
 	};
 
 #ifndef PUGIXML_NO_STL
-	// xml_writer implementation for FILE*
+	// xml_writer implementation for string, add by liqs99
 	class PUGIXML_CLASS xml_writer_string: public xml_writer
 	{
 	public:
@@ -379,6 +379,26 @@ namespace pugi
 		//Set Node tag, it is UINT_PTR for userdata, added by liqs99
 		bool set_tag(UINT_PTR uptr);
 		UINT_PTR get_tag();
+
+		bool set_pos(xml_attribute attr);
+
+		bool set_name_start_pos(int pos);
+		int  get_name_start_pos();
+
+		bool set_name_end_pos(int pos);
+		int  get_name_end_pos();
+
+		bool set_value_start_pos(int pos);
+		int  get_value_start_pos();
+
+		bool set_value_end_pos(int pos);
+		int  get_value_end_pos();
+
+		//Set attribute column in editor
+// 		bool set_column_start_pos(int column);
+// 		int  get_column_start_pos();
+// 		bool set_column_end_pos(int column);
+// 		int  get_column_end_pos();
 
 		// Set attribute value (equivalent to set_value without error checking)
 		xml_attribute& operator=(const char_t* rhs);
@@ -503,11 +523,42 @@ namespace pugi
 		void set_tag(UINT_PTR uptr);
 		UINT_PTR get_tag();
 
-		void set_row(int n);
-		int get_row();
+		void set_pos(xml_node node);
 
-		void set_column(int n);
-		int get_column();
+		void set_open_start_pos(int pos);
+		int  get_open_start_pos();
+
+		void set_open_end_pos(int pos);
+		int  get_open_end_pos();
+
+		void set_close_start_pos(int pos);
+		int  get_close_start_pos();
+
+		void set_close_end_pos(int pos);
+		int  get_close_end_pos();
+
+// 		void set_row(int n);
+// 		int get_row();
+// 
+// 		void set_row_end(int n);
+// 		int get_row_end();
+
+		//node在编辑器中的信息
+// 		void set_tagName_start_pos(int column);
+// 		int  get_tagName_start_pos();
+// 		void set_tagName_end_pos(int column);
+// 		int  get_tagName_end_pos();
+// 		void set_tagOpen_start_pos(int column);
+// 		int  get_tagOpen_start_pos();
+// 		void set_tagOpen_end_pos(int column);
+// 		int  get_tagOpen_end_pos();
+// 		void set_tagClose_start_pos(int column);
+// 		int  get_tagClose_start_pos();
+// 		void set_tagClose_end_pos(int column);
+// 		int  get_tagClose_end_pos();
+// 		void set_depth(int depth);
+// 		int  get_depth();
+		
 
 		// Add attribute with specified name. Returns added attribute, or empty attribute on errors.
 		xml_attribute append_attribute(const char_t* name);

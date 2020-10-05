@@ -159,7 +159,7 @@ void CDlgOptions::SetXmlOptions(const tagEditorConfig &opt)
 void CDlgOptions::SetXmlOptions(CSciWnd *pSciWnd, const tagEditorConfig &opt)
 {
 	LSSTRING_CONVERSION;
-	pSciWnd->SendEditor(SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)LST2UTF8(opt.strXmlFontName));
+	pSciWnd->SendEditor(SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)(const char *)LST2UTF8(opt.strXmlFontName));
 	pSciWnd->sci_StyleSetSize(STYLE_DEFAULT, opt.nXmlFontSize);
 	pSciWnd->sci_StyleSetBack(STYLE_DEFAULT, opt.crXmlBkColor);
 	pSciWnd->sci_StyleSetBack(STYLE_LINENUMBER, opt.crXmlBkColor);

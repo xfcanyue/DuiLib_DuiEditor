@@ -119,26 +119,27 @@ void CDefaultEditor::SetAttributeValue(LPCTSTR szControlName, LPCTSTR szAttribut
 	strXML += " ";
 	strXML += szAttribute;
 	strXML += _T(" />");
-	xml_parse_result ret = m_nodeControl.load(strXML);
+	xml_parse_result ret = m_nodeControl.load(T2XML(strXML));
 	if(ret.status != pugi::status_ok)//如果匹配不成功, 就认为只有文件名, 无其他参数
 	{
 		strXML = _T("<");
 		strXML += m_strClassName;
 		strXML += _T(" />");
-		ret = m_nodeControl.load(strXML);
+		ret = m_nodeControl.load(T2XML(strXML));
 	}
 }
 
 CString CDefaultEditor::GetAttributeValue()
 {
 	//过滤默认属性
-	g_duiProp.FilterDefaultValue(m_nodeControl.child(m_strClassName));
+	g_duiProp.FilterDefaultValue(m_nodeControl.child(T2XML(m_strClassName)), NULL);
+	g_duiProp.FilterPosWidthHeight(m_nodeControl.child(T2XML(m_strClassName)), NULL);
 
 	CString strText, temp;
-	xml_node root = m_nodeControl.child(m_strClassName);
+	xml_node root = m_nodeControl.child(T2XML(m_strClassName));
 	for (xml_attribute attr=root.first_attribute(); attr; attr=attr.next_attribute())
 	{
-		temp.Format(_T("%s=\"%s\" "), attr.name(), attr.value());
+		temp.Format(_T("%s=\"%s\" "), XML2T(attr.name()), XML2T(attr.value()));
 		strText += temp;
 	}
 

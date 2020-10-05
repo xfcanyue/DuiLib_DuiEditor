@@ -8,6 +8,7 @@
 #include "locale.h"
 
 #include "../LsStringConverter.h"
+LsStringConverter __lsstring__convert__temp__instance__;
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,

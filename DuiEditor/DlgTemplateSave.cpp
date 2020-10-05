@@ -85,7 +85,7 @@ void CDlgTemplateSave::OnBnClickedOk()
 	m_staPicture.GetImage()->Save(strPath+_T("\\skin.jpg"), Gdiplus::ImageFormatJPEG);
 
 	//过滤默认属性
-	xml_node root = m_pDoc->m_doc.root().child(_T("Window"));
+	xml_node root = m_pDoc->m_doc.root().child(XTEXT("Window"));
 	m_pDoc->FilterDefaultValue(root);
 
 	//创建一个拷贝, 然后保存拷贝

@@ -15,9 +15,7 @@
 #define HEADER_PUGICONFIG_HPP
 
 // Uncomment this to enable wchar_t mode
-#ifdef _UNICODE
-	#define PUGIXML_WCHAR_MODE
-#endif
+// #define PUGIXML_WCHAR_MODE
 
 // Uncomment this to enable compact mode
 // #define PUGIXML_COMPACT

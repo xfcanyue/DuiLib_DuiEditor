@@ -1028,7 +1028,8 @@ namespace pugi
 {
 	struct xml_attribute_struct
 	{
-		xml_attribute_struct(impl::xml_memory_page* page): header(page, 0), namevalue_base(0), tag(0)
+		xml_attribute_struct(impl::xml_memory_page* page): header(page, 0), namevalue_base(0), 
+			tag(0), pos(-1)
 		{
 			PUGI__STATIC_ASSERT(sizeof(xml_attribute_struct) == 8);
 		}
@@ -1044,11 +1045,13 @@ namespace pugi
 		impl::compact_pointer<xml_attribute_struct, 7, 0> next_attribute;
 
 		UINT_PTR tag;
+		int pos;
 	};
 
 	struct xml_node_struct
 	{
-		xml_node_struct(impl::xml_memory_page* page, xml_node_type type): header(page, type - 1), namevalue_base(0), tag(0), row(0), col(0)
+		xml_node_struct(impl::xml_memory_page* page, xml_node_type type): header(page, type - 1), namevalue_base(0), 
+			tag(0), pos(-1), row(-1), row_end(-1), depth(0)
 		{
 			PUGI__STATIC_ASSERT(sizeof(xml_node_struct) == 12);
 		}
@@ -1070,8 +1073,9 @@ namespace pugi
 		impl::compact_pointer<xml_attribute_struct, 11, 0> first_attribute;
 
 		UINT_PTR tag;
-		int row;
-		int col;
+		int pos;			//所在位置
+		int row;			// 所在行
+		int row_end;		// 闭合所在行
 	};
 }
 #else
@@ -1079,7 +1083,8 @@ namespace pugi
 {
 	struct xml_attribute_struct
 	{
-		xml_attribute_struct(impl::xml_memory_page* page): header(reinterpret_cast<uintptr_t>(page)), name(0), value(0), prev_attribute_c(0), next_attribute(0), tag(0)
+		xml_attribute_struct(impl::xml_memory_page* page): header(reinterpret_cast<uintptr_t>(page)), name(0), value(0), prev_attribute_c(0), next_attribute(0), 
+			tag(0), name_start_pos(-1), name_end_pos(-1), value_start_pos(-1), value_end_pos(-1)
 		{
 		}
 
@@ -1092,11 +1097,16 @@ namespace pugi
 		xml_attribute_struct* next_attribute;
 
 		UINT_PTR tag;
+		int name_start_pos;
+		int name_end_pos;
+		int value_start_pos;
+		int value_end_pos;
 	};
 
 	struct xml_node_struct
 	{
-		xml_node_struct(impl::xml_memory_page* page, xml_node_type type): header(reinterpret_cast<uintptr_t>(page) | (type - 1)), name(0), value(0), parent(0), first_child(0), prev_sibling_c(0), next_sibling(0), first_attribute(0), tag(0), row(0), col(0)
+		xml_node_struct(impl::xml_memory_page* page, xml_node_type type): header(reinterpret_cast<uintptr_t>(page) | (type - 1)), name(0), value(0), parent(0), first_child(0), prev_sibling_c(0), next_sibling(0), first_attribute(0), 
+			tag(0), open_start_pos(-1), open_end_pos(-1), close_start_pos(-1), close_end_pos(-1)
 		{
 		}
 
@@ -1115,8 +1125,10 @@ namespace pugi
 		xml_attribute_struct* first_attribute;
 
 		UINT_PTR tag;
-		int row;
-		int col;
+		int open_start_pos;		// 所在位置<NodeName>	"<"的位置
+		int open_end_pos;		// 所在位置<NodeName>	">"的位置
+		int close_start_pos;	// 结束位置</NodeName>	"</"的位置
+		int close_end_pos;		// 结束位置</NodeName>	">"的位置
 	};
 }
 #endif
@@ -2835,7 +2847,8 @@ PUGI__NS_BEGIN
 		xml_allocator* alloc_state;
 		char_t* error_offset;
 		xml_parse_status error_status;
-		
+		char_t* backup;
+
 		xml_parser(xml_allocator* alloc_): alloc(*alloc_), alloc_state(alloc_), error_offset(0), error_status(status_ok)
 		{
 		}
@@ -2978,6 +2991,7 @@ PUGI__NS_BEGIN
 					if (PUGI__OPTSET(parse_comments))
 					{
 						PUGI__PUSHNODE(node_comment); // Append a new node on the tree.
+						cursor->open_start_pos = s - backup - 3;
 						cursor->value = s; // Save the offset.
 					}
 
@@ -2985,6 +2999,7 @@ PUGI__NS_BEGIN
 					{
 						s = strconv_comment(s, endch);
 
+						cursor->open_end_pos = s - backup;
 						if (!s) PUGI__THROW_ERROR(status_bad_comment, cursor->value);
 					}
 					else
@@ -3173,6 +3188,7 @@ PUGI__NS_BEGIN
 			char_t ch = 0;
 			xml_node_struct* cursor = root;
 			char_t* mark = s;
+			backup = s;
 
 			while (*s != 0)
 			{
@@ -3185,6 +3201,7 @@ PUGI__NS_BEGIN
 					{
 						PUGI__PUSHNODE(node_element); // Append a new node to the tree.
 
+						cursor->open_start_pos = s - backup - 1;
 						cursor->name = s;
 
 						PUGI__SCANWHILE_UNROLL(PUGI__IS_CHARTYPE(ss, ct_symbol)); // Scan for a terminator.
@@ -3193,6 +3210,7 @@ PUGI__NS_BEGIN
 						if (ch == '>')
 						{
 							// end of tag
+							cursor->open_end_pos = s - backup;
 						}
 						else if (PUGI__IS_CHARTYPE(ch, ct_space))
 						{
@@ -3206,11 +3224,13 @@ PUGI__NS_BEGIN
 									xml_attribute_struct* a = append_new_attribute(cursor, alloc); // Make space for this attribute.
 									if (!a) PUGI__THROW_ERROR(status_out_of_memory, s);
 
+									a->name_start_pos = s - backup;
 									a->name = s; // Save the offset.
 
 									PUGI__SCANWHILE_UNROLL(PUGI__IS_CHARTYPE(ss, ct_symbol)); // Scan for a terminator.
 									PUGI__ENDSEG(); // Save char in 'ch', terminate & step over.
 
+									a->name_end_pos = s - backup - 1;
 									if (PUGI__IS_CHARTYPE(ch, ct_space))
 									{
 										PUGI__SKIPWS(); // Eat any whitespace.
@@ -3229,7 +3249,9 @@ PUGI__NS_BEGIN
 											++s; // Step over the quote.
 											a->value = s; // Save the offset.
 
+											a->value_start_pos = s - backup;
 											s = strconv_attribute(s, ch);
+											a->value_end_pos = s - backup -1;
 										
 											if (!s) PUGI__THROW_ERROR(status_bad_attribute, a->value);
 
@@ -3248,12 +3270,14 @@ PUGI__NS_BEGIN
 									
 									if (*s == '>')
 									{
+										cursor->open_end_pos = s - backup + 1;
 										PUGI__POPNODE();
 										s++;
 										break;
 									}
 									else if (*s == 0 && endch == '>')
 									{
+										cursor->open_end_pos = s - backup;
 										PUGI__POPNODE();
 										break;
 									}
@@ -3261,8 +3285,8 @@ PUGI__NS_BEGIN
 								}
 								else if (*s == '>')
 								{
+									cursor->open_end_pos = s - backup + 1;
 									++s;
-
 									break;
 								}
 								else if (*s == 0 && endch == '>')
@@ -3295,6 +3319,7 @@ PUGI__NS_BEGIN
 					{
 						++s;
 
+						cursor->close_start_pos = s - backup - 2;
 						char_t* name = cursor->name;
 						if (!name) PUGI__THROW_ERROR(status_end_element_mismatch, s);
 						
@@ -3308,7 +3333,8 @@ PUGI__NS_BEGIN
 							if (*s == 0 && name[0] == endch && name[1] == 0) PUGI__THROW_ERROR(status_bad_end_element, s);
 							else PUGI__THROW_ERROR(status_end_element_mismatch, s);
 						}
-							
+
+						cursor->close_end_pos = s - backup + 1;
 						PUGI__POPNODE(); // Pop.
 
 						PUGI__SKIPWS();
@@ -5244,6 +5270,61 @@ namespace pugi
 		return _attr->tag;
 	}
 
+	PUGI__FN bool xml_attribute::set_pos(xml_attribute attr)
+	{
+		if (!_attr || !attr) return false;
+		set_name_start_pos(attr.get_name_start_pos());
+		set_name_end_pos(attr.get_name_end_pos());
+		set_value_start_pos(attr.get_value_start_pos());
+		set_value_end_pos(attr.get_value_end_pos());
+		return true;
+	}
+
+	PUGI__FN bool xml_attribute::set_name_start_pos(int pos)
+	{
+		if (!_attr) return false;
+		_attr->name_start_pos = pos;
+		return true;
+	}
+	PUGI__FN int  xml_attribute::get_name_start_pos()
+	{
+		if (!_attr) return -1;
+		return _attr->name_start_pos;
+	}
+	PUGI__FN bool xml_attribute::set_name_end_pos(int pos)
+	{
+		if (!_attr) return false;
+		_attr->name_end_pos = pos;
+		return true;
+	}
+	PUGI__FN int  xml_attribute::get_name_end_pos()
+	{
+		if (!_attr) return -1;
+		return _attr->name_end_pos;
+	}
+	PUGI__FN bool xml_attribute::set_value_start_pos(int pos)
+	{
+		if (!_attr) return false;
+		_attr->value_start_pos = pos;
+		return true;
+	}
+	PUGI__FN int  xml_attribute::get_value_start_pos()
+	{
+		if (!_attr) return -1;
+		return _attr->value_start_pos;
+	}
+	PUGI__FN bool xml_attribute::set_value_end_pos(int pos)
+	{
+		if (!_attr) return false;
+		_attr->value_end_pos = pos;
+		return true;
+	}
+	PUGI__FN int  xml_attribute::get_value_end_pos()
+	{
+		if (!_attr) return -1;
+		return _attr->value_end_pos;
+	}
+	
 #ifdef __BORLANDC__
 	PUGI__FN bool operator&&(const xml_attribute& lhs, bool rhs)
 	{
@@ -5523,31 +5604,52 @@ namespace pugi
 
 
 	//Set Node tag, it is UINT_PTR for usedata, added by liqs99
-	PUGI__FN void xml_node::set_tag(UINT_PTR uptr)
+	PUGI__FN void xml_node::set_tag(UINT_PTR uptr) { if(_root) _root->tag = uptr; }
+	PUGI__FN UINT_PTR xml_node::get_tag() { return _root ? _root->tag : NULL; }
+
+	PUGI__FN void xml_node::set_pos(xml_node node)
 	{
-		if(_root) _root->tag = uptr;
-	}
-	PUGI__FN UINT_PTR xml_node::get_tag()
-	{
-		return _root ? _root->tag : NULL;
+		set_open_start_pos(node.get_open_start_pos());
+		set_open_end_pos(node.get_open_end_pos());
+		set_close_start_pos(node.get_close_start_pos());
+		set_close_end_pos(node.get_close_end_pos());
 	}
 
-	PUGI__FN void xml_node::set_row(int n)
-	{
-		if(_root) _root->row = n;
-	}
-	PUGI__FN int xml_node::get_row()
-	{
-		return _root ? _root->row : 0;
-	}
-	PUGI__FN void xml_node::set_column(int n)
-	{
-		if(_root) _root->col = n;
-	}
-	PUGI__FN int xml_node::get_column()
-	{
-		return _root ? _root->col : 0;
-	}
+	PUGI__FN void xml_node::set_open_start_pos(int pos)	{ if(_root) _root->open_start_pos = pos; }
+	PUGI__FN int  xml_node::get_open_start_pos()			{ return _root ? _root->open_start_pos : -1; }
+
+	PUGI__FN void xml_node::set_open_end_pos(int pos)	{ if(_root) _root->open_end_pos = pos; }
+	PUGI__FN int  xml_node::get_open_end_pos()			{ return _root ? _root->open_end_pos : -1; }
+
+	PUGI__FN void xml_node::set_close_start_pos(int pos)	{ if(_root) _root->close_start_pos = pos; }
+	PUGI__FN int  xml_node::get_close_start_pos()			{ return _root ? _root->close_start_pos : -1; }
+
+	PUGI__FN void xml_node::set_close_end_pos(int pos)	{ if(_root) _root->close_end_pos = pos; }
+	PUGI__FN int  xml_node::get_close_end_pos()			{ return _root ? _root->close_end_pos : -1; }
+
+// 	PUGI__FN void xml_node::set_row(int n) { if(_root) _root->row = n; }
+// 	PUGI__FN int xml_node::get_row() { return _root ? _root->row : -1; }
+// 
+// 	PUGI__FN void xml_node::set_row_end(int n) { if(_root) _root->row_end = n; }
+// 	PUGI__FN int xml_node::get_row_end() { return _root ? _root->row_end : -1; }
+
+// 	PUGI__FN void xml_node::set_tagName_start_pos(int n)	{ if(_root) _root->tagNameStart = n;		}
+// 	PUGI__FN int  xml_node::get_tagName_start_pos()			{ return _root ? _root->tagNameStart : -1;	}
+// 	PUGI__FN void xml_node::set_tagName_end_pos(int n)		{ if(_root) _root->tagNameEnd = n;			}
+// 	PUGI__FN int  xml_node::get_tagName_end_pos()			{ return _root ? _root->tagNameEnd : -1;	}
+// 
+// 	PUGI__FN void xml_node::set_tagOpen_start_pos(int n)	{ if(_root) _root->tagOpenStart = n;		}
+// 	PUGI__FN int  xml_node::get_tagOpen_start_pos()			{ return _root ? _root->tagOpenStart : -1;	}
+// 	PUGI__FN void xml_node::set_tagOpen_end_pos(int n)		{ if(_root) _root->tagOpenEnd = n;			}
+// 	PUGI__FN int  xml_node::get_tagOpen_end_pos()			{ return _root ? _root->tagOpenEnd : -1;	}
+// 
+// 	PUGI__FN void xml_node::set_tagClose_start_pos(int n)	{ if(_root) _root->tagCloseStart = n;		}
+// 	PUGI__FN int  xml_node::get_tagClose_start_pos()		{ return _root ? _root->tagCloseStart : -1; }
+// 	PUGI__FN void xml_node::set_tagClose_end_pos(int n)		{ if(_root) _root->tagCloseEnd = n;			}
+// 	PUGI__FN int  xml_node::get_tagClose_end_pos()			{ return _root ? _root->tagCloseEnd : -1;	}
+
+// 	PUGI__FN void xml_node::set_depth(int depth)			{ if(_root) _root->depth = depth;			}
+// 	PUGI__FN int  xml_node::get_depth()						{ return _root ? _root->depth : -1;			}
 
 	PUGI__FN xml_attribute xml_node::append_attribute(const char_t* name_)
 	{
@@ -6902,6 +7004,7 @@ namespace pugi
 		{
 			buffered_writer.write_string(PUGIXML_TEXT("<?xml version=\"1.0\""));
 			if (encoding == encoding_latin1) buffered_writer.write_string(PUGIXML_TEXT(" encoding=\"ISO-8859-1\""));
+			if (encoding == encoding_utf8) buffered_writer.write_string(PUGIXML_TEXT(" encoding=\"UTF-8\""));
 			buffered_writer.write('?', '>');
 			if (!(flags & format_raw))  buffered_writer.write('\r', '\n');
 		}

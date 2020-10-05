@@ -68,5 +68,6 @@
 #endif
 
 
+#define PUGIXML_WCHAR_MODE
 #include "../pugixml/pugixml.hpp"
 	using namespace pugi;

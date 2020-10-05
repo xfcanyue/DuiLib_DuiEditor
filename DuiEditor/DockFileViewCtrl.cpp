@@ -40,6 +40,7 @@ BEGIN_MESSAGE_MAP(CDockFileViewCtrl, CTreeCtrl)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_DEBUG_RUN, &CDockFileViewCtrl::OnUpdateEditDebugRun)
 	ON_COMMAND(ID_EDIT_COPY_FILE_NAME, &CDockFileViewCtrl::OnEditCopyFileName)
 	ON_COMMAND(ID_EDIT_DEBUG_NO_FILE, &CDockFileViewCtrl::OnEditDebugNoFile)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_DEBUG_NO_FILE, &CDockFileViewCtrl::OnUpdateEditDebugNoFile)
 END_MESSAGE_MAP()
 
 
@@ -90,7 +91,7 @@ BOOL CDockFileViewCtrl::InitFolder(LPCTSTR szFolderPath)
 	LSSTRING_CONVERSION;
 	LPSHELLFOLDER psfRootFolder = NULL;
 	LPITEMIDLIST pidlRootFolder = NULL;
-	if (FAILED(pDesktop->ParseDisplayName(NULL, NULL, (LPWSTR)LST2W(szFolderPath), NULL, &pidlRootFolder, NULL)))
+	if (FAILED(pDesktop->ParseDisplayName(NULL, NULL, (LPWSTR)(const wchar_t *)LST2W(szFolderPath), NULL, &pidlRootFolder, NULL)))
 	{
 		return FALSE;
 	}
@@ -608,4 +609,10 @@ void CDockFileViewCtrl::OnEditDebugNoFile()
 		SetItemState(m_hStartupItem, 0, TVIS_BOLD);
 		m_hStartupItem = NULL;
 	}
+}
+
+
+void CDockFileViewCtrl::OnUpdateEditDebugNoFile(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(!g_proj.GetStartupFile().IsEmpty());
 }

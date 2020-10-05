@@ -55,7 +55,7 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 		rc.bottom = rc.top + tracker.m_rect.Height();
 	}
 
-	CString strNewControlClass = nodeToolBox.name(); //准备插入控件的类名
+	CString strNewControlClass = XML2T(nodeToolBox.name()); //准备插入控件的类名
 
 	//插入位置, 知道了插入位置，才能确定container
 	CDlgInsertControl dlg;
@@ -78,7 +78,7 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 			//选中控件树Window节点添加子控件
 			if(pManager->GetUiFrom() == pParentContainer) 
 			{ 
-				if(g_duiProp.IsBaseFromContainer(strNewControlClass)) //必须放置于容器内
+				if(g_duiProp.IsContainerUI(nodeToolBox)) //必须放置于容器内
 				{
 					if(pParentContainer->GetCount() > 0)
 					{
@@ -156,7 +156,7 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 	case INSERT_CHILD: //当前容器下方插入控件
 		{
 			if(!pParentContainer->Add(pNewControl)) { CUIBuilder::DeleteControl(pNewControl); return; }		
-			nodeNewControl = nodeContainer.append_child(strNewControlClass);	//写入文档
+			nodeNewControl = nodeContainer.append_child(T2XML(strNewControlClass));	//写入文档
 		}
 		break;
 	case INSERT_NEXT:	//当前控件下方插入兄弟控件
@@ -165,7 +165,7 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 			{ 
 				CUIBuilder::DeleteControl(pNewControl); return; 
 			}
-			nodeNewControl = nodeContainer.append_child(strNewControlClass);	//写入文档
+			nodeNewControl = nodeContainer.insert_child_after(T2XML(strNewControlClass), nodeCurrent);	//写入文档
 		}
 		break;
 	case INSERT_BEFORE:	//当前控件上方插入兄弟控件
@@ -174,19 +174,20 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 			{ 
 				CUIBuilder::DeleteControl(pNewControl); return; 
 			}
-			nodeNewControl = nodeContainer.insert_child_before(strNewControlClass, nodeCurrent);	//写入文档
+			nodeNewControl = nodeContainer.insert_child_before(T2XML(strNewControlClass), nodeCurrent);	//写入文档
 		}
 		break;
-	}
-
-	if(bCustomControl)
-	{
-		nodeNewControl.attribute_auto(_T("custombasedfrom")).set_value(strCuscomControlParent);
 	}
 
 	//保存文档和控件的双向指针
 	pNewControl->SetTag((UINT_PTR)nodeNewControl.internal_object());
 	nodeNewControl.set_tag((UINT_PTR)pNewControl);
+	GetUIManager()->GetCodeView()->AddNode(nodeNewControl);
+
+	if(bCustomControl)
+	{
+		nodeNewControl.attribute_auto(XTEXT("custombasedfrom")).set_value(T2XML(strCuscomControlParent));
+	}
 
 	if(pManager->GetDesignView()->m_nFormatInsert == 0)	//自动定位
 	{
@@ -236,7 +237,8 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 		g_duiProp.AddAttribute(nodeNewControl, _T("height"),		rcNew.bottom-rcNew.top, NULL);
 	}
 
-	g_duiProp.FilterDefaultValue(nodeNewControl);
+	g_duiProp.FilterDefaultValue(nodeNewControl, GetUIManager());
+	g_duiProp.FilterPosWidthHeight(nodeNewControl, GetUIManager());
 
 	//载入控件默认属性
 	LPCTSTR pDefaultAttributes = GetManager()->GetDefaultAttributeList(strNewControlClass);
@@ -270,10 +272,10 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 	m_tracker.Add(nodeNewControl, pNewControl->GetPos());
 
 	//插入command history
-	pManager->GetCmdHistory()->AddNewControl(nodeNewControl);
+	//pManager->GetCmdHistory()->AddNewControl(nodeNewControl);
 
 	//保存文档修改标志
-	pManager->GetDocument()->SetModifiedFlag(TRUE);
+	//pManager->GetDocument()->SetModifiedFlag(TRUE);
 }
 
 void CUIWindowEx::OnSelectingControl(CControlUI *pControl, const CRect &rcTracker)
@@ -417,33 +419,34 @@ LRESULT CUIWindowEx::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHa
 	styleValue &= ~WS_CAPTION;
 	::SetWindowLong(*this, GWL_STYLE, styleValue | WS_CLIPSIBLINGS | WS_CLIPCHILDREN);
 
-	CDuiEditorDoc *pDoc = GetUIManager()->GetDocument();
+	//CDuiEditorDoc *pDoc = GetUIManager()->GetDocument();
 	GetManager()->Init(m_hWnd);
 	GetManager()->AddPreMessageFilter(this);
-	GetManager()->SetResourcePath(pDoc->GetSkinPath());
+	//GetManager()->SetResourcePath(pDoc->GetSkinPath());
 
-	CUIBuilder builder;
-	CString skinFile = pDoc->GetSkinFileName();
-	if(skinFile.CompareNoCase(_T("config.xml")) == 0)
-	{
-		m_bOpenConfigFile = true;
-	}
+// 	CUIBuilder builder;
+// 	CString skinFile = pDoc->GetSkinFileName();
+// 	if(skinFile.CompareNoCase(_T("config.xml")) == 0)
+// 	{
+// 		m_bOpenConfigFile = true;
+// 	}
 
-	CControlUI* pRoot=NULL;
-	pRoot = builder.Create(pDoc->m_doc, this, GetManager());
-	if (pRoot==NULL && !m_bOpenConfigFile)
-	{
-		//MessageBox(m_hWnd, _T("Loading resource files error."), _T("Duilib"), MB_OK|MB_ICONERROR);
-		//return 0;
-	}
+// 	CControlUI* pRoot=NULL;
+// 	pRoot = builder.Create(pDoc->m_doc, this, GetManager());
+// 	if (pRoot==NULL && !m_bOpenConfigFile)
+// 	{
+// 		//MessageBox(m_hWnd, _T("Loading resource files error."), _T("Duilib"), MB_OK|MB_ICONERROR);
+// 		//return 0;
+// 	}
+
+	
+// 	xml_node nodeWindow = pDoc->m_doc.child(XTEXT("Window"));
+// 	p->SetTag((UINT_PTR)nodeWindow.internal_object());
+// 	nodeWindow.set_tag((UINT_PTR)p);
+// 	p->Add(pRoot);
 
 	//先在根部放一个containner, 设计器内部把它当成窗口对象。
 	CUIFormView *p = new CUIFormView;
-	xml_node nodeWindow = pDoc->m_doc.child(_T("Window"));
-	p->SetTag((UINT_PTR)nodeWindow.internal_object());
-	nodeWindow.set_tag((UINT_PTR)p);
-	p->Add(pRoot);
-
 	GetManager()->AttachDialog(p);
 	GetManager()->AddNotifier(this);
 
@@ -502,7 +505,7 @@ LRESULT CUIWindowEx::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHand
 		return 0;
 
 
-	CString strText = node.attribute(_T("text")).value();
+	CString strText = XML2T(node.attribute(XTEXT("text")).value());
 
 	if(nChar == 0x08) //Backspace, 退格键
 	{
@@ -517,7 +520,7 @@ LRESULT CUIWindowEx::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHand
 		temp.Format(_T("%c"), nChar);
 		strText += temp;
 	}
-	g_duiProp.AddAttribute(node, _T("text"), strText,	pManager->GetDesignView());
+	g_duiProp.AddAttribute(node, _T("text"), strText,	GetUIManager());
 	CControlUI *pFocusControl = (CControlUI *)node.get_tag();
 	pFocusControl->SetText(strText);
 	pFocusControl->NeedParentUpdate();
@@ -679,7 +682,7 @@ LRESULT CUIWindowEx::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 		//if(!b) InsertMsg(_T("::SetCaretPos failed."));
  	}
 
-	if(nHit > 0 && (g_duiProp.IsBaseFromControlUI(nodeClick.name()) || g_duiProp.IsWindowForm(nodeClick.name())))
+	if(nHit > 0 && (g_duiProp.IsControlUI(nodeClick) || g_duiProp.IsWindowForm(nodeClick)))
 	{
 		m_tracker.Track(pWnd, pt, TRUE);
 	}
@@ -691,7 +694,7 @@ LRESULT CUIWindowEx::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 		rc.NormalizeRect();
 
 		//鼠标拉动框选控件, 必须是一个容器里面的
-		if(g_duiProp.IsBaseFromContainer(nodeClick.name()))
+		if(g_duiProp.IsContainerUI(nodeClick))
 		{
 			m_listTrackerSeleted.clear();
 			OnSelectingControl(pControl, rc);
@@ -744,7 +747,7 @@ LRESULT CUIWindowEx::OnMouseMove(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 
 		CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
 		CString temp;
-		temp.Format(_T("Cursor: %d, %d"), pt.x, pt.y);
+		temp.Format(_T("坐标: %d, %d"), pt.x, pt.y);
 		pMain->m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_CURSOR_POS, temp);
 	}
 

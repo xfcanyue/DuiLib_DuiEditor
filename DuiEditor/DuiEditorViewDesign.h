@@ -55,7 +55,6 @@ protected:
 public:
 	afx_msg void OnDestroy();
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-	afx_msg LRESULT OnInitViewDesign(WPARAM WParam, LPARAM LParam);
 	virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 
@@ -71,18 +70,7 @@ public:
 	afx_msg void OnUpdateEditCopyName(CCmdUI *pCmdUI);
 	afx_msg void OnEditCopyNameEx();
 	afx_msg void OnUpdateEditCopyNameEx(CCmdUI *pCmdUI);
-	afx_msg void OnEditUndo();
-	afx_msg void OnUpdateEditUndo(CCmdUI *pCmdUI);
-	afx_msg void OnEditRedo();
-	afx_msg void OnUpdateEditRedo(CCmdUI *pCmdUI);
-	afx_msg void OnEditInsertFont();
-	afx_msg void OnEditInsertDefault();
-	afx_msg void OnEditInsertStyleNode();
 
-	afx_msg void OnUiformDebug();
-	afx_msg void OnUpdateUiformDebug(CCmdUI *pCmdUI);
-	afx_msg void OnUiformDebugEnd();
-	afx_msg void OnUpdateUiformDebugEnd(CCmdUI *pCmdUI);
 	afx_msg void OnCommandTabLayoutSetSel(UINT nID);
 
 	afx_msg void OnFormatAlignLeft();

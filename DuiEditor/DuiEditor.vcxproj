@@ -266,7 +266,6 @@
     <ClInclude Include="DuiEditorDocTemplate.h" />
     <ClInclude Include="DuiEditorView.h" />
     <ClInclude Include="DuiEditorViewCode.h" />
-    <ClInclude Include="DuiEditorCommandHistory.h" />
     <ClInclude Include="DuiProject.h" />
     <ClInclude Include="EditorConfig.h" />
     <ClInclude Include="EditSearchCtrl.h" />
@@ -278,6 +277,7 @@
     <ClInclude Include="MySplitterWnd.h" />
     <ClInclude Include="MyStatusBar.h" />
     <ClInclude Include="SciFind.h" />
+    <ClInclude Include="SciXmlParse.h" />
     <ClInclude Include="SciXmlWriter.h" />
     <ClInclude Include="ScriptEditorDoc.h" />
     <ClInclude Include="ScriptEditorView.h" />
@@ -328,7 +328,6 @@
     <ClCompile Include="DuiEditorDocTemplate.cpp" />
     <ClCompile Include="DuiEditorView.cpp" />
     <ClCompile Include="DuiEditorViewCode.cpp" />
-    <ClCompile Include="DuiEditorCommandHistory.cpp" />
     <ClCompile Include="DuiProject.cpp" />
     <ClCompile Include="EditSearchCtrl.cpp" />
     <ClCompile Include="ImageEditor.cpp" />
@@ -338,6 +337,7 @@
     <ClCompile Include="MySplitterWnd.cpp" />
     <ClCompile Include="MyStatusBar.cpp" />
     <ClCompile Include="SciFind.cpp" />
+    <ClCompile Include="SciXmlParse.cpp" />
     <ClCompile Include="SciXmlWriter.cpp" />
     <ClCompile Include="ScriptEditorDoc.cpp" />
     <ClCompile Include="ScriptEditorView.cpp" />

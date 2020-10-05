@@ -31,6 +31,7 @@ public:
 	HTREEITEM AddNewControl(xml_node node, HTREEITEM hInertAfter=TVI_LAST);
 	HTREEITEM AddNewControl(xml_node nodeNewContrl, xml_node nodeCurrentControl, HTREEITEM htiAfter);
 
+
 	void UpdateXmlNode(xml_node node);
 
 	HTREEITEM FindXmlNode(xml_node node);

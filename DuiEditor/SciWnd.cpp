@@ -89,6 +89,7 @@ BEGIN_MESSAGE_MAP(CSciWnd, CWnd)
 	ON_WM_RBUTTONUP()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
+	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
 
@@ -151,10 +152,16 @@ void CSciWnd::InitXML(const tagEditorConfig &opt)
 {
 	sci_SetLexer(SCLEX_XML);		//设定词法解析器
 	sci_SetCodePage(SC_CP_UTF8);	//编码	
+	//sci_SetCodePage(936);	//编码	
+
+	if(opt.bAutoWrapLine)
+	{
+		sci_SetWrapMode(SC_WRAP_WORD);	//自动换行
+	}
 
 	LSSTRING_CONVERSION;
 
-	SendEditor(SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)LST2UTF8(opt.strXmlFontName));//(LPARAM)"Courier New");//"微软雅黑");
+	SendEditor(SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)(const char *)LST2UTF8(opt.strXmlFontName));//(LPARAM)"Courier New");//"微软雅黑");
 	sci_StyleSetSize(STYLE_DEFAULT, opt.nXmlFontSize);//14);
 	sci_StyleSetFore(STYLE_DEFAULT,RGB(0,0,0));
 
@@ -330,17 +337,29 @@ void CSciWnd::OnLButtonDown(UINT nFlags, CPoint point)
 	CWnd::OnLButtonDown(nFlags, point);
 }
 
-void CSciWnd::OnLButtonUp(UINT nFlags, CPoint point)
+void CSciWnd::OnMouseMove(UINT nFlags, CPoint point)
 {
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	int line = sci_GetCurLine();
 
 	CWnd *pOwner = GetOwner();
 	if (pOwner && IsWindow(pOwner->m_hWnd))
-		pOwner->SendMessage(WM_SCIWND_CLICK, (WPARAM)line, 0);
+		pOwner->SendMessage(WM_SCIWND_MOUSEMOVE, (WPARAM)line, 0);
+
+	CWnd::OnMouseMove(nFlags, point);
+}
+
+void CSciWnd::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	int pos = sci_GetCurrentPos();
+
+	CWnd *pOwner = GetOwner();
+	if (pOwner && IsWindow(pOwner->m_hWnd))
+		pOwner->SendMessage(WM_SCIWND_CLICK, (WPARAM)pos, 0);
 
 	CWnd::OnLButtonUp(nFlags, point);
 }
+
 BOOL CSciWnd::OnParentNotify(SCNotification *pMsg)
 {
 	switch (pMsg->nmhdr.code)
@@ -620,36 +639,6 @@ bool CSciWnd::BraceHighLightAttributes(int attrbegin, int attrend, int openTagTa
 		sci_BraceHighlight(bracebegin, braceend);
 		highlightAttr = true;
 	}
-	
-
-	/*
-	//寻找单引号
-	int findpos3 = 0; 
-	int findpos4 = 0;
-	sci_SetTargetStart(findpos1+1);
-	sci_SetTargetEnd(pos);
-	findpos3 = sci_SearchInTarget(1, "\'");
-
-	if(findpos3 > 0)
-	{
-		sci_SetTargetStart(findpos3+1);
-		sci_SetTargetEnd(findpos2);
-		findpos4 = sci_SearchInTarget(1, "\'");
-		if(findpos3 >= 0 && findpos4 >= 0)
-		{
-			if(pos >= findpos3 && pos <= findpos4)
-			{
-				sci_BraceHighlight(findpos3, findpos4);
-				highlightAttr = true;
-			}
-		}
-		else if((findpos3 >=0 && findpos4 < 0) || (findpos3 <0 && findpos4 >= 0) )
-		{
-			if(findpos3 > 0) sci_BraceBadLight(findpos3);
-			if(findpos4 > 0) sci_BraceBadLight(findpos4);
-			highlightAttr = true;
-		}
-	}	
-	*/
 	return highlightAttr;
 }
+

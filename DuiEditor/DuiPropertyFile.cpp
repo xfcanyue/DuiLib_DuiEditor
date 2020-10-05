@@ -71,38 +71,38 @@ BOOL CDuiPropertyFile::LoadPropertyFile()
 
 xml_node CDuiPropertyFile::GetRoot()
 {
-	return xml.child(_T("Controls"));
+	return xml.child(XTEXT("Controls"));
 }
-
-BOOL CDuiPropertyFile::IsBaseFromControlUI(LPCTSTR className)
+/*
+BOOL CDuiPropertyFile::IsControlUI(LPCTSTR className)
 {
 	if(CompareString(className, _T("Control")))
 		return TRUE;
 
 	xml_node nodeFind = FindControl(className);
-	xml_attribute attr = nodeFind.attribute(_T("parent"));
+	xml_attribute attr = nodeFind.attribute(XTEXT("parent"));
 	if(attr)
 	{
-		xml_node nodeFind = FindControl(attr.value());
+		xml_node nodeFind = FindControl(XML2T(attr.value()));
 		if(nodeFind)
 		{
-			return IsBaseFromControlUI(nodeFind.name());
+			return IsControlUI(XML2T(nodeFind.name()));
 		}
 	}
 	return FALSE;
 }
 
 
-BOOL CDuiPropertyFile::IsBaseFromContainer(LPCTSTR className)
+BOOL CDuiPropertyFile::IsContainerUI(LPCTSTR className)
 {
 	if(CompareString(className, _T("Container")))
 		return TRUE;
 
 	xml_node nodeFind = FindControl(className);
-	xml_attribute attr = nodeFind.attribute(_T("parent"));
+	xml_attribute attr = nodeFind.attribute(XTEXT("parent"));
 	if(attr)
 	{
-		return IsBaseFromContainer(attr.value());
+		return IsContainerUI(XML2T(attr.value()));
 	}
 	return FALSE;
 }
@@ -110,7 +110,52 @@ BOOL CDuiPropertyFile::IsBaseFromContainer(LPCTSTR className)
 
 BOOL CDuiPropertyFile::IsWindowForm(LPCTSTR className)
 {
-	if(CompareString(className, _T("Window")))
+	if(CompareString(className, XTEXT("Window")))
+		return TRUE;
+	return FALSE;
+}
+*/
+BOOL CDuiPropertyFile::IsControlUI(xml_node node)
+{
+	if(CompareString(node.name(), XTEXT("Control")))
+		return TRUE;
+
+	xml_node nodeFind = FindControl(XML2T(node.name()));
+	xml_attribute attr = nodeFind.attribute(XTEXT("parent"));
+	if(attr)
+	{
+		xml_node nodeFind = FindControl(XML2T(attr.value()));
+		if(nodeFind)
+		{
+			return IsControlUI(nodeFind);
+		}
+	}
+	return FALSE;
+}
+
+
+BOOL CDuiPropertyFile::IsContainerUI(xml_node node)
+{
+	if(CompareString(node.name(), XTEXT("Container")))
+		return TRUE;
+
+	xml_node nodeFind = FindControl(XML2T(node.name()));
+	xml_attribute attr = nodeFind.attribute(XTEXT("parent"));
+	if(attr)
+	{
+		xml_node nodeFind2 = FindControl(XML2T(attr.value()));
+		if(nodeFind2)
+		{
+			return IsContainerUI(nodeFind2);
+		}
+	}
+	return FALSE;
+}
+
+
+BOOL CDuiPropertyFile::IsWindowForm(xml_node node)
+{
+	if(CompareString(node.name(), XTEXT("Window")))
 		return TRUE;
 	return FALSE;
 }
@@ -138,7 +183,7 @@ BOOL CDuiPropertyFile::IsStyleNode(xml_node node)
 
 BOOL CDuiPropertyFile::IsNeedInputText(xml_node node)
 {
-	if(IsWindowForm(node.name()))
+	if(IsWindowForm(node))
 		return FALSE;
 
 	return TRUE;
@@ -160,6 +205,34 @@ xml_node CDuiPropertyFile::FindControl(LPCTSTR className)
 	return retnode;
 }
 
+xml_node CDuiPropertyFile::FindAttribute(LPCTSTR className, LPCTSTR attrName)
+{
+	xml_node node;
+	node = FindControl(className);
+	
+	for (;;)
+	{
+		if(!node) return xml_node();
+
+		xml_node nodeAttr = node.find_child_by_attribute(XTEXT("name"), T2XML(attrName));
+		if(nodeAttr)
+		{
+			return nodeAttr;
+		}
+		else
+		{
+			CString parentName = XML2T(node.attribute(XTEXT("parent")).value());
+			if(parentName.IsEmpty())
+			{
+				return xml_node();
+			}
+			else
+			{
+				node = FindControl(parentName);
+			}
+		}
+	}	
+}
 
 void CDuiPropertyFile::InitToolBoxIcon()
 {
@@ -206,12 +279,12 @@ void CDuiPropertyFile::InitToolBoxIcon()
 
 UINT CDuiPropertyFile::GetControlIconIndex(xml_node nodeDoc)
 {
-	if(nodeDoc.attribute(_T("custombasedfrom")))
+	if(nodeDoc.attribute(XTEXT("custombasedfrom")))
 	{
 		return TREENODETYPE_CUSTOMCONTROL;
 	}
 
-	LPCTSTR nodeName = nodeDoc.name();
+	CString nodeName = XML2T(nodeDoc.name());
 
 	if(CompareString(nodeName, _T("ActiveX")))
 	{
@@ -387,16 +460,16 @@ UINT CDuiPropertyFile::GetControlIconIndex(xml_node nodeDoc)
 	}
 }
 
-void CDuiPropertyFile::FilterDefaultValue(xml_node nodeDoc)
+void CDuiPropertyFile::FilterDefaultValue(xml_node nodeDoc, CUIManager *pUIManager)
 {
-	xml_node nodeDuiProp = g_duiProp.FindControl(nodeDoc.name());
+	xml_node nodeDuiProp = g_duiProp.FindControl(XML2T(nodeDoc.name()));
 	if(!nodeDuiProp)
 	{
 		//找不到, 会不会是自定义控件
-		xml_attribute attrCustom = nodeDoc.attribute(_T("custombasedfrom"));
+		xml_attribute attrCustom = nodeDoc.attribute(XTEXT("custombasedfrom"));
 		if(attrCustom)
 		{
-			nodeDuiProp = g_duiProp.FindControl(attrCustom.value());
+			nodeDuiProp = g_duiProp.FindControl(XML2T(attrCustom.value()));
 		}
 	}
 
@@ -405,136 +478,147 @@ void CDuiPropertyFile::FilterDefaultValue(xml_node nodeDoc)
 	{
 		xml_attribute attr2 = attr.next_attribute();
 
-		LPCTSTR pstrValue = attr.value();
-		if(pstrValue == '\0' || attr.value() == NULL)
+		CString pstrValue = XML2T(attr.value());
+		if(pstrValue.IsEmpty())
 		{
+			if(pUIManager) pUIManager->GetCodeView()->DeleteAttribute(nodeDoc, attr);
 			nodeDoc.remove_attribute(attr);
 		}
 		else
-			_FilterDefaultValue(nodeDoc, attr, nodeDuiProp);
+			_FilterDefaultValue(nodeDoc, attr, nodeDuiProp, pUIManager);
 
 		attr = attr2;
 	}
-
-// 	for (xml_attribute attr=nodeDoc.first_attribute(); attr; attr=attr.next_attribute())
-// 	{
-// 		LPCTSTR pstrValue = attr.value();
-// 		if(pstrValue == '\0' || attr.value() == NULL)
-// 		{
-// 			nodeDoc.remove_attribute(attr);
-// 		}
-// 		else
-// 			_FilterDefaultValue(nodeDoc, attr, nodeDuiProp);
-// 	}
-
-	/*
-	for (xml_node nodeAttr=nodeDuiProp.first_child(); nodeAttr; nodeAttr=nodeAttr.next_sibling())
-	{
-		xml_attribute attr = node.attribute(nodeAttr.attribute(_T("name")).value());
-		if(attr)
-		{
-			if(attr.value() == '\0' || attr.value() == NULL)
-			{
-				node.remove_attribute(attr);
-			}
-			else if(CompareString(attr.value(), nodeAttr.attribute(_T("default")).value()))
-			{
-				node.remove_attribute(attr);
-			}
-		}
-	}
-	*/
 }
 
-void CDuiPropertyFile::_FilterDefaultValue(xml_node nodeDoc, xml_attribute attr, xml_node nodeDuiProp)
+void CDuiPropertyFile::_FilterDefaultValue(xml_node nodeDoc, xml_attribute attr, xml_node nodeDuiProp, CUIManager *pUIManager)
 {
-	xml_node nodeAttr = nodeDuiProp.find_child_by_attribute(_T("name"), attr.name());//nodeDuiProp.child(attr.name());
+	xml_node nodeAttr = nodeDuiProp.find_child_by_attribute(XTEXT("name"), attr.name());//nodeDuiProp.child(attr.name());
 	if(nodeAttr)
 	{
-		if(CompareString(attr.value(), nodeAttr.attribute(_T("default")).value()))
+		if(CompareString(attr.value(), nodeAttr.attribute(XTEXT("default")).value()))
 		{
+			if(pUIManager) pUIManager->GetCodeView()->DeleteAttribute(nodeDoc, attr);
 			nodeDoc.remove_attribute(attr);
 			return;
 		}
 		return;
 	}
 
-	LPCTSTR pstrParent = nodeDuiProp.attribute(_T("parent")).value();
-	if(pstrParent==NULL || pstrParent[0]=='\0')	return;
+	CString pstrParent = XML2T(nodeDuiProp.attribute(XTEXT("parent")).value());
+	if(pstrParent.IsEmpty())	return;
 
 	xml_node nodeParentDuiProp = FindControl(pstrParent);
 	if(nodeParentDuiProp)
 	{
-		_FilterDefaultValue(nodeDoc, attr, nodeParentDuiProp);
+		_FilterDefaultValue(nodeDoc, attr, nodeParentDuiProp, pUIManager);
 	}
 }
 
-xml_attribute CDuiPropertyFile::AddAttribute(xml_node nodeControl, LPCTSTR attrName, RECT rc, CDuiEditorViewDesign *pView)
+void CDuiPropertyFile::FilterPosWidthHeight(xml_node nodeDoc, CUIManager *pUIManager)
+{
+	if(!g_cfg.bFilterPosWidthHeight) return;
+
+	//float控件不处理
+	if(!nodeDoc.attribute(XTEXT("float")).as_bool())
+	{
+		//如果没有pos属性，不处理。
+		xml_attribute attrPos = nodeDoc.attribute(XTEXT("pos"));
+		if(attrPos) 
+		{
+			xml_attribute attrWidth = nodeDoc.attribute(XTEXT("width"));
+			xml_attribute attrHeight = nodeDoc.attribute(XTEXT("height"));
+
+			//pos属性无法转换成rect，不处理
+			CDuiRect rc;
+			if(rc.FromString(XML2T(attrPos.as_string())))
+			{
+				//pos属性的大小 不等于 width或height属性，不处理。 因为手写的同学可能写错了，不要擅自处理。
+				if(rc.GetWidth() == attrWidth.as_int() && rc.GetHeight() == attrHeight.as_int())
+				{
+					//好了，把pos属性去掉吧
+					if(pUIManager) pUIManager->GetCodeView()->DeleteAttribute(nodeDoc, attrPos);
+					nodeDoc.remove_attribute(attrPos);
+				}	
+			}	
+		}
+	}
+}
+
+xml_attribute CDuiPropertyFile::AddAttribute(xml_node nodeControl, LPCTSTR attrName, RECT rc, CUIManager *pUIManager)
 {
 	CString strValue;
 	strValue.Format(_T("%d,%d,%d,%d"), rc.left, rc.top, rc.right, rc.bottom);
-	return AddAttribute(nodeControl, attrName, strValue, pView);
+	return AddAttribute(nodeControl, attrName, strValue, pUIManager);
 }
 
-xml_attribute CDuiPropertyFile::AddAttribute(xml_node nodeControl, LPCTSTR attrName, int attrValue, CDuiEditorViewDesign *pView)
+xml_attribute CDuiPropertyFile::AddAttribute(xml_node nodeControl, LPCTSTR attrName, int attrValue, CUIManager *pUIManager)
 {
 	CString strValue;
 	strValue.Format(_T("%d"), attrValue);
-	return AddAttribute(nodeControl, attrName, strValue, pView);
+	return AddAttribute(nodeControl, attrName, strValue, pUIManager);
 }
 
-xml_attribute CDuiPropertyFile::AddAttribute(xml_node nodeControl, LPCTSTR attrName, bool attrValue, CDuiEditorViewDesign *pView)
+xml_attribute CDuiPropertyFile::AddAttribute(xml_node nodeControl, LPCTSTR attrName, bool attrValue, CUIManager *pUIManager)
 {
 	if(attrValue)
 	{
-		return AddAttribute(nodeControl, attrName, _T("true"), pView);
+		return AddAttribute(nodeControl, attrName, _T("true"), pUIManager);
 	}
-	return AddAttribute(nodeControl, attrName, _T("false"), pView);
+	return AddAttribute(nodeControl, attrName, _T("false"), pUIManager);
 }
 
-xml_attribute CDuiPropertyFile::AddAttribute(xml_node nodeControl, LPCTSTR attrName, LPCTSTR attrValue, CDuiEditorViewDesign *pView)
+xml_attribute CDuiPropertyFile::AddAttribute(xml_node nodeControl, LPCTSTR attrName, LPCTSTR attrValue, CUIManager *pUIManager)
 {		
-	if(pView)
+	if(pUIManager)
 	{
-		pView->GetUIManager()->GetCmdHistory()->AddModifyControl(nodeControl);
-		pView->GetDocument()->SetModifiedFlag(TRUE);
+		//pView->GetUIManager()->GetCmdHistory()->AddModifyControl(nodeControl);
+		//pUIManager->GetDocument()->SetModifiedFlag(TRUE);
 	}
 
 	xml_attribute attr = _addAttribute(nodeControl, attrName, attrValue);
+	
+	if(pUIManager)
+	{
+		//实时更新到XML页面
+		pUIManager->GetCodeView()->AddAttribute(nodeControl, attr);
+	}
 
 	return attr;
 }
 
 xml_attribute CDuiPropertyFile::_addAttribute(xml_node nodeControl, LPCTSTR attrName, LPCTSTR attrValue)
 {	
+	CString ControlName = XML2T(nodeControl.name());
+	
 	{	//attribute已经存在, 写入attribute
-		xml_attribute attr = nodeControl.attribute(attrName);
+		xml_attribute attr = nodeControl.attribute(T2XML(attrName));
 		if(attr)
 		{
-			attr.set_value(attrValue);
+			attr.set_value(T2XML(attrValue));
 			return attr;
 		}
 	}
 
 	if(!nodeControl.last_attribute()) //没有一个属性, 直接插入
 	{
-		xml_attribute attr = nodeControl.append_attribute(attrName);
-		attr.set_value(attrValue);
+		xml_attribute attr = nodeControl.append_attribute(T2XML(attrName));
+		attr.set_value(T2XML(attrValue));
 		return attr;
 	}
 
 	for (xml_attribute attr=nodeControl.last_attribute(); attr; attr=attr.previous_attribute())
 	{
-		if(IsCorrectOrder(nodeControl.name(), attrName, attr.name())) //attrName在attr后面, 这插入到attr后面
+		if(IsCorrectOrder(ControlName, attrName, XML2T(attr.name()))) //attrName在attr后面, 这插入到attr后面
 		{
-			xml_attribute attr2 = nodeControl.insert_attribute_after(attrName, attr);
-			attr2.set_value(attrValue);
+			xml_attribute attr2 = nodeControl.insert_attribute_after(T2XML(attrName), attr);
+			attr2.set_value(T2XML(attrValue));
 			return attr2;
 		}
 	}
 
-	xml_attribute attr = nodeControl.prepend_attribute(attrName);
-	attr.set_value(attrValue);
+	xml_attribute attr = nodeControl.prepend_attribute(T2XML(attrName));
+	attr.set_value(T2XML(attrValue));
 	return attr;
 }
 
@@ -549,9 +633,9 @@ BOOL CDuiPropertyFile::IsCorrectOrder(LPCTSTR controlName, LPCTSTR attrNameAppen
 
 	BOOL bAppendFind = FALSE;
 	BOOL bAttrFind = FALSE;
-	for (xml_node node=nodeprop.child(_T("Attribute")); node; node=node.next_sibling(_T("Attribute")))
+	for (xml_node node=nodeprop.child(XTEXT("Attribute")); node; node=node.next_sibling(XTEXT("Attribute")))
 	{
-		LPCTSTR a = node.attribute(_T("name")).value();
+		CString a = XML2T(node.attribute(XTEXT("name")).value());
 		if(CompareString(attrNameAppend, a))
 		{
 			bAppendFind = TRUE;
@@ -572,5 +656,5 @@ BOOL CDuiPropertyFile::IsCorrectOrder(LPCTSTR controlName, LPCTSTR attrNameAppen
 	}
 
 	//如果都没找到, 回溯到父控件定义
-	return IsCorrectOrder(nodeprop.attribute(_T("parent")).value(), attrNameAppend, attrName);
+	return IsCorrectOrder(XML2T(nodeprop.attribute(XTEXT("parent")).value()), attrNameAppend, attrName);
 }

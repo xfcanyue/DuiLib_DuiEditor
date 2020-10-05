@@ -117,6 +117,9 @@ void CChildFrame::OnSize(UINT nType, int cx, int cy)
 
 void CChildFrame::OnDesignerView()
 {
+	if(!GetUIManager()->GetCodeView()->UpdateDocument())
+		return;
+
 	GetUIManager()->SetSplitterMode(SPLIT_DESIGN);
 
 	m_split.SetViewMode(SPLIT_DESIGN);

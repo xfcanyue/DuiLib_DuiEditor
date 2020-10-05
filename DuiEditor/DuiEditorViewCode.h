@@ -15,27 +15,40 @@ public:
 	CDuiEditorDoc* GetDocument() const;
 	void LoadDocument();
 	BOOL ApplyDocument();
+	BOOL UpdateDocument();
 	BOOL IsModify() { return sci.sci_GetModify(); }
 
 	void SelectXmlNode(CControlUI *pControl);
 	void SelectXmlNode(xml_node node);
 
+	//设计界面中增加控件，即时更新XML
+	void AddNode(xml_node node);
+	//设计界面中删除控件，即时更新XML
+	void DeleteNode(xml_node node);
 
+	//设计界面中增加属性，即时更新XML
+	void AddAttribute(xml_node node, xml_attribute attr);
+	//设计界面中修改属性，即时更新XML
+	void ModifyAttribute(xml_node node, xml_attribute attr);
+	//设计界面中删除属性，即时更新XML
+	void DeleteAttribute(xml_node node, xml_attribute attr);
 
-	CSciWnd *GetSciWnd() { return &sci; }
 public:
+	CSciWnd *GetSciWnd() { return &sci; }
 	CUIManager *GetUIManager() const { return m_pUIManager; }
 	void SetUIManager(CUIManager *pManager) { m_pUIManager = pManager; }
 private:
 	CUIManager *m_pUIManager;
+
 protected:
 	CSciFind		*m_pDlgFind;
 	HWND			m_hDlgFind;
 	CSciWnd sci;
-	int m_nTargetLine; //载入文档后滚动到目标行
-
+	int m_nTargetLine;			//载入文档后滚动到目标行
+	BOOL m_bAutoUpdateDesign;	//是否自动更新到视图
+	BOOL m_bNeedUpdate;			//是否允许更新视图
 protected:
-	BOOL SelectControlUI(int line, xml_node node);
+	BOOL SelectControlUI(int pos, xml_node node);
 	void UpdateFrameStatus();
 
 	CString GetNodeName();
@@ -54,10 +67,8 @@ public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
 	afx_msg LRESULT OnSciClick(WPARAM WParam, LPARAM LParam);
-	afx_msg void OnEditUndo();
-	afx_msg void OnUpdateEditUndo(CCmdUI *pCmdUI);
-	afx_msg void OnEditRedo();
-	afx_msg void OnUpdateEditRedo(CCmdUI *pCmdUI);
+	afx_msg LRESULT OnSciMouseMove(WPARAM WParam, LPARAM LParam);
+	
 	afx_msg void OnEditCut();
 	afx_msg void OnUpdateEditCut(CCmdUI *pCmdUI);
 	afx_msg void OnEditCopy();
@@ -72,4 +83,9 @@ public:
 	afx_msg void OnSciUpdateDesign();
 	afx_msg void OnUpdateSciUpdateDesign(CCmdUI *pCmdUI);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+	afx_msg void OnSciParseXml();
+	afx_msg void OnSciApplyDesign();
+	afx_msg void OnUpdateSciApplyDesign(CCmdUI *pCmdUI);
+	afx_msg void OnSciWrapLine();
+	afx_msg void OnUpdateSciWrapLine(CCmdUI *pCmdUI);
 };

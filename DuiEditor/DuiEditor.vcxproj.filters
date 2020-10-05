@@ -304,9 +304,6 @@
     <ClInclude Include="DuiEditor.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="DuiEditorCommandHistory.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="DuiEditorDoc.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -377,6 +374,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="MyStatusBar.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SciXmlParse.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -480,9 +480,6 @@
     <ClCompile Include="DuiEditor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="DuiEditorCommandHistory.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="DuiEditorDoc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -547,6 +544,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="MyStatusBar.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SciXmlParse.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -5,6 +5,7 @@
 #define WM_SCIWND_LBUTTONDOWN	WM_USER+988
 #define WM_SCIWND_LBUTTONUP		WM_USER+989
 #define WM_SCIWND_CLICK			WM_USER+990
+#define WM_SCIWND_MOUSEMOVE		WM_USER+991
 
 // CSciWnd
 typedef  int SciDll_void;
@@ -39,10 +40,12 @@ public:
 	void findMatchingBracePos(int & braceAtCaret, int & braceOpposite);
 	bool braceMatch();
 	bool BraceHighLightAttributes(int first, int second, int openTagTailLen);
+
 protected:
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	DECLARE_MESSAGE_MAP()
 protected:
 	void defineMarker(int marker, int markerType, COLORREF fore, COLORREF back, COLORREF foreActive) {
@@ -92,6 +95,8 @@ public:
 	SciDll_void sci_InsertText(int pos, LPCVOID pText);
 	//清空文档所有字符
 	SciDll_void sci_ClearTextAll();
+	//删除范围内的字符
+	SciDll_void sci_DeleteRange(int pos, int deleteLength);
 	//清空文档字符的所有格式();
 	SciDll_void sci_ClearDocunmentStyle();
 	//获取某个位置的字符
@@ -973,6 +978,12 @@ inline SciDll_void CSciWnd::sci_InsertText(int pos, LPCVOID pText)
 inline SciDll_void CSciWnd::sci_ClearTextAll()
 {
 	return execute(SCI_CLEARALL,0,0);
+}
+
+//删除范围内的字符
+inline SciDll_void CSciWnd::sci_DeleteRange(int pos, int deleteLength)
+{
+	return execute(SCI_DELETERANGE, pos, deleteLength);
 }
 
 //清空文档字符的所有格式()

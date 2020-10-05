@@ -193,9 +193,9 @@ void CUIPropertyGridAttributeListProperty::OnClickButton(CPoint point)
 	m_strClassName.Empty();
 	CUIPropertyGridCtrl *pGridCtrl = (CUIPropertyGridCtrl *)m_pWndList;
 	if(g_duiProp.IsDefaultNode(pGridCtrl->m_TreeNode))
-		m_strClassName = pGridCtrl->m_TreeNode.attribute(_T("name")).value();
+		m_strClassName = pGridCtrl->m_TreeNode.attribute(XTEXT("name")).value();
 	else if(g_duiProp.IsStyleNode(pGridCtrl->m_TreeNode))
-		m_strClassName = pGridCtrl->m_TreeNode.attribute(_T("class")).value();
+		m_strClassName = pGridCtrl->m_TreeNode.attribute(XTEXT("class")).value();
 
 	//这里要进行单独判断, TreeViewUI的几个属性
 	else if(CompareString(GetName(), _T("checkboxattr")))
@@ -421,7 +421,7 @@ void CUIPropertyGridCtrl::InitProp(xml_node TreeNode)
 	RemoveAll();
 
 	CString strText = _T("属性 -- ");
-	strText += TreeNode.name();
+	strText += XML2T(TreeNode.name());
 	m_pPropertyWnd->SetWindowText(strText);
 
 	m_pPropertyWnd->m_wndFindText.GetWindowText(m_strFilter);
@@ -435,26 +435,26 @@ void CUIPropertyGridCtrl::InitProp(xml_node TreeNode)
 	}
 
 	//当前控件属性
-	xml_node nodePropertyControl = g_duiProp.FindControl(m_TreeNode.name());
+	xml_node nodePropertyControl = g_duiProp.FindControl(XML2T(m_TreeNode.name()));
 	if(nodePropertyControl)
 	{
 		_initProp(nodePropertyControl);
 	}
 	else //在duiprop找不到, 是不是自定义控件?
 	{
-		xml_attribute attrCustom = m_TreeNode.attribute(_T("custombasedfrom"));
+		xml_attribute attrCustom = m_TreeNode.attribute(XTEXT("custombasedfrom"));
 		if(attrCustom)
 		{
-			nodePropertyControl = g_duiProp.FindControl(attrCustom.value());
+			nodePropertyControl = g_duiProp.FindControl(XML2T(attrCustom.value()));
 			_initProp(nodePropertyControl);
 		}
 	}
 
 	//载入父控件属性
-	LPCTSTR ParentClassName = nodePropertyControl.attribute(_T("parent")).value();
+	CString ParentClassName = XML2T(nodePropertyControl.attribute(XTEXT("parent")).value());
 	for(;;)
 	{
-		if(ParentClassName == NULL || ParentClassName[0] == '\0')
+		if(ParentClassName.IsEmpty())
 			break;
 
 		xml_node nodeParent = g_duiProp.FindControl(ParentClassName);
@@ -462,7 +462,7 @@ void CUIPropertyGridCtrl::InitProp(xml_node TreeNode)
 
 		_initProp(nodeParent);
 
-		ParentClassName = nodeParent.attribute(_T("parent")).value();
+		ParentClassName = XML2T(nodeParent.attribute(XTEXT("parent")).value());
 	}
 		
 	return;
@@ -470,18 +470,18 @@ void CUIPropertyGridCtrl::InitProp(xml_node TreeNode)
 
 void CUIPropertyGridCtrl::_initProp(xml_node nodeProperty)
 {
-	CMFCPropertyGridProperty* pGroup1 = new CMFCPropertyGridProperty(nodeProperty.name());
+	CMFCPropertyGridProperty* pGroup1 = new CMFCPropertyGridProperty(XML2T(nodeProperty.name()));
 	AddProperty(pGroup1);
 
 	for (pugi::xml_node nodeChild = nodeProperty.first_child(); nodeChild; nodeChild = nodeChild.next_sibling())
 	{
-		if(_tcscmp(nodeChild.name(), _T("Attribute")) == 0)
+		if(CompareString(nodeChild.name(), _T("Attribute")))
 		{
 			//过滤已经添加的属性
-			if(_isRepeatProperty(nodeChild.attribute(_T("name")).value()))
+			if(_isRepeatProperty(XML2T(nodeChild.attribute(XTEXT("name")).value())))
 				continue;
 
-			CString strAttr = nodeChild.attribute(_T("name")).value();
+			CString strAttr = XML2T(nodeChild.attribute(XTEXT("name")).value());
 			if(strAttr.Find(m_strFilter) >= 0)
 			{
 				//CString str = nodeChild.attribute(_T("name")).value();
@@ -511,11 +511,11 @@ BOOL CUIPropertyGridCtrl::_isRepeatProperty(LPCTSTR propName)
 
 void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrNode, CMFCPropertyGridProperty* pGroupParent)
 {
-	xml_attribute attrName = attrNode.attribute(_T("name"));
-	xml_attribute attrDefValue = attrNode.attribute(_T("default"));	
-	xml_attribute attrComment = attrNode.attribute(_T("comment"));
-	xml_attribute attrType = attrNode.attribute(_T("type"));
-	xml_attribute attrSpanValue = attrNode.attribute(_T("value"));
+	xml_attribute attrName = attrNode.attribute(XTEXT("name"));
+	xml_attribute attrDefValue = attrNode.attribute(XTEXT("default"));	
+	xml_attribute attrComment = attrNode.attribute(XTEXT("comment"));
+	xml_attribute attrType = attrNode.attribute(XTEXT("type"));
+	xml_attribute attrSpanValue = attrNode.attribute(XTEXT("value"));
 
 	CMFCPropertyGridProperty *pProperty = NULL;
 
@@ -525,17 +525,17 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 		LOGFONT lf;
 		afxGlobalData.fontRegular.GetLogFont(&lf); 
 		CUIPropertyGridFontProperty *pfntProp;
-		pfntProp = new CUIPropertyGridFontProperty(attrName.value(), lf, CF_EFFECTS | CF_SCREENFONTS, attrComment.value());
+		pfntProp = new CUIPropertyGridFontProperty(XML2T(attrName.value()), lf, CF_EFFECTS | CF_SCREENFONTS, XML2T(attrComment.value()));
 		pfntProp->SetData((DWORD)attrNode.internal_object());
 		pfntProp->AllowEdit(TRUE);
 		pGroupParent->AddSubItem(pfntProp);	
 
-		xml_attribute attrName = TreeNode.attribute(_T("name"));
+		xml_attribute attrName = TreeNode.attribute(XTEXT("name"));
 		if(!attrName)
 		{
-			attrName = g_duiProp.AddAttribute(TreeNode, _T("name"), _T("宋体"), GetView());
+			attrName = g_duiProp.AddAttribute(TreeNode, _T("name"), _T("宋体"), GetUIManager());
 		}
-		pfntProp->SetFontName(attrName.value());
+		pfntProp->SetFontName(XML2T(attrName.value()));
 		return;
 	}
 
@@ -543,7 +543,7 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 #ifndef DUILIB_VERSION_ORIGINAL
 	if(CompareString(attrName.value(), _T("style")))
 	{
-		pProperty = new CMFCPropertyGridProperty(attrName.value(), (_variant_t)attrDefValue.value(),  attrComment.value());
+		pProperty = new CMFCPropertyGridProperty(XML2T(attrName.value()), (_variant_t)XML2T(attrDefValue.value()),  XML2T(attrComment.value()));
 		pProperty->SetData((DWORD)attrNode.internal_object());
 		pGroupParent->AddSubItem(pProperty);
 
@@ -564,9 +564,9 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 
 		xml_attribute attr = TreeNode.attribute(attrName.value());
 		if(attr)
-			pProperty->SetValue((_variant_t)attr.value());
+			pProperty->SetValue((_variant_t)XML2T(attr.value()));
 		else
-			pProperty->SetValue((_variant_t)attrDefValue.value());
+			pProperty->SetValue((_variant_t)XML2T(attrDefValue.value()));
 
 		pProperty->SetOriginalValue(pProperty->GetValue());	
 		return;
@@ -575,7 +575,7 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 
 	if(CompareString(attrType.value(), _T("INT")))
 	{
-		pProperty = new CMFCPropertyGridProperty(attrName.value(), _variant_t((long)attrDefValue.as_int(), VT_I4),  attrComment.value());
+		pProperty = new CMFCPropertyGridProperty(XML2T(attrName.value()), _variant_t((long)attrDefValue.as_int(), VT_I4),  XML2T(attrComment.value()));
 		pProperty->SetData((DWORD)attrNode.internal_object());
 		pProperty->AllowEdit(TRUE);
 		pProperty->EnableSpinControl(TRUE, 0, 9999);
@@ -589,32 +589,32 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 	}
 	else if(CompareString(attrType.value(), _T("DWORD")))
 	{
-		CUIPropertyGridColorProperty* pColorProp = new CUIPropertyGridColorProperty(attrName.value(), (_variant_t)0,  NULL, attrComment.value());
+		CUIPropertyGridColorProperty* pColorProp = new CUIPropertyGridColorProperty(XML2T(attrName.value()), (_variant_t)0,  NULL, XML2T(attrComment.value()));
 		pColorProp->SetData((DWORD)attrNode.internal_object());
 		pColorProp->EnableOtherButton(_T("其他..."));
 		pColorProp->EnableAutomaticButton(_T("transparent"), RGB(255,255,255), TRUE);
-		pColorProp->SetUIColor(attrDefValue.value());
+		pColorProp->SetUIColor(XML2T(attrDefValue.value()));
 		pGroupParent->AddSubItem(pColorProp);
 
 		xml_attribute attr = TreeNode.attribute(attrName.value());
 		if(attr)
 		{
-			pColorProp->SetUIColor(attr.value());
+			pColorProp->SetUIColor(XML2T(attr.value()));
 		}
 	}
 	else if(CompareString(attrType.value(), _T("STRING")))
 	{
 		if(attrSpanValue)	//STRING类型是否有value取值属性
-			pProperty = new CMFCPropertyGridProperty(attrName.value(), (_variant_t)attrDefValue.value(),  attrComment.value());
+			pProperty = new CMFCPropertyGridProperty(XML2T(attrName.value()), (_variant_t)XML2T(attrDefValue.value()),  XML2T(attrComment.value()));
 		else
-			pProperty = new CUIPropertyGridStringProperty(attrName.value(), (_variant_t)attrDefValue.value(),  attrComment.value());
+			pProperty = new CUIPropertyGridStringProperty(XML2T(attrName.value()), (_variant_t)XML2T(attrDefValue.value()),  XML2T(attrComment.value()));
 		pProperty->SetData((DWORD)attrNode.internal_object());
 		pGroupParent->AddSubItem(pProperty);
 
 		if(attrSpanValue)	//STRING类型是否有value取值属性
 		{
 			CStringArray arrString;
-			SplitCString(arrString, attrSpanValue.value());
+			SplitCString(arrString, XML2T(attrSpanValue.value()));
 			for (int i=0; i<arrString.GetSize(); i++)
 			{
 				pProperty->AddOption(arrString[i]);
@@ -628,7 +628,7 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 
 		xml_attribute attr = TreeNode.attribute(attrName.value());
 		if(attr)
-			pProperty->SetValue((_variant_t)attr.value());
+			pProperty->SetValue((_variant_t)XML2T(attr.value()));
 		else
 			pProperty->SetValue((_variant_t)attrDefValue.value());
 		pProperty->SetOriginalValue(pProperty->GetValue());		
@@ -636,7 +636,7 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 	else if(CompareString(attrType.value(), _T("BOOL")))
 	{
 		bool bValue = attrDefValue.as_bool();
-		pProperty = new CMFCPropertyGridProperty(attrName.value(), (_variant_t)bValue,  attrComment.value());
+		pProperty = new CMFCPropertyGridProperty(XML2T(attrName.value()), (_variant_t)bValue,  XML2T(attrComment.value()));
 		pProperty->SetData((DWORD)attrNode.internal_object());
 		pGroupParent->AddSubItem(pProperty);
 
@@ -648,12 +648,12 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 	}
 	else if(CompareString(attrType.value(), _T("SIZE")))
 	{
-		CMFCPropertyGridProperty* pSize = new CMFCPropertyGridProperty(attrName.value(), (_variant_t)0, TRUE);
+		CMFCPropertyGridProperty* pSize = new CMFCPropertyGridProperty(XML2T(attrName.value()), (_variant_t)0, TRUE);
 		pSize->SetData((DWORD)attrNode.internal_object());
 		pGroupParent->AddSubItem(pSize);
 
 		CStringArray strArrDef;
-		SplitCString(strArrDef, attrDefValue.value());
+		SplitCString(strArrDef, XML2T(attrDefValue.value()));
 
 		int nWidth = 0;
 		int nHeight = 0;
@@ -664,27 +664,27 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 		if(attr)
 		{
 			CStringArray strArray;
-			SplitCString(strArray, attr.value());
+			SplitCString(strArray, XML2T(attr.value()));
 			if(strArray.GetSize() > 0) nWidth = _tstoi(strArray[0]);
 			if(strArray.GetSize() > 1) nHeight = _tstoi(strArray[1]);
 		}
 
-		pProperty = new CMFCPropertyGridProperty(_T("width"), _variant_t((long)nWidth, VT_I4), attrComment.value());
+		pProperty = new CMFCPropertyGridProperty(_T("width"), _variant_t((long)nWidth, VT_I4), XML2T(attrComment.value()));
 		pProperty->EnableSpinControl(TRUE, 0, 9999);
 		pSize->AddSubItem(pProperty);
  
-		pProperty = new CMFCPropertyGridProperty( _T("height"), _variant_t((long)nHeight, VT_I4), attrComment.value());
+		pProperty = new CMFCPropertyGridProperty( _T("height"), _variant_t((long)nHeight, VT_I4), XML2T(attrComment.value()));
 		pProperty->EnableSpinControl(TRUE, 0, 9999);
 		pSize->AddSubItem(pProperty);
 	}
 	else if(CompareString(attrType.value(), _T("RECT")))
 	{
-		CMFCPropertyGridProperty* pRect = new CMFCPropertyGridProperty(attrName.value(), attrDefValue.as_int(), TRUE);
+		CMFCPropertyGridProperty* pRect = new CMFCPropertyGridProperty(XML2T(attrName.value()), attrDefValue.as_int(), TRUE);
 		pRect->SetData((DWORD)attrNode.internal_object());
 		pGroupParent->AddSubItem(pRect);
 
 		CStringArray strArrDef;
-		SplitCString(strArrDef, attrDefValue.value());
+		SplitCString(strArrDef, XML2T(attrDefValue.value()));
 
 		int nLeft = 0;
 		int nTop = 0;
@@ -699,33 +699,33 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 		if(attr)
 		{
 			CStringArray strArray;
-			SplitCString(strArray, attr.value());
+			SplitCString(strArray, XML2T(attr.value()));
 			if(strArray.GetSize() > 0) nLeft = _tstoi(strArray[0]);
 			if(strArray.GetSize() > 1) nTop = _tstoi(strArray[1]);
 			if(strArray.GetSize() > 2) nRight = _tstoi(strArray[2]);
 			if(strArray.GetSize() > 3) nBottom = _tstoi(strArray[3]);
 		}
 
-		pProperty = new CMFCPropertyGridProperty(_T("left"), _variant_t((long)nLeft, VT_I4), attrComment.value());
+		pProperty = new CMFCPropertyGridProperty(_T("left"), _variant_t((long)nLeft, VT_I4), XML2T(attrComment.value()));
 		pProperty->EnableSpinControl(TRUE, 0, 9999);
 		pRect->AddSubItem(pProperty);
 
-		pProperty = new CMFCPropertyGridProperty( _T("top"), _variant_t((long)nTop, VT_I4), attrComment.value());
+		pProperty = new CMFCPropertyGridProperty( _T("top"), _variant_t((long)nTop, VT_I4), XML2T(attrComment.value()));
 		pProperty->EnableSpinControl(TRUE, 0, 9999);
 		pRect->AddSubItem(pProperty);
 
-		pProperty = new CMFCPropertyGridProperty( _T("right"), _variant_t((long)nRight, VT_I4), attrComment.value());
+		pProperty = new CMFCPropertyGridProperty( _T("right"), _variant_t((long)nRight, VT_I4), XML2T(attrComment.value()));
 		pProperty->EnableSpinControl(TRUE, 0, 9999);
 		pRect->AddSubItem(pProperty);
 
-		pProperty = new CMFCPropertyGridProperty( _T("bottom"), _variant_t((long)nBottom, VT_I4), attrComment.value());
+		pProperty = new CMFCPropertyGridProperty( _T("bottom"), _variant_t((long)nBottom, VT_I4), XML2T(attrComment.value()));
 		pProperty->EnableSpinControl(TRUE, 0, 9999);
 		pRect->AddSubItem(pProperty);
 
 	}
 	else if(CompareString(attrType.value(), _T("CHAR")))
 	{
-		pProperty = new CMFCPropertyGridProperty(attrName.value(), (_variant_t)attrDefValue.value(),  attrComment.value());
+		pProperty = new CMFCPropertyGridProperty(XML2T(attrName.value()), (_variant_t)attrDefValue.value(),  XML2T(attrComment.value()));
 		pProperty->SetData((DWORD)attrNode.internal_object());
 		pProperty->AllowEdit(TRUE);
 		pGroupParent->AddSubItem(pProperty);
@@ -739,21 +739,21 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 	else if(CompareString(attrType.value(), _T("IMAGE")))
 	{
 		xml_attribute attr = TreeNode.attribute(attrName.value());
-		CUIPropertyGridImageProperty* pImage = new CUIPropertyGridImageProperty(attrName.value(), attr.value());
+		CUIPropertyGridImageProperty* pImage = new CUIPropertyGridImageProperty(XML2T(attrName.value()), XML2T(attr.value()));
 		pImage->SetData((DWORD)attrNode.internal_object());
 		pGroupParent->AddSubItem(pImage);
 	}
 	else if(CompareString(attrType.value(), _T("ATTRIBUTELIST")))
 	{
 		xml_attribute attr = TreeNode.attribute(attrName.value());
-		CUIPropertyGridAttributeListProperty* pImage = new CUIPropertyGridAttributeListProperty(attrName.value(), attr.value());
-		pImage->SetDescription(attrComment.value());
+		CUIPropertyGridAttributeListProperty* pImage = new CUIPropertyGridAttributeListProperty(XML2T(attrName.value()), XML2T(attr.value()));
+		pImage->SetDescription(XML2T(attrComment.value()));
 		pImage->SetData((DWORD)attrNode.internal_object());
 
 		if(g_duiProp.IsDefaultNode(TreeNode))
-			pImage->m_strClassName = TreeNode.attribute(_T("name")).value();
+			pImage->m_strClassName = TreeNode.attribute(XTEXT("name")).value();
 		else if(g_duiProp.IsStyleNode(TreeNode))
-			pImage->m_strClassName = TreeNode.attribute(_T("class")).value();
+			pImage->m_strClassName = TreeNode.attribute(XTEXT("class")).value();
 		else if(attrSpanValue)
 		{
 			pImage->m_strClassName = attrSpanValue.value();
@@ -767,10 +767,10 @@ void CUIPropertyGridCtrl::OnOpenFontDialog(CUIPropertyGridFontProperty *pfntProp
 {
 	ASSERT(g_duiProp.IsFontNode(m_TreeNode));
 
-	pfntProp->SetFontName(m_TreeNode.attribute(_T("name")).as_string(_T("宋体")));
-	pfntProp->SetBold(m_TreeNode.attribute(_T("bold")).as_bool());
-	pfntProp->SetUnderline(m_TreeNode.attribute(_T("underline")).as_bool());
-	pfntProp->SetItalic(m_TreeNode.attribute(_T("italic")).as_bool());
+	pfntProp->SetFontName(XML2T(m_TreeNode.attribute(XTEXT("name")).as_string(XTEXT("宋体"))));
+	pfntProp->SetBold(m_TreeNode.attribute(XTEXT("bold")).as_bool());
+	pfntProp->SetUnderline(m_TreeNode.attribute(XTEXT("underline")).as_bool());
+	pfntProp->SetItalic(m_TreeNode.attribute(XTEXT("italic")).as_bool());
 }
 
 void CUIPropertyGridCtrl::OnPropertyChanged(CMFCPropertyGridProperty* pProp) const
@@ -797,11 +797,11 @@ void CUIPropertyGridCtrl::OnPropertyChanged(CMFCPropertyGridProperty* pProp) con
 	}
 
 	xml_node duiNode((xml_node_struct *)pProp->GetData()); //属性文件
-	xml_attribute attrName		= duiNode.attribute(_T("name"));
-	xml_attribute attrDefValue	= duiNode.attribute(_T("default"));	
-	xml_attribute attrComment	= duiNode.attribute(_T("comment"));
-	xml_attribute attrType		= duiNode.attribute(_T("type"));
-	xml_attribute attrSpanValue = duiNode.attribute(_T("value"));
+	xml_attribute attrName		= duiNode.attribute(XTEXT("name"));
+	xml_attribute attrDefValue	= duiNode.attribute(XTEXT("default"));	
+	xml_attribute attrComment	= duiNode.attribute(XTEXT("comment"));
+	xml_attribute attrType		= duiNode.attribute(XTEXT("type"));
+	xml_attribute attrSpanValue = duiNode.attribute(XTEXT("value"));
 
 	xml_attribute attrTree;
 	
@@ -815,13 +815,13 @@ void CUIPropertyGridCtrl::OnPropertyChanged(CMFCPropertyGridProperty* pProp) con
 		if( CompareString(attrName.value(), _T("shared")) )
 		{
 			//修改Style的shared属性, 应该把原来的remove掉
-			BOOL bShared = m_TreeNode.attribute(_T("shared")).as_bool();
+			BOOL bShared = m_TreeNode.attribute(XTEXT("shared")).as_bool();
 			BOOL bSharedNew = pProp->GetValue().boolVal != 0;
 			CDuiEditorViewDesign *pView = GetView();
 			if(pView)
 			{
-				CString strStyleName = m_TreeNode.attribute(_T("name")).as_string();
-				bool bShared = m_TreeNode.attribute(_T("shared")).as_bool();
+				CString strStyleName = XML2T(m_TreeNode.attribute(XTEXT("name")).as_string());
+				bool bShared = m_TreeNode.attribute(XTEXT("shared")).as_bool();
 				pView->GetUIManager()->GetManager()->RemoveStyle(strStyleName, bShared);
 			}
 		}
@@ -830,12 +830,12 @@ void CUIPropertyGridCtrl::OnPropertyChanged(CMFCPropertyGridProperty* pProp) con
 
 	if(CompareString(attrType.value(), _T("INT")))
 	{
-		attrTree = g_duiProp.AddAttribute(m_TreeNode, attrName.value(), pProp->GetValue().intVal, GetView());
+		attrTree = g_duiProp.AddAttribute(m_TreeNode, XML2T(attrName.value()), pProp->GetValue().intVal, GetUIManager());
 	}
 	else if(CompareString(attrType.value(), _T("DWORD")))
 	{
 		CUIPropertyGridColorProperty *pPropColor = (CUIPropertyGridColorProperty *)pProp;
-		attrTree = g_duiProp.AddAttribute(m_TreeNode, attrName.value(), pPropColor->GetUIColor(), GetView());
+		attrTree = g_duiProp.AddAttribute(m_TreeNode, XML2T(attrName.value()), pPropColor->GetUIColor(), GetUIManager());
 	}
 	else if(CompareString(attrType.value(), _T("STRING")))
 	{
@@ -851,48 +851,45 @@ void CUIPropertyGridCtrl::OnPropertyChanged(CMFCPropertyGridProperty* pProp) con
 		//是否设置Control的name?
 		if(GetUIManager())
 		{
-			if(CompareString(attrName.value(), _T("name")))
-				if(g_duiProp.IsBaseFromControlUI(m_TreeNode.name()))
+			if(CompareString(attrName.value(), _T("name")) && g_duiProp.IsControlUI(m_TreeNode))
+			{
+				CDuiEditorViewDesign *pView = GetUIManager()->GetDesignView();
+				xml_node nodeDoc = pView->GetDocument()->m_doc.root().child(XTEXT("Window"));
+				if(IsRepeatName(nodeDoc, (LPCTSTR)pProp->GetValue().bstrVal))
 				{
-					//LPCTSTR lpszValue = pProp->GetValue().bstrVal;
-					CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
-					CDuiEditorViewDesign *pView = (CDuiEditorViewDesign *)pMain->GetActiveUIView();
-					xml_node nodeDoc = pView->GetDocument()->m_doc.root().child(_T("Window"));
-					if(IsRepeatName(nodeDoc, (LPCTSTR)pProp->GetValue().bstrVal))
-					{
-						AfxMessageBox(_T("已存在相同的name属性控件!"));
-						pProp->SetValue(pProp->GetOriginalValue());
-						return;
-					}
+					AfxMessageBox(_T("已存在相同的name属性控件!"));
+					pProp->SetValue(pProp->GetOriginalValue());
+					return;
 				}
+			}
 		}
 		
-		attrTree = g_duiProp.AddAttribute(m_TreeNode, attrName.value(), (LPCTSTR)pProp->GetValue().bstrVal, GetView());
+		attrTree = g_duiProp.AddAttribute(m_TreeNode, XML2T(attrName.value()), (LPCTSTR)pProp->GetValue().bstrVal, GetUIManager());
 		pProp->SetOriginalValue(pProp->GetValue());
 	}
 	else if(CompareString(attrType.value(), _T("BOOL")))
 	{
-		attrTree = g_duiProp.AddAttribute(m_TreeNode, attrName.value(), pProp->GetValue().boolVal != 0, GetView());
+		attrTree = g_duiProp.AddAttribute(m_TreeNode, XML2T(attrName.value()), pProp->GetValue().boolVal != 0, GetUIManager());
 	}
 	else if(CompareString(attrType.value(), _T("SIZE")))
 	{
-		attrTree = g_duiProp.AddAttribute(m_TreeNode, attrName.value(), (LPCTSTR)pProp->GetValue().bstrVal, GetView());
+		attrTree = g_duiProp.AddAttribute(m_TreeNode, XML2T(attrName.value()), (LPCTSTR)pProp->GetValue().bstrVal, GetUIManager());
 	}
 	else if(CompareString(attrType.value(), _T("RECT")))
 	{
-		attrTree = g_duiProp.AddAttribute(m_TreeNode, attrName.value(), (LPCTSTR)pProp->GetValue().bstrVal, GetView());
+		attrTree = g_duiProp.AddAttribute(m_TreeNode, XML2T(attrName.value()), (LPCTSTR)pProp->GetValue().bstrVal, GetUIManager());
 	}
 	else if(CompareString(attrType.value(), _T("CHAR")))
 	{
-		attrTree = g_duiProp.AddAttribute(m_TreeNode, attrName.value(), (LPCTSTR)pProp->GetValue().bstrVal, GetView());
+		attrTree = g_duiProp.AddAttribute(m_TreeNode, XML2T(attrName.value()), (LPCTSTR)pProp->GetValue().bstrVal, GetUIManager());
 	}
 	else if(CompareString(attrType.value(), _T("IMAGE")))
 	{
-		attrTree = g_duiProp.AddAttribute(m_TreeNode, attrName.value(), (LPCTSTR)pProp->GetValue().bstrVal, GetView());
+		attrTree = g_duiProp.AddAttribute(m_TreeNode, XML2T(attrName.value()), (LPCTSTR)pProp->GetValue().bstrVal, GetUIManager());
 	}
 	else if(CompareString(attrType.value(), _T("ATTRIBUTELIST")))
 	{
-		attrTree = g_duiProp.AddAttribute(m_TreeNode, attrName.value(), (LPCTSTR)pProp->GetValue().bstrVal, GetView());
+		attrTree = g_duiProp.AddAttribute(m_TreeNode, XML2T(attrName.value()), (LPCTSTR)pProp->GetValue().bstrVal, GetUIManager());
 	}
 
  	CDuiEditorViewDesign *pView = GetView();
@@ -902,7 +899,13 @@ void CUIPropertyGridCtrl::OnPropertyChanged(CMFCPropertyGridProperty* pProp) con
 		pView->Invalidate();
 	}
 
-	g_duiProp.FilterDefaultValue(m_TreeNode);
+	if(GetUIManager() && CompareString(_T("name"), attrTree.name()) )
+	{
+		GetUIManager()->GetTreeView()->UpdateXmlNode(m_TreeNode);
+	}
+
+	g_duiProp.FilterDefaultValue(m_TreeNode, GetUIManager());
+	g_duiProp.FilterPosWidthHeight(m_TreeNode, GetUIManager());
 
 	CMFCPropertyGridCtrl::OnPropertyChanged(pProp);
 	return;
@@ -946,11 +949,11 @@ void CUIPropertyGridCtrl::OnPropertyFontChangedFromFontDialog(CUIPropertyGridFon
 
 BOOL CUIPropertyGridCtrl::IsRepeatName(xml_node nodeDoc, LPCTSTR lpszName) const
 {
-	xml_attribute attr = nodeDoc.attribute(_T("name"));
+	xml_attribute attr = nodeDoc.attribute(XTEXT("name"));
 	if(attr)
 	{
-		LPCTSTR lpszName2 = attr.value();
-		if(lpszName2 != '\0' && CompareString(lpszName, lpszName2))
+		CString lpszName2 = XML2T(attr.value());
+		if(lpszName == lpszName2)
 		{
 			return TRUE;
 		}
@@ -983,7 +986,7 @@ void CUIPropertyGridCtrl::OnGridpropertyCopyValue()
 	CMFCPropertyGridProperty *pProp = m_pPropFocused;
 
 	xml_node duiNode((xml_node_struct *)pProp->GetData()); //属性文件
-	xml_attribute attrType		= duiNode.attribute(_T("type"));
+	xml_attribute attrType		= duiNode.attribute(XTEXT("type"));
 
 
 	CString strText;
@@ -1065,7 +1068,7 @@ void CUIPropertyGridCtrl::OnGridpropertyCopyValueEx()
 	CMFCPropertyGridProperty *pProp = m_pPropFocused;
 
 	xml_node duiNode((xml_node_struct *)pProp->GetData()); //属性文件
-	xml_attribute attrType		= duiNode.attribute(_T("type"));
+	xml_attribute attrType		= duiNode.attribute(XTEXT("type"));
 
 
 	CString strText;
@@ -1158,20 +1161,20 @@ void CUIPropertyGridCtrl::OnGridpropertySetDefaultValue()
 	CMFCPropertyGridProperty *pProp = m_pPropFocused;
 
 	xml_node duiNode((xml_node_struct *)pProp->GetData()); //属性文件
-	xml_attribute attrType		= duiNode.attribute(_T("type"));
-	xml_attribute attrDefault	= duiNode.attribute(_T("default"));
+	xml_attribute attrType		= duiNode.attribute(XTEXT("type"));
+	xml_attribute attrDefault	= duiNode.attribute(XTEXT("default"));
 
 	int nLevel = pProp->GetHierarchyLevel();
 	if(nLevel > 1) //重置子项，比如 RECT SIZE
 	{
 		CMFCPropertyGridProperty *pPropParent = pProp->GetParent();
 		duiNode = xml_node((xml_node_struct *)pPropParent->GetData());
-		attrType = duiNode.attribute(_T("type"));
-		attrDefault	= duiNode.attribute(_T("default"));
+		attrType = duiNode.attribute(XTEXT("type"));
+		attrDefault	= duiNode.attribute(XTEXT("default"));
 
 		if(CompareString(attrType.value(), _T("SIZE")))
 		{
-			CDuiSize szDefault(attrDefault.as_string(_T("0,0")));
+			CDuiSize szDefault(XML2T(attrDefault.as_string(XTEXT("0,0"))));
 
 			CString strName = pProp->GetName();
 			if(CompareString(strName, _T("width")))
@@ -1185,7 +1188,7 @@ void CUIPropertyGridCtrl::OnGridpropertySetDefaultValue()
 		}
 		else if(CompareString(attrType.value(), _T("RECT")))
 		{
-			CDuiRect rcDefault(attrDefault.as_string(_T("0,0,0,0")));
+			CDuiRect rcDefault(XML2T(attrDefault.as_string(XTEXT("0,0,0,0"))));
 			CString strName = pProp->GetName();
 			if(CompareString(strName, _T("left")))
 			{
@@ -1212,7 +1215,7 @@ void CUIPropertyGridCtrl::OnGridpropertySetDefaultValue()
 	else if(CompareString(attrType.value(), _T("DWORD")))
 	{
 		CUIPropertyGridColorProperty *pPropColor = (CUIPropertyGridColorProperty *)pProp;
-		pPropColor->SetUIColor(attrDefault.as_string());
+		pPropColor->SetUIColor(XML2T(attrDefault.as_string()));
 	}
 	else if(CompareString(attrType.value(), _T("STRING")))
 	{
@@ -1224,13 +1227,13 @@ void CUIPropertyGridCtrl::OnGridpropertySetDefaultValue()
 	}
 	else if(CompareString(attrType.value(), _T("SIZE")))
 	{
-		CDuiSize szDefault(attrDefault.as_string(_T("0,0")));
+		CDuiSize szDefault(XML2T(attrDefault.as_string(XTEXT("0,0"))));
 		if(pProp->GetSubItem(0)) pProp->GetSubItem(0)->SetValue(_variant_t((long)szDefault.cx, VT_I4));
 		if(pProp->GetSubItem(1)) pProp->GetSubItem(1)->SetValue(_variant_t((long)szDefault.cy, VT_I4));
 	}
 	else if(CompareString(attrType.value(), _T("RECT")))
 	{
-		CDuiRect rcDefault(attrDefault.as_string(_T("0,0,0,0")));	
+		CDuiRect rcDefault(XML2T(attrDefault.as_string(XTEXT("0,0,0,0"))));	
 		if(pProp->GetSubItem(0)) pProp->GetSubItem(0)->SetValue(_variant_t((long)rcDefault.left, VT_I4));
 		if(pProp->GetSubItem(1)) pProp->GetSubItem(1)->SetValue(_variant_t((long)rcDefault.top, VT_I4));
 		if(pProp->GetSubItem(2)) pProp->GetSubItem(2)->SetValue(_variant_t((long)rcDefault.right, VT_I4));

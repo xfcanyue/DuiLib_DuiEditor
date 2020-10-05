@@ -54,7 +54,7 @@ void CUITracker::Draw(CDC* pDC) const
 // 	}
 	
 	//draw move handle
-	if(g_duiProp.IsBaseFromContainer(m_node.name()) && m_bDrawMoveHandle)
+	if(g_duiProp.IsContainerUI(m_node) && m_bDrawMoveHandle)
 	{
 		CRect rect = m_rect;
 		GetMoveHandleRect(&rect);
@@ -107,7 +107,7 @@ int CUITracker::HitTestHandles(CPoint point) const
 	if (!rect.PtInRect(point))
 		return hitNothing;  // totally missed
 
-	BOOL bIsContainer = g_duiProp.IsBaseFromContainer(m_node.name());
+	BOOL bIsContainer = g_duiProp.IsContainerUI(m_node);
 	if(bIsContainer)
 	{
 		GetMoveHandleRect(&rect);
@@ -137,7 +137,7 @@ int CUITracker::HitTestHandles(CPoint point) const
 			return hitNothing;  // must have been between resize handles
 	}
 
-	if(g_duiProp.IsWindowForm(m_node.name()) || bIsContainer)
+	if(g_duiProp.IsWindowForm(m_node) || bIsContainer)
 	{
 		return hitNothing;
 	}

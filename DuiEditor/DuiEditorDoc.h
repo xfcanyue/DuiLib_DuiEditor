@@ -53,5 +53,17 @@ public:
 	virtual BOOL OnSaveDocument(LPCTSTR lpszPathName);
 	virtual void OnCloseDocument();
 	virtual void SetModifiedFlag(BOOL bModified = TRUE);
-	afx_msg void OnFileReopen();
+	virtual BOOL IsModified();
+	afx_msg void OnFileReopen();	
+	afx_msg void OnEditInsertFont();
+	afx_msg void OnEditInsertDefault();
+	afx_msg void OnEditInsertStyleNode();
+	afx_msg void OnEditUndo();
+	afx_msg void OnUpdateEditUndo(CCmdUI *pCmdUI);
+	afx_msg void OnEditRedo();
+	afx_msg void OnUpdateEditRedo(CCmdUI *pCmdUI);
+	afx_msg void OnUiformDebug();
+	afx_msg void OnUpdateUiformDebug(CCmdUI *pCmdUI);
+	afx_msg void OnUiformDebugEnd();
+	afx_msg void OnUpdateUiformDebugEnd(CCmdUI *pCmdUI);
 };

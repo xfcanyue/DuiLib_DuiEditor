@@ -47,6 +47,7 @@ public:
 	afx_msg void OnUpdateEditDebugRun(CCmdUI *pCmdUI);
 	afx_msg void OnEditCopyFileName();
 	afx_msg void OnEditDebugNoFile();
+	afx_msg void OnUpdateEditDebugNoFile(CCmdUI *pCmdUI);
 };
 
 

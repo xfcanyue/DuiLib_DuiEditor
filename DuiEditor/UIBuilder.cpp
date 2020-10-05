@@ -86,22 +86,22 @@ CControlUI* CUIBuilder::Create(pugi::xml_node xmldoc, IDialogBuilderCallback* pC
 	}
 
 	if( pManager ) {
-		LPCTSTR pstrClass = NULL;
+		CString pstrClass = NULL;
 		int nAttributes = 0;
-		LPCTSTR pstrName = NULL;
-		LPCTSTR pstrValue = NULL;
+		CString pstrName = NULL;
+		CString pstrValue = NULL;
 		LPTSTR pstr = NULL;
 		for( xml_node node = root.first_child() ; node; node = node.next_sibling() ) {
 			if(node.type() != node_element)	continue;
-			pstrClass = node.name();
+			pstrClass = XML2T(node.name());
 			if( _tcsicmp(pstrClass, _T("Image")) == 0 ) {
-				LPCTSTR pImageName = NULL;
-				LPCTSTR pImageResType = NULL;
+				CString pImageName = NULL;
+				CString pImageResType = NULL;
 				bool shared = false;
 				DWORD mask = 0;
 				for( xml_attribute attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
-					pstrName = attr.name();
-					pstrValue = attr.value();
+					pstrName = XML2T(attr.name());
+					pstrValue = XML2T(attr.value());
 					if( _tcsicmp(pstrName, _T("name")) == 0 ) {
 						pImageName = pstrValue;
 					}
@@ -120,7 +120,7 @@ CControlUI* CUIBuilder::Create(pugi::xml_node xmldoc, IDialogBuilderCallback* pC
 			}
 			else if( _tcsicmp(pstrClass, _T("Font")) == 0 ) {
 				int id = -1;
-				LPCTSTR pFontName = NULL;
+				CString pFontName = NULL;
 				int size = 12;
 				bool bold = false;
 				bool underline = false;
@@ -128,8 +128,8 @@ CControlUI* CUIBuilder::Create(pugi::xml_node xmldoc, IDialogBuilderCallback* pC
 				bool defaultfont = false;
 				bool shared = false;
 				for( xml_attribute attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
-					pstrName = attr.name();
-					pstrValue = attr.value();
+					pstrName = XML2T(attr.name());
+					pstrValue = XML2T(attr.value());
 					if( _tcsicmp(pstrName, _T("id")) == 0 ) {
 						id = _tcstol(pstrValue, &pstr, 10);
 					}
@@ -161,12 +161,12 @@ CControlUI* CUIBuilder::Create(pugi::xml_node xmldoc, IDialogBuilderCallback* pC
 				}
 			}
 			else if( _tcsicmp(pstrClass, _T("Default")) == 0 ) {
-				LPCTSTR pControlName = NULL;
-				LPCTSTR pControlValue = NULL;
+				CString pControlName = NULL;
+				CString pControlValue = NULL;
 				bool shared = false;
 				for( xml_attribute attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
-					pstrName = attr.name();
-					pstrValue = attr.value();
+					pstrName = XML2T(attr.name());
+					pstrValue = XML2T(attr.value());
 					if( _tcsicmp(pstrName, _T("name")) == 0 ) {
 						pControlName = pstrValue;
 					}
@@ -182,12 +182,12 @@ CControlUI* CUIBuilder::Create(pugi::xml_node xmldoc, IDialogBuilderCallback* pC
 				}
 			}
 			else if( _tcsicmp(pstrClass, _T("Style")) == 0 ) {
-				LPCTSTR pName = NULL;
-				LPCTSTR pStyle = NULL;
+				CString pName = NULL;
+				CString pStyle = NULL;
 				bool shared = false;
 				for( xml_attribute attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
-					pstrName = attr.name();
-					pstrValue = attr.value();
+					pstrName = XML2T(attr.name());
+					pstrValue = XML2T(attr.value());
 					if( _tcsicmp(pstrName, _T("name")) == 0 ) {
 						pName = pstrValue;
 					}
@@ -203,10 +203,10 @@ CControlUI* CUIBuilder::Create(pugi::xml_node xmldoc, IDialogBuilderCallback* pC
 				}
 			}
 			else if (_tcsicmp(pstrClass, _T("Import")) == 0) {
-				LPCTSTR pstrPath = NULL;
+				CString pstrPath = NULL;
 				for( xml_attribute attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
-					pstrName = attr.name();
-					pstrValue = attr.value();
+					pstrName = XML2T(attr.name());
+					pstrValue = XML2T(attr.value());
 					if (_tcsicmp(pstrName, _T("fontfile")) == 0) {
 						pstrPath = pstrValue;
 					}
@@ -217,7 +217,7 @@ CControlUI* CUIBuilder::Create(pugi::xml_node xmldoc, IDialogBuilderCallback* pC
 			}
 		}
 
-		pstrClass = root.name();
+		pstrClass = XML2T(root.name());
 		if( _tcsicmp(pstrClass, _T("Window")) == 0 ) 
 		{
 			if( pManager->GetPaintWindow()  && !pManager->IsInitWindowParameter()) //modify by liqs99
@@ -236,8 +236,8 @@ void CUIBuilder::SetWindowAttribute(CPaintManagerUI *pManager, xml_node node)
 
 	for (xml_attribute attr=node.first_attribute(); attr; attr=attr.next_attribute())
 	{
-		LPCTSTR pstrName = attr.name();
-		LPCTSTR pstrValue = attr.value();
+		CString pstrName = XML2T(attr.name());
+		CString pstrValue = XML2T(attr.value());
 
 		if( _tcsicmp(pstrName, _T("size")) == 0 ) {
 			LPTSTR pstr = NULL;
@@ -388,23 +388,23 @@ CControlUI* CUIBuilder::_Parse(pugi::xml_node root,  CControlUI* pParent, CPaint
 		if(node.type() != node_element)	
 			continue;
 
-		LPCTSTR pstrClass = node.name();
+		CString pstrClass = XML2T(node.name());
 		if( _tcsicmp(pstrClass, _T("Image")) == 0 || _tcsicmp(pstrClass, _T("Font")) == 0 \
 			|| _tcsicmp(pstrClass, _T("Default")) == 0 || _tcsicmp(pstrClass, _T("Style")) == 0 ) continue;
 
 		CControlUI* pControl = NULL;
 		if (_tcsicmp(pstrClass, _T("Import")) == 0) continue;
 		if( _tcsicmp(pstrClass, _T("Include")) == 0 ) {			//载入Include必须使用原来的CDialogBuilder
-			int count = node.attribute(_T("count")).as_int(1);
+			int count = node.attribute(XTEXT("count")).as_int(1);
 			for ( int i = 0; i < count; i++ ) {
 				CDialogBuilder builder;
 				if( m_pstrtype != NULL ) { // 使用资源dll，从资源中读取
-					WORD id = node.attribute(_T("source")).as_int(); 
+					WORD id = node.attribute(XTEXT("source")).as_int(); 
 					pControl = builder.Create((UINT)id, m_pstrtype, m_pCallback, pManager, pParent);
 				}
 				else {
-					LPCTSTR szValue = node.attribute(_T("source")).value();
-					pControl = builder.Create(szValue, (UINT)0, m_pCallback, pManager, pParent);
+					CString szValue = XML2T(node.attribute(XTEXT("source")).value());
+					pControl = builder.Create((LPCTSTR)szValue, (UINT)0, m_pCallback, pManager, pParent);
 				}
 			}
 
@@ -520,7 +520,7 @@ CControlUI* CUIBuilder::_Parse(pugi::xml_node root,  CControlUI* pParent, CPaint
 		// Process attributes
 		for (xml_attribute attr=node.first_attribute(); attr; attr=attr.next_attribute())
 		{
-			pControl->SetAttribute(attr.name(), attr.value());
+			pControl->SetAttribute(XML2T(attr.name()), XML2T(attr.value()));
 		}
 
 		if( pManager ) {
@@ -560,13 +560,13 @@ CControlUI* CUIBuilder::CreateControl(LPCTSTR pstrClass)
 CControlUI* CUIBuilder::CreateControl(xml_node node)
 {
 	CControlUI *pControl = NULL;
-	pControl = CreateControl(node.name());
+	pControl = CreateControl(XML2T(node.name()));
 	if(!pControl)
 	{
-		xml_attribute attr = node.attribute(_T("custombasedfrom"));
+		xml_attribute attr = node.attribute(XTEXT("custombasedfrom"));
 		if(attr)
 		{
-			pControl = CreateControl(attr.value());
+			pControl = CreateControl(XML2T(attr.value()));
 		}
 // 		else //不认识的控件，直接从CContainner创建, 不能这样子哦
 // 		{
@@ -639,23 +639,23 @@ CControlUI* CUIBuilderOrginal::Create(xml_node xmldoc, IDialogBuilderCallback* p
 	if( !root) return NULL;
 
 	if( pManager ) {
-		LPCTSTR pstrClass = NULL;
+		CString pstrClass = NULL;
 		int nAttributes = 0;
-		LPCTSTR pstrName = NULL;
-		LPCTSTR pstrValue = NULL;
+		CString pstrName = NULL;
+		CString pstrValue = NULL;
 		LPTSTR pstr = NULL;
 		for( xml_node node = root.first_child() ; node; node = node.next_sibling() ) 
 		{
 			if(node.type() != node_element)	continue;
-			pstrClass = node.name();
+			pstrClass = XML2T(node.name());
 			if( _tcsicmp(pstrClass, _T("Image")) == 0 ) {
-				LPCTSTR pImageName = NULL;
-				LPCTSTR pImageResType = NULL;
+				CString pImageName = NULL;
+				CString pImageResType = NULL;
 				DWORD mask = 0;
 				bool shared = false;
 				for(xml_attribute attr=node.first_attribute(); attr; attr=attr.next_attribute() ) {
-					pstrName = attr.name();
-					pstrValue = attr.value();
+					pstrName = XML2T(attr.name());
+					pstrValue = XML2T(attr.value());
 					if( _tcsicmp(pstrName, _T("name")) == 0 ) {
 						pImageName = pstrValue;
 					}
@@ -674,7 +674,7 @@ CControlUI* CUIBuilderOrginal::Create(xml_node xmldoc, IDialogBuilderCallback* p
 			}
 			else if( _tcsicmp(pstrClass, _T("Font")) == 0 ) {
 				int id = -1;
-				LPCTSTR pFontName = NULL;
+				CString pFontName = NULL;
 				int size = 12;
 				bool bold = false;
 				bool underline = false;
@@ -682,8 +682,8 @@ CControlUI* CUIBuilderOrginal::Create(xml_node xmldoc, IDialogBuilderCallback* p
 				bool defaultfont = false;
 				bool shared = false;
 				for(xml_attribute attr=node.first_attribute(); attr; attr=attr.next_attribute() ) {
-					pstrName = attr.name();
-					pstrValue = attr.value();
+					pstrName = XML2T(attr.name());
+					pstrValue = XML2T(attr.value());
 					if( _tcsicmp(pstrName, _T("id")) == 0 ) {
 						id = _tcstol(pstrValue, &pstr, 10);
 					}
@@ -715,12 +715,12 @@ CControlUI* CUIBuilderOrginal::Create(xml_node xmldoc, IDialogBuilderCallback* p
 				}
 			}
 			else if( _tcsicmp(pstrClass, _T("Default")) == 0 ) {
-				LPCTSTR pControlName = NULL;
-				LPCTSTR pControlValue = NULL;
+				CString pControlName = NULL;
+				CString pControlValue = NULL;
 				bool shared = false;
 				for(xml_attribute attr=node.first_attribute(); attr; attr=attr.next_attribute() ) {
-					pstrName = attr.name();
-					pstrValue = attr.value();
+					pstrName = XML2T(attr.name());
+					pstrValue = XML2T(attr.value());
 					if( _tcsicmp(pstrName, _T("name")) == 0 ) {
 						pControlName = pstrValue;
 					}
@@ -737,10 +737,10 @@ CControlUI* CUIBuilderOrginal::Create(xml_node xmldoc, IDialogBuilderCallback* p
 			}
 			else if( _tcsicmp(pstrClass, _T("MultiLanguage")) == 0 ) {
 				int id = -1;
-				LPCTSTR pMultiLanguage = NULL;
+				CString pMultiLanguage = NULL;
 				for(xml_attribute attr=node.first_attribute(); attr; attr=attr.next_attribute() ) {
-					pstrName = attr.name();
-					pstrValue = attr.value();
+					pstrName = XML2T(attr.name());
+					pstrValue = XML2T(attr.value());
 					if( _tcsicmp(pstrName, _T("id")) == 0 ) {
 						id = _tcstol(pstrValue, &pstr, 10);
 					}
@@ -754,12 +754,12 @@ CControlUI* CUIBuilderOrginal::Create(xml_node xmldoc, IDialogBuilderCallback* p
 			}
 		}
 
-		pstrClass = root.name();
+		pstrClass = XML2T(root.name());
 		if( _tcsicmp(pstrClass, _T("Window")) == 0 ) {
 			if( pManager->GetPaintWindow() ) {
 				for(xml_attribute attr=root.first_attribute(); attr; attr=attr.next_attribute() ) {
-					pstrName = attr.name();
-					pstrValue = attr.value();
+					pstrName = XML2T(attr.name());
+					pstrValue = XML2T(attr.value());
 					pManager->SetWindowAttribute(pstrName, pstrValue);
 				}
 			}
@@ -773,7 +773,7 @@ CControlUI* CUIBuilderOrginal::_Parse(xml_node root,  CControlUI* pParent, CPain
 	IContainerUI* pContainer = NULL;
 	CControlUI* pReturn = NULL;
 	for( xml_node node = root.first_child() ; node; node = node.next_sibling() ) {
-		LPCTSTR pstrClass = node.name();
+		CString pstrClass = XML2T(node.name());
 		if( _tcsicmp(pstrClass, _T("Image")) == 0 || _tcsicmp(pstrClass, _T("Font")) == 0 \
 			|| _tcsicmp(pstrClass, _T("Default")) == 0 
 			|| _tcsicmp(pstrClass, _T("MultiLanguage")) == 0 ) continue;
@@ -781,19 +781,19 @@ CControlUI* CUIBuilderOrginal::_Parse(xml_node root,  CControlUI* pParent, CPain
 		CControlUI* pControl = NULL;
 		if( _tcsicmp(pstrClass, _T("Include")) == 0 ) {
 			if( !node.first_attribute() ) continue;
-			int count = node.attribute(_T("count")).as_int(1);
+			int count = node.attribute(XTEXT("count")).as_int(1);
 
 			CDialogBuilder builder;
 			for ( int i = 0; i < count; i++ ) {
 				if (!m_xml)
 				{
 					if( m_pstrtype != NULL ) { // 使用资源dll，从资源中读取
-						WORD id = node.attribute(_T("source")).as_int(); 
+						WORD id = node.attribute(XTEXT("source")).as_int(); 
 						pControl = builder.Create((UINT)id, m_pstrtype, m_pCallback, pManager, pParent);
 					}
 					else 
 					{
-						LPCTSTR szValue = node.attribute(_T("source")).value();
+						CString szValue = XML2T(node.attribute(XTEXT("source")).value());
 						pControl = builder.Create((LPCTSTR)szValue, (UINT)0, m_pCallback, pManager, pParent);
 					}
 				}
@@ -821,7 +821,7 @@ CControlUI* CUIBuilderOrginal::_Parse(xml_node root,  CControlUI* pParent, CPain
 			// 若有控件默认配置先初始化默认属性
 			if( pManager ) {
 				pNode->SetManager(pManager, NULL, false);
-				LPCTSTR pDefaultAttributes = pManager->GetDefaultAttributeList(pstrClass);
+				CString pDefaultAttributes = pManager->GetDefaultAttributeList(pstrClass);
 				if( pDefaultAttributes ) {
 					pNode->SetAttributeList(pDefaultAttributes);
 				}
@@ -831,7 +831,7 @@ CControlUI* CUIBuilderOrginal::_Parse(xml_node root,  CControlUI* pParent, CPain
 			if( node.first_attribute() ) {
 				for (xml_attribute attr=node.first_attribute(); attr; attr=attr.next_attribute())
 				{
-					pNode->SetAttribute(attr.name(), attr.value());
+					pNode->SetAttribute(XML2T(attr.name()), XML2T(attr.value()));
 				}
 			}
 
@@ -964,7 +964,7 @@ CControlUI* CUIBuilderOrginal::_Parse(xml_node root,  CControlUI* pParent, CPain
 		// Attach to parent
 		// 因为某些属性和父窗口相关，比如selected，必须先Add到父窗口
 		if( pParent != NULL ) {
-			bool bCover = node.attribute(_T("cover")).as_bool();
+			bool bCover = node.attribute(XTEXT("cover")).as_bool();
 			if( bCover ) {
 				pParent->SetCover(pControl);
 			}
@@ -987,7 +987,7 @@ CControlUI* CUIBuilderOrginal::_Parse(xml_node root,  CControlUI* pParent, CPain
 		// Init default attributes
 		if( pManager ) {
 			pControl->SetManager(pManager, NULL, false);
-			LPCTSTR pDefaultAttributes = pManager->GetDefaultAttributeList(pstrClass);
+			CString pDefaultAttributes = pManager->GetDefaultAttributeList(pstrClass);
 			if( pDefaultAttributes ) {
 				pControl->SetAttributeList(pDefaultAttributes);
 			}
@@ -997,7 +997,7 @@ CControlUI* CUIBuilderOrginal::_Parse(xml_node root,  CControlUI* pParent, CPain
 			// Set ordinary attributes
 			for (xml_attribute attr=node.first_attribute(); attr; attr=attr.next_attribute())
 			{
-				pControl->SetAttribute(attr.name(), attr.value());
+				pControl->SetAttribute(XML2T(attr.name()), XML2T(attr.value()));
 			}
 		}
 		if( pManager ) {
@@ -1084,13 +1084,13 @@ CControlUI* CUIBuilderOrginal::CreateControl(LPCTSTR pstrClass)
 CControlUI* CUIBuilderOrginal::CreateControl(xml_node node)
 {
 	CControlUI *pControl = NULL;
-	pControl = CreateControl(node.name());
+	pControl = CreateControl(XML2T(node.name()));
 	if(!pControl)
 	{
-		xml_attribute attr = node.attribute(_T("custombasedfrom"));
+		xml_attribute attr = node.attribute(XTEXT("custombasedfrom"));
 		if(attr)
 		{
-			pControl = CreateControl(attr.value());
+			pControl = CreateControl(XML2T(attr.value()));
 		}
 		// 		else //不认识的控件，直接从CContainner创建, 不能这样子哦
 		// 		{

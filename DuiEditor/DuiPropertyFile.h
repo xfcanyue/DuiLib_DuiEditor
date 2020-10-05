@@ -40,6 +40,7 @@
 #define	TREENODETYPE_GIFANIM			35
 #define	TREENODETYPE_STYLE				36
 
+class CUIManager;
 class CDuiPropertyFile
 {
 public:
@@ -48,10 +49,14 @@ public:
 
 	BOOL LoadPropertyFile();
 	xml_node GetRoot();
-
-	BOOL IsBaseFromControlUI(LPCTSTR className);
-	BOOL IsBaseFromContainer(LPCTSTR className);
+	/*
+	BOOL IsControlUI(LPCTSTR className);
+	BOOL IsContainerUI(LPCTSTR className);
 	BOOL IsWindowForm(LPCTSTR className);
+	*/
+	BOOL IsControlUI(xml_node nodeNode);
+	BOOL IsContainerUI(xml_node nodeNode);
+	BOOL IsWindowForm(xml_node nodeNode);
 	BOOL IsFontNode(xml_node nodeNode);
 	BOOL IsDefaultNode(xml_node node);
 	BOOL IsStyleNode(xml_node node);
@@ -59,25 +64,29 @@ public:
 	//是否有定义text字段
 	BOOL IsNeedInputText(xml_node node);
 
-	xml_node FindControl(LPCTSTR className);
+	xml_node FindControl(LPCTSTR className); //查找控件的定义
+	xml_node FindAttribute(LPCTSTR className, LPCTSTR attrName); //查找控件定义的属性
 
 	//获得控件的图标序号
 	static UINT GetControlIconIndex(xml_node nodeDoc);
 
 	//为了防止属性冗余, 过滤默认属性
-	void FilterDefaultValue(xml_node nodeDoc);
+	void FilterDefaultValue(xml_node nodeDoc, CUIManager *pUIManager);
+
+	//过滤多余的pos属性
+	void FilterPosWidthHeight(xml_node nodeDoc, CUIManager *pUIManager);
 
 	//插入属性到布局文件中, 遵循属性文件中属性定义的顺序
-	xml_attribute AddAttribute(xml_node nodeControl, LPCTSTR attrName, RECT rc, CDuiEditorViewDesign *pView);
-	xml_attribute AddAttribute(xml_node nodeControl, LPCTSTR attrName, int attrValue, CDuiEditorViewDesign *pView);
-	xml_attribute AddAttribute(xml_node nodeControl, LPCTSTR attrName, bool attrValue, CDuiEditorViewDesign *pView);
-	xml_attribute AddAttribute(xml_node nodeControl, LPCTSTR attrName, LPCTSTR attrValue, CDuiEditorViewDesign *pView);
+	xml_attribute AddAttribute(xml_node nodeControl, LPCTSTR attrName, RECT rc, CUIManager *pUIManager);
+	xml_attribute AddAttribute(xml_node nodeControl, LPCTSTR attrName, int attrValue, CUIManager *pUIManager);
+	xml_attribute AddAttribute(xml_node nodeControl, LPCTSTR attrName, bool attrValue, CUIManager *pUIManager);
+	xml_attribute AddAttribute(xml_node nodeControl, LPCTSTR attrName, LPCTSTR attrValue, CUIManager *pUIManager);
 
 protected:
 	void InitToolBoxIcon();
 	xml_attribute _addAttribute(xml_node nodeControl, LPCTSTR attrName, LPCTSTR attrValue);
 	BOOL IsCorrectOrder(LPCTSTR controlName, LPCTSTR attrNameAppend, LPCTSTR attrName);
-	void _FilterDefaultValue(xml_node nodeDoc, xml_attribute attr, xml_node nodeDuiProp);
+	void _FilterDefaultValue(xml_node nodeDoc, xml_attribute attr, xml_node nodeDuiProp, CUIManager *pUIManager);
 public:
 	xml_document xml;
 	CImageList m_ImageList;

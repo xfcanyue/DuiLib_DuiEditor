@@ -10,6 +10,7 @@
 #include "DlgOptions.h"
 
 #include "ThreadPipe.h"
+#include "UIManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -49,9 +50,9 @@ static UINT indicators[] =
 	ID_SEPARATOR,           // 状态行指示器
 
 	ID_INDICATOR_CURSOR_POS,	//鼠标位置
+	ID_INDICATOR_CURRENT_POS,	//当前位置
 	ID_INDICATOR_LINE,			//行号
 	ID_INDICATOR_COL,			//列号
-	ID_INDICATOR_CURRENT_POS,	//当前位置
 	ID_INDICATOR_LENGTH,		//文档总长度
 	ID_INDICATOR_TOTAL_LINE,	//文档总行数
 
@@ -401,11 +402,11 @@ void CMainFrame::OnClose()
 
 CDuiEditorViewDesign *CMainFrame::GetActiveUIView()
 {
-	CMDIChildWnd* pFrame=MDIGetActive();
+	CChildFrame *pFrame=(CChildFrame *)MDIGetActive();
 	if(!pFrame)
 		return NULL;
 
-	return DYNAMIC_DOWNCAST(CDuiEditorViewDesign, pFrame->GetActiveView());
+	return DYNAMIC_DOWNCAST(CDuiEditorViewDesign, pFrame->GetUIManager()->GetDesignView());
 }
 
 void CMainFrame::ShowAllPane()

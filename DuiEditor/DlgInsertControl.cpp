@@ -44,7 +44,7 @@ BOOL CDlgInsertControl::OnInitDialog()
 	CButton *pBtn2 = (CButton *)GetDlgItem(IDC_RADIO2);
 	CButton *pBtn3 = (CButton *)GetDlgItem(IDC_RADIO3);
 
-	if( g_duiProp.IsBaseFromContainer(nodeControl.name()) || g_duiProp.IsWindowForm(nodeControl.name()))
+	if( g_duiProp.IsContainerUI(nodeControl) || g_duiProp.IsWindowForm(nodeControl) )
 	{
 		pBtn1->SetCheck(TRUE);
 		return TRUE;

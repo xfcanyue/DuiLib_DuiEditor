@@ -413,7 +413,7 @@ void CUITrackerMuliti::OnChangedRect()
 		CControlUI *pNewControl = NULL;
 
 		//创建控件
-		LPCTSTR pstrClass = nodeCurrentControl.name();
+		CString pstrClass = XML2T(nodeCurrentControl.name());
 		pNewControl = CUIBuilder::CreateControl(pstrClass);
 		if(!pNewControl) continue;
 
@@ -424,11 +424,17 @@ void CUITrackerMuliti::OnChangedRect()
 		xml_node nodeNewControl = nodeParent.append_copy(nodeCurrentControl);
 
 		//复制控件不能复制控件的name
-		xml_attribute attrName = nodeNewControl.attribute(_T("name"));
+		xml_attribute attrName = nodeNewControl.attribute(XTEXT("name"));
 		if(attrName)
 		{
 			nodeNewControl.remove_attribute(attrName);
 		}
+
+		//保存文档和控件的双向指针
+		pNewControl->SetTag((UINT_PTR)nodeNewControl.internal_object());
+		nodeNewControl.set_tag((UINT_PTR)pNewControl);
+
+		GetUIManager()->GetCodeView()->AddNode(nodeNewControl);
 
 		if(pCurrentControl->IsFloat()) //绝对定位
 		{
@@ -465,12 +471,8 @@ void CUITrackerMuliti::OnChangedRect()
 		//载入控件当前属性
 		for (xml_attribute attr = nodeNewControl.first_attribute(); attr; attr=attr.next_attribute())
 		{
-			pNewControl->SetAttribute(attr.name(), attr.value());
+			pNewControl->SetAttribute(XML2T(attr.name()), XML2T(attr.value()));
 		}
-
-		//保存文档和控件的双向指针
-		pNewControl->SetTag((UINT_PTR)nodeNewControl.internal_object());
-		nodeNewControl.set_tag((UINT_PTR)pNewControl);
 
 		//插入左边控件树
 		HTREEITEM hTreeSibling = GetUIManager()->GetTreeView()->FindXmlNode(nodeCurrentControl); 
@@ -484,10 +486,10 @@ void CUITrackerMuliti::OnChangedRect()
 		GetUIManager()->UpdateControlUI(nodeNewControl);
 
 		//插入command history
-		GetUIManager()->GetCmdHistory()->AddNewControl(nodeNewControl);
+		//GetUIManager()->GetCmdHistory()->AddNewControl(nodeNewControl);
 
 		//保存文档修改标志
-		GetUIManager()->GetDocument()->SetModifiedFlag(TRUE);
+		//GetUIManager()->GetDocument()->SetModifiedFlag(TRUE);
 
 		//缓存当前复制的控件
 		arrNewControl.Add(pNewControl);

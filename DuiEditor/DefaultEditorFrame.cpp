@@ -78,7 +78,7 @@ int CDefaultEditorFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	m_wndView.CreateControl(pDlgMain->m_strClassName);
 
-	pPropList->InitProp(pDlgMain->m_nodeControl.child(pDlgMain->m_strClassName));
+	pPropList->InitProp(pDlgMain->m_nodeControl.child(T2XML(pDlgMain->m_strClassName)));
 	return 0;
 }
 

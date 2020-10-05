@@ -47,10 +47,9 @@ BOOL CDlgCustomControl::OnInitDialog()
 	xml_node root = g_duiProp.GetRoot();
 	for (xml_node node=root.first_child(); node; node=node.next_sibling())
 	{
-		LPCTSTR ptrClass = node.name();
-		if(g_duiProp.IsBaseFromControlUI(ptrClass))
+		if(g_duiProp.IsControlUI(node))
 		{
-			m_cbParentControl.AddString(ptrClass);
+			m_cbParentControl.AddString(XML2T(node.name()));
 		}
 	}
 	m_cbParentControl.SelectString(-1, _T("Container"));

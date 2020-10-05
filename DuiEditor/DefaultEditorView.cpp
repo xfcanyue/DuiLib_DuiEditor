@@ -52,10 +52,10 @@ int CDefaultEditorView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	strRc.Format(_T("%d,%d"), rcClient.Width(), rcClient.Height());
 
 	xml_document doc;
-	xml_node nodeWindow = doc.root().append_child(_T("Window"));
-	nodeWindow.attribute_auto(_T("size")).set_value(strRc);
-	xml_node nodeVert = nodeWindow.append_child(_T("VerticalLayout"));
-	nodeVert.attribute_auto(_T("bkcolor")).set_value(_T("#FF696969"));
+	xml_node nodeWindow = doc.root().append_child(XTEXT("Window"));
+	nodeWindow.attribute_auto(XTEXT("size")).set_value(T2XML(strRc));
+	xml_node nodeVert = nodeWindow.append_child(XTEXT("VerticalLayout"));
+	nodeVert.attribute_auto(XTEXT("bkcolor")).set_value(XTEXT("#FF696969"));
 
 	GetManager()->Init(m_hWnd);
 
@@ -151,7 +151,7 @@ void CDefaultEditorView::SetControlAttribute()
 		xml_node root = pDlgMain->m_nodeControl.root().first_child(); //.child(pDlgMain->m_strClassName);
 		for (xml_attribute attr=root.first_attribute(); attr; attr=attr.next_attribute())
 		{
-			m_pControl->SetAttribute(attr.name(), attr.value());
+			m_pControl->SetAttribute(XML2T(attr.name()), XML2T(attr.value()));
 		}
 	}
 }

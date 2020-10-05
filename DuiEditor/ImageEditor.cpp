@@ -108,33 +108,34 @@ void CImageEditor::SetAttributeValue(LPCTSTR szAttribute)
 	CString strXML = _T("<IMAGE ");
 	strXML += szAttribute;
 	strXML += _T(" />");
-	xml_parse_result ret = m_nodeImage.load(strXML);
+	xml_parse_result ret = m_nodeImage.load(T2XML(strXML));
 	if(ret.status != pugi::status_ok)//如果匹配不成功, 就认为只有文件名, 无其他参数
 	{
 		strXML = _T("<IMAGE />");
-		ret = m_nodeImage.load(strXML);
-		nodedata = m_nodeImage.child(_T("IMAGE"));
+		ret = m_nodeImage.load(T2XML(strXML));
+		nodedata = m_nodeImage.child(XTEXT("IMAGE"));
 
 		g_duiProp.AddAttribute(nodedata, _T("file"), szAttribute, NULL);
 	}
 	else
 	{
-		nodedata = m_nodeImage.child(_T("IMAGE"));
+		nodedata = m_nodeImage.child(XTEXT("IMAGE"));
 	}
 }
 
 CString CImageEditor::GetAttributeValue()
 {
-	xml_node node = m_nodeImage.child(_T("IMAGE"));
+	xml_node node = m_nodeImage.child(XTEXT("IMAGE"));
 
 	//过滤默认属性
-	g_duiProp.FilterDefaultValue(node);
+	g_duiProp.FilterDefaultValue(node, NULL);
+	g_duiProp.FilterPosWidthHeight(node, NULL);
 
 	//判断source是否等于图像原始大小, 等于则删除source属性定义
-	xml_attribute attr = node.attribute(_T("source"));
+	xml_attribute attr = node.attribute(XTEXT("source"));
 	if(attr)
 	{
-		CDuiRect rc(attr.value());
+		CDuiRect rc(XML2T(attr.value()));
 		if(m_rcImage == rc)
 			node.remove_attribute(attr);
 	}
@@ -155,13 +156,13 @@ CString CImageEditor::GetAttributeValue()
 	{
 		for (xml_attribute attr=node.first_attribute(); attr; attr=attr.next_attribute())
 		{
-			temp.Format(_T("%s='%s' "), attr.name(), attr.value());
+			temp.Format(_T("%s='%s' "), XML2T(attr.name()), XML2T(attr.value()));
 			strImage += temp;
 		}
 	}
 	else
 	{
-		strImage = node.attribute(_T("file")).value();
+		strImage = node.attribute(XTEXT("file")).value();
 	}
 
 	return strImage;

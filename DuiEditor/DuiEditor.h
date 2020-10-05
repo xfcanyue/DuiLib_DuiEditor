@@ -9,7 +9,6 @@
 
 #include "resource.h"       // 主符号
 #include "DuiPropertyFile.h"
-#include "DuiEditorCommandHistory.h"
 #include "EditorConfig.h"
 
 #include "DuiProject.h"
@@ -18,10 +17,26 @@ extern CDuiProject g_proj;
 extern CString g_strAppPath;							//应用程序路径
 extern CDuiPropertyFile g_duiProp;
 
-inline BOOL CompareString(LPCTSTR str1, LPCTSTR str2)
+inline BOOL CompareString(const wchar_t *str1, const wchar_t *str2)
 {
 	return _tcscmp(str1, str2) == 0;
 }
+
+inline BOOL CompareString(const char *str1, const char *str2)
+{
+	return strcmp(str1, str2) == 0;
+}
+
+inline BOOL CompareString(const wchar_t *str1, const char *str2)
+{
+	return strcmp(LSW2A(str1), str2) == 0;
+}
+
+inline BOOL CompareString(const char *str1, const wchar_t *str2)
+{
+	return strcmp(str1, LSW2A(str2)) == 0;
+}
+
 
 inline BOOL SplitCString(CStringArray &arrstr, LPCTSTR strtemp)
 {
@@ -81,7 +96,6 @@ inline void InsertMsgV(LPCTSTR lpszFormat, ...)
 }
 
 #define WM_REOPEN_FILE			WM_USER + 221
-#define WM_INIT_VIEW_DESIGN		WM_USER + 222
 // CDuiEditorApp:
 // 有关此类的实现，请参阅 DuiEditor.cpp
 //

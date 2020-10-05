@@ -72,9 +72,9 @@ void CDockControlTreeCtrl::InitTreeContent()
 
 	DeleteAllItems();
 
-	pugi::xml_node root = GetUIManager()->GetDocument()->m_doc.root().child(_T("Window"));
+	pugi::xml_node root = GetUIManager()->GetDocument()->m_doc.root().child(XTEXT("Window"));
 
-	HTREEITEM hRootItem = InsertItem(root.name(), 0, 0, TVI_ROOT, TVI_LAST);
+	HTREEITEM hRootItem = InsertItem(XML2T(root.name()), 0, 0, TVI_ROOT, TVI_LAST);
 	SetItemData(hRootItem, (DWORD)root.internal_object());
 
 	int type = CDuiPropertyFile::GetControlIconIndex(root);
@@ -128,16 +128,21 @@ void CDockControlTreeCtrl::OpenXmlDocument(pugi::xml_node elem, HTREEITEM hTreeP
 
 HTREEITEM CDockControlTreeCtrl::AddNewControl(xml_node node, HTREEITEM hParent, HTREEITEM hInertAfter)
 {
-	CString text = node.name();
+	CString text = XML2T(node.name());
 
-	xml_attribute attr = node.attribute(_T("sname"));
-	if(!attr)	attr = node.attribute(_T("name"));
+	xml_attribute attr = node.attribute(XTEXT("sname"));
+	if(!attr)	attr = node.attribute(XTEXT("name"));
 	if(attr)
 	{
-		CString strControlName = attr.as_string();
+		CString strControlName = XML2T(attr.as_string());
 		if(!strControlName.IsEmpty())
-			text.Format(_T("%s %s=\"%s\""), node.name(), attr.name(), attr.as_string());
-	}	
+			text.Format(_T("%s %s=\"%s\""), XML2T(node.name()), XML2T(attr.name()), XML2T(attr.as_string()));
+	}
+
+	if(node.type() == node_comment)
+	{
+		text.Format(_T("<!-- %s -->"), XML2T(node.value()));
+	}
 
 	HTREEITEM hItem = InsertItem(text, 0, 0, hParent, hInertAfter);
 	SetItemData(hItem, (DWORD)node.internal_object());
@@ -185,19 +190,6 @@ HTREEITEM CDockControlTreeCtrl::AddNewControl(xml_node nodeNewContrl, xml_node n
 	}
 
 	return AddNewControl(nodeNewContrl, hItemCurrent, TVI_LAST);
-/*
-	HTREEITEM hItemParent = FindXmlNode(nodeNewContrl.parent());
-	if(hItemParent == NULL)	return NULL;
-
-	if(htiAfter == TVI_BEFORE)
-	{
-		HTREEITEM hPrev = GetNextItem(hItemParent)
-		return AddNewControl(nodeNewContrl, hItemParent, TVI_SORT);
-	}
-
-	HTREEITEM hItemInsert = FindXmlNode(nodeCurrentControl);
-	return AddNewControl(nodeNewContrl, hItemParent, hItemInsert);
-	*/
 }
 
 void CDockControlTreeCtrl::UpdateXmlNode(xml_node node)
@@ -211,21 +203,21 @@ void CDockControlTreeCtrl::UpdateXmlNode(xml_node node)
 	if(GetItemData(hItem) != (DWORD_PTR)node.internal_object())
 		return;
 
-	CString text = node.name();
+	CString text = XML2T(node.name());
 
-	CString strName = node.attribute(_T("name")).as_string();
+	CString strName = XML2T(node.attribute(XTEXT("name")).as_string());
 	if(!strName.IsEmpty())
 	{
 		CString temp;
-		temp.Format(_T(" %s=\"%s\""), node.attribute(_T("name")).name(), node.attribute(_T("name")).as_string());
+		temp.Format(_T(" %s=\"%s\""), XML2T(node.attribute(XTEXT("name")).name()), XML2T(node.attribute(XTEXT("name")).as_string()));
 		text += temp;
 	}
 
-	CString strSName = node.attribute(_T("sname")).as_string();
+	CString strSName = XML2T(node.attribute(XTEXT("sname")).as_string());
 	if(!strSName.IsEmpty())
 	{
 		CString temp;
-		temp.Format(_T(" %s=\"%s\""), node.attribute(_T("sname")).name(), node.attribute(_T("sname")).as_string());
+		temp.Format(_T(" %s=\"%s\""), XML2T(node.attribute(XTEXT("sname")).name()), XML2T(node.attribute(XTEXT("sname")).as_string()));
 		text += temp;
 	}
 
@@ -297,7 +289,7 @@ void CDockControlTreeCtrl::OnNMRClick(NMHDR *pNMHDR, LRESULT *pResult)
 					for (xml_node nd = node.first_child(); nd; nd=nd.next_sibling())
 					{
 						CString temp;
-						temp.Format(_T("页面%d %s name=%s"), nCmd-ID_TABLAYOUT_SETSEL_00+1, nd.name(), nd.attribute(_T("name")).value());
+						temp.Format(_T("页面%d %s name=%s"), nCmd-ID_TABLAYOUT_SETSEL_00+1, XML2T(nd.name()), XML2T(nd.attribute(XTEXT("name")).value()));
 						::InsertMenu(menutab.GetSubMenu(0)->GetSubMenu(0)->m_hMenu, -1, MF_BYPOSITION, nCmd, temp);
 						nCmd++;
 					}
@@ -378,7 +370,7 @@ BOOL CDockControlTreeCtrl::OnDragXmlNode(HTREEITEM src, HTREEITEM dest)
 	//
 
 	//判断目标位置是否容器
-	if(!g_duiProp.IsBaseFromContainer(nodedest.name()))
+	if(!g_duiProp.IsContainerUI(nodedest))
 		return FALSE;
 
 	xml_node nodeNew;
@@ -591,7 +583,7 @@ BOOL CDockControlTreeCtrl::OnDraging()
 	}
 
 	xml_node nodedest = xml_node((xml_node_struct *)GetItemData(hTreeItem));
-	if(!g_duiProp.IsBaseFromContainer(nodedest.name()))
+	if(!g_duiProp.IsContainerUI(nodedest))
 		return FALSE;
 
 	CImageList::DragShowNolock(FALSE);
@@ -705,11 +697,11 @@ BOOL CDockControlTreeCtrl::OnToolTipText( UINT id, NMHDR * pNMHDR, LRESULT * pRe
 	xml_node node((xml_node_struct *)GetItemData(hitem));;
 
 	CString temp;
-	temp.Format(_T("<%s "), node.name());
+	temp.Format(_T("<%s "), XML2T(node.name()));
 	strTipText += temp;
 	for (xml_attribute attr=node.first_attribute(); attr; attr=attr.next_attribute())
 	{
-		temp.Format(_T("%s=\"%s\""), attr.name(), attr.value());
+		temp.Format(_T("%s=\"%s\""), XML2T(attr.name()), XML2T(attr.value()));
 		strTipText += temp;
 		strTipText += _T(" ");
 	}

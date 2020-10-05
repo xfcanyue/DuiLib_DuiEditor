@@ -7,7 +7,7 @@ public:
 	~LsStringConverter() { Release(); }
 
 public:
-	LPCTSTR A_to_T(const void *buffer)
+	CString A_to_T(const void *buffer)
 	{
 #ifdef _UNICODE
 		return A_to_W(buffer);
@@ -16,7 +16,7 @@ public:
 #endif
 	}
 
-	LPCSTR T_to_A(const void *buffer)
+	CStringA T_to_A(const void *buffer)
 	{
 #ifdef _UNICODE
 		return W_to_A(buffer);
@@ -25,7 +25,7 @@ public:
 #endif
 	}
 
-	LPCTSTR W_to_T(const void *buffer)
+	CString W_to_T(const void *buffer)
 	{
 #ifdef _UNICODE
 		return (LPCTSTR)buffer;
@@ -34,7 +34,7 @@ public:
 #endif
 	}
 
-	LPCWSTR T_to_W(const void *buffer)
+	CStringW T_to_W(const void *buffer)
 	{
 #ifdef _UNICODE
 		return (LPCWSTR)buffer;
@@ -43,7 +43,7 @@ public:
 #endif
 	}
 
-	LPCTSTR utf8_to_T(const void *buffer)
+	CString utf8_to_T(const void *buffer)
 	{
 #ifdef _UNICODE
 		return utf8_to_W(buffer);
@@ -52,7 +52,7 @@ public:
 #endif
 	}
 
-	LPCSTR T_to_utf8(const void *buffer)
+	CStringA T_to_utf8(const void *buffer)
 	{
 #ifdef _UNICODE
 		return W_to_utf8(buffer);
@@ -61,7 +61,7 @@ public:
 #endif
 	}
 
-	LPCWSTR A_to_W(const void *buffer)
+	CStringW A_to_W(const void *buffer)
 	{
 		int len = MultiByteToWideChar(CP_ACP, 0, (const char *)buffer, -1, NULL, 0);
 
@@ -70,7 +70,7 @@ public:
 		return (LPCWSTR)_block;
 	}
 
-	LPCSTR W_to_A(const void *buffer)
+	CStringA W_to_A(const void *buffer)
 	{
 		int len = WideCharToMultiByte(CP_ACP, 0, (const wchar_t *)buffer, -1, NULL, 0, NULL, NULL);
 
@@ -79,21 +79,21 @@ public:
 		return (LPCSTR)_block;
 	}
 
-	LPCSTR A_to_utf8(const void *buffer)
+	CStringA A_to_utf8(const void *buffer)
 	{
 		LsStringConverter conv;
 		LPCWSTR wstr = conv.A_to_W(buffer);
 		return W_to_utf8(wstr);
 	}
 
-	LPCSTR utf8_to_A(const void *buffer)
+	CStringA utf8_to_A(const void *buffer)
 	{
 		LsStringConverter conv;
 		LPCWSTR wstr = conv.utf8_to_W(buffer);
 		return W_to_A(wstr);
 	}
 
-	LPCSTR W_to_utf8(const void *buffer)
+	CStringA W_to_utf8(const void *buffer)
 	{
 		int len = WideCharToMultiByte(CP_UTF8, 0, (const wchar_t *)buffer, -1, NULL, 0, NULL, NULL);
 
@@ -102,7 +102,7 @@ public:
 		return (LPCSTR)_block;
 	}
 
-	LPCWSTR utf8_to_W(const void *buffer)
+	CStringW utf8_to_W(const void *buffer)
 	{
 		int len = ::MultiByteToWideChar(CP_UTF8, NULL, (const char *)buffer, -1, NULL, 0);
 
@@ -128,7 +128,9 @@ private:
 	BYTE *_block;
 };
 
-#define LSSTRING_CONVERSION	LsStringConverter _LSSTRINGCONVERT_TEMP_INSTANCE_;
+//#define LSSTRING_CONVERSION	LsStringConverter _LSSTRINGCONVERT_TEMP_INSTANCE_;
+#define LSSTRING_CONVERSION
+extern LsStringConverter __lsstring__convert__temp__instance__;
 
 #define LSA2T(p)	(_LSSTRINGCONVERT_TEMP_INSTANCE_.A_to_T(p))
 #define LSA2W(p)	(_LSSTRINGCONVERT_TEMP_INSTANCE_.A_to_W(p))
@@ -145,3 +147,13 @@ private:
 #define LSUTF82T(p)	(_LSSTRINGCONVERT_TEMP_INSTANCE_.utf8_to_T(p))
 #define LSUTF82A(p)	(_LSSTRINGCONVERT_TEMP_INSTANCE_.utf8_to_A(p))
 #define LSUTF82W(p)	(_LSSTRINGCONVERT_TEMP_INSTANCE_.utf8_to_W(p))
+
+#ifdef PUGIXML_WCHAR_MODE
+#define XML2T(t)		LSW2T(t)
+#define T2XML(t)		LST2W(t)
+#define XML2UTF8(t)		LST2UTF8(t)
+#else
+#define XML2T(t)		LSUTF82T(t)
+#define T2XML(t)		LST2UTF8(t)
+#define XML2UTF8(t)		t
+#endif

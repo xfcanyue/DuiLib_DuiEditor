@@ -5,3 +5,5 @@
 
 #include "stdafx.h"
 tagEditorConfig g_cfg;
+
+LsStringConverter __lsstring__convert__temp__instance__;

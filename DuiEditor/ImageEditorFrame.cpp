@@ -93,7 +93,7 @@ int CImageEditorFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CDuiEditorViewDesign *pView = (CDuiEditorViewDesign *)pMain->GetActiveUIView();
 	m_wndView.m_pManager = pView->GetUIManager()->GetManager();
 
-	pPropList->InitProp(pDlgMain->m_nodeImage.child(_T("IMAGE")));
+	pPropList->InitProp(pDlgMain->m_nodeImage.child(XTEXT("IMAGE")));
 	m_wndProperty.OnExpandAllProperties();
 	//////////////////////////////////////////////////////////////////////////
 	//m_wndList.m_wndList.DisplayFolder(CPaintManagerUI::GetResourcePath().GetData());
@@ -108,16 +108,16 @@ void CImageEditorFrame::SetViewImage()
 {
 	CImageEditor *pDlgMain = (CImageEditor *)GetParent();
 
-	xml_node node = pDlgMain->m_nodeImage.child(_T("IMAGE"));
+	xml_node node = pDlgMain->m_nodeImage.child(XTEXT("IMAGE"));
 	CString strImage, temp;
 	for (xml_attribute attr=node.first_attribute(); attr; attr=attr.next_attribute())
 	{
-		temp.Format(_T("%s='%s' "), attr.name(), attr.value());
+		temp.Format(_T("%s='%s' "), XML2T(attr.name()), XML2T(attr.value()));
 		strImage += temp;
 	}
 
 	//获取图片大小
-	xml_attribute attr2 = node.attribute(_T("file"));
+	xml_attribute attr2 = node.attribute(XTEXT("file"));
 	CImage img;
 	CRect  rcImg;
 	CString strSkinDir = pDlgMain->m_pDoc->GetSkinPath();//CPaintManagerUI::GetResourcePath();
