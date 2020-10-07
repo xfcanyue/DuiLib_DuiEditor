@@ -81,9 +81,9 @@ void CUIDialog::ShowDialog(CUIForm *pParentWnd)
 UINT CUIDialog::DoModal(CUIFrmBase *pParentWnd)
 {
 	if(pParentWnd)
-		Create(pParentWnd->GetManager()->GetPaintWindow(), GetWindowClassName(), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE);
+		Create(pParentWnd->GetManager()->GetPaintWindow(), GetWindowClassName(), UI_WNDSTYLE_DIALOG|WS_SIZEBOX, WS_EX_WINDOWEDGE);
 	else
-		Create(NULL, GetWindowClassName(), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE);
+		Create(NULL, GetWindowClassName(), UI_WNDSTYLE_DIALOG|WS_SIZEBOX, WS_EX_WINDOWEDGE);
 	CenterWindow();
 	_bModal = true;
 	return ShowModal();

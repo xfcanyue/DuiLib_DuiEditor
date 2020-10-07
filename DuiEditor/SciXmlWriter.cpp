@@ -426,7 +426,7 @@ void CSciXmlWriter::DeleteNode(xml_node node)
 	{
 		int start = 0;
 		int end = 0;
-		if(node.prepend_child())
+		if(node.previous_sibling())
 		{
 			xml_node nodeprev = node.previous_sibling();
 			start = nodeprev.get_open_end_pos();
@@ -445,8 +445,15 @@ void CSciXmlWriter::DeleteNode(xml_node node)
 			AdjustElseNodePos(node, start, start - end);
 		}
 		else
-		{
-			start = node.get_open_start_pos();
+		{		
+			if(nodeParent)
+			{
+				start = nodeParent.get_open_end_pos();
+			}
+			else
+			{
+				start = node.get_open_start_pos();
+			}
 			end = node.get_open_end_pos();
 			if(node.get_close_end_pos() >= 0)
 			{
