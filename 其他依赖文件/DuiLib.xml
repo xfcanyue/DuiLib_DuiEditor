@@ -114,9 +114,9 @@
 		<Attribute name="inset" default="0,0,0,0" type="RECT" comment="容器的内边距,如(2,2,2,2)" />
 		<Attribute name="mousechild" default="true" type="BOOL" comment="本控件的子控件是否可以响应用户操作,如(true)" />	
 		<Attribute name="vscrollbar" default="false" type="BOOL" comment="是否使用竖向滚动条,如(true)" />
-		<Attribute name="vscrollbarstyle" default="" type="STRING" comment="设置本容器的纵向滚动条的样式" />
+		<Attribute name="vscrollbarstyle" default="" type="ATTRIBUTELIST" comment="设置本容器的纵向滚动条的样式" />
 		<Attribute name="hscrollbar" default="false" type="BOOL" comment="是否使用横向滚动条,如(true)" />
-		<Attribute name="hscrollbarstyle" default="" type="STRING" comment="设置本容器的横向滚动条的样式" />
+		<Attribute name="hscrollbarstyle" default="" type="ATTRIBUTELIST" comment="设置本容器的横向滚动条的样式" />
 		<Attribute name="scrollstepsize" default="0" type="INT" comment="容器的滚动条滚动步长，0代表使用默认步长" />	
 		<Attribute name="childpadding" default="0" type="INT" comment="子控件之间的额外距离,如(4)" />		
 		<Attribute name="childvpadding" default="0" type="INT" comment="子控件之间的额外距离,如(4)" />		
@@ -243,7 +243,7 @@
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
-		<Attribute name="formatstyle" default="date" type="STRING" value="date,time,datetime" comment="时间格式" />
+		<Attribute name="formatstyle" default="date" type="STRING" value="date,time" comment="显示格式" />	
 	</DateTime>
 	<IPAddress parent="Label" notifies="setfocus killfocus timer menu windowinit(root)">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
@@ -261,7 +261,7 @@
 		<Attribute name="disabledimage" default="" type="IMAGE" comment="禁用的状态图片" />
 		<Attribute name="hotforeimage" default="" type="IMAGE" comment="状态图片" />
 		<Attribute name="stateimage" default="" type="IMAGE" comment="状态图片" />
-		<Attribute name="statecount" default="0" type="INT" comment="" />		
+		<Attribute name="statecount" default="0" type="INT" comment="" />
 		<Attribute name="bindtablayoutname" default="" type="STRING" comment="绑定TabLayout控件"/>
 		<Attribute name="bindtabindex" default="-1" type="INT" comment="点击后将触发绑定TabLayout控件的对应索引号"/>		
 		<Attribute name="hotbkcolor" default="0x00000000" type="DWORD" comment="鼠标悬浮背景颜色,如(0xFFFF00FF)" />
@@ -622,7 +622,7 @@
 		<Attribute name="dropbuttonpushedimage" default="" type="IMAGE" comment="下拉按钮,鼠标按下的状态图片" />
 		<Attribute name="dropbuttonfocusedimage" default="" type="IMAGE" comment="下拉按钮,获得焦点时的状态图片" />
 		<Attribute name="dropbuttondisabledimage" default="" type="IMAGE" comment="下拉按钮,禁用的状态图片" />
-		<Attribute name="type" default="droplist" type="STRING" value="dropdown,droplist" comment="Combo类型" />		
+		<Attribute name="type" default="droplist" type="STRING" value="dropdown,droplist" comment="Combo是否允许编辑" />		
 	</ComboEx>
 	<IconButton parent="Button" notifies="setfocus killfocus timer menu dropdown itemselect windowinit(root)">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
@@ -705,11 +705,25 @@
 		<Attribute name="imagepath" default="" type="STRING" comment="图片文件夹"/>
 		<Attribute name="retention" default="200" type="INT" comment="每张图片停留时间"/>
 	</ImageBox>
-	
-	
-	
-	
-	
+	<DateTimeEx parent="HorizontalLayout" notifies="setfocus killfocus timer menu windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="formatstyle" default="date" type="STRING" value="date,time,datetime" comment="显示格式" />		
+		<Attribute name="datelabelstyle" default="" type="ATTRIBUTELIST" value="Label" comment="设置日期label的样式" />
+		<Attribute name="timelabelstyle" default="" type="ATTRIBUTELIST" value="Label" comment="设置时间label的样式" />
+	</DateTimeEx>
+	<AccordionPane parent="VerticalLayout">
+		<Attribute name="name" default="" type="STRING" comment="控件名字" />
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="headerheight" default="30" type="INT" comment="Pane的标题栏高度，如(30)" />
+		<Attribute name="headerstyle" default="" type="ATTRIBUTELIST" value="HorizontalLayout" comment="Pane的标题的样式表" />
+		<Attribute name="iconstyle" default="" type="ATTRIBUTELIST" value="Label" comment="Pane的图标" />
+		<Attribute name="textstyle" default="" type="ATTRIBUTELIST" value="Label" comment="右侧按钮" />
+		<Attribute name="togglestyle" default="" type="ATTRIBUTELIST" value="Option" comment="右侧按钮" />
+		<Attribute name="panevisible" default="true" type="BOOL" comment="是否显示pane" />
+	</AccordionPane>
 	
 	
 	

@@ -71,6 +71,8 @@ UILIB_PLUGIN_API void DuiPluginsRegister()
 	REGIST_DUICONTROL(CPictureControlUI);
 	REGIST_DUICONTROL(CComboExUI);
 	REGIST_DUICONTROL(CIconButtonUI);
+	REGIST_DUICONTROL(CDateTimeExUI);
+	REGIST_DUICONTROL(CAccordionPaneUI);
 }
 
 extern "C" UILIB_PLUGIN_API CControlUI *CreateControl(LPCTSTR pstrClass)
@@ -110,6 +112,14 @@ extern "C" UILIB_PLUGIN_API CControlUI *CreateControl(LPCTSTR pstrClass)
 	else if( _tcscmp(pstrClass, _T("IconButton")) == 0 ) 
 	{
 		return new CIconButtonUI;
+	}
+	else if( _tcscmp(pstrClass, _T("DateTimeEx")) == 0 ) 
+	{
+		return new CDateTimeExUI;
+	}
+	else if( _tcscmp(pstrClass, _T("AccordionPane")) == 0 ) 
+	{
+		return new CAccordionPaneUI;
 	}
 	return NULL;
 }

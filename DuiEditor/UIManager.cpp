@@ -95,6 +95,69 @@ BOOL CUIManager::SelectItem(CControlUI *pControl)
 	return TRUE;
 }
 
+void CUIManager::EnsureVisible(xml_node node)
+{
+	CControlUI *pControlUI = (CControlUI *)node.get_tag();
+	return EnsureVisible(pControlUI);
+}
+
+void CUIManager::EnsureVisible(CControlUI *pControl)
+{
+	if(!pControl) return;
+	CDuiEditorViewDesign *pDesign = GetDesignView();
+	if(!pDesign) return;
+
+	CSize czSize = pDesign->GetTotalSize();
+	CPoint ptScroll = pDesign->GetScrollPosition();
+	CRect rcControl = pControl->GetPos();
+	CRect rcClient;
+	pDesign->GetClientRect(rcClient);
+	rcClient += ptScroll;
+
+//	InsertMsgV(_T("ScrollPosition.x=%d, ScrollPosition.y=%d, rcControl.left=%d, rcControl.top=%d, rcControl.right=%d, rcControl.bottom=%d, rcClient.left=%d, rcClient.top=%d, rcClient.right=%d, rcClient.bottom=%d"), 
+//		ptScroll.x, ptScroll.y, rcControl.left, rcControl.top, rcControl.right, rcControl.bottom, rcClient.left, rcClient.top, rcClient.right, rcClient.bottom);
+
+	CRect rcx;
+	if(rcx.IntersectRect(rcControl, rcClient))
+		return;
+
+	if(rcControl.bottom <= rcClient.top)
+	{
+		int offset = rcClient.top - rcControl.bottom;
+		ptScroll.y -= offset;
+		ptScroll.y -= rcControl.Height();
+		if(pDesign->IsViewRuleBar()) ptScroll.y -= RULEBAR_SIZE_Y;
+		if(ptScroll.y < 0) ptScroll.y = 0;
+	}
+	else if(rcControl.top >= rcClient.bottom)
+	{
+		int offset = rcControl.top - rcClient.bottom;
+		ptScroll.y += offset;
+		ptScroll.y += rcControl.Height();
+		if(pDesign->IsViewRuleBar()) ptScroll.y += RULEBAR_SIZE_Y;
+		if(ptScroll.y > czSize.cy) ptScroll.y = czSize.cy;
+	}
+
+	if(rcControl.right <= rcClient.left)
+	{
+		int offset = rcClient.left - rcControl.right;
+		ptScroll.x -= offset;
+		ptScroll.x -= rcControl.Width();
+		if(pDesign->IsViewRuleBar()) ptScroll.x -= RULEBAR_SIZE_X;
+		if(ptScroll.x < 0) ptScroll.x = 0;
+	}
+	else if(rcControl.left >= rcClient.right)
+	{
+		int offset = rcControl.left - rcClient.right;
+		ptScroll.x += offset;
+		ptScroll.x += rcControl.Width();
+		if(pDesign->IsViewRuleBar()) ptScroll.x += RULEBAR_SIZE_X;
+		if(ptScroll.x > czSize.cy) ptScroll.x = czSize.cx;
+	}
+
+	pDesign->ScrollToPosition(ptScroll);
+}
+
 BOOL CUIManager::UpdateControlUI(CControlUI *pControl)
 {
 	xml_node nodeControl((xml_node_struct *)pControl->GetTag());
@@ -162,8 +225,8 @@ BOOL CUIManager::UpdateControlPos(xml_node node, CRect rect, BOOL bUpdateWithHei
 		g_duiProp.AddAttribute(node, _T("pos"), rcNewPos, this);
 		if(bUpdateWithHeight)
 		{
-			g_duiProp.AddAttribute(node, _T("width"), rcNewPos.Width(), NULL);
-			g_duiProp.AddAttribute(node, _T("height"), rcNewPos.Height(), NULL);
+			g_duiProp.AddAttribute(node, _T("width"), rcNewPos.Width(), this);
+			g_duiProp.AddAttribute(node, _T("height"), rcNewPos.Height(), this);
 		}
 
 		return TRUE;

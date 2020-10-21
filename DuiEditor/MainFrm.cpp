@@ -43,6 +43,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_COMMAND(ID_INDICATOR_TOTAL_LINE, NULL)
 	ON_COMMAND(ID_VIEW_OUTPUT_BAR, &CMainFrame::OnViewOutputBar)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_OUTPUT_BAR, &CMainFrame::OnUpdateViewOutputBar)
+	ON_COMMAND(ID_EDIT_FIND, &CMainFrame::OnEditFind)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -70,6 +71,9 @@ CMainFrame::CMainFrame()
 	theApp.m_nAppLook = ID_VIEW_APPLOOK_OFF_2007_BLUE;
 	m_uTimerReOpenFile = 0;
 	m_pDocReOpen = NULL;
+
+	m_pDlgFind = NULL;
+	m_hDlgFind = NULL;
 }
 
 CMainFrame::~CMainFrame()
@@ -409,6 +413,14 @@ CDuiEditorViewDesign *CMainFrame::GetActiveUIView()
 	return DYNAMIC_DOWNCAST(CDuiEditorViewDesign, pFrame->GetUIManager()->GetDesignView());
 }
 
+CUIManager *CMainFrame::GetActiveUIManager()
+{
+	CChildFrame *pFrame=(CChildFrame *)MDIGetActive();
+	if(!pFrame)
+		return NULL;
+	return pFrame->GetUIManager();
+}
+
 void CMainFrame::ShowAllPane()
 {
 	m_wndFileView.ShowPane(TRUE, TRUE, TRUE);
@@ -529,4 +541,20 @@ void CMainFrame::OnViewOutputBar()
 void CMainFrame::OnUpdateViewOutputBar(CCmdUI *pCmdUI)
 {
 	pCmdUI->SetCheck(m_wndOutput.IsPaneVisible());
+}
+
+void CMainFrame::OnEditFind()
+{
+	if(::IsWindow(m_hDlgFind))
+	{
+		m_pDlgFind->CenterWindow(this);
+		return;
+	}
+
+	m_pDlgFind = new CSciFind;
+	m_pDlgFind->Create(IDD_SCI_FIND, this);
+	m_pDlgFind->CenterWindow(this);
+	m_pDlgFind->ShowWindow(SW_SHOW);
+
+	m_hDlgFind = m_pDlgFind->m_hWnd;
 }

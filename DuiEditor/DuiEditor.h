@@ -128,6 +128,7 @@ public:
 	afx_msg void OnFileNewXml();
 	afx_msg void OnFileNewXmlFromTemplate();
 	afx_msg void OnFileNewAsScript();
+	afx_msg void OnUpdateFileNewAsScript(CCmdUI *pCmdUI);
 };
 
 extern CDuiEditorApp theApp;

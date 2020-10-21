@@ -47,6 +47,7 @@ BEGIN_MESSAGE_MAP(CDuiEditorApp, CWinAppEx)
 	ON_COMMAND(ID_FILE_NEW_XML, &CDuiEditorApp::OnFileNewXml)
 	ON_COMMAND(ID_FILE_LOAD_TEMPLATE, &CDuiEditorApp::OnFileNewXmlFromTemplate)
 	ON_COMMAND(ID_FILE_NEW_AS_SCRIPT, &CDuiEditorApp::OnFileNewAsScript)
+	ON_UPDATE_COMMAND_UI(ID_FILE_NEW_AS_SCRIPT, &CDuiEditorApp::OnUpdateFileNewAsScript)
 END_MESSAGE_MAP()
 
 
@@ -179,13 +180,13 @@ BOOL CDuiEditorApp::InitInstance()
 	AddDocTemplate(pDocTemplate);
 
 	//CMultiDocTemplate* pDocTemplate;
-	pDocTemplate = new CMultiDocTemplate(IDR_DuiScriptTYPE,
-		RUNTIME_CLASS(CScriptEditorDoc),
-		RUNTIME_CLASS(CChildFrame2), // 自定义 MDI 子框架
-		RUNTIME_CLASS(CScriptEditorView));
-	if (!pDocTemplate)
-		return FALSE;
-	AddDocTemplate(pDocTemplate);
+// 	pDocTemplate = new CMultiDocTemplate(IDR_DuiScriptTYPE,
+// 		RUNTIME_CLASS(CScriptEditorDoc),
+// 		RUNTIME_CLASS(CChildFrame2), // 自定义 MDI 子框架
+// 		RUNTIME_CLASS(CScriptEditorView));
+// 	if (!pDocTemplate)
+// 		return FALSE;
+// 	AddDocTemplate(pDocTemplate);
 
 	// 创建主 MDI 框架窗口
 	CMainFrame* pMainFrame = new CMainFrame;
@@ -413,4 +414,10 @@ void CDuiEditorApp::OnFileNewAsScript()
 		pTemplate = m_pDocManager->GetNextDocTemplate(pos);
 		pTemplate->OpenDocumentFile(NULL);
 	}
+}
+
+
+void CDuiEditorApp::OnUpdateFileNewAsScript(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(FALSE);
 }

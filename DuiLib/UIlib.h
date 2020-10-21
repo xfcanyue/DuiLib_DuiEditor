@@ -117,7 +117,6 @@
 #include "Control/UIFadeButton.h"
 #include "Control/UIRing.h"
 
-
 #include "Utils/UIApplication.h"
 #include "Utils/UIFrameBase.h"
 #include "Utils/UIFrameWnd.h"

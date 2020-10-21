@@ -196,7 +196,15 @@ void CUIPropertyGridAttributeListProperty::OnClickButton(CPoint point)
 		m_strClassName = pGridCtrl->m_TreeNode.attribute(XTEXT("name")).value();
 	else if(g_duiProp.IsStyleNode(pGridCtrl->m_TreeNode))
 		m_strClassName = pGridCtrl->m_TreeNode.attribute(XTEXT("class")).value();
-
+	else
+	{
+		xml_node nodeAttr = g_duiProp.FindAttribute(XML2T(pGridCtrl->m_TreeNode.name()), GetName());
+		if(nodeAttr)
+		{
+			m_strClassName = nodeAttr.attribute(XTEXT("value")).value();
+		}
+	}
+	/*
 	//这里要进行单独判断, TreeViewUI的几个属性
 	else if(CompareString(GetName(), _T("checkboxattr")))
 	{
@@ -214,13 +222,27 @@ void CUIPropertyGridAttributeListProperty::OnClickButton(CPoint point)
 	{
 		m_strClassName = _T("HorizontalLayout");
 	}
-
-	//combo的dropbox属性
-	else if(CompareString(GetName(), _T("dropbox")))
+	else if(CompareString(GetName(), _T("dropbox"))) //combo的dropbox属性
 	{
 		m_strClassName = _T("VerticalLayout");
 	}
-
+	else if(CompareString(GetName(), _T("vscrollbarstyle")))
+	{
+		m_strClassName = _T("VScrollBar");
+	}
+	else if(CompareString(GetName(), _T("hscrollbarstyle")))
+	{
+		m_strClassName = _T("HScrollBar");
+	}
+	else if(CompareString(GetName(), _T("datelabelstyle")))
+	{
+		m_strClassName = _T("Label");
+	}
+	else if(CompareString(GetName(), _T("timelabelstyle")))
+	{
+		m_strClassName = _T("Label");
+	}
+	*/
 	if(m_strClassName.IsEmpty())
 		return;
 

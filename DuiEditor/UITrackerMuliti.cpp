@@ -447,10 +447,10 @@ void CUITrackerMuliti::OnChangedRect()
 
 			pNewControl->SetAttribute(_T("pos"), RectToString(&rcNew));
 
-			g_duiProp.AddAttribute(nodeNewControl, _T("float"), _T("true"),					NULL);
-			g_duiProp.AddAttribute(nodeNewControl, _T("pos"), RectToString(&rcNew),			NULL);
-			g_duiProp.AddAttribute(nodeNewControl, _T("width"), rcNew.right-rcNew.left,		NULL);
-			g_duiProp.AddAttribute(nodeNewControl, _T("height"), rcNew.bottom-rcNew.top,	NULL);
+			g_duiProp.AddAttribute(nodeNewControl, _T("float"), _T("true"),					GetUIManager());
+			g_duiProp.AddAttribute(nodeNewControl, _T("pos"), RectToString(&rcNew),			GetUIManager());
+			g_duiProp.AddAttribute(nodeNewControl, _T("width"), rcNew.right-rcNew.left,		GetUIManager());
+			g_duiProp.AddAttribute(nodeNewControl, _T("height"), rcNew.bottom-rcNew.top,	GetUIManager());
 		}
 		else
 		{

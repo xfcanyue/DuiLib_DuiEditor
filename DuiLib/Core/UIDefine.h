@@ -321,6 +321,7 @@ protected:                                                                \
 #define DUI_CTR_COLORPALETTE					  (_T("ColorPalette"))
 
 #define DUI_CTR_TABCTRL							(_T("TabCtrl"))	
+
 	///
 	//////////////END控件名称宏定义//////////////////////////////////////////////////
 

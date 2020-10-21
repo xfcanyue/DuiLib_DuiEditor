@@ -19,8 +19,6 @@ IMPLEMENT_DYNCREATE(CDuiEditorViewCode, CView)
 CDuiEditorViewCode::CDuiEditorViewCode()
 {
 	m_pUIManager = NULL;
-	m_pDlgFind = NULL;
-	m_hDlgFind = NULL;
 	m_nTargetLine = -1;
 	m_bAutoUpdateDesign = TRUE;
 	m_bNeedUpdate = FALSE;
@@ -39,7 +37,6 @@ BEGIN_MESSAGE_MAP(CDuiEditorViewCode, CView)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &CDuiEditorViewCode::OnUpdateEditCut)
 	ON_COMMAND(ID_EDIT_COPY, &CDuiEditorViewCode::OnEditCopy)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &CDuiEditorViewCode::OnUpdateEditCopy)
-	ON_COMMAND(ID_EDIT_FIND, &CDuiEditorViewCode::OnEditFind)
 	ON_COMMAND(ID_EDIT_PASTE, &CDuiEditorViewCode::OnEditPaste)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &CDuiEditorViewCode::OnUpdateEditPaste)
 	ON_WM_CONTEXTMENU()
@@ -337,8 +334,9 @@ BOOL CDuiEditorViewCode::SelectControlUI(int pos, xml_node node)
 		(pos>=node.get_close_start_pos() && pos<=node.get_close_end_pos()))
 	{
 		CControlUI *pControl = (CControlUI *)node.get_tag();
-		pManager->SelectItem(pControl);
-		pManager->GetTreeView()->SelectXmlNode(node);
+		GetUIManager()->SelectItem(pControl);
+		GetUIManager()->EnsureVisible(node);
+		GetUIManager()->GetTreeView()->SelectXmlNode(node);
 
 		//ÇÐ»»×ó±ß¿Ø¼þÊ÷
 		CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
@@ -708,7 +706,7 @@ void CDuiEditorViewCode::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	CMenu *pMenu = popmenu.GetSubMenu(0);
 	pMenu->DeleteMenu(ID_SCI_PARSE_XML, MF_BYCOMMAND);
 #endif
-	theApp.GetContextMenuManager()->ShowPopupMenu(popmenu.GetSubMenu(0)->m_hMenu, point.x, point.y, this, TRUE);
+	theApp.GetContextMenuManager()->ShowPopupMenu(popmenu.GetSubMenu(0)->m_hMenu, point.x, point.y, AfxGetMainWnd(), TRUE);
 }
 
 
@@ -744,23 +742,6 @@ void CDuiEditorViewCode::OnEditPaste()
 void CDuiEditorViewCode::OnUpdateEditPaste(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(sci.sci_CanPaste());
-}
-
-void CDuiEditorViewCode::OnEditFind()
-{
-	if(::IsWindow(m_hDlgFind))
-	{
-		m_pDlgFind->CenterWindow(this);
-		return;
-	}
-
-	m_pDlgFind = new CSciFind;
-	m_pDlgFind->m_pSciWnd = &sci;
-	m_pDlgFind->Create(IDD_SCI_FIND, this);
-	m_pDlgFind->CenterWindow(this);
-	m_pDlgFind->ShowWindow(SW_SHOW);
-
-	m_hDlgFind = m_pDlgFind->m_hWnd;
 }
 
 

@@ -1,6 +1,5 @@
 #pragma once
 #include "SciWnd.h"
-#include "SciFind.h"
 #include "SciXmlWriter.h"
 // CDuiEditorCode 视图
 
@@ -41,8 +40,6 @@ private:
 	CUIManager *m_pUIManager;
 
 protected:
-	CSciFind		*m_pDlgFind;
-	HWND			m_hDlgFind;
 	CSciWnd sci;
 	int m_nTargetLine;			//载入文档后滚动到目标行
 	BOOL m_bAutoUpdateDesign;	//是否自动更新到视图
@@ -75,7 +72,6 @@ public:
 	afx_msg void OnUpdateEditCopy(CCmdUI *pCmdUI);
 	afx_msg void OnEditPaste();
 	afx_msg void OnUpdateEditPaste(CCmdUI *pCmdUI);
-	afx_msg void OnEditFind();
 	virtual void OnInitialUpdate();
 	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
 	afx_msg void OnEditRefresh();

@@ -36,6 +36,7 @@ private:
 // 操作
 public:
 	void InitView();
+	BOOL IsViewRuleBar() { return m_bViewRuleBar; }
 // 重写
 protected:
 	virtual void OnDraw(CDC* pDC);  // 重写以绘制该视图

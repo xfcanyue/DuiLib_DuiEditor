@@ -6,14 +6,18 @@
 #include "SciFind.h"
 #include "afxdialogex.h"
 
+#include "MainFrm.h"
+#include "ChildFrm.h"
+#include "UIManager.h"
 
 static CString s_strFindText;
 static CString s_strReplaceText;
-static BOOL s_bMatchCase	= FALSE;
-static BOOL s_bWholeWord	= FALSE;
+static int s_nFindRange;
+static BOOL s_bMatchCase	= TRUE;
+static BOOL s_bWholeWord	= TRUE;
 static BOOL s_bWordStart	= FALSE;
 static BOOL s_bRegExp		= FALSE;
-static int  s_nFindDirection = 0;
+static int  s_nFindDirection = FIND_DIRECT_DOWN;
 // CSciFind 对话框
 
 IMPLEMENT_DYNAMIC(CSciFind, CDialogEx)
@@ -21,7 +25,7 @@ IMPLEMENT_DYNAMIC(CSciFind, CDialogEx)
 CSciFind::CSciFind(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CSciFind::IDD, pParent)
 {
-
+	s_nFindRange = 0;
 }
 
 CSciFind::~CSciFind()
@@ -37,6 +41,7 @@ void CSciFind::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK4, s_bRegExp);
 	DDX_Text(pDX, IDC_COMBO1, s_strFindText);
 	DDX_Text(pDX, IDC_COMBO2, s_strReplaceText);
+	DDX_CBIndex(pDX, IDC_COMBO3, s_nFindRange);
 }
 
 
@@ -45,8 +50,10 @@ BEGIN_MESSAGE_MAP(CSciFind, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_REPACE_CURRENT, &CSciFind::OnBtnRepaceCurrent)
 	ON_BN_CLICKED(IDC_BTN_REPLACE_ALL, &CSciFind::OnBtnReplaceAll)
 	ON_WM_CTLCOLOR()
-	ON_BN_CLICKED(IDC_BTN_FIND_NEXT, &CSciFind::OnBnClickedBtnFindNext)
-	ON_BN_CLICKED(IDC_BTN_FIND_PRE, &CSciFind::OnBnClickedBtnFindPre)
+	ON_CBN_SELCHANGE(IDC_COMBO3, &CSciFind::OnSelchangeCombo3)
+	ON_COMMAND(IDC_RADIO1, &CSciFind::OnRadio1)
+	ON_COMMAND(IDC_RADIO2, &CSciFind::OnRadio2)
+	ON_COMMAND(IDC_RADIO3, &CSciFind::OnRadio3)
 END_MESSAGE_MAP()
 
 
@@ -58,18 +65,26 @@ BOOL CSciFind::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
+	LoadText();
+
 	switch (s_nFindDirection)
 	{
-	case 0:
+	case FIND_DIRECT_DOWN:
 		((CButton *)GetDlgItem(IDC_RADIO1))->SetCheck(1);
 		break;
-	case 1:
+	case FIND_DIRECT_UP:
 		((CButton *)GetDlgItem(IDC_RADIO2))->SetCheck(1);
 		break;
-	case 2:
+	case FIND_DIRECT_ALL:
 		((CButton *)GetDlgItem(IDC_RADIO3))->SetCheck(1);
 		break;
 	}
+
+	CComboBox *pCombo = (CComboBox *)GetDlgItem(IDC_COMBO3);
+	pCombo->AddString(_T("当前文档"));
+	//pCombo->AddString(_T("所有打开的文档"));
+	//pCombo->AddString(_T("当前项目"));
+	pCombo->SetCurSel(s_nFindRange);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
@@ -89,38 +104,28 @@ HBRUSH CSciFind::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return hbr;
 }
 
-
-void CSciFind::OnOK()
+BOOL CSciFind::sciFind(CSciWnd *pSciWnd)
 {
-	if(!UpdateData(TRUE))	return;
-	if(((CButton *)GetDlgItem(IDC_RADIO1))->GetCheck())
-		s_nFindDirection = 0;
-	if(((CButton *)GetDlgItem(IDC_RADIO2))->GetCheck())
-		s_nFindDirection = 1;
-	if(((CButton *)GetDlgItem(IDC_RADIO3))->GetCheck())
-		s_nFindDirection = 2;
-
-	LSSTRING_CONVERSION;
 	CStringA strFindTextA = LST2UTF8(s_strFindText);
 	CStringA strReplaceTextA = LST2UTF8(s_strReplaceText);
 
 	Sci_TextToFind ttf;
 	ttf.lpstrText = (char *)(const char *)strFindTextA;
-
+	
 	//查找方向
-	int len = m_pSciWnd->sci_GetLength();
-	int nCurrentPos = m_pSciWnd->sci_GetCurrentPos();
-	if(s_nFindDirection == 0)
+	int len = pSciWnd->sci_GetLength();
+	int nCurrentPos = pSciWnd->sci_GetCurrentPos();
+	if(s_nFindDirection == FIND_DIRECT_DOWN)
 	{
 		ttf.chrg.cpMin = nCurrentPos;
 		ttf.chrg.cpMax = len;
 	}
-	else if(s_nFindDirection == 1)
+	else if(s_nFindDirection == FIND_DIRECT_UP)
 	{
 		ttf.chrg.cpMin = nCurrentPos;
 		ttf.chrg.cpMax = 0;
 	}
-	else
+	else if(s_nFindDirection == FIND_DIRECT_ALL)
 	{
 		ttf.chrg.cpMin = 0;
 		ttf.chrg.cpMax = len;
@@ -137,20 +142,165 @@ void CSciFind::OnOK()
 	if(s_bRegExp)
 		searchFlag = searchFlag|SCFIND_REGEXP;
 
-	int find = m_pSciWnd->sci_FindText(searchFlag, ttf);
-	if(find == -1)
+	int find = pSciWnd->sci_FindText(searchFlag, ttf);
+	if(find >= 0)
 	{
-		GetDlgItem(IDC_STATIC_TEXT_FIND)->SetWindowText(_T("未找到相关内容"));
-		return;
+		if(s_nFindDirection == FIND_DIRECT_DOWN)
+		{
+			pSciWnd->sci_SetSel(find, find+strFindTextA.GetLength());
+		}
+		else if(s_nFindDirection == FIND_DIRECT_UP)
+		{
+			pSciWnd->sci_SetSel(find+strFindTextA.GetLength(), find);
+		}
+		else if(s_nFindDirection == FIND_DIRECT_ALL)
+		{
+			pSciWnd->sci_SetSel(find, find+strFindTextA.GetLength());
+		}
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+BOOL CSciFind::sciReplaceCurrent(CSciWnd *pSciWnd)
+{
+	CStringA strReplaceTextA = LST2UTF8(s_strReplaceText);
+
+	int start = pSciWnd->sci_GetSelectionStart();
+	int end = pSciWnd->sci_GetSelectionEnd();
+	if(start-end != 0)
+	{
+		pSciWnd->sci_ReplaceSel(strReplaceTextA);
+		return TRUE;
+	}
+	return FALSE;
+}
+
+int CSciFind::sciReplaceAll(CSciWnd *pSciWnd)
+{
+	CSciUndoBlock undoblock(pSciWnd);
+	int nTimes = 0;
+	CStringA strReplaceTextA = LST2UTF8(s_strReplaceText);
+	for (;;)
+	{
+		if(!sciFind(pSciWnd))
+		{
+			break;
+		}
+
+		int start = pSciWnd->sci_GetSelectionStart();
+		int end = pSciWnd->sci_GetSelectionEnd();
+		if(start-end != 0)
+		{
+			pSciWnd->sci_ReplaceSel(strReplaceTextA);
+			nTimes++;
+		}
+	}
+	return nTimes;
+}
+
+void CSciFind::OnOK()
+{
+	if(!UpdateData(TRUE))	return;
+
+	if(s_strFindText.IsEmpty()) return;
+	SaveText();
+
+	CSciWnd *pSciWnd = NULL;
+	CMainFrame *pMainFrame = (CMainFrame *)AfxGetMainWnd();
+	if(s_nFindRange == FIND_RANGE_CURRENT)
+	{
+		CUIManager *pUIManager = pMainFrame->GetActiveUIManager();
+		if(!pUIManager) return;
+		pSciWnd = pUIManager->GetCodeView()->GetSciWnd();
+	}
+	else if(s_nFindRange == FIND_RANGE_OPENED)
+	{
+
+	}
+	else if(s_nFindRange == FIND_RANGE_PROJECT)
+	{
+
+	}
+	
+
+	if(!pSciWnd) return;
+	if(sciFind(pSciWnd))
+	{
+		GetDlgItem(IDC_STATIC_TEXT_FIND)->SetWindowText(_T(""));
 	}
 	else
 	{
-		GetDlgItem(IDC_STATIC_TEXT_FIND)->SetWindowText(_T(""));
-
-		m_pSciWnd->sci_SetSel(find, find+strFindTextA.GetLength());
+		GetDlgItem(IDC_STATIC_TEXT_FIND)->SetWindowText(_T("未找到相关内容"));
 	}
 
 	//CDialogEx::OnOK();
+}
+
+
+void CSciFind::OnBtnRepaceCurrent()
+{
+	if(!UpdateData(TRUE)) return;
+
+	if(s_strFindText.IsEmpty()) return;
+	if(s_strReplaceText.IsEmpty()) return;
+	SaveText();
+
+	CSciWnd *pSciWnd = NULL;
+	CMainFrame *pMainFrame = (CMainFrame *)AfxGetMainWnd();
+	if(s_nFindRange == FIND_RANGE_CURRENT)
+	{
+		CUIManager *pUIManager = pMainFrame->GetActiveUIManager();
+		if(!pUIManager) return;
+		pSciWnd = pUIManager->GetCodeView()->GetSciWnd();
+	}
+	else if(s_nFindRange == FIND_RANGE_OPENED)
+	{
+
+	}
+	else if(s_nFindRange == FIND_RANGE_PROJECT)
+	{
+
+	}
+
+	if(!pSciWnd) return;
+	sciReplaceCurrent(pSciWnd);
+}
+
+
+void CSciFind::OnBtnReplaceAll()
+{
+	if(!UpdateData(TRUE))
+		return;
+
+	if(s_strFindText.IsEmpty()) return;
+	if(s_strReplaceText.IsEmpty()) return;
+	SaveText();
+
+	CSciWnd *pSciWnd = NULL;
+	CMainFrame *pMainFrame = (CMainFrame *)AfxGetMainWnd();
+	if(s_nFindRange == FIND_RANGE_CURRENT)
+	{
+		CUIManager *pUIManager = pMainFrame->GetActiveUIManager();
+		if(!pUIManager) return;
+		pSciWnd = pUIManager->GetCodeView()->GetSciWnd();
+	}
+	else if(s_nFindRange == FIND_RANGE_OPENED)
+	{
+
+	}
+	else if(s_nFindRange == FIND_RANGE_PROJECT)
+	{
+
+	}
+
+	if(!pSciWnd) return;
+	int nTimes = sciReplaceAll(pSciWnd);
+
+	CString temp;
+	temp.Format(_T("共替换 %d 次"), nTimes);
+	GetDlgItem(IDC_STATIC_TEXT_REPLACE)->SetWindowText(temp);
 }
 
 
@@ -180,177 +330,96 @@ void CSciFind::PostNcDestroy()
 }
 
 
-void CSciFind::OnBtnRepaceCurrent()
+void CSciFind::OnSelchangeCombo3()
 {
-	if(!UpdateData(TRUE))
-		return;
-
-	LSSTRING_CONVERSION;
-	CStringA strReplaceTextA = LST2UTF8(s_strReplaceText);
-	if(strReplaceTextA.IsEmpty())	
-		return;
-
-	int start = m_pSciWnd->sci_GetSelectionStart();
-	int end = m_pSciWnd->sci_GetSelectionEnd();
-	if(start-end != 0)
-	{
-		m_pSciWnd->sci_ReplaceSel(strReplaceTextA);
-	}
+	CComboBox *pCombo = (CComboBox *)GetDlgItem(IDC_COMBO3);
+	s_nFindRange = pCombo->GetCurSel();
 }
 
 
-void CSciFind::OnBtnReplaceAll()
+void CSciFind::OnRadio1()
 {
-	if(!UpdateData(TRUE))
-		return;
-	if(((CButton *)GetDlgItem(IDC_RADIO1))->GetCheck())
-		s_nFindDirection = 0;
-	if(((CButton *)GetDlgItem(IDC_RADIO2))->GetCheck())
-		s_nFindDirection = 1;
-	if(((CButton *)GetDlgItem(IDC_RADIO3))->GetCheck())
-		s_nFindDirection = 2;
+	s_nFindDirection = FIND_DIRECT_DOWN;
+}
 
-	LSSTRING_CONVERSION;
-	CStringA strFindTextA = LST2UTF8(s_strFindText);
+
+void CSciFind::OnRadio2()
+{
+	s_nFindDirection = FIND_DIRECT_UP;
+}
+
+
+void CSciFind::OnRadio3()
+{
+	s_nFindDirection = FIND_DIRECT_ALL;
+}
+
+void CSciFind::SaveText()
+{
+	if(!s_strFindText.IsEmpty())
 	{
-		GetDlgItem(IDC_STATIC_TEXT_FIND)->SetWindowText(_T("查找内容不允许为空"));
-		return;
-	}
-	CStringA strReplaceTextA = LST2UTF8(s_strReplaceText);
-	if(strReplaceTextA.IsEmpty())	
-	{
-		GetDlgItem(IDC_STATIC_TEXT_REPLACE)->SetWindowText(_T("替换内容不允许为空"));
-		return;
-	}
+		BOOL bSave = TRUE;
+		int countText = 0;
 
-	Sci_TextToFind ttf;
-	ttf.lpstrText = (char *)(const char *)strFindTextA;
-	ttf.chrg.cpMin = 0;
-	ttf.chrg.cpMax = m_pSciWnd->sci_GetLength();
-
-	//查找标志
-	int searchFlag = 0;
-	if(s_bMatchCase)
-		searchFlag = searchFlag|SCFIND_MATCHCASE;
-	if(s_bWholeWord)
-		searchFlag = searchFlag|SCFIND_WHOLEWORD;
-	if(s_bWordStart)
-		searchFlag = searchFlag|SCFIND_WORDSTART;
-	if(s_bRegExp)
-		searchFlag = searchFlag|SCFIND_REGEXP;
-
-	int nTimes = 0;
-	for (;;)
-	{
-		int find = m_pSciWnd->sci_FindText(searchFlag, ttf);
-		if(find == -1)
+		xml_node nodeFind = g_cfg.xml.child_auto(XTEXT("DuiEditor")).child_auto(XTEXT("FindText"));
+		for (xml_node node=nodeFind.first_child(); node; node=node.next_sibling())
 		{
-			break;
+			if(CompareString(s_strFindText,  node.text().get()))
+			{
+				bSave = FALSE;
+				break;
+			}
+			countText++;
 		}
 
-		m_pSciWnd->sci_SetSel(find, find+strFindTextA.GetLength());
-		int start = m_pSciWnd->sci_GetSelectionStart();
-		int end = m_pSciWnd->sci_GetSelectionEnd();
-		if(start-end != 0)
+		if(bSave)
 		{
-			m_pSciWnd->sci_ReplaceSel(strReplaceTextA);
-			nTimes++;
+			if(countText >= 10) nodeFind.remove_child(nodeFind.last_child());
+			nodeFind.prepend_child(XTEXT("Text")).text().set(T2XML(s_strFindText));
 		}
 	}
 
-	CString temp;
-	temp.Format(_T("共替换 %d 次"), nTimes);
-	GetDlgItem(IDC_STATIC_TEXT_REPLACE)->SetWindowText(temp);
+	//////////////////////////////////////////////////////////////////////////
+	if(!s_strReplaceText.IsEmpty())
+	{
+		BOOL bSave = TRUE;
+		int countText = 0;
+
+		xml_node nodeReplace = g_cfg.xml.child_auto(XTEXT("DuiEditor")).child_auto(XTEXT("ReplaceText"));
+		for (xml_node node=nodeReplace.first_child(); node; node=node.next_sibling())
+		{
+			if(CompareString(s_strReplaceText,  node.text().get()))
+			{
+				bSave = FALSE;
+				break;
+			}
+			countText++;
+		}
+
+		if(bSave)
+		{
+			if(countText >= 10) nodeReplace.remove_child(nodeReplace.last_child());	
+			nodeReplace.prepend_child(XTEXT("Text")).text().set(T2XML(s_strReplaceText));
+		}
+	}
+
+	g_cfg.SaveConfig();
 }
 
-
-
-void CSciFind::OnBnClickedBtnFindNext()
+void CSciFind::LoadText()
 {
-	if(!UpdateData(TRUE))	return;
-	LSSTRING_CONVERSION;
-	CStringA strFindTextA = LST2UTF8(s_strFindText);
-	CStringA strReplaceTextA = LST2UTF8(s_strReplaceText);
+	CComboBox *pComboFind = (CComboBox *)GetDlgItem(IDC_COMBO1);
+	CComboBox *pComboReplace = (CComboBox *)GetDlgItem(IDC_COMBO2);
 
-	Sci_TextToFind ttf;
-	ttf.lpstrText = (char *)(const char *)strFindTextA;
-
-	//查找方向
-	int len = m_pSciWnd->sci_GetLength();
-	int nCurrentPos = m_pSciWnd->sci_GetCurrentPos();
-	ttf.chrg.cpMin = nCurrentPos;
-	ttf.chrg.cpMax = len;
-
-	//查找标志
-	int searchFlag = 0;
-	if(s_bMatchCase)
-		searchFlag = searchFlag|SCFIND_MATCHCASE;
-	if(s_bWholeWord)
-		searchFlag = searchFlag|SCFIND_WHOLEWORD;
-	if(s_bWordStart)
-		searchFlag = searchFlag|SCFIND_WORDSTART;
-	if(s_bRegExp)
-		searchFlag = searchFlag|SCFIND_REGEXP;
-
-	int find = m_pSciWnd->sci_FindText(searchFlag, ttf);
-	if(find == -1)
+	xml_node nodeFind = g_cfg.xml.child(XTEXT("DuiEditor")).child(XTEXT("FindText"));
+	for (xml_node node=nodeFind.first_child(); node; node=node.next_sibling())
 	{
-		GetDlgItem(IDC_STATIC_TEXT_FIND)->SetWindowText(_T("未找到相关内容"));
-		return;
+		pComboFind->AddString(XML2T(node.text().get()));
 	}
-	else
+
+	xml_node nodeReplace = g_cfg.xml.child(XTEXT("DuiEditor")).child(XTEXT("ReplaceText"));
+	for (xml_node node=nodeReplace.first_child(); node; node=node.next_sibling())
 	{
-		GetDlgItem(IDC_STATIC_TEXT_FIND)->SetWindowText(_T(""));
-
-		m_pSciWnd->sci_SetSel(find, find+strFindTextA.GetLength());
-	}
-}
-
-
-void CSciFind::OnBnClickedBtnFindPre()
-{
-	if(!UpdateData(TRUE))	return;
-	if(((CButton *)GetDlgItem(IDC_RADIO1))->GetCheck())
-		s_nFindDirection = 0;
-	if(((CButton *)GetDlgItem(IDC_RADIO2))->GetCheck())
-		s_nFindDirection = 1;
-	if(((CButton *)GetDlgItem(IDC_RADIO3))->GetCheck())
-		s_nFindDirection = 2;
-
-	LSSTRING_CONVERSION;
-	CStringA strFindTextA = LST2UTF8(s_strFindText);
-	CStringA strReplaceTextA = LST2UTF8(s_strReplaceText);
-
-	Sci_TextToFind ttf;
-	ttf.lpstrText = (char *)(const char *)strFindTextA;
-
-	//查找方向
-	int len = m_pSciWnd->sci_GetLength();
-	int nCurrentPos = m_pSciWnd->sci_GetCurrentPos();
-	ttf.chrg.cpMin = nCurrentPos-1;
-	ttf.chrg.cpMax = 0;
-
-	//查找标志
-	int searchFlag = 0;
-	if(s_bMatchCase)
-		searchFlag = searchFlag|SCFIND_MATCHCASE;
-	if(s_bWholeWord)
-		searchFlag = searchFlag|SCFIND_WHOLEWORD;
-	if(s_bWordStart)
-		searchFlag = searchFlag|SCFIND_WORDSTART;
-	if(s_bRegExp)
-		searchFlag = searchFlag|SCFIND_REGEXP;
-
-	int find = m_pSciWnd->sci_FindText(searchFlag, ttf);
-	if(find == -1)
-	{
-		GetDlgItem(IDC_STATIC_TEXT_FIND)->SetWindowText(_T("未找到相关内容"));
-		return;
-	}
-	else
-	{
-		GetDlgItem(IDC_STATIC_TEXT_FIND)->SetWindowText(_T(""));
-
-		m_pSciWnd->sci_SetSel(find, find+strFindTextA.GetLength());
+		pComboReplace->AddString(XML2T(node.text().get()));
 	}
 }

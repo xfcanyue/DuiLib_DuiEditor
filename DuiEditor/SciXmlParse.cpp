@@ -351,7 +351,7 @@ void CSciXmlParse::DeleteControl(xml_node node)
 
 void CSciXmlParse::AddControlAttribute(xml_node node, xml_attribute attr)
 {
-	if(!g_duiProp.IsControlUI(node))
+	if(!g_duiProp.IsControlUI(node) && !g_duiProp.IsWindowForm(node))
 		return;
 
 	CControlUI *pControl = (CControlUI *)node.get_tag();

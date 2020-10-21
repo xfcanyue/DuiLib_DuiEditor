@@ -199,9 +199,9 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 
 		pNewControl->SetAttribute(_T("pos"), RectToString(&rcNew));
 
-		g_duiProp.AddAttribute(nodeNewControl, _T("pos"), RectToString(&rcNew),			NULL);
-		g_duiProp.AddAttribute(nodeNewControl, _T("width"), rcNew.right-rcNew.left,		NULL);
-		g_duiProp.AddAttribute(nodeNewControl, _T("height"), rcNew.bottom-rcNew.top,	NULL);
+		g_duiProp.AddAttribute(nodeNewControl, _T("pos"), RectToString(&rcNew),			GetUIManager());
+		g_duiProp.AddAttribute(nodeNewControl, _T("width"), rcNew.right-rcNew.left,		GetUIManager());
+		g_duiProp.AddAttribute(nodeNewControl, _T("height"), rcNew.bottom-rcNew.top,	GetUIManager());
 	}
 	else if(pManager->GetDesignView()->m_nFormatInsert == 1)	//绝对定位
 	{
@@ -214,10 +214,10 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 
 		pNewControl->SetAttribute(_T("pos"), RectToString(&rcNew));
 
-		g_duiProp.AddAttribute(nodeNewControl, _T("float"), _T("true"),					NULL);
-		g_duiProp.AddAttribute(nodeNewControl, _T("pos"), RectToString(&rcNew),			NULL);
-		g_duiProp.AddAttribute(nodeNewControl, _T("width"), rcNew.right-rcNew.left,		NULL);
-		g_duiProp.AddAttribute(nodeNewControl, _T("height"), rcNew.bottom-rcNew.top,	NULL);
+		g_duiProp.AddAttribute(nodeNewControl, _T("float"), _T("true"),					GetUIManager());
+		g_duiProp.AddAttribute(nodeNewControl, _T("pos"), RectToString(&rcNew),			GetUIManager());
+		g_duiProp.AddAttribute(nodeNewControl, _T("width"), rcNew.right-rcNew.left,		GetUIManager());
+		g_duiProp.AddAttribute(nodeNewControl, _T("height"), rcNew.bottom-rcNew.top,	GetUIManager());
 	}
 	else if(pManager->GetDesignView()->m_nFormatInsert == 2)	//相对定位
 	{
@@ -230,11 +230,11 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 
 		pNewControl->SetAttribute(_T("pos"), RectToString(&rcNew));
 
-		g_duiProp.AddAttribute(nodeNewControl, _T("float"),			_T("true"),				NULL);
-		g_duiProp.AddAttribute(nodeNewControl, _T("relativepos"),	_T("50,50,0,0"),		NULL);
-		g_duiProp.AddAttribute(nodeNewControl, _T("pos"),			RectToString(&rcNew),	NULL);
-		g_duiProp.AddAttribute(nodeNewControl, _T("width"),			rcNew.right-rcNew.left, NULL);
-		g_duiProp.AddAttribute(nodeNewControl, _T("height"),		rcNew.bottom-rcNew.top, NULL);
+		g_duiProp.AddAttribute(nodeNewControl, _T("float"),			_T("true"),				GetUIManager());
+		g_duiProp.AddAttribute(nodeNewControl, _T("relativepos"),	_T("50,50,0,0"),		GetUIManager());
+		g_duiProp.AddAttribute(nodeNewControl, _T("pos"),			RectToString(&rcNew),	GetUIManager());
+		g_duiProp.AddAttribute(nodeNewControl, _T("width"),			rcNew.right-rcNew.left, GetUIManager());
+		g_duiProp.AddAttribute(nodeNewControl, _T("height"),		rcNew.bottom-rcNew.top, GetUIManager());
 	}
 
 	g_duiProp.FilterDefaultValue(nodeNewControl, GetUIManager());

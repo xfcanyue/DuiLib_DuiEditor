@@ -241,6 +241,7 @@ void CDockControlTreeCtrl::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 		GetUIManager()->GetPropList()->InitProp(node);
 
 		GetUIManager()->SelectItem(node);
+		GetUIManager()->EnsureVisible(node);
 		GetUIManager()->GetCodeView()->SelectXmlNode(node);
 	}
 }
@@ -260,6 +261,7 @@ void CDockControlTreeCtrl::OnNMRClick(NMHDR *pNMHDR, LRESULT *pResult)
 		GetUIManager()->GetPropList()->InitProp(node);
 
 		GetUIManager()->SelectItem(node);
+		GetUIManager()->EnsureVisible(node);
 		GetUIManager()->GetCodeView()->SelectXmlNode(node);
 	}
 

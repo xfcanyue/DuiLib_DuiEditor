@@ -34,11 +34,8 @@ void CUIFormView::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 		LPTSTR pstr = NULL;
 		int cx = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
 		int cy = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr); 
-#ifndef DUILIB_VERSION_ORIGINAL
-		pManager->SetInitSize(pManager->GetDPIObj()->Scale(cx), pManager->GetDPIObj()->Scale(cy));
-#else
-		pManager->SetInitSize(cx, cy);
-#endif
+
+		SetInitSize(cx, cy);
 	} 
 	else if( _tcsicmp(pstrName, _T("sizebox")) == 0 ) {
 		RECT rcSizeBox = { 0 };
@@ -182,10 +179,17 @@ SIZE CUIFormView::GetInitSize()
 
 void CUIFormView::SetInitSize(int cx, int cy)
 {
-	m_pManager->SetInitSize(cx,cy);
+#ifndef DUILIB_VERSION_ORIGINAL
+	GetManager()->SetInitSize(GetManager()->GetDPIObj()->Scale(cx), GetManager()->GetDPIObj()->Scale(cy));
+#else
+	GetManager()->SetInitSize(cx, cy);
+#endif
 
-	::SetWindowPos(m_pManager->GetPaintWindow(), NULL, 0, 0, cx, cy, SWP_NOZORDER | SWP_NOMOVE | SWP_NOACTIVATE);
-	Refresh();
+	if(GetManager()->GetPaintWindow())
+	{
+		::SetWindowPos(m_pManager->GetPaintWindow(), NULL, 0, 0, cx, cy, SWP_NOZORDER | SWP_NOMOVE | SWP_NOACTIVATE);
+		Refresh();
+	}
 }
 
 void CUIFormView::Refresh()

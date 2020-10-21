@@ -47,14 +47,23 @@ BOOL CThreadTest::InitInstance()
 			strPath = m_pDoc->GetSkinPath();
 			strFileName = m_pDoc->GetSkinFileName();
 		}
-
+#ifdef _DEBUG
+		strCmd.Format(_T("%sDuiPreviewerd.exe \"-f %s%s\" \"-o %d\""), 
+			g_strAppPath, strPath, strFileName, hChildStdoutWr);
+#else
 		strCmd.Format(_T("%sDuiPreviewer.exe \"-f %s%s\" \"-o %d\""), 
 			g_strAppPath, strPath, strFileName, hChildStdoutWr);
+#endif
 	}
 	else if(m_nTestFrom == 1)
 	{
+#ifdef _DEBUG
+		strCmd.Format(_T("%sDuiPreviewerd.exe \"-f %s\" \"-o %d\""), 
+			g_strAppPath, m_strSpacialFile, hChildStdoutWr);
+#else
 		strCmd.Format(_T("%sDuiPreviewer.exe \"-f %s\" \"-o %d\""), 
 			g_strAppPath, m_strSpacialFile, hChildStdoutWr);
+#endif
 	}
 	else
 	{

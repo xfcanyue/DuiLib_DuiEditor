@@ -103,6 +103,7 @@ struct tagEditorConfig
 
 		xml.save_to_default_file();
 	}
-private:
+
+public:
 	xml_document xml;
 };

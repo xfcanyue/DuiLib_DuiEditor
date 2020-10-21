@@ -69,6 +69,12 @@
     <ClCompile Include="ComboEditWnd.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="UIDateTimeEx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIAccordionPane.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -117,6 +123,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ComboEditWnd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIDateTimeEx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIAccordionPane.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -12,6 +12,7 @@
 
 #include "DuiEditorViewDesign.h"
 #include "DuiEditorDoc.h"
+#include "SciFind.h"
 
 class CMainFrame : public CMDIFrameWndEx
 {
@@ -27,6 +28,7 @@ public:
 // 操作
 public:
 	CDuiEditorViewDesign *GetActiveUIView();
+	CUIManager *GetActiveUIManager();
 
 	void ShowAllPane();
 	void HideAllPane();
@@ -51,6 +53,8 @@ protected:  // 控件条嵌入成员
 	CDockOutputWnd	  m_wndOutput;
 	CDockToolBoxWnd	  m_wndToolBox;
 
+	CSciFind		*m_pDlgFind;
+	HWND			m_hDlgFind;
 // 生成的消息映射函数
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -73,6 +77,7 @@ public:
 	afx_msg void OnViewControlTree();
 	afx_msg void OnViewOutputBar();
 	afx_msg void OnUpdateViewOutputBar(CCmdUI *pCmdUI);
+	afx_msg void OnEditFind();
 };
 
 
