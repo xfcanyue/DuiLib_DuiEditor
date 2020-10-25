@@ -104,13 +104,20 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 			{
 				AfxMessageBox(_T("控件需要放置于容器内."));  return;
 			}
-			pParentContainer = (CContainerUI *)pCurControl->GetParent()->GetInterface(DUI_CTR_CONTAINER);
+
+			nodeContainer = nodeCurrent.parent(); //保险起见，应该从xml中寻找父控件
+			if(!nodeContainer)
+			{
+				AfxMessageBox(_T("无法插入兄弟控件, 无法找到当前控件的父控件."));
+				return;
+			}
+			CControlUI *pTemp1 = (CControlUI *)nodeContainer.get_tag();
+			pParentContainer = (CContainerUI *)pTemp1->GetInterface(DUI_CTR_CONTAINER);
 			if(!pParentContainer)
 			{
 				AfxMessageBox(_T("无法插入兄弟控件, 当前控件的父控件不是容器."));
 				return;
 			}
-			nodeContainer = xml_node((xml_node_struct *)pParentContainer->GetTag());
 		}
 		break;
 	case INSERT_BEFORE:	//当前控件上方插入兄弟控件
@@ -120,13 +127,20 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 			{
 				AfxMessageBox(_T("控件需要放置于容器内."));  return;
 			}
-			pParentContainer = (CContainerUI *)pCurControl->GetParent()->GetInterface(DUI_CTR_CONTAINER);
+
+			nodeContainer = nodeCurrent.parent(); //保险起见，应该从xml中寻找父控件
+			if(!nodeContainer)
+			{
+				AfxMessageBox(_T("无法插入兄弟控件, 无法找到当前控件的父控件."));
+				return;
+			}
+			CControlUI *pTemp1 = (CControlUI *)nodeContainer.get_tag();
+			pParentContainer = (CContainerUI *)pTemp1->GetInterface(DUI_CTR_CONTAINER);
 			if(!pParentContainer)
 			{
 				AfxMessageBox(_T("无法插入兄弟控件, 当前控件的父控件不是容器."));
 				return;
 			}
-			nodeContainer = xml_node((xml_node_struct *)pParentContainer->GetTag());
 		}
 		break;	
 	}

@@ -197,6 +197,33 @@
     <None Include="res\00290.bmp">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="res\toolbox\icon1.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\ColorPalette.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\00764.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\keyboard.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\Picture.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\xml_err.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\xml_ok.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\ListItem.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\MsgWnd.ico">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

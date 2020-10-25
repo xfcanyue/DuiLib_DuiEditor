@@ -197,8 +197,7 @@ BOOL CUIManager::UpdateControlPos(xml_node node, CRect rect, BOOL bUpdateWithHei
 	//改变主窗口大小
 	if(pControl == GetUiFrom()) 
 	{
-		GetUiFrom()->SetInitSize(rect.Width(), rect.Height());
-		SetScrollSize();
+		SetUIFormWindowSize(rect.Width(), rect.Height());
 
 		CString temp;
 		temp.Format(_T("%d,%d"), rect.Width(), rect.Height());
@@ -262,8 +261,7 @@ BOOL CUIManager::UpdateControlWidth(xml_node node, int width)
 	{
 		SIZE szForm = GetUiFrom()->GetInitSize();
 		szForm.cx = width;
-		GetUiFrom()->SetInitSize(szForm.cx, szForm.cy);
-		SetScrollSize();
+		SetUIFormWindowSize(szForm.cx, szForm.cy);
 
 		CString temp;
 		temp.Format(_T("%d,%d"), szForm.cx, szForm.cy);
@@ -311,8 +309,7 @@ BOOL CUIManager::UpdateControlHeight(xml_node node, int height)
 	{
 		SIZE szForm = GetUiFrom()->GetInitSize();
 		szForm.cy = height;
-		GetUiFrom()->SetInitSize(szForm.cx, szForm.cy);
-		SetScrollSize();
+		SetUIFormWindowSize(szForm.cx, szForm.cy);
 
 		CString temp;
 		temp.Format(_T("%d,%d"), szForm.cx, szForm.cy);
@@ -410,8 +407,7 @@ BOOL CUIManager::UpdateControlUI(xml_node node, xml_attribute attr)
 			if(CompareString(attr.name(), _T("size")))
 			{
 				CDuiSize sz(XML2T(attr.value()));
-				GetUiFrom()->SetInitSize(sz.cx, sz.cy);
-				SetScrollSize();
+				SetUIFormWindowSize(sz.cx, sz.cy);
 			}
 		}
 		else if(CompareString(attr.name(), _T("pos")))
@@ -454,7 +450,7 @@ BOOL CUIManager::DeleteControl(xml_node node)
 		nodeContainer.remove_child(node);
 	}
 
-	if(g_duiProp.IsContainerUI(nodeContainer))
+	if(g_duiProp.IsContainerUI(nodeContainer) || g_duiProp.IsWindowForm(nodeContainer))
 	{
 		CContainerUI *pContainer = (CContainerUI *)nodeContainer.get_tag();
 		pContainer->Remove(pControl);
@@ -494,8 +490,7 @@ void CUIManager::SetZoom(int zoom)
 	else
 		GetUiWindow()->MoveWindow(0, 0, rc.Width(), rc.Height(), TRUE);
 
-	GetUiFrom()->SetInitSize(rc.Width(), rc.Height());
-	SetScrollSize();
+	SetUIFormWindowSize(rc.Width(), rc.Height());
 
 	GetDesignView()->SendMessage(WM_SIZE);
 #endif
@@ -509,4 +504,26 @@ void CUIManager::SetSplitterMode(int nMode)
 int  CUIManager::GetSplitterMode() const
 {
 	return m_nSplitterMode;
+}
+
+void CUIManager::SetUIFormWindowSize(int cx, int cy)
+{
+	CDuiSize szForm(cx, cy);
+	if(szForm.cx <= 0 || szForm.cy <= 0)
+	{
+		CRect rcClient;
+		GetDesignView()->GetClientRect(rcClient);
+		if(szForm.cx <= 0) 
+		{
+			szForm.cx = rcClient.Width();
+			if(GetDesignView()->IsViewRuleBar()) szForm.cx -= RULEBAR_SIZE_X;
+		}
+		if(szForm.cy <= 0) 
+		{
+			szForm.cy = rcClient.Height();
+			if(GetDesignView()->IsViewRuleBar()) szForm.cy -= RULEBAR_SIZE_Y;
+		}
+	}
+	GetUiFrom()->SetInitSize(szForm.cx, szForm.cy);
+	SetScrollSize();
 }

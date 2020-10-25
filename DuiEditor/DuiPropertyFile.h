@@ -39,10 +39,22 @@
 #define	TREENODETYPE_MENU				34
 #define	TREENODETYPE_GIFANIM			35
 #define	TREENODETYPE_STYLE				36
+#define	TREENODETYPE_COLOR_PALETTE		37
+#define	TREENODETYPE_IPADDRESS			38
+#define	TREENODETYPE_KEYBOARD			39
+#define	TREENODETYPE_PICTURE			40
+#define	TREENODETYPE_LISTITEM			41
+#define	TREENODETYPE_MSGWND				42
 
 class CUIManager;
 class CDuiPropertyFile
 {
+public:
+	struct tagToolboxIco 
+	{
+		CString ControlName;
+		UINT index;
+	};
 public:
 	CDuiPropertyFile(void);
 	virtual ~CDuiPropertyFile(void);

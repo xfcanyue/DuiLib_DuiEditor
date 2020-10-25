@@ -80,6 +80,7 @@ namespace DuiLib
 						COptionUI* pControl = static_cast<COptionUI*>(aOptionGroup->GetAt(i));
 						if( pControl != this ) {
 							pControl->Selected(false);
+							pControl->SwitchControlVisible();
 						}
 					}
 					if (bTriggerEvent) m_pManager->SendNotify(this, DUI_MSGTYPE_SELECTCHANGED);
@@ -95,10 +96,17 @@ namespace DuiLib
 
 	bool COptionUI::Activate()
 	{
-		if( !CButtonUI::Activate() ) return false;
+		//if( !CButtonUI::Activate() ) return false;
+		if( !CControlUI::Activate() ) return false;
+		if( m_pManager != NULL )
+		{
+			m_pManager->SendNotify(this, DUI_MSGTYPE_CLICK);
+			BindTriggerTabSel();
+		}
 		if( !m_sGroupName.IsEmpty() ) Selected(true);
 		else Selected(!m_bSelected);
 
+		SwitchControlVisible();
 		return true;
 	}
 
@@ -108,6 +116,24 @@ namespace DuiLib
 		if( !IsEnabled() ) {
 			if( m_bSelected ) m_uButtonState = UISTATE_SELECTED;
 			else m_uButtonState = 0;
+		}
+	}
+
+	void COptionUI::SwitchControlVisible()
+	{
+		if(m_sSwitchControlVisible.IsEmpty()) 
+			return;
+
+		CControlUI* pControl = GetManager()->FindControl(m_sSwitchControlVisible);
+		if(!pControl) return;
+		bool bVisible = pControl->IsVisible();
+		if(IsSelected() && !bVisible)
+		{
+			pControl->SetVisible(true);
+		}
+		else if(!IsSelected() && bVisible)
+		{
+			pControl->SetVisible(false);
 		}
 	}
 

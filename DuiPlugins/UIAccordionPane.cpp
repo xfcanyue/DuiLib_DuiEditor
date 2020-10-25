@@ -5,10 +5,10 @@ namespace DuiLib
 {
 	IMPLEMENT_DUICONTROL(CAccordionPaneUI)
 
-	CAccordionPaneUI::CAccordionPaneUI() : CUIAnimation( this ), m_bPaneVisible(true)
+	CAccordionPaneUI::CAccordionPaneUI() : CUIAnimation( this ), m_nHeaderHeight(30), m_animation_direction(0), m_bPaneVisible(true)
 	{
 		m_pHeader = new CHorizontalLayoutUI;
-		m_pHeader->SetFixedHeight(30);
+		m_pHeader->SetFixedHeight(m_nHeaderHeight);
 		m_pHeader->SetChildVAlign(DT_VCENTER);
 		__super::Add(m_pHeader);
 
@@ -16,13 +16,10 @@ namespace DuiLib
 		m_pHeader->Add(m_pHeaderLabel = new CLabelUI);
 		m_pHeader->Add(m_pHeaderButton = new COptionUI);
 
+		m_pHeaderButton->OnEvent += MakeDelegate(this, &CAccordionPaneUI::OnToggleEvent);
+
 		m_pBody = new CVerticalLayoutUI;
 		__super::Add(m_pBody);
-
-// 		m_pHeaderIcon->SetBkColor(0xFFFF0000);
-// 		m_pHeaderLabel->SetBkColor(0xFF00FF00);
-// 		m_pHeaderButton->SetBkColor(0xFF0000FF);
-//		m_pBody->SetBkColor(0xFF00005A);
 	}
 
 	CAccordionPaneUI::~CAccordionPaneUI()
@@ -42,6 +39,41 @@ namespace DuiLib
 		return __super::GetInterface(pstrName);
 	}
 
+	void CAccordionPaneUI::DoInit()
+	{
+		
+	}
+
+	bool CAccordionPaneUI::Activate()
+	{
+		if( !CControlUI::Activate() ) return false;
+
+		SetPaneVisible(!IsPaneVisible());
+		return true;
+	}
+
+	bool CAccordionPaneUI::OnToggleEvent(void *param)
+	{
+		TEventUI *pEvent = (TEventUI *)param;
+
+		if( pEvent->Type == UIEVENT_KEYDOWN )
+		{
+			if (IsKeyboardEnabled()) {
+				if( pEvent->chKey == VK_SPACE || pEvent->chKey == VK_RETURN ) {
+					Activate();
+				}
+			}
+		}	
+		if( pEvent->Type == UIEVENT_BUTTONUP )
+		{
+			if( ::PtInRect(&m_rcItem, pEvent->ptMouse) ) 
+			{
+				Activate();
+			}
+		}
+		return true;
+	}
+
 	void CAccordionPaneUI::DoEvent(TEventUI& event)
 	{
 		if( event.Type == UIEVENT_TIMER ) 
@@ -50,9 +82,9 @@ namespace DuiLib
 		}
 		if( event.Type == UIEVENT_BUTTONUP) 
 		{
-			if( IsEnabled() ) 
+			if( ::PtInRect(&m_pHeader->GetPos(), event.ptMouse) ) 
 			{
-				SetPaneVisible(!IsPaneVisible());
+				Activate();
 			}
 		}
 		__super::DoEvent( event );
@@ -65,22 +97,69 @@ namespace DuiLib
 
 	void CAccordionPaneUI::OnAnimationStep(INT nTotalFrame, INT nCurFrame, INT nAnimationID)
 	{
-// 		int iStepLen = ( m_rcItemOld.bottom - m_rcItemOld.top - m_pHeader->GetFixedHeight() ) / nTotalFrame;
-// 
-// 		if(m_bPaneVisible)
-// 			m_rcCurPos.bottom += iStepLen;
-// 		else
-// 			m_rcCurPos.bottom -= iStepLen;
-// 		SetPos(m_rcCurPos);
+		NeedParentUpdate();
 	}
 
 	void CAccordionPaneUI::OnAnimationStop(INT nAnimationID) 
 	{
-		//NeedParentUpdate();
+		NeedParentUpdate();
+		if(IsPaneVisible())
+			m_pHeaderButton->Selected(true, false);
+		else
+			m_pHeaderButton->Selected(false, false);
+	}
+
+	void CAccordionPaneUI::SetPaneVisible(bool bVisible, bool bAnimation)
+	{
+		if(m_bPaneVisible == bVisible)
+			return;
+		m_bPaneVisible = bVisible;
+		if(!bAnimation)
+		{
+			NeedParentUpdate();
+			return;
+		}
+
+		if(m_bPaneVisible)
+		{
+			if(GetParent())
+			{
+				GetParent()->CalcPos(this, m_rcItemOld);
+			}
+		}
+		else
+		{
+			m_rcItemOld = m_rcItem;
+		}
+
+		StopAnimation( PANE_ANIMATION_ID );
+		StartAnimation( PANE_ANIMATION_ELLAPSE, PANE_ANIMATION_FRAME_COUNT, PANE_ANIMATION_ID );
 	}
 
 	SIZE CAccordionPaneUI::EstimateSize(SIZE szAvailable)
 	{
+		if(IsAnimationRunning(PANE_ANIMATION_ID))
+		{	
+			SIZE sz;// = m_cxyFixed;
+			sz.cx = m_rcItemOld.right - m_rcItemOld.left;
+			sz.cy = m_rcItemOld.bottom - m_rcItemOld.top;
+			if(IsPaneVisible())
+			{
+				sz.cy = m_pHeader->GetFixedHeight();
+				sz.cy += (m_rcItemOld.bottom - m_rcItemOld.top - m_nHeaderHeight) / PANE_ANIMATION_FRAME_COUNT * GetCurrentFrame(PANE_ANIMATION_ID);
+			}
+			else
+			{
+				sz.cy -= (m_rcItemOld.bottom - m_rcItemOld.top - m_nHeaderHeight) / PANE_ANIMATION_FRAME_COUNT * GetCurrentFrame(PANE_ANIMATION_ID);
+			}
+
+			CStringA temp;
+			RECT rc = GetPos();//m_rcItemOld; //GetPos();
+			temp.Format("sz.cx=%d, sz.cy=%d left=%d top=%d right=%d bottom=%d\r\n", 
+				sz.cx, sz.cy, rc.left, rc.top, rc.right, rc.bottom);
+			OutputDebugStringA(temp);
+			return sz;
+		}
 		if(!IsPaneVisible())
 		{
 			SIZE sz = m_cxyFixed;
@@ -88,6 +167,60 @@ namespace DuiLib
 			return sz;
 		}
 		return __super::EstimateSize(szAvailable);
+	}
+
+	int CAccordionPaneUI::GetFixedHeight() const
+	{
+		CAccordionPaneUI *pThis = const_cast<CAccordionPaneUI *>(this);
+		if(pThis->IsAnimationRunning(PANE_ANIMATION_ID))
+		{
+			SIZE sz;// = m_cxyFixed;
+			sz.cx = m_rcItemOld.right - m_rcItemOld.left;
+			sz.cy = m_rcItemOld.bottom - m_rcItemOld.top;
+			if(IsPaneVisible())
+			{
+				sz.cy = m_pHeader->GetFixedHeight();
+				sz.cy += (m_rcItemOld.bottom - m_rcItemOld.top - m_nHeaderHeight) / PANE_ANIMATION_FRAME_COUNT * pThis->GetCurrentFrame(PANE_ANIMATION_ID);
+			}
+			else
+			{
+				sz.cy -= (m_rcItemOld.bottom - m_rcItemOld.top - m_nHeaderHeight) / PANE_ANIMATION_FRAME_COUNT * pThis->GetCurrentFrame(PANE_ANIMATION_ID);
+			}		
+			return sz.cy;
+		}
+		if(!pThis->IsPaneVisible())
+		{
+			return m_pHeader->GetFixedHeight();
+		}
+		return __super::GetFixedHeight();
+	}
+
+	void CAccordionPaneUI::SetPos(RECT rc, bool bNeedInvalidate)
+	{
+		CStringA temp;
+		temp.Format("SetPos: left=%d top=%d right=%d bottom=%d\r\n", rc.left, rc.top, rc.right, rc.bottom);
+		OutputDebugStringA(temp);
+		__super::SetPos(rc, bNeedInvalidate);
+	}
+
+	CControlUI* CAccordionPaneUI::GetItemAt(int iIndex) const
+	{
+		return m_pBody->GetItemAt(iIndex);
+	}
+
+	int CAccordionPaneUI::GetItemIndex(CControlUI* pControl) const
+	{
+		return m_pBody->GetItemIndex(pControl);
+	}
+
+	bool CAccordionPaneUI::SetItemIndex(CControlUI* pControl, int iIndex)
+	{
+		return m_pBody->SetItemIndex(pControl, iIndex);
+	}
+
+	int CAccordionPaneUI::GetCount() const
+	{
+		return m_pBody->GetCount();
 	}
 
 	bool CAccordionPaneUI::Add(CControlUI* pControl)
@@ -125,29 +258,7 @@ namespace DuiLib
 		return m_pBody;
 	}
 
-	void CAccordionPaneUI::SetPaneVisible(bool bVisible)
-	{
-		if(m_bPaneVisible == bVisible)
-			return;
-		m_bPaneVisible = bVisible;
-
-		m_pBody->SetVisible(bVisible);
-		NeedParentUpdate();
-		return;
-
-
-		m_rcItemOld = m_rcItem;
-
-		m_rcCurPos.left		= m_rcItem.left;
-		m_rcCurPos.right	= m_rcItem.right;
-		m_rcCurPos.top		= m_rcItem.top;
-		m_rcCurPos.bottom	= m_rcItem.bottom;
-
-		//StopAnimation( TAB_ANIMATION_ID );
-		//StartAnimation( TAB_ANIMATION_ELLAPSE, TAB_ANIMATION_FRAME_COUNT, TAB_ANIMATION_ID );
-	}
-
-	bool CAccordionPaneUI::IsPaneVisible()
+	bool CAccordionPaneUI::IsPaneVisible() const
 	{
 		return m_bPaneVisible;
 	}
@@ -155,6 +266,7 @@ namespace DuiLib
 	{
 		if( _tcsicmp(pstrName, _T("headerheight")) == 0 ) 
 		{
+			m_nHeaderHeight = _ttoi(pstrValue);
 			m_pHeader->SetFixedHeight(_ttoi(pstrValue));
 		}
 		else if( _tcsicmp(pstrName, _T("headerstyle")) == 0 ) 
@@ -172,6 +284,21 @@ namespace DuiLib
 		else if( _tcsicmp(pstrName, _T("togglestyle")) == 0 ) 
 		{
 			m_pHeaderButton->ApplyAttributeList(pstrValue);
+		}
+		else if( _tcsicmp(pstrName, _T("bodystyle")) == 0 ) 
+		{
+			m_pBody->ApplyAttributeList(pstrValue);
+		}
+		if( _tcsicmp(pstrName, _T("animation_direction")) == 0)
+		{
+			if(_tcsicmp( pstrValue, _T("horizontal")) == 0)
+				m_animation_direction = 1;
+			else
+				m_animation_direction = 0;
+		}
+		else if( _tcsicmp(pstrName, _T("panevisible")) == 0 ) 
+		{
+			SetPaneVisible(_tcsicmp(pstrValue, _T("true")) == 0, false);
 		}
 		else 
 			__super::SetAttribute(pstrName, pstrValue);

@@ -22,6 +22,7 @@ CDuiEditorViewCode::CDuiEditorViewCode()
 	m_nTargetLine = -1;
 	m_bAutoUpdateDesign = TRUE;
 	m_bNeedUpdate = FALSE;
+	m_xmlParseResult.status = pugi::status_ok;
 }
 
 CDuiEditorViewCode::~CDuiEditorViewCode()
@@ -411,6 +412,8 @@ void CDuiEditorViewCode::UpdateFrameStatus()
 	int curLine = sci.sci_GetCurLine();
 	int curPos = sci.sci_GetCurrentPos();
 
+	pFrame->m_wndStatusBar.SetXmlUpdateStatus(!m_bNeedUpdate);
+
 	CString temp;
 	temp.Format(_T("ÐÐ: %d"), curLine+1);
 	pFrame->m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_LINE, temp);
@@ -518,15 +521,15 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 				{
 					m_bNeedUpdate = TRUE;
 #ifdef _DEBUG
-					InsertMsg(_T("try to update design."));
+					//InsertMsg(_T("try to update design."));
 #endif
 					CStringA strTextUtf8;
 					sci.sci_GetTextAll(strTextUtf8);
 					CString strText = LSUTF82T(strTextUtf8);
 
 					xml_document xml;
-					xml_parse_result ret = xml.load_string(T2XML(strText), XML_PARSER_OPTIONS);
-					if(ret.status == pugi::status_ok)
+					m_xmlParseResult = xml.load_string(T2XML(strText), XML_PARSER_OPTIONS);
+					if(m_xmlParseResult.status == pugi::status_ok)
 					{
 						CSciXmlParse parse;
 						parse.SetUIManager(GetUIManager());
@@ -536,7 +539,7 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 					else
 					{
 #ifdef _DEBUG
-						InsertMsg(_T("auto update design failed."));
+						//InsertMsg(_T("auto update design failed."));
 #endif
 					}
 				}

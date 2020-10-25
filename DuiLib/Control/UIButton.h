@@ -37,6 +37,9 @@ namespace DuiLib
 		virtual LPCTSTR GetStateImage();
 		virtual void SetStateImage(LPCTSTR pStrImage);
 
+		virtual void SwitchControlVisible();
+		virtual void SetSwitchControlVisible(LPCTSTR ControlName);
+
 		virtual void BindTabIndex(int _BindTabIndex);
 		virtual void BindTabLayoutName(LPCTSTR _TabLayoutName);
 		virtual void BindTriggerTabSel(int _SetSelectIndex = -1);
@@ -105,6 +108,8 @@ namespace DuiLib
 
 		DWORD m_dwPushedBorderColor; //add by liqs99
 		DWORD m_dwDisableBorderColor; //add by liqs99
+
+		CDuiString m_sSwitchControlVisible;
 
 		int			m_iBindTabIndex;
 		CDuiString	m_sBindTabLayoutName;

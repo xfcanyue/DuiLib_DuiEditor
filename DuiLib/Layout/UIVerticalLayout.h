@@ -27,6 +27,8 @@ namespace DuiLib
 
 		RECT GetThumbRect(bool bUseNew = false) const;
 
+		virtual bool CalcPos(CControlUI *pChildControl, RECT &rcChild); //子控件调用这个，计算子空间的rect
+
 	protected:
 		int m_iSepHeight;
 		UINT m_uButtonState;

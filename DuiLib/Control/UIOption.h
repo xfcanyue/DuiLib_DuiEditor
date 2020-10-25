@@ -20,6 +20,8 @@ namespace DuiLib
 		bool Activate();
 		void SetEnabled(bool bEnable = true);
 
+		virtual void SwitchControlVisible();
+
 		LPCTSTR GetSelectedImage();
 		void SetSelectedImage(LPCTSTR pStrImage);
 

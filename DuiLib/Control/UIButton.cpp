@@ -121,6 +121,8 @@ namespace DuiLib
 		{
 			m_pManager->SendNotify(this, DUI_MSGTYPE_CLICK);
 			BindTriggerTabSel();
+
+			SwitchControlVisible();
 		}
 		return true;
 	}
@@ -319,6 +321,22 @@ namespace DuiLib
 		Invalidate();
 	}
 
+
+	void CButtonUI::SwitchControlVisible()
+	{
+		if(m_sSwitchControlVisible.IsEmpty()) 
+			return;
+
+		CControlUI* pControl = GetManager()->FindControl(m_sSwitchControlVisible);
+		if(!pControl) return;
+		pControl->SetVisible(!pControl->IsVisible());
+	}
+
+	void CButtonUI::SetSwitchControlVisible(LPCTSTR ControlName)
+	{
+		m_sSwitchControlVisible = ControlName;
+	}
+
 	void CButtonUI::BindTabIndex(int _BindTabIndex )
 	{
 		if( _BindTabIndex >= 0)
@@ -368,6 +386,7 @@ namespace DuiLib
 		else if( _tcsicmp(pstrName, _T("hotforeimage")) == 0 ) SetHotForeImage(pstrValue);
 		else if( _tcsicmp(pstrName, _T("stateimage")) == 0 ) SetStateImage(pstrValue);
 		else if( _tcsicmp(pstrName, _T("statecount")) == 0 ) SetStateCount(_ttoi(pstrValue));
+		else if( _tcsicmp(pstrName, _T("switchcontrolvisible")) == 0 ) SetSwitchControlVisible(pstrValue);
 		else if( _tcsicmp(pstrName, _T("bindtabindex")) == 0 ) BindTabIndex(_ttoi(pstrValue));
 		else if( _tcsicmp(pstrName, _T("bindtablayoutname")) == 0 ) BindTabLayoutName(pstrValue);
 		else if( _tcsicmp(pstrName, _T("hotbkcolor")) == 0 )

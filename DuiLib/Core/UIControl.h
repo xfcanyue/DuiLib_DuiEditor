@@ -98,6 +98,7 @@ namespace DuiLib {
 		virtual RECT GetClientPos() const; // 客户区域（除去scrollbar和inset）
 		virtual const RECT& GetPos() const;
 		virtual void SetPos(RECT rc, bool bNeedInvalidate = true);
+		virtual bool CalcPos(CControlUI *pChildControl, RECT &rcChild); //子控件调用这个，计算子空间的rect
 		virtual void Move(SIZE szOffset, bool bNeedInvalidate = true);
 		virtual int GetWidth() const;
 		virtual int GetHeight() const;

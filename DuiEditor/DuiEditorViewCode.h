@@ -34,6 +34,7 @@ public:
 
 public:
 	CSciWnd *GetSciWnd() { return &sci; }
+	xml_parse_result *GetParseResult() { return &m_xmlParseResult; }
 	CUIManager *GetUIManager() const { return m_pUIManager; }
 	void SetUIManager(CUIManager *pManager) { m_pUIManager = pManager; }
 private:
@@ -44,6 +45,7 @@ protected:
 	int m_nTargetLine;			//载入文档后滚动到目标行
 	BOOL m_bAutoUpdateDesign;	//是否自动更新到视图
 	BOOL m_bNeedUpdate;			//是否允许更新视图
+	xml_parse_result m_xmlParseResult;
 protected:
 	BOOL SelectControlUI(int pos, xml_node node);
 	void UpdateFrameStatus();

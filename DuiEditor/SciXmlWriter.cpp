@@ -351,23 +351,31 @@ void CSciXmlWriter::AddNode(xml_node node)
 		//父节点只有一个刚刚插入的子节点，那么，父节点需要改成这个模式 <NodeName>.....</NodeName>
 		if(nodeParent.first_child() == nodeParent.last_child())
 		{
-			int parent_offset = 0;
-			int posx = nodeParent.get_open_end_pos();
-			//删除 />
-			sci.sci_DeleteRange(posx - 2, 2);
-			parent_offset -= 2;
-			posx -= 2;
+			//如果本身是否已经有 </NodeName>
+			if(nodeParent.get_close_start_pos() == 0 && nodeParent.get_close_end_pos() == 0)
+			{
+				int parent_offset = 0;
+				int posx = nodeParent.get_open_end_pos();
+				//删除 />
+				sci.sci_DeleteRange(posx - 2, 2);
+				parent_offset -= 2;
+				posx -= 2;
 			
-			InitWriter(posx);
-			write('>');
-			nodeParent.set_open_end_pos(GetCurPos());
-			writeEndLine();
-			text_output_indent(depth);
-			node_output_close(nodeParent);
-			AdjustElseNodePos(nodeParent, GetStartPos(), GetOffset() + parent_offset);
-			flush();
+				InitWriter(posx);
+				write('>');
+				nodeParent.set_open_end_pos(GetCurPos());
+				writeEndLine();
+				text_output_indent(depth);
+				node_output_close(nodeParent);
+				AdjustElseNodePos(nodeParent, GetStartPos(), GetOffset() + parent_offset);
+				flush();
 
-			pos = nodeParent.get_open_end_pos();
+				pos = nodeParent.get_open_end_pos();
+			}
+			else
+			{
+				pos = nodeParent.get_open_end_pos();
+			}
 		}
 		else if(node.previous_sibling())
 		{

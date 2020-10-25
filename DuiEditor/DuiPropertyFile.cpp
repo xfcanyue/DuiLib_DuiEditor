@@ -6,10 +6,73 @@
 
 #include <typeinfo>
 
+CDuiPropertyFile::tagToolboxIco s_toolbox_ico [] = 
+{
+	{	_T("ActiveX"),				TREENODETYPE_ACTIVE				},
+	{	_T("Button"),				TREENODETYPE_BUTTON				},
+	{	_T("FadeButton"),			TREENODETYPE_BUTTON				},
+	{	_T("IconButton"),			TREENODETYPE_BUTTON				},
+	{	_T("Combo"),				TREENODETYPE_COMBO				},
+	{	_T("ComboEx"),				TREENODETYPE_COMBO				},
+	{	_T("Container"),			TREENODETYPE_CONTAINER			},
+	{	_T("Control"),				TREENODETYPE_CONTROL			},
+	{	_T("Default"),				TREENODETYPE_DEFAULT			},
+	{	_T("Edit"),					TREENODETYPE_EDIT				},
+	{	_T("Font"),					TREENODETYPE_FONT				},
+	{	_T("HorizontalLayout"),		TREENODETYPE_HORIZONTALLAYOUT	},
+	{	_T("Label"),				TREENODETYPE_LABEL				},
+	{	_T("Option"),				TREENODETYPE_OPTION				},
+	{	 _T("Pointer"),				TREENODETYPE_POINTER			},
+	{	_T("Progress"),				TREENODETYPE_PROGRESS			},
+	{	_T("ScrollBar"),			TREENODETYPE_SCROLLBAR			},
+	{	_T("HScrollBar"),			TREENODETYPE_SCROLLBAR			},
+	{	_T("VScrollBar"),			TREENODETYPE_SCROLLBAR			},
+	{	_T("Slider"),				TREENODETYPE_SLIDER				},
+	{	_T("TabCtrl"),				TREENODETYPE_TABLAYOUT			},
+	{	_T("TabLayout"),			TREENODETYPE_TABLAYOUT			},
+	{	_T("AnimationTabLayout"),	TREENODETYPE_TABLAYOUT			},
+	{	_T("Text"),					TREENODETYPE_TEXT				},
+	{	_T("TileLayout"),			TREENODETYPE_TILELAYOUT			},
+	{	_T("VerticalLayout"),		TREENODETYPE_VERTICALLAYOUT		},
+	{	_T("Window"),				TREENODETYPE_WINDOW				},
+	{	_T("ChildWindow"),			TREENODETYPE_WINDOW				},
+	{	_T("List"),					TREENODETYPE_LIST				},
+	{	_T("RichEdit"),				TREENODETYPE_RICHEDIT			},
+	{	_T("CheckBox"),				TREENODETYPE_CHECKBOX			},
+	{	_T("GridCtrl"),				TREENODETYPE_GRIDCTRL			},
+	{	_T("WebBrowser"),			TREENODETYPE_IEXPLORER			},
+	{	_T("WebKitCef"),			TREENODETYPE_LIBCEF				},
+	{	_T("TreeView"),				TREENODETYPE_TREEVIEW			},
+	{	_T("TreeNode"),				TREENODETYPE_TREENODE			},
+	{	_T("DateTime"),				TREENODETYPE_DATETIME			},
+	{	_T("DateTimeEx"),				TREENODETYPE_DATETIME		},
+	{	_T("CustomControl"),			TREENODETYPE_CUSTOMCONTROL	},
+	{	_T("ChildLayout"),				TREENODETYPE_CHILDLAYOUT	},
+	{	_T("ImageBox"),					TREENODETYPE_IMAGEBOX		},
+	{	_T("GroupBox"),					TREENODETYPE_GROUPBOX		},
+	{	_T("Menu"),						TREENODETYPE_MENU			},
+	{	_T("MenuElement"),				TREENODETYPE_MENU			},
+	{	_T("GifAnim"),					TREENODETYPE_GIFANIM		},
+	{	_T("Style"),					TREENODETYPE_STYLE			},
+	{	_T("ColorPalette"),				TREENODETYPE_COLOR_PALETTE	},
+	{	_T("IPAddress"),				TREENODETYPE_IPADDRESS		},
+	{	_T("KeyBoard"),					TREENODETYPE_KEYBOARD		},
+	{	_T("KeyBoardNumber"),			TREENODETYPE_KEYBOARD		},
+	{	_T("KeyBoardSimple"),			TREENODETYPE_KEYBOARD		},
+	{	_T("PictureControl"),			TREENODETYPE_PICTURE		},
+	{	_T("AccordionPane"),			TREENODETYPE_WINDOW			},
+	{	_T("ListHeader"),				TREENODETYPE_LISTITEM		},
+	{	_T("ListHeaderItem"),			TREENODETYPE_LISTITEM		},
+	{	_T("ListLabelElement"),			TREENODETYPE_LISTITEM		},
+	{	_T("ListTextElement"),			TREENODETYPE_LISTITEM		},
+	{	_T("ListContainerHeaderItem"),	TREENODETYPE_LISTITEM		},
+	{	_T("ListContainerElement"),		TREENODETYPE_LISTITEM		},
+	{	_T("MsgWnd"),					TREENODETYPE_MSGWND			}
+};
+
 CDuiPropertyFile::CDuiPropertyFile(void)
 {
 }
-
 
 CDuiPropertyFile::~CDuiPropertyFile(void)
 {
@@ -275,6 +338,12 @@ void CDuiPropertyFile::InitToolBoxIcon()
 	m_ImageList.Add(::LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TOOLBOX_MENU)));
 	m_ImageList.Add(::LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TOOLBOX_GIFANIM)));
 	m_ImageList.Add(::LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TOOLBOX_STYLE)));
+	m_ImageList.Add(::LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TOOLBOX_COLOR_PALETTE)));
+	m_ImageList.Add(::LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TOOLBOX_IPADDRESS)));
+	m_ImageList.Add(::LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TOOLBOX_KEYBOARD)));
+	m_ImageList.Add(::LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TOOLBOX_PICTURE)));
+	m_ImageList.Add(::LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TOOLBOX_LISTITEM)));
+	m_ImageList.Add(::LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TOOLBOX_MSGWND)));
 }
 
 UINT CDuiPropertyFile::GetControlIconIndex(xml_node nodeDoc)
@@ -286,178 +355,14 @@ UINT CDuiPropertyFile::GetControlIconIndex(xml_node nodeDoc)
 
 	CString nodeName = XML2T(nodeDoc.name());
 
-	if(CompareString(nodeName, _T("ActiveX")))
+	int size = sizeof(s_toolbox_ico) / sizeof(tagToolboxIco);
+	for (int i=0; i<size; i++)
 	{
-		return TREENODETYPE_ACTIVE;
+		if(s_toolbox_ico[i].ControlName == nodeName)
+			return s_toolbox_ico[i].index;
 	}
-	else if(CompareString(nodeName, _T("Button")))
-	{
-		return TREENODETYPE_BUTTON;
-	}
-	else if(CompareString(nodeName, _T("Combo")))
-	{
-		return TREENODETYPE_COMBO;
-	}
-	else if(CompareString(nodeName, _T("ComboEx")))
-	{
-		return TREENODETYPE_COMBO;
-	}
-	else if(CompareString(nodeName, _T("Container")))
-	{
-		return TREENODETYPE_CONTAINER;
-	}
-	else if(CompareString(nodeName, _T("Control")))
-	{
-		return TREENODETYPE_CONTROL;
-	}
-	else if(CompareString(nodeName, _T("Default")))
-	{
-		return TREENODETYPE_DEFAULT;
-	}
-	else if(CompareString(nodeName, _T("Edit")))
-	{
-		return TREENODETYPE_EDIT;
-	}
-	else if(CompareString(nodeName, _T("Font")))
-	{
-		return TREENODETYPE_FONT;
-	}
-	else if(CompareString(nodeName, _T("HorizontalLayout")))
-	{
-		return TREENODETYPE_HORIZONTALLAYOUT;
-	}
-	else if(CompareString(nodeName, _T("Label")))
-	{
-		return TREENODETYPE_LABEL;
-	}
-	else if(CompareString(nodeName, _T("Option")))
-	{
-		return TREENODETYPE_OPTION;
-	}
-	else if(CompareString(nodeName, _T("Pointer")))
-	{
-		return TREENODETYPE_POINTER;
-	}
-	else if(CompareString(nodeName, _T("Progress")))
-	{
-		return TREENODETYPE_PROGRESS;
-	}
-	else if(CompareString(nodeName, _T("ScrollBar")))
-	{
-		return TREENODETYPE_SCROLLBAR;
-	}
-	else if(CompareString(nodeName, _T("HScrollBar")))
-	{
-		return TREENODETYPE_SCROLLBAR;
-	}
-	else if(CompareString(nodeName, _T("VScrollBar")))
-	{
-		return TREENODETYPE_SCROLLBAR;
-	}
-	else if(CompareString(nodeName, _T("Slider")))
-	{
-		return TREENODETYPE_SLIDER;
-	}
-	else if(CompareString(nodeName, _T("TabLayout")))
-	{
-		return TREENODETYPE_TABLAYOUT;
-	}
-	else if(CompareString(nodeName, _T("AnimationTabLayout")))
-	{
-		return TREENODETYPE_TABLAYOUT;
-	}
-	else if(CompareString(nodeName, _T("Text")))
-	{
-		return TREENODETYPE_TEXT;
-	}
-	else if(CompareString(nodeName, _T("TileLayout")))
-	{
-		return TREENODETYPE_TILELAYOUT;
-	}
-	else if(CompareString(nodeName, _T("VerticalLayout")))
-	{
-		return TREENODETYPE_VERTICALLAYOUT;
-	}
-	else if(CompareString(nodeName, _T("Window")))
-	{
-		return TREENODETYPE_WINDOW;
-	}
-	else if(CompareString(nodeName, _T("ChildWindow")))
-	{
-		return TREENODETYPE_WINDOW;
-	}
-	else if(CompareString(nodeName, _T("List")))
-	{
-		return TREENODETYPE_LIST;
-	}
-	else if(CompareString(nodeName, _T("RichEdit")))
-	{
-		return TREENODETYPE_RICHEDIT;
-	}
-	else if(CompareString(nodeName, _T("CheckBox")))
-	{
-		return TREENODETYPE_CHECKBOX;
-	}
-	else if(CompareString(nodeName, _T("GridCtrl")))
-	{
-		return TREENODETYPE_GRIDCTRL;
-	}
-	else if(CompareString(nodeName, _T("WebBrowser")))
-	{
-		return TREENODETYPE_IEXPLORER;
-	}
-	else if(CompareString(nodeName, _T("WebKitCef")))
-	{
-		return TREENODETYPE_LIBCEF;
-	}
-	else if(CompareString(nodeName, _T("TreeView")))
-	{
-		return TREENODETYPE_TREEVIEW;
-	}
-	else if(CompareString(nodeName, _T("TreeNode")))
-	{
-		return TREENODETYPE_TREENODE;
-	}
-	else if(CompareString(nodeName, _T("DateTime")))
-	{
-		return TREENODETYPE_DATETIME;
-	}
-	else if(CompareString(nodeName, _T("CustomControl")))
-	{
-		return TREENODETYPE_CUSTOMCONTROL;
-	}
-	else if(CompareString(nodeName, _T("ChildLayout")))
-	{
-		return TREENODETYPE_CHILDLAYOUT;
-	}
-	else if(CompareString(nodeName, _T("ImageBox")))
-	{
-		return TREENODETYPE_IMAGEBOX;
-	}
-	else if(CompareString(nodeName, _T("GroupBox")))
-	{
-		return TREENODETYPE_GROUPBOX;
-	}
-	else if(CompareString(nodeName, _T("Menu")))
-	{
-		return TREENODETYPE_MENU;
-	}
-	else if(CompareString(nodeName, _T("MenuElement")))
-	{
-		return TREENODETYPE_MENU;
-	}
-	else if(CompareString(nodeName, _T("GifAnim")))
-	{
-		return TREENODETYPE_GIFANIM;
-	}
-	else if(CompareString(nodeName, _T("Style")))
-	{
-		return TREENODETYPE_STYLE;
-	}
-	else
-	{
-		return TREENODETYPE_UNKNOW;
-	}
+
+	return TREENODETYPE_UNKNOW;
 }
 
 void CDuiPropertyFile::FilterDefaultValue(xml_node nodeDoc, CUIManager *pUIManager)

@@ -9,6 +9,7 @@
 #include "ChildFrm.h"
 #include "DlgOptions.h"
 
+#include "ThreadTest.h"
 #include "ThreadPipe.h"
 #include "UIManager.h"
 
@@ -36,6 +37,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_WM_TIMER()
 	ON_COMMAND(ID_VIEW_CONTROL_TREE, &CMainFrame::OnViewControlTree)
 	ON_COMMAND(ID_INDICATOR_CURSOR_POS, NULL)
+	ON_COMMAND(ID_INDICATOR_XML_STATUS, NULL)
 	ON_COMMAND(ID_INDICATOR_LINE, NULL)
 	ON_COMMAND(ID_INDICATOR_COL, NULL)
 	ON_COMMAND(ID_INDICATOR_CURRENT_POS, NULL)
@@ -51,6 +53,7 @@ static UINT indicators[] =
 	ID_SEPARATOR,           // 状态行指示器
 
 	ID_INDICATOR_CURSOR_POS,	//鼠标位置
+	ID_INDICATOR_XML_STATUS,	//XML文档状态
 	ID_INDICATOR_CURRENT_POS,	//当前位置
 	ID_INDICATOR_LINE,			//行号
 	ID_INDICATOR_COL,			//列号
@@ -186,6 +189,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
 	m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_CURSOR_POS, _T("Cursor: "));
+	m_wndStatusBar.SetPaneWidthByID(ID_INDICATOR_XML_STATUS, 16);
 	m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_LINE, _T("row: "));
 	m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_COL, _T("col: "));
 	m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_CURRENT_POS, _T("pos: "));
@@ -210,7 +214,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	HICON hClassViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(IDI_ICON_CLASS_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
 	m_wndControl.SetIcon(hClassViewIcon, FALSE);
 
-	if (!m_wndToolBox.Create(_T("duilib控件箱"), this, CRect(0, 0, 150, 200), TRUE, ID_TOOLBOX_WND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT))
+	if (!m_wndToolBox.Create(_T("控件箱"), this, CRect(0, 0, 150, 200), TRUE, ID_TOOLBOX_WND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT))
 	{
 		return FALSE; // 未能创建
 	}
@@ -399,8 +403,13 @@ LRESULT CMainFrame::OnChangeActiveTab(WPARAM wparam, LPARAM lparam)
 void CMainFrame::OnClose()
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	CThreadPipe::ClosePipe();
+	if(g_hThreadTestHandle != NULL)
+	{
+		TerminateProcess(g_pThreadTest->m_piProcInfo.hProcess, 0);
+		WaitForSingleObject(g_pThreadTest->m_piProcInfo.hProcess, 1000);
+	}
 
+	CThreadPipe::ClosePipe();
 	CMDIFrameWndEx::OnClose();
 }
 

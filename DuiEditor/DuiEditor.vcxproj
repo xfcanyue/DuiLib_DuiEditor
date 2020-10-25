@@ -210,10 +210,12 @@
     <None Include="res\toolbar1.bmp" />
     <None Include="res\toolbar2.bmp" />
     <None Include="res\Toolbar256.bmp" />
+    <None Include="res\ToolBox\00764.ico" />
     <None Include="res\ToolBox\Active.ico" />
     <None Include="res\ToolBox\Button.ico" />
     <None Include="res\ToolBox\CheckBox.ico" />
     <None Include="res\ToolBox\ChildLayout.ico" />
+    <None Include="res\ToolBox\ColorPalette.ico" />
     <None Include="res\ToolBox\Combo.ico" />
     <None Include="res\ToolBox\Container.ico" />
     <None Include="res\ToolBox\Control.ico" />
@@ -226,13 +228,18 @@
     <None Include="res\ToolBox\Grid.ico" />
     <None Include="res\ToolBox\GroupBox.ico" />
     <None Include="res\ToolBox\HorizontalLayout.ico" />
+    <None Include="res\toolbox\icon1.ico" />
     <None Include="res\ToolBox\ie.ico" />
     <None Include="res\ToolBox\ImageBox.ico" />
+    <None Include="res\ToolBox\keyboard.ico" />
     <None Include="res\ToolBox\Label.ico" />
     <None Include="res\ToolBox\libcef.ico" />
     <None Include="res\ToolBox\List.ico" />
+    <None Include="res\ToolBox\ListItem.ico" />
     <None Include="res\ToolBox\Menu.ico" />
+    <None Include="res\ToolBox\MsgWnd.ico" />
     <None Include="res\ToolBox\Option.ico" />
+    <None Include="res\ToolBox\Picture.ico" />
     <None Include="res\ToolBox\Pointer.ico" />
     <None Include="res\ToolBox\Progress.ico" />
     <None Include="res\ToolBox\RichEdit.ico" />
@@ -247,6 +254,8 @@
     <None Include="res\ToolBox\Unknow.ico" />
     <None Include="res\ToolBox\VerticalLayout.ico" />
     <None Include="res\ToolBox\Window.ico" />
+    <None Include="res\xml_err.ico" />
+    <None Include="res\xml_ok.ico" />
     <None Include="UserImages.bmp" />
   </ItemGroup>
   <ItemGroup>

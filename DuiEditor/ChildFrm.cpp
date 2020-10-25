@@ -62,12 +62,14 @@ void CChildFrame::OnMDIActivate(BOOL bActivate, CWnd* pActivateWnd, CWnd* pDeact
 	// TODO: 在此处添加消息处理程序代码
 	if(bActivate)
 	{
-		//InsertMsg(_T("CChildFrame::OnMDIActivate"));
+		InsertMsg(_T("CChildFrame::OnMDIActivate"));
 
 		CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
 		CDuiEditorDoc* pDoc = (CDuiEditorDoc *)GetActiveDocument();
 		pMain->m_wndControl.SetActiveTreeView(pDoc->GetUIManager()->GetTreeView());
 		pMain->m_wndProperty.SetActivePropList(pDoc->GetUIManager()->GetPropList());
+
+		pMain->m_wndStatusBar.Invalidate();
 
 		CView *pActiveView = GetActiveView();
 		if(GetUIManager()->GetCodeView() == pActiveView && GetUIManager()->GetSplitterMode() == SPLIT_CODE)

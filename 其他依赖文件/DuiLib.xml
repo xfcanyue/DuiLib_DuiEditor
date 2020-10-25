@@ -262,6 +262,7 @@
 		<Attribute name="hotforeimage" default="" type="IMAGE" comment="状态图片" />
 		<Attribute name="stateimage" default="" type="IMAGE" comment="状态图片" />
 		<Attribute name="statecount" default="0" type="INT" comment="" />
+		<Attribute name="switchcontrolvisible" default="" type="STRING" comment="切换绑定控件的隐藏显示"/>
 		<Attribute name="bindtablayoutname" default="" type="STRING" comment="绑定TabLayout控件"/>
 		<Attribute name="bindtabindex" default="-1" type="INT" comment="点击后将触发绑定TabLayout控件的对应索引号"/>		
 		<Attribute name="hotbkcolor" default="0x00000000" type="DWORD" comment="鼠标悬浮背景颜色,如(0xFFFF00FF)" />
@@ -722,6 +723,7 @@
 		<Attribute name="iconstyle" default="" type="ATTRIBUTELIST" value="Label" comment="Pane的图标" />
 		<Attribute name="textstyle" default="" type="ATTRIBUTELIST" value="Label" comment="右侧按钮" />
 		<Attribute name="togglestyle" default="" type="ATTRIBUTELIST" value="Option" comment="右侧按钮" />
+		<Attribute name="bodystyle" default="" type="ATTRIBUTELIST" value="VerticalLayout" comment="Pane主体部分" />
 		<Attribute name="panevisible" default="true" type="BOOL" comment="是否显示pane" />
 	</AccordionPane>
 	

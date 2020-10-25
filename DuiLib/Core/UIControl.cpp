@@ -419,6 +419,11 @@ namespace DuiLib {
 		}
 	}
 
+	bool CControlUI::CalcPos(CControlUI *pChildControl, RECT &rcChild) //子控件调用这个，计算子空间的rect
+	{
+		return false;
+	}
+
 	void CControlUI::Move(SIZE szOffset, bool bNeedInvalidate)
 	{
 		m_cXY.cx += szOffset.cx;

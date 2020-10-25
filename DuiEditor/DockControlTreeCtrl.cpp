@@ -168,11 +168,16 @@ HTREEITEM CDockControlTreeCtrl::AddNewControl(xml_node nodeNewContrl, xml_node n
 
 	HTREEITEM hItemCurrent = FindXmlNode(nodeCurrentControl);
 	if(!hItemCurrent)	return NULL;
-	HTREEITEM hItemParent = GetParentItem(hItemCurrent);
-	if(hItemParent == NULL)	return NULL;
 
 	if(htiAfter == TVI_BEFORE)
 	{
+		HTREEITEM hItemParent = GetParentItem(hItemCurrent);
+		if(hItemParent == NULL)	
+		{
+			AfxMessageBox(_T("插入到控件树中出错了。"));
+			return NULL;
+		}
+
 		HTREEITEM hPrev = GetNextItem(hItemCurrent, TVGN_PREVIOUS);
 		if(hPrev) //插入到前一个兄弟项的后面
 		{
@@ -186,6 +191,12 @@ HTREEITEM CDockControlTreeCtrl::AddNewControl(xml_node nodeNewContrl, xml_node n
 	}
 	else if(htiAfter == TVI_NEXT)
 	{
+		HTREEITEM hItemParent = GetParentItem(hItemCurrent);
+		if(hItemParent == NULL)	
+		{
+			AfxMessageBox(_T("插入到控件树中出错了。"));
+			return NULL;
+		}
 		return AddNewControl(nodeNewContrl, hItemParent, hItemCurrent);
 	}
 

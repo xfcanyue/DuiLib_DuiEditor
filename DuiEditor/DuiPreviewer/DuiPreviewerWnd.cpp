@@ -195,7 +195,10 @@ LRESULT CDuiPreviewerWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 #endif
 	case WM_SIZE:
 		break;
-	case WM_CHAR:			
+	case WM_CHAR:		
+		//DuiWriteConsole(_T("WM_CHAR"));	
+		if(VK_ESCAPE == wParam)
+			Close();
 		break;
 	case WM_SYSCOMMAND:		
 		break;

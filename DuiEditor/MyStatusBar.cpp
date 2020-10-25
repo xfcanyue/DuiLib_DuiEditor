@@ -5,6 +5,8 @@
 #include "DuiEditor.h"
 #include "MyStatusBar.h"
 
+#include "MainFrm.h"
+#include "UIManager.h"
 
 const int nTextMargin = 4; // Gap between image and text
 // CMyStatusBar
@@ -13,15 +15,18 @@ IMPLEMENT_DYNAMIC(CMyStatusBar, CMFCStatusBar)
 
 CMyStatusBar::CMyStatusBar()
 {
-
+	m_bXmlUpdateSuccess = TRUE;
 }
 
 CMyStatusBar::~CMyStatusBar()
 {
+	::DeleteObject(m_hIconXmlOk);
+	::DeleteObject(m_hIconXmlErr);
 }
 
 
 BEGIN_MESSAGE_MAP(CMyStatusBar, CMFCStatusBar)
+	ON_WM_CREATE()
 END_MESSAGE_MAP()
 
 
@@ -60,6 +65,15 @@ BOOL CMyStatusBar::SetPaneTextByID(UINT nID, LPCTSTR lpszNewText, BOOL bCalcPane
 	return TRUE;
 }
 
+BOOL CMyStatusBar::SetPaneWidthByID(UINT nID, int cx)
+{
+	int nIndex = GetIndexByID(nID);
+	if(nIndex < 0)	return FALSE;
+
+	SetPaneWidth(nIndex, cx);
+	return TRUE;
+}
+
 // CMyStatusBar 消息处理程序
 void CMyStatusBar::OnDrawPane(CDC* pDC, CMFCStatusBarPaneInfo* pPane)
 {
@@ -89,6 +103,12 @@ void CMyStatusBar::OnDrawPane(CDC* pDC, CMFCStatusBarPaneInfo* pPane)
 	if (!(pPane->nStyle & SBPS_NOBORDERS)) // only adjust if there are borders
 	{
 		rectPane.DeflateRect(2 * AFX_CX_BORDER, AFX_CY_BORDER);
+	}
+
+	//这个icon, 我们自己来画
+	if(pPane->nID == ID_INDICATOR_XML_STATUS)
+	{
+		return OnDrawXmlUpdateStatus(pDC, pPane);
 	}
 
 	// Draw icon
@@ -129,7 +149,7 @@ void CMyStatusBar::OnDrawPane(CDC* pDC, CMFCStatusBarPaneInfo* pPane)
 		{
 			COLORREF clrText = pDC->SetTextColor(CMFCVisualManager::GetInstance()->GetStatusBarPaneTextColor(this, pPane));
 
-			if(pPane->nID > 0)
+			if(pPane->nID > 0) //改了这里，居中显示。
 				pDC->DrawText(pPane->lpszText, lstrlen(pPane->lpszText), rectText, DT_CENTER | DT_SINGLELINE | DT_VCENTER | DT_NOPREFIX);
 			else
 				pDC->DrawText(pPane->lpszText, lstrlen(pPane->lpszText), rectText, DT_LEFT | DT_SINGLELINE | DT_VCENTER | DT_NOPREFIX);
@@ -138,4 +158,94 @@ void CMyStatusBar::OnDrawPane(CDC* pDC, CMFCStatusBarPaneInfo* pPane)
 	}
 }
 
+void CMyStatusBar::OnDrawXmlUpdateStatus(CDC* pDC, CMFCStatusBarPaneInfo* pPane)
+{
+	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
+	CUIManager *pManager = pMain->GetActiveUIManager();
+	if(!pManager) return;
+	xml_parse_result *pret = pManager->GetCodeView()->GetParseResult();
 
+	CRect rect = pPane->rect;
+	rect.OffsetRect(2, 2);
+	if(pret->status == pugi::status_ok)
+		DrawIconEx(pDC->GetSafeHdc(),rect.left,rect.top,m_hIconXmlOk,16,16,0,NULL,DI_NORMAL);
+	else
+		DrawIconEx(pDC->GetSafeHdc(),rect.left,rect.top,m_hIconXmlErr,16,16,0,NULL,DI_NORMAL);
+
+	//InsertMsg(_T("OnDrawXmlUpdateStatus"));
+}
+
+INT_PTR CMyStatusBar::OnToolHitTest(CPoint point, TOOLINFO* pTI) const
+{
+	ASSERT_VALID(this);
+
+	// check child windows first by calling CPane
+	INT_PTR nHit = (INT_PTR) CPane::OnToolHitTest(point, pTI);
+	if (nHit != -1)
+		return nHit;
+
+	CMFCStatusBarPaneInfo* pSBP = HitTest(point);
+	if(pSBP == NULL || pSBP->nID != ID_INDICATOR_XML_STATUS)
+		return __super::OnToolHitTest(point, pTI);
+	
+	nHit = pSBP->nID;
+	CString strTipText;
+
+	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
+	CUIManager *pManager = pMain->GetActiveUIManager();
+	if(!pManager) return nHit;
+	xml_parse_result *pret = pManager->GetCodeView()->GetParseResult();
+
+	int row = pManager->GetCodeView()->GetSciWnd()->sci_LineFromPosition(pret->offset);
+	int col = pret->offset - pManager->GetCodeView()->GetSciWnd()->sci_PositionFromLine(row);
+	if(pret->status != pugi::status_ok)
+		strTipText.Format(_T("行: %d, 列: %d, 位置: %d, 错误信息: %s"), row+1, col+1, pret->offset, LSA2T(pret->description()));
+	else
+		strTipText = LSA2T(pret->description());
+
+	if (pTI != NULL)
+	{
+		pTI->lpszText = (LPTSTR) ::calloc((strTipText.GetLength() + 1), sizeof(TCHAR));
+		lstrcpy(pTI->lpszText, strTipText);
+
+		pTI->rect = pSBP->rect;
+		pTI->uId = 0;
+		pTI->hwnd = m_hWnd;
+	}	
+
+	CToolTipCtrl* pToolTip = AfxGetModuleState()->m_thread.GetDataNA()->m_pToolTip;
+	if (pToolTip != NULL && pToolTip->GetSafeHwnd() != NULL)
+	{
+		pToolTip->SetFont(&afxGlobalData.fontTooltip, FALSE);
+	}
+
+	return nHit;
+}
+
+int CMyStatusBar::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+	if (CMFCStatusBar::OnCreate(lpCreateStruct) == -1)
+		return -1;
+
+	// TODO:  在此添加您专用的创建代码
+	//这么载入的话，icon的size居然变成了 32*32 ????
+// 	HINSTANCE hInstance = AfxGetApp()->m_hInstance;
+// 	m_hIconXmlOk = ::LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON_XML_OK));
+// 	m_hIconXmlErr = ::LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON_XML_ERR));
+
+	m_hIconXmlOk = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(IDI_ICON_XML_OK), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
+	m_hIconXmlErr = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(IDI_ICON_XML_ERR), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
+
+	return 0;
+}
+
+void CMyStatusBar::SetXmlUpdateStatus(BOOL bUpdateSuccess)
+{
+	if(m_bXmlUpdateSuccess == bUpdateSuccess) return;
+
+	int nIndex = GetIndexByID(ID_INDICATOR_XML_STATUS);
+	if(nIndex < 0)	return;
+
+	m_bXmlUpdateSuccess = bUpdateSuccess;
+	InvalidatePaneContent(nIndex);
+}

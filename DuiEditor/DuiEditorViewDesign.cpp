@@ -951,6 +951,21 @@ void CDuiEditorViewDesign::OnSize(UINT nType, int cx, int cy)
 	CScrollView::OnSize(nType, cx, cy);
 
 	// TODO: 在此处添加消息处理程序代码
+	if(!GetUIManager()) return;
+	if(!GetUIManager()->GetUiFrom()) return;
+
+	//如果window size没有定义 或者 cx==0 或者 cy==0
+// 	SIZE szForm = GetUIManager()->GetManager()->GetInitSize();
+// 	if(szForm.cx <= 0 || szForm.cy <= 0)
+// 	{
+// 		GetUIManager()->SetUIFormWindowSize(szForm.cx, szForm.cy);
+// 	}
+	CString strSize = XML2T(GetUIManager()->GetDocument()->m_doc.child(XTEXT("Window")).attribute(XTEXT("size")).value());
+	CDuiSize szForm(strSize);
+	if(szForm.cx <= 0 || szForm.cy <= 0)
+	{
+		GetUIManager()->SetUIFormWindowSize(szForm.cx, szForm.cy);
+	}
 }
 
 
