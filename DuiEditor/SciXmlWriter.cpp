@@ -352,7 +352,7 @@ void CSciXmlWriter::AddNode(xml_node node)
 		if(nodeParent.first_child() == nodeParent.last_child())
 		{
 			//如果本身是否已经有 </NodeName>
-			if(nodeParent.get_close_start_pos() == 0 && nodeParent.get_close_end_pos() == 0)
+			if(nodeParent.get_close_start_pos() < 0 && nodeParent.get_close_end_pos() < 0)
 			{
 				int parent_offset = 0;
 				int posx = nodeParent.get_open_end_pos();

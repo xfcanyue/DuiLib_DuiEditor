@@ -152,12 +152,6 @@ namespace DuiLib
 			{
 				sz.cy -= (m_rcItemOld.bottom - m_rcItemOld.top - m_nHeaderHeight) / PANE_ANIMATION_FRAME_COUNT * GetCurrentFrame(PANE_ANIMATION_ID);
 			}
-
-			CStringA temp;
-			RECT rc = GetPos();//m_rcItemOld; //GetPos();
-			temp.Format("sz.cx=%d, sz.cy=%d left=%d top=%d right=%d bottom=%d\r\n", 
-				sz.cx, sz.cy, rc.left, rc.top, rc.right, rc.bottom);
-			OutputDebugStringA(temp);
 			return sz;
 		}
 		if(!IsPaneVisible())
@@ -193,14 +187,6 @@ namespace DuiLib
 			return m_pHeader->GetFixedHeight();
 		}
 		return __super::GetFixedHeight();
-	}
-
-	void CAccordionPaneUI::SetPos(RECT rc, bool bNeedInvalidate)
-	{
-		CStringA temp;
-		temp.Format("SetPos: left=%d top=%d right=%d bottom=%d\r\n", rc.left, rc.top, rc.right, rc.bottom);
-		OutputDebugStringA(temp);
-		__super::SetPos(rc, bNeedInvalidate);
 	}
 
 	CControlUI* CAccordionPaneUI::GetItemAt(int iIndex) const

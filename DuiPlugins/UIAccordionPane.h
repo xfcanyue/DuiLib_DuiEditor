@@ -27,8 +27,6 @@ namespace DuiLib
 
 		virtual SIZE EstimateSize(SIZE szAvailable);
 
-		void SetPos(RECT rc, bool bNeedInvalidate = true);
-
 		CControlUI* GetItemAt(int iIndex) const;
 		int GetItemIndex(CControlUI* pControl) const;
 		bool SetItemIndex(CControlUI* pControl, int iIndex);
