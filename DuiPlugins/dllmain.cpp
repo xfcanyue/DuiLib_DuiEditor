@@ -73,6 +73,9 @@ UILIB_PLUGIN_API void DuiPluginsRegister()
 	REGIST_DUICONTROL(CIconButtonUI);
 	REGIST_DUICONTROL(CDateTimeExUI);
 	REGIST_DUICONTROL(CAccordionPaneUI);
+	REGIST_DUICONTROL(CAnimationPaneUI);
+	REGIST_DUICONTROL(CImageBoxExUI);
+	REGIST_DUICONTROL(CRollTextExUI);
 }
 
 extern "C" UILIB_PLUGIN_API CControlUI *CreateControl(LPCTSTR pstrClass)
@@ -120,6 +123,18 @@ extern "C" UILIB_PLUGIN_API CControlUI *CreateControl(LPCTSTR pstrClass)
 	else if( _tcscmp(pstrClass, _T("AccordionPane")) == 0 ) 
 	{
 		return new CAccordionPaneUI;
+	}
+	else if( _tcscmp(pstrClass, _T("AnimationPane")) == 0 ) 
+	{
+		return new CAnimationPaneUI;
+	}
+	else if( _tcscmp(pstrClass, _T("ImageBoxEx")) == 0 ) 
+	{
+		return new CImageBoxExUI;
+	}
+	else if( _tcscmp(pstrClass, _T("RollTextEx")) == 0 ) 
+	{
+		return new CRollTextExUI;
 	}
 	return NULL;
 }

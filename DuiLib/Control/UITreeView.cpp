@@ -251,10 +251,13 @@ namespace DuiLib
 
 		pControl = CalLocation((CTreeNodeUI*)pControl);
 
-		if(pTreeView && pIndexNode)
-			return pTreeView->AddAt((CTreeNodeUI*)pControl,pIndexNode);
-		else 
-			return pTreeView->Add((CTreeNodeUI*)pControl);
+		if(pTreeView)
+		{
+			if(pIndexNode)
+				return pTreeView->AddAt((CTreeNodeUI*)pControl,pIndexNode);
+			else 
+				return pTreeView->Add((CTreeNodeUI*)pControl);
+		}
 
 		return TRUE;
 	}

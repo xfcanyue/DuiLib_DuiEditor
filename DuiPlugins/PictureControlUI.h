@@ -1,6 +1,6 @@
 #pragma once
 
-class UILIB_PLUGIN_API CPictureControlUI : public CVerticalLayoutUI
+class UILIB_PLUGIN_API CPictureControlUI : public CContainerUI
 {
 	DECLARE_DUICONTROL(CPictureControlUI)
 public:
@@ -10,33 +10,40 @@ public:
 	LPCTSTR	GetClass() const;
 	LPVOID	GetInterface(LPCTSTR pstrName);
 
-	virtual void Init();
-	virtual void SetVisible(bool bVisible = true);
-	virtual void PaintForeImage(HDC hDC);
+	virtual void DoInit();
+	virtual bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
 	virtual void DoEvent(TEventUI& event);
-	virtual bool Activate();
 	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 
 	void SetFrameDelay(int nDelay);
 	int  GetFrameDelay();
 
-	void SetPicture(LPCTSTR fileName); //从硬盘文件绝对路径载入图片,不同于xml的fileimage属性
-	void SetPicture(CxImage &img);
+	void	SetAutoPlay(bool bIsAuto = true );
+	bool	IsAutoPlay() const;
+	void	SetAutoSize(bool bIsAuto = true );
+	bool	IsAutoSize() const;
+
+	void LoadFile(LPCTSTR fileName); //从硬盘文件绝对路径载入图片,不同于xml的fileimage属性
 
 	void StartAnim();
 	void StopAnim();
+	void OnTimer(UINT_PTR idEvent);
 
-	static DWORD LoadImage2Memory(const STRINGorID &bitmap, LPCTSTR type,LPBYTE &pData);
-	static bool LoadGifImageX(CxImage &img, STRINGorID bitmap, LPCTSTR type , DWORD mask);
-
+protected:
+	void InitImage();
 protected:
 	struct Imp;
 	Imp* m_pImp;
 
 private:
-	CxImage *m_pImage;
-	int m_type;
-	UINT m_uButtonState;
+	bool			m_bIsAutoPlay;				// 是否自动播放gif
+	bool			m_bIsAutoSize;				// 是否自动根据图片设置大小
+	int				m_nDelay;					//循环毫秒数
 
+private:
+	int m_imagetype;	//图片类型
+	UINT_PTR			m_idEventTimer;		//动画定时器
+	UINT				m_nFrameCount;		//gif图片总帧数
+	UINT				m_nFramePosition;	//当前放到第几帧
 };
 

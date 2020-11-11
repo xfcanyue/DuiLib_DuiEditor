@@ -53,7 +53,7 @@ void CUITracker::Draw(CDC* pDC) const
 // 		}
 // 	}
 	
-	//draw move handle
+	//draw move handle, 在Container中，我们需要拖拽鼠标，所以在Container中，不能所有位置都允许 move handle
 	if(g_duiProp.IsContainerUI(m_node) && m_bDrawMoveHandle)
 	{
 		CRect rect = m_rect;

@@ -45,7 +45,7 @@ public:
 	int  GetSplitterMode() const;
 
 	void SetUIFormWindowSize(int cx, int cy);
-protected:
+
 	BOOL UpdateControlUI(CControlUI *pControl);
 
 private:

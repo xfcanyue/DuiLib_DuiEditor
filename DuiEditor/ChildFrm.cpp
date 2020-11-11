@@ -62,7 +62,7 @@ void CChildFrame::OnMDIActivate(BOOL bActivate, CWnd* pActivateWnd, CWnd* pDeact
 	// TODO: 在此处添加消息处理程序代码
 	if(bActivate)
 	{
-		InsertMsg(_T("CChildFrame::OnMDIActivate"));
+		//InsertMsg(_T("CChildFrame::OnMDIActivate"));
 
 		CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
 		CDuiEditorDoc* pDoc = (CDuiEditorDoc *)GetActiveDocument();
@@ -119,7 +119,7 @@ void CChildFrame::OnSize(UINT nType, int cx, int cy)
 
 void CChildFrame::OnDesignerView()
 {
-	if(!GetUIManager()->GetCodeView()->UpdateDocument())
+	if(!GetUIManager()->GetCodeView()->ApplyDocument()) //UpdateDocument())
 		return;
 
 	GetUIManager()->SetSplitterMode(SPLIT_DESIGN);
@@ -158,6 +158,9 @@ void CChildFrame::OnUpdateDesignerCode(CCmdUI *pCmdUI)
 
 void CChildFrame::OnDesignerSplitUpdown()
 {
+	if(!GetUIManager()->GetCodeView()->ApplyDocument()) //UpdateDocument())
+		return;
+
 	GetUIManager()->SetSplitterMode(SPLIT_UPDOWN);
 
 	m_split.SetViewMode(SPLIT_UPDOWN);
@@ -176,6 +179,9 @@ void CChildFrame::OnUpdateDesignerSplitUpdown(CCmdUI *pCmdUI)
 
 void CChildFrame::OnDesignerSplitLeftright()
 {
+	if(!GetUIManager()->GetCodeView()->ApplyDocument()) //UpdateDocument())
+		return;
+
 	GetUIManager()->SetSplitterMode(SPLIT_LEFTRIGHT);
 
 	m_split.SetViewMode(SPLIT_LEFTRIGHT);

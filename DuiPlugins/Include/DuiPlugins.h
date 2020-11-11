@@ -19,9 +19,9 @@
 #endif
 
 #define DUI_CTR_ACCORDIONPANE				(_T("AccordionPane"))	
+#define DUI_CTR_ANIMATIONPANE				(_T("AnimationPane"))	
 #define DUI_CTR_DATETIMEEX					(_T("DateTimeEx"))
 
-#include "../../3rd/CxImage/Include/image.h"
 #include "../../3rd/GridControl/Include/GridControl.h"
 
 #include "../ComboExUI.h"
@@ -35,6 +35,9 @@
 #include "../PictureControlUI.h"
 #include "../UIDateTimeEx.h"
 #include "../UIAccordionPane.h"
+#include "../UIAnimationPane.h"
+#include "../UIImageBoxEx.h"
+#include "../UIRollTextEx.h"
 
 //extern "C" 
 UILIB_PLUGIN_API void DuiPluginsRegister();

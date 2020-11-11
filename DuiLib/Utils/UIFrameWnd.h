@@ -18,8 +18,8 @@ public:
 
 	CPaintManagerUI *GetManager() { return &m_pm; }
 
-	void AttachForm(CUIForm *pForm);
-	void DetachForm(CUIForm *pForm);
+	void AttachVirtualForm(CUIForm *pForm);
+	void DetachVirtualForm(CUIForm *pForm);
 
 	void ShowFullScreen(); //»´∆¡œ‘ æ
 public:

@@ -797,6 +797,9 @@ void CUIPropertyGridCtrl::OnOpenFontDialog(CUIPropertyGridFontProperty *pfntProp
 
 void CUIPropertyGridCtrl::OnPropertyChanged(CMFCPropertyGridProperty* pProp) const
 {
+	if(GetUIManager())
+		CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
+
 	int nLevel = pProp->GetHierarchyLevel();
 
 	if(nLevel > 1) //修改子项 第2层, size rect 等参数

@@ -218,19 +218,19 @@ void CImageEditorFrame::OnSetSourcePos(CRect &rc)
 					CMFCPropertyGridProperty *pProp3 = pProp2->GetSubItem(x);
 					if(CompareString(pProp3->GetName(), _T("left")))
 					{
-						pProp3->SetValue((_variant_t)(INT)rc.left);
+						pProp3->SetValue((_variant_t)(long)rc.left);
 					}
 					else if(CompareString(pProp3->GetName(), _T("top")))
 					{
-						pProp3->SetValue((_variant_t)(INT)rc.top);
+						pProp3->SetValue((_variant_t)(long)rc.top);
 					}
 					else if(CompareString(pProp3->GetName(), _T("right")))
 					{
-						pProp3->SetValue((_variant_t)(INT)rc.right);
+						pProp3->SetValue((_variant_t)(long)rc.right);
 					}
 					else if(CompareString(pProp3->GetName(), _T("bottom")))
 					{
-						pProp3->SetValue((_variant_t)(INT)rc.bottom);
+						pProp3->SetValue((_variant_t)(long)rc.bottom);
 					}
 				}
 

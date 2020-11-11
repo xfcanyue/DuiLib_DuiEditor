@@ -1,170 +1,35 @@
 #include "StdAfx.h"
 #include "UIDateTimeEx.h"
+#include "UIDateTimeExWnd.h"
 
 namespace DuiLib
 {
-	//CDateTimeExUI::m_nDTUpdateFlag
-#define DT_NONE   0
-#define DT_UPDATE 1
-#define DT_DELETE 2
-#define DT_KEEP   3
-
-	class CDateTimeExWnd : public CWindowWnd
+	class CDateTimeLabelUI : public CLabelUI
 	{
 	public:
-		CDateTimeExWnd();
+		CDateTimeLabelUI(CDateTimeExUI *pOwner, int uFormatType) : m_pOwner(pOwner), m_uFormatStyle(uFormatType)
+		{
+		}
 
-		void Init(CDateTimeExUI* pOwner, UINT uFormatStyle);
-		RECT CalPos();
+		virtual CDuiString GetText() const
+		{
+			CDuiString sText;
+			SYSTEMTIME &st = m_pOwner->GetTime();
 
-		LPCTSTR GetWindowClassName() const;
-		LPCTSTR GetSuperClassName() const;
-		void OnFinalMessage(HWND hWnd);
+			if(m_uFormatStyle == UIDTS_DATE)
+				sText.SmallFormat(_T("%4d - %02d - %02d"), st.wYear, st.wMonth, st.wDay);
+			else if(m_uFormatStyle == UIDTS_TIME)
+				sText.SmallFormat(_T("%02d : %02d : %02d"), st.wHour, st.wMinute, st.wSecond);
+			else if(m_uFormatStyle == UIDTS_DATETIME)
+				sText.SmallFormat(_T("%4d - %02d - %02d %2d : %02d : %02d"), st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 
-		LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
-	protected:
-		CDateTimeExUI* m_pOwner;
-		HBRUSH m_hBkBrush;
-		bool m_bInit;
-		bool m_bDropOpen;
-		SYSTEMTIME m_oldSysTime;
-		UINT m_uFormatStyle;
+			return sText;
+		}
+	private:
+		CDateTimeExUI *m_pOwner;
+		int m_uFormatStyle;
 	};
 
-	CDateTimeExWnd::CDateTimeExWnd() : m_pOwner(NULL), m_hBkBrush(NULL), m_bInit(false), m_bDropOpen(false), m_uFormatStyle(UIDTS_DATE)
-	{
-	}
-
-	void CDateTimeExWnd::Init(CDateTimeExUI* pOwner, UINT uFormatStyle)
-	{
-		m_pOwner = pOwner;
-		m_uFormatStyle = uFormatStyle;
-
-		if (m_hWnd == NULL)
-		{
-			RECT rcPos = CalPos();
-			UINT uStyle = WS_CHILD;
-
-			//add by liqs99
-			if(m_uFormatStyle == UIDTS_TIME)
-			{
-				uStyle |= DTS_TIMEFORMAT;
-			}
-
-			Create(m_pOwner->GetManager()->GetPaintWindow(), NULL, uStyle, 0, rcPos);
-			SetWindowFont(m_hWnd, m_pOwner->GetManager()->GetFontInfo(m_pOwner->GetFont())->hFont, TRUE);
-		}
-
-		memcpy(&m_oldSysTime, &m_pOwner->m_sysTime, sizeof(SYSTEMTIME));
-		::SendMessage(m_hWnd, DTM_SETSYSTEMTIME, 0, (LPARAM)&m_pOwner->m_sysTime);
-		::ShowWindow(m_hWnd, SW_SHOWNOACTIVATE);
-		::SetFocus(m_hWnd);
-
-		m_bInit = true;    
-	}
-
-	RECT CDateTimeExWnd::CalPos()
-	{
-		CDuiRect rcPos;
-		if(m_uFormatStyle == UIDTS_DATE) rcPos = m_pOwner->m_pLabelDate->GetPos();
-		else if(m_uFormatStyle == UIDTS_TIME) rcPos = m_pOwner->m_pLabelTime->GetPos();
-
-		CControlUI* pParent = m_pOwner;
-		RECT rcParent;
-		while( pParent = pParent->GetParent() ) {
-			if( !pParent->IsVisible() ) {
-				rcPos.left = rcPos.top = rcPos.right = rcPos.bottom = 0;
-				break;
-			}
-			rcParent = pParent->GetClientPos();
-			if( !::IntersectRect(&rcPos, &rcPos, &rcParent) ) {
-				rcPos.left = rcPos.top = rcPos.right = rcPos.bottom = 0;
-				break;
-			}
-		}
-
-		return rcPos;
-	}
-
-	LPCTSTR CDateTimeExWnd::GetWindowClassName() const
-	{
-		return _T("DateTimeExWnd");
-	}
-
-	LPCTSTR CDateTimeExWnd::GetSuperClassName() const
-	{
-		return DATETIMEPICK_CLASS;
-	}
-
-	void CDateTimeExWnd::OnFinalMessage(HWND hWnd)
-	{
-		if( m_hBkBrush != NULL ) ::DeleteObject(m_hBkBrush);
-		//m_pOwner->GetManager()->RemoveNativeWindow(hWnd);
-		if(m_uFormatStyle == UIDTS_DATE)
-			m_pOwner->m_pWindowDate = NULL;
-		else 
-			m_pOwner->m_pWindowTime = NULL;
-		delete this;
-	}
-
-	LRESULT CDateTimeExWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
-	{
-		LRESULT lRes = 0;
-		BOOL bHandled = TRUE;
-		if( uMsg == WM_CREATE ) {
-			//m_pOwner->GetManager()->AddNativeWindow(m_pOwner, m_hWnd);
-			bHandled = FALSE;
-		}
-		else if (uMsg == WM_KEYDOWN && wParam == VK_ESCAPE)
-		{
-			memcpy(&m_pOwner->m_sysTime, &m_oldSysTime, sizeof(SYSTEMTIME));
-			m_pOwner->UpdateText();
-			PostMessage(WM_CLOSE);
-			return lRes;
-		}
-		else if(uMsg == OCM_NOTIFY)
-		{
-			NMHDR* pHeader=(NMHDR*)lParam;
-			if(pHeader != NULL && pHeader->hwndFrom == m_hWnd) {
-				if(pHeader->code == DTN_DATETIMECHANGE) {
-					LPNMDATETIMECHANGE lpChage=(LPNMDATETIMECHANGE)lParam;
-					::SendMessage(m_hWnd, DTM_GETSYSTEMTIME, 0, (LPARAM)&m_pOwner->m_sysTime);
-					m_pOwner->UpdateText();
-				}
-				else if(pHeader->code == DTN_DROPDOWN) {
-					m_bDropOpen = true;
-
-				}
-				else if(pHeader->code == DTN_CLOSEUP) {
-					::SendMessage(m_hWnd, DTM_GETSYSTEMTIME, 0, (LPARAM)&m_pOwner->m_sysTime);
-					m_pOwner->UpdateText();
-					PostMessage(WM_CLOSE);
-					m_bDropOpen = false;
-				}
-			}
-			bHandled = FALSE;
-		}
-		else if(uMsg == WM_KILLFOCUS)
-		{
-			if(!m_bDropOpen) {
-				PostMessage(WM_CLOSE);
-			}
-			bHandled = FALSE;
-		}
-		else if( uMsg == WM_PAINT) {
-			if (m_pOwner->GetManager()->IsLayered()) {
-				//m_pOwner->GetManager()->AddNativeWindow(m_pOwner, m_hWnd);
-			}
-			bHandled = FALSE;
-		}
-		else if( uMsg == WM_SETCURSOR)
-		{
-			return lRes;
-		}
-		else bHandled = FALSE;
-		if( !bHandled ) return CWindowWnd::HandleMessage(uMsg, wParam, lParam);
-		return lRes;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	//
 	IMPLEMENT_DUICONTROL(CDateTimeExUI)
@@ -180,12 +45,12 @@ namespace DuiLib
 		::GetLocalTime(&m_sysTime);
 		m_bReadOnly = false;
 
-		m_pLabelDate = new CLabelUI;
+		m_pLabelDate = new CDateTimeLabelUI(this, UIDTS_DATE);
 		m_pLabelDate->SetTextPadding(CDuiRect(5,0,5,0));
 		Add(m_pLabelDate);
 		m_pLabelDate->OnEvent += MakeDelegate(this, &CDateTimeExUI::OnEventLabelDate);
 
-		m_pLabelTime = new CLabelUI;
+		m_pLabelTime = new CDateTimeLabelUI(this, UIDTS_TIME);
 		m_pLabelTime->SetTextPadding(CDuiRect(5,0,5,0));
 		Add(m_pLabelTime);
 		m_pLabelTime->OnEvent += MakeDelegate(this, &CDateTimeExUI::OnEventLabelTime);
@@ -204,7 +69,7 @@ namespace DuiLib
 
 	void CDateTimeExUI::DoInit()
 	{
-		UpdateText();
+		
 	}
 
 	bool CDateTimeExUI::OnEventLabelDate(void* param)
@@ -229,8 +94,8 @@ namespace DuiLib
 			if( m_pWindowDate ) return false;
 			m_pWindowDate = new CDateTimeExWnd();
 			ASSERT(m_pWindowDate);
-			m_pWindowDate->Init(this, UIDTS_DATE);
-			m_pWindowDate->ShowWindow();
+			((CDateTimeExWnd *)m_pWindowDate)->Init(this, UIDTS_DATE);
+			((CDateTimeExWnd *)m_pWindowDate)->ShowWindow();
 		}
 		if( pEvent->Type == UIEVENT_KILLFOCUS && IsEnabled() ) 
 		{
@@ -247,8 +112,8 @@ namespace DuiLib
 				}
 				if( m_pWindowDate != NULL )
 				{
-					m_pWindowDate->Init(this, UIDTS_DATE);
-					m_pWindowDate->ShowWindow();
+					((CDateTimeExWnd *)m_pWindowDate)->Init(this, UIDTS_DATE);
+					((CDateTimeExWnd *)m_pWindowDate)->ShowWindow();
 				}
 			}
 			return false;
@@ -279,8 +144,8 @@ namespace DuiLib
 			if( m_pWindowTime ) return false;
 			m_pWindowTime = new CDateTimeExWnd();
 			ASSERT(m_pWindowTime);
-			m_pWindowTime->Init(this, UIDTS_TIME);
-			m_pWindowTime->ShowWindow();
+			((CDateTimeExWnd *)m_pWindowTime)->Init(this, UIDTS_TIME);
+			((CDateTimeExWnd *)m_pWindowTime)->ShowWindow();
 		}
 		if( pEvent->Type == UIEVENT_KILLFOCUS && IsEnabled() ) 
 		{
@@ -297,8 +162,8 @@ namespace DuiLib
 				}
 				if( m_pWindowTime != NULL )
 				{
-					m_pWindowTime->Init(this, UIDTS_TIME);
-					m_pWindowTime->ShowWindow();
+					((CDateTimeExWnd *)m_pWindowTime)->Init(this, UIDTS_TIME);
+					((CDateTimeExWnd *)m_pWindowTime)->ShowWindow();
 				}
 			}
 			return false;
@@ -316,7 +181,6 @@ namespace DuiLib
 	{
 		m_sysTime = *pst;
 		Invalidate();
-		UpdateText();
 	}
 
 	void CDateTimeExUI::SetReadOnly(bool bReadOnly)
@@ -340,27 +204,61 @@ namespace DuiLib
 		return m_uFormatStyle;
 	}
 
-	void CDateTimeExUI::UpdateText()
+	void CDateTimeExUI::SetText(LPCTSTR lpszDate)
+	{
+		DATE dt;
+		USES_CONVERSION_EX;
+		LPCTSTR pszDate = ( lpszDate == NULL ) ? _T("") : lpszDate;
+
+		HRESULT hr;
+		LPOLESTR p = T2OLE_EX((LPTSTR)pszDate, _ATL_SAFE_ALLOCA_DEF_THRESHOLD);
+
+#ifndef _UNICODE
+		if( p == NULL )
+		{
+			dt = 0;
+			return;
+		}
+#endif // _UNICODE
+
+		DWORD dwFlags = 0;
+		LCID lcid = LANG_USER_DEFAULT;
+		if (FAILED(hr = VarDateFromStr( p, lcid, dwFlags, &dt )))
+		{
+			if (hr == DISP_E_TYPEMISMATCH)
+			{
+				// Can't convert string to date, set 0 and invalidate
+				dt = 0;
+				return;
+			}
+			else if (hr == DISP_E_OVERFLOW)
+			{
+				// Can't convert string to date, set -1 and invalidate
+				dt = -1;
+				return;
+			}
+			else
+			{
+				// Can't convert string to date, set -1 and invalidate
+				dt = -1;
+				return;
+			}
+		}
+		::VariantTimeToSystemTime(dt, &m_sysTime);
+	}
+
+	CDuiString CDateTimeExUI::GetText() const
 	{
 		CDuiString sText;
 
-		if(m_uFormatStyle == 0)
-		{
-			sText.SmallFormat(_T("%4d-%02d-%02d"), m_sysTime.wYear, m_sysTime.wMonth, m_sysTime.wDay);
-			if(m_pLabelDate) m_pLabelDate->SetText(sText);
-		}
-		else if(m_uFormatStyle == 1)
-		{
-			sText.SmallFormat(_T("%2d:%02d:%02d"), m_sysTime.wHour, m_sysTime.wMinute, m_sysTime.wSecond);
-			if(m_pLabelTime) m_pLabelTime->SetText(sText);
-		}
-		else if(m_uFormatStyle == 2)
-		{
-			sText.SmallFormat(_T("%4d-%02d-%02d"), m_sysTime.wYear, m_sysTime.wMonth, m_sysTime.wDay);
-			if(m_pLabelDate) m_pLabelDate->SetText(sText);
-			sText.SmallFormat(_T("%2d:%02d:%02d"), m_sysTime.wHour, m_sysTime.wMinute, m_sysTime.wSecond);
-			if(m_pLabelTime) m_pLabelTime->SetText(sText);
-		}
+		if(m_uFormatStyle == UIDTS_DATE)
+			sText.SmallFormat(_T("%4d - %02d - %02d"), m_sysTime.wYear, m_sysTime.wMonth, m_sysTime.wDay);
+		else if(m_uFormatStyle == UIDTS_TIME)
+			sText.SmallFormat(_T("%02d : %02d : %02d"), m_sysTime.wHour, m_sysTime.wMinute, m_sysTime.wSecond);
+		else if(m_uFormatStyle == UIDTS_DATETIME)
+			sText.SmallFormat(_T("%4d - %02d - %02d %2d : %02d : %02d"), m_sysTime.wYear, m_sysTime.wMonth, m_sysTime.wDay, m_sysTime.wHour, m_sysTime.wMinute, m_sysTime.wSecond);
+
+		return sText;
 	}
 
 	void CDateTimeExUI::DoEvent(TEventUI& event)
@@ -384,6 +282,16 @@ namespace DuiLib
 		return m_iFont;
 	}
 
+	CLabelUI *CDateTimeExUI::GetDateLabel() const
+	{
+		return m_pLabelDate;
+	}
+
+	CLabelUI *CDateTimeExUI::GetTimeLabel() const
+	{
+		return m_pLabelTime;
+	}
+
 	void CDateTimeExUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
 		//add by liqs99
@@ -403,7 +311,7 @@ namespace DuiLib
 			}
 			else if( _tcscmp(pstrValue, _T("datetime")) == 0)
 			{
-				SetFormatStyle(UIDTS_DateTimeEx);
+				SetFormatStyle(UIDTS_DATETIME);
 				m_pLabelDate->SetVisible(true);
 				m_pLabelTime->SetVisible(true);
 			}
@@ -413,8 +321,6 @@ namespace DuiLib
 				m_pLabelDate->SetVisible(true);
 				m_pLabelTime->SetVisible(false);
 			}
-
-			UpdateText();
 		}
 		else if( _tcscmp(pstrName, _T("datelabelstyle")) == 0 ) 
 		{

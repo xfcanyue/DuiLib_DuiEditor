@@ -1130,7 +1130,7 @@ namespace DuiLib {
 		SetItemInfo(GetName(), bCheck);
 	}
 
-	bool CMenuElementUI::GetChecked() const
+	bool CMenuElementUI::GetChecked()
 	{
 		LPCTSTR pstrName = GetName();
 		if(pstrName == NULL || lstrlen(pstrName) <= 0) return false;
@@ -1143,8 +1143,27 @@ namespace DuiLib {
 				return pItemInfo->bChecked;
 			}
 		}
+		
+		//发消息给父窗口，返回check状态
+// 		bool isClosing = false;
+// 		CMenuUI* menuUI=static_cast<CMenuUI*>(GetManager()->GetRoot());
+// 		isClosing = (menuUI->m_pWindow->isClosing);
+// 		if (IsWindow(GetManager()->GetPaintWindow()) && !isClosing) {
+// 			if (CMenuWnd::GetGlobalContextMenuObserver().GetManager() != NULL)
+// 			{
+// 				CMenuCmdUI cmdUI;
+// 				cmdUI.m_bEnable = IsEnabled();
+// 				cmdUI.m_bCheck = true;
+// 				cmdUI.m_sName = GetName();
+// 				cmdUI.m_sText = GetText();
+// 				LRESULT lRet = ::SendMessage(CMenuWnd::GetGlobalContextMenuObserver().GetManager()->GetPaintWindow(), WM_MENU_UPDATE_COMMAND_UI, (WPARAM)&cmdUI, (LPARAM)this);
+// 				if(lRet)
+// 				{
+// 					return cmdUI.GetCheck();
+// 				}
+// 			}
+// 		}
 		return false;
-
 	}
 
 	void CMenuElementUI::SetCheckItem(bool bCheckItem/* = false*/)
@@ -1258,5 +1277,40 @@ namespace DuiLib {
 			return pItemInfo;
 		}
 		return NULL;
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	CMenuCmdUI::CMenuCmdUI() : m_bEnable(true), m_bCheck(false)
+	{
+	}
+
+	void CMenuCmdUI::Enable(bool bOn)
+	{
+		m_bEnable = bOn;
+	}
+
+	void CMenuCmdUI::SetCheck(bool bCheck)
+	{
+		m_bCheck = bCheck;
+	}
+
+	bool CMenuCmdUI::GetCheck()
+	{
+		return m_bCheck;
+	}
+
+	void CMenuCmdUI::SetText(LPCTSTR lpszText)
+	{
+		m_sText = lpszText;
+	}
+
+	CDuiString CMenuCmdUI::GetText()
+	{
+		return m_sText;
+	}
+
+	CDuiString CMenuCmdUI::GetName()
+	{
+		return m_sName;
 	}
 } // namespace DuiLib

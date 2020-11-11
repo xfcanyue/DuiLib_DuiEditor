@@ -22,6 +22,7 @@ CDuiEditorViewCode::CDuiEditorViewCode()
 	m_nTargetLine = -1;
 	m_bAutoUpdateDesign = TRUE;
 	m_bNeedUpdate = FALSE;
+	m_bUpdateDesignWhileModified = TRUE;
 	m_xmlParseResult.status = pugi::status_ok;
 }
 
@@ -51,6 +52,8 @@ BEGIN_MESSAGE_MAP(CDuiEditorViewCode, CView)
 	ON_UPDATE_COMMAND_UI(ID_SCI_APPLY_DESIGN, &CDuiEditorViewCode::OnUpdateSciApplyDesign)
 	ON_COMMAND(ID_SCI_WRAP_LINE, &CDuiEditorViewCode::OnSciWrapLine)
 	ON_UPDATE_COMMAND_UI(ID_SCI_WRAP_LINE, &CDuiEditorViewCode::OnUpdateSciWrapLine)
+	ON_COMMAND(ID_SCI_UPDATE_WHILE_MODIFY, &CDuiEditorViewCode::OnSciUpdateWhileModify)
+	ON_UPDATE_COMMAND_UI(ID_SCI_UPDATE_WHILE_MODIFY, &CDuiEditorViewCode::OnUpdateSciUpdateWhileModify)
 END_MESSAGE_MAP()
 
 
@@ -201,9 +204,10 @@ BOOL CDuiEditorViewCode::ApplyDocument()
 	CDuiEditorDoc *pDoc = (CDuiEditorDoc *)GetDocument();
 	pDoc->m_doc.load_string(T2XML(strText), XML_PARSER_OPTIONS);
 
+	GetUIManager()->GetUiTracker()->RemoveAll();
 	GetUIManager()->GetTreeView()->InitTreeContent();
 	GetUIManager()->GetDesignView()->InitView();
-	pDoc->SetModifiedFlag(TRUE);
+	//pDoc->SetModifiedFlag(TRUE);
 	return TRUE;
 }
 
@@ -231,6 +235,10 @@ BOOL CDuiEditorViewCode::UpdateDocument()
 	CSciXmlParse parse;
 	parse.SetUIManager(GetUIManager());
 	parse.Parse(GetUIManager()->GetDocument()->m_doc, xml);
+
+	//重新计算控件大小，并且刷新Tracker
+	GetUIManager()->GetUiFrom()->SetPos(GetUIManager()->GetUiFrom()->GetPos());
+	GetUIManager()->GetUiTracker()->RefreshRect();
 
 	GetUIManager()->GetDocument()->SetModifiedFlag(TRUE);
 	//sci.sci_SetSavePoint();
@@ -278,8 +286,6 @@ void CDuiEditorViewCode::SelectXmlNode(xml_node node)
 
 void CDuiEditorViewCode::AddNode(xml_node node)
 {
-	CSciUndoBlock undo(&sci);
-
 	m_bAutoUpdateDesign = FALSE;
 	CSciXmlWriter w(&sci);
 	w.AddNode(node);
@@ -288,8 +294,6 @@ void CDuiEditorViewCode::AddNode(xml_node node)
 
 void CDuiEditorViewCode::DeleteNode(xml_node node)
 {
-	CSciUndoBlock undo(&sci);
-
 	m_bAutoUpdateDesign = FALSE;
 	CSciXmlWriter w(&sci);
 	w.DeleteNode(node);
@@ -298,8 +302,6 @@ void CDuiEditorViewCode::DeleteNode(xml_node node)
 
 void CDuiEditorViewCode::AddAttribute(xml_node node, xml_attribute attr)
 {
-	CSciUndoBlock undo(&sci);
-
 	m_bAutoUpdateDesign = FALSE;
 	CSciXmlWriter w(&sci);
 	w.AddAttribute(node, attr);
@@ -308,8 +310,6 @@ void CDuiEditorViewCode::AddAttribute(xml_node node, xml_attribute attr)
 
 void CDuiEditorViewCode::ModifyAttribute(xml_node node, xml_attribute attr)
 {
-	CSciUndoBlock undo(&sci);
-
 	m_bAutoUpdateDesign = FALSE;
 	CSciXmlWriter w(&sci);
 	m_bAutoUpdateDesign = FALSE;;
@@ -319,8 +319,6 @@ void CDuiEditorViewCode::ModifyAttribute(xml_node node, xml_attribute attr)
 
 void CDuiEditorViewCode::DeleteAttribute(xml_node node, xml_attribute attr)
 {
-	CSciUndoBlock undo(&sci);
-
 	m_bAutoUpdateDesign = FALSE;
 	CSciXmlWriter w(&sci);
 	w.DeleteAttribute(node, attr);
@@ -412,7 +410,10 @@ void CDuiEditorViewCode::UpdateFrameStatus()
 	int curLine = sci.sci_GetCurLine();
 	int curPos = sci.sci_GetCurrentPos();
 
-	pFrame->m_wndStatusBar.SetXmlUpdateStatus(!m_bNeedUpdate);
+	if(m_bUpdateDesignWhileModified)
+		pFrame->m_wndStatusBar.SetXmlUpdateStatus(!m_bNeedUpdate);
+	else
+		pFrame->m_wndStatusBar.SetXmlUpdateStatus(m_xmlParseResult.status == pugi::status_ok);
 
 	CString temp;
 	temp.Format(_T("行: %d"), curLine+1);
@@ -515,32 +516,29 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 				(pMsg->modificationType & SC_MOD_DELETETEXT))
 			{
 				//InsertMsg(_T("SCN_MODIFIED"));
+				CStringA strTextUtf8;
+				sci.sci_GetTextAll(strTextUtf8);
+				CString strText = LSUTF82T(strTextUtf8);
+				xml_document xml;
+				m_xmlParseResult = xml.load_string(T2XML(strText), XML_PARSER_OPTIONS);
 
-				//尝试实时提交修改		
-				if(m_bAutoUpdateDesign)
+				//尝试实时提交修改
+				if(m_bUpdateDesignWhileModified && m_bAutoUpdateDesign  && 
+					(GetUIManager()->GetSplitterMode() == SPLIT_UPDOWN || 
+					GetUIManager()->GetSplitterMode() == SPLIT_LEFTRIGHT) )
 				{
 					m_bNeedUpdate = TRUE;
-#ifdef _DEBUG
-					//InsertMsg(_T("try to update design."));
-#endif
-					CStringA strTextUtf8;
-					sci.sci_GetTextAll(strTextUtf8);
-					CString strText = LSUTF82T(strTextUtf8);
 
-					xml_document xml;
-					m_xmlParseResult = xml.load_string(T2XML(strText), XML_PARSER_OPTIONS);
 					if(m_xmlParseResult.status == pugi::status_ok)
 					{
 						CSciXmlParse parse;
 						parse.SetUIManager(GetUIManager());
 						parse.Parse(GetUIManager()->GetDocument()->m_doc, xml);
+
+						//重新计算控件大小，并且刷新Tracker
+						GetUIManager()->GetUiFrom()->SetPos(GetUIManager()->GetUiFrom()->GetPos());
+						GetUIManager()->GetUiTracker()->RefreshRect();
 						m_bNeedUpdate = FALSE;
-					}
-					else
-					{
-#ifdef _DEBUG
-						//InsertMsg(_T("auto update design failed."));
-#endif
 					}
 				}
 			}
@@ -807,4 +805,16 @@ void CDuiEditorViewCode::OnSciWrapLine()
 void CDuiEditorViewCode::OnUpdateSciWrapLine(CCmdUI *pCmdUI)
 {
 	pCmdUI->SetCheck(sci.sci_GetWrapMode() != SC_WRAP_NONE);
+}
+
+
+void CDuiEditorViewCode::OnSciUpdateWhileModify()
+{
+	m_bUpdateDesignWhileModified = !m_bUpdateDesignWhileModified;
+}
+
+
+void CDuiEditorViewCode::OnUpdateSciUpdateWhileModify(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(m_bUpdateDesignWhileModified);
 }

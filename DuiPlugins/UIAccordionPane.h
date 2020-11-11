@@ -5,9 +5,12 @@
 
 namespace DuiLib
 {
+	#define	ACCORDION_ANIMATION_ID	1
+
 	class UILIB_PLUGIN_API CAccordionPaneUI : public CVerticalLayoutUI, public CUIAnimation
 	{
 		DECLARE_DUICONTROL(CAccordionPaneUI)
+		class CPaneCheckBox;
 	public:
 		CAccordionPaneUI();
 		~CAccordionPaneUI();
@@ -44,6 +47,12 @@ namespace DuiLib
 		void SetPaneVisible(bool bVisible, bool bAnimation = true);
 		bool IsPaneVisible() const;
 		virtual int GetFixedHeight() const;
+
+		void SetFrameCount(int framecount);
+		int GetFrameCount() const;
+		void SetFrameDelay(int nDelay);
+		int GetFrameDelay() const;
+
 		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 
 	private:
@@ -59,13 +68,8 @@ namespace DuiLib
 
 		RECT m_rcItemOld;
 
-		enum
-		{
-			PANE_ANIMATION_ID = 1,
-
-			PANE_ANIMATION_ELLAPSE = 5,
-			PANE_ANIMATION_FRAME_COUNT = 24,
-		};
+		int m_nFrameCount;
+		int m_nFrameDelay;
 	};
 
 } // namespace DuiLib

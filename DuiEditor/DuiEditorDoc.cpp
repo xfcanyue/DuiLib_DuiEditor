@@ -217,7 +217,15 @@ BOOL CDuiEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
 		return FALSE;
 
 	// TODO:  在此添加您专用的创建代码
-	m_doc.load_file(lpszPathName, XML_PARSER_OPTIONS);
+	xml_parse_result ret = m_doc.load_file(lpszPathName, XML_PARSER_OPTIONS);
+	if(ret.status != pugi::status_ok)
+	{
+		LSSTRING_CONVERSION;
+		CString temp;
+		temp.Format(_T("解析错误: \r\n位置: %d \r\n错误信息: %s"), 
+			ret.offset, LSA2T(ret.description()));
+		AfxMessageBox(temp);
+	}
 
 	xml_node root = m_doc.child(XTEXT("Window"));
 	if(root)
@@ -437,6 +445,7 @@ void CDuiEditorDoc::OnEditInsertFont()
 		GetUIManager()->GetTreeView()->AddNewControl(nodeFont, TVI_FIRST);
 	}
 
+	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
 	GetUIManager()->GetCodeView()->AddNode(nodeFont);
 	g_duiProp.AddAttribute(nodeFont, _T("id"), 0,				GetUIManager());
 	g_duiProp.AddAttribute(nodeFont, _T("name"), _T("宋体"),	GetUIManager());
@@ -466,6 +475,7 @@ void  CDuiEditorDoc::OnEditInsertDefault()
 		GetUIManager()->GetTreeView()->AddNewControl(nodeDefault, TVI_FIRST);
 	}
 
+	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
 	GetUIManager()->GetCodeView()->AddNode(nodeDefault);
 	GetUIManager()->GetPropList()->InitProp(nodeDefault);
 }
@@ -491,6 +501,7 @@ void  CDuiEditorDoc::OnEditInsertStyleNode()
 		GetUIManager()->GetTreeView()->AddNewControl(nodeStyle, TVI_FIRST);
 	}
 
+	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
 	GetUIManager()->GetCodeView()->AddNode(nodeStyle);
 	g_duiProp.AddAttribute(nodeStyle, _T("name"), _T(""),	GetUIManager());
 	g_duiProp.AddAttribute(nodeStyle, _T("class"), _T(""),	GetUIManager());

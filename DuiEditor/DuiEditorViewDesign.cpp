@@ -393,6 +393,7 @@ void CDuiEditorViewDesign::OnUpdateEditPaste(CCmdUI *pCmdUI)
 
 void CDuiEditorViewDesign::OnEditClear()
 {
+	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
 	for (int i=0; i<GetUIManager()->GetUiTracker()->m_arrTracker.GetSize(); i++)
 	{
 		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
@@ -497,6 +498,7 @@ void CDuiEditorViewDesign::OnCommandTabLayoutSetSel(UINT nID)
 
 void CDuiEditorViewDesign::OnFormatAlignLeft()
 {
+	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
 	CRect rcFocus = GetUIManager()->GetUiTracker()->m_pFocused->m_pControl->GetPos();
 
 	for (int i=0; i<GetUIManager()->GetUiTracker()->GetSize(); i++)
@@ -515,6 +517,7 @@ void CDuiEditorViewDesign::OnFormatAlignLeft()
 			GetUIManager()->UpdateControlUI(elem->m_node,  attr);
 		}
 	}
+	GetUIManager()->GetUiTracker()->RefreshRect();
 }
 
 
@@ -526,6 +529,7 @@ void CDuiEditorViewDesign::OnUpdateFormatAlignLeft(CCmdUI *pCmdUI)
 
 void CDuiEditorViewDesign::OnFormatAlignRight()
 {
+	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
 	CRect rcFocus = GetUIManager()->GetUiTracker()->m_pFocused->m_pControl->GetPos();
 
 	for (int i=0; i<GetUIManager()->GetUiTracker()->GetSize(); i++)
@@ -544,6 +548,7 @@ void CDuiEditorViewDesign::OnFormatAlignRight()
 			GetUIManager()->UpdateControlUI(elem->m_node,  attr);
 		}
 	}
+	GetUIManager()->GetUiTracker()->RefreshRect();
 }
 
 
@@ -555,6 +560,7 @@ void CDuiEditorViewDesign::OnUpdateFormatAlignRight(CCmdUI *pCmdUI)
 
 void CDuiEditorViewDesign::OnFormatAlignTop()
 {
+	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
 	CRect rcFocus = GetUIManager()->GetUiTracker()->m_pFocused->m_pControl->GetPos();
 
 	for (int i=0; i<GetUIManager()->GetUiTracker()->GetSize(); i++)
@@ -573,6 +579,7 @@ void CDuiEditorViewDesign::OnFormatAlignTop()
 			GetUIManager()->UpdateControlUI(elem->m_node,  attr);
 		}
 	}
+	GetUIManager()->GetUiTracker()->RefreshRect();
 }
 
 
@@ -584,6 +591,7 @@ void CDuiEditorViewDesign::OnUpdateFormatAlignTop(CCmdUI *pCmdUI)
 
 void CDuiEditorViewDesign::OnFormatAlignBottom()
 {
+	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
 	CRect rcFocus = GetUIManager()->GetUiTracker()->m_pFocused->m_pControl->GetPos();
 
 	for (int i=0; i<GetUIManager()->GetUiTracker()->GetSize(); i++)
@@ -602,6 +610,7 @@ void CDuiEditorViewDesign::OnFormatAlignBottom()
 			GetUIManager()->UpdateControlUI(elem->m_node,  attr);
 		}
 	}
+	GetUIManager()->GetUiTracker()->RefreshRect();
 }
 
 
@@ -612,6 +621,7 @@ void CDuiEditorViewDesign::OnUpdateFormatAlignBottom(CCmdUI *pCmdUI)
 
 void CDuiEditorViewDesign::OnFormatAlignCenterVert()
 {
+	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
 	for (int i=0; i<GetUIManager()->GetUiTracker()->GetSize(); i++)
 	{
 		CUITrackerMuliti::CTrackerElement *elem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
@@ -629,6 +639,7 @@ void CDuiEditorViewDesign::OnFormatAlignCenterVert()
 		xml_attribute attr = g_duiProp.AddAttribute(elem->m_node, _T("pos"), RectToString(&rc),	GetUIManager());
 		GetUIManager()->UpdateControlUI(elem->m_node, attr);
 	}
+	GetUIManager()->GetUiTracker()->RefreshRect();
 }
 
 
@@ -640,6 +651,7 @@ void CDuiEditorViewDesign::OnUpdateFormatAlignCenterVert(CCmdUI *pCmdUI)
 
 void CDuiEditorViewDesign::OnFormatAlignCenterHori()
 {
+	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
 	//多选和单选的居中, 是不一样的
 	if(GetUIManager()->GetUiTracker()->GetSize() > 1)
 	{
@@ -667,6 +679,7 @@ void CDuiEditorViewDesign::OnFormatAlignCenterHori()
 		xml_attribute attr = g_duiProp.AddAttribute(elem->m_node, _T("pos"), RectToString(&rc),	GetUIManager());
 		GetUIManager()->UpdateControlUI(elem->m_node,  attr);
 	}
+	GetUIManager()->GetUiTracker()->RefreshRect();
 }
 
 
@@ -677,6 +690,7 @@ void CDuiEditorViewDesign::OnUpdateFormatAlignCenterHori(CCmdUI *pCmdUI)
 
 void CDuiEditorViewDesign::OnFormatAlignSameSpaceVert()
 {
+	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
 	if(GetUIManager()->GetUiTracker()->GetSize() <= 2)	return;
 
 	//创建一个从上到下的数组
@@ -734,6 +748,7 @@ void CDuiEditorViewDesign::OnFormatAlignSameSpaceVert()
 		xml_attribute attr = g_duiProp.AddAttribute(elem->m_node, _T("pos"), RectToString(&rc),	GetUIManager());
 		GetUIManager()->UpdateControlUI(elem->m_node,  attr);
 	}
+	GetUIManager()->GetUiTracker()->RefreshRect();
 }
 
 
@@ -745,6 +760,7 @@ void CDuiEditorViewDesign::OnUpdateFormatAlignSameSpaceVert(CCmdUI *pCmdUI)
 
 void CDuiEditorViewDesign::OnFormatAlignSameSpaceHori()
 {
+	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
 	if(GetUIManager()->GetUiTracker()->GetSize() <= 2)	return;
 
 	//创建一个从左到右的数组
@@ -801,6 +817,7 @@ void CDuiEditorViewDesign::OnFormatAlignSameSpaceHori()
 		xml_attribute attr = g_duiProp.AddAttribute(elem->m_node, _T("pos"), RectToString(&rc),	GetUIManager());
 		GetUIManager()->UpdateControlUI(elem->m_node,  attr);
 	}
+	GetUIManager()->GetUiTracker()->RefreshRect();
 }
 
 
@@ -811,6 +828,7 @@ void CDuiEditorViewDesign::OnUpdateFormatAlignSameSpaceHori(CCmdUI *pCmdUI)
 
 void CDuiEditorViewDesign::OnFormatSameWidth()
 {
+	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
 	CRect rcFocus = GetUIManager()->GetUiTracker()->m_pFocused->m_pControl->GetPos();
 
 	for (int i=0; i<GetUIManager()->GetUiTracker()->GetSize(); i++)
@@ -829,6 +847,7 @@ void CDuiEditorViewDesign::OnFormatSameWidth()
 			GetUIManager()->UpdateControlUI(elem->m_node,  attr);
 		}
 	}
+	GetUIManager()->GetUiTracker()->RefreshRect();
 }
 
 
@@ -840,6 +859,7 @@ void CDuiEditorViewDesign::OnUpdateFormatSameWidth(CCmdUI *pCmdUI)
 
 void CDuiEditorViewDesign::OnFormatSameHeight()
 {
+	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
 	CRect rcFocus = GetUIManager()->GetUiTracker()->m_pFocused->m_pControl->GetPos();
 
 	for (int i=0; i<GetUIManager()->GetUiTracker()->GetSize(); i++)
@@ -858,6 +878,7 @@ void CDuiEditorViewDesign::OnFormatSameHeight()
 			GetUIManager()->UpdateControlUI(elem->m_node,  attr);
 		}
 	}
+	GetUIManager()->GetUiTracker()->RefreshRect();
 }
 
 
@@ -869,6 +890,7 @@ void CDuiEditorViewDesign::OnUpdateFormatSameHeight(CCmdUI *pCmdUI)
 
 void CDuiEditorViewDesign::OnFormatSameSize()
 {
+	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
 	CRect rcFocus = GetUIManager()->GetUiTracker()->m_pFocused->m_pControl->GetPos();
 
 	for (int i=0; i<GetUIManager()->GetUiTracker()->GetSize(); i++)
@@ -887,6 +909,7 @@ void CDuiEditorViewDesign::OnFormatSameSize()
 			GetUIManager()->UpdateControlUI(elem->m_node,  attr);
 		}
 	}
+	GetUIManager()->GetUiTracker()->RefreshRect();
 }
 
 

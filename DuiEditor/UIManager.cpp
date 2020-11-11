@@ -89,8 +89,16 @@ BOOL CUIManager::SelectItem(CControlUI *pControl)
 		}
 	}
 
-	if(::GetKeyState(VK_CONTROL)>=0) GetUiTracker()->RemoveAll();
+	if(::GetKeyState(VK_CONTROL)>=0) //没有按下Ctrl键
+	{	
+		if(!GetUiTracker()->IsSelected(pControl))//当前点击的控件是未选中的
+			GetUiTracker()->RemoveAll();
+		else if(GetUiTracker()->m_pFocused->m_pControl != pControl) //当前点击的控件不是焦点控件
+			GetUiTracker()->RemoveAll();
+	}
+
 	GetUiTracker()->Add(xml_node((xml_node_struct *)pControl->GetTag()), pControl->GetPos());
+
 	GetUiWindow()->Invalidate();
 	return TRUE;
 }

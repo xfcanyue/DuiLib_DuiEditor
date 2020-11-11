@@ -196,6 +196,7 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 	//保存文档和控件的双向指针
 	pNewControl->SetTag((UINT_PTR)nodeNewControl.internal_object());
 	nodeNewControl.set_tag((UINT_PTR)pNewControl);
+
 	GetUIManager()->GetCodeView()->AddNode(nodeNewControl);
 
 	if(bCustomControl)
@@ -284,12 +285,6 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 	//只选中新添加的控件
 	m_tracker.RemoveAll();
 	m_tracker.Add(nodeNewControl, pNewControl->GetPos());
-
-	//插入command history
-	//pManager->GetCmdHistory()->AddNewControl(nodeNewControl);
-
-	//保存文档修改标志
-	//pManager->GetDocument()->SetModifiedFlag(TRUE);
 }
 
 void CUIWindowEx::OnSelectingControl(CControlUI *pControl, const CRect &rcTracker)
@@ -405,15 +400,13 @@ LRESULT CUIWindowEx::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 	else
 	{
-		if(uMsg == WM_PAINT)
+ 		if(uMsg == WM_PAINT || uMsg == WM_LBUTTONUP || uMsg == WM_LBUTTONDOWN || uMsg == WM_MOUSEMOVE ||
+ 			uMsg == WM_MOUSEHOVER || uMsg == WM_TIMER || uMsg == WM_SETFOCUS || uMsg == WM_KILLFOCUS)
 		{
 			if (GetManager()->MessageHandler(uMsg, wParam, lParam, lRes))
 				return lRes;
 		}
 	}
-
-// 	if (m_pm.MessageHandler(uMsg, wParam, lParam, lRes))
-// 		return lRes;
 
 	return CWindowWnd::HandleMessage(uMsg, wParam, lParam);
 }
@@ -605,6 +598,8 @@ LRESULT CUIWindowEx::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 {
 	SetFocus(GetSafeHwnd());
 
+	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
+
 	CUIManager *pManager = GetUIManager();
 
 	//切换左边控件树
@@ -681,8 +676,8 @@ LRESULT CUIWindowEx::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 	}
 	else
 	{
-		m_tracker.SetFocus(nodeClick);
 		pManager->SelectItem(nodeClick);
+		m_tracker.SetFocus(nodeClick);
 		pManager->GetTreeView()->SelectXmlNode(nodeClick);
 		pManager->GetCodeView()->SelectXmlNode(nodeClick);
 	}

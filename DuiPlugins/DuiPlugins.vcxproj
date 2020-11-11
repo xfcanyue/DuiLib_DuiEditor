@@ -202,6 +202,7 @@
   <ItemGroup>
     <ClCompile Include="ComboEditWnd.cpp" />
     <ClCompile Include="ComboExUI.cpp" />
+    <ClCompile Include="UIDateTimeExWnd.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">false</CompileAsManaged>
@@ -233,12 +234,16 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="UIAccordionPane.cpp" />
+    <ClCompile Include="UIAnimationPane.cpp" />
     <ClCompile Include="UIDataExchange.cpp" />
     <ClCompile Include="UIDateTimeEx.cpp" />
+    <ClCompile Include="UIImageBoxEx.cpp" />
+    <ClCompile Include="UIRollTextEx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComboEditWnd.h" />
     <ClInclude Include="ComboExUI.h" />
+    <ClInclude Include="UIDateTimeExWnd.h" />
     <ClInclude Include="GridCtrlUI.h" />
     <ClInclude Include="GridCtrlWnd.h" />
     <ClInclude Include="IconButton.h" />
@@ -253,8 +258,11 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="UIAccordionPane.h" />
+    <ClInclude Include="UIAnimationPane.h" />
     <ClInclude Include="UIDataExchange.h" />
     <ClInclude Include="UIDateTimeEx.h" />
+    <ClInclude Include="UIImageBoxEx.h" />
+    <ClInclude Include="UIRollTextEx.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DuiPlugins.rc" />

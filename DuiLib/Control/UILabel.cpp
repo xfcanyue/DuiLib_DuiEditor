@@ -114,7 +114,8 @@ namespace DuiLib
 			m_cxyFixed.cx = MulDiv(rcText.right - rcText.left + GetManager()->GetDPIObj()->Scale(m_rcTextPadding.left) + GetManager()->GetDPIObj()->Scale(m_rcTextPadding.right), 100, GetManager()->GetDPIObj()->GetScale());
 		}
 
-		if( m_cxyFixed.cy == 0 ) return CDuiSize(GetManager()->GetDPIObj()->Scale(m_cxyFixed.cx), m_pManager->GetFontInfo(GetFont())->tm.tmHeight + 4);
+		//注释掉了，不需要自动计算高度，modify by liqs99
+		//if( m_cxyFixed.cy == 0 ) return CDuiSize(GetManager()->GetDPIObj()->Scale(m_cxyFixed.cx), m_pManager->GetFontInfo(GetFont())->tm.tmHeight + 4);
 		return CControlUI::EstimateSize(szAvailable);
 	}
 

@@ -190,6 +190,11 @@ LRESULT CComboEditWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		bHandled = FALSE;
 	}
+	else if( uMsg == WM_SETCURSOR)
+	{
+		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_IBEAM)));
+		return lRes;
+	}
 	else bHandled = FALSE;
 
 	if( !bHandled ) return CWindowWnd::HandleMessage(uMsg, wParam, lParam);

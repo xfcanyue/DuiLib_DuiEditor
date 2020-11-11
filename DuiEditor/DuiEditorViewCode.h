@@ -13,8 +13,8 @@ public:
 
 	CDuiEditorDoc* GetDocument() const;
 	void LoadDocument();
-	BOOL ApplyDocument();
-	BOOL UpdateDocument();
+	BOOL ApplyDocument();	//强制更新
+	BOOL UpdateDocument(); //增量更新
 	BOOL IsModify() { return sci.sci_GetModify(); }
 
 	void SelectXmlNode(CControlUI *pControl);
@@ -42,9 +42,10 @@ private:
 
 protected:
 	CSciWnd sci;
-	int m_nTargetLine;			//载入文档后滚动到目标行
-	BOOL m_bAutoUpdateDesign;	//是否自动更新到视图
-	BOOL m_bNeedUpdate;			//是否允许更新视图
+	int m_nTargetLine;					//载入文档后滚动到目标行
+	BOOL m_bAutoUpdateDesign;			//是否需要更新到视图
+	BOOL m_bNeedUpdate;					//是否允许更新视图
+	BOOL m_bUpdateDesignWhileModified; //当修改文档时，是否立即增量更新视图
 	xml_parse_result m_xmlParseResult;
 protected:
 	BOOL SelectControlUI(int pos, xml_node node);
@@ -86,4 +87,6 @@ public:
 	afx_msg void OnUpdateSciApplyDesign(CCmdUI *pCmdUI);
 	afx_msg void OnSciWrapLine();
 	afx_msg void OnUpdateSciWrapLine(CCmdUI *pCmdUI);
+	afx_msg void OnSciUpdateWhileModify();
+	afx_msg void OnUpdateSciUpdateWhileModify(CCmdUI *pCmdUI);
 };

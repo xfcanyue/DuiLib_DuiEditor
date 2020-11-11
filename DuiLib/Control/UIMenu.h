@@ -55,7 +55,8 @@ enum MenuItemDefaultInfo
 
 };
 
-#define WM_MENUCLICK WM_USER + 121  //用来接收按钮单击的消息
+#define WM_MENUCLICK WM_USER + 121					//用来接收按钮单击的消息
+#define WM_MENU_UPDATE_COMMAND_UI WM_USER + 122		//更新菜单消息
 
 
 ///////////////////////////////////////////////
@@ -367,7 +368,7 @@ public:
 	void SetIconSize(LONG cx, LONG cy);
 	void DrawItemIcon(HDC hDC, const RECT& rcItem);
 	void SetChecked(bool bCheck = true);
-	bool GetChecked() const;
+	bool GetChecked();
 	void SetCheckItem(bool bCheckItem = false);
 	bool GetCheckItem() const;
 
@@ -390,6 +391,27 @@ protected:
 	bool		m_bCheckItem;
 
 	bool		m_bShowExplandIcon;
+};
+
+class CMenuCmdUI
+{
+	friend class CMenuElementUI;
+public:
+	CMenuCmdUI();
+	virtual void Enable(bool bOn = TRUE);
+
+	virtual void SetCheck(bool bCheck);
+	virtual bool GetCheck();
+
+	virtual void SetText(LPCTSTR lpszText);
+	virtual CDuiString GetText();
+
+	virtual CDuiString GetName();
+private:
+	bool m_bEnable;
+	bool m_bCheck;
+	CDuiString m_sText;
+	CDuiString m_sName;
 };
 
 } // namespace DuiLib

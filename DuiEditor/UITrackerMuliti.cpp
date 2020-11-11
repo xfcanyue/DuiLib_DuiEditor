@@ -254,6 +254,20 @@ ExitLoop:
 
 BOOL CUITrackerMuliti::SetCursor(CWnd *pWnd, UINT nHitTest, const CPoint &ptDPtoLP, const CSize &szOffset)
 {
+	//只判断焦点控件的鼠标
+	if(m_pFocused == NULL)
+		return FALSE;
+
+	CRect rectSave = m_rect;
+	m_rect = m_pFocused->GetPos();
+	if (CUITracker::SetCursor(pWnd, nHitTest, ptDPtoLP, szOffset))
+	{
+		m_rect = rectSave;
+		return TRUE;
+	}
+	return FALSE;
+
+	/*
 	CRect rectSave = m_rect;
 	for (int i=0;i<m_arrTracker.GetSize();i++)
 	{
@@ -267,6 +281,7 @@ BOOL CUITrackerMuliti::SetCursor(CWnd *pWnd, UINT nHitTest, const CPoint &ptDPto
 		}
 	}
 	m_rect = rectSave;
+	*/
 	return FALSE;
 }
 
@@ -341,6 +356,34 @@ void CUITrackerMuliti::RemoveAll()
 	m_arrTracker.RemoveAll();
 }
 
+BOOL CUITrackerMuliti::IsSelected(xml_node node)
+{
+	for (int i=0;i<m_arrTracker.GetSize();i++)
+	{
+		CTrackerElement* pArrTracker = m_arrTracker.GetAt(i);
+
+		if (pArrTracker->m_node == node)
+		{
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+BOOL CUITrackerMuliti::IsSelected(CControlUI *pControl)
+{
+	for (int i=0;i<m_arrTracker.GetSize();i++)
+	{
+		CTrackerElement* pArrTracker = m_arrTracker.GetAt(i);
+
+		if (pArrTracker->m_pControl == pControl)
+		{
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
 void CUITrackerMuliti::CopyTrackerRect()
 {
 	for (int i=0;i<m_arrTracker.GetSize();i++)
@@ -386,6 +429,8 @@ void CUITrackerMuliti::SetFocus(xml_node node)
 
 void CUITrackerMuliti::OnChangedRect()
 {
+	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
+
 	BOOL bCopyControls = FALSE;
 	CArray<CControlUI *, CControlUI *> arrNewControl;
 
@@ -421,20 +466,22 @@ void CUITrackerMuliti::OnChangedRect()
 		if(!pParent->Add(pNewControl)) { CUIBuilder::DeleteControl(pNewControl); continue; }	
 
 		//写入文档
-		xml_node nodeNewControl = nodeParent.append_copy(nodeCurrentControl);
-
-		//复制控件不能复制控件的name
-		xml_attribute attrName = nodeNewControl.attribute(XTEXT("name"));
-		if(attrName)
-		{
-			nodeNewControl.remove_attribute(attrName);
-		}
+		xml_node nodeNewControl = nodeParent.append_child(nodeCurrentControl.name());
 
 		//保存文档和控件的双向指针
 		pNewControl->SetTag((UINT_PTR)nodeNewControl.internal_object());
 		nodeNewControl.set_tag((UINT_PTR)pNewControl);
 
 		GetUIManager()->GetCodeView()->AddNode(nodeNewControl);
+
+		//复制属性
+		for (xml_attribute attr=nodeCurrentControl.first_attribute(); attr; attr=attr.next_attribute())
+		{
+			if(CompareString(attr.name(), XTEXT("name"))) //不能复制控件的name
+				continue;
+
+			g_duiProp.AddAttribute(nodeNewControl, XML2T(attr.name()), XML2T(attr.value()), GetUIManager());
+		}
 
 		if(pCurrentControl->IsFloat()) //绝对定位
 		{
@@ -509,6 +556,7 @@ void CUITrackerMuliti::OnChangedRect()
 
 void CUITrackerMuliti::OnChangedRect(const CRect& rectOld)
 {
+	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
 //	InsertMsg(_T("OnChangedRect(const CRect& rectOld)"));
 
 	switch (m_nHitTest)
@@ -621,5 +669,9 @@ void CUITrackerMuliti::RefreshRect()
 	{
 		CTrackerElement* pArrTracker = m_arrTracker.GetAt(i);
 		pArrTracker->m_rect = pArrTracker->m_pControl->GetPos();
+	}
+	if(GetUIManager())
+	{
+		GetUIManager()->GetUiWindow()->Invalidate();
 	}
 }

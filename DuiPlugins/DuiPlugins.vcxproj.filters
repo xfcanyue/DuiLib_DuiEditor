@@ -75,6 +75,18 @@
     <ClCompile Include="UIAccordionPane.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="UIAnimationPane.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIImageBoxEx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIDateTimeExWnd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIRollTextEx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -129,6 +141,18 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="UIAccordionPane.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIAnimationPane.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIImageBoxEx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIDateTimeExWnd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIRollTextEx.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

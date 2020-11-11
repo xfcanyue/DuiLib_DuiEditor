@@ -26,14 +26,15 @@ namespace DuiLib
 		void SetFormatStyle(UINT uStyle);
 		UINT GetFormatStyle();
 
-		void UpdateText();
+		virtual void SetText(LPCTSTR pstrText);
+		virtual CDuiString GetText() const;
 
 		void DoEvent(TEventUI& event);
 
 		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+
 	protected:
 		SYSTEMTIME m_sysTime;
-		int        m_nDTUpdateFlag;
 		bool       m_bReadOnly;
 		int        m_uFormatStyle; //0=date, 1=time, 2=datetime  add by liqs99
 

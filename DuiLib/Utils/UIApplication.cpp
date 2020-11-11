@@ -154,7 +154,7 @@ void CUIApplication::InitResource()
 		}
 	case UILIB_ZIPRESOURCE:
 		{
-			CPaintManagerUI::SetResourcePath(m_strAppPath + _T("Res\\"));
+			CPaintManagerUI::SetResourcePath(m_strAppPath + m_strSkinPath);
 			HRSRC hResource = ::FindResource(CPaintManagerUI::GetResourceDll(), MAKEINTRESOURCE(m_uZipResourceID), m_strZipResourceType);
 			if( hResource != NULL ) {
 				DWORD dwSize = 0;

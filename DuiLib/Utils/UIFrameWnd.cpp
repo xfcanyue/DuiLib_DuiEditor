@@ -16,37 +16,37 @@ CUIFrameWnd::~CUIFrameWnd(void)
 
 void CUIFrameWnd::OnFinalMessage( HWND hWnd )
 {
-// 	std::list<CUIForm *>::iterator it;
-// 	for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
-// 	{
-// 		CUIForm *pForm = (CUIForm *)(*it);
-// 		RemoveVirtualWnd(pForm->GetWindowClassName());
-// 	}
-// 	m_listForm.clear();
+	if(m_listForm.size() > 0)
+	{
+		std::list<CUIForm *>::iterator it;
+		for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
+		{
+				delete (CUIForm *)(*it);
+		}
+		m_listForm.clear();
+	}
 
 	__super::OnFinalMessage(hWnd);	
 }
 
-void CUIFrameWnd::AttachForm(CUIForm *pForm)
+void CUIFrameWnd::AttachVirtualForm(CUIForm *pForm)
 {
-	//if(!AddVirtualWnd(pForm->GetWindowClassName(), pForm))
-	//	return;
-
-	std::list<CUIForm *>::iterator it;
-	for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
+	if(m_listForm.size() > 0)
 	{
-		if(*it == pForm)
-			return;
+		std::list<CUIForm *>::iterator it;
+		for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
+		{
+			if(*it == pForm)
+				return;
+		}
 	}
 
 	pForm->SetFrameWnd(this);
 	m_listForm.push_back(pForm);
 }
 
-void CUIFrameWnd::DetachForm(CUIForm *pForm)
+void CUIFrameWnd::DetachVirtualForm(CUIForm *pForm)
 {
-	//RemoveVirtualWnd(pForm->GetWindowClassName());
-
 	if(m_listForm.size() > 0)
 	{
 		std::list<CUIForm *>::iterator it;
@@ -179,6 +179,35 @@ LRESULT CUIFrameWnd::HandleMenuCommandMessage(UINT uMsg, WPARAM wParam, LPARAM l
 			}
 
 			delete pMenuCmd;
+			return 0;
+		}
+	}
+	else if(uMsg == WM_MENU_UPDATE_COMMAND_UI)
+	{
+		bHandled = TRUE;
+
+		CMenuCmdUI* pCmdUI = (CMenuCmdUI *)wParam;
+		if(pCmdUI)
+		{
+			if(OnMenuUpdateCommandUI(pCmdUI))
+			{
+				bHandled = TRUE;
+				return 1;
+			}
+
+			if(m_listForm.size() > 0)
+			{
+				std::list<CUIForm *>::iterator it;
+				for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
+				{
+					if((*it)->OnMenuUpdateCommandUI(pCmdUI))
+					{
+						bHandled = TRUE;
+						return 1; 
+					}
+				}
+			}
+
 			return 0;
 		}
 	}

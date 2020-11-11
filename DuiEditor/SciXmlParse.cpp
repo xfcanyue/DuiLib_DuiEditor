@@ -290,16 +290,18 @@ void CSciXmlParse::AddControl(xml_node node, xml_node nodeSample)
 				CUIBuilder::DeleteControl(pNewControl);
 				return;
 			}
+			GetUIManager()->UpdateControlUI(pNewControl);
 			GetUIManager()->GetTreeView()->AddNewControl(node, nodeprev, TVI_NEXT);
 		}
 	}	
 	else
 	{
-		if(!pContainer->Add(pNewControl))
+		if(!pContainer->AddAt(pNewControl, 0))
 		{
 			CUIBuilder::DeleteControl(pNewControl);
 			return;
 		}
+		GetUIManager()->UpdateControlUI(pNewControl);
 		GetUIManager()->GetTreeView()->AddNewControl(node);
 	}
 }
@@ -387,6 +389,8 @@ void CSciXmlParse::DeleteControlAttribute(xml_node node, xml_attribute attr)
 		node.attribute(XTEXT("name")).set_value(nodeAttr.attribute(XTEXT("default")).value());
 		GetUIManager()->GetTreeView()->UpdateXmlNode(node);
 	}
+
+	GetUIManager()->UpdateControlUI(pControl);
 }
 
 void CSciXmlParse::AddUIFont(xml_node node, xml_node nodeSample)

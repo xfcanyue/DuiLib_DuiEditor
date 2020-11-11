@@ -53,6 +53,8 @@ public:
 	BOOL Add(CTrackerElement * pTracker);
 	BOOL Remove(xml_node node);
 	void RemoveAll();
+	BOOL IsSelected(xml_node node);
+	BOOL IsSelected(CControlUI *pControl);
 
 	BOOL IsEmpty() const { return m_arrTracker.IsEmpty(); }
 	int  GetSize() const { return m_arrTracker.GetSize(); }

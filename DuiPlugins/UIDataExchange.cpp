@@ -44,6 +44,8 @@ bool CUIDataExchange::UpdateDataUI(bool bSaveAndValidate)
 
 bool CUIDataExchange::_UpdateText(_ddx_data *pData, bool bSaveAndValidate)
 {
+	bool m_bUpdate = true;
+
 	if(bSaveAndValidate)
 	{
 		switch (pData->valueType)
@@ -60,8 +62,25 @@ bool CUIDataExchange::_UpdateText(_ddx_data *pData, bool bSaveAndValidate)
 			*((CString *)(pData->pValue)) = pData->pControl->GetText();
 			break;
 		case _value_coledatetime:
+			{
+				CDateTimeExUI *pdatetimeex = (CDateTimeExUI *)pData->pControl->GetInterface(DUI_CTR_DATETIMEEX);
+				CDateTimeUI *pdatetime = (CDateTimeUI *)pData->pControl->GetInterface(DUI_CTR_DATETIME);
+				if(pdatetimeex)
+				{
+					*((COleDateTime *)(pData->pValue)) = COleDateTime(pdatetimeex->GetTime());
+				}
+				else if(pdatetime)
+				{
+					*((COleDateTime *)(pData->pValue)) = COleDateTime(pdatetime->GetTime());
+				}
+				else
+				{
+					m_bUpdate = false;
+				}
+			}
 			break;
 		case _value_colecurrency:
+			m_bUpdate = ((COleCurrency *)(pData->pValue))->ParseCurrency(pData->pControl->GetText()) == TRUE;
 			break;
 #endif
 		default: break;
@@ -88,14 +107,37 @@ bool CUIDataExchange::_UpdateText(_ddx_data *pData, bool bSaveAndValidate)
 			pData->pControl->SetText(*((CString *)(pData->pValue)));
 			break;
 		case _value_coledatetime:
+			{
+				CDateTimeExUI *pdatetimeex = (CDateTimeExUI *)pData->pControl->GetInterface(DUI_CTR_DATETIMEEX);
+				CDateTimeUI *pdatetime = (CDateTimeUI *)pData->pControl->GetInterface(DUI_CTR_DATETIME);
+				if(pdatetimeex)
+				{
+					SYSTEMTIME st;
+					m_bUpdate = ((COleDateTime *)(pData->pValue))->GetAsSystemTime(st);
+					pdatetimeex->SetTime(&st);
+				}
+				else if(pdatetime)
+				{
+					SYSTEMTIME st;
+					m_bUpdate = ((COleDateTime *)(pData->pValue))->GetAsSystemTime(st);
+					pdatetime->SetTime(&st);
+				}
+				else
+				{
+					m_bUpdate = false;
+				}
+			}
 			break;
 		case _value_colecurrency:
+			{
+				pData->pControl->SetText(((COleCurrency *)(pData->pValue))->Format());
+			}
 			break;
 #endif
 		default: break;
 		}	
 	}
-	return true;
+	return m_bUpdate;
 }
 
 bool CUIDataExchange::_UpdateCheckBox(_ddx_data *pData, bool bSaveAndValidate)

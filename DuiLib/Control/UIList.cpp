@@ -1963,7 +1963,8 @@ namespace DuiLib {
 		CListElementUI::CListElementUI() : m_iIndex(-1),
 		m_pOwner(NULL), 
 		m_bSelected(false),
-		m_uButtonState(0)
+		m_uButtonState(0),
+		m_bAutoCalcWidth(true)
 	{
 	}
 
@@ -2218,6 +2219,15 @@ namespace DuiLib {
 		}
 	}
 
+	bool CListElementUI::GetAutoCalcWidth() const
+	{
+		return m_bAutoCalcWidth;
+	}
+
+	void CListElementUI::SetAutoCalcWidth(bool bAutoCalcWidth)
+	{
+		m_bAutoCalcWidth = bAutoCalcWidth;
+	}
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
 	//
@@ -2328,7 +2338,7 @@ namespace DuiLib {
 			cXY.cy += pInfo->rcTextPadding.top + pInfo->rcTextPadding.bottom;
 		}
 
-		if( cXY.cx == 0 && m_pManager != NULL ) {
+		if( GetAutoCalcWidth() && cXY.cx == 0 && m_pManager != NULL ) {
 			RECT rcText = { 0, 0, 9999, cXY.cy };
 			if( pInfo->bShowHtml ) {
 				int nLinks = 0;
@@ -2585,7 +2595,8 @@ namespace DuiLib {
 		m_iIndex(-1),
 		m_pOwner(NULL), 
 		m_bSelected(false),
-		m_uButtonState(0)
+		m_uButtonState(0),
+		m_bAutoCalcWidth(true)
 	{
 	}
 
@@ -2976,5 +2987,15 @@ namespace DuiLib {
 				pListItem->SetPos(rt);
 			}
 		}
+	}
+
+	bool CListContainerElementUI::GetAutoCalcWidth() const
+	{
+		return m_bAutoCalcWidth;
+	}
+
+	void CListContainerElementUI::SetAutoCalcWidth(bool bAutoCalcWidth)
+	{
+		m_bAutoCalcWidth = bAutoCalcWidth;
 	}
 } // namespace DuiLib

@@ -153,13 +153,8 @@ namespace DuiLib {
 			m_pLayout->SetAutoDestroy(false);
 			m_pLayout->EnableScrollBar();
 			m_pLayout->ApplyAttributeList(m_pOwner->GetDropBoxAttributeList());
-			RECT rcOwner = m_pOwner->GetPos(); //modify by liqs99
 			for( int i = 0; i < m_pOwner->GetCount(); i++ ) {
-				//modify by liqs99, set child control to owner's width
-				CControlUI *pControl = static_cast<CControlUI*>(m_pOwner->GetItemAt(i));
-				pControl->SetFixedWidth(rcOwner.right - rcOwner.left);
-				m_pLayout->Add(pControl);
-				//m_pLayout->Add(static_cast<CControlUI*>(m_pOwner->GetItemAt(i)));
+				m_pLayout->Add(static_cast<CControlUI*>(m_pOwner->GetItemAt(i)));
 			}
 			CShadowUI *pShadow = m_pOwner->GetManager()->GetShadow();
 			pShadow->CopyShadow(m_pm.GetShadow());
@@ -410,6 +405,7 @@ namespace DuiLib {
 		{
 			pListItem->SetOwner(this);
 			pListItem->SetIndex(m_items.GetSize());
+			pListItem->SetAutoCalcWidth(false);
 		}
 		return CContainerUI::Add(pControl);
 	}
@@ -423,6 +419,7 @@ namespace DuiLib {
 		if( pListItem != NULL ) {
 			pListItem->SetOwner(this);
 			pListItem->SetIndex(iIndex);
+			pListItem->SetAutoCalcWidth(false);
 		}
 
 		for(int i = iIndex + 1; i < GetCount(); ++i) {
