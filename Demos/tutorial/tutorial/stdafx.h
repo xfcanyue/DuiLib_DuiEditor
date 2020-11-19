@@ -34,7 +34,6 @@
 
 // TODO: 在此处引用程序需要的其他头文件
 #include "../../../DuiLib/Duilib.h"
-#include "../../../3rd/GridControl/Include/GridControl.h"
 #include "../../../DuiPlugins/Include/DuiPlugins.h"
 using namespace DuiLib;
 

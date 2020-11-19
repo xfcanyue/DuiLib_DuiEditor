@@ -134,8 +134,8 @@ namespace DuiLib
 
 	bool CDuiRect::FromString(LPCTSTR pstrValue) //¥”"left,top,right,bottom"ππ‘ÏRECT
 	{
-		if (pstrValue == NULL || *pstrValue == _T('\0')) return false;
 		left = top = right = bottom = 0;
+		if (pstrValue == NULL || *pstrValue == _T('\0')) return false;
 		LPTSTR pstr = NULL;
 		left	= _tcstol(pstrValue, &pstr, 10);	if(!pstr) return false;
 		top		= _tcstol(pstr + 1, &pstr, 10);		if(!pstr) return false;

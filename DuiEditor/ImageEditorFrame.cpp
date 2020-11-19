@@ -34,6 +34,8 @@ BEGIN_MESSAGE_MAP(CImageEditorFrame, CFrameWndEx)
 	ON_UPDATE_COMMAND_UI(ID_TB_SAVE, &CImageEditorFrame::OnUpdateTbSave)
 	ON_COMMAND(ID_TB_UI_PREVIEW, &CImageEditorFrame::OnTbUiPreview)
 	ON_UPDATE_COMMAND_UI(ID_TB_UI_PREVIEW, &CImageEditorFrame::OnUpdateTbUiPreview)
+	ON_WM_DESTROY()
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -63,13 +65,29 @@ int CImageEditorFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 	m_wndToolBar.EnableTextLabels(TRUE);
 
+	if (!m_wndPaneAdjust.Create(_T("调整"), this, CRect(0, 0, 100, 180), TRUE, ID_OUTPUT_WND, 
+		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM,
+		AFX_CBRS_REGULAR_TABS, AFX_CBRS_RESIZE))
+	{
+		return FALSE; // 未能创建
+	}
+
 	if (!m_wndList.Create(_T("文件"), this, 
-		CRect(0, 0, 300, 200), TRUE, ID_VIEW_CONTROL, 
+		CRect(0, 0, 350, 500), TRUE, ID_VIEW_CONTROL, 
 		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI,
 		AFX_CBRS_REGULAR_TABS, AFX_CBRS_RESIZE))
 	{
 		return FALSE; // 未能创建
 	}
+
+	if (!m_wndImage.Create(_T("原始图片"), this, 
+		CRect(0, 0, 350, 200), TRUE, ID_PROPERTY_WND, 
+		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI,
+		AFX_CBRS_REGULAR_TABS, AFX_CBRS_RESIZE))
+	{
+		return FALSE; // 未能创建
+	}
+	m_wndImage.SetCaptionText(m_wndImage.m_strCaption);
 
 	if (!m_wndProperty.Create(_T("属性"), this, 
 		CRect(0, 0, 300, 200), TRUE, ID_PROPERTY_WND, 
@@ -78,57 +96,158 @@ int CImageEditorFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	{
 		return FALSE; // 未能创建
 	}
-	CUIPropertyGridCtrl *pPropList = m_wndProperty.CreatePropList();
-	pPropList->SetOwner(this);
+	m_pPropList = m_wndProperty.CreatePropList();
+	m_pPropList->SetOwner(this);
 
 	EnableDocking(CBRS_ALIGN_ANY);
 	m_wndList.EnableDocking(CBRS_ALIGN_ANY);
+	m_wndImage.EnableDocking(CBRS_ALIGN_ANY);
 	m_wndProperty.EnableDocking(CBRS_ALIGN_RIGHT);
 	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
+	m_wndPaneAdjust.EnableDocking(CBRS_ALIGN_BOTTOM);
 	DockPane(&m_wndToolBar);
 	DockPane(&m_wndList);
+	DockPane(&m_wndImage);
 	DockPane(&m_wndProperty);
+	DockPane(&m_wndPaneAdjust);
 
-	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
-	CDuiEditorViewDesign *pView = (CDuiEditorViewDesign *)pMain->GetActiveUIView();
-	m_wndView.m_pManager = pView->GetUIManager()->GetManager();
+	m_wndImage.DockToWindow(&m_wndList, CBRS_BOTTOM);
+	SetPaneHeight(200);
 
-	pPropList->InitProp(pDlgMain->m_nodeImage.child(XTEXT("IMAGE")));
+	m_wndView.m_pManager = g_pEditorImage->GetUIManager()->GetManager();
+
+	m_pPropList->InitProp(g_pEditorImage->m_nodedata);
 	m_wndProperty.OnExpandAllProperties();
-	//////////////////////////////////////////////////////////////////////////
-	//m_wndList.m_wndList.DisplayFolder(CPaintManagerUI::GetResourcePath().GetData());
-	m_wndList.m_wndList.DisplayFolder(pDlgMain->m_pDoc->GetSkinPath());
 
-	SetViewImage();
+	m_wndPaneAdjust.m_pForm->InitData();
+
+	m_wndView.InitData();
 	m_wndView.SetFocus();
+
+	SetTimer(1, 10, NULL);
 	return 0;
 }
 
-void CImageEditorFrame::SetViewImage()
+void CImageEditorFrame::SetPaneHeight(int nHeight)
 {
-	CImageEditor *pDlgMain = (CImageEditor *)GetParent();
+	BOOL bLeftBar = FALSE;
+	BOOL bAloneInContainer = FALSE;
+	CPaneContainer* pContainer = NULL;
+	CPaneDivider* pDivider = NULL;
 
-	xml_node node = pDlgMain->m_nodeImage.child(XTEXT("IMAGE"));
-	CString strImage, temp;
-	for (xml_attribute attr=node.first_attribute(); attr; attr=attr.next_attribute())
+	BOOL bResult = FindInternalDivider (&m_wndImage, pContainer, pDivider, bLeftBar, bAloneInContainer);
+
+	if (bAloneInContainer)
 	{
-		temp.Format(_T("%s='%s' "), XML2T(attr.name()), XML2T(attr.value()));
-		strImage += temp;
+		MessageBox (_T ("DialogBar is docked alone in container."));
+		return;
+	}
+	if (!bResult || pContainer == NULL || pDivider == NULL)
+	{
+		AfxMessageBox (_T ("The DialogBar is not docked."));
+		return;
 	}
 
-	//获取图片大小
-	xml_attribute attr2 = node.attribute(XTEXT("file"));
-	CImage img;
-	CRect  rcImg;
-	CString strSkinDir = pDlgMain->m_pDoc->GetSkinPath();//CPaintManagerUI::GetResourcePath();
-	HRESULT hRet = img.Load(strSkinDir + attr2.value());
-	if(SUCCEEDED(hRet))
+	if (!pDivider->IsHorizontal ())
 	{
-		rcImg.SetRect(0, 0, img.GetWidth(), img.GetHeight());
+		MessageBox (_T ("Internal pane divider is vertical, can change width only."));
+		return;
 	}
 
-	pDlgMain->m_rcImage = rcImg;
-	m_wndView.SetImage(strImage, rcImg);
+	CPaneContainer* pRootContainer = m_wndImage.GetDefaultPaneDivider ()->FindPaneContainer (&m_wndImage, bLeftBar);	
+
+	while (pRootContainer->GetParentPaneContainer () != NULL)
+	{
+		pRootContainer = pRootContainer->GetParentPaneContainer ();
+	}
+
+	CRect rectContainer;
+	pRootContainer->GetWindowRect (rectContainer, FALSE);
+
+	if ((UINT)rectContainer.Height () - 4 < nHeight)
+	{
+		CString strFormat = _T ("Required height exceeds allowed height in the current container.\nAllowed height is %u pixels.");
+		CString strMessage; 
+		strMessage.Format (strFormat, rectContainer.Height () - 4);
+		MessageBox (strMessage);
+		return;
+	}
+
+
+	CRect rectDlgBar;
+	m_wndImage.GetWindowRect (rectDlgBar);
+
+	CPoint ptOffset (0, 0);
+	ptOffset.y = rectDlgBar.Height () - nHeight;
+	if (bLeftBar)
+	{
+		ptOffset.y = -ptOffset.y;
+	}
+	pDivider->Move (ptOffset);
+}
+
+BOOL CImageEditorFrame::FindInternalDivider (CDockablePane* pBar, 
+	CPaneContainer*& pContainer, 
+	CPaneDivider*& pDivider,
+	BOOL& bLeftBar, 
+	BOOL& bAloneInContainer)
+{
+	pContainer = NULL;
+	pDivider = NULL;
+	bLeftBar = FALSE;
+	bAloneInContainer = FALSE;
+
+	CPaneDivider* pDefaultPaneDivider = pBar->GetDefaultPaneDivider ();
+	CMultiPaneFrameWnd* pParentMiniFrame = 
+		DYNAMIC_DOWNCAST (CMultiPaneFrameWnd, pBar->GetParentMiniFrame ()) ;
+
+	CPaneContainer* pStartContainer = NULL;
+
+	if (pParentMiniFrame != NULL)
+	{
+		CPaneContainerManager& manager = pParentMiniFrame->GetPaneContainerManager ();
+		pStartContainer = manager.FindPaneContainer (pBar, bLeftBar);
+	}
+	else if (pDefaultPaneDivider != NULL)
+	{
+		pStartContainer = pDefaultPaneDivider->FindPaneContainer (pBar, bLeftBar);
+	}
+	else
+	{
+		return FALSE;
+	}
+
+	if (pStartContainer != NULL)
+	{
+		pContainer = pStartContainer;
+
+		while (pContainer != NULL)
+		{
+			if (!pContainer->IsRightPartEmpty (TRUE) && 
+				!pContainer->IsLeftPartEmpty (TRUE))
+			{
+				break;	
+			}
+			pContainer = pContainer->GetParentPaneContainer ();
+		}
+
+		if (pContainer == NULL)
+		{
+			bAloneInContainer = TRUE;
+			return FALSE;
+		}
+		else
+		{
+			pDivider = (CPaneDivider*) pContainer->GetPaneDivider ();
+
+			bLeftBar = (pContainer->IsLeftPane (pBar) || 
+				pContainer->GetLeftPaneContainer () != NULL && 
+				((CPaneContainer*)pContainer->GetLeftPaneContainer ())-> 
+				FindSubPaneContainer (pBar, CPaneContainer::BC_FIND_BY_LEFT_BAR) != NULL);
+			return TRUE;
+		}
+	}
+	return FALSE;
 }
 
 BOOL CImageEditorFrame::OnEraseBkgnd(CDC* pDC)
@@ -168,7 +287,7 @@ void CImageEditorFrame::OnSelectedFile(LPCTSTR lpstrPathName)
 {
 	CImageEditor *pDlgMain = (CImageEditor *)GetParent();
 
-	CString strDocPath = pDlgMain->m_pDoc->GetSkinPath(); //CPaintManagerUI::GetResourcePath();
+	CString strDocPath = pDlgMain->GetUIManager()->GetDocument()->GetSkinPath(); //CPaintManagerUI::GetResourcePath();
 	CString strFileName = lpstrPathName;
 	
 	//只能取子目录的文件
@@ -182,86 +301,39 @@ void CImageEditorFrame::OnSelectedFile(LPCTSTR lpstrPathName)
 		return;
 	}
 
-	CUIPropertyGridCtrl *pPropList = m_wndProperty.GetPropList(0);
-	if(pPropList->GetPropertyCount() > 0)
-	{
-		if(pPropList->GetProperty(0)->GetSubItemsCount() > 0)
-		{
-			CMFCPropertyGridProperty *pProp = pPropList->GetProperty(0)->GetSubItem(0);
+	g_pEditorImage->SetImageFile(lpstrPathName);
+	m_wndView.InitData();
+	m_wndImage.m_pView->InitData();
 
-			pProp->SetValue((_variant_t)strFileName);
-			pPropList->OnPropertyChanged(pProp);
-			m_wndView.SetFocus();
-		}
-	}
-}
-
-void CImageEditorFrame::OnSetSourcePos(CRect &rc)
-{
-	CUIPropertyGridCtrl *pPropList = m_wndProperty.GetPropList(0);
-	for (int i=0; i<pPropList->GetPropertyCount(); i++)
-	{
-		CMFCPropertyGridProperty *pProp1 = pPropList->GetProperty(i);
-		for (int j=0; j<pProp1->GetSubItemsCount(); j++)
-		{
-			CMFCPropertyGridProperty *pProp2 = pProp1->GetSubItem(j);
-			CString strName = pProp2->GetName();
-
-			if( CompareString(strName, _T("source")) ) 
-			{
-				CString temp;
-				temp.Format(_T("%d,%d,%d,%d"), rc.left, rc.top, rc.right, rc.bottom);
-				//pProp2->SetValue((_variant_t)temp);
-
-				for(int x=0; x<pProp2->GetSubItemsCount(); x++)
-				{
-					CMFCPropertyGridProperty *pProp3 = pProp2->GetSubItem(x);
-					if(CompareString(pProp3->GetName(), _T("left")))
-					{
-						pProp3->SetValue((_variant_t)(long)rc.left);
-					}
-					else if(CompareString(pProp3->GetName(), _T("top")))
-					{
-						pProp3->SetValue((_variant_t)(long)rc.top);
-					}
-					else if(CompareString(pProp3->GetName(), _T("right")))
-					{
-						pProp3->SetValue((_variant_t)(long)rc.right);
-					}
-					else if(CompareString(pProp3->GetName(), _T("bottom")))
-					{
-						pProp3->SetValue((_variant_t)(long)rc.bottom);
-					}
-				}
-
-				pPropList->OnPropertyChanged(pProp2);
-				break;
-			}
-		}
-	}
+	m_pPropList->InitProp(g_pEditorImage->m_nodedata);
+	m_wndProperty.OnExpandAllProperties();
 }
 
 LRESULT CImageEditorFrame::OnPropertyChanged (WPARAM,LPARAM lParam)
 {
 	CMFCPropertyGridProperty* pProp = (CMFCPropertyGridProperty*)lParam;
 	
-	SetViewImage();
-
-	if(m_bPreview)
-	{
-		CImageEditor *pDlgMain = (CImageEditor *)GetParent();
-
-		if(pDlgMain->m_pParentGrid && pDlgMain->m_pParentProp)
-		{
-			pDlgMain->m_pParentProp->SetValue(_variant_t(pDlgMain->GetAttributeValue()));
-			pDlgMain->m_pParentProp->SetOriginalValue(pProp->GetValue());
-			pDlgMain->m_pParentGrid->OnPropertyChanged(pDlgMain->m_pParentProp);
-		}
-	}
+	m_wndPaneAdjust.m_pForm->InitData();
+	m_wndView.InitData();
+	m_wndImage.m_pView->InitData();
+	ParentPreview();
 
 	return 0;
 }
 
+void CImageEditorFrame::ParentPreview()
+{
+	if(m_bPreview)
+	{
+		//刷新父窗口预览
+		if(g_pEditorImage->m_pParentGrid && g_pEditorImage->m_pParentProp)
+		{
+			g_pEditorImage->m_pParentProp->SetOriginalValue(g_pEditorImage->m_pParentProp->GetValue());
+			g_pEditorImage->m_pParentProp->SetValue(_variant_t(g_pEditorImage->GetAttributeValue()));
+			g_pEditorImage->m_pParentGrid->OnPropertyChanged(g_pEditorImage->m_pParentProp);
+		}
+	}
+}
 
 void CImageEditorFrame::OnTbExit()
 {
@@ -298,4 +370,25 @@ void CImageEditorFrame::OnTbUiPreview()
 void CImageEditorFrame::OnUpdateTbUiPreview(CCmdUI *pCmdUI)
 {
 	pCmdUI->SetCheck(m_bPreview);
+}
+
+
+void CImageEditorFrame::OnDestroy()
+{
+	CFrameWndEx::OnDestroy();
+
+	// TODO: 在此处添加消息处理程序代码
+	delete m_pPropList;
+}
+
+
+void CImageEditorFrame::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	if(nIDEvent == 1)
+	{
+		m_wndList.OnExplorerViewsLargeIcon();
+		KillTimer(nIDEvent);
+	}
+	CFrameWndEx::OnTimer(nIDEvent);
 }

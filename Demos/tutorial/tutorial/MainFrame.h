@@ -28,5 +28,9 @@ public:
 	CStdStringPtrMap m_MenuInfos; //²Ëµ¥Ñ¡ÖÐ×´Ì¬
 	BOOL m_bCheckmenu_cmd_2;
 	BOOL m_bCheckmenu_cmd_22;
+	BOOL m_bCheckmenu_cmd_41;
+	BOOL m_bCheckmenu_cmd_42;
+
+	int m_nMenuSelected;
 };
 

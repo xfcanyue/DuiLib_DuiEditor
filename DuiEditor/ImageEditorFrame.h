@@ -1,7 +1,9 @@
 #pragma once
 #include "DockPropertyWnd.h"
-#include "ImageEditorTreeWnd.h"
+#include "ImageEditorPaneFile.h"
 #include "ImageEditorView.h"
+#include "ImageEditorPane.h"
+#include "ImageEditorPaneImage.h"
 //////////////////////////////////////////////////////////////////////////
 // CImageEditorFrame ¿ò¼Ü
 
@@ -14,16 +16,25 @@ protected:
 
 public:
 	CImageEditorView		m_wndView;
-	CImageEditorListWnd		m_wndList;
+	CImageEditorPaneFile	m_wndList;
 	CDockPropertyWnd		m_wndProperty;
 	CMFCToolBar				m_wndToolBar;
+	CImageEditorPaneAdjust	m_wndPaneAdjust;
+	CImageEditorPaneImage	m_wndImage;
+
+	CUIPropertyGridCtrl		*m_pPropList;
 
 	BOOL m_bPreview;
 
-	void SetViewImage();
 public:
 	void OnSelectedFile(LPCTSTR lpstrPathName);
-	void OnSetSourcePos(CRect &rc);
+	void ParentPreview();
+
+	BOOL FindInternalDivider (CDockablePane* pBar, 
+		CPaneContainer*& pContainer, 
+		CPaneDivider*& pDivider, BOOL& bLeftSlider, 
+		BOOL& bAloneInContainer);
+	void SetPaneHeight(int nHeight);
 protected:
 	virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo);
 	DECLARE_MESSAGE_MAP()
@@ -38,6 +49,8 @@ public:
 	afx_msg void OnUpdateTbSave(CCmdUI *pCmdUI);
 	afx_msg void OnTbUiPreview();
 	afx_msg void OnUpdateTbUiPreview(CCmdUI *pCmdUI);
+	afx_msg void OnDestroy();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };
 
 

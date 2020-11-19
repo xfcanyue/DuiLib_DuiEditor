@@ -15,7 +15,7 @@ public:
 	CDefaultEditorView		m_wndView;
 	CDockPropertyWnd		m_wndProperty;
 	CMFCToolBar				m_wndToolBar;
-
+	CUIPropertyGridCtrl *m_pPropList;
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
@@ -28,6 +28,7 @@ public:
 	afx_msg void OnUpdateTbSave(CCmdUI *pCmdUI);
 	afx_msg void OnTbUiEffect();
 	afx_msg void OnUpdateTbUiEffect(CCmdUI *pCmdUI);
+	afx_msg void OnDestroy();
 };
 
 

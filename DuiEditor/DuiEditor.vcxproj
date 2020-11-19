@@ -280,7 +280,11 @@
     <ClInclude Include="EditSearchCtrl.h" />
     <ClInclude Include="ImageEditor.h" />
     <ClInclude Include="ImageEditorFrame.h" />
-    <ClInclude Include="ImageEditorTreeWnd.h" />
+    <ClInclude Include="ImageEditorImagePreview.h" />
+    <ClInclude Include="ImageEditorPane.h" />
+    <ClInclude Include="ImageEditorPaneDialog.h" />
+    <ClInclude Include="ImageEditorPaneImage.h" />
+    <ClInclude Include="ImageEditorPaneFile.h" />
     <ClInclude Include="ImageEditorView.h" />
     <ClInclude Include="LsStringConverter.h" />
     <ClInclude Include="MySplitterWnd.h" />
@@ -310,9 +314,9 @@
     <ClInclude Include="ToolBoxCtrl.h" />
     <ClInclude Include="ToolBoxWnd.h" />
     <ClInclude Include="UIManager.h" />
-    <ClInclude Include="UIPropertyGridCtrl.h" />
     <ClInclude Include="DockControlTreeCtrl.h" />
     <ClInclude Include="DockControlTreeWnd.h" />
+    <ClInclude Include="UIPropertyGridCtrl.h" />
     <ClInclude Include="UITracker.h" />
     <ClInclude Include="UITrackerMuliti.h" />
     <ClInclude Include="UIView.h" />
@@ -341,7 +345,11 @@
     <ClCompile Include="EditSearchCtrl.cpp" />
     <ClCompile Include="ImageEditor.cpp" />
     <ClCompile Include="ImageEditorFrame.cpp" />
-    <ClCompile Include="ImageEditorTreeWnd.cpp" />
+    <ClCompile Include="ImageEditorImagePreview.cpp" />
+    <ClCompile Include="ImageEditorPane.cpp" />
+    <ClCompile Include="ImageEditorPaneDialog.cpp" />
+    <ClCompile Include="ImageEditorPaneFile.cpp" />
+    <ClCompile Include="ImageEditorPaneImage.cpp" />
     <ClCompile Include="ImageEditorView.cpp" />
     <ClCompile Include="MySplitterWnd.cpp" />
     <ClCompile Include="MyStatusBar.cpp" />
@@ -373,9 +381,9 @@
     <ClCompile Include="ToolBoxCtrl.cpp" />
     <ClCompile Include="ToolBoxWnd.cpp" />
     <ClCompile Include="UIManager.cpp" />
-    <ClCompile Include="UIPropertyGridCtrl.cpp" />
     <ClCompile Include="DockControlTreeCtrl.cpp" />
     <ClCompile Include="DockControlTreeWnd.cpp" />
+    <ClCompile Include="UIPropertyGridCtrl.cpp" />
     <ClCompile Include="UITracker.cpp" />
     <ClCompile Include="UITrackerMuliti.cpp" />
     <ClCompile Include="UIView.cpp" />

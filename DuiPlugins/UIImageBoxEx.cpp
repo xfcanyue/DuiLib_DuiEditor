@@ -54,12 +54,12 @@ CImageBoxExUI::~CImageBoxExUI(void)
 
 LPCTSTR CImageBoxExUI::GetClass() const
 {
-	return _T("ImageBoxEx");
+	return DUI_CTR_IMAGEBOXEX;
 }
 
 LPVOID CImageBoxExUI::GetInterface(LPCTSTR pstrName)
 {
-	if( _tcscmp(pstrName, _T("ImageBoxEx")) == 0 ) return static_cast<CImageBoxExUI*>(this);
+	if( _tcscmp(pstrName, DUI_CTR_IMAGEBOXEX) == 0 ) return static_cast<CImageBoxExUI*>(this);
 	return CControlUI::GetInterface(pstrName);
 }
 

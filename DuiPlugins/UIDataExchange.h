@@ -1,5 +1,8 @@
 #pragma once
 
+namespace DuiLib
+{
+
 #define UI_BINDCONTROL(classname, pControl, controlname)  { pControl = static_cast<classname *>(FindControl(controlname)); ASSERT(pControl); }
 #define UI_COMMAND(controlname, fun) if(IsControl(msg, controlname)) { fun(); return; }
 
@@ -85,3 +88,4 @@ public:
 	static COleDateTime MergeCOleDateTime(const COleDateTime &date, const COleDateTime &time);
 };
 
+}

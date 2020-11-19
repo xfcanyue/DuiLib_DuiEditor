@@ -259,9 +259,6 @@
     <ClInclude Include="UIView.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="UIPropertyGridCtrl.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="DuiPropertyFile.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -290,9 +287,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ImageEditorView.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageEditorTreeWnd.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="DlgOptions.h">
@@ -406,6 +400,24 @@
     <ClInclude Include="SciXmlParse.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ImageEditorPane.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageEditorPaneDialog.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageEditorImagePreview.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageEditorPaneFile.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageEditorPaneImage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPropertyGridCtrl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -433,9 +445,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="UIView.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="UIPropertyGridCtrl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DuiPropertyFile.cpp">
@@ -466,9 +475,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ImageEditorView.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ImageEditorTreeWnd.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DlgOptions.cpp">
@@ -574,6 +580,27 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SciXmlParse.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageEditorPane.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageEditorPaneDialog.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageEditorImagePreview.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageEditorPaneFile.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageEditorPaneFile.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageEditorPaneImage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPropertyGridCtrl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

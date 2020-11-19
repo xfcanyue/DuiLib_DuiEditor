@@ -5,6 +5,7 @@
 #include <afxwin.h>
 #include <afxdllx.h>
 
+#include "Include/DuiPlugins.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -49,16 +50,6 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 	}
 	return 1;   // È·¶¨
 }
-
-#include "ComboExUI.h"
-#include "IconButton.h"
-#include "GridCtrlUI.h"
-#include "MsgWndUI.h"
-#include "KeyBoardUI.h"
-#include "KeyBoardNumberUI.h"
-#include "KeyBoardSimpleUI.h"
-#include "ImageBoxUI.h"
-#include "PictureControlUI.h"
 
 UILIB_PLUGIN_API void DuiPluginsRegister()
 {

@@ -83,6 +83,8 @@
 	using namespace DuiLib;
 	#include "../DuiPlugins/Include/DuiPlugins.h"
 #endif
+
+#include "../3rd/CxImage/Include/image.h"
 //////////////////////////////////////////////////////////////////////////
 #define INCLUDE_DEPRECATED_FEATURES
 #include "scintilla/include/SciLexer.h"

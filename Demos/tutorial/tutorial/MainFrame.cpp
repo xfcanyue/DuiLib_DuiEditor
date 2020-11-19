@@ -9,6 +9,9 @@ CMainFrame::CMainFrame(void)
 	AttachVirtualForm(new CFormAdvanceControl);
 	m_bCheckmenu_cmd_2 = TRUE;
 	m_bCheckmenu_cmd_22 = TRUE;
+	m_bCheckmenu_cmd_41 = TRUE;
+	m_bCheckmenu_cmd_42 = FALSE;
+	m_nMenuSelected = 0;
 }
 
 
@@ -83,6 +86,26 @@ bool CMainFrame::OnMenuCommand(const MenuCmd *cmd)
 		//更新本地菜单选中状态
 		m_bCheckmenu_cmd_22 = !m_bCheckmenu_cmd_22;
 	}
+	if(IsMenuCommand(cmd, _T("menu_cmd_41")))
+	{
+		//更新本地菜单选中状态
+		m_bCheckmenu_cmd_41 = !m_bCheckmenu_cmd_41;
+	}
+	if(IsMenuCommand(cmd, _T("menu_cmd_42")))
+	{
+		//更新本地菜单选中状态
+		m_bCheckmenu_cmd_42 = !m_bCheckmenu_cmd_42;
+	}
+	if(IsMenuCommand(cmd, _T("menu_cmd_5")))
+	{
+		//更新本地菜单选中状态
+		m_nMenuSelected = 0;
+	}
+	if(IsMenuCommand(cmd, _T("menu_cmd_6")))
+	{
+		//更新本地菜单选中状态
+		m_nMenuSelected = 1;
+	}
 	return false;
 }
 
@@ -91,9 +114,40 @@ bool CMainFrame::OnMenuCommand(const MenuCmd *cmd)
 */
 bool CMainFrame::OnMenuUpdateCommandUI(CMenuCmdUI *cmdUI)
 {
+	if(IsMenuCommand(cmdUI, _T("menu_cmd_1")))
+	{
+		cmdUI->Enable(FALSE);
+		cmdUI->SetText(cmdUI->GetText() + _T(" 禁用"));
+		return true;
+	}
+	if(IsMenuCommand(cmdUI, _T("menu_cmd_2")))
+	{
+		cmdUI->SetCheck(m_bCheckmenu_cmd_2);
+		return true;
+	}
 	if(IsMenuCommand(cmdUI, _T("menu_cmd_22")))
 	{
-		cmdUI->SetCheck(m_bCheckmenu_cmd_2 == TRUE);
+		cmdUI->SetCheck(m_bCheckmenu_cmd_22);
+		return true;
+	}
+	if(IsMenuCommand(cmdUI, _T("menu_cmd_41")))
+	{
+		cmdUI->SetCheck(m_bCheckmenu_cmd_41);
+		return true;
+	}
+	if(IsMenuCommand(cmdUI, _T("menu_cmd_42")))
+	{
+		cmdUI->SetCheck(m_bCheckmenu_cmd_42);
+		return true;
+	}
+	if(IsMenuCommand(cmdUI, _T("menu_cmd_5")))
+	{
+		cmdUI->SetCheck(m_nMenuSelected == 0);
+		return true;
+	}
+	if(IsMenuCommand(cmdUI, _T("menu_cmd_6")))
+	{
+		cmdUI->SetCheck(m_nMenuSelected == 1);
 		return true;
 	}
 	return false;
@@ -136,10 +190,10 @@ void CMainFrame::OnNotifyClick(TNotifyUI& msg)
 	if(IsControl(msg, _T("windowmenubtn")))
 	{
 		//设置菜单选中信息
-		CMenuWnd::GetGlobalContextMenuObserver().SetMenuCheckInfo(&m_MenuInfos);
+		//CMenuWnd::GetGlobalContextMenuObserver().SetMenuCheckInfo(&m_MenuInfos);
 
 		//设置状态
-		CMenuWnd::SetMenuItemInfo(_T("menu_cmd_2"), m_bCheckmenu_cmd_2 == TRUE);
+		//CMenuWnd::SetMenuItemInfo(_T("menu_cmd_2"), m_bCheckmenu_cmd_2 == TRUE);
 
 		CreateMenu(_T("Menu.xml"));
 	}

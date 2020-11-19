@@ -72,6 +72,13 @@ inline CString RectToString(LPRECT rc)
 	return temp;
 }
 
+inline CString NumberToString(int n)
+{
+	CString temp;
+	temp.Format(_T("%d"), n);
+	return temp;
+}
+
 extern HWND g_hWndMsg;
 #define WM_INSERT_MSG		WM_USER + 345
 inline void InsertMsg(LPCTSTR strLog)

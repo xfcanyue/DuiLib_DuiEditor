@@ -18,25 +18,45 @@
 #endif
 #endif
 
-#define DUI_CTR_ACCORDIONPANE				(_T("AccordionPane"))	
-#define DUI_CTR_ANIMATIONPANE				(_T("AnimationPane"))	
-#define DUI_CTR_DATETIMEEX					(_T("DateTimeEx"))
-
-#include "../../3rd/GridControl/Include/GridControl.h"
-
-#include "../ComboExUI.h"
-#include "../GridCtrlUI.h"
-#include "../MsgWndUI.h"
-#include "../KeyBoardUI.h"
-#include "../KeyBoardNumberUI.h"
-#include "../KeyBoardSimpleUI.h"
-#include "../ImageBoxUI.h"
 #include "../UIDataExchange.h"
-#include "../PictureControlUI.h"
+
+
+#define DUI_CTR_COMBOEX						(_T("ComboEx"))
+#include "../UIComboEx.h"
+
+#define DUI_CTR_GRIDCTRL					(_T("GridCtrl"))
+#include "../MFCGridCtrl/GridCtrl.h"
+#include "../UIGridCtrl.h"
+
+#define DUI_CTR_ICONBUTTON					(_T("IconButton"))
+#include "../UIIconButton.h"
+
+#define DUI_CTR_MSGWND						(_T("RichEdit"))
+#include "../UIMsgWnd.h"
+
+#include "../UIKeyBoard.h"
+#include "../UIKeyBoardNumber.h"
+#include "../UIKeyBoardSimple.h"
+
+#define DUI_CTR_PICTURECONTROL				(_T("PictureControl"))
+#include "../UIPictureControl.h"
+
+#define DUI_CTR_DATETIMEEX					(_T("DateTimeEx"))
 #include "../UIDateTimeEx.h"
+
+#define DUI_CTR_ACCORDIONPANE				(_T("AccordionPane"))	
 #include "../UIAccordionPane.h"
+
+#define DUI_CTR_ANIMATIONPANE				(_T("AnimationPane"))
 #include "../UIAnimationPane.h"
+
+#define DUI_CTR_IMAGEBOX					(_T("ImageBox"))
+#include "../UIImageBox.h"
+
+#define DUI_CTR_IMAGEBOXEX					(_T("ImageBoxEx"))
 #include "../UIImageBoxEx.h"
+
+#define DUI_CTR_ROLLTEXTEX					(_T("RollTextEx"))
 #include "../UIRollTextEx.h"
 
 //extern "C" 

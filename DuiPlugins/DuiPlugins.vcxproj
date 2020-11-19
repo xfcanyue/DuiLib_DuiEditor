@@ -200,8 +200,19 @@
     <None Include="res\DuiPlugins.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ComboEditWnd.cpp" />
-    <ClCompile Include="ComboExUI.cpp" />
+    <ClCompile Include="UIComboEditWnd.cpp" />
+    <ClCompile Include="UIComboEx.cpp" />
+    <ClCompile Include="MFCGridCtrl\CellType\GridCellCheck.cpp" />
+    <ClCompile Include="MFCGridCtrl\CellType\GridCellCombo.cpp" />
+    <ClCompile Include="MFCGridCtrl\CellType\GridCellDateTime.cpp" />
+    <ClCompile Include="MFCGridCtrl\CellType\GridCellNumeric.cpp" />
+    <ClCompile Include="MFCGridCtrl\CellType\GridURLCell.cpp" />
+    <ClCompile Include="MFCGridCtrl\GridCell.cpp" />
+    <ClCompile Include="MFCGridCtrl\GridCellBase.cpp" />
+    <ClCompile Include="MFCGridCtrl\GridCtrl.cpp" />
+    <ClCompile Include="MFCGridCtrl\GridDropTarget.cpp" />
+    <ClCompile Include="MFCGridCtrl\InPlaceEdit.cpp" />
+    <ClCompile Include="MFCGridCtrl\TitleTip.cpp" />
     <ClCompile Include="UIDateTimeExWnd.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
@@ -218,15 +229,15 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="DuiPlugins.cpp" />
-    <ClCompile Include="GridCtrlUI.cpp" />
-    <ClCompile Include="GridCtrlWnd.cpp" />
-    <ClCompile Include="IconButton.cpp" />
-    <ClCompile Include="ImageBoxUI.cpp" />
-    <ClCompile Include="KeyBoardSimpleUI.cpp" />
-    <ClCompile Include="KeyBoardNumberUI.cpp" />
-    <ClCompile Include="KeyBoardUI.cpp" />
-    <ClCompile Include="MsgWndUI.cpp" />
-    <ClCompile Include="PictureControlUI.cpp" />
+    <ClCompile Include="UIGridCtrl.cpp" />
+    <ClCompile Include="UIGridCtrlWnd.cpp" />
+    <ClCompile Include="UIIconButton.cpp" />
+    <ClCompile Include="UIImageBox.cpp" />
+    <ClCompile Include="UIKeyBoardSimple.cpp" />
+    <ClCompile Include="UIKeyBoardNumber.cpp" />
+    <ClCompile Include="UIKeyBoard.cpp" />
+    <ClCompile Include="UIMsgWnd.cpp" />
+    <ClCompile Include="UIPictureControl.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">Create</PrecompiledHeader>
@@ -241,19 +252,32 @@
     <ClCompile Include="UIRollTextEx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ComboEditWnd.h" />
-    <ClInclude Include="ComboExUI.h" />
+    <ClInclude Include="UIComboEditWnd.h" />
+    <ClInclude Include="UIComboEx.h" />
+    <ClInclude Include="MFCGridCtrl\CellRange.h" />
+    <ClInclude Include="MFCGridCtrl\CellType\GridCellCheck.h" />
+    <ClInclude Include="MFCGridCtrl\CellType\GridCellCombo.h" />
+    <ClInclude Include="MFCGridCtrl\CellType\GridCellDateTime.h" />
+    <ClInclude Include="MFCGridCtrl\CellType\GridCellNumeric.h" />
+    <ClInclude Include="MFCGridCtrl\CellType\GridURLCell.h" />
+    <ClInclude Include="MFCGridCtrl\GridCell.h" />
+    <ClInclude Include="MFCGridCtrl\GridCellBase.h" />
+    <ClInclude Include="MFCGridCtrl\GridCtrl.h" />
+    <ClInclude Include="MFCGridCtrl\GridDropTarget.h" />
+    <ClInclude Include="MFCGridCtrl\GridMemDC.h" />
+    <ClInclude Include="MFCGridCtrl\InPlaceEdit.h" />
+    <ClInclude Include="MFCGridCtrl\TitleTip.h" />
     <ClInclude Include="UIDateTimeExWnd.h" />
-    <ClInclude Include="GridCtrlUI.h" />
-    <ClInclude Include="GridCtrlWnd.h" />
-    <ClInclude Include="IconButton.h" />
-    <ClInclude Include="ImageBoxUI.h" />
+    <ClInclude Include="UIGridCtrl.h" />
+    <ClInclude Include="UIGridCtrlWnd.h" />
+    <ClInclude Include="UIIconButton.h" />
+    <ClInclude Include="UIImageBox.h" />
     <ClInclude Include="Include\DuiPlugins.h" />
-    <ClInclude Include="KeyBoardSimpleUI.h" />
-    <ClInclude Include="KeyBoardNumberUI.h" />
-    <ClInclude Include="KeyBoardUI.h" />
-    <ClInclude Include="MsgWndUI.h" />
-    <ClInclude Include="PictureControlUI.h" />
+    <ClInclude Include="UIKeyBoardSimple.h" />
+    <ClInclude Include="UIKeyBoardNumber.h" />
+    <ClInclude Include="UIKeyBoard.h" />
+    <ClInclude Include="UIMsgWnd.h" />
+    <ClInclude Include="UIPictureControl.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />

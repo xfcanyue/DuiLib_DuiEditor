@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Window size="400,300" caption="0,0,0,65">
-	<VerticalLayout bkimage="images\common\window\MsgBxBk_New.png">
-		<HorizontalLayout height="65" padding="0,2,2,0">
-			<Button width="20" height="20" normalimage="file='images\common\system\btn_sys_close.png' source='7,0,27,20' " hotimage="file='images\common\system\btn_sys_close.png' source='40,0,60,20' " pushedimage="file='images\common\system\btn_sys_close.png' source='72,0,92,20' " pos="0,0,20,20" float="true" floatalign="top,right" />
+<Window size="400,300" caption="0,0,0,65" showshadow="true" shadowsize="1" shadowposition="1,1">
+	<VerticalLayout inset="1,1,1,1" bkcolor="0xFFFFFFFF" bordercolor="0xFFA0A0A4" bordersize="1">
+		<HorizontalLayout height="21" bkcolor="0xFFEEF0F5" bordercolor="0xFFE1E1E1" bottombordersize="1">
+			<Button name="windowclosebtn" width="20" height="20" normalimage="file='images\common\system\btn_sys_close.png' source='7,0,27,20' " hotimage="file='images\common\system\btn_sys_close.png' source='40,0,60,20' " pushedimage="file='images\common\system\btn_sys_close.png' source='72,0,92,20' " pos="0,0,20,20" float="true" floatalign="top,right" />
 		</HorizontalLayout>
 		<VerticalLayout />
 	</VerticalLayout>

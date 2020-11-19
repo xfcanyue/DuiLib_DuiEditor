@@ -39,12 +39,12 @@ namespace DuiLib
 
 	LPCTSTR CRollTextExUI::GetClass() const
 	{
-		return _T("RollTextExUI");
+		return DUI_CTR_ROLLTEXTEX;
 	}
 
 	LPVOID CRollTextExUI::GetInterface(LPCTSTR pstrName)
 	{
-		if( _tcsicmp(pstrName, _T("RollTextEx")) == 0 ) return static_cast<CRollTextExUI*>(this);
+		if( _tcsicmp(pstrName, DUI_CTR_ROLLTEXTEX) == 0 ) return static_cast<CRollTextExUI*>(this);
 		return CLabelUI::GetInterface(pstrName);
 	}
 

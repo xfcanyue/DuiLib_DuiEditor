@@ -156,17 +156,48 @@ void CUIPropertyGridImageProperty::OnClickButton(CPoint point)
 
 	CString strOldValue = COLE2CT(GetValue().bstrVal);
 	CImageEditor dlg;
+	dlg.SetUIManager(((CMainFrame *)AfxGetMainWnd())->GetActiveUIManager());
 	dlg.m_pParentGrid = m_pWndList;
 	dlg.m_pParentProp = this;
 	dlg.SetAttributeValue(strOldValue);
+
+	//获取一张图片，作为图片编辑的背景层
+	xml_node node = ((CUIPropertyGridCtrl *)m_pWndList)->GetXmlNode();
+	CControlUI *pControl = (CControlUI *)node.get_tag();
+	if(pControl)
+	{
+		//获取图片之前，先给控件设置空图片再拍照
+		pControl->SetAttribute(GetName(), _T(""));
+
+		CControlUI *pRoot = pControl->GetManager()->GetRoot();
+		CSize szForm = pControl->GetManager()->GetInitSize();
+		CImage img;
+		img.Create(szForm.cx, szForm.cy, 32);
+		CRect rcPaint(0,0,szForm.cx,szForm.cy);
+		pRoot->DoPaint(img.GetDC(), rcPaint, NULL);
+		img.ReleaseDC();
+
+		HBITMAP hBitmap = img.Detach();
+		CxImage imgx;
+		imgx.CreateFromHBITMAP(hBitmap);
+		imgx.Crop(pControl->GetPos());
+		::DeleteObject(hBitmap);
+
+		dlg.SetControlImage(imgx);
+		pControl->SetAttribute(GetName(), (LPCTSTR)GetValue().bstrVal);
+	}
+
 	if(dlg.DoModal() == IDOK)
 	{
 		SetValue(_variant_t(dlg.GetAttributeValue()));
 	}
 	else
 	{
-		SetValue((_variant_t)strOldValue);
-		m_pWndList->OnPropertyChanged(this);
+		if(dlg.GetAttributeValue() != strOldValue)
+		{
+			SetValue((_variant_t)strOldValue);
+			m_pWndList->OnPropertyChanged(this);
+		}
 	}
 
 	m_bButtonIsDown = FALSE;
@@ -439,6 +470,7 @@ CDuiEditorViewDesign *CUIPropertyGridCtrl::GetView() const
 
 void CUIPropertyGridCtrl::InitProp(xml_node TreeNode)
 {
+	//InsertMsg(_T("CUIPropertyGridCtrl::InitProp(xml_node TreeNode)"));
 	CLockWindowUpdate lockUpdate(this);
 	RemoveAll();
 
@@ -529,6 +561,21 @@ BOOL CUIPropertyGridCtrl::_isRepeatProperty(LPCTSTR propName)
 		}
 	}
 	return FALSE;
+}
+
+CMFCPropertyGridProperty *CUIPropertyGridCtrl::GetAttributeCell(LPCTSTR attrName)
+{
+	for (int i=0; i<GetPropertyCount(); i++)
+	{
+		CMFCPropertyGridProperty *pProp1 = GetProperty(i);
+		for (int j=0; j<pProp1->GetSubItemsCount(); j++)
+		{
+			CMFCPropertyGridProperty *pProp2 = pProp1->GetSubItem(j);
+			if(CompareString(pProp2->GetName(), attrName))
+				return pProp2;
+		}
+	}
+	return NULL;
 }
 
 void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrNode, CMFCPropertyGridProperty* pGroupParent)

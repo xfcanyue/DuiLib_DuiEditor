@@ -268,7 +268,22 @@ public:
 	virtual SIZE EstimateSize(SIZE szAvailable);
 
 	//modify by liqs99, 下面函数改为虚函数
-	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) ;
+	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+
+	void SetExpandIcon(LPCTSTR strIcon);
+	CDuiString GetExpandIcon();
+	void SetCheckIcon(LPCTSTR strIcon);
+	CDuiString GetCheckIcon();
+
+	void SetIconWidth(int nWidth);
+	int GetIconWidth();
+	void SetIconBkColor(DWORD dwColor);
+	DWORD GetIconBkColor();
+private:
+	CDuiString m_strExpandIcon;
+	CDuiString m_strCheckIcon;
+	int m_nIconWidth;
+	DWORD m_dwIconBkColor;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -352,11 +367,13 @@ public:
     LPVOID GetInterface(LPCTSTR pstrName);
     bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
 	void DrawItemText(HDC hDC, const RECT& rcItem);
+	void DrawItemBorder(HDC hDC, const RECT& rcItem);
 	SIZE EstimateSize(SIZE szAvailable);
 
 	void DoEvent(TEventUI& event);
 
 	CMenuWnd* GetMenuWnd();
+	CMenuUI* GetMenuUI();
 	void CreateMenuWnd();
 	
 	void SetLineType();
@@ -365,6 +382,7 @@ public:
 	void SetLinePadding(RECT rcInset);
 	RECT GetLinePadding() const;
 	void SetIcon(LPCTSTR strIcon);
+	void SetUnCheckIcon(LPCTSTR strIcon);
 	void SetIconSize(LONG cx, LONG cy);
 	void DrawItemIcon(HDC hDC, const RECT& rcItem);
 	void SetChecked(bool bCheck = true);
@@ -379,6 +397,14 @@ public:
 
 	MenuItemInfo* GetItemInfo(LPCTSTR pstrName);
 	MenuItemInfo* SetItemInfo(LPCTSTR pstrName, bool bChecked);
+
+	void OnUpdateCommandUI();
+
+	void DrawDisableItemIcon(HDC hDC, LPCTSTR pStrImage, LPCTSTR pStrModify);
+protected:
+	bool _DrawImageMenuDisableIcon(HDC hDC, CPaintManagerUI* pManager, const RECT& rc, const RECT& rcPaint, const CDuiString& sImageName, \
+		const CDuiString& sImageResType, RECT rcItem, RECT rcBmpPart, RECT rcCorner, DWORD dwMask, BYTE bFade, \
+		bool bHole, bool bTiledX, bool bTiledY, HINSTANCE instance = NULL);
 protected:
 	CMenuWnd*	m_pWindow;
 
@@ -386,9 +412,11 @@ protected:
 	DWORD		m_dwLineColor;  //分隔线颜色
 	RECT		m_rcLinePadding;	//分割线的左右边距
 
-	SIZE		m_szIconSize; 	//画图标
+	SIZE		m_szIconSize; 		//画图标
 	CDuiString	m_strIcon;
-	bool		m_bCheckItem;
+	CDuiString  m_strUnCheckIcon;	//未选中时的图标
+	bool		m_bCheckItem;	//菜单是否拥有复选框
+	bool		m_bCheck;		//复选框是否选中
 
 	bool		m_bShowExplandIcon;
 };
@@ -397,10 +425,10 @@ class CMenuCmdUI
 {
 	friend class CMenuElementUI;
 public:
-	CMenuCmdUI();
-	virtual void Enable(bool bOn = TRUE);
+	CMenuCmdUI(CMenuElementUI *p);
+	virtual void Enable(BOOL bEnable = TRUE);
 
-	virtual void SetCheck(bool bCheck);
+	virtual void SetCheck(BOOL bCheck = TRUE);
 	virtual bool GetCheck();
 
 	virtual void SetText(LPCTSTR lpszText);
@@ -408,10 +436,11 @@ public:
 
 	virtual CDuiString GetName();
 private:
-	bool m_bEnable;
-	bool m_bCheck;
-	CDuiString m_sText;
-	CDuiString m_sName;
+// 	bool m_bEnable;
+// 	bool m_bCheck;
+// 	CDuiString m_sText;
+// 	CDuiString m_sName;
+	CMenuElementUI *pMenuElement;
 };
 
 } // namespace DuiLib

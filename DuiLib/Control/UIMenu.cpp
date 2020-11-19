@@ -10,9 +10,11 @@ namespace DuiLib {
 	//
 	IMPLEMENT_DUICONTROL(CMenuUI)
 
-		CMenuUI::CMenuUI():
-		m_pWindow(NULL)
+	CMenuUI::CMenuUI():
+	m_pWindow(NULL), m_nIconWidth(26), m_dwIconBkColor(0xFFE8EDEE)
 	{
+		m_ListInfo.dwDisabledBkColor = 0x00000000;
+
 		if (GetHeader() != NULL)
 			GetHeader()->SetVisible(false);
 	}
@@ -127,9 +129,58 @@ namespace DuiLib {
 
 	void CMenuUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
-		CListUI::SetAttribute(pstrName, pstrValue);
+		if( _tcsicmp(pstrName, _T("expandicon")) == 0){
+			SetExpandIcon(pstrValue);
+		}
+		else if( _tcsicmp(pstrName, _T("checkicon")) == 0){
+			SetCheckIcon(pstrValue);
+		}
+		else if( _tcsicmp(pstrName, _T("iconwidth")) == 0){
+			SetIconWidth(_ttoi(pstrValue));
+		}
+		else if( _tcsicmp(pstrName, _T("iconbkcolor")) == 0){
+			while( *pstrValue > _T('\0') && *pstrValue <= _T(' ') ) pstrValue = ::CharNext(pstrValue);
+			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetIconBkColor(clrColor);
+		}
+		else
+			CListUI::SetAttribute(pstrName, pstrValue);
 	}
 
+	void CMenuUI::SetExpandIcon(LPCTSTR strIcon) 
+	{ 
+		m_strExpandIcon = strIcon; 
+	}
+	CDuiString CMenuUI::GetExpandIcon() 
+	{ 
+		return m_strExpandIcon; 
+	}
+	void CMenuUI::SetCheckIcon(LPCTSTR strIcon) 
+	{ 
+		m_strCheckIcon = strIcon;
+	}
+	CDuiString CMenuUI::GetCheckIcon() 
+	{ 
+		return m_strCheckIcon; 
+	}
+	void CMenuUI::SetIconWidth(int nWidth)
+	{
+		m_nIconWidth = nWidth;
+	}
+	int CMenuUI::GetIconWidth()
+	{
+		return m_nIconWidth;
+	}
+	void CMenuUI::SetIconBkColor(DWORD dwColor)
+	{
+		m_dwIconBkColor = dwColor;
+	}
+	DWORD CMenuUI::GetIconBkColor()
+	{
+		return m_dwIconBkColor;
+	}
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
 
@@ -340,10 +391,14 @@ namespace DuiLib {
 			}
 			m_pLayout->GetList()->SetAutoDestroy(false);
 
-			for( int i = 0; i < m_pOwner->GetCount(); i++ ) {
-				if(m_pOwner->GetItemAt(i)->GetInterface(_T("MenuElement")) != NULL ){
-					(static_cast<CMenuElementUI*>(m_pOwner->GetItemAt(i)))->SetOwner(m_pLayout);
-					m_pLayout->Add(static_cast<CControlUI*>(m_pOwner->GetItemAt(i)));
+			for( int i = 0; i < m_pOwner->GetCount(); i++ ) 
+			{
+				if(m_pOwner->GetItemAt(i)->GetInterface(_T("MenuElement")) != NULL )
+				{
+					CMenuElementUI *pElementUI = static_cast<CMenuElementUI*>(m_pOwner->GetItemAt(i));
+					pElementUI->SetOwner(m_pLayout);
+					m_pLayout->Add(static_cast<CControlUI*>(pElementUI));
+					pElementUI->OnUpdateCommandUI();
 				}
 			}
 
@@ -368,6 +423,15 @@ namespace DuiLib {
 			m_pm.AttachDialog(pRoot);
 			m_pm.AddNotifier(this);
 
+			if(GetMenuUI())
+			{
+				for (int i=0; i<GetMenuUI()->GetCount(); i++)
+				{
+					CMenuElementUI *pElementUI = static_cast<CMenuElementUI*>(GetMenuUI()->GetItemAt(i));
+					pElementUI->OnUpdateCommandUI();
+				}
+			}
+
 			ResizeMenu();
 		}
 		GetMenuUI()->m_pWindow = this;
@@ -378,7 +442,7 @@ namespace DuiLib {
 
 	CMenuUI* CMenuWnd::GetMenuUI()
 	{
-		return static_cast<CMenuUI*>(m_pm.GetRoot());
+		return dynamic_cast<CMenuUI*>(m_pm.GetRoot());
 	}
 
 	void CMenuWnd::ResizeMenu()
@@ -645,7 +709,7 @@ namespace DuiLib {
 	m_pWindow(NULL),
 		m_bDrawLine(false),
 		m_dwLineColor(DEFAULT_LINE_COLOR),
-		m_bCheckItem(false),
+		m_bCheckItem(false), m_bCheck(false),
 		m_bShowExplandIcon(false)
 	{
 		m_cxyFixed.cy = ITEM_DEFAULT_HEIGHT;
@@ -705,6 +769,7 @@ namespace DuiLib {
 			CRenderClip::GenerateClip(hDC, rcTemp, clip);
 			CMenuElementUI::DrawItemBk(hDC, m_rcItem);
 			DrawItemText(hDC, m_rcItem);
+			DrawItemBorder(hDC, rcTemp);
 			DrawItemIcon(hDC, m_rcItem);
 			DrawItemExpland(hDC, m_rcItem);
 
@@ -752,6 +817,7 @@ namespace DuiLib {
 					}
 				}
 			}
+
 		}
 
 		if( m_pVerticalScrollBar != NULL ) {
@@ -776,41 +842,85 @@ namespace DuiLib {
 
 	void CMenuElementUI::DrawItemIcon(HDC hDC, const RECT& rcItem)
 	{
-		if (!m_strIcon.IsEmpty() && !(m_bCheckItem && !GetChecked()))
+		CDuiString strIcon = m_strIcon;
+		if(GetCheckItem())	//如果是复选框
 		{
-			SIZE m_cxyFixed = CMenuElementUI::m_cxyFixed;
-			m_cxyFixed.cx = GetManager()->GetDPIObj()->Scale(m_cxyFixed.cx);
-			m_cxyFixed.cy = GetManager()->GetDPIObj()->Scale(m_cxyFixed.cy);
-
-			SIZE m_szIconSize = CMenuElementUI::m_szIconSize;
-			m_szIconSize.cx = GetManager()->GetDPIObj()->Scale(m_szIconSize.cx);
-			m_szIconSize.cy = GetManager()->GetDPIObj()->Scale(m_szIconSize.cy);
-			TListInfoUI* pInfo = m_pOwner->GetListInfo();
-			RECT rcTextPadding = pInfo->rcTextPadding;
-			GetManager()->GetDPIObj()->Scale(&rcTextPadding);
-			int padding = (rcTextPadding.left - m_szIconSize.cx) / 2;
-			RECT rcDest =
+			if(GetChecked())
 			{
-				padding,
-				(m_cxyFixed.cy - m_szIconSize.cy) / 2,
-				padding + m_szIconSize.cx,
-				(m_cxyFixed.cy - m_szIconSize.cy) / 2 + m_szIconSize.cy
-			};
-			GetManager()->GetDPIObj()->ScaleBack(&rcDest);
-			CDuiString pStrImage;
-			pStrImage.Format(_T("dest='%d,%d,%d,%d'"), rcDest.left, rcDest.top, rcDest.right, rcDest.bottom);
-			DrawImage(hDC, m_strIcon, pStrImage);
+				//如果当前没有设置图标, 使用默认的
+				if(m_strIcon.IsEmpty() && GetMenuUI()) 
+				{
+					strIcon = GetMenuUI()->GetCheckIcon();
+				}
+			}
+			else
+			{
+				strIcon = m_strUnCheckIcon;
+			}
 		}
+		else
+		{
+			strIcon = m_strIcon;
+		}
+
+		if(strIcon.IsEmpty()) return;
+
+		SIZE m_cxyFixed = CMenuElementUI::m_cxyFixed;
+		m_cxyFixed.cx = GetManager()->GetDPIObj()->Scale(m_cxyFixed.cx);
+		m_cxyFixed.cy = GetManager()->GetDPIObj()->Scale(m_cxyFixed.cy);
+
+		//SIZE m_szIconSize = CMenuElementUI::m_szIconSize;
+		m_szIconSize.cx = GetManager()->GetDPIObj()->Scale(m_szIconSize.cx);
+		m_szIconSize.cy = GetManager()->GetDPIObj()->Scale(m_szIconSize.cy);
+
+		int nWidth = 0;
+		if(GetMenuUI())
+			nWidth = GetManager()->GetDPIObj()->Scale(GetMenuUI()->GetIconWidth());
+		int padding = (nWidth - m_szIconSize.cx) / 2;
+		RECT rcDest =
+		{
+			padding,
+			(m_cxyFixed.cy - m_szIconSize.cy) / 2,
+			padding + m_szIconSize.cx,
+			(m_cxyFixed.cy - m_szIconSize.cy) / 2 + m_szIconSize.cy
+		};
+		GetManager()->GetDPIObj()->ScaleBack(&rcDest);
+		/*
+		TListInfoUI* pInfo = m_pOwner->GetListInfo();
+		RECT rcTextPadding = pInfo->rcTextPadding;
+		GetManager()->GetDPIObj()->Scale(&rcTextPadding);
+
+		int padding = (rcTextPadding.left - m_szIconSize.cx) / 2;
+		RECT rcDest =
+		{
+			padding,
+			(m_cxyFixed.cy - m_szIconSize.cy) / 2,
+			padding + m_szIconSize.cx,
+			(m_cxyFixed.cy - m_szIconSize.cy) / 2 + m_szIconSize.cy
+		};
+		GetManager()->GetDPIObj()->ScaleBack(&rcDest);
+		*/
+
+		CDuiString pStrImage;
+		pStrImage.Format(_T("dest='%d,%d,%d,%d'"), rcDest.left, rcDest.top, rcDest.right, rcDest.bottom);
+		//if(IsEnabled())
+			DrawImage(hDC, strIcon, pStrImage);	
+		//else
+		//	DrawDisableItemIcon(hDC, strIcon, pStrImage);
 	}
 
 	void CMenuElementUI::DrawItemExpland(HDC hDC, const RECT& rcItem)
 	{
-		if (m_bShowExplandIcon)
+		if (m_bShowExplandIcon && IsEnabled())
 		{
 			CDuiString strExplandIcon;
 			strExplandIcon = GetManager()->GetDefaultAttributeList(_T("ExplandIcon"));
-			if (strExplandIcon.IsEmpty()) {
-				return;
+			if (strExplandIcon.IsEmpty()) 
+			{
+				if(GetMenuUI())
+					strExplandIcon = GetMenuUI()->GetExpandIcon();
+				if (strExplandIcon.IsEmpty()) 
+					return;
 			}
 			SIZE m_cxyFixed = CMenuElementUI::m_cxyFixed;
 			m_cxyFixed.cx = GetManager()->GetDPIObj()->Scale(m_cxyFixed.cx);
@@ -834,7 +944,6 @@ namespace DuiLib {
 			DrawImage(hDC, strExplandIcon, pStrImage);
 		}
 	}
-
 
 	void CMenuElementUI::DrawItemText(HDC hDC, const RECT& rcItem)
 	{
@@ -870,6 +979,77 @@ namespace DuiLib {
 			pInfo->nFont, DT_SINGLELINE | pInfo->uTextStyle);
 	}
 
+	void CMenuElementUI::DrawItemBorder(HDC hDC, const RECT& rcItem)
+	{
+		int nBorderSize;
+		SIZE cxyBorderRound;
+		RECT rcBorderSize;
+		if (m_pManager) {
+			nBorderSize = GetManager()->GetDPIObj()->Scale(m_nBorderSize);
+			cxyBorderRound = GetManager()->GetDPIObj()->Scale(m_cxyBorderRound);
+			rcBorderSize = GetManager()->GetDPIObj()->Scale(m_rcBorderSize);
+		}
+		else {
+			nBorderSize = m_nBorderSize;
+			cxyBorderRound = m_cxyBorderRound;
+			rcBorderSize = m_rcBorderSize;
+		}
+
+		if(m_dwBorderColor != 0 || m_dwFocusBorderColor != 0 || m_dwHotBorderColor != 0) {
+			//画圆角边框
+			if(nBorderSize > 0 && ( cxyBorderRound.cx > 0 || cxyBorderRound.cy > 0 )) {
+				if (IsFocused() && m_dwFocusBorderColor != 0)
+					CRenderEngine::DrawRoundRect(hDC, rcItem, nBorderSize, cxyBorderRound.cx, cxyBorderRound.cy, GetAdjustColor(m_dwFocusBorderColor), m_nBorderStyle);	
+				//////////////////////////////////////////////////////////////////////////
+				//add by liqs99
+				else if (IsHot() && m_dwHotBorderColor != 0)
+					CRenderEngine::DrawRoundRect(hDC, rcItem, nBorderSize, cxyBorderRound.cx, cxyBorderRound.cy, GetAdjustColor(m_dwHotBorderColor), m_nBorderStyle);
+				//////////////////////////////////////////////////////////////////////////
+				else
+					CRenderEngine::DrawRoundRect(hDC, rcItem, nBorderSize, cxyBorderRound.cx, cxyBorderRound.cy, GetAdjustColor(m_dwBorderColor), m_nBorderStyle);
+			}
+			else {
+				if (IsFocused() && m_dwFocusBorderColor != 0 && nBorderSize > 0) { 
+					CRenderEngine::DrawRect(hDC, rcItem, nBorderSize, GetAdjustColor(m_dwFocusBorderColor), m_nBorderStyle);
+				}
+				//////////////////////////////////////////////////////////////////////////
+				//add by liqs99
+				else if (IsHot() && m_dwHotBorderColor != 0 && nBorderSize > 0) { 
+					CRenderEngine::DrawRect(hDC, rcItem, nBorderSize, GetAdjustColor(m_dwHotBorderColor), m_nBorderStyle);
+				}
+				//////////////////////////////////////////////////////////////////////////
+				else if(rcBorderSize.left > 0 || rcBorderSize.top > 0 || rcBorderSize.right > 0 || rcBorderSize.bottom > 0) {
+					RECT rcBorder;
+
+					if(rcBorderSize.left > 0){
+						rcBorder		= rcItem;
+						rcBorder.right	= rcBorder.left;
+						CRenderEngine::DrawLine(hDC,rcBorder,rcBorderSize.left,GetAdjustColor(m_dwBorderColor),m_nBorderStyle);
+					}
+					if(rcBorderSize.top > 0){
+						rcBorder		= rcItem;
+						rcBorder.bottom	= rcBorder.top;
+						CRenderEngine::DrawLine(hDC,rcBorder,rcBorderSize.top,GetAdjustColor(m_dwBorderColor),m_nBorderStyle);
+					}
+					if(rcBorderSize.right > 0){
+						rcBorder		= rcItem;
+						rcBorder.right -= 1;
+						rcBorder.left	= rcBorder.right;
+						CRenderEngine::DrawLine(hDC,rcBorder,rcBorderSize.right,GetAdjustColor(m_dwBorderColor),m_nBorderStyle);
+					}
+					if(rcBorderSize.bottom > 0){
+						rcBorder		= rcItem;
+						rcBorder.bottom -= 1;
+						rcBorder.top	= rcBorder.bottom;
+						CRenderEngine::DrawLine(hDC,rcBorder,rcBorderSize.bottom,GetAdjustColor(m_dwBorderColor),m_nBorderStyle);
+					}
+				}
+				else if(nBorderSize > 0) {
+					CRenderEngine::DrawRect(hDC, rcItem, nBorderSize, GetAdjustColor(m_dwBorderColor), m_nBorderStyle);
+				}
+			}
+		}
+	}
 
 	SIZE CMenuElementUI::EstimateSize(SIZE szAvailable)
 	{
@@ -931,6 +1111,7 @@ namespace DuiLib {
 		{
 			CListContainerElementUI::DoEvent(event);
 			if( m_pWindow ) return;
+			SetHot(true);
 			bool hasSubMenu = false;
 			for( int i = 0; i < GetCount(); ++i )
 			{
@@ -942,7 +1123,7 @@ namespace DuiLib {
 					hasSubMenu = true;
 				}
 			}
-			if( hasSubMenu )
+			if( hasSubMenu && IsEnabled())
 			{
 				m_pOwner->SelectItem(GetIndex(), true);
 				CreateMenuWnd();
@@ -960,7 +1141,7 @@ namespace DuiLib {
 
 
 		if (event.Type == UIEVENT_MOUSELEAVE) {
-
+			SetHot(false);
 			bool hasSubMenu = false;
 			for (int i = 0; i < GetCount(); ++i)
 			{
@@ -1068,6 +1249,12 @@ namespace DuiLib {
 		return m_pWindow;
 	}
 
+	CMenuUI* CMenuElementUI::GetMenuUI()
+	{
+		//return dynamic_cast<CMenuUI*>(GetManager()->GetRoot());
+		return dynamic_cast<CMenuUI*>(GetOwner());
+	}
+
 	void CMenuElementUI::CreateMenuWnd()
 	{
 		if( m_pWindow ) return;
@@ -1118,6 +1305,11 @@ namespace DuiLib {
 		if ( strIcon != _T("") )
 			m_strIcon = strIcon;
 	}
+	void CMenuElementUI::SetUnCheckIcon(LPCTSTR strIcon)
+	{
+		if ( strIcon != _T("") )
+			m_strUnCheckIcon = strIcon;
+	}
 
 	void CMenuElementUI::SetIconSize(LONG cx, LONG cy)
 	{
@@ -1127,6 +1319,12 @@ namespace DuiLib {
 
 	void CMenuElementUI::SetChecked(bool bCheck/* = true*/)
 	{
+		CStdStringPtrMap* mCheckInfos = CMenuWnd::GetGlobalContextMenuObserver().GetMenuCheckInfo();
+		if(mCheckInfos == NULL)
+		{
+			m_bCheck = bCheck;
+			return;
+		}
 		SetItemInfo(GetName(), bCheck);
 	}
 
@@ -1143,26 +1341,10 @@ namespace DuiLib {
 				return pItemInfo->bChecked;
 			}
 		}
-		
-		//发消息给父窗口，返回check状态
-// 		bool isClosing = false;
-// 		CMenuUI* menuUI=static_cast<CMenuUI*>(GetManager()->GetRoot());
-// 		isClosing = (menuUI->m_pWindow->isClosing);
-// 		if (IsWindow(GetManager()->GetPaintWindow()) && !isClosing) {
-// 			if (CMenuWnd::GetGlobalContextMenuObserver().GetManager() != NULL)
-// 			{
-// 				CMenuCmdUI cmdUI;
-// 				cmdUI.m_bEnable = IsEnabled();
-// 				cmdUI.m_bCheck = true;
-// 				cmdUI.m_sName = GetName();
-// 				cmdUI.m_sText = GetText();
-// 				LRESULT lRet = ::SendMessage(CMenuWnd::GetGlobalContextMenuObserver().GetManager()->GetPaintWindow(), WM_MENU_UPDATE_COMMAND_UI, (WPARAM)&cmdUI, (LPARAM)this);
-// 				if(lRet)
-// 				{
-// 					return cmdUI.GetCheck();
-// 				}
-// 			}
-// 		}
+		else
+		{
+			return m_bCheck;
+		}
 		return false;
 	}
 
@@ -1185,6 +1367,9 @@ namespace DuiLib {
 	{
 		if( _tcsicmp(pstrName, _T("icon")) == 0){
 			SetIcon(pstrValue);
+		}
+		if( _tcsicmp(pstrName, _T("uncheckicon")) == 0){
+			SetUnCheckIcon(pstrValue);
 		}
 		else if( _tcsicmp(pstrName, _T("iconsize")) == 0 ) {
 			LPTSTR pstr = NULL;
@@ -1279,38 +1464,123 @@ namespace DuiLib {
 		return NULL;
 	}
 
+	void CMenuElementUI::OnUpdateCommandUI()
+	{
+		//发消息给父窗口，返回check状态
+		if (!::IsWindow(GetManager()->GetPaintWindow())) 
+			return;
+
+		if (CMenuWnd::GetGlobalContextMenuObserver().GetManager() == NULL)
+			return;
+
+		//if(!GetCheckItem())
+		//	return;
+
+		CMenuCmdUI cmdUI(this);
+// 		cmdUI.m_bEnable = IsEnabled();
+// 		cmdUI.m_bCheck = true;
+// 		cmdUI.m_sName = GetName();
+// 		cmdUI.m_sText = GetText();
+		LRESULT lRet = ::SendMessage(CMenuWnd::GetGlobalContextMenuObserver().GetManager()->GetPaintWindow(), WM_MENU_UPDATE_COMMAND_UI, (WPARAM)&cmdUI, (LPARAM)this);		
+	}
+
+	void CMenuElementUI::DrawDisableItemIcon(HDC hDC, LPCTSTR pStrImage, LPCTSTR pStrModify)
+	{
+		if ((m_pManager == NULL) || (hDC == NULL)) return;
+		const TDrawInfo* pDrawInfo = m_pManager->GetDrawInfo(pStrImage, pStrModify);
+
+		CPaintManagerUI *pManager = m_pManager;
+		RECT rcItem = m_rcItem;
+		RECT rcPaint = m_rcItem;
+		//return DrawImageInfo(hDC, pManager, rcItem, rcPaint, pDrawInfo, instance);
+
+		RECT rcDest = rcItem;
+		if( pDrawInfo->rcDest.left != 0 || pDrawInfo->rcDest.top != 0 ||
+			pDrawInfo->rcDest.right != 0 || pDrawInfo->rcDest.bottom != 0 ) {
+				rcDest.left = rcItem.left + pDrawInfo->rcDest.left;
+				rcDest.top = rcItem.top + pDrawInfo->rcDest.top;
+				rcDest.right = rcItem.left + pDrawInfo->rcDest.right;
+				if( rcDest.right > rcItem.right ) rcDest.right = rcItem.right;
+				rcDest.bottom = rcItem.top + pDrawInfo->rcDest.bottom;
+				if( rcDest.bottom > rcItem.bottom ) rcDest.bottom = rcItem.bottom;
+		}
+		bool bRet = _DrawImageMenuDisableIcon(hDC, pManager, rcItem, rcPaint, pDrawInfo->sImageName, pDrawInfo->sResType, rcDest, \
+			pDrawInfo->rcSource, pDrawInfo->rcCorner, pDrawInfo->dwMask, pDrawInfo->uFade, pDrawInfo->bHole, pDrawInfo->bTiledX, pDrawInfo->bTiledY, m_instance);
+
+	}
+	bool CMenuElementUI::_DrawImageMenuDisableIcon(HDC hDC, CPaintManagerUI* pManager, const RECT& rc, const RECT& rcPaint, const CDuiString& sImageName, \
+		const CDuiString& sImageResType, RECT rcItem, RECT rcBmpPart, RECT rcCorner, DWORD dwMask, BYTE bFade, \
+		bool bHole, bool bTiledX, bool bTiledY, HINSTANCE instance)
+	{
+		if (sImageName.IsEmpty()) {
+			return false;
+		}
+		const TImageInfo* data = NULL;
+		if( sImageResType.IsEmpty() ) {
+			data = pManager->GetImageEx((LPCTSTR)sImageName, NULL, dwMask, false, instance);
+		}
+		else {
+			data = pManager->GetImageEx((LPCTSTR)sImageName, (LPCTSTR)sImageResType, dwMask, false, instance);
+		}
+		if( !data ) return false;    
+
+		if( rcBmpPart.left == 0 && rcBmpPart.right == 0 && rcBmpPart.top == 0 && rcBmpPart.bottom == 0 ) {
+			rcBmpPart.right = data->nX;
+			rcBmpPart.bottom = data->nY;
+		}
+		if (rcBmpPart.right > data->nX) rcBmpPart.right = data->nX;
+		if (rcBmpPart.bottom > data->nY) rcBmpPart.bottom = data->nY;
+
+		RECT rcTemp;
+		if( !::IntersectRect(&rcTemp, &rcItem, &rc) ) return true;
+		if( !::IntersectRect(&rcTemp, &rcItem, &rcPaint) ) return true;
+
+		CRenderEngine::DrawImage(hDC, data->hBitmap, rcItem, rcPaint, rcBmpPart, rcCorner, pManager->IsLayered() ? true : data->bAlpha, bFade, bHole, bTiledX, bTiledY);
+
+		//需要把data->hBitmap转为灰度图
+//		CRenderEngine::DrawImage(hDC, hbmp, rcItem, rcPaint, rcBmpPart, rcCorner, pManager->IsLayered() ? true : data->bAlpha, bFade, bHole, bTiledX, bTiledY);
+
+		return true;
+	}
 	//////////////////////////////////////////////////////////////////////////
-	CMenuCmdUI::CMenuCmdUI() : m_bEnable(true), m_bCheck(false)
+	CMenuCmdUI::CMenuCmdUI(CMenuElementUI *p) : pMenuElement(p)//m_bEnable(true), m_bCheck(false)
 	{
 	}
 
-	void CMenuCmdUI::Enable(bool bOn)
+	void CMenuCmdUI::Enable(BOOL bEnable)
 	{
-		m_bEnable = bOn;
+		//m_bEnable = bOn;
+		pMenuElement->SetEnabled(bEnable == TRUE);
 	}
 
-	void CMenuCmdUI::SetCheck(bool bCheck)
+	void CMenuCmdUI::SetCheck(BOOL bCheck)
 	{
-		m_bCheck = bCheck;
+		//m_bCheck = bCheck;
+		pMenuElement->SetChecked(bCheck == TRUE);
+		
 	}
 
 	bool CMenuCmdUI::GetCheck()
 	{
-		return m_bCheck;
+		//return m_bCheck;
+		return pMenuElement->GetChecked();
 	}
 
 	void CMenuCmdUI::SetText(LPCTSTR lpszText)
 	{
-		m_sText = lpszText;
+		//m_sText = lpszText;
+		return pMenuElement->SetText(lpszText);
 	}
 
 	CDuiString CMenuCmdUI::GetText()
 	{
-		return m_sText;
+		//return m_sText;
+		return pMenuElement->GetText();
 	}
 
 	CDuiString CMenuCmdUI::GetName()
 	{
-		return m_sName;
+		//return m_sName;
+		return pMenuElement->GetName();
 	}
 } // namespace DuiLib

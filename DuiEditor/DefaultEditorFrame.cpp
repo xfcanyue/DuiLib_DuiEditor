@@ -31,6 +31,7 @@ BEGIN_MESSAGE_MAP(CDefaultEditorFrame, CFrameWndEx)
 	ON_UPDATE_COMMAND_UI(ID_TB_SAVE, &CDefaultEditorFrame::OnUpdateTbSave)
 	ON_COMMAND(ID_TB_UI_EFFECT, &CDefaultEditorFrame::OnTbUiEffect)
 	ON_UPDATE_COMMAND_UI(ID_TB_UI_EFFECT, &CDefaultEditorFrame::OnUpdateTbUiEffect)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -60,8 +61,8 @@ int CDefaultEditorFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	{
 		return FALSE; // 未能创建
 	}
-	CUIPropertyGridCtrl *pPropList = m_wndProperty.CreatePropList();
-	pPropList->SetOwner(this);
+	m_pPropList = m_wndProperty.CreatePropList();
+	m_pPropList->SetOwner(this);
 
 	EnableDocking(CBRS_ALIGN_ANY);
 	m_wndProperty.EnableDocking(CBRS_ALIGN_RIGHT);
@@ -78,7 +79,7 @@ int CDefaultEditorFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	m_wndView.CreateControl(pDlgMain->m_strClassName);
 
-	pPropList->InitProp(pDlgMain->m_nodeControl.child(T2XML(pDlgMain->m_strClassName)));
+	m_pPropList->InitProp(pDlgMain->m_nodeControl.child(T2XML(pDlgMain->m_strClassName)));
 	return 0;
 }
 
@@ -136,4 +137,13 @@ void CDefaultEditorFrame::OnTbUiEffect()
 void CDefaultEditorFrame::OnUpdateTbUiEffect(CCmdUI *pCmdUI)
 {
 	pCmdUI->SetCheck(m_wndView.m_bUiEffect);
+}
+
+
+void CDefaultEditorFrame::OnDestroy()
+{
+	CFrameWndEx::OnDestroy();
+
+	// TODO: 在此处添加消息处理程序代码
+	delete m_pPropList;
 }

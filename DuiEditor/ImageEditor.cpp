@@ -7,8 +7,10 @@
 #include "afxdialogex.h"
 
 #include "MainFrm.h"
-// CImageEditor 对话框
+#include "UIManager.h"
 
+// CImageEditor 对话框
+CImageEditor *g_pEditorImage = NULL;
 IMPLEMENT_DYNAMIC(CImageEditor, CDialogEx)
 
 CImageEditor::CImageEditor(CWnd* pParent /*=NULL*/)
@@ -44,9 +46,7 @@ BOOL CImageEditor::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
-	CDuiEditorViewDesign *pView = (CDuiEditorViewDesign *)pMain->GetActiveUIView();
-	m_pDoc = pView->GetDocument();
+	g_pEditorImage = this;
 
 	CRect rectDummy;
 	GetClientRect(rectDummy);
@@ -92,6 +92,7 @@ void CImageEditor::OnDestroy()
 	{
 		m_pFrame->DestroyWindow();
 	}
+	g_pEditorImage = NULL;
 }
 
 BOOL CImageEditor::OnEraseBkgnd(CDC* pDC)
@@ -103,8 +104,6 @@ BOOL CImageEditor::OnEraseBkgnd(CDC* pDC)
 
 void CImageEditor::SetAttributeValue(LPCTSTR szAttribute)
 {
-	xml_node nodedata;
-
 	CString strXML = _T("<IMAGE ");
 	strXML += szAttribute;
 	strXML += _T(" />");
@@ -113,14 +112,91 @@ void CImageEditor::SetAttributeValue(LPCTSTR szAttribute)
 	{
 		strXML = _T("<IMAGE />");
 		ret = m_nodeImage.load(T2XML(strXML));
-		nodedata = m_nodeImage.child(XTEXT("IMAGE"));
+		m_nodedata = m_nodeImage.child(XTEXT("IMAGE"));
 
-		g_duiProp.AddAttribute(nodedata, _T("file"), szAttribute, NULL);
+		g_duiProp.AddAttribute(m_nodedata, _T("file"), szAttribute, NULL);
 	}
 	else
 	{
-		nodedata = m_nodeImage.child(XTEXT("IMAGE"));
+		m_nodedata = m_nodeImage.child(XTEXT("IMAGE"));
 	}
+
+	/*
+	//先把所有属性用默认的填上，不存在就创建
+	xml_node nodePropertyControl = g_duiProp.FindControl(_T("IMAGE"));
+	if(!nodePropertyControl) return;
+	
+	for (xml_node node=nodePropertyControl.first_child(); node; node=node.next_sibling())
+	{
+		if(node.type() != node_element) continue;
+		if(!CompareString(node.name(), _T("Attribute"))) continue;
+
+		CString strName = XML2T(node.attribute(XTEXT("name")).as_string());
+		xml_attribute attr = m_nodedata.attribute(node.attribute(XTEXT("name")).as_string());
+		if(!attr)
+		{
+			CString strDefault = XML2T(node.attribute(XTEXT("default")).as_string());
+			g_duiProp.AddAttribute(m_nodedata, strName, strDefault, NULL);
+		}
+	}
+	*/
+
+	//载入图片
+	CString strSkinDir = GetUIManager()->GetDocument()->GetSkinPath();
+	m_image.DestroyFrames(); m_image.Destroy();
+	m_image.Load(strSkinDir + XML2T(m_nodedata.attribute(XTEXT("file")).value()));
+	m_rcImage.SetRect(0, 0, m_image.GetWidth(), m_image.GetHeight());
+
+	//设置默认source
+// 	xml_attribute attr = m_nodedata.attribute(XTEXT("file"));
+// 	if(attr)
+// 	{
+// 		xml_attribute attr2 = m_nodedata.attribute(XTEXT("source"));
+// 		if(!attr2)
+// 		{
+// 			m_nodedata.attribute_auto(XTEXT("source")).set_value(T2XML(RectToString(m_rcImage)));
+// 		}
+// 	}
+
+	return;
+}
+
+void CImageEditor::SetControlImage(CxImage &img)
+{
+	m_imgControlX.Transfer(img);
+
+	CRect rc(0, 0, m_imgControlX.GetWidth(), m_imgControlX.GetHeight());
+	m_rcControl = rc;
+
+	//设置默认dest
+// 	xml_attribute attrDest = m_nodedata.attribute(XTEXT("dest"));
+// 	if(!attrDest)
+// 	{
+// 		m_nodedata.attribute_auto(XTEXT("dest")).set_value(T2XML(RectToString(rc)));
+// 	}
+}
+
+void CImageEditor::SetImageFile(LPCTSTR lpstrPathName)
+{
+	CString strDocPath = GetUIManager()->GetDocument()->GetSkinPath(); //CPaintManagerUI::GetResourcePath();
+	CString strFileName = lpstrPathName;
+
+	//只能取子目录的文件
+	if(strFileName.Find(strDocPath) == 0)
+	{
+		strFileName = strFileName.Right(strFileName.GetLength() - strDocPath.GetLength());
+	}
+	else
+	{
+		::MessageBoxA(NULL, "只能使用当前目录或者子目录的文件", "ERROR", MB_OK);
+		return;
+	}
+
+	g_duiProp.AddAttribute(g_pEditorImage->m_nodedata, _T("file"), strFileName, NULL);
+
+	m_image.DestroyFrames(); m_image.Destroy();
+	m_image.Load(lpstrPathName);
+	m_rcImage.SetRect(0, 0, m_image.GetWidth(), m_image.GetHeight());
 }
 
 CString CImageEditor::GetAttributeValue()
@@ -131,13 +207,22 @@ CString CImageEditor::GetAttributeValue()
 	g_duiProp.FilterDefaultValue(node, NULL);
 	g_duiProp.FilterPosWidthHeight(node, NULL);
 
-	//判断source是否等于图像原始大小, 等于则删除source属性定义
-	xml_attribute attr = node.attribute(XTEXT("source"));
+	//判断dest是否等于图像原始大小, 等于则删除dest属性定义
+	xml_attribute attr = node.attribute(XTEXT("dest"));
 	if(attr)
 	{
 		CDuiRect rc(XML2T(attr.value()));
-		if(m_rcImage == rc)
+		if(m_rcControl == rc)
 			node.remove_attribute(attr);
+	}
+
+	//判断source是否等于图像原始大小, 等于则删除source属性定义
+	xml_attribute attr2 = node.attribute(XTEXT("source"));
+	if(attr2)
+	{
+		CDuiRect rc(XML2T(attr2.value()));
+		if(m_rcImage == rc)
+			node.remove_attribute(attr2);
 	}
 
 	CString strImage, temp;
@@ -180,4 +265,20 @@ LRESULT CImageEditor::DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 	}
 
 	return CDialogEx::DefWindowProc(message, wParam, lParam);
+}
+
+
+BOOL CImageEditor::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	if(pMsg->message == WM_KEYDOWN)
+	{
+		if(m_pFrame && m_pFrame->GetSafeHwnd())
+		{
+			CWnd *pWnd = m_pFrame->GetFocus();
+			if(pWnd)
+				pWnd->SendMessage(pMsg->message, pMsg->wParam, pMsg->lParam);
+		}
+	}
+	return CDialogEx::PreTranslateMessage(pMsg);
 }

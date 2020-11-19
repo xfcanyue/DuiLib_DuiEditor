@@ -58,7 +58,7 @@ namespace DuiLib
 
 	LPCTSTR CDateTimeExUI::GetClass() const
 	{
-		return _T("DateTimeExUI");
+		return DUI_CTR_DATETIMEEX;
 	}
 
 	LPVOID CDateTimeExUI::GetInterface(LPCTSTR pstrName)

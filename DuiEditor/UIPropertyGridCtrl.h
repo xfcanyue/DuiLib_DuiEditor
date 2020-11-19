@@ -98,6 +98,9 @@ public:
 
 	BOOL IsRepeatName(xml_node nodeDoc, LPCTSTR lpszName) const;
 
+	//获取相关属性的那个格子
+	CMFCPropertyGridProperty *GetAttributeCell(LPCTSTR attrName);
+
 	xml_node GetXmlNode() const { return m_TreeNode; }
 	xml_node m_TreeNode;
 

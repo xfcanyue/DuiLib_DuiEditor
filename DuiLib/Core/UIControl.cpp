@@ -1396,7 +1396,7 @@ namespace DuiLib {
 			rcBorderSize = m_rcBorderSize;
 		}
 		
-		if(m_dwBorderColor != 0 || m_dwFocusBorderColor != 0) {
+		if(m_dwBorderColor != 0 || m_dwFocusBorderColor != 0 || m_dwHotBorderColor != 0) {
 			//»­Ô²½Ç±ß¿ò
 			if(nBorderSize > 0 && ( cxyBorderRound.cx > 0 || cxyBorderRound.cy > 0 )) {
 				if (IsFocused() && m_dwFocusBorderColor != 0)

@@ -4,7 +4,7 @@
 namespace DuiLib {
 	IMPLEMENT_DUICONTROL(CFadeButtonUI)
 
-	CFadeButtonUI::CFadeButtonUI() : CUIAnimation( &(*this) ), m_bMouseHove( FALSE ), m_bMouseLeave( FALSE )
+	CFadeButtonUI::CFadeButtonUI() : CUIAnimation(this), m_bMouseHove( FALSE ), m_bMouseLeave( FALSE )
 	{
 	}
 

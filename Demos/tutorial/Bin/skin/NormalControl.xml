@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Window size="800,600">
+<Window size="800,645">
 	<VerticalLayout vscrollbar="true" childpadding="10" padding="10,10,10,10" bkcolor="0xFFD1E8F5">
 		<HorizontalLayout height="30" childpadding="10">
 			<Label text="Button" autocalcwidth="true" />
@@ -38,7 +38,7 @@
 		</HorizontalLayout>
 		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
 			<Label text="Edit" autocalcwidth="true" />
-			<Edit width="150" bordercolor="0xFFC0C0C0" bordersize="1" />
+			<Edit width="150" tipvalue="编辑框" bordercolor="0xFFC0C0C0" bordersize="1" />
 		</HorizontalLayout>
 		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
 			<Label text="Date" autocalcwidth="true" />
@@ -72,6 +72,12 @@
 					<PictureControl fileimage="images\common\webbrowser\load_error.png" autosize="true" />
 				</VerticalLayout>
 				<Text height="20" text="PNG" align="center" bkcolor="0xFFE1E1E1" />
+			</VerticalLayout>
+			<VerticalLayout width="100" inset="1,1,1,1" bordercolor="0xFF969696" bordersize="1">
+				<VerticalLayout childalign="center" childvalign="vcenter">
+					<PictureControl fileimage="images\bmp.bmp" autosize="true" />
+				</VerticalLayout>
+				<Text height="20" text="BMP" align="center" bkcolor="0xFFE1E1E1" />
 			</VerticalLayout>
 			<VerticalLayout width="100" inset="1,1,1,1" bordercolor="0xFF969696" bordersize="1">
 				<VerticalLayout childalign="center" childvalign="vcenter">

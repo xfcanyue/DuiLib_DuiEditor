@@ -2,6 +2,9 @@
 #include "UIDataExchange.h"
 
 
+namespace DuiLib
+{
+
 CUIDataExchange::CUIDataExchange(void)
 {
 	m_pManager = NULL;
@@ -353,4 +356,6 @@ COleDateTime CUIDataExchange::MergeCOleDateTime(const COleDateTime &date, const 
 	COleDateTime dt;
 	dt.SetDateTime(date.GetYear(), date.GetMonth(), date.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond());
 	return dt;
+}
+
 }

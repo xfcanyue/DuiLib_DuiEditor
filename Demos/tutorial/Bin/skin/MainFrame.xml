@@ -18,6 +18,7 @@
 			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="1" text="高级控件" bottombordersize="2" style="style_option_header" />
 			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="2" text="动画控件" bottombordersize="2" style="style_option_header" />
 			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="3" text="键盘" bottombordersize="2" style="style_option_header" />
+			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="4" text="MFCGridCtrl" bottombordersize="2" style="style_option_header" />
 		</HorizontalLayout>
 		<TabLayout name="tab_main">
 			<VerticalLayout childpadding="10" padding="10,10,10,10">
@@ -123,10 +124,6 @@
 					</ListContainerElement>
 				</List>
 				<HorizontalLayout>
-					<VerticalLayout>
-						<Label text="GridCtrl" height="20" />
-						<GridCtrl name="gridctrl_1" columncount="6" fixedcolumntext="姓名,用户名,手机号码,固定电话,使用日期" />
-					</VerticalLayout>
 					<VerticalLayout>
 						<Label text="TreeView" height="20" />
 						<TreeView visiblecheckbtn="true" itemselectedbkcolor="0x00000000" itemhotbkcolor="0x00000000" vscrollbar="true" hscrollbar="true" bkcolor="0xFFFFFFFF">
@@ -258,6 +255,9 @@
 					<RichEdit height="30" inset="5,5,5,5" bkcolor="0xFFFFFFFF" bordercolor="0xFFC0C0C0" bordersize="1" text="这是一个简易的键盘控件" />
 				</HorizontalLayout>
 				<KeyBoard keywidth="60" keyheight="60" keypadding="2" font="3" height="450" />
+			</VerticalLayout>
+			<VerticalLayout>
+				<GridCtrl name="gridctrl_1" columncount="6" fixedcolumntext="姓名,用户名,手机号码,固定电话,使用日期" />
 			</VerticalLayout>
 		</TabLayout>
 		<Label text="日志输出窗口:" height="20" />

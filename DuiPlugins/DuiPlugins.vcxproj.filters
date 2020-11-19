@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\MFCGridCtrl">
+      <UniqueIdentifier>{99139b45-8b59-490b-b1b4-6a0fe02ef810}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\MFCGridCtrl">
+      <UniqueIdentifier>{a81083e9-4e57-45c1-a820-0e6eb160676c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -33,40 +39,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="GridCtrlUI.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="GridCtrlWnd.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="MsgWndUI.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="KeyBoardUI.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="KeyBoardNumberUI.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="KeyBoardSimpleUI.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ImageBoxUI.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="UIDataExchange.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="PictureControlUI.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ComboExUI.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="IconButton.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ComboEditWnd.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="UIDateTimeEx.cpp">
@@ -87,6 +60,72 @@
     <ClCompile Include="UIRollTextEx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="MFCGridCtrl\GridCell.cpp">
+      <Filter>源文件\MFCGridCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCGridCtrl\GridCtrl.cpp">
+      <Filter>源文件\MFCGridCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCGridCtrl\GridCellBase.cpp">
+      <Filter>源文件\MFCGridCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCGridCtrl\CellType\GridCellCheck.cpp">
+      <Filter>源文件\MFCGridCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCGridCtrl\CellType\GridCellCombo.cpp">
+      <Filter>源文件\MFCGridCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCGridCtrl\CellType\GridCellDateTime.cpp">
+      <Filter>源文件\MFCGridCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCGridCtrl\CellType\GridCellNumeric.cpp">
+      <Filter>源文件\MFCGridCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCGridCtrl\CellType\GridURLCell.cpp">
+      <Filter>源文件\MFCGridCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCGridCtrl\GridDropTarget.cpp">
+      <Filter>源文件\MFCGridCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCGridCtrl\InPlaceEdit.cpp">
+      <Filter>源文件\MFCGridCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCGridCtrl\TitleTip.cpp">
+      <Filter>源文件\MFCGridCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPictureControl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIMsgWnd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIKeyBoard.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIKeyBoardSimple.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIKeyBoardNumber.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIImageBox.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIIconButton.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIGridCtrlWnd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIGridCtrl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIComboEx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIComboEditWnd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -98,43 +137,10 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="GridCtrlWnd.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="GridCtrlUI.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="MsgWndUI.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="KeyBoardUI.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="KeyBoardNumberUI.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="KeyBoardSimpleUI.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageBoxUI.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="UIDataExchange.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="PictureControlUI.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Include\DuiPlugins.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ComboExUI.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="IconButton.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ComboEditWnd.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="UIDateTimeEx.h">
@@ -153,6 +159,78 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="UIRollTextEx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCGridCtrl\CellRange.h">
+      <Filter>头文件\MFCGridCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCGridCtrl\GridCell.h">
+      <Filter>头文件\MFCGridCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCGridCtrl\GridCtrl.h">
+      <Filter>头文件\MFCGridCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCGridCtrl\GridCellBase.h">
+      <Filter>头文件\MFCGridCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCGridCtrl\CellType\GridCellCheck.h">
+      <Filter>头文件\MFCGridCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCGridCtrl\CellType\GridCellCombo.h">
+      <Filter>头文件\MFCGridCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCGridCtrl\CellType\GridCellDateTime.h">
+      <Filter>头文件\MFCGridCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCGridCtrl\CellType\GridCellNumeric.h">
+      <Filter>头文件\MFCGridCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCGridCtrl\GridDropTarget.h">
+      <Filter>头文件\MFCGridCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCGridCtrl\GridMemDC.h">
+      <Filter>头文件\MFCGridCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCGridCtrl\CellType\GridURLCell.h">
+      <Filter>头文件\MFCGridCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCGridCtrl\TitleTip.h">
+      <Filter>头文件\MFCGridCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="UIMsgWnd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIKeyBoard.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIKeyBoardSimple.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIKeyBoardNumber.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCGridCtrl\InPlaceEdit.h">
+      <Filter>头文件\MFCGridCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="UIIconButton.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIImageBox.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIGridCtrl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIGridCtrlWnd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIComboEx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIComboEditWnd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPictureControl.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
