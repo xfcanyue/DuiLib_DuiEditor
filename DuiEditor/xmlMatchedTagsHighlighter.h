@@ -31,12 +31,11 @@
 
 using namespace std;
 
-class CSciWnd;
-
-
+class CDuiEditorViewCode;
 class XmlMatchedTagsHighlighter {
 public:
-	XmlMatchedTagsHighlighter(CSciWnd *pEditView):_pEditView(pEditView){};
+	XmlMatchedTagsHighlighter(CSciWnd *pSciWnd, CDuiEditorViewCode *pCodeView)
+		:_pSciWnd(pSciWnd), _pCodeView(pCodeView) {};
 	struct XmlMatchedTagsPos {
 		int tagOpenStart;
 		int tagNameEnd;
@@ -48,8 +47,8 @@ public:
 	XmlMatchedTagsPos tagMatch(bool doHiliteAttr);
 
 private:
-	CSciWnd *_pEditView;
-	
+	CSciWnd *_pSciWnd;
+	CDuiEditorViewCode *_pCodeView;
 
 	struct FindResult {
 		int start;

@@ -26,7 +26,7 @@ public:
 	void ShowDialog(CUIForm *pParentWnd);
 	*/
 	UINT DoModal(CUIFrmBase *pParentWnd = NULL);
-	void ShowDialog(CUIFrmBase *pParentWnd = NULL);
+	void ShowDialog(CUIFrmBase *pParentWnd = NULL); //注意非模态窗口必须是new出来的。
 
 	virtual void Notify(TNotifyUI& msg);
 

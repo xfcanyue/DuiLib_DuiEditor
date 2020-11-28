@@ -1,16 +1,16 @@
-#ifndef __UIOPTION_H__
-#define __UIOPTION_H__
+#ifndef __UIOPTIONLAYOUT_H__
+#define __UIOPTIONLAYOUT_H__
 
 #pragma once
 
 namespace DuiLib
 {
-	class UILIB_API COptionUI : public CButtonUI
+	class UILIB_API COptionLayoutUI : public CButtonLayoutUI
 	{
-		DECLARE_DUICONTROL(COptionUI)
+		DECLARE_DUICONTROL(COptionLayoutUI)
 	public:
-		COptionUI();
-		~COptionUI();
+		COptionLayoutUI();
+		~COptionLayoutUI();
 
 		LPCTSTR GetClass() const;
 		LPVOID GetInterface(LPCTSTR pstrName);
@@ -82,27 +82,6 @@ namespace DuiLib
 		CDuiString m_sSelectedStateImage;
 
 		DWORD m_dwSelectedBorderColor;
-	};
-
-	class UILIB_API CCheckBoxUI : public COptionUI
-	{
-		DECLARE_DUICONTROL(CCheckBoxUI)
-
-	public:
-		CCheckBoxUI();
-		virtual LPCTSTR GetClass() const;
-		virtual LPVOID GetInterface(LPCTSTR pstrName);
-
-		void SetCheck(bool bCheck);
-		bool GetCheck() const;
-	protected:
-		bool m_bAutoCheck; 
-
-	public:
-		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
-		void SetAutoCheck(bool bEnable);
-		virtual void DoEvent(TEventUI& event);
-		virtual void Selected(bool bSelected, bool bTriggerEvent=true);
 	};
 } // namespace DuiLib
 

@@ -1,5 +1,4 @@
 #pragma once
-#include "SciWnd.h"
 
 // CDlgOptions ¶Ô»°¿ò
 

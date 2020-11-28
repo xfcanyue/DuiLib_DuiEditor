@@ -37,6 +37,14 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 		//  CDynLinkLibrary 对象不会附加到
 		//  规则 DLL 的资源链，并将导致严重的
 		//  问题。
+		CString temp;
+		TCHAR czProgName[MAX_PATH];
+		int  iNiValue = GetModuleFileName(hInstance, czProgName, MAX_PATH);
+		if(iNiValue > 0)
+		{
+			temp = czProgName;
+			g_strDuiPluginsPath = temp.Left(temp.ReverseFind('\\') + 1);
+		}
 
 		new CDynLinkLibrary(DuiPluginsDLL);
 
@@ -64,9 +72,9 @@ UILIB_PLUGIN_API void DuiPluginsRegister()
 	REGIST_DUICONTROL(CIconButtonUI);
 	REGIST_DUICONTROL(CDateTimeExUI);
 	REGIST_DUICONTROL(CAccordionPaneUI);
-	REGIST_DUICONTROL(CAnimationPaneUI);
 	REGIST_DUICONTROL(CImageBoxExUI);
 	REGIST_DUICONTROL(CRollTextExUI);
+	REGIST_DUICONTROL(CSciEditUI);
 }
 
 extern "C" UILIB_PLUGIN_API CControlUI *CreateControl(LPCTSTR pstrClass)
@@ -115,10 +123,6 @@ extern "C" UILIB_PLUGIN_API CControlUI *CreateControl(LPCTSTR pstrClass)
 	{
 		return new CAccordionPaneUI;
 	}
-	else if( _tcscmp(pstrClass, _T("AnimationPane")) == 0 ) 
-	{
-		return new CAnimationPaneUI;
-	}
 	else if( _tcscmp(pstrClass, _T("ImageBoxEx")) == 0 ) 
 	{
 		return new CImageBoxExUI;
@@ -126,6 +130,10 @@ extern "C" UILIB_PLUGIN_API CControlUI *CreateControl(LPCTSTR pstrClass)
 	else if( _tcscmp(pstrClass, _T("RollTextEx")) == 0 ) 
 	{
 		return new CRollTextExUI;
+	}
+	else if( _tcscmp(pstrClass, _T("SciEdit")) == 0 ) 
+	{
+		return new CSciEditUI;
 	}
 	return NULL;
 }

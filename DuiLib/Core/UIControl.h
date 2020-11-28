@@ -206,6 +206,25 @@ namespace DuiLib {
 		void SetVirtualWnd(LPCTSTR pstrValue);
 		CDuiString GetVirtualWnd() const;
 
+		virtual void SetCalcPos(RECT rc);
+		virtual RECT GetCalcPos();
+		virtual void SetCalPosNow(bool bCalcNow);
+		virtual bool IsCalPosNow();
+	public:
+		class CInnerCalcPosLock
+		{
+		public:
+			CInnerCalcPosLock(CControlUI *p) : _p(p) 
+			{
+				_p->SetCalPosNow(true);
+			}
+			~CInnerCalcPosLock()
+			{
+				_p->SetCalPosNow(false);
+			}
+		private:
+			CControlUI *_p;
+		};
 	public:
 		CEventSource OnInit;
 		CEventSource OnDestroy;
@@ -270,6 +289,8 @@ namespace DuiLib {
 
 		CStdStringPtrMap m_mCustomAttrHash;
 
+		RECT m_rcCalcPos;	//子控件调用CalcPos时，父控件可能以这个rect来计算
+		bool m_bCalcPosNow;	//标记为正在计算子控件pos，在子控件的GetFixedWidth(),GetFixedHeight(),EstimateSize()可能需要判断这个标记
 	private:
 		CDuiString m_asOnInit;
 		CDuiString m_asOnEvent;

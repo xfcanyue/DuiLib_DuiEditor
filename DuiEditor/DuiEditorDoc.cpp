@@ -250,13 +250,7 @@ BOOL CDuiEditorDoc::OnSaveDocument(LPCTSTR lpszPathName)
 
 	bool bSave = m_doc.save_file(lpszPathName, PUGIXML_TEXT("\t"), format_default, encoding_utf8);
 	if(!bSave)	return FALSE;
-	/*
-	//创建一个拷贝, 然后保存拷贝
-	xml_document doc;
-	doc.root().append_copy(root);
-	bool bSave = doc.save_file(lpszPathName, PUGIXML_TEXT("\t"), format_default, encoding_utf8);
-	if(!bSave)	return FALSE;
-	*/
+
 	GetUIManager()->GetCodeView()->GetSciWnd()->sci_SetSavePoint();
 	SetModifiedFlag(FALSE);
 	return TRUE;

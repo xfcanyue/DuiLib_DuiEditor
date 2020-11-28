@@ -6,7 +6,7 @@
 namespace DuiLib
 {
 	#define PANE_ANIMATION_ID  2
-	class UILIB_PLUGIN_API CAnimationPaneUI : public CContainerUI, public CUIAnimation
+	class UILIB_API CAnimationPaneUI : public CContainerUI, public CUIAnimation
 	{
 		DECLARE_DUICONTROL(CAnimationPaneUI)
 	public:
@@ -28,8 +28,6 @@ namespace DuiLib
 
 		void SetPaneVisible(bool bVisible, bool bAnimation = true);
 		bool IsPaneVisible() const;
-		virtual bool IsVisible() const;
-		virtual void SetVisible(bool bVisible = true);
 		virtual int GetFixedHeight() const;
 		virtual int GetFixedWidth() const;
 
@@ -37,6 +35,10 @@ namespace DuiLib
 		int GetFrameCount() const;
 		void SetFrameDelay(int nDelay);
 		int GetFrameDelay() const;
+
+		//动画方向 0 = 无动画， 1 = 上下， 2=左右
+		void SetAnimationDirection(int nAnim);
+		int GetAnimationDirection();
 
 		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 

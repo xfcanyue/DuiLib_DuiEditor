@@ -84,6 +84,7 @@
 #include "Control/UITreeView.h"
 
 #include "Control/UILabel.h"
+#include "Layout/UILabelLayout.h"
 #include "Control/UIText.h"
 #include "Control/UIEdit.h"
 #include "Control/UIGifAnim.h"
@@ -91,8 +92,11 @@
 
 #include "Control/UIAnimation.h"
 #include "Layout/UIAnimationTabLayout.h"
+#include "Control/UIAnimationPane.h"
 #include "Control/UIButton.h"
+#include "Layout/UIButtonLayout.h"
 #include "Control/UIOption.h"
+#include "Layout/UIOptionLayout.h"
 #include "Control/UITabCtrl.h"
 
 #include "Control/UIProgress.h"

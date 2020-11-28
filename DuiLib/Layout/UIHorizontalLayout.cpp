@@ -34,7 +34,8 @@ namespace DuiLib
 
 		// Adjust for inset
 		RECT m_rcInset = CHorizontalLayoutUI::m_rcInset;
-		GetManager()->GetDPIObj()->Scale(&m_rcInset);
+		if(GetManager())
+			GetManager()->GetDPIObj()->Scale(&m_rcInset);
 		rc.left += m_rcInset.left;
 		rc.top += m_rcInset.top;
 		rc.right -= m_rcInset.right;
@@ -340,7 +341,10 @@ namespace DuiLib
 
 	bool CHorizontalLayoutUI::CalcPos(CControlUI *pChildControl, RECT &rcChild) //子控件调用这个，计算子空间的rect
 	{
-		RECT rc = m_rcItem;
+		CInnerCalcPosLock lock(this);
+
+		CDuiRect rc = GetCalcPos();//m_rcItem;
+		if(rc.IsNull()) rc = m_rcItem;
 
 		// Adjust for inset
 		RECT m_rcInset = CHorizontalLayoutUI::m_rcInset;

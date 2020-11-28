@@ -241,9 +241,6 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="SciWnd.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="UIManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -418,6 +415,9 @@
     <ClInclude Include="UIPropertyGridCtrl.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\3rd\scintilla\SciWnd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -427,9 +427,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ChildFrm.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="SciWnd.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="UIManager.cpp">

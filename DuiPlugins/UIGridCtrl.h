@@ -1,5 +1,4 @@
 #pragma once
-#include "UIGridCtrlWnd.h"
 
 namespace DuiLib
 {
@@ -7,7 +6,6 @@ namespace DuiLib
 class UILIB_PLUGIN_API CGridCtrlUI : public CContainerUI
 {
 	DECLARE_DUICONTROL(CGridCtrlUI)
-	friend class CGridCtrlWnd;
 public:
 	CGridCtrlUI(void);
 	virtual ~CGridCtrlUI(void);
@@ -31,13 +29,12 @@ public:
 	
 
 	virtual void DoInit();
-	virtual void DoEvent(TEventUI& event);  
+	virtual void DoEvent(TEventUI& event);
 	virtual LRESULT MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, bool& bHandled);
 
 	void SetPos(RECT rc, bool bNeedInvalidate  = true);
 	void SetInternVisible(bool bVisible);
 
-protected:
 	void OnGridNotify(UINT uMsg, WPARAM wParam, LPARAM lParam);
 public:
 	//////////////////////////////////////////////////////////////////////////
@@ -118,7 +115,7 @@ public:
 	void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 
 public:
-	CGridCtrlWnd *m_pWindow;
+	CWindowWnd *m_pWindow;
 
 
 private:

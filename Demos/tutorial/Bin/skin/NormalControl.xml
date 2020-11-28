@@ -5,6 +5,13 @@
 			<Label text="Button" autocalcwidth="true" />
 			<Button width="100" normalimage="file='images\common\button\button.png' source='0,0,15,27' corner='5,5,5,5' " hotimage="file='images\common\button\button.png' source='15,0,30,27' corner='5,5,5,5' " text="按钮文本" />
 			<IconButton iconnormalimage="images\delico.png" width="100" normalimage="file='images\common\button\button.png' source='0,0,15,27' corner='5,5,5,5' " hotimage="file='images\common\button\button.png' source='15,0,30,27' corner='5,5,5,5' " text="图标按钮" />
+			<ButtonLayout width="150" style="style_button">
+				<HorizontalLayout inset="10,0,10,0" childvalign="vcenter">
+					<Control width="16" height="16" foreimage="images\check-select.png" />
+					<Text text="按钮容器" align="center" />
+					<Control width="16" height="16" foreimage="images\check-unselect.png" />
+				</HorizontalLayout>
+			</ButtonLayout>
 			<Button name="btn_domodal" width="120" text="打开模态对话框" style="style_button" />
 			<Button name="btn_show_dialog" width="120" text="打开非模态对话框" style="style_button" />
 		</HorizontalLayout>
@@ -93,7 +100,7 @@
 		<HorizontalLayout height="80" childpadding="10" childvalign="vcenter">
 			<Label text="RichEdit" autocalcwidth="true" />
 			<RichEdit height="30" inset="5,5,5,5" bkcolor="0xFFFFFFFF" bordercolor="0xFFC0C0C0" bordersize="1" text="单行文本" />
-			<RichEdit inset="5,5,5,5" vscrollbar="true" autovscroll="true" hscrollbar="true" autohscroll="true" wantreturn="true" wantctrlreturn="true" multiline="true" bkcolor="0xFFFFFFFF" bordercolor="0xFFC0C0C0" bordersize="1" text="多行文本" />
+			<RichEdit inset="5,5,5,5" vscrollbar="true" autovscroll="true" hscrollbar="true" autohscroll="true" wanttab="true" wantreturn="true" wantctrlreturn="true" multiline="true" bkcolor="0xFFFFFFFF" bordercolor="0xFFC0C0C0" bordersize="1" text="多行文本" />
 		</HorizontalLayout>
 		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
 			<Label text="IPAddress" autocalcwidth="true" />

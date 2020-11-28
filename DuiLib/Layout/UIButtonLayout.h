@@ -1,16 +1,16 @@
-#ifndef __UIBUTTON_H__
-#define __UIBUTTON_H__
+#ifndef __UIBUTTONLAYOUT_H__
+#define __UIBUTTONLAYOUT_H__
 
 #pragma once
 
 namespace DuiLib
 {
-	class UILIB_API CButtonUI : public CLabelUI
+	class UILIB_API CButtonLayoutUI : public CLabelLayoutUI
 	{
-		DECLARE_DUICONTROL(CButtonUI)
+		DECLARE_DUICONTROL(CButtonLayoutUI)
 
 	public:
-		CButtonUI();
+		CButtonLayoutUI();
 
 		LPCTSTR GetClass() const;
 		LPVOID GetInterface(LPCTSTR pstrName);

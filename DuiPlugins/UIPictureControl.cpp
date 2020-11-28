@@ -152,6 +152,19 @@ void CPictureControlUI::LoadFile(LPCTSTR fileName)
 	m_pImp->img.Load(fileName);
 
 	InitImage();
+	Invalidate();
+}
+
+void CPictureControlUI::SetCxImage(const void *pCxImage)
+{
+	CxImage *pImage = (CxImage *)pCxImage;
+	m_pImp->img.DestroyFrames();
+	m_pImp->img.Destroy();
+	m_pImp->img.SetRetreiveAllFrames(true);
+	m_pImp->img.Transfer(*pImage);
+
+	InitImage();
+	Invalidate();
 }
 
 void CPictureControlUI::InitImage()

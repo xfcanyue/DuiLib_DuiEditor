@@ -1,5 +1,4 @@
 #pragma once
-#include "SciWnd.h"
 
 
 class CSciUndoBlock //允许多个操作合并为一个undo动作

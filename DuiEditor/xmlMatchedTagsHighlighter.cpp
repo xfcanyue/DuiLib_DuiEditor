@@ -33,7 +33,7 @@
 
 #include "stdafx.h"
 #include "xmlMatchedTagsHighlighter.h"
-#include "SciWnd.h"
+#include "UIManager.h"
 
 
 
@@ -44,7 +44,7 @@ vector< pair<int, int> > XmlMatchedTagsHighlighter::getAttributesPos(int start, 
 	int bufLen = end - start + 1;
 	//char *buf = new char[bufLen+1];
 	CStringA buf;
-	_pEditView->sci_GetTextRange(start, end, buf);
+	_pSciWnd->sci_GetTextRange(start, end, buf);
 
 	enum {\
 		attr_invalid,\
@@ -132,7 +132,7 @@ vector< pair<int, int> > XmlMatchedTagsHighlighter::getAttributesPos(int start, 
 bool XmlMatchedTagsHighlighter::getXmlMatchedTagsPos(XmlMatchedTagsPos &xmlTags)
 {
 	bool tagFound = false;
-	int caret = _pEditView->execute(SCI_GETCURRENTPOS);
+	int caret = _pSciWnd->execute(SCI_GETCURRENTPOS);
 	int searchStartPoint = caret;
 	int styleAt;
 	FindResult openFound;
@@ -142,7 +142,7 @@ bool XmlMatchedTagsHighlighter::getXmlMatchedTagsPos(XmlMatchedTagsPos &xmlTags)
 	do
 	{
 		openFound = findText("<", searchStartPoint, 0, 0);
-		styleAt = _pEditView->execute(SCI_GETSTYLEAT, openFound.start);
+		styleAt = _pSciWnd->execute(SCI_GETSTYLEAT, openFound.start);
 		searchStartPoint = openFound.start - 1;
 	} while (openFound.success && (styleAt == SCE_H_DOUBLESTRING || styleAt == SCE_H_SINGLESTRING) && searchStartPoint > 0);
 
@@ -154,14 +154,14 @@ bool XmlMatchedTagsHighlighter::getXmlMatchedTagsPos(XmlMatchedTagsPos &xmlTags)
 		do
 		{
 			closeFound = findText(">", searchStartPoint, caret, 0);
-			styleAt = _pEditView->execute(SCI_GETSTYLEAT, closeFound.start);
+			styleAt = _pSciWnd->execute(SCI_GETSTYLEAT, closeFound.start);
 			searchStartPoint = closeFound.end;
 		} while (closeFound.success && (styleAt == SCE_H_DOUBLESTRING || styleAt == SCE_H_SINGLESTRING) && searchStartPoint <= caret);
 
 		if (!closeFound.success)
 		{
 			// We're in a tag (either a start tag or an end tag)
-			int nextChar = _pEditView->execute(SCI_GETCHARAT, openFound.start + 1);
+			int nextChar = _pSciWnd->execute(SCI_GETCHARAT, openFound.start + 1);
 
 
 			/////////////////////////////////////////////////////////////////////////
@@ -170,7 +170,7 @@ bool XmlMatchedTagsHighlighter::getXmlMatchedTagsPos(XmlMatchedTagsPos &xmlTags)
 			if ('/' == nextChar)
 			{
 				xmlTags.tagCloseStart = openFound.start;
-				int docLength = _pEditView->execute(SCI_GETLENGTH);
+				int docLength = _pSciWnd->execute(SCI_GETLENGTH);
 				FindResult endCloseTag = findText(">", caret, docLength, 0);
 				if (endCloseTag.success)
 				{
@@ -181,13 +181,13 @@ bool XmlMatchedTagsHighlighter::getXmlMatchedTagsPos(XmlMatchedTagsPos &xmlTags)
 
 				// UTF-8 or ASCII tag name
 				std::string tagName;
-				nextChar = _pEditView->execute(SCI_GETCHARAT, position);	
+				nextChar = _pSciWnd->execute(SCI_GETCHARAT, position);	
 				// Checking for " or ' is actually wrong here, but it means it works better with invalid XML
 				while(position < docLength && !isWhitespace(nextChar) && nextChar != '/' && nextChar != '>' && nextChar != '\"' && nextChar != '\'')
 				{
 					tagName.push_back((char)nextChar);
 					++position;
-					nextChar = _pEditView->execute(SCI_GETCHARAT, position);	
+					nextChar = _pSciWnd->execute(SCI_GETCHARAT, position);	
 				}
 				
 				// Now we know where the end of the tag is, and we know what the tag is called
@@ -276,18 +276,18 @@ bool XmlMatchedTagsHighlighter::getXmlMatchedTagsPos(XmlMatchedTagsPos &xmlTags)
 			// CURSOR IN OPEN TAG   
 			/////////////////////////////////////////////////////////////////////////
 				int position = openFound.start + 1;
-				int docLength = _pEditView->execute(SCI_GETLENGTH);
+				int docLength = _pSciWnd->execute(SCI_GETLENGTH);
 				
 				xmlTags.tagOpenStart = openFound.start;
 
 				std::string tagName;
-				nextChar = _pEditView->execute(SCI_GETCHARAT, position);	
+				nextChar = _pSciWnd->execute(SCI_GETCHARAT, position);	
 				// Checking for " or ' is actually wrong here, but it means it works better with invalid XML
 				while(position < docLength && !isWhitespace(nextChar) && nextChar != '/' && nextChar != '>' && nextChar != '\"' && nextChar != '\'')
 				{
 					tagName.push_back((char)nextChar);
 					++position;
-					nextChar = _pEditView->execute(SCI_GETCHARAT, position);	
+					nextChar = _pSciWnd->execute(SCI_GETCHARAT, position);	
 				}
 				
 				// Now we know where the end of the tag is, and we know what the tag is called
@@ -301,7 +301,7 @@ bool XmlMatchedTagsHighlighter::getXmlMatchedTagsPos(XmlMatchedTagsPos &xmlTags)
 					{
 						xmlTags.tagOpenEnd = closeAnglePosition + 1;
 						// If it's a self closing tag
-						if (_pEditView->execute(SCI_GETCHARAT, closeAnglePosition - 1) == '/')
+						if (_pSciWnd->execute(SCI_GETCHARAT, closeAnglePosition - 1) == '/')
 						{
 							// Set it as found, and mark that there's no close tag
 							xmlTags.tagCloseEnd = -1;
@@ -401,8 +401,8 @@ XmlMatchedTagsHighlighter::FindResult XmlMatchedTagsHighlighter::findOpenTag(con
 		result = findText(search.c_str(), searchStart, searchEnd, 0);
 		if (result.success)
 		{
-			nextChar = _pEditView->execute(SCI_GETCHARAT, result.end);
-			styleAt = _pEditView->execute(SCI_GETSTYLEAT, result.start);
+			nextChar = _pSciWnd->execute(SCI_GETCHARAT, result.end);
+			styleAt = _pSciWnd->execute(SCI_GETSTYLEAT, result.start);
 			if (styleAt != SCE_H_CDATA && styleAt != SCE_H_DOUBLESTRING && styleAt != SCE_H_SINGLESTRING)
 			{
 				// We've got an open tag for this tag name (i.e. nextChar was space or '>')
@@ -417,7 +417,7 @@ XmlMatchedTagsHighlighter::FindResult XmlMatchedTagsHighlighter::findOpenTag(con
 				else if (isWhitespace(nextChar))
 				{
 					int closeAnglePosition = findCloseAngle(result.end, forwardSearch ? end : start);
-					if (-1 != closeAnglePosition && '/' != _pEditView->execute(SCI_GETCHARAT, closeAnglePosition - 1))
+					if (-1 != closeAnglePosition && '/' != _pSciWnd->execute(SCI_GETCHARAT, closeAnglePosition - 1))
 					{
 						openTagFound.end = closeAnglePosition;
 						openTagFound.success = true;
@@ -471,7 +471,7 @@ int XmlMatchedTagsHighlighter::findCloseAngle(int startPosition, int endPosition
 		closeAngle = findText(">", startPosition, endPosition);
 		if (closeAngle.success)
 		{
-			int style = _pEditView->execute(SCI_GETSTYLEAT, closeAngle.start);
+			int style = _pSciWnd->execute(SCI_GETSTYLEAT, closeAngle.start);
 			// As long as we're not in an attribute (  <TAGNAME attrib="val>ue"> is VALID XML. )
 			if (style != SCE_H_DOUBLESTRING && style != SCE_H_SINGLESTRING)
 			{
@@ -509,8 +509,8 @@ XmlMatchedTagsHighlighter::FindResult XmlMatchedTagsHighlighter::findCloseTag(co
 		result = findText(search.c_str(), searchStart, searchEnd, 0);
 		if (result.success)
 		{
-			nextChar = _pEditView->execute(SCI_GETCHARAT, result.end);
-			styleAt = _pEditView->execute(SCI_GETSTYLEAT, result.start);
+			nextChar = _pSciWnd->execute(SCI_GETCHARAT, result.end);
+			styleAt = _pSciWnd->execute(SCI_GETSTYLEAT, result.start);
 		
 			// Setup the parameters for the next search, if there is one.
 			if (forwardSearch)
@@ -538,7 +538,7 @@ XmlMatchedTagsHighlighter::FindResult XmlMatchedTagsHighlighter::findCloseTag(co
 					do
 					{
 						++whitespacePoint;
-						nextChar = _pEditView->execute(SCI_GETCHARAT, whitespacePoint);
+						nextChar = _pSciWnd->execute(SCI_GETCHARAT, whitespacePoint);
 				
 					} while(isWhitespace(nextChar));
 			
@@ -567,7 +567,7 @@ XmlMatchedTagsHighlighter::FindResult XmlMatchedTagsHighlighter::findText(const 
 	search.lpstrText = const_cast<char *>(text); // Grrrrrr
 	search.chrg.cpMin = start;
 	search.chrg.cpMax = end;
-	int result = _pEditView->execute(SCI_FINDTEXT, flags, reinterpret_cast<LPARAM>(&search));
+	int result = _pSciWnd->execute(SCI_FINDTEXT, flags, reinterpret_cast<LPARAM>(&search));
 	if (-1 == result)
 	{
 		returnValue.success = false;
@@ -585,47 +585,47 @@ XmlMatchedTagsHighlighter::XmlMatchedTagsPos XmlMatchedTagsHighlighter::tagMatch
 {
 	// Clean up all marks of previous action
 	int docStart = 0;
-	int docEnd = _pEditView->sci_GetLength();
-	_pEditView->sci_SetIndicatorCurrent(SCE_UNIVERSAL_TAGMATCH);
-	_pEditView->sci_IndicatorClearRange(docStart, docEnd);
+	int docEnd = _pSciWnd->sci_GetLength();
+	_pSciWnd->sci_SetIndicatorCurrent(SCE_UNIVERSAL_TAGMATCH);
+	_pSciWnd->sci_IndicatorClearRange(docStart, docEnd);
 
 	// Get the original targets and search options to restore after tag matching operation
-	int originalStartPos = _pEditView->execute(SCI_GETTARGETSTART);
-	int originalEndPos = _pEditView->execute(SCI_GETTARGETEND);
-	int originalSearchFlags = _pEditView->execute(SCI_GETSEARCHFLAGS);
+	int originalStartPos = _pSciWnd->execute(SCI_GETTARGETSTART);
+	int originalEndPos = _pSciWnd->execute(SCI_GETTARGETEND);
+	int originalSearchFlags = _pSciWnd->execute(SCI_GETSEARCHFLAGS);
 
 	XmlMatchedTagsPos xmlTags = {0};
 
     // Detect if it's a xml/html tag. If yes, Colour it!
 	if (getXmlMatchedTagsPos(xmlTags))
 	{
-		_pEditView->execute(SCI_SETINDICATORCURRENT, SCE_UNIVERSAL_TAGMATCH);
+		_pSciWnd->execute(SCI_SETINDICATORCURRENT, SCE_UNIVERSAL_TAGMATCH);
 		int openTagTailLen = 2;
 
 		// Colourising the close tag firstly
 		if ((xmlTags.tagCloseStart != -1) && (xmlTags.tagCloseEnd != -1))
 		{
-			_pEditView->execute(SCI_INDICATORFILLRANGE,  xmlTags.tagCloseStart, xmlTags.tagCloseEnd - xmlTags.tagCloseStart);
+			_pSciWnd->execute(SCI_INDICATORFILLRANGE,  xmlTags.tagCloseStart, xmlTags.tagCloseEnd - xmlTags.tagCloseStart);
 			// tag close is present, so it's not single tag
 			openTagTailLen = 1;
 		}
 
 		// Colourising the open tag
-		_pEditView->execute(SCI_INDICATORFILLRANGE,  xmlTags.tagOpenStart, xmlTags.tagNameEnd - xmlTags.tagOpenStart);
-		_pEditView->execute(SCI_INDICATORFILLRANGE,  xmlTags.tagOpenEnd - openTagTailLen, openTagTailLen);
+		_pSciWnd->execute(SCI_INDICATORFILLRANGE,  xmlTags.tagOpenStart, xmlTags.tagNameEnd - xmlTags.tagOpenStart);
+		_pSciWnd->execute(SCI_INDICATORFILLRANGE,  xmlTags.tagOpenEnd - openTagTailLen, openTagTailLen);
 
         
         // Colouising its attributs
 		bool highlightAttr = false;
         if (doHiliteAttr)
 		{
-			int pos = _pEditView->sci_GetCurrentPos();
+			int pos = _pSciWnd->sci_GetCurrentPos();
 			vector< pair<int, int> > attributes = getAttributesPos(xmlTags.tagNameEnd, xmlTags.tagOpenEnd - openTagTailLen);
 			for (size_t i = 0, len = attributes.size(); i < len ; ++i)
 			{
 				if(pos >= attributes[i].first && pos <= attributes[i].second)
 				{
-					highlightAttr = _pEditView->BraceHighLightAttributes(attributes[i].first, attributes[i].second, openTagTailLen);
+					highlightAttr = _pCodeView->BraceHighLightAttributes(attributes[i].first, attributes[i].second, openTagTailLen);
 					break;
 				}
 			}
@@ -640,26 +640,26 @@ XmlMatchedTagsHighlighter::XmlMatchedTagsPos XmlMatchedTagsHighlighter::tagMatch
 
         // Colouising indent guide line position
 		if(!highlightAttr)//如果没有对属性值引号高亮，则对节点封闭标签高亮
-		if (_pEditView->sci_GetIndentationGuides())
+		if (_pSciWnd->sci_GetIndentationGuides())
 		{
-			int columnAtCaret  = int(_pEditView->execute(SCI_GETCOLUMN, xmlTags.tagOpenStart));
-			int columnOpposite = int(_pEditView->execute(SCI_GETCOLUMN, xmlTags.tagCloseStart));
+			int columnAtCaret  = int(_pSciWnd->execute(SCI_GETCOLUMN, xmlTags.tagOpenStart));
+			int columnOpposite = int(_pSciWnd->execute(SCI_GETCOLUMN, xmlTags.tagCloseStart));
 
-			int lineAtCaret  = int(_pEditView->execute(SCI_LINEFROMPOSITION, xmlTags.tagOpenStart));
-			int lineOpposite = int(_pEditView->execute(SCI_LINEFROMPOSITION, xmlTags.tagCloseStart));
+			int lineAtCaret  = int(_pSciWnd->execute(SCI_LINEFROMPOSITION, xmlTags.tagOpenStart));
+			int lineOpposite = int(_pSciWnd->execute(SCI_LINEFROMPOSITION, xmlTags.tagCloseStart));
 
 			if (xmlTags.tagCloseStart != -1 && lineAtCaret != lineOpposite)
 			{
-				_pEditView->execute(SCI_BRACEHIGHLIGHT, xmlTags.tagOpenStart, xmlTags.tagCloseEnd-1);
-				_pEditView->execute(SCI_SETHIGHLIGHTGUIDE, (columnAtCaret < columnOpposite)?columnAtCaret:columnOpposite);
+				_pSciWnd->execute(SCI_BRACEHIGHLIGHT, xmlTags.tagOpenStart, xmlTags.tagCloseEnd-1);
+				_pSciWnd->execute(SCI_SETHIGHLIGHTGUIDE, (columnAtCaret < columnOpposite)?columnAtCaret:columnOpposite);
 			}
 		}
 		
 	}
 
 	// restore the original targets and search options to avoid the conflit with search/replace function
-	_pEditView->execute(SCI_SETTARGETSTART, originalStartPos);
-	_pEditView->execute(SCI_SETTARGETEND, originalEndPos);
-	_pEditView->execute(SCI_SETSEARCHFLAGS, originalSearchFlags);
+	_pSciWnd->execute(SCI_SETTARGETSTART, originalStartPos);
+	_pSciWnd->execute(SCI_SETTARGETEND, originalEndPos);
+	_pSciWnd->execute(SCI_SETSEARCHFLAGS, originalSearchFlags);
 	return xmlTags;
 }

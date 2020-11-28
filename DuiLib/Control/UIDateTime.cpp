@@ -1,6 +1,8 @@
 #include "StdAfx.h"
 #include "UIDateTime.h"
 
+//#include <atlbase.h> 
+#include <atlstr.h> 
 #include <atlconv.h>
 
 namespace DuiLib

@@ -1,5 +1,4 @@
 #pragma once
-#include "SciWnd.h"
 #include "Resource.h"
 // CSciFind ¶Ô»°¿ò
 

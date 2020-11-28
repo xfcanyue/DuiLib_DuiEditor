@@ -125,6 +125,8 @@ namespace DuiLib
 #define DUI_MSGTYPE_GRID_ENDSELCHANGE		(_T("gridendselchange"))	//add by liqs99
 #define DUI_MSGTYPE_GRID_DROPDOWNLIST       (_T("griddropdownlist"))	//add by liqs99
 #define DUI_MSGTYPE_GRID_GETDISPINFO        (_T("gridgetdispinfo"))		//add by liqs99
+
+#define DUI_MSGTYPE_SCI_NOTIFY				(_T("scinotify"))			//add by liqs99
 	//////////////////////////////////////////////////////////////////////////
 
 	struct DUI_MSGMAP_ENTRY;
@@ -272,10 +274,13 @@ protected:                                                                \
 
 #define  DUI_CTR_COMBO                           (_T("Combo"))
 #define  DUI_CTR_LABEL                           (_T("Label"))
+#define  DUI_CTR_LABEL_LAYOUT                    (_T("LabelLayout"))
 #define  DUI_CTR_FLASH							 (_T("Flash"))
 
 #define  DUI_CTR_BUTTON                          (_T("Button"))
+#define  DUI_CTR_BUTTON_LAYOUT                   (_T("ButtonLayout"))
 #define  DUI_CTR_OPTION                          (_T("Option"))
+#define  DUI_CTR_OPTION_LAYOUT                   (_T("OptionLayout"))
 #define  DUI_CTR_SLIDER                          (_T("Slider"))
 
 #define  DUI_CTR_CONTROL                         (_T("Control"))
@@ -286,6 +291,7 @@ protected:                                                                \
 #define  DUI_CTR_PROGRESS                        (_T("Progress"))
 #define  DUI_CTR_RICHEDIT                        (_T("RichEdit"))
 #define  DUI_CTR_CHECKBOX                        (_T("CheckBox"))
+#define  DUI_CTR_CHECKBOX_LAYOUT                 (_T("CheckBoxLayout"))
 #define  DUI_CTR_COMBOBOX                        (_T("ComboBox"))
 #define  DUI_CTR_DATETIME                        (_T("DateTime"))
 #define  DUI_CTR_TREEVIEW                        (_T("TreeView"))
@@ -321,7 +327,7 @@ protected:                                                                \
 #define DUI_CTR_COLORPALETTE					  (_T("ColorPalette"))
 
 #define DUI_CTR_TABCTRL							(_T("TabCtrl"))	
-
+#define DUI_CTR_ANIMATIONPANE					(_T("AnimationPane"))
 	///
 	//////////////END控件名称宏定义//////////////////////////////////////////////////
 

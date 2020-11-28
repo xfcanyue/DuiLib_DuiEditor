@@ -1,5 +1,14 @@
 #pragma once
-#include "xmlMatchedTagsHighlighter.h"
+
+#ifdef DLL_SCIWND_
+#	ifdef DLL_SCIWND_EXPORT
+#		define _SCIWNDCTR_ _declspec(dllexport)
+#	else
+#		define _SCIWNDCTR_ _declspec(dllimport)
+#	endif
+#else
+#   define _SCIWNDCTR_
+#endif
 
 #define WM_SCIWND_RBUTTONUP		WM_USER+987
 #define WM_SCIWND_LBUTTONDOWN	WM_USER+988
@@ -12,7 +21,7 @@ typedef  int SciDll_void;
 typedef int (*SEND_EDITOR)(void*,int,int,int);
 
 enum folderStyle {FOLDER_TYPE, FOLDER_STYLE_SIMPLE, FOLDER_STYLE_ARROW, FOLDER_STYLE_CIRCLE, FOLDER_STYLE_BOX, FOLDER_STYLE_NONE};
-class CSciWnd : public CWnd
+class _SCIWNDCTR_ CSciWnd : public CWnd
 {
 	DECLARE_DYNAMIC(CSciWnd)
 public:
@@ -33,14 +42,11 @@ public:
 	BOOL LoadFile(LPCTSTR szPath);
 	BOOL SaveFile(LPCTSTR szPath);
 
-	void InitXML(const tagEditorConfig &opt);
+	void InitXML();
+	void InitCpp() {}
+	void InitReceipt() {}
 
 	BOOL OnParentNotify(SCNotification *pMsg);
-
-	void findMatchingBracePos(int & braceAtCaret, int & braceOpposite);
-	bool braceMatch();
-	bool BraceHighLightAttributes(int first, int second, int openTagTailLen);
-
 protected:
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
@@ -316,13 +322,13 @@ public:
 
 	//设置字体
 	SciDll_void sci_StyleSetFont(int styleNumer, LPCSTR fontName);
-	SciDll_void sci_StyleGetFont(int styleNumer, CString &fontName);
+	SciDll_void sci_StyleGetFont(int styleNumer, CStringA &fontName);
 
 	//设置字体大小
 	SciDll_void sci_StyleSetSize(int styleNumber, int sizeInPoints);
 	int  sci_StyleGetSize(int styleNumber);
 
-	//字体大小包含小数点的,比如size=9.4, 应该穿传入940
+	//字体大小包含小数点的,比如size=9.4, 应该传入940
 	SciDll_void sci_StyleSetSizeFractional(int styleNumber, int sizeInHundredthPoints);
 	int  sci_StyleGetSizeFractional(int styleNumber);
 
@@ -433,6 +439,8 @@ public:
 	SciDll_void sci_ToggleCaretSticky();
 
 	/*----------Margins------------*/
+	SciDll_void sci_SetMargins(int margins);
+	int sci_GetMargins();
 
 	//SC_MARGIN_SYMBOL (0),
 	//SC_MARGIN_BACK (2) ,
@@ -806,7 +814,7 @@ public:
 	int  sci_GetLexer();
 
 	SciDll_void sci_SetLexerLanguage(LPCSTR name);
-	SciDll_void sci_GetLexerLanguage(CString &Text);
+	SciDll_void sci_GetLexerLanguage(CStringA &Text);
 
 	SciDll_void sci_LoadLexerLibrary(LPCSTR path);
 
@@ -821,13 +829,13 @@ public:
 	SciDll_void sci_DescribeProperty(LPCSTR name, LPTSTR description);
 
 	SciDll_void sci_SetProperty(LPCSTR key, LPCSTR value);
-	SciDll_void sci_GetProperty(LPCSTR key, CString &Value);
+	SciDll_void sci_GetProperty(LPCSTR key, CStringA &Value);
 
-	SciDll_void sci_GetPropertyExpanded(LPCSTR key, CString &Value);
+	SciDll_void sci_GetPropertyExpanded(LPCSTR key, CStringA &Value);
 
 	int  sci_GetPropertyInt(LPCSTR key, int ndefault);
 
-	SciDll_void sci_DescribeKeywordSets(CString &descriptions);
+	SciDll_void sci_DescribeKeywordSets(CStringA &descriptions);
 
 	SciDll_void sci_SetKeyWords(int keyWordSet, LPCSTR keyWordList);
 
@@ -942,6 +950,7 @@ inline SciDll_void CSciWnd::sci_GetStyledText(int cpMin, int cpMax, CStringA &pT
 	pText = tr.lpstrText;
 
 	delete []tr.lpstrText;
+	return 0;
 }
 
 //设置文档缓冲区大小, 使创建的文档不会小于当前的文档
@@ -1424,7 +1433,7 @@ inline BOOL CSciWnd::sci_GetSelectionIsRectangle()
 
 inline SciDll_void CSciWnd::sci_SetSelectionMode(int mode)
 {
-	execute(SCI_SETSELECTIONMODE,mode,0);
+	return execute(SCI_SETSELECTIONMODE,mode,0);
 }
 
 inline int  CSciWnd::sci_GetSelectionMode()
@@ -1444,7 +1453,7 @@ inline int  CSciWnd::sci_GetLineSelEndPosition(int line)
 
 inline SciDll_void CSciWnd::sci_MoveCaretinSideView()
 {
-	execute(SCI_MOVECARETINSIDEVIEW,0,0);
+	return execute(SCI_MOVECARETINSIDEVIEW,0,0);
 }
 
 inline int  CSciWnd::sci_WordEndPosition(int position, BOOL onlyWordCharacters)
@@ -1524,22 +1533,22 @@ inline int  CSciWnd::sci_PointYFromPosition(int pos)
 
 inline SciDll_void CSciWnd::sci_HideSelection(BOOL hide)
 {
-	execute(SCI_HIDESELECTION,hide,0);
+	return execute(SCI_HIDESELECTION,hide,0);
 }
 
 inline SciDll_void CSciWnd::sci_ChooseCaretX()
 {
-	execute(SCI_CHOOSECARETX,0,0);
+	return execute(SCI_CHOOSECARETX,0,0);
 }
 
 inline SciDll_void CSciWnd::sci_MoveSelectedLinesUp()
 {
-	execute(SCI_MOVESELECTEDLINESUP,0,0);
+	return execute(SCI_MOVESELECTEDLINESUP,0,0);
 }
 
 inline SciDll_void CSciWnd::sci_MoveSlectionLinesDown()
 {
-	execute(SCI_MOVESELECTEDLINESDOWN,0,0);
+	return execute(SCI_MOVESELECTEDLINESDOWN,0,0);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1793,7 +1802,7 @@ inline SciDll_void CSciWnd::sci_StyleSetFont(int styleNumer, LPCSTR fontName)
 	return execute(SCI_STYLESETFONT,styleNumer,(LPARAM)fontName);	
 }
 
-inline SciDll_void CSciWnd::sci_StyleGetFont(int styleNumer, CString &fontName)
+inline SciDll_void CSciWnd::sci_StyleGetFont(int styleNumer, CStringA &fontName)
 {
 	int nRet = -1;
 	char *p = new char[33];
@@ -2132,6 +2141,16 @@ inline SciDll_void CSciWnd::sci_ToggleCaretSticky()
 
 //////////////////////////////////////////////////////////////////////////
 /*----------Margins------------*/
+inline SciDll_void CSciWnd::sci_SetMargins(int margins)
+{
+	return execute(SCI_SETMARGINS, margins, 0);
+}
+
+inline int CSciWnd::sci_GetMargins()
+{
+	return execute(SCI_GETMARGINS, 0, 0);
+}
+
 inline SciDll_void CSciWnd::sci_SetMarginTypeN(int margin, int iType)
 {
 	return execute(SCI_SETMARGINTYPEN,margin,iType);
@@ -3051,7 +3070,7 @@ inline void *CSciWnd::sci_GetDocPointer()
 
 inline SciDll_void CSciWnd::sci_SetDocPointer(void *pDoc)
 {
-	execute(SCI_SETDOCPOINTER,0,(LPARAM)pDoc);
+	return execute(SCI_SETDOCPOINTER,0,(LPARAM)pDoc);
 }
 
 inline void *CSciWnd::sci_CreateDocument()
@@ -3061,12 +3080,12 @@ inline void *CSciWnd::sci_CreateDocument()
 
 inline SciDll_void CSciWnd::sci_AddRefDocument(void *pDoc)
 {
-	execute(SCI_ADDREFDOCUMENT,0,(LPARAM)pDoc);
+	return execute(SCI_ADDREFDOCUMENT,0,(LPARAM)pDoc);
 }
 
 inline SciDll_void CSciWnd::sci_ReleaseDocument(void *pDoc)
 {
-	execute(SCI_RELEASEDOCUMENT,0,(LPARAM)pDoc);
+	return execute(SCI_RELEASEDOCUMENT,0,(LPARAM)pDoc);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3318,7 +3337,7 @@ inline SciDll_void CSciWnd::sci_SetLexerLanguage(LPCSTR name)
 	return execute(SCI_SETLEXERLANGUAGE, 0, (LPARAM)name);
 }
 
-inline SciDll_void CSciWnd::sci_GetLexerLanguage(CString &Text)
+inline SciDll_void CSciWnd::sci_GetLexerLanguage(CStringA &Text)
 {
 	int nRet = -1;
 	char *p = new char[256];
@@ -3363,7 +3382,7 @@ inline SciDll_void CSciWnd::sci_SetProperty(LPCSTR key, LPCSTR value)
 	return execute(SCI_SETPROPERTY, (LPARAM)key, (LPARAM)value);
 }
 
-inline SciDll_void CSciWnd::sci_GetProperty(LPCSTR key, CString &Value)
+inline SciDll_void CSciWnd::sci_GetProperty(LPCSTR key, CStringA &Value)
 {
 	int nRet = -1;
 	char *p = new char[256];
@@ -3377,7 +3396,7 @@ inline SciDll_void CSciWnd::sci_GetProperty(LPCSTR key, CString &Value)
 	return nRet;
 }
 
-inline SciDll_void CSciWnd::sci_GetPropertyExpanded(LPCSTR key, CString &Value)
+inline SciDll_void CSciWnd::sci_GetPropertyExpanded(LPCSTR key, CStringA &Value)
 {
 	int nRet = -1;
 	char *p = new char[256];
@@ -3396,7 +3415,7 @@ inline int  CSciWnd::sci_GetPropertyInt(LPCSTR key, int ndefault)
 	return execute(SCI_GETPROPERTYINT, (LPARAM)key, ndefault);
 }
 
-inline SciDll_void CSciWnd::sci_DescribeKeywordSets(CString &descriptions)
+inline SciDll_void CSciWnd::sci_DescribeKeywordSets(CStringA &descriptions)
 {
 	int nRet = -1;
 	char *p = new char[1024];

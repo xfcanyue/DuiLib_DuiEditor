@@ -40,43 +40,8 @@
 
 #include "../Duilib/Duilib.h"
 #include "Include/DuiPlugins.h"
-/*
-#include "CxImage/CxImage/ximage.h"
-#include "CxImage/CxImage/ximage.cpp"
-#include "CxImage/CxImage/tif_xfile.cpp"
-#include "CxImage/CxImage/ximabmp.cpp"
-#include "CxImage/CxImage/ximadsp.cpp"
-#include "CxImage/CxImage/ximaenc.cpp"
-#include "CxImage/CxImage/ximaxif.cpp"
-#include "CxImage/CxImage/ximagif.cpp"
-#include "CxImage/CxImage/ximahist.cpp"
-#include "CxImage/CxImage/ximaico.cpp"
-#include "CxImage/CxImage/ximainfo.cpp"
-#include "CxImage/CxImage/ximaint.cpp"
-#include "CxImage/CxImage/ximajas.cpp"
-#include "CxImage/CxImage/ximajbg.cpp"
-#include "CxImage/CxImage/ximajpg.cpp"
-#include "CxImage/CxImage/ximalpha.cpp"
-#include "CxImage/CxImage/ximalyr.cpp"
-#include "CxImage/CxImage/ximamng.cpp"
-#include "CxImage/CxImage/ximapal.cpp"
-#include "CxImage/CxImage/ximapcx.cpp"
-#include "CxImage/CxImage/ximapng.cpp"
-#include "CxImage/CxImage/ximapsd.cpp"
-#include "CxImage/CxImage/ximaraw.cpp"
-#include "CxImage/CxImage/ximasel.cpp"
-#include "CxImage/CxImage/ximaska.cpp"
-#include "CxImage/CxImage/ximatga.cpp"
-#include "CxImage/CxImage/ximath.cpp"
-#include "CxImage/CxImage/ximatif.cpp"
-#include "CxImage/CxImage/ximatran.cpp"
-#include "CxImage/CxImage/ximawbmp.cpp"
-#include "CxImage/CxImage/ximawmf.cpp"
-#include "CxImage/CxImage/ximawnd.cpp"
-#include "CxImage/CxImage/xmemfile.cpp"
-*/
-
 #include "../3rd/CxImage/Include/image.h"
+#include "LsStringConverter.h"
 
 inline DWORD LoadImage2Memory(const STRINGorID &bitmap, LPCTSTR type,LPBYTE &pData)
 {
@@ -195,7 +160,6 @@ inline DWORD LoadImage2Memory(const STRINGorID &bitmap, LPCTSTR type,LPBYTE &pDa
 	return dwSize;
 }
 
-
 inline bool LoadGifImageX(CxImage &img, STRINGorID bitmap, LPCTSTR type , DWORD mask)
 {
 	LPBYTE pData = NULL;
@@ -216,3 +180,6 @@ inline bool LoadGifImageX(CxImage &img, STRINGorID bitmap, LPCTSTR type , DWORD 
 	delete[] pData; pData = NULL;
 	return true;
 }
+
+
+extern CString g_strDuiPluginsPath;

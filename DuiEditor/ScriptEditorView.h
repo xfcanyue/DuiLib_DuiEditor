@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ScriptEditorDoc.h"
-#include "SciWnd.h"
 // CScriptEditorView йсм╪
 
 class CScriptEditorView : public CView

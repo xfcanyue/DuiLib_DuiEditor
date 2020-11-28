@@ -11,6 +11,8 @@ namespace DuiLib {
 		m_pCurrentControl( NULL ),
 		m_bControlVisibleFlag( false )
 	{
+		m_nFrameCount = 15;
+		m_nFrameDelay = 10;
 	}
 
 	LPCTSTR CAnimationTabLayoutUI::GetClass() const
@@ -63,8 +65,10 @@ namespace DuiLib {
 		{
 			m_rcCurPos.top = m_rcItem.top;
 			m_rcCurPos.bottom = m_rcItem.bottom;
-			m_rcCurPos.left = m_rcItem.left - ( m_rcItem.right - m_rcItem.left ) * m_nPositiveDirection + 52 * m_nPositiveDirection;
-			m_rcCurPos.right = m_rcItem.right - ( m_rcItem.right - m_rcItem.left ) * m_nPositiveDirection+ 52 * m_nPositiveDirection;		
+			//m_rcCurPos.left = m_rcItem.left - ( m_rcItem.right - m_rcItem.left ) * m_nPositiveDirection + 52 * m_nPositiveDirection;
+			//m_rcCurPos.right = m_rcItem.right - ( m_rcItem.right - m_rcItem.left ) * m_nPositiveDirection+ 52 * m_nPositiveDirection;
+			m_rcCurPos.left = m_rcItem.left - ( m_rcItem.right - m_rcItem.left ) * m_nPositiveDirection + m_nPositiveDirection;
+			m_rcCurPos.right = m_rcItem.right - ( m_rcItem.right - m_rcItem.left ) * m_nPositiveDirection+ m_nPositiveDirection;		
 		}
 		else
 		{
@@ -75,7 +79,7 @@ namespace DuiLib {
 		}
 
 		StopAnimation( TAB_ANIMATION_ID );
-		StartAnimation( TAB_ANIMATION_ELLAPSE, TAB_ANIMATION_FRAME_COUNT, TAB_ANIMATION_ID );
+		StartAnimation( m_nFrameDelay, m_nFrameCount, TAB_ANIMATION_ID );
 	}
 
 	void CAnimationTabLayoutUI::DoEvent(TEventUI& event)
@@ -135,6 +139,11 @@ namespace DuiLib {
 		NeedParentUpdate();
 	}
 
+	void CAnimationTabLayoutUI::SetFrameCount(int framecount) { m_nFrameCount = framecount; }
+	int CAnimationTabLayoutUI::GetFrameCount() const { return m_nFrameCount; }
+	void CAnimationTabLayoutUI::SetFrameDelay(int nDelay) { m_nFrameDelay = nDelay; }
+	int CAnimationTabLayoutUI::GetFrameDelay() const { return m_nFrameDelay; }
+
 	void CAnimationTabLayoutUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
 		if( _tcsicmp(pstrName, _T("animation_direction")) == 0 && 
@@ -142,6 +151,13 @@ namespace DuiLib {
 		{
 			m_bIsVerticalDirection = true; // pstrValue = "vertical" or "horizontal"
 		}
-		return CTabLayoutUI::SetAttribute(pstrName, pstrValue);
+		else if( _tcsicmp(pstrName, _T("framecount")) == 0 ) {
+			SetFrameCount(_ttoi(pstrValue));
+		}
+		else if( _tcsicmp(pstrName, _T("framedelay")) == 0 ) {
+			SetFrameDelay(_ttoi(pstrValue));
+		}
+		else
+			CTabLayoutUI::SetAttribute(pstrName, pstrValue);
 	}
 } // namespace DuiLib

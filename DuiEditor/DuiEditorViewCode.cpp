@@ -12,6 +12,7 @@
 #include "ChildFrm.h"
 #include "UIManager.h"
 #include "SciXmlParse.h"
+#include "xmlMatchedTagsHighlighter.h"
 // CDuiEditorCode
 
 IMPLEMENT_DYNCREATE(CDuiEditorViewCode, CView)
@@ -92,8 +93,22 @@ int CDuiEditorViewCode::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		AfxMessageBox(_T("create SciLexer window error."));
 		return -1;      // 未能创建
 	}
-	sci.InitXML(g_cfg);
+	sci.InitXML();
 	sci.sci_UsePopup(FALSE);
+
+	sci.SendEditor(SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)(const char *)LST2UTF8(g_cfg.strXmlFontName));
+	sci.sci_StyleSetSize(STYLE_DEFAULT, g_cfg.nXmlFontSize);
+	sci.sci_StyleSetBack(STYLE_DEFAULT, g_cfg.crXmlBkColor);
+	sci.sci_StyleSetBack(STYLE_LINENUMBER, g_cfg.crXmlBkColor);
+	sci.sci_StyleSetBack(STYLE_INDENTGUIDE, g_cfg.crXmlBkColor);
+	for (int i = SCE_H_DEFAULT; i <= SCE_HPHP_OPERATOR; i++)
+	{
+		sci.sci_StyleSetBack(i,	g_cfg.crXmlBkColor);
+	}
+	sci.sci_SetSelBack(STYLE_DEFAULT, g_cfg.crXmlSelBkColor);
+	sci.sci_SetExtraDescent(g_cfg.nXmlLineSpace);
+	sci.sci_SetExtraAscent(g_cfg.nXmlLineSpace);
+	sci.sci_SetCaretLineBack(g_cfg.crXmlCaretLineBkColor);
 
 	return 0;
 }
@@ -103,7 +118,39 @@ void CDuiEditorViewCode::OnInitialUpdate()
 	CView::OnInitialUpdate();
 
 	// TODO: 在此添加专用代码和/或调用基类
-	LoadDocument();
+	//初始化打开的文档，不应该从xml中载入，因为手写的xml并不标准，容易产生定位错误。
+	CDuiEditorDoc *pDoc = (CDuiEditorDoc *)GetDocument();
+	CString xmlfile = pDoc->GetSkinPath() + pDoc->GetSkinFileName();
+
+	if(xmlfile.IsEmpty()) //应该是新建的文档
+	{
+		m_bAutoUpdateDesign = FALSE;
+		xml_writer_string w;
+		pDoc->m_doc.print(w);
+		sci.sci_SetText(w.strText.c_str());
+		m_bAutoUpdateDesign = TRUE;
+	}
+	else //直接从文件中载入
+	{
+		m_bAutoUpdateDesign = FALSE;
+
+		CFile file;
+		if(file.Open(xmlfile, CFile::modeRead))
+		{
+			UINT buflen = (UINT)file.GetLength();
+
+			char *pBuffer = new char[buflen + 1];
+			file.Read((void *)pBuffer, buflen);
+			pBuffer[buflen] = 0;
+			sci.sci_SetText(pBuffer);
+			delete []pBuffer;
+			file.Close();
+		}
+
+		m_bAutoUpdateDesign = TRUE;
+	}
+
+	
 	GetUIManager()->GetDocument()->SetModifiedFlag(FALSE);
 	sci.sci_SetSavePoint();
 	sci.sci_EmptyUndoBuffer(); //清理历史记录
@@ -131,16 +178,13 @@ void CDuiEditorViewCode::LoadDocument()
 #endif
 	CDuiEditorDoc *pDoc = (CDuiEditorDoc *)GetDocument();
 
+	//初始化打开的文档，不应该从xml中载入，因为手写的xml并不标准，容易产生定位错误。
 	m_bAutoUpdateDesign = FALSE;
 	sci.sci_ClearTextAll();
 	xml_writer_string w;
 	pDoc->m_doc.print(w);
 	sci.sci_InsertText(0, w.strText.c_str());
 	m_bAutoUpdateDesign = TRUE;
-
-//  CSciXmlWriter writer(&sci);
-//  writer.print(pDoc->m_doc);//.child(_T("Window")));
-// 	return;
 
 	if(m_nTargetLine >= 0)
 	{
@@ -380,6 +424,31 @@ LRESULT CDuiEditorViewCode::OnSciClick(WPARAM WParam, LPARAM LParam)
 	//点击文档内容时，同时选中设计界面中的控件 以及 树控件
 	int pos = (int)WParam;
 
+	xml_node node = GetDocument()->m_doc.first_child();
+	if(node.type() == node_declaration)
+	{
+		if((pos>=node.get_open_start_pos() && pos<=node.get_open_end_pos()) ||
+			(pos>=node.get_close_start_pos() && pos<=node.get_close_end_pos()))
+		{
+#ifdef _DEBUG
+			InsertMsgV(_T("node:%s, open_start_pos=%d, open_end_pos=%d, close_start_pos=%d, close_end_pos=%d"), 
+				XML2T(node.name()), node.get_open_start_pos(), node.get_open_end_pos(), node.get_close_start_pos(), node.get_close_end_pos());
+#endif
+			for (xml_attribute attr=node.first_attribute(); attr; attr=attr.next_attribute())
+			{
+				if(pos >= attr.get_name_start_pos() && pos <= attr.get_value_end_pos()+1)
+				{
+#ifdef _DEBUG
+					InsertMsgV(_T("attr: %s, name_start_pos=%d, name_end_pos=%d, value_start_pos=%d, value_end_pos=%d"), 
+						XML2T(attr.name()), attr.get_name_start_pos(), attr.get_name_end_pos(), attr.get_value_start_pos(), attr.get_value_end_pos());
+#endif
+					continue;
+				}
+			}
+			return 0;
+		}
+	}
+
 	xml_node root = GetDocument()->m_doc.child(XTEXT("Window"));
 	SelectControlUI(pos, root);
 
@@ -512,8 +581,8 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 		break;
 	case SCN_MODIFIED:
 		{
-			if((pMsg->modificationType & SC_MOD_INSERTTEXT) || 
-				(pMsg->modificationType & SC_MOD_DELETETEXT))
+			if(m_bAutoUpdateDesign && 
+				((pMsg->modificationType & SC_MOD_INSERTTEXT) || (pMsg->modificationType & SC_MOD_DELETETEXT)) )
 			{
 				//InsertMsg(_T("SCN_MODIFIED"));
 				CStringA strTextUtf8;
@@ -523,9 +592,8 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 				m_xmlParseResult = xml.load_string(T2XML(strText), XML_PARSER_OPTIONS);
 
 				//尝试实时提交修改
-				if(m_bUpdateDesignWhileModified && m_bAutoUpdateDesign  && 
-					(GetUIManager()->GetSplitterMode() == SPLIT_UPDOWN || 
-					GetUIManager()->GetSplitterMode() == SPLIT_LEFTRIGHT) )
+				if(m_bUpdateDesignWhileModified && 
+					((GetUIManager()->GetSplitterMode() == SPLIT_UPDOWN) || (GetUIManager()->GetSplitterMode() == SPLIT_LEFTRIGHT)) )
 				{
 					m_bNeedUpdate = TRUE;
 
@@ -558,7 +626,50 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 		break;
 	case SCN_UPDATEUI:
 		{	
+			braceMatch();
+			XmlMatchedTagsHighlighter xmlTagMatchHiliter(&sci, this);
+			xmlTagMatchHiliter.tagMatch(true);
 			UpdateFrameStatus();
+		}
+		break;
+	case SCN_AUTOCSELECTION:
+		{
+			int pos = sci.sci_GetCurrentPos();
+			int charpos = pos - 1;
+
+			//如果只按空格，在弹出的选择框里面直接选取，pos不能减一。
+			char ch = sci.sci_GetCharAt(pos);
+			if(ch == ' ' || ch == '	')
+			{
+				charpos = pos;
+			}
+
+			int startPos = sci.sci_WordStartPosition(charpos, TRUE);
+			int endPos = sci.sci_WordEndPosition(charpos, TRUE);
+			CStringA strSelected;
+			sci.sci_AutocGetCurrentText(strSelected);
+
+			sci.sci_SetTargetStart(startPos);
+			sci.sci_SetTargetEnd(endPos);
+			sci.sci_ReplaceTarget(-1, strSelected);
+			sci.sci_GoToPos(startPos + strSelected.GetLength());
+
+			//判断当前编辑的是不是属性。 如果是属性，考虑把 ="" 自动补全。
+			char ch2 = sci.sci_GetCharAt(startPos-1);
+			if(ch2 != '<' && ch2 != '/')
+			{
+				pos = sci.sci_GetCurrentPos();
+				if(sci.sci_GetCharAt(pos+1) != '=') //如果属性后面没有 “=”，自动补上
+				{
+					sci.sci_SetTargetStart(pos);
+					sci.sci_SetTargetEnd(pos);
+					sci.sci_ReplaceTarget(-1, "=\"\"");
+					sci.sci_GoToPos(pos+2);
+				}
+			}
+
+			sci.sci_AutocCancel(); //不使用默认的插人
+			return TRUE;
 		}
 		break;
 	}	
@@ -659,6 +770,146 @@ CString CDuiEditorViewCode::AutoCompleteProperty(CString objectName, CString Att
 	return strShow;
 }
 
+void CDuiEditorViewCode::findMatchingBracePos(int & braceAtCaret, int & braceOpposite)
+{
+	int caretPos = sci.sci_GetCurrentPos();
+	braceAtCaret = -1;
+	braceOpposite = -1;
+	TCHAR charBefore = '\0';
+
+	int lengthDoc = sci.sci_GetLength();
+
+	if ((lengthDoc > 0) && (caretPos > 0))
+	{
+		charBefore = sci.sci_GetCharAt(caretPos - 1);
+	}
+	// Priority goes to character before caret
+	if (charBefore && _tcschr(TEXT("[](){}\"\""), charBefore))
+	{
+		braceAtCaret = caretPos - 1;
+	}
+
+	if (lengthDoc > 0  && (braceAtCaret < 0))
+	{
+		// No brace found so check other side
+		TCHAR charAfter = sci.sci_GetCharAt(caretPos);
+		if (charAfter && _tcschr(TEXT("[](){}\"\""), charAfter))
+		{
+			braceAtCaret = caretPos;
+		}
+	}
+	if (braceAtCaret >= 0)
+		braceOpposite = sci.sci_BraceMatch(braceAtCaret, 0);
+}
+
+bool CDuiEditorViewCode::braceMatch()
+{
+	int braceAtCaret = -1;
+	int braceOpposite = -1;
+	findMatchingBracePos(braceAtCaret, braceOpposite);
+
+	if ((braceAtCaret != -1) && (braceOpposite == -1))
+	{
+		sci.sci_BraceBadLight(braceAtCaret);
+		sci.sci_SetHighlightGuide(0);
+	}
+	else
+	{
+		sci.sci_BraceHighlight(braceAtCaret, braceOpposite);
+
+		if (sci.sci_GetIndentationGuides())
+		{
+			int columnAtCaret = sci.sci_GetColumn(braceAtCaret);
+			int columnOpposite = sci.sci_GetColumn(braceOpposite);
+			sci.sci_SetHighlightGuide((columnAtCaret < columnOpposite)?columnAtCaret:columnOpposite);
+		}
+	}
+	return (braceAtCaret != -1);
+}
+
+bool CDuiEditorViewCode::BraceHighLightAttributes(int attrbegin, int attrend, int openTagTailLen)
+{
+	bool highlightAttr = false;
+
+	int pos = sci.sci_GetCurrentPos();
+
+	//当前光标点击在某个属性上
+#ifdef _DEBUG
+	// 	LSSTRING_CONVERSION;
+	// 	CStringA temp;
+	// 	sci_GetTextRange(attrbegin, attrend, temp);
+	// 	InsertMsg(LSA2T(temp));
+#endif
+	//先找双引号，然后在双引号里面寻找单引号
+	int findpos1 = 0; 
+	int findpos2 = 0;
+	sci.sci_SetTargetStart(attrbegin);
+	sci.sci_SetTargetEnd(attrend);
+	findpos1 = sci.sci_SearchInTarget(1, "\"");
+
+	sci.sci_SetTargetStart(findpos1+1);
+	sci.sci_SetTargetEnd(attrend);
+	findpos2 = sci.sci_SearchInTarget(1, "\"");
+
+	if(findpos1 >= 0 && findpos2 >= 0)
+	{
+		sci.sci_BraceHighlight(findpos1, findpos2);
+		highlightAttr = true;
+	}
+	else if((findpos1 >=0 && findpos2 < 0) || (findpos1 <0 && findpos2 >= 0) )
+	{
+		if(findpos1 > 0) sci.sci_BraceBadLight(findpos1);
+		if(findpos2 > 0) sci.sci_BraceBadLight(findpos2);
+		highlightAttr = true;
+		return highlightAttr;
+	}
+
+#ifdef _DEBUG
+	// 	sci_GetTextRange(findpos1+1, findpos2, temp);
+	// 	InsertMsg(LSA2T(temp));
+#endif
+
+	//检查双引号内部的单引号匹配
+	int findpos3 = findpos1+1; 
+	int findpos4 = 0;
+	int bracebegin = -1;
+	int braceend = -1;
+	while (true)
+	{
+		sci.sci_SetTargetStart(findpos3);
+		sci.sci_SetTargetEnd(findpos2);
+		findpos3 = sci.sci_SearchInTarget(1, "\'");
+		if(findpos3 < 0)
+			break;
+
+		sci.sci_SetTargetStart(findpos3+1);
+		sci.sci_SetTargetEnd(findpos2);
+		findpos4 = sci.sci_SearchInTarget(1, "\'");
+		if(findpos4 < 0) //匹配失败
+		{
+			sci.sci_BraceBadLight(findpos3);
+			bracebegin = -1;
+			braceend = -1;
+			highlightAttr = true;
+			break;
+		}
+
+		if(pos >= findpos3 && pos <= findpos4)
+		{
+			bracebegin = findpos3;
+			braceend = findpos4;
+		}
+
+		findpos3 = findpos4+1;
+	}
+
+	if(bracebegin >= 0 && braceend >= 0)
+	{
+		sci.sci_BraceHighlight(bracebegin, braceend);
+		highlightAttr = true;
+	}
+	return highlightAttr;
+}
 
 BOOL CDuiEditorViewCode::PreCreateWindow(CREATESTRUCT& cs)
 {

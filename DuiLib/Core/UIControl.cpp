@@ -48,6 +48,9 @@ namespace DuiLib {
 		::ZeroMemory(&m_rcPaint, sizeof(RECT));
 		::ZeroMemory(&m_rcBorderSize,sizeof(RECT));
 		m_piFloatPercent.left = m_piFloatPercent.top = m_piFloatPercent.right = m_piFloatPercent.bottom = 0.0f;
+
+		::ZeroMemory(&m_rcCalcPos, sizeof(m_rcCalcPos));
+		m_bCalcPosNow = false;
 	}
 
 	CControlUI::~CControlUI()
@@ -99,7 +102,8 @@ namespace DuiLib {
 	{
 		m_pManager = pManager;
 		m_pParent = pParent;
-		if( bInit && m_pParent ) Init();
+		if( bInit && m_pParent ) 
+			Init();
 	}
 
 	CControlUI* CControlUI::GetParent() const
@@ -1516,4 +1520,23 @@ namespace DuiLib {
 		Invalidate();
 	}
 
+	void CControlUI::SetCalcPos(RECT rc)
+	{
+		m_rcCalcPos = rc;
+	}
+
+	RECT CControlUI::GetCalcPos()
+	{
+		return m_rcCalcPos;
+	}
+
+	void CControlUI::SetCalPosNow(bool bCalcNow)
+	{
+		m_bCalcPosNow = bCalcNow;
+	}
+
+	bool CControlUI::IsCalPosNow()
+	{
+		return m_bCalcPosNow;
+	}
 } // namespace DuiLib

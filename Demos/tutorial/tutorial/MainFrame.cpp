@@ -3,10 +3,12 @@
 
 #include "Dialog1.h"
 #include "FormAdvanceControl.h"
+#include "FormSciEditor.h"
 
 CMainFrame::CMainFrame(void)
 {
 	AttachVirtualForm(new CFormAdvanceControl);
+	AttachVirtualForm(new CFormSciEditor);
 	m_bCheckmenu_cmd_2 = TRUE;
 	m_bCheckmenu_cmd_22 = TRUE;
 	m_bCheckmenu_cmd_41 = TRUE;
@@ -25,12 +27,12 @@ void CMainFrame::Notify(TNotifyUI& msg)
 	CString ControlName = msg.pSender->GetName();
 	CString EventName = msg.sType;
 
-	if(ControlName != _T("msgwnd_frame"))
-	{
-		CString strText;
-		strText.Format(_T("Notify: class='%s' name='%s' msg='%s'"), className, ControlName, EventName);
-		InsertMsgUI(strText);
-	}
+// 	if(ControlName != _T("msgwnd_frame"))
+// 	{
+// 		CString strText;
+// 		strText.Format(_T("Notify: class='%s' name='%s' msg='%s'"), className, ControlName, EventName);
+// 		InsertMsgUI(strText);
+// 	}
 
 	__super::Notify(msg);
 }
@@ -62,6 +64,8 @@ void CMainFrame::InitWindow()
 	pRoll2->SetText(pRoll2->GetText() + strText);
 	pRoll3->SetText(pRoll3->GetText() + strText);
 	pRoll4->SetText(pRoll4->GetText() + strText);
+
+
 }
 
 bool CMainFrame::OnCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -155,25 +159,25 @@ bool CMainFrame::OnMenuUpdateCommandUI(CMenuCmdUI *cmdUI)
 
 void CMainFrame::OnNotifyClick(TNotifyUI& msg)
 {
-	if(IsControl(msg, _T("btn_showhide_top_pane")))
-		OnShowHideTopPane();
+// 	if(IsControl(msg, _T("btn_showhide_top_pane")))
+// 		OnShowHideTopPane();
 
 	//使用UI_COMMAND消息映射
-	UI_COMMAND(_T("btn_showhide_bottom_pane"), OnShowHideBottomPane);
+//	UI_COMMAND(_T("btn_showhide_bottom_pane"), OnShowHideBottomPane);
 
-	if(IsControl(msg, _T("btn_showhide_left_pane")))
-	{
-		CAnimationPaneUI *pPane;
-		UI_BINDCONTROL(CAnimationPaneUI, pPane, _T("pane_3"));
-		pPane->SetPaneVisible(!pPane->IsPaneVisible());
-	}
-	
-	if(IsControl(msg, _T("btn_showhide_right_pane")))
-	{
-		CAnimationPaneUI *pPane;
-		UI_BINDCONTROL(CAnimationPaneUI, pPane, _T("pane_4"));
-		pPane->SetPaneVisible(!pPane->IsPaneVisible());
-	}
+// 	if(IsControl(msg, _T("btn_showhide_left_pane")))
+// 	{
+// 		CAnimationPaneUI *pPane;
+// 		UI_BINDCONTROL(CAnimationPaneUI, pPane, _T("pane_3"));
+// 		pPane->SetPaneVisible(!pPane->IsPaneVisible());
+// 	}
+// 	
+// 	if(IsControl(msg, _T("btn_showhide_right_pane")))
+// 	{
+// 		CAnimationPaneUI *pPane;
+// 		UI_BINDCONTROL(CAnimationPaneUI, pPane, _T("pane_4"));
+// 		pPane->SetPaneVisible(!pPane->IsPaneVisible());
+// 	}
 
 	if(IsControl(msg, _T("btn_domodal")))
 	{
@@ -211,14 +215,14 @@ void CMainFrame::OnNotifyTimer(TNotifyUI& msg)
 
 void CMainFrame::OnShowHideTopPane()
 {
-	CAnimationPaneUI *pPane;
-	UI_BINDCONTROL(CAnimationPaneUI, pPane, _T("pane_1"));
-	pPane->SetPaneVisible(!pPane->IsPaneVisible());
+// 	CAnimationPaneUI *pPane;
+// 	UI_BINDCONTROL(CAnimationPaneUI, pPane, _T("pane_1"));
+// 	pPane->SetPaneVisible(!pPane->IsPaneVisible());
 }
 
 void CMainFrame::OnShowHideBottomPane()
 {
-	CAnimationPaneUI *pPane;
-	UI_BINDCONTROL(CAnimationPaneUI, pPane, _T("pane_2"));
-	pPane->SetPaneVisible(!pPane->IsPaneVisible());
+// 	CAnimationPaneUI *pPane;
+// 	UI_BINDCONTROL(CAnimationPaneUI, pPane, _T("pane_2"));
+// 	pPane->SetPaneVisible(!pPane->IsPaneVisible());
 }

@@ -1,11 +1,11 @@
 #include "StdAfx.h"
-#include "UIButton.h"
+#include "UIButtonLayout.h"
 
 namespace DuiLib
 {
-	IMPLEMENT_DUICONTROL(CButtonUI)
+	IMPLEMENT_DUICONTROL(CButtonLayoutUI)
 
-	CButtonUI::CButtonUI()
+	CButtonLayoutUI::CButtonLayoutUI()
 		: m_uButtonState(0)
 		, m_iHotFont(-1)
 		, m_iPushedFont(-1)
@@ -23,27 +23,27 @@ namespace DuiLib
 		m_uTextStyle = DT_SINGLELINE | DT_VCENTER | DT_CENTER;
 	}
 
-	LPCTSTR CButtonUI::GetClass() const
+	LPCTSTR CButtonLayoutUI::GetClass() const
 	{
-		return _T("ButtonUI");
+		return _T("ButtonLayoutUI");
 	}
 
-	LPVOID CButtonUI::GetInterface(LPCTSTR pstrName)
+	LPVOID CButtonLayoutUI::GetInterface(LPCTSTR pstrName)
 	{
-		if( _tcsicmp(pstrName, DUI_CTR_BUTTON) == 0 ) return static_cast<CButtonUI*>(this);
-		return CLabelUI::GetInterface(pstrName);
+		if( _tcsicmp(pstrName, DUI_CTR_BUTTON_LAYOUT) == 0 ) return static_cast<CButtonLayoutUI*>(this);
+		return __super::GetInterface(pstrName);
 	}
 
-	UINT CButtonUI::GetControlFlags() const
+	UINT CButtonLayoutUI::GetControlFlags() const
 	{
 		return (IsKeyboardEnabled() ? UIFLAG_TABSTOP : 0) | (IsEnabled() ? UIFLAG_SETCURSOR : 0);
 	}
 
-	void CButtonUI::DoEvent(TEventUI& event)
+	void CButtonLayoutUI::DoEvent(TEventUI& event)
 	{
 		if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
 			if( m_pParent != NULL ) m_pParent->DoEvent(event);
-			else CLabelUI::DoEvent(event);
+			else __super::DoEvent(event);
 			return;
 		}
 
@@ -111,10 +111,10 @@ namespace DuiLib
 				Invalidate();
 			}
 		}
-		CLabelUI::DoEvent(event);
+		__super::DoEvent(event);
 	}
 
-	bool CButtonUI::Activate()
+	bool CButtonLayoutUI::Activate()
 	{
 		if( !CControlUI::Activate() ) return false;
 		if( m_pManager != NULL )
@@ -128,7 +128,7 @@ namespace DuiLib
 		return true;
 	}
 
-	void CButtonUI::SetEnabled(bool bEnable)
+	void CButtonLayoutUI::SetEnabled(bool bEnable)
 	{
 		CControlUI::SetEnabled(bEnable);
 		if( !IsEnabled() ) {
@@ -137,185 +137,185 @@ namespace DuiLib
 	}
 
 	
-	void CButtonUI::SetHotFont(int index)
+	void CButtonLayoutUI::SetHotFont(int index)
 	{
 		m_iHotFont = index;
 		Invalidate();
 	}
 
-	int CButtonUI::GetHotFont() const
+	int CButtonLayoutUI::GetHotFont() const
 	{
 		return m_iHotFont;
 	}
 
-	void CButtonUI::SetPushedFont(int index)
+	void CButtonLayoutUI::SetPushedFont(int index)
 	{
 		m_iPushedFont = index;
 		Invalidate();
 	}
 
-	int CButtonUI::GetPushedFont() const
+	int CButtonLayoutUI::GetPushedFont() const
 	{
 		return m_iPushedFont;
 	}
 
-	void CButtonUI::SetFocusedFont(int index)
+	void CButtonLayoutUI::SetFocusedFont(int index)
 	{
 		m_iFocusedFont = index;
 		Invalidate();
 	}
 
-	int CButtonUI::GetFocusedFont() const
+	int CButtonLayoutUI::GetFocusedFont() const
 	{
 		return m_iFocusedFont;
 	}
 
-	void CButtonUI::SetHotBkColor( DWORD dwColor )
+	void CButtonLayoutUI::SetHotBkColor( DWORD dwColor )
 	{
 		m_dwHotBkColor = dwColor;
 		Invalidate();
 	}
 
-	DWORD CButtonUI::GetHotBkColor() const
+	DWORD CButtonLayoutUI::GetHotBkColor() const
 	{
 		return m_dwHotBkColor;
 	}
 	
-	void CButtonUI::SetPushedBkColor( DWORD dwColor )
+	void CButtonLayoutUI::SetPushedBkColor( DWORD dwColor )
 	{
 		m_dwPushedBkColor = dwColor;
 		Invalidate();
 	}
 
-	DWORD CButtonUI::GetPushedBkColor() const
+	DWORD CButtonLayoutUI::GetPushedBkColor() const
 	{
 		return m_dwPushedBkColor;
 	}
 		
-	void CButtonUI::SetDisabledBkColor( DWORD dwColor )
+	void CButtonLayoutUI::SetDisabledBkColor( DWORD dwColor )
 	{
 		m_dwDisabledBkColor = dwColor;
 		Invalidate();
 	}
 
-	DWORD CButtonUI::GetDisabledBkColor() const
+	DWORD CButtonLayoutUI::GetDisabledBkColor() const
 	{
 		return m_dwDisabledBkColor;
 	}
 	
-	void CButtonUI::SetHotTextColor(DWORD dwColor)
+	void CButtonLayoutUI::SetHotTextColor(DWORD dwColor)
 	{
 		m_dwHotTextColor = dwColor;
 	}
 
-	DWORD CButtonUI::GetHotTextColor() const
+	DWORD CButtonLayoutUI::GetHotTextColor() const
 	{
 		return m_dwHotTextColor;
 	}
 
-	void CButtonUI::SetPushedTextColor(DWORD dwColor)
+	void CButtonLayoutUI::SetPushedTextColor(DWORD dwColor)
 	{
 		m_dwPushedTextColor = dwColor;
 	}
 
-	DWORD CButtonUI::GetPushedTextColor() const
+	DWORD CButtonLayoutUI::GetPushedTextColor() const
 	{
 		return m_dwPushedTextColor;
 	}
 
-	void CButtonUI::SetFocusedTextColor(DWORD dwColor)
+	void CButtonLayoutUI::SetFocusedTextColor(DWORD dwColor)
 	{
 		m_dwFocusedTextColor = dwColor;
 	}
 
-	DWORD CButtonUI::GetFocusedTextColor() const
+	DWORD CButtonLayoutUI::GetFocusedTextColor() const
 	{
 		return m_dwFocusedTextColor;
 	}
 
-	LPCTSTR CButtonUI::GetNormalImage()
+	LPCTSTR CButtonLayoutUI::GetNormalImage()
 	{
 		return m_sNormalImage;
 	}
 
-	void CButtonUI::SetNormalImage(LPCTSTR pStrImage)
+	void CButtonLayoutUI::SetNormalImage(LPCTSTR pStrImage)
 	{
 		m_sNormalImage = pStrImage;
 		Invalidate();
 	}
 
-	LPCTSTR CButtonUI::GetHotImage()
+	LPCTSTR CButtonLayoutUI::GetHotImage()
 	{
 		return m_sHotImage;
 	}
 
-	void CButtonUI::SetHotImage(LPCTSTR pStrImage)
+	void CButtonLayoutUI::SetHotImage(LPCTSTR pStrImage)
 	{
 		m_sHotImage = pStrImage;
 		Invalidate();
 	}
 
-	LPCTSTR CButtonUI::GetPushedImage()
+	LPCTSTR CButtonLayoutUI::GetPushedImage()
 	{
 		return m_sPushedImage;
 	}
 
-	void CButtonUI::SetPushedImage(LPCTSTR pStrImage)
+	void CButtonLayoutUI::SetPushedImage(LPCTSTR pStrImage)
 	{
 		m_sPushedImage = pStrImage;
 		Invalidate();
 	}
 
-	LPCTSTR CButtonUI::GetFocusedImage()
+	LPCTSTR CButtonLayoutUI::GetFocusedImage()
 	{
 		return m_sFocusedImage;
 	}
 
-	void CButtonUI::SetFocusedImage(LPCTSTR pStrImage)
+	void CButtonLayoutUI::SetFocusedImage(LPCTSTR pStrImage)
 	{
 		m_sFocusedImage = pStrImage;
 		Invalidate();
 	}
 
-	LPCTSTR CButtonUI::GetDisabledImage()
+	LPCTSTR CButtonLayoutUI::GetDisabledImage()
 	{
 		return m_sDisabledImage;
 	}
 
-	void CButtonUI::SetDisabledImage(LPCTSTR pStrImage)
+	void CButtonLayoutUI::SetDisabledImage(LPCTSTR pStrImage)
 	{
 		m_sDisabledImage = pStrImage;
 		Invalidate();
 	}
 
-	LPCTSTR CButtonUI::GetHotForeImage()
+	LPCTSTR CButtonLayoutUI::GetHotForeImage()
 	{
 		return m_sHotForeImage;
 	}
 
-	void CButtonUI::SetHotForeImage( LPCTSTR pStrImage )
+	void CButtonLayoutUI::SetHotForeImage( LPCTSTR pStrImage )
 	{
 		m_sHotForeImage = pStrImage;
 		Invalidate();
 	}
 
-	void CButtonUI::SetStateCount(int nCount)
+	void CButtonLayoutUI::SetStateCount(int nCount)
 	{
 		m_nStateCount = nCount;
 		Invalidate();
 	}
 
-	int CButtonUI::GetStateCount() const
+	int CButtonLayoutUI::GetStateCount() const
 	{
 		return m_nStateCount;
 	}
 
-	LPCTSTR CButtonUI::GetStateImage()
+	LPCTSTR CButtonLayoutUI::GetStateImage()
 	{
 		return m_sStateImage;
 	}
 
-	void CButtonUI::SetStateImage( LPCTSTR pStrImage )
+	void CButtonLayoutUI::SetStateImage( LPCTSTR pStrImage )
 	{
 		m_sNormalImage.Empty();
 		m_sStateImage = pStrImage;
@@ -323,7 +323,7 @@ namespace DuiLib
 	}
 
 
-	void CButtonUI::SwitchControlVisible()
+	void CButtonLayoutUI::SwitchControlVisible()
 	{
 		if(m_sSwitchControlVisible.IsEmpty()) 
 			return;
@@ -333,12 +333,12 @@ namespace DuiLib
 		pControl->SetVisible(!pControl->IsVisible());
 	}
 
-	void CButtonUI::SetSwitchControlVisible(LPCTSTR ControlName)
+	void CButtonLayoutUI::SetSwitchControlVisible(LPCTSTR ControlName)
 	{
 		m_sSwitchControlVisible = ControlName;
 	}
 
-	void CButtonUI::SwitchPaneVisible()
+	void CButtonLayoutUI::SwitchPaneVisible()
 	{
 		if(m_sSwitchPaneVisible.IsEmpty()) 
 			return;
@@ -352,24 +352,24 @@ namespace DuiLib
 		}
 	}
 
-	void CButtonUI::SetSwitchPaneVisible(LPCTSTR ControlName)
+	void CButtonLayoutUI::SetSwitchPaneVisible(LPCTSTR ControlName)
 	{
 		m_sSwitchPaneVisible = ControlName;
 	}
 
-	void CButtonUI::BindTabIndex(int _BindTabIndex )
+	void CButtonLayoutUI::BindTabIndex(int _BindTabIndex )
 	{
 		if( _BindTabIndex >= 0)
 			m_iBindTabIndex	= _BindTabIndex;
 	}
 
-	void CButtonUI::BindTabLayoutName( LPCTSTR _TabLayoutName )
+	void CButtonLayoutUI::BindTabLayoutName( LPCTSTR _TabLayoutName )
 	{
 		if(_TabLayoutName)
 			m_sBindTabLayoutName = _TabLayoutName;
 	}
 
-	void CButtonUI::BindTriggerTabSel( int _SetSelectIndex /*= -1*/ )
+	void CButtonLayoutUI::BindTriggerTabSel( int _SetSelectIndex /*= -1*/ )
 	{
 		LPCTSTR pstrName = GetBindTabLayoutName();
 		if(pstrName == NULL || (GetBindTabLayoutIndex() < 0 && _SetSelectIndex < 0))
@@ -380,23 +380,23 @@ namespace DuiLib
 		pTabLayout->SelectItem(_SetSelectIndex >=0?_SetSelectIndex:GetBindTabLayoutIndex());
 	}
 
-	void CButtonUI::RemoveBindTabIndex()
+	void CButtonLayoutUI::RemoveBindTabIndex()
 	{
 		m_iBindTabIndex	= -1;
 		m_sBindTabLayoutName.Empty();
 	}
 
-	int CButtonUI::GetBindTabLayoutIndex()
+	int CButtonLayoutUI::GetBindTabLayoutIndex()
 	{
 		return m_iBindTabIndex;
 	}
 
-	LPCTSTR CButtonUI::GetBindTabLayoutName()
+	LPCTSTR CButtonLayoutUI::GetBindTabLayoutName()
 	{
 		return m_sBindTabLayoutName;
 	}
 
-	void CButtonUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
+	void CButtonLayoutUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
 		if( _tcsicmp(pstrName, _T("normalimage")) == 0 ) SetNormalImage(pstrValue);
 		else if( _tcsicmp(pstrName, _T("hotimage")) == 0 ) SetHotImage(pstrValue);
@@ -470,10 +470,10 @@ namespace DuiLib
 			SetDisableBorderColor(clrColor);
 		}
 		
-		else CLabelUI::SetAttribute(pstrName, pstrValue);
+		else __super::SetAttribute(pstrName, pstrValue);
 	}
 
-	void CButtonUI::PaintText(HDC hDC)
+	void CButtonLayoutUI::PaintText(HDC hDC)
 	{
 		if( IsFocused() ) m_uButtonState |= UISTATE_FOCUSED;
 		else m_uButtonState &= ~ UISTATE_FOCUSED;
@@ -486,7 +486,7 @@ namespace DuiLib
 		CDuiString sText = GetText();
 		if( sText.IsEmpty() ) return;
 
-		RECT m_rcTextPadding = CButtonUI::m_rcTextPadding;
+		RECT m_rcTextPadding = CButtonLayoutUI::m_rcTextPadding;
 		GetManager()->GetDPIObj()->Scale(&m_rcTextPadding);
 		int nLinks = 0;
 		RECT rc = m_rcItem;
@@ -520,7 +520,7 @@ namespace DuiLib
 			iFont, m_uTextStyle);
 	}
 
-	void CButtonUI::PaintBkColor(HDC hDC)
+	void CButtonLayoutUI::PaintBkColor(HDC hDC)
 	{
 		if( (m_uButtonState & UISTATE_DISABLED) != 0 ) {
 			if(m_dwDisabledBkColor != 0) {
@@ -544,7 +544,7 @@ namespace DuiLib
 		return CControlUI::PaintBkColor(hDC);
 	}
 
-	void CButtonUI::PaintStatusImage(HDC hDC)
+	void CButtonLayoutUI::PaintStatusImage(HDC hDC)
 	{
 		if(!m_sStateImage.IsEmpty() && m_nStateCount > 0)
 		{
@@ -628,7 +628,7 @@ namespace DuiLib
 		}
 	}
 
-	void CButtonUI::PaintForeImage(HDC hDC)
+	void CButtonLayoutUI::PaintForeImage(HDC hDC)
 	{
 		if( (m_uButtonState & UISTATE_PUSHED) != 0 ) {
 			if( !m_sPushedForeImage.IsEmpty() ) {
@@ -647,7 +647,7 @@ namespace DuiLib
 		}
 	}
 
-	void CButtonUI::PaintBorder(HDC hDC)
+	void CButtonLayoutUI::PaintBorder(HDC hDC)
 	{
 		DWORD dwColor = 0;
 

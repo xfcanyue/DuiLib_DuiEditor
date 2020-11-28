@@ -87,8 +87,9 @@
 #include "../3rd/CxImage/Include/image.h"
 //////////////////////////////////////////////////////////////////////////
 #define INCLUDE_DEPRECATED_FEATURES
-#include "scintilla/include/SciLexer.h"
-#include "scintilla/include/Scintilla.h"
+#include "../3rd/scintilla/include/SciLexer.h"
+#include "../3rd/scintilla/include/Scintilla.h"
+#include "../3rd/scintilla/SciWnd.h"
 
 #include "pugixml/pugiconfig.hpp"
 #include "pugixml/pugixml.hpp"

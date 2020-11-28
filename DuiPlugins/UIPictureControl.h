@@ -27,6 +27,7 @@ public:
 	bool	IsAutoSize() const;
 
 	void LoadFile(LPCTSTR fileName); //从硬盘文件绝对路径载入图片,不同于xml的fileimage属性
+	void SetCxImage(const void *pCxImage);
 
 	void StartAnim();
 	void StopAnim();

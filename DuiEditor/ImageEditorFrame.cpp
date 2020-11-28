@@ -307,6 +307,8 @@ void CImageEditorFrame::OnSelectedFile(LPCTSTR lpstrPathName)
 
 	m_pPropList->InitProp(g_pEditorImage->m_nodedata);
 	m_wndProperty.OnExpandAllProperties();
+
+	ParentPreview();
 }
 
 LRESULT CImageEditorFrame::OnPropertyChanged (WPARAM,LPARAM lParam)

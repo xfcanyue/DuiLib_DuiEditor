@@ -91,7 +91,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_AFXEXT;UILIB_PLUGIN_API_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_AFXEXT;UILIB_PLUGIN_API_EXPORTS;DLL_SCIWND_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -116,7 +116,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_AFXEXT;UILIB_PLUGIN_API_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_AFXEXT;UILIB_PLUGIN_API_EXPORTS;DLL_SCIWND_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -143,7 +143,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_AFXEXT;UILIB_PLUGIN_API_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_AFXEXT;UILIB_PLUGIN_API_EXPORTS;DLL_SCIWND_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -172,7 +172,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_AFXEXT;UILIB_PLUGIN_API_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_AFXEXT;UILIB_PLUGIN_API_EXPORTS;DLL_SCIWND_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -200,6 +200,7 @@
     <None Include="res\DuiPlugins.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\3rd\scintilla\SciWnd.cpp" />
     <ClCompile Include="UIComboEditWnd.cpp" />
     <ClCompile Include="UIComboEx.cpp" />
     <ClCompile Include="MFCGridCtrl\CellType\GridCellCheck.cpp" />
@@ -230,7 +231,6 @@
     </ClCompile>
     <ClCompile Include="DuiPlugins.cpp" />
     <ClCompile Include="UIGridCtrl.cpp" />
-    <ClCompile Include="UIGridCtrlWnd.cpp" />
     <ClCompile Include="UIIconButton.cpp" />
     <ClCompile Include="UIImageBox.cpp" />
     <ClCompile Include="UIKeyBoardSimple.cpp" />
@@ -245,13 +245,15 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="UIAccordionPane.cpp" />
-    <ClCompile Include="UIAnimationPane.cpp" />
     <ClCompile Include="UIDataExchange.cpp" />
     <ClCompile Include="UIDateTimeEx.cpp" />
     <ClCompile Include="UIImageBoxEx.cpp" />
     <ClCompile Include="UIRollTextEx.cpp" />
+    <ClCompile Include="UISciEdit.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\3rd\scintilla\SciWnd.h" />
+    <ClInclude Include="LsStringConverter.h" />
     <ClInclude Include="UIComboEditWnd.h" />
     <ClInclude Include="UIComboEx.h" />
     <ClInclude Include="MFCGridCtrl\CellRange.h" />
@@ -269,7 +271,6 @@
     <ClInclude Include="MFCGridCtrl\TitleTip.h" />
     <ClInclude Include="UIDateTimeExWnd.h" />
     <ClInclude Include="UIGridCtrl.h" />
-    <ClInclude Include="UIGridCtrlWnd.h" />
     <ClInclude Include="UIIconButton.h" />
     <ClInclude Include="UIImageBox.h" />
     <ClInclude Include="Include\DuiPlugins.h" />
@@ -282,11 +283,11 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="UIAccordionPane.h" />
-    <ClInclude Include="UIAnimationPane.h" />
     <ClInclude Include="UIDataExchange.h" />
     <ClInclude Include="UIDateTimeEx.h" />
     <ClInclude Include="UIImageBoxEx.h" />
     <ClInclude Include="UIRollTextEx.h" />
+    <ClInclude Include="UISciEdit.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DuiPlugins.rc" />

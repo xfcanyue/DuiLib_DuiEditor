@@ -1,5 +1,4 @@
 #pragma once
-#include "SciWnd.h"
 #include "SciXmlWriter.h"
 // CDuiEditorCode 视图
 
@@ -54,7 +53,10 @@ protected:
 	CString GetNodeName();
 	void AutoCompleteNode(CString objectName);		//自动完成控件名
 	CString AutoCompleteProperty(CString objectName, CString AttrName);	//自动完成属性名
-
+public:
+	void findMatchingBracePos(int & braceAtCaret, int & braceOpposite);
+	bool braceMatch();
+	bool BraceHighLightAttributes(int first, int second, int openTagTailLen);
 public:
 	virtual void OnDraw(CDC* pDC);      // 重写以绘制该视图
 

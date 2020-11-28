@@ -2,7 +2,6 @@
 //
 
 #include "stdafx.h"
-#include "DuiEditor.h"
 #include "SciWnd.h"
 #include "colors.h"
 
@@ -67,7 +66,6 @@ static const char *plus_xpm[] = {
 
 #define VIEW_MARGIN_LINENUMBER 0
 #define VIEW_MARGIN_BREAK	1
-//#define VIEW_MARGIN_MARKER	2
 #define VIEW_MARGIN_FOLD	2
 
 #define BREAK_TYPEN	0
@@ -115,7 +113,7 @@ BOOL CSciWnd::LoadFile(LPCTSTR szPath)
 	if(!file.Open(szPath, CFile::modeRead))	return FALSE;
 	UINT buflen = (UINT)file.GetLength();
 
-	CHAR *pBuffer = new CHAR[buflen + 1];
+	char *pBuffer = new char[buflen + 1];
 	file.Read((void *)pBuffer, buflen);
 	pBuffer[buflen] = 0;
 	sci_SetText(pBuffer);
@@ -148,37 +146,35 @@ BOOL CSciWnd::SaveFile(LPCTSTR szPath)
 	return TRUE;
 }
 
-void CSciWnd::InitXML(const tagEditorConfig &opt)
+void CSciWnd::InitXML()
 {
 	sci_SetLexer(SCLEX_XML);		//设定词法解析器
-	sci_SetCodePage(SC_CP_UTF8);	//编码	
+	sci_SetCodePage(SC_CP_UTF8);	//编码
 	//sci_SetCodePage(936);	//编码	
 
-	if(opt.bAutoWrapLine)
-	{
-		sci_SetWrapMode(SC_WRAP_WORD);	//自动换行
-	}
+// 	if(opt.bAutoWrapLine)
+// 	{
+// 		sci_SetWrapMode(SC_WRAP_WORD);	//自动换行
+// 	}
 
-	LSSTRING_CONVERSION;
-
-	SendEditor(SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)(const char *)LST2UTF8(opt.strXmlFontName));//(LPARAM)"Courier New");//"微软雅黑");
-	sci_StyleSetSize(STYLE_DEFAULT, opt.nXmlFontSize);//14);
+	SendEditor(SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)"Courier New");//(LPARAM)"Courier New");//"微软雅黑");
+	sci_StyleSetSize(STYLE_DEFAULT, 14);//14);
 	sci_StyleSetFore(STYLE_DEFAULT,RGB(0,0,0));
 
-	sci_StyleSetBack(STYLE_DEFAULT, opt.crXmlBkColor);
-	sci_StyleSetBack(STYLE_LINENUMBER, opt.crXmlBkColor);
-	sci_StyleSetBack(STYLE_INDENTGUIDE, opt.crXmlBkColor);
+	sci_StyleSetBack(STYLE_DEFAULT, RGB(255,255,255));
+	sci_StyleSetBack(STYLE_LINENUMBER, RGB(255,255,255));
+	sci_StyleSetBack(STYLE_INDENTGUIDE, RGB(255,255,255));
 
 	for (int i = SCE_H_DEFAULT; i <= SCE_HPHP_OPERATOR; i++)
 	{
-		sci_StyleSetBack(i,	opt.crXmlBkColor);
+		sci_StyleSetBack(i,	RGB(255,255,255));
 	}
 
 	//设置选中文本背景色
-	sci_SetSelBack(STYLE_DEFAULT, opt.crXmlSelBkColor);//RGB(0xA0,0xCA,0xF0));
+	sci_SetSelBack(STYLE_DEFAULT, RGB(0xA0,0xCA,0xF0));//RGB(0xA0,0xCA,0xF0));
 
-	sci_SetExtraDescent(opt.nXmlLineSpace);
-	sci_SetExtraAscent(opt.nXmlLineSpace);
+	sci_SetExtraDescent(1);
+	sci_SetExtraAscent(1);
 
 	//XML
 	COLORREF crfComment = RGB(0,150,0);
@@ -263,7 +259,7 @@ void CSciWnd::InitXML(const tagEditorConfig &opt)
 
 	//当前行高亮显示
 	sci_SetCaretLineVisible(TRUE);
-	sci_SetCaretLineBack(opt.crXmlCaretLineBkColor);//RGB(215,215,247));
+	sci_SetCaretLineBack(RGB(215,215,247));
 
 	//自动调整滚动条宽度
 	sci_SetScrollWidthTracking(TRUE);
@@ -320,8 +316,6 @@ void CSciWnd::InitXML(const tagEditorConfig &opt)
 	execute(SCI_CLEARCMDKEY, (WPARAM)('Z'+((SCMOD_CTRL|SCMOD_SHIFT)<<16)), SCI_NULL);
 	execute(SCI_CLEARCMDKEY, (WPARAM)('Y'+(SCMOD_CTRL<<16)), SCI_NULL);
 	execute(SCI_CLEARCMDKEY, (WPARAM)SCK_ESCAPE, SCI_NULL);
-	//execute(SCI_CLEARALLCMDKEYS);
-
 }
 
 void CSciWnd::OnRButtonUp(UINT nFlags, CPoint point) 
@@ -334,28 +328,31 @@ void CSciWnd::OnRButtonUp(UINT nFlags, CPoint point)
 
 void CSciWnd::OnLButtonDown(UINT nFlags, CPoint point)
 {
+	CWnd *pOwner = GetOwner();
+	if (pOwner && IsWindow(pOwner->m_hWnd))
+		pOwner->SendMessage(WM_SCIWND_LBUTTONDOWN, (WPARAM)sci_GetCurrentPos(), 0);
 	CWnd::OnLButtonDown(nFlags, point);
 }
 
 void CSciWnd::OnMouseMove(UINT nFlags, CPoint point)
 {
-	int line = sci_GetCurLine();
-
 	CWnd *pOwner = GetOwner();
 	if (pOwner && IsWindow(pOwner->m_hWnd))
-		pOwner->SendMessage(WM_SCIWND_MOUSEMOVE, (WPARAM)line, 0);
+		pOwner->SendMessage(WM_SCIWND_MOUSEMOVE, (WPARAM)sci_GetCurrentPos(), 0);
 
 	CWnd::OnMouseMove(nFlags, point);
 }
 
 void CSciWnd::OnLButtonUp(UINT nFlags, CPoint point)
 {
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	int pos = sci_GetCurrentPos();
 
 	CWnd *pOwner = GetOwner();
 	if (pOwner && IsWindow(pOwner->m_hWnd))
+	{
+		pOwner->SendMessage(WM_SCIWND_LBUTTONUP, (WPARAM)pos, 0);
 		pOwner->SendMessage(WM_SCIWND_CLICK, (WPARAM)pos, 0);
+	}
 
 	CWnd::OnLButtonUp(nFlags, point);
 }
@@ -379,11 +376,6 @@ BOOL CSciWnd::OnParentNotify(SCNotification *pMsg)
 	case SCN_DOUBLECLICK:
 		break;
 	case SCN_UPDATEUI:
-		{
-			braceMatch();
-			XmlMatchedTagsHighlighter xmlTagMatchHiliter(this);
-			xmlTagMatchHiliter.tagMatch(true);
-		}
 		break;
 	case SCN_MODIFIED:
 		{
@@ -433,44 +425,6 @@ BOOL CSciWnd::OnParentNotify(SCNotification *pMsg)
 	case SCN_CALLTIPCLICK:
 		break;
 	case SCN_AUTOCSELECTION:
-		{
-			int pos = sci_GetCurrentPos();
-			int charpos = pos - 1;
-
-			//如果只按空格，在弹出的选择框里面直接选取，pos不能减一。
-			char ch = sci_GetCharAt(pos);
-			if(ch == ' ' || ch == '	')
-			{
-				charpos = pos;
-			}
-
-			int startPos = sci_WordStartPosition(charpos, TRUE);
-			int endPos = sci_WordEndPosition(charpos, TRUE);
-			CStringA strSelected;
-			sci_AutocGetCurrentText(strSelected);
-
-			sci_SetTargetStart(startPos);
-			sci_SetTargetEnd(endPos);
-			sci_ReplaceTarget(-1, strSelected);
-			sci_GoToPos(startPos + strSelected.GetLength());
-
-			//判断当前编辑的是不是属性。 如果是属性，考虑把 ="" 自动补全。
-			char ch2 = sci_GetCharAt(startPos-1);
-			if(ch2 != '<' && ch2 != '/')
-			{
-				pos = sci_GetCurrentPos();
-				if(sci_GetCharAt(pos+1) != '=') //如果属性后面没有 “=”，自动补上
-				{
-					sci_SetTargetStart(pos);
-					sci_SetTargetEnd(pos);
-					sci_ReplaceTarget(-1, "=\"\"");
-					sci_GoToPos(pos+2);
-				}
-			}
-
-			sci_AutocCancel(); //不使用默认的插人
-			return TRUE;
-		}
 		break;
 	case SCN_AUTOCCANCELLED:
 		break;
@@ -500,145 +454,4 @@ BOOL CSciWnd::OnParentNotify(SCNotification *pMsg)
 }
 
 
-void CSciWnd::findMatchingBracePos(int & braceAtCaret, int & braceOpposite)
-{
-	int caretPos = sci_GetCurrentPos();
-	braceAtCaret = -1;
-	braceOpposite = -1;
-	TCHAR charBefore = '\0';
-
-	int lengthDoc = sci_GetLength();
-
-	if ((lengthDoc > 0) && (caretPos > 0))
-	{
-		charBefore = sci_GetCharAt(caretPos - 1);
-	}
-	// Priority goes to character before caret
-	if (charBefore && _tcschr(TEXT("[](){}\"\""), charBefore))
-	{
-		braceAtCaret = caretPos - 1;
-	}
-
-	if (lengthDoc > 0  && (braceAtCaret < 0))
-	{
-		// No brace found so check other side
-		TCHAR charAfter = sci_GetCharAt(caretPos);
-		if (charAfter && _tcschr(TEXT("[](){}\"\""), charAfter))
-		{
-			braceAtCaret = caretPos;
-		}
-	}
-	if (braceAtCaret >= 0)
-		braceOpposite = sci_BraceMatch(braceAtCaret, 0);
-}
-
-bool CSciWnd::braceMatch()
-{
-	int braceAtCaret = -1;
-	int braceOpposite = -1;
-	findMatchingBracePos(braceAtCaret, braceOpposite);
-
-	if ((braceAtCaret != -1) && (braceOpposite == -1))
-	{
-		sci_BraceBadLight(braceAtCaret);
-		sci_SetHighlightGuide(0);
-	}
-	else
-	{
-		sci_BraceHighlight(braceAtCaret, braceOpposite);
-
-		if (sci_GetIndentationGuides())
-		{
-			int columnAtCaret = sci_GetColumn(braceAtCaret);
-			int columnOpposite = sci_GetColumn(braceOpposite);
-			sci_SetHighlightGuide((columnAtCaret < columnOpposite)?columnAtCaret:columnOpposite);
-		}
-	}
-	return (braceAtCaret != -1);
-}
-
-
-bool CSciWnd::BraceHighLightAttributes(int attrbegin, int attrend, int openTagTailLen)
-{
-	bool highlightAttr = false;
-
-	int pos = sci_GetCurrentPos();
-
-	//当前光标点击在某个属性上
-#ifdef _DEBUG
-// 	LSSTRING_CONVERSION;
-// 	CStringA temp;
-// 	sci_GetTextRange(attrbegin, attrend, temp);
-// 	InsertMsg(LSA2T(temp));
-#endif
-	//先找双引号，然后在双引号里面寻找单引号
-	int findpos1 = 0; 
-	int findpos2 = 0;
-	sci_SetTargetStart(attrbegin);
-	sci_SetTargetEnd(attrend);
-	findpos1 = sci_SearchInTarget(1, "\"");
-
-	sci_SetTargetStart(findpos1+1);
-	sci_SetTargetEnd(attrend);
-	findpos2 = sci_SearchInTarget(1, "\"");
-
-	if(findpos1 >= 0 && findpos2 >= 0)
-	{
-		sci_BraceHighlight(findpos1, findpos2);
-		highlightAttr = true;
-	}
-	else if((findpos1 >=0 && findpos2 < 0) || (findpos1 <0 && findpos2 >= 0) )
-	{
-		if(findpos1 > 0) sci_BraceBadLight(findpos1);
-		if(findpos2 > 0) sci_BraceBadLight(findpos2);
-		highlightAttr = true;
-		return highlightAttr;
-	}
-
-#ifdef _DEBUG
-// 	sci_GetTextRange(findpos1+1, findpos2, temp);
-// 	InsertMsg(LSA2T(temp));
-#endif
-
-	//检查双引号内部的单引号匹配
-	int findpos3 = findpos1+1; 
-	int findpos4 = 0;
-	int bracebegin = -1;
-	int braceend = -1;
-	while (true)
-	{
-		sci_SetTargetStart(findpos3);
-		sci_SetTargetEnd(findpos2);
-		findpos3 = sci_SearchInTarget(1, "\'");
-		if(findpos3 < 0)
-			break;
-
-		sci_SetTargetStart(findpos3+1);
-		sci_SetTargetEnd(findpos2);
-		findpos4 = sci_SearchInTarget(1, "\'");
-		if(findpos4 < 0) //匹配失败
-		{
-			sci_BraceBadLight(findpos3);
-			bracebegin = -1;
-			braceend = -1;
-			highlightAttr = true;
-			break;
-		}
-
-		if(pos >= findpos3 && pos <= findpos4)
-		{
-			bracebegin = findpos3;
-			braceend = findpos4;
-		}
-
-		findpos3 = findpos4+1;
-	}
-
-	if(bracebegin >= 0 && braceend >= 0)
-	{
-		sci_BraceHighlight(bracebegin, braceend);
-		highlightAttr = true;
-	}
-	return highlightAttr;
-}
 

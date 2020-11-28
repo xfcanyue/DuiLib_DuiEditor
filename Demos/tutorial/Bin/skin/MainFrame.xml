@@ -19,6 +19,7 @@
 			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="2" text="动画控件" bottombordersize="2" style="style_option_header" />
 			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="3" text="键盘" bottombordersize="2" style="style_option_header" />
 			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="4" text="MFCGridCtrl" bottombordersize="2" style="style_option_header" />
+			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="5" text="SciEdit" bottombordersize="2" style="style_option_header" />
 		</HorizontalLayout>
 		<TabLayout name="tab_main">
 			<VerticalLayout childpadding="10" padding="10,10,10,10">
@@ -166,43 +167,14 @@
 				<AnimationTabLayout name="tab_animation">
 					<HorizontalLayout childpadding="5" bkcolor="0xFFFFFFFF">
 						<VerticalLayout width="200">
-							<AccordionPane width="200" bodyheight="100" headerstyle="inset=&quot;10,0,10,0&quot; childpadding=&quot;10&quot; bkcolor=&quot;0xFFA6CAF0&quot; bordercolor=&quot;0xFFA0A0A4&quot; leftbordersize=&quot;1&quot; topbordersize=&quot;1&quot; rightbordersize=&quot;1&quot; " iconstyle="width=&quot;16&quot; height=&quot;16&quot; foreimage=&quot;images\icon0.png&quot; " textstyle="text=&quot;Pane1&quot; align=&quot;center&quot; " togglestyle="width=&quot;12&quot; height=&quot;12&quot; selectedimage=&quot;images\leftjt02.png&quot; normalimage=&quot;images\leftjt01.png&quot; " bodystyle="inset=&quot;1,1,1,1&quot; childvalign=&quot;vcenter&quot; bordercolor=&quot;0xFF800000&quot; bordersize=&quot;1&quot; " framecount="10" framedelay="10" bkcolor="0xFFFFFFFF" bordercolor="0xFFC0C0C0">
-								<Text text="Pane1 Child control" bkcolor="0xFFC0C0C0" />
-								<Text text="Pane1 child control2" bkcolor="0xFFC0DCC0" />
-							</AccordionPane>
-							<AccordionPane width="200" bodyheight="100" headerstyle="inset=&quot;10,0,10,0&quot; childpadding=&quot;10&quot; bkcolor=&quot;0xFFA6CAF0&quot; bordercolor=&quot;0xFFA0A0A4&quot; leftbordersize=&quot;1&quot; topbordersize=&quot;1&quot; rightbordersize=&quot;1&quot; " iconstyle="width=&quot;16&quot; height=&quot;16&quot; foreimage=&quot;images\icon0.png&quot; " textstyle="text=&quot;Pane2&quot; align=&quot;center&quot; " togglestyle="width=&quot;12&quot; height=&quot;12&quot; selectedimage=&quot;images\leftjt02.png&quot; normalimage=&quot;images\leftjt01.png&quot; " bodystyle="inset=&quot;1,1,1,1&quot; bordercolor=&quot;0xFF008000&quot; bordersize=&quot;1&quot; " framedelay="10" bkcolor="0xFFFFFFFF">
-								<Label bkcolor="0xFFC0C0C0" />
-								<Label bkcolor="0xFFC0DCC0" />
-							</AccordionPane>
+							<AccordionPane name="accordion_1" headerstyle="bkcolor=&quot;0xFFA6CAF0&quot; " iconstyle="foreimage=&quot;images\icon0.png&quot; " textstyle="text=&quot;Pane&quot; " checkboxstyle="selectedimage=&quot;images\leftjt02.png&quot; group=&quot;accordion_group&quot; normalimage=&quot;images\leftjt01.png&quot; " bodystyle="bkcolor=&quot;0xFFC0DCC0&quot; " />
+							<AccordionPane name="accordion_2" headerstyle="bkcolor=&quot;0xFFA6CAF0&quot; " iconstyle="foreimage=&quot;images\icon0.png&quot; " textstyle="text=&quot;Pane&quot; " checkboxstyle="selectedimage=&quot;images\leftjt02.png&quot; group=&quot;accordion_group&quot; normalimage=&quot;images\leftjt01.png&quot; " bodystyle="bkcolor=&quot;0xFFC0DCC0&quot; " panevisible="false" />
 						</VerticalLayout>
 						<VerticalLayout width="200">
-							<AccordionPane width="200" bodyheight="100" headerstyle="inset=&quot;10,0,10,0&quot; childpadding=&quot;10&quot; bkcolor=&quot;0xFFA6CAF0&quot; bordercolor=&quot;0xFFA0A0A4&quot; leftbordersize=&quot;1&quot; topbordersize=&quot;1&quot; rightbordersize=&quot;1&quot; " iconstyle="width=&quot;16&quot; height=&quot;16&quot; foreimage=&quot;images\icon0.png&quot; " textstyle="text=&quot;Pane1 Group&quot; align=&quot;center&quot; " togglestyle="width=&quot;12&quot; height=&quot;12&quot; selectedimage=&quot;images\leftjt02.png&quot; group=&quot;pane_group_1&quot; normalimage=&quot;images\leftjt01.png&quot; " bodystyle="inset=&quot;1,1,1,1&quot; childvalign=&quot;vcenter&quot; bordercolor=&quot;0xFF800000&quot; bordersize=&quot;1&quot; " framecount="10" bkcolor="0xFFFFFFFF" bordercolor="0xFFC0C0C0">
-								<Text text="Pane1 Child control" bkcolor="0xFFC0C0C0" />
-								<Text text="Pane1 child control2" bkcolor="0xFFC0DCC0" />
-							</AccordionPane>
-							<AccordionPane width="200" bodyheight="100" headerstyle="inset=&quot;10,0,10,0&quot; childpadding=&quot;10&quot; bkcolor=&quot;0xFFA6CAF0&quot; bordercolor=&quot;0xFFA0A0A4&quot; leftbordersize=&quot;1&quot; topbordersize=&quot;1&quot; rightbordersize=&quot;1&quot; " iconstyle="width=&quot;16&quot; height=&quot;16&quot; foreimage=&quot;images\icon0.png&quot; " textstyle="text=&quot;Pane2 Group&quot; align=&quot;center&quot; " togglestyle="width=&quot;12&quot; height=&quot;12&quot; selectedimage=&quot;images\leftjt02.png&quot; group=&quot;pane_group_1&quot; normalimage=&quot;images\leftjt01.png&quot; " bodystyle="inset=&quot;1,1,1,1&quot; bordercolor=&quot;0xFF008000&quot; bordersize=&quot;1&quot; " panevisible="false" framecount="10" bkcolor="0xFFFFFFFF">
-								<Label bkcolor="0xFFC0C0C0" />
-								<Label bkcolor="0xFFC0DCC0" />
-							</AccordionPane>
-							<AccordionPane width="200" bodyheight="100" headerstyle="inset=&quot;10,0,10,0&quot; childpadding=&quot;10&quot; bkcolor=&quot;0xFFA6CAF0&quot; bordercolor=&quot;0xFFA0A0A4&quot; leftbordersize=&quot;1&quot; topbordersize=&quot;1&quot; rightbordersize=&quot;1&quot; " iconstyle="width=&quot;16&quot; height=&quot;16&quot; foreimage=&quot;images\icon0.png&quot; " textstyle="text=&quot;Pane3 Group&quot; align=&quot;center&quot; " togglestyle="width=&quot;12&quot; height=&quot;12&quot; selectedimage=&quot;images\leftjt02.png&quot; group=&quot;pane_group_1&quot; normalimage=&quot;images\leftjt01.png&quot; " bodystyle="inset=&quot;1,1,1,1&quot; bordercolor=&quot;0xFF008000&quot; bordersize=&quot;1&quot; " panevisible="false" framecount="10" bkcolor="0xFFFFFFFF">
-								<Label bkcolor="0xFFC0C0C0" />
-								<Label bkcolor="0xFFC0DCC0" />
-							</AccordionPane>
+							<AccordionPane name="accordion_3" height="150" headerstyle="bkcolor=&quot;0xFFA6CAF0&quot; " iconstyle="foreimage=&quot;images\icon0.png&quot; " textstyle="text=&quot;Pane&quot; " checkboxstyle="selectedimage=&quot;images\leftjt02.png&quot; group=&quot;accordion_group2&quot; normalimage=&quot;images\leftjt01.png&quot; " bodystyle="bkcolor=&quot;0xFFC0DCC0&quot; " />
+							<AccordionPane name="accordion_4" height="150" headerstyle="bkcolor=&quot;0xFFA6CAF0&quot; " iconstyle="foreimage=&quot;images\icon0.png&quot; " textstyle="text=&quot;Pane&quot; " checkboxstyle="selectedimage=&quot;images\leftjt02.png&quot; group=&quot;accordion_group2&quot; normalimage=&quot;images\leftjt01.png&quot; " bodystyle="bkcolor=&quot;0xFFC0DCC0&quot; " panevisible="false" />
 						</VerticalLayout>
-						<VerticalLayout width="200">
-							<AccordionPane width="200" bodyheight="100" headerstyle="inset=&quot;10,0,10,0&quot; childpadding=&quot;10&quot; bkcolor=&quot;0xFFA6CAF0&quot; bordercolor=&quot;0xFFA0A0A4&quot; leftbordersize=&quot;1&quot; topbordersize=&quot;1&quot; rightbordersize=&quot;1&quot; " iconstyle="width=&quot;16&quot; height=&quot;16&quot; foreimage=&quot;images\icon0.png&quot; " textstyle="text=&quot;Pane4 Group&quot; align=&quot;center&quot; " togglestyle="width=&quot;12&quot; height=&quot;12&quot; selectedimage=&quot;images\leftjt02.png&quot; group=&quot;pane_group_1&quot; normalimage=&quot;images\leftjt01.png&quot; " bodystyle="inset=&quot;1,1,1,1&quot; childvalign=&quot;vcenter&quot; bordercolor=&quot;0xFF800000&quot; bordersize=&quot;1&quot; " bkcolor="0xFFFFFFFF" bordercolor="0xFFC0C0C0">
-								<Text text="Pane4 Child control" bkcolor="0xFFC0C0C0" />
-								<Text text="Pane4 child control2" bkcolor="0xFFC0DCC0" />
-							</AccordionPane>
-							<AccordionPane width="200" bodyheight="100" headerstyle="inset=&quot;10,0,10,0&quot; childpadding=&quot;10&quot; bkcolor=&quot;0xFFA6CAF0&quot; bordercolor=&quot;0xFFA0A0A4&quot; leftbordersize=&quot;1&quot; topbordersize=&quot;1&quot; rightbordersize=&quot;1&quot; " iconstyle="width=&quot;16&quot; height=&quot;16&quot; foreimage=&quot;images\icon0.png&quot; " textstyle="text=&quot;Pane5 Group&quot; align=&quot;center&quot; " togglestyle="width=&quot;12&quot; height=&quot;12&quot; selectedimage=&quot;images\leftjt02.png&quot; group=&quot;pane_group_1&quot; normalimage=&quot;images\leftjt01.png&quot; " bodystyle="inset=&quot;1,1,1,1&quot; bordercolor=&quot;0xFF008000&quot; bordersize=&quot;1&quot; " panevisible="false" bkcolor="0xFFFFFFFF">
-								<Label bkcolor="0xFFC0C0C0" />
-								<Label bkcolor="0xFFC0DCC0" />
-							</AccordionPane>
-							<AccordionPane width="200" bodyheight="100" headerstyle="inset=&quot;10,0,10,0&quot; childpadding=&quot;10&quot; bkcolor=&quot;0xFFA6CAF0&quot; bordercolor=&quot;0xFFA0A0A4&quot; leftbordersize=&quot;1&quot; topbordersize=&quot;1&quot; rightbordersize=&quot;1&quot; " iconstyle="width=&quot;16&quot; height=&quot;16&quot; foreimage=&quot;images\icon0.png&quot; " textstyle="text=&quot;Pane6 Group&quot; align=&quot;center&quot; " togglestyle="width=&quot;12&quot; height=&quot;12&quot; selectedimage=&quot;images\leftjt02.png&quot; group=&quot;pane_group_1&quot; normalimage=&quot;images\leftjt01.png&quot; " bodystyle="inset=&quot;1,1,1,1&quot; bordercolor=&quot;0xFF008000&quot; bordersize=&quot;1&quot; " panevisible="false" bkcolor="0xFFFFFFFF">
-								<Label bkcolor="0xFFC0C0C0" />
-								<Label bkcolor="0xFFC0DCC0" />
-							</AccordionPane>
-						</VerticalLayout>
+						<VerticalLayout width="200" />
 					</HorizontalLayout>
 					<HorizontalLayout bkcolor="0xFFFFFFFF">
 						<AnimationPane name="pane_3" animation="horizontal" framecount="10" framedelay="10" bkcolor="0xFF800080" text="左边">
@@ -214,14 +186,14 @@
 							</AnimationPane>
 							<VerticalLayout inset="10,10,10,10" childpadding="10" childalign="center" childvalign="vcenter" minheight="225">
 								<Control />
-								<Button name="btn_showhide_top_pane" width="150" height="40" normalimage="file='images\common\button\button.png' source='0,0,15,27' corner='5,5,5,5' " hotimage="file='images\common\button\button.png' source='15,0,30,27' corner='5,5,5,5' " text="隐藏/显示上边栏" />
+								<Button name="btn_showhide_top_pane" width="150" height="40" normalimage="file='images\common\button\button.png' source='0,0,15,27' corner='5,5,5,5' " hotimage="file='images\common\button\button.png' source='15,0,30,27' corner='5,5,5,5' " switchpanevisible="pane_1" text="隐藏/显示上边栏" />
 								<HorizontalLayout height="40" childpadding="10" childvalign="vcenter">
 									<Control />
-									<Button name="btn_showhide_left_pane" width="150" height="40" normalimage="file='images\common\button\button.png' source='0,0,15,27' corner='5,5,5,5' " hotimage="file='images\common\button\button.png' source='15,0,30,27' corner='5,5,5,5' " text="隐藏/显示左边栏" />
-									<Button name="btn_showhide_right_pane" width="150" height="40" normalimage="file='images\common\button\button.png' source='0,0,15,27' corner='5,5,5,5' " hotimage="file='images\common\button\button.png' source='15,0,30,27' corner='5,5,5,5' " text="隐藏/显示右边栏" />
+									<Button name="btn_showhide_left_pane" width="150" height="40" normalimage="file='images\common\button\button.png' source='0,0,15,27' corner='5,5,5,5' " hotimage="file='images\common\button\button.png' source='15,0,30,27' corner='5,5,5,5' " switchpanevisible="pane_3" text="隐藏/显示左边栏" />
+									<Button name="btn_showhide_right_pane" width="150" height="40" normalimage="file='images\common\button\button.png' source='0,0,15,27' corner='5,5,5,5' " hotimage="file='images\common\button\button.png' source='15,0,30,27' corner='5,5,5,5' " switchpanevisible="pane_4" text="隐藏/显示右边栏" />
 									<Control />
 								</HorizontalLayout>
-								<Button name="btn_showhide_bottom_pane" width="150" height="40" normalimage="file='images\common\button\button.png' source='0,0,15,27' corner='5,5,5,5' " hotimage="file='images\common\button\button.png' source='15,0,30,27' corner='5,5,5,5' " text="隐藏/显示底边栏" />
+								<Button name="btn_showhide_bottom_pane" width="150" height="40" normalimage="file='images\common\button\button.png' source='0,0,15,27' corner='5,5,5,5' " hotimage="file='images\common\button\button.png' source='15,0,30,27' corner='5,5,5,5' " switchpanevisible="pane_2" text="隐藏/显示底边栏" />
 								<Control />
 							</VerticalLayout>
 							<AnimationPane name="pane_2" animation="vertical" childvalign="bottom" bkcolor="0xFF0000FF">
@@ -258,6 +230,9 @@
 			</VerticalLayout>
 			<VerticalLayout>
 				<GridCtrl name="gridctrl_1" columncount="6" fixedcolumntext="姓名,用户名,手机号码,固定电话,使用日期" />
+			</VerticalLayout>
+			<VerticalLayout>
+				<SciEdit name="sciedit_1" inset="0,1,0,0" bordercolor="0xFFC0C0C0" topbordersize="1" />
 			</VerticalLayout>
 		</TabLayout>
 		<Label text="日志输出窗口:" height="20" />

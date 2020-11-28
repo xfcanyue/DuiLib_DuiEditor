@@ -61,6 +61,8 @@ public:
 	virtual void OnNotityGridDropDownList(TNotifyUI &msg) {}
 	virtual void OnNotityGridGetDispInfo(TNotifyUI &msg) {}
 
+	virtual void OnNotifySciNotify(TNotifyUI &msg) {}
+
 	//接收菜单消息，返回true，不继续往下发送消息
 	virtual bool OnMenuCommand(const MenuCmd *cmd) { return false; }
 

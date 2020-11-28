@@ -1,9 +1,81 @@
 #include "StdAfx.h"
 #include "UIGridCtrl.h"
-#include "UIGridCtrlWnd.h"
 
 namespace DuiLib
 {
+
+class CGridCtrlWnd : public CWindowWnd
+{
+public:
+	CGridCtrlWnd(void) {}
+	~CGridCtrlWnd(void) {}
+
+	void Init(CGridCtrlUI* pOwner)
+	{
+		m_pOwner = pOwner;
+		Create(m_pOwner->GetManager()->GetPaintWindow(), NULL, WS_CHILD|WS_VISIBLE, 0, m_rcWindow);
+		ASSERT(m_hWnd);
+
+		SetWindowLong(m_hWnd, GWL_EXSTYLE, GetWindowLong(m_hWnd, GWL_EXSTYLE) & ~(WS_EX_WINDOWEDGE | WS_EX_DLGMODALFRAME | WS_BORDER));
+	}
+
+	void SetPos(RECT rc, bool bNeedInvalidate  = true)
+	{
+		m_rcWindow = rc;
+		::MoveWindow(GetHWND(), rc.left, rc.top, rc.right-rc.left, rc.bottom-rc.top, TRUE);
+	}
+
+	LPCTSTR GetWindowClassName() const
+	{
+		return _T("GridCtrl");
+	}
+
+	void OnFinalMessage(HWND hWnd)
+	{
+		if(m_pGrid) { delete m_pGrid; m_pGrid = NULL; }
+	}
+
+	virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		LRESULT lRes = 0;
+		BOOL bHandled = FALSE;
+		if( uMsg == WM_CREATE ) 
+		{
+			m_pOwner->GetManager()->AddNativeWindow(m_pOwner, m_hWnd);
+
+			CWnd *pWnd = CWnd::FromHandle(m_hWnd);
+			m_pGrid = new CGridCtrl();
+			m_pGrid->Create(m_rcWindow, pWnd, 1, WS_CHILD|WS_VISIBLE);
+			ASSERT(m_pGrid);
+			ASSERT(m_pGrid->m_hWnd);
+
+		}
+		else if( uMsg == WM_SIZE) 
+		{
+			CRect rcClient;
+			::GetClientRect(m_hWnd, &rcClient);
+			m_pGrid->MoveWindow(rcClient);
+
+			//m_pGrid->ExpandColumnsToFit(TRUE);
+		}
+		else if(uMsg == WM_LBUTTONDOWN)
+		{
+			m_pOwner->OnGridNotify(uMsg, wParam, lParam);
+		}
+		else if(uMsg == WM_NOTIFY)
+		{
+			m_pOwner->OnGridNotify(uMsg, wParam, lParam);
+		}
+
+		if( !bHandled ) return CWindowWnd::HandleMessage(uMsg, wParam, lParam);
+		return lRes;
+	}
+
+public:
+	RECT m_rcWindow;
+	CGridCtrlUI *m_pOwner;
+	CGridCtrl *m_pGrid;
+};
 
 IMPLEMENT_DUICONTROL(CGridCtrlUI)
 CGridCtrlUI::CGridCtrlUI(void) : m_pWindow(0)
@@ -59,7 +131,7 @@ CGridCtrl *CGridCtrlUI::GetGrid()
 {
 	if(m_pWindow)
 	{
-		return m_pWindow->m_pGrid;
+		return ((CGridCtrlWnd *)m_pWindow)->m_pGrid;
 	}
 	return NULL;
 }
@@ -121,11 +193,11 @@ CGridDefaultCell &CGridCtrlUI::CellFixedRowColDef()				//返回默认单元格引用
 void CGridCtrlUI::DoInit()
 {
 	m_pWindow = new CGridCtrlWnd;
-	m_pWindow->Init(this);
+	((CGridCtrlWnd *)m_pWindow)->Init(this);
 
-	if(m_pWindow && m_pWindow->m_pGrid)
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
 	{
-		CGridCtrl *pGrid = m_pWindow->m_pGrid;
+		CGridCtrl *pGrid = ((CGridCtrlWnd *)m_pWindow)->m_pGrid;
 		if(pGrid)
 		{
 			CFont ft;
@@ -227,9 +299,9 @@ bool CGridCtrlUI::SetRowCount(int count)
 {
 	m_nRowCount = count;
 
-	if(m_pWindow && m_pWindow->m_pGrid)
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
 	{
-		return m_pWindow->m_pGrid->SetRowCount(m_nRowCount) == TRUE;
+		return ((CGridCtrlWnd *)m_pWindow)->m_pGrid->SetRowCount(m_nRowCount) == TRUE;
 	}
 	return false;
 }
@@ -242,9 +314,9 @@ int CGridCtrlUI::GetRowCount()
 bool CGridCtrlUI::SetColumnCount(int count)
 {
 	m_nColumnCount = count;
-	if(m_pWindow && m_pWindow->m_pGrid)
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
 	{
-		return m_pWindow->m_pGrid->SetColumnCount(m_nColumnCount) == TRUE;
+		return ((CGridCtrlWnd *)m_pWindow)->m_pGrid->SetColumnCount(m_nColumnCount) == TRUE;
 	}
 	return false;
 }
@@ -257,9 +329,9 @@ int CGridCtrlUI::GetColumnCount()
 bool CGridCtrlUI::SetFixedRowCount(int count)
 {
 	m_nFixedRowCount = count;
-	if(m_pWindow && m_pWindow->m_pGrid)
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
 	{
-		return m_pWindow->m_pGrid->SetFixedRowCount(m_nFixedRowCount) == TRUE;
+		return ((CGridCtrlWnd *)m_pWindow)->m_pGrid->SetFixedRowCount(m_nFixedRowCount) == TRUE;
 	}
 	return false;
 }
@@ -272,9 +344,9 @@ int CGridCtrlUI::GetFixedRowCount()
 bool CGridCtrlUI::SetFixedColumnCount(int count)
 {
 	m_nFixedColumnCount = count;
-	if(m_pWindow && m_pWindow->m_pGrid)
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
 	{
-		return m_pWindow->m_pGrid->SetFixedColumnCount(m_nFixedColumnCount) == TRUE;
+		return ((CGridCtrlWnd *)m_pWindow)->m_pGrid->SetFixedColumnCount(m_nFixedColumnCount) == TRUE;
 	}
 	return false;
 }
@@ -287,9 +359,9 @@ int CGridCtrlUI::GetFixedColumnCount()
 void CGridCtrlUI::SetEditable(bool bEditable)
 {
 	m_bEditable = bEditable;
-	if(m_pWindow && m_pWindow->m_pGrid)
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
 	{
-		m_pWindow->m_pGrid->SetEditable(m_bEditable);
+		((CGridCtrlWnd *)m_pWindow)->m_pGrid->SetEditable(m_bEditable);
 	}
 }
 
@@ -301,8 +373,8 @@ bool CGridCtrlUI::GetEditable()
 void CGridCtrlUI::SetSingleRowSelection(bool bSingleRow)
 {
 	m_bSingleRowSelection = bSingleRow;
-	if(m_pWindow && m_pWindow->m_pGrid)
-		m_pWindow->m_pGrid->SetSingleRowSelection(m_bSingleRowSelection);
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
+		((CGridCtrlWnd *)m_pWindow)->m_pGrid->SetSingleRowSelection(m_bSingleRowSelection);
 }
 
 bool CGridCtrlUI::GetSingleRowSelection()
@@ -313,8 +385,8 @@ bool CGridCtrlUI::GetSingleRowSelection()
 void CGridCtrlUI::SetListMode(bool bListMode)
 {
 	m_bListMode = bListMode;
-	if(m_pWindow && m_pWindow->m_pGrid)
-		m_pWindow->m_pGrid->SetListMode(m_bListMode);
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
+		((CGridCtrlWnd *)m_pWindow)->m_pGrid->SetListMode(m_bListMode);
 }
 
 bool CGridCtrlUI::GetListMode()
@@ -325,8 +397,8 @@ bool CGridCtrlUI::GetListMode()
 void CGridCtrlUI::SetViewListNumber(bool bView)
 {
 	m_bViewListNo = bView;
-	if(m_pWindow && m_pWindow->m_pGrid)
-		m_pWindow->m_pGrid->SetViewFixedColNo(m_bViewListNo);
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
+		((CGridCtrlWnd *)m_pWindow)->m_pGrid->SetViewFixedColNo(m_bViewListNo);
 }
 
 bool CGridCtrlUI::GetViewListNumber()
@@ -338,11 +410,11 @@ void CGridCtrlUI::SetFont(int index)
 {
 	m_iFont = index;
 
-	if(m_pWindow && m_pWindow->m_pGrid)
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
 	{
 		CFont ft;
 		ft.Attach(GetManager()->GetFont(m_iFont));
-		m_pWindow->m_pGrid->SetFont(&ft);
+		((CGridCtrlWnd *)m_pWindow)->m_pGrid->SetFont(&ft);
 		ft.Detach();
 		Refresh();
 	}
@@ -366,9 +438,9 @@ DWORD CGridCtrlUI::GetTextColor() const
 void CGridCtrlUI::SetVirtualGrid(bool bVirtual)
 {
 	m_bVirtualGrid = bVirtual;
-	if(m_pWindow && m_pWindow->m_pGrid)
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
 	{
-		m_pWindow->m_pGrid->SetVirtualMode(m_bVirtualGrid);
+		((CGridCtrlWnd *)m_pWindow)->m_pGrid->SetVirtualMode(m_bVirtualGrid);
 		Refresh();
 	}
 }
@@ -381,9 +453,9 @@ bool CGridCtrlUI::GetVirtualGrid()
 void  CGridCtrlUI::SetGridBkColor(DWORD dwColor)
 {
 	m_dwGridBkColor = dwColor;
-	if(m_pWindow && m_pWindow->m_pGrid)
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
 	{
-		m_pWindow->m_pGrid->SetGridBkColor(RGB(UIARGB_GetRValue(m_dwGridBkColor), 
+		((CGridCtrlWnd *)m_pWindow)->m_pGrid->SetGridBkColor(RGB(UIARGB_GetRValue(m_dwGridBkColor), 
 															UIARGB_GetGValue(m_dwGridBkColor), 
 															UIARGB_GetBValue(m_dwGridBkColor)));
 		Refresh();
@@ -399,9 +471,9 @@ DWORD CGridCtrlUI::GetGridBkColor()
 void  CGridCtrlUI::SetGridLineColor(DWORD dwColor)
 {
 	m_dwGridLineColor = dwColor;
-	if(m_pWindow && m_pWindow->m_pGrid)
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
 	{
-		m_pWindow->m_pGrid->SetGridLineColor(RGB(UIARGB_GetRValue(m_dwGridLineColor), 
+		((CGridCtrlWnd *)m_pWindow)->m_pGrid->SetGridLineColor(RGB(UIARGB_GetRValue(m_dwGridLineColor), 
 																UIARGB_GetGValue(m_dwGridLineColor), 
 																UIARGB_GetBValue(m_dwGridLineColor)));
 		Refresh();
@@ -416,9 +488,9 @@ DWORD CGridCtrlUI::GetGridLineColor()
 void CGridCtrlUI::SetEnableHighLightBkColor(bool bValue)
 {
 	m_bHighLightBkColor = bValue;
-	if(m_pWindow && m_pWindow->m_pGrid)
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
 	{
-		m_pWindow->m_pGrid->SetEnableHighLightBkColor(m_bHighLightBkColor);
+		((CGridCtrlWnd *)m_pWindow)->m_pGrid->SetEnableHighLightBkColor(m_bHighLightBkColor);
 	}
 }
 
@@ -430,9 +502,9 @@ bool CGridCtrlUI::GetEnableHighLightBkColor()
 void CGridCtrlUI::SetHighLightBkColor(DWORD dwColor)		
 {
 	m_crHighLightBkColor = dwColor;
-	if(m_pWindow && m_pWindow->m_pGrid)
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
 	{
-		m_pWindow->m_pGrid->SetHighLightBkColor(RGB(UIARGB_GetRValue(m_crHighLightBkColor), 
+		((CGridCtrlWnd *)m_pWindow)->m_pGrid->SetHighLightBkColor(RGB(UIARGB_GetRValue(m_crHighLightBkColor), 
 			UIARGB_GetGValue(m_crHighLightBkColor), 
 			UIARGB_GetBValue(m_crHighLightBkColor)));
 		Refresh();
@@ -447,9 +519,9 @@ DWORD CGridCtrlUI::GetHighLightBkColor()
 void CGridCtrlUI::SetEnableHighLightTextClr(bool bValue)
 {
 	m_bHighLightTextClr = bValue;
-	if(m_pWindow && m_pWindow->m_pGrid)
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
 	{
-		m_pWindow->m_pGrid->SetEnableHighLightTextColor(m_bHighLightTextClr);
+		((CGridCtrlWnd *)m_pWindow)->m_pGrid->SetEnableHighLightTextColor(m_bHighLightTextClr);
 	}
 }
 
@@ -461,9 +533,9 @@ bool CGridCtrlUI::GetEnableHighLightTextClr()
 void CGridCtrlUI::SetHighLightTextClr(DWORD dwColor)
 {
 	m_crHighLightTextClr = dwColor;
-	if(m_pWindow && m_pWindow->m_pGrid)
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
 	{
-		m_pWindow->m_pGrid->SetHighLightTextClr(RGB(UIARGB_GetRValue(m_crHighLightTextClr), 
+		((CGridCtrlWnd *)m_pWindow)->m_pGrid->SetHighLightTextClr(RGB(UIARGB_GetRValue(m_crHighLightTextClr), 
 			UIARGB_GetGValue(m_crHighLightTextClr), 
 			UIARGB_GetBValue(m_crHighLightTextClr)));
 		Refresh();
@@ -477,8 +549,8 @@ DWORD CGridCtrlUI::GetHighLightTextClr()
 
 void CGridCtrlUI::SetFocusCellBorder(bool bBorder)
 {
-	if(m_pWindow && m_pWindow->m_pGrid)
-		m_pWindow->m_pGrid->SetFrameFocusCell(bBorder);
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
+		((CGridCtrlWnd *)m_pWindow)->m_pGrid->SetFrameFocusCell(bBorder);
 }
 
 bool CGridCtrlUI::GetFocusCellBorder()
@@ -489,9 +561,9 @@ bool CGridCtrlUI::GetFocusCellBorder()
 void CGridCtrlUI::SetFocusCellBorderColor(DWORD dwColor)
 {
 	m_dwFocusCellBorderColor = dwColor;
-	if(m_pWindow && m_pWindow->m_pGrid)
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
 	{
-		m_pWindow->m_pGrid->SetFrameFocusCellColor(RGB(UIARGB_GetRValue(m_dwFocusCellBorderColor), 
+		((CGridCtrlWnd *)m_pWindow)->m_pGrid->SetFrameFocusCellColor(RGB(UIARGB_GetRValue(m_dwFocusCellBorderColor), 
 			UIARGB_GetGValue(m_dwFocusCellBorderColor), 
 			UIARGB_GetBValue(m_dwFocusCellBorderColor)));
 		Refresh();
@@ -505,31 +577,31 @@ DWORD CGridCtrlUI::GetFocusCellBorderColor()
 //////////////////////////////////////////////////////////////////////////
 void CGridCtrlUI::Refresh()
 {
-	if(m_pWindow && m_pWindow->m_pGrid)
-		m_pWindow->m_pGrid->Refresh();
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
+		((CGridCtrlWnd *)m_pWindow)->m_pGrid->Refresh();
 }
 
 void CGridCtrlUI::SetAutoRedraw(bool bAuto)
 {
-	if(m_pWindow && m_pWindow->m_pGrid)
-		m_pWindow->m_pGrid->SetAutoReDraw(bAuto);
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
+		((CGridCtrlWnd *)m_pWindow)->m_pGrid->SetAutoReDraw(bAuto);
 }
 
 void CGridCtrlUI::ExpandColumnsToFit(BOOL bExpandFixed)
 {
-	if(m_pWindow && m_pWindow->m_pGrid)
-		m_pWindow->m_pGrid->ExpandColumnsToFit(bExpandFixed);
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
+		((CGridCtrlWnd *)m_pWindow)->m_pGrid->ExpandColumnsToFit(bExpandFixed);
 }
 
 int  CGridCtrlUI::InsertRow(int rowPosition)
 {
 	int row = -1;
-	if(m_pWindow && m_pWindow->m_pGrid)
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
 	{
-		row = m_pWindow->m_pGrid->InsertRow(_T(""), rowPosition);
+		row = ((CGridCtrlWnd *)m_pWindow)->m_pGrid->InsertRow(_T(""), rowPosition);
 		if(row >= 0)
 		{
-			m_pWindow->m_pGrid->SetRowHeight(row, GetRowHeight());
+			((CGridCtrlWnd *)m_pWindow)->m_pGrid->SetRowHeight(row, GetRowHeight());
 		}
 	}
 
@@ -562,9 +634,9 @@ void CGridCtrlUI::SetHeaderTexts(LPCTSTR pstrValue)
 		m_arrHeaderText.Add(pStr);	
 	}
 
-	if(m_pWindow && m_pWindow->m_pGrid)
+	if(m_pWindow && ((CGridCtrlWnd *)m_pWindow)->m_pGrid)
 	{
-		CGridCtrl *pGrid = m_pWindow->m_pGrid;
+		CGridCtrl *pGrid = ((CGridCtrlWnd *)m_pWindow)->m_pGrid;
 		for(int i=0; i<m_arrHeaderText.GetSize(); i++)
 		{
 			CDuiString *pstr = (CDuiString *)m_arrHeaderText.GetAt(i);

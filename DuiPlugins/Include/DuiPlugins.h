@@ -18,8 +18,8 @@
 #endif
 #endif
 
-#include "../UIDataExchange.h"
 
+#include "../UIDataExchange.h"
 
 #define DUI_CTR_COMBOEX						(_T("ComboEx"))
 #include "../UIComboEx.h"
@@ -47,9 +47,6 @@
 #define DUI_CTR_ACCORDIONPANE				(_T("AccordionPane"))	
 #include "../UIAccordionPane.h"
 
-#define DUI_CTR_ANIMATIONPANE				(_T("AnimationPane"))
-#include "../UIAnimationPane.h"
-
 #define DUI_CTR_IMAGEBOX					(_T("ImageBox"))
 #include "../UIImageBox.h"
 
@@ -58,6 +55,9 @@
 
 #define DUI_CTR_ROLLTEXTEX					(_T("RollTextEx"))
 #include "../UIRollTextEx.h"
+
+#define DUI_CTR_SCIEDIT						(_T("SciEdit"))
+#include "../UISciEdit.h"
 
 //extern "C" 
 UILIB_PLUGIN_API void DuiPluginsRegister();

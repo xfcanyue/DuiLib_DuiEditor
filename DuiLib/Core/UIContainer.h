@@ -132,6 +132,7 @@ namespace DuiLib {
 		CScrollBarUI* m_pHorizontalScrollBar;
 		CDuiString	m_sVerticalScrollBarStyle;
 		CDuiString	m_sHorizontalScrollBarStyle;
+
 	};
 
 } // namespace DuiLib

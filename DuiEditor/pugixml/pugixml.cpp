@@ -3120,6 +3120,7 @@ PUGI__NS_BEGIN
 					PUGI__PUSHNODE(node_pi);
 				}
 
+				cursor->open_start_pos = s - backup - 5;
 				cursor->name = target;
 
 				PUGI__ENDSEG();

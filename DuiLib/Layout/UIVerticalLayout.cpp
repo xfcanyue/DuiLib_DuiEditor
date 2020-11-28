@@ -34,7 +34,8 @@ namespace DuiLib
 
 		// Adjust for inset
 		RECT m_rcInset = CVerticalLayoutUI::m_rcInset;
-		GetManager()->GetDPIObj()->Scale(&m_rcInset);
+		if(GetManager())
+			GetManager()->GetDPIObj()->Scale(&m_rcInset);
 		rc.left += m_rcInset.left;
 		rc.top += m_rcInset.top;
 		rc.right -= m_rcInset.right;
@@ -347,7 +348,10 @@ namespace DuiLib
 
 	bool CVerticalLayoutUI::CalcPos(CControlUI *pChildControl, RECT &rcChild)
 	{
-		RECT rc = m_rcItem;
+		CInnerCalcPosLock lock(this);
+
+		CDuiRect rc = GetCalcPos();//m_rcItem;
+		if(rc.IsNull()) rc = m_rcItem;
 
 		// Adjust for inset
 		RECT m_rcInset = CVerticalLayoutUI::m_rcInset;

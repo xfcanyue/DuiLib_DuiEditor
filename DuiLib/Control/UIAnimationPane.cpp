@@ -48,7 +48,6 @@ namespace DuiLib
 
 	void CAnimationPaneUI::OnAnimationStep(INT nTotalFrame, INT nCurFrame, INT nAnimationID)
 	{
-		IsAnimationRunning(PANE_ANIMATION_ID);
 		NeedParentUpdate();
 	}
 
@@ -202,40 +201,31 @@ namespace DuiLib
 		return m_bPaneVisible;
 	}
 
-	bool CAnimationPaneUI::IsVisible() const
-	{
-// 		if(m_animation != 0)
-// 		{
-// 			return IsPaneVisible();
-// 		}
-		return __super::IsVisible();
-	}
-
-	void CAnimationPaneUI::SetVisible(bool bVisible)
-	{
-		if(m_animation != 0)
-		{
-			SetPaneVisible(bVisible);
-			return;
-		}
-		__super::SetVisible(bVisible);
-	}
-
 	void CAnimationPaneUI::SetFrameCount(int framecount) { m_nFrameCount = framecount; }
 	int CAnimationPaneUI::GetFrameCount() const { return m_nFrameCount; }
 	void CAnimationPaneUI::SetFrameDelay(int nDelay) { m_nFrameDelay = nDelay; }
 	int CAnimationPaneUI::GetFrameDelay() const { return m_nFrameDelay; }
+
+	void CAnimationPaneUI::SetAnimationDirection(int nAnim)
+	{
+		m_animation = nAnim;
+	}
+
+	int CAnimationPaneUI::GetAnimationDirection()
+	{
+		return m_animation;
+	}
 
 	void CAnimationPaneUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
 		if( _tcsicmp(pstrName, _T("animation")) == 0)
 		{
 			if(_tcsicmp( pstrValue, _T("horizontal")) == 0)
-				m_animation = 2;
+				SetAnimationDirection(2);
 			else if(_tcsicmp( pstrValue, _T("vertical")) == 0)
-				m_animation = 1;
+				SetAnimationDirection(1);
 			else
-				m_animation = 0;
+				SetAnimationDirection(0);
 		}
 		else if( _tcsicmp(pstrName, _T("panevisible")) == 0 ) 
 		{

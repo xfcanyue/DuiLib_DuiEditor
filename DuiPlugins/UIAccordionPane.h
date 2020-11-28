@@ -7,10 +7,11 @@ namespace DuiLib
 {
 	#define	ACCORDION_ANIMATION_ID	1
 
-	class UILIB_PLUGIN_API CAccordionPaneUI : public CVerticalLayoutUI, public CUIAnimation
+	class UILIB_PLUGIN_API CAccordionPaneUI : public CVerticalLayoutUI
 	{
 		DECLARE_DUICONTROL(CAccordionPaneUI)
 		class CPaneCheckBox;
+		class CAccordionBody;
 	public:
 		CAccordionPaneUI();
 		~CAccordionPaneUI();
@@ -21,12 +22,7 @@ namespace DuiLib
 		virtual void DoInit();
 
 		virtual bool Activate();
-		bool OnToggleEvent(void *param);
 		virtual void DoEvent(TEventUI& event);
-		void OnTimer( int nTimerID );
-		virtual void OnAnimationStart(INT nAnimationID, BOOL bFirstLoop) {}
-		virtual void OnAnimationStep(INT nTotalFrame, INT nCurFrame, INT nAnimationID);
-		virtual void OnAnimationStop(INT nAnimationID);
 
 		virtual SIZE EstimateSize(SIZE szAvailable);
 
@@ -59,17 +55,9 @@ namespace DuiLib
 		CHorizontalLayoutUI *m_pHeader;
 		CLabelUI *m_pHeaderIcon;
 		CLabelUI *m_pHeaderLabel;
-		COptionUI *m_pHeaderButton;
-		CVerticalLayoutUI	*m_pBody;
-
-		int m_nHeaderHeight;
-		int m_animation_direction; //动画方向 0 = 上下， 1=左右
-		bool m_bPaneVisible;	
-
-		RECT m_rcItemOld;
-
-		int m_nFrameCount;
-		int m_nFrameDelay;
+		COptionUI *m_pHeaderCheckBox;
+		CAnimationPaneUI	*m_pAnimPane;
+		CVerticalLayoutUI	*m_pBodyVerti;
 	};
 
 } // namespace DuiLib

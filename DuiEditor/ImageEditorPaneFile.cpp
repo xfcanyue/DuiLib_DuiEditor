@@ -182,6 +182,7 @@ void CImageEditorListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 		if ( ( rItem.state & LVIS_SELECTED ) && bListHasFocus )
 			uFormat |= ILD_FOCUS;
 
+		//画图标，如果CxImage不能加载的，就用系统默认图标显示
 		CRect rcIcon = rcItem;
 		rcIcon.left += 5;
 		rcIcon.right -= 5;
@@ -280,10 +281,11 @@ HRESULT CImageEditorListCtrl::DisplayFolder(LPAFX_SHELLITEMINFO lpItemInfo)
 
 BOOL CImageEditorListCtrl::InitList()
 {
+	//弄个假的ImageList给ListCtrl，从而把图标区域变大了。
 	m_imageEmpty.Create(60, 60, ILC_COLOR32 | ILC_MASK, 1, 1);
 	SetImageList(&m_imageEmpty, LVSIL_NORMAL);
 
-	SetIconSpacing(100,100);
+	//SetIconSpacing(100,100);
 	m_imageShell.Attach(GetShellImageList(TRUE));
 	return TRUE;
 }

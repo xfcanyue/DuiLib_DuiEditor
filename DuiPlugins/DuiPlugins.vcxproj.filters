@@ -48,9 +48,6 @@
     <ClCompile Include="UIAccordionPane.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="UIAnimationPane.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="UIImageBoxEx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -114,9 +111,6 @@
     <ClCompile Include="UIIconButton.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="UIGridCtrlWnd.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="UIGridCtrl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -124,6 +118,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="UIComboEditWnd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\scintilla\SciWnd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UISciEdit.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -147,9 +147,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="UIAccordionPane.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="UIAnimationPane.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="UIImageBoxEx.h">
@@ -221,9 +218,6 @@
     <ClInclude Include="UIGridCtrl.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="UIGridCtrlWnd.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="UIComboEx.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -231,6 +225,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="UIPictureControl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\scintilla\SciWnd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UISciEdit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="LsStringConverter.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
