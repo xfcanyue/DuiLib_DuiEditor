@@ -59,32 +59,52 @@ void CPictureControlUI::DoInit()
 	
 }
 
-bool CPictureControlUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
+void CPictureControlUI::PaintForeImage(HDC hDC)
 {
-	bool bPaint = __super::DoPaint(hDC, rcPaint, pStopControl);
-	if(bPaint)
+	if(m_imagetype == CXIMAGE_FORMAT_GIF)
 	{
-		if(m_imagetype == CXIMAGE_FORMAT_GIF)
-		{
-			CxImage *pImage = m_pImp->img.GetFrame(m_nFramePosition);
-			if(pImage)
-				pImage->Draw(hDC, m_rcPaint);
-		}
-		else if(m_imagetype == CXIMAGE_FORMAT_ICO)
-		{
-			m_pImp->img.Draw(hDC, m_rcPaint);
-		}
-		else
-		{
-			m_pImp->img.Draw(hDC, m_rcPaint);
-		}
+		CxImage *pImage = m_pImp->img.GetFrame(m_nFramePosition);
+		if(pImage)
+			pImage->Draw(hDC, m_rcPaint);
 	}
-	return bPaint;
+	else if(m_imagetype == CXIMAGE_FORMAT_ICO)
+	{
+		m_pImp->img.Draw(hDC, m_rcPaint);
+	}
+	else
+	{
+		m_pImp->img.Draw(hDC, m_rcPaint);
+	}
+
+	__super::PaintForeImage(hDC);
+}
+
+bool CPictureControlUI::Activate()
+{
+	if( !__super::Activate() ) return false;
+	if( m_pManager != NULL )
+	{
+		m_pManager->SendNotify(this, DUI_MSGTYPE_CLICK);
+	}
+	return true;
 }
 
 void CPictureControlUI::DoEvent(TEventUI& event)
 {
-	
+	if( event.Type == UIEVENT_KEYDOWN )
+	{
+		if (IsKeyboardEnabled()) {
+			if( event.chKey == VK_SPACE || event.chKey == VK_RETURN ) {
+				Activate();
+				return;
+			}
+		}
+	}		
+
+	if( event.Type == UIEVENT_BUTTONUP )
+	{
+		if( ::PtInRect(&m_rcItem, event.ptMouse) ) Activate();				
+	}
 }
 
 void CPictureControlUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)

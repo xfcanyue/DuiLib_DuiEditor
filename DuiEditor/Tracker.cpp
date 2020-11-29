@@ -3,7 +3,7 @@
 
 
 // various GDI objects we need to draw
-AFX_STATIC_DATA HCURSOR _afxCursors[10] = { 0, };
+AFX_STATIC_DATA HCURSOR _afxCursors[11] = { 0, };
 AFX_STATIC_DATA HBRUSH _afxHatchBrush = 0;
 AFX_STATIC_DATA HPEN _afxBlackDottedPen = 0;
 AFX_STATIC_DATA int _afxHandleSize = 0;
@@ -137,6 +137,7 @@ void CTracker::Construct()
 		_afxCursors[7] = _afxCursors[5];
 		_afxCursors[8] = ::LoadCursorW(hInst, ATL_MAKEINTRESOURCEW(AFX_IDC_TRACK4WAY));
 		_afxCursors[9] = ::LoadCursorW(hInst, ATL_MAKEINTRESOURCEW(AFX_IDC_MOVE4WAY));
+		_afxCursors[10] = ::LoadCursorW(hInst, ATL_MAKEINTRESOURCEW(AFX_IDC_NODROPCRSR));
 
 		// get default handle size from Windows profile setting
 		static const TCHAR szWindows[] = _T("windows");
@@ -291,7 +292,6 @@ BOOL CTracker::SetCursor(CWnd* pWnd, UINT nHitTest) const
 		if (m_nStyle & hatchedBorder)
 			nHandle = (TrackerHit)9;
 	}
-
 
 	ENSURE(nHandle < _countof(_afxCursors));
 	::SetCursor(_afxCursors[nHandle]);

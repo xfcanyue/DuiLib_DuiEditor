@@ -71,6 +71,7 @@ public:
 	void OnkeyRight();
 
 	void RefreshRect();
+	BOOL CanbeMoveRect();
 public:
 	CArray<CTrackerElement*,CTrackerElement*> m_arrTracker; //Tracking controls array
 	CTrackerElement* m_pFocused; // Control has focus

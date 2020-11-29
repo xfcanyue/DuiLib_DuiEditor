@@ -305,6 +305,77 @@ void CSciXmlWriter::text_output(const char * text)
 	}
 }
 
+void CSciXmlWriter::text_output(CStringA &strRet, const char * text)
+{
+	strRet.Empty();
+
+	const char * s = text;
+
+	//检查是否有转义字符
+	BOOL IsEscapeChar = FALSE;
+	while (*s)
+	{
+		switch (*s)
+		{
+		case 0: break;
+		case '&':
+			IsEscapeChar = TRUE;
+			break;
+		case '<':
+			IsEscapeChar = TRUE;
+			break;
+		case '>':
+			IsEscapeChar = TRUE;
+			break;
+		case '"':
+			IsEscapeChar = TRUE;
+			break;
+		default:
+			break;
+		}
+
+		if(IsEscapeChar)
+			break;
+
+		++s;
+	}
+
+	if(!IsEscapeChar)
+	{
+		strRet = text;
+		return;
+	}
+
+	s = text;
+	while (*s)
+	{
+		switch (*s)
+		{
+		case 0: break;
+		case '&':
+			strRet += "&amp;";
+			++s;
+			break;
+		case '<':
+			strRet += "&lt;";
+			++s;
+			break;
+		case '>':
+			strRet += "&gt;";
+			++s;
+			break;
+		case '"':
+			strRet += "&quot;";
+			++s;
+			break;
+		default: 
+			strRet += *s;
+			++s;
+			break;
+		}
+	}
+}
+
 void CSciXmlWriter::text_output_indent(int depth)
 {
 	for (int i=0; i<depth; i++)
@@ -599,22 +670,46 @@ void CSciXmlWriter::AddAttribute(xml_node node, xml_attribute attr)
 void CSciXmlWriter::ModifyAttribute(xml_node node, xml_attribute attr)
 {
 	CSciWnd &sci = *m_pSciWnd;
+	
+	//先删除，再添加好像会变成两个 undo 事件
+// 	int start = attr.get_value_start_pos();
+// 	int end = attr.get_value_end_pos();
+// 	sci.sci_DeleteRange(start, end-start);
+// 
+// 	InitWriter(start);
+// 	text_output(XML2UTF8(attr.value()));
+// 
+// 	attr.set_value_end_pos(GetCurPos());
+// 	int offset = GetOffset() - (end - start);
+// 	if(offset != 0)
+// 	{
+// 		AdjustElseAttributesPos(node, attr, GetStartPos(), offset);
+// 		AdjustElseNodePos(node, GetStartPos(), offset);
+// 	}
+// 	flush();
+	
+
+	//////////////////////////////////////////////////////////////////////////
+	//改成直接替换
 
 	int start = attr.get_value_start_pos();
 	int end = attr.get_value_end_pos();
-	sci.sci_DeleteRange(start, end-start);
 
-	InitWriter(start);
-	text_output(XML2UTF8(attr.value()));
+	CStringA strRet;
+	text_output(strRet, XML2UTF8(attr.value()));
 
-	attr.set_value_end_pos(GetCurPos());
-	int offset = GetOffset() - (end - start);
+	sci.sci_SetTargetStart(start);
+	sci.sci_SetTargetEnd(end);
+	sci.sci_ReplaceTarget(-1, strRet);
+	sci.sci_GoToPos(start + strRet.GetLength());
+
+	attr.set_value_end_pos(start + strRet.GetLength());
+	int offset = strRet.GetLength() - (end - start);
 	if(offset != 0)
 	{
-		AdjustElseAttributesPos(node, attr, GetStartPos(), offset);
-		AdjustElseNodePos(node, GetStartPos(), offset);
+		AdjustElseAttributesPos(node, attr, start, offset);
+		AdjustElseNodePos(node, start, offset);
 	}
-	flush();
 }
 
 void CSciXmlWriter::DeleteAttribute(xml_node node, xml_attribute attr)

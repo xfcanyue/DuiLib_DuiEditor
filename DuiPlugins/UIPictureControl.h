@@ -14,7 +14,8 @@ public:
 	LPVOID	GetInterface(LPCTSTR pstrName);
 
 	virtual void DoInit();
-	virtual bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
+	virtual void PaintForeImage(HDC hDC);
+	virtual bool Activate();
 	virtual void DoEvent(TEventUI& event);
 	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 

@@ -356,7 +356,6 @@ void CDuiEditorViewCode::ModifyAttribute(xml_node node, xml_attribute attr)
 {
 	m_bAutoUpdateDesign = FALSE;
 	CSciXmlWriter w(&sci);
-	m_bAutoUpdateDesign = FALSE;;
 	w.ModifyAttribute(node, attr);
 	m_bAutoUpdateDesign = TRUE;
 }
@@ -466,10 +465,10 @@ LRESULT CDuiEditorViewCode::OnSciMouseMove(WPARAM WParam, LPARAM LParam)
 	int col = pos - sci.sci_PositionFromLine(row);
 
 	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
-// 	CString temp;
-// 	temp.Format(_T("坐标: 行=%d, 列=%d, 位置=%d"), row, col, pos);
-// 	pMain->m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_CURSOR_POS, temp);
-	pMain->m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_CURSOR_POS, _T(""));
+	CString temp;
+	temp.Format(_T("%d"), pos);
+	pMain->m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_CURSOR_POS, temp);
+//	pMain->m_wndStatusBar.SetPaneTextByID(ID_INDICATOR_CURSOR_POS, _T(""));
 	return 0;
 }
 

@@ -183,7 +183,13 @@ BOOL CUITrackerMuliti::Track(CWnd* pWnd, CPoint point, BOOL bAllowInvert/* = FAL
 				bBeyond=FALSE;
 				::SetCursor(hOldCursor);
 			}
+
+			//如果焦点控件不是float，不允许拖动。
+			if(!CanbeMoveRect())
+				::SetCursor(m_hNoDropCursor);
+
 			point=msg.lParam;
+
 
 			for (int i=0;i<m_arrCloneRect.GetSize();i++)
 			{
@@ -254,7 +260,7 @@ ExitLoop:
 
 BOOL CUITrackerMuliti::SetCursor(CWnd *pWnd, UINT nHitTest, const CPoint &ptDPtoLP, const CSize &szOffset)
 {
-	//只判断焦点控件的鼠标
+	//这里只判断焦点控件的鼠标
 	if(m_pFocused == NULL)
 		return FALSE;
 
@@ -265,23 +271,7 @@ BOOL CUITrackerMuliti::SetCursor(CWnd *pWnd, UINT nHitTest, const CPoint &ptDPto
 		m_rect = rectSave;
 		return TRUE;
 	}
-	return FALSE;
 
-	/*
-	CRect rectSave = m_rect;
-	for (int i=0;i<m_arrTracker.GetSize();i++)
-	{
-		CTrackerElement* pArrTracker = m_arrTracker.GetAt(i);
-
-		m_rect=pArrTracker->GetPos();
-		if (CUITracker::SetCursor(pWnd, nHitTest, ptDPtoLP, szOffset))
-		{
-			m_rect = rectSave;
-			return TRUE;
-		}
-	}
-	m_rect = rectSave;
-	*/
 	return FALSE;
 }
 
@@ -429,6 +419,8 @@ void CUITrackerMuliti::SetFocus(xml_node node)
 
 void CUITrackerMuliti::OnChangedRect()
 {
+	if(!CanbeMoveRect()) return;
+
 	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
 
 	BOOL bCopyControls = FALSE;
@@ -443,8 +435,17 @@ void CUITrackerMuliti::OnChangedRect()
 		//没有按住Ctrl键, 移动控件
 		if(::GetKeyState(VK_CONTROL) >= 0)
 		{
-			pArrTracker->m_rect = rc;
-			GetUIManager()->UpdateControlPos(pArrTracker->m_node, rc);
+			xml_node nodeCurrentControl = pArrTracker->m_node;
+			CControlUI *pCurrentControl = (CControlUI *)nodeCurrentControl.get_tag();
+			if(pCurrentControl->IsFloat())
+			{
+				pArrTracker->m_rect = rc;
+				GetUIManager()->UpdateControlPos(pArrTracker->m_node, rc);
+			}
+			else
+			{
+				InsertMsg(_T("非float控件不能通过拖动鼠标改变其位置"));
+			}
 			continue;
 		}
 
@@ -674,4 +675,19 @@ void CUITrackerMuliti::RefreshRect()
 	{
 		GetUIManager()->GetUiWindow()->Invalidate();
 	}
+}
+
+BOOL CUITrackerMuliti::CanbeMoveRect()
+{
+	//如果焦点控件不是float，不允许拖动。
+	if(m_pFocused == NULL || m_pFocused->m_pControl == NULL || !m_pFocused->m_pControl->IsFloat())
+		return FALSE;
+
+	for (int i=0;i<m_arrTracker.GetSize();i++)
+	{
+		CTrackerElement* pArrTracker = m_arrTracker.GetAt(i);
+		if(!pArrTracker->m_pControl->IsFloat())
+			return FALSE;
+	}
+	return TRUE;
 }

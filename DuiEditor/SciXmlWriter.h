@@ -7,10 +7,12 @@ public:
 	CSciUndoBlock(CSciWnd *pSciWnd) : m_pSciWnd(pSciWnd)
 	{
 		m_pSciWnd->sci_BeginUndoAction();
+		//InsertMsg(_T("Begin Undo"));
 	}
 	~CSciUndoBlock()
 	{
 		m_pSciWnd->sci_EndUndoAction();
+		//InsertMsg(_T("End Undo"));
 	}
 	CSciWnd *m_pSciWnd;
 };
@@ -39,6 +41,7 @@ protected:
 	void node_output_all_attributes(xml_node node);
 	void node_output_close(xml_node node);
 	void text_output(const char * text);
+	void text_output(CStringA &strRet, const char * text);
 	void text_output_indent(int depth);
 
 private:
