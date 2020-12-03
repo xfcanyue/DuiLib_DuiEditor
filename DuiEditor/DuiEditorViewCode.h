@@ -38,7 +38,7 @@ public:
 	void SetUIManager(CUIManager *pManager) { m_pUIManager = pManager; }
 private:
 	CUIManager *m_pUIManager;
-
+	DWORD m_dwLastClickCode;
 protected:
 	CSciWnd sci;
 	int m_nTargetLine;					//载入文档后滚动到目标行

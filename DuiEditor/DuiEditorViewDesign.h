@@ -123,6 +123,7 @@ public:
 	afx_msg void OnUpdateFileSaveTemplate(CCmdUI *pCmdUI);
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnSetFocus(CWnd* pOldWnd);
 };
 
 #ifndef _DEBUG  // DuiEditorView.cpp 中的调试版本

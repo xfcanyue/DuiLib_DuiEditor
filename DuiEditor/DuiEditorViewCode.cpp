@@ -25,6 +25,8 @@ CDuiEditorViewCode::CDuiEditorViewCode()
 	m_bNeedUpdate = FALSE;
 	m_bUpdateDesignWhileModified = TRUE;
 	m_xmlParseResult.status = pugi::status_ok;
+
+	m_dwLastClickCode = 0;
 }
 
 CDuiEditorViewCode::~CDuiEditorViewCode()
@@ -417,6 +419,7 @@ BOOL CDuiEditorViewCode::SelectControlUI(int pos, xml_node node)
 
 LRESULT CDuiEditorViewCode::OnSciClick(WPARAM WParam, LPARAM LParam)
 {
+	m_dwLastClickCode = GetTickCount();
 	if(GetUIManager()->GetSplitterMode() == SPLIT_CODE)
 		return 0;
 
@@ -450,7 +453,6 @@ LRESULT CDuiEditorViewCode::OnSciClick(WPARAM WParam, LPARAM LParam)
 
 	xml_node root = GetDocument()->m_doc.child(XTEXT("Window"));
 	SelectControlUI(pos, root);
-
 	return 0;
 }
 
@@ -669,6 +671,13 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 
 			sci.sci_AutocCancel(); //不使用默认的插人
 			return TRUE;
+		}
+		break;
+	case SCN_FOCUSOUT:
+		//InsertMsg(_T("SCN_FOCUSOUT"));
+		if(GetTickCount() - m_dwLastClickCode < 500)
+		{
+			sci.sci_SetFocus(TRUE);
 		}
 		break;
 	}	
@@ -1068,3 +1077,4 @@ void CDuiEditorViewCode::OnUpdateSciUpdateWhileModify(CCmdUI *pCmdUI)
 {
 	pCmdUI->SetCheck(m_bUpdateDesignWhileModified);
 }
+

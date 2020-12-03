@@ -95,6 +95,7 @@ BEGIN_MESSAGE_MAP(CDuiEditorViewDesign, CScrollView)
 	ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_TEMPLATE, &CDuiEditorViewDesign::OnUpdateFileSaveTemplate)
 	ON_WM_CREATE()
 	ON_WM_MOUSEMOVE()
+	ON_WM_SETFOCUS()
 END_MESSAGE_MAP()
 
 // CDuiEditorView 构造/析构
@@ -194,6 +195,9 @@ void CDuiEditorViewDesign::InitView()
 	GetUIManager()->SetScrollSize();
 
 	GetUIManager()->GetTreeView()->InitTreeContent();
+
+	//设置定时器，刷新一下duilib窗口，不然duilib会抢焦点
+	//SetTimer(1, 100, NULL);
 }
 
 void CDuiEditorViewDesign::OnDestroy()
@@ -1199,3 +1203,13 @@ void CDuiEditorViewDesign::OnMouseMove(UINT nFlags, CPoint point)
 
 	CScrollView::OnMouseMove(nFlags, point);
 }
+
+
+void CDuiEditorViewDesign::OnSetFocus(CWnd* pOldWnd)
+{
+	CScrollView::OnSetFocus(pOldWnd);
+
+	// TODO: 在此处添加消息处理程序代码
+	//InsertMsg(_T("CDuiEditorViewDesign::OnSetFocus"));
+}
+

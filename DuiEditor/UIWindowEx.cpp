@@ -377,7 +377,9 @@ LRESULT CUIWindowEx::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_SYSCOMMAND:		lRes = OnSysCommand(uMsg, wParam, lParam, bHandled); break;
 	case WM_KEYDOWN:		lRes = OnKeyDown(uMsg, wParam, lParam, bHandled); break;
 	case WM_KILLFOCUS:		lRes = OnKillFocus(uMsg, wParam, lParam, bHandled); break;
-	case WM_SETFOCUS:		lRes = OnSetFocus(uMsg, wParam, lParam, bHandled); break;
+	case WM_SETFOCUS:		
+		lRes = OnSetFocus(uMsg, wParam, lParam, bHandled); 
+		break;
 	case WM_LBUTTONUP:		lRes = OnLButtonUp(uMsg, wParam, lParam, bHandled); break;
 	case WM_LBUTTONDOWN:	lRes = OnLButtonDown(uMsg, wParam, lParam, bHandled); break;
 	case WM_MOUSEMOVE:		lRes = OnMouseMove(uMsg, wParam, lParam, bHandled); break;
@@ -413,6 +415,9 @@ LRESULT CUIWindowEx::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 LRESULT CUIWindowEx::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
+	//创建一个隐藏光标, 此光标用于在控件上直接输入文字
+	::CreateCaret(m_hWnd,(HBITMAP) NULL, 0, 0);
+
 	CUIManager *pManager = GetUIManager();
 	pManager->_setUITrackerMuliti(&m_tracker);
 
@@ -484,10 +489,9 @@ LRESULT CUIWindowEx::OnKillFocus(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPar
 
 LRESULT CUIWindowEx::OnSetFocus(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
 {
+	HWND hWnd = GetHWND();
 	bHandled = FALSE;
 
-	//创建一个隐藏光标, 此光标用于在控件上直接输入文字
-	::CreateCaret(m_hWnd,(HBITMAP) NULL, 0, 0);
 	//InsertMsg(_T("CUIWindowEx::OnSetFocus"));
 	return 0;
 }

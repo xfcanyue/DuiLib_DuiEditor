@@ -58,7 +58,7 @@ BOOL CUIManager::SelectItem(CControlUI *pControl)
 		GetUiWindow()->Invalidate();
 		return FALSE;
 	}
-
+	
 	//往上回溯，碰到TabLayout都切换过来
 	CControlUI *pControlTemp = pControl;
 	CControlUI *pParent = pControl->GetParent();
@@ -96,9 +96,9 @@ BOOL CUIManager::SelectItem(CControlUI *pControl)
 		else if(GetUiTracker()->m_pFocused->m_pControl != pControl) //当前点击的控件不是焦点控件
 			GetUiTracker()->RemoveAll();
 	}
-
+	
 	GetUiTracker()->Add(xml_node((xml_node_struct *)pControl->GetTag()), pControl->GetPos());
-
+	
 	GetUiWindow()->Invalidate();
 	return TRUE;
 }
