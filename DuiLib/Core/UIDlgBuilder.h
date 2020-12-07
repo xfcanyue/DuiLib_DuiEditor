@@ -19,7 +19,7 @@ namespace DuiLib {
 		CControlUI* Create(STRINGorID xml, LPCTSTR type = NULL, IDialogBuilderCallback* pCallback = NULL,
 			CPaintManagerUI* pManager = NULL, CControlUI* pParent = NULL);
 		CControlUI* Create(IDialogBuilderCallback* pCallback = NULL, CPaintManagerUI* pManager = NULL,
-			CControlUI* pParent = NULL);
+			CControlUI* pParent = NULL, CLangPackage *pkg = NULL);
 
 		CMarkup* GetMarkup();
 
@@ -27,7 +27,7 @@ namespace DuiLib {
 		void GetLastErrorLocation(LPTSTR pstrSource, SIZE_T cchMax) const;
 	    void SetInstance(HINSTANCE instance){ m_instance = instance;};
 	private:
-		CControlUI* _Parse(CMarkupNode* parent, CControlUI* pParent = NULL, CPaintManagerUI* pManager = NULL);
+		CControlUI* _Parse(CMarkupNode* parent, CControlUI* pParent = NULL, CPaintManagerUI* pManager = NULL, CLangPackage *pkg = NULL);
 
 		CMarkup m_xml;
 		IDialogBuilderCallback* m_pCallback;

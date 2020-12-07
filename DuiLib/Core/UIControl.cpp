@@ -21,6 +21,7 @@ namespace DuiLib {
 		m_bDragEnabled(false),
 		m_bDropEnabled(false),
 		m_bResourceText(false),
+		m_nResourceID(0),
 		m_chShortcut('\0'),
 		m_pTag(NULL),
 		m_dwBackColor(0),
@@ -127,8 +128,21 @@ namespace DuiLib {
 
 	CDuiString CControlUI::GetText() const
 	{
-		if (!IsResourceText()) return m_sText;
-		return CResourceManager::GetInstance()->GetText(m_sText);
+		if (IsResourceText())
+			return CResourceManager::GetInstance()->GetText(m_sText);
+
+ 		CControlUI* pThis = const_cast<CControlUI* >(this);
+// 		if(pThis->GetInterface(DUI_CTR_EDIT))
+// 		{
+// 			int x = 0; x++;
+// 		}
+		CLangPackage *pkg = pThis->GetLangPackage();
+		if(pkg && GetResourceID() > 0)
+		{
+			CDuiString s = pkg->GetText(GetResourceID());
+			if(!s.IsEmpty()) return s; 
+		}
+		return m_sText;
 	}
 
 	void CControlUI::SetText(LPCTSTR pstrText)
@@ -164,6 +178,31 @@ namespace DuiLib {
 		m_bResourceText = bResource;
 		Invalidate();
 	}
+
+	int  CControlUI::GetResourceID() const
+	{
+		return m_nResourceID;
+	}
+
+	void CControlUI::SetResourceID(int resid)
+	{
+		if(m_nResourceID == resid) return;
+		m_nResourceID = resid;
+		Invalidate();
+	}
+
+	CLangPackage *CControlUI::GetLangPackage()
+	{
+		if(!GetManager()) return NULL;
+		CLangPackage *pkg = GetManager()->GetLangManager()->GetPackage(m_sSkinFile);
+		return pkg;
+	}
+
+	void CControlUI::SetSkinFile(LPCTSTR lpstrSkinFile) 
+	{ 
+		m_sSkinFile = lpstrSkinFile; 
+	}
+	CDuiString CControlUI::GetSkinFile() { return m_sSkinFile.GetData(); }
 
 	bool CControlUI::IsDragEnabled() const
 	{
@@ -606,8 +645,18 @@ namespace DuiLib {
 
 	CDuiString CControlUI::GetToolTip() const
 	{
-		if (!IsResourceText()) return m_sToolTip;
-		return CResourceManager::GetInstance()->GetText(m_sToolTip);
+		if (IsResourceText()) 
+			return CResourceManager::GetInstance()->GetText(m_sToolTip);
+
+		CControlUI* pThis = const_cast<CControlUI* >(this);
+		CLangPackage *pkg = pThis->GetLangPackage();
+		if(pkg && GetResourceID() > 0)
+		{
+			CDuiString s = pkg->GetToolTip(GetResourceID());
+			if(!s.IsEmpty()) return s; 
+		}
+
+		return m_sToolTip;
 	}
 
 	void CControlUI::SetToolTip(LPCTSTR pstrText)
@@ -1168,6 +1217,8 @@ namespace DuiLib {
 		else if( _tcsicmp(pstrName, _T("drag")) == 0 ) SetDragEnable(_tcsicmp(pstrValue, _T("true")) == 0);
 		else if( _tcsicmp(pstrName, _T("drop")) == 0 ) SetDropEnable(_tcsicmp(pstrValue, _T("true")) == 0);
 		else if( _tcsicmp(pstrName, _T("resourcetext")) == 0 ) SetResourceText(_tcsicmp(pstrValue, _T("true")) == 0);
+		else if( _tcsicmp(pstrName, _T("resourceid")) == 0 ) 
+			SetResourceID(_ttoi(pstrValue));
 		else if( _tcsicmp(pstrName, _T("text")) == 0 ) SetText(pstrValue);
 		else if( _tcsicmp(pstrName, _T("tooltip")) == 0 ) SetToolTip(pstrValue);
 		else if( _tcsicmp(pstrName, _T("userdata")) == 0 ) SetUserData(pstrValue);

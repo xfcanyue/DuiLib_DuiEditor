@@ -44,6 +44,12 @@ namespace DuiLib {
 		virtual bool IsResourceText() const;
 		virtual void SetResourceText(bool bResource);
 
+		virtual int  GetResourceID() const;			//add by liqs99
+		virtual void SetResourceID(int resid);		//add by liqs99
+		virtual CLangPackage *GetLangPackage();
+		virtual void SetSkinFile(LPCTSTR lpstrSkinFile);
+		virtual CDuiString GetSkinFile();
+
 		virtual bool IsDragEnabled() const;
 		virtual void SetDragEnable(bool bDrag);
 
@@ -261,6 +267,9 @@ namespace DuiLib {
 		bool m_bDropEnabled;
 
 		bool m_bResourceText;
+		int  m_nResourceID;
+		CDuiString m_sSkinFile;	//我来自哪个文件， add by liqs99
+
 		CDuiString m_sText;
 		CDuiString m_sToolTip;
 		TCHAR m_chShortcut;

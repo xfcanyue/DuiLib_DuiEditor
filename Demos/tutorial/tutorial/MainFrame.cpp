@@ -2,6 +2,7 @@
 #include "MainFrame.h"
 
 #include "Dialog1.h"
+#include "Dialog2.h"
 #include "FormAdvanceControl.h"
 #include "FormSciEditor.h"
 
@@ -65,7 +66,9 @@ void CMainFrame::InitWindow()
 	pRoll3->SetText(pRoll3->GetText() + strText);
 	pRoll4->SetText(pRoll4->GetText() + strText);
 
-
+	CDuiString str1 = CLangManager::GetString1(1);
+	CDuiString str2 = CLangManager::GetString2(1);
+	CDuiString str3 = CLangManager::GetString3(1);
 }
 
 bool CMainFrame::OnCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -109,6 +112,24 @@ bool CMainFrame::OnMenuCommand(const MenuCmd *cmd)
 	{
 		//更新本地菜单选中状态
 		m_nMenuSelected = 1;
+	}
+	if(IsMenuCommand(cmd, _T("menu_lang_chs")))
+	{
+		CLangManager::SetLanguage(_T("Lang\\ChineseSimplified"), _T("chs"));
+		GetMainWnd()->GetManager()->GetLangManager()->ReloadLanguage();
+		return true;
+	}
+	if(IsMenuCommand(cmd, _T("menu_lang_ChineseTraditional")))
+	{
+		CLangManager::SetLanguage(_T("Lang\\ChineseTraditional"), _T("chtrad"));
+		GetMainWnd()->GetManager()->GetLangManager()->ReloadLanguage();
+		return true;
+	}
+	if(IsMenuCommand(cmd, _T("menu_lang_english")))
+	{
+		CLangManager::SetLanguage(_T("Lang\\English"), _T("en"));
+		GetMainWnd()->GetManager()->GetLangManager()->ReloadLanguage();
+		return true;
 	}
 	return false;
 }
@@ -154,6 +175,21 @@ bool CMainFrame::OnMenuUpdateCommandUI(CMenuCmdUI *cmdUI)
 		cmdUI->SetCheck(m_nMenuSelected == 1);
 		return true;
 	}
+	if(IsMenuCommand(cmdUI, _T("menu_lang_chs")))
+	{
+		cmdUI->SetCheck(CLangManager::GetLangName() == _T("chs"));
+		return true;
+	}
+	if(IsMenuCommand(cmdUI, _T("menu_lang_ChineseTraditional")))
+	{
+		cmdUI->SetCheck(CLangManager::GetLangName() == _T("chtrad"));
+		return true;
+	}
+	if(IsMenuCommand(cmdUI, _T("menu_lang_english")))
+	{
+		cmdUI->SetCheck(CLangManager::GetLangName() == _T("en"));
+		return true;
+	}
 	return false;
 }
 
@@ -181,7 +217,7 @@ void CMainFrame::OnNotifyClick(TNotifyUI& msg)
 
 	if(IsControl(msg, _T("btn_domodal")))
 	{
-		CDialog1 dlg;
+		CDialog2 dlg;
 		dlg.DoModal(this);
 	}
 

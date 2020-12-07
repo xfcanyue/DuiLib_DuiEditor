@@ -19,6 +19,8 @@
 #include "MainFrm.h"
 #include "UIManager.h"
 #include "DlgCreateDuiDocument.h"
+#include "DlgBuildLanguagePackage.h"
+#include "DlgBuildLanguagePackageEx.h"
 
 #include "ThreadTest.h"
 #include "ThreadPipe.h"
@@ -44,6 +46,9 @@ BEGIN_MESSAGE_MAP(CDuiEditorDoc, CDocument)
 	ON_UPDATE_COMMAND_UI(ID_UIFORM_DEBUG, &CDuiEditorDoc::OnUpdateUiformDebug)
 	ON_COMMAND(ID_UIFORM_DEBUG_END, &CDuiEditorDoc::OnUiformDebugEnd)
 	ON_UPDATE_COMMAND_UI(ID_UIFORM_DEBUG_END, &CDuiEditorDoc::OnUpdateUiformDebugEnd)
+	ON_COMMAND(ID_BUILD_LANG_PACKAGE, &CDuiEditorDoc::OnBuildLangPackage)
+	ON_COMMAND(ID_BUILD_LANG_PACKAGE_EX, &CDuiEditorDoc::OnBuildLangPackageEx)
+	ON_COMMAND(ID_BUILD_LANG_STRING_TABLE, &CDuiEditorDoc::OnBuildLangStringTable)
 END_MESSAGE_MAP()
 
 
@@ -560,4 +565,50 @@ void CDuiEditorDoc::OnUiformDebugEnd()
 void CDuiEditorDoc::OnUpdateUiformDebugEnd(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(g_hThreadTestHandle != NULL);
+}
+
+void CDuiEditorDoc::OnBuildLangPackage()
+{
+	CDlgBuildLanguagePackage dlg;
+	dlg.SetUIManager(GetUIManager());
+	dlg.DoModal();
+}
+
+void CDuiEditorDoc::OnBuildLangPackageEx()
+{
+	CDlgBuildLanguagePackageEx dlg;
+	dlg.SetUIManager(GetUIManager());
+	dlg.DoModal();
+}
+
+
+void CDuiEditorDoc::OnBuildLangStringTable()
+{
+	CString file = GetUIManager()->GetDocument()->GetSkinPath();
+	if(file.IsEmpty())
+	{
+		AfxMessageBox(_T("请先保存文件。"));
+		return;
+	}
+	file += _T("StringTable");
+
+	static TCHAR BASED_CODE szFilter[] = _T("语言包文件(*.lng)|*.lng||");
+	CFileDialog fileDlg(FALSE, _T("lng"), GetUIManager()->GetManager()->GetResourcePath() + (LPCTSTR)file,  
+		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,szFilter);
+	fileDlg.m_ofn.lStructSize = 88;
+	if(fileDlg.DoModal() != IDOK)	return;
+
+	xml_document xml;
+	xml_parse_result ret = xml.load_file(fileDlg.GetPathName());
+
+	xml_node rootLang = xml.child_auto("Language");
+	if(!rootLang.first_child())
+	{
+		xml_node node1 = rootLang.append_child("String");
+		node1.append_attribute("id").set_value("1");
+		node1.append_attribute("text1").set_value("");
+		node1.append_attribute("text2").set_value("");
+		node1.append_attribute("text3").set_value("");
+	}
+	xml.save_file(fileDlg.GetPathName());
 }

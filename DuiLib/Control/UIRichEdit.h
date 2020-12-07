@@ -115,7 +115,7 @@ namespace DuiLib {
 		void PaintStatusImage(HDC hDC);
 
 		void SetTipValue(LPCTSTR pStrTipValue);
-		LPCTSTR GetTipValue();
+		CDuiString GetTipValue();
 		void SetTipValueColor(LPCTSTR pStrColor);
 		DWORD GetTipValueColor();
 		void SetTipValueAlign(UINT uAlign);

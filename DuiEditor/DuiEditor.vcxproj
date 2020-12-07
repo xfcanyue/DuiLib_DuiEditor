@@ -265,6 +265,8 @@
     <ClInclude Include="DefaultEditor.h" />
     <ClInclude Include="DefaultEditorFrame.h" />
     <ClInclude Include="DefaultEditorView.h" />
+    <ClInclude Include="DlgBuildLanguagePackage.h" />
+    <ClInclude Include="DlgBuildLanguagePackageEx.h" />
     <ClInclude Include="DlgCreateDuiDocument.h" />
     <ClInclude Include="DlgCustomControl.h" />
     <ClInclude Include="DlgInsertControl.h" />
@@ -330,6 +332,8 @@
     <ClCompile Include="DefaultEditor.cpp" />
     <ClCompile Include="DefaultEditorFrame.cpp" />
     <ClCompile Include="DefaultEditorView.cpp" />
+    <ClCompile Include="DlgBuildLanguagePackage.cpp" />
+    <ClCompile Include="DlgBuildLanguagePackageEx.cpp" />
     <ClCompile Include="DlgCreateDuiDocument.cpp" />
     <ClCompile Include="DlgCustomControl.cpp" />
     <ClCompile Include="DlgInsertControl.cpp" />

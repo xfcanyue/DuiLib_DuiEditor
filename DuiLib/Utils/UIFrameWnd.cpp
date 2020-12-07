@@ -255,7 +255,12 @@ void CUIFrameWnd::Notify(TNotifyUI& msg)
 		std::list<CUIForm *>::iterator it;
 		for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
 		{
+#ifdef _DEBUG
+			CUIForm *pForm = (CUIForm *)(*it);
+			pForm->Notify(msg);
+#else
 			(*it)->Notify(msg);
+#endif
 		}
 	}
 
@@ -302,7 +307,12 @@ void CUIFrameWnd::__InitWindow()
 		std::list<CUIForm *>::iterator it;
 		for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
 		{
+#ifdef _DEBUG
+			CUIForm *pForm = (CUIForm *)(*it);
+			pForm->InitWindow();
+#else
 			(*it)->InitWindow();
+#endif
 		}
 	}
 	

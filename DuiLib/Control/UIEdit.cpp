@@ -596,8 +596,16 @@ namespace DuiLib
 
 	LPCTSTR CEditUI::GetTipValue()
 	{
-		if (!IsResourceText()) return m_sTipValue;
-		return CResourceManager::GetInstance()->GetText(m_sTipValue);
+		if (IsResourceText()) 
+			return CResourceManager::GetInstance()->GetText(m_sTipValue);
+
+		CLangPackage *pkg = GetLangPackage();
+		if(pkg && GetResourceID() > 0)
+		{
+			CDuiString s = pkg->GetTipValue(GetResourceID());
+			if(!s.IsEmpty()) return s; 
+		}
+		return m_sTipValue;
 	}
 	                    
 	void CEditUI::SetTipValueColor( LPCTSTR pStrColor )

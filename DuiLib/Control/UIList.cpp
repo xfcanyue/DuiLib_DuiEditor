@@ -2432,7 +2432,8 @@ namespace DuiLib {
 	LPCTSTR CListTextElementUI::GetText(int iIndex) const
 	{
 		CDuiString* pText = static_cast<CDuiString*>(m_aTexts.GetAt(iIndex));
-		if( pText ) {
+		if( pText ) 
+		{
 			if (!IsResourceText()) 
 				return pText->GetData();
 			return CResourceManager::GetInstance()->GetText(*pText);

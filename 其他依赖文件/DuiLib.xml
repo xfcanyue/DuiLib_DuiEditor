@@ -93,6 +93,7 @@
 		<Attribute name="drag" default="false" type="BOOL" comment="" />
 		<Attribute name="drop" default="false" type="BOOL" comment="" />		
 		<Attribute name="resourcetext" default="false" type="BOOL" comment="是否支持多语言，为true文字绘制会走多语言接口" />			
+		<Attribute name="resourceid" default="0" type="INT" comment="多语言文本id，不使用多语言设置为0" />			
 		<Attribute name="text" default="" type="STRING" comment="显示文本,如(测试文本)" />
 		<Attribute name="tooltip" default="" type="STRING" comment="鼠标悬浮提示,如(请在这里输入你的密码)" />
 		<Attribute name="userdata" default="" type="STRING" comment="自定义标识" />
@@ -832,6 +833,9 @@
 	<SciEdit parent="Container" notifies="">
 		<Attribute name="name" default="" type="STRING" comment="控件名字" />	
 	</SciEdit>
+	<ChildWindow parent="Container">
+		<Attribute name="name" default="" type="STRING" comment="控件名字" />
+	</ChildWindow>
 	
 	<!-- 以下只给设计器使用 -->
 	<Font>

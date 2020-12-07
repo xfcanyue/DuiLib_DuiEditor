@@ -416,7 +416,7 @@ LRESULT CUIWindowEx::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 LRESULT CUIWindowEx::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	//创建一个隐藏光标, 此光标用于在控件上直接输入文字
-	::CreateCaret(m_hWnd,(HBITMAP) NULL, 0, 0);
+	//::CreateCaret(m_hWnd,(HBITMAP) NULL, 0, 0);
 
 	CUIManager *pManager = GetUIManager();
 	pManager->_setUITrackerMuliti(&m_tracker);
@@ -492,6 +492,8 @@ LRESULT CUIWindowEx::OnSetFocus(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPara
 	HWND hWnd = GetHWND();
 	bHandled = FALSE;
 
+	//创建一个隐藏光标, 此光标用于在控件上直接输入文字
+	//::CreateCaret(m_hWnd,(HBITMAP) NULL, 0, 0);
 	//InsertMsg(_T("CUIWindowEx::OnSetFocus"));
 	return 0;
 }
@@ -691,6 +693,8 @@ LRESULT CUIWindowEx::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
  	if(pFocusControl)
  	{
  		CRect rcFocusControl = pFocusControl->GetPos();
+		//创建一个隐藏光标, 此光标用于在控件上直接输入文字
+		::CreateCaret(m_hWnd,(HBITMAP) NULL, 0, 0);
  		BOOL b = ::SetCaretPos(rcFocusControl.left, rcFocusControl.bottom);
 		//if(!b) InsertMsg(_T("::SetCaretPos failed."));
  	}
@@ -736,9 +740,61 @@ LRESULT CUIWindowEx::OnRButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 		bHandled = FALSE;
 		return 0;
 	}
-
+//	InsertMsg(_T("CUIWindowEx::OnRButtonDown"));
+	bHandled = TRUE;
 	g_pToolBox->SetDefaultPoint();
 	::SetCursor(::LoadCursor(NULL, IDC_ARROW));
+
+	CPoint pt;
+	::GetCursorPos(&pt);
+	::ScreenToClient(m_hWnd, &pt);
+
+	CUIManager *pManager = GetUIManager();
+	CControlUI* pControl = GetManager()->FindControl(pt);
+	if(pControl==NULL) 
+	{
+		m_tracker.RemoveAll();
+		return 0;
+	}
+
+	xml_node nodeClick;
+	while (TRUE)
+	{
+		if(!pControl)	break;
+
+		nodeClick = xml_node((xml_node_struct *)pControl->GetTag());
+		if(nodeClick)	break;
+		pControl = pControl->GetParent();
+	}
+
+	if(!nodeClick)
+	{
+		m_tracker.RemoveAll();
+		return 0;
+	}
+
+	pControl = (CControlUI*)nodeClick.get_tag();
+	if(pControl==NULL) 
+	{
+		m_tracker.RemoveAll();
+		return 0;
+	}
+
+	int nHit = m_tracker.HitTest(pt);
+	m_tracker.m_nHitTest = nHit;
+	if(nHit==CUITracker::hitNothing)
+	{
+		pManager->SelectItem(nodeClick);
+		pManager->GetTreeView()->SelectXmlNode(nodeClick);
+		pManager->GetCodeView()->SelectXmlNode(nodeClick);
+	}
+	else
+	{
+		pManager->SelectItem(nodeClick);
+		m_tracker.SetFocus(nodeClick);
+		pManager->GetTreeView()->SelectXmlNode(nodeClick);
+		pManager->GetCodeView()->SelectXmlNode(nodeClick);
+	}
 
 	return 0;
 }

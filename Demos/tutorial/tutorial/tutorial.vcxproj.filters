@@ -52,6 +52,9 @@
     <ClInclude Include="FormSciEditor.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Dialog2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -73,6 +76,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="FormSciEditor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialog2.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

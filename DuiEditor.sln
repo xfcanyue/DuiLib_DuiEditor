@@ -10,7 +10,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DuiEditor", "DuiEditor\DuiE
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DuiPreviewer", "DuiEditor\DuiPreviewer\DuiPreviewer.vcxproj", "{1F020C88-31A7-406F-91D8-DB65C36BF428}"
 	ProjectSection(ProjectDependencies) = postProject
-		{AEBE2742-393C-489D-962E-94B52CC02114} = {AEBE2742-393C-489D-962E-94B52CC02114}
 		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E} = {E106ACD7-4E53-4AEE-942B-D0DD426DB34E}
 	EndProjectSection
 EndProject
@@ -22,6 +21,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DuiPlugins", "DuiPlugins\Du
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tutorial", "Demos\tutorial\tutorial\tutorial.vcxproj", "{C3EA50E0-1257-468F-AA07-E91A0A7C2011}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AEBE2742-393C-489D-962E-94B52CC02114} = {AEBE2742-393C-489D-962E-94B52CC02114}
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E} = {E106ACD7-4E53-4AEE-942B-D0DD426DB34E}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

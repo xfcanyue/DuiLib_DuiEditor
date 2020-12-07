@@ -328,6 +328,8 @@ protected:                                                                \
 
 #define DUI_CTR_TABCTRL							(_T("TabCtrl"))	
 #define DUI_CTR_ANIMATIONPANE					(_T("AnimationPane"))
+
+#define DUI_CTR_CHILDWINDOW					(_T("ChildWindow"))
 	///
 	//////////////END控件名称宏定义//////////////////////////////////////////////////
 

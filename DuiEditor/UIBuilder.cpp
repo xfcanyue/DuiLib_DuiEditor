@@ -227,6 +227,7 @@ CControlUI* CUIBuilder::Create(pugi::xml_node xmldoc, IDialogBuilderCallback* pC
 			}
 		}
 	}
+
 	return _Parse(root, pParent, pManager);
 }
 

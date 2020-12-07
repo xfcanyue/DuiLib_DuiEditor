@@ -33,6 +33,7 @@ public:
 	void SetUIManager(CUIManager *pManager) { m_pUIManager = pManager; }
 private:
 	CUIManager *m_pUIManager;
+	int _nMaxResourceID;
 // 操作
 public:
 	void InitView();
@@ -124,6 +125,11 @@ public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnSetFocus(CWnd* pOldWnd);
+	BOOL GetMaxResourceID(xml_node root, int &nMaxResourceID);
+	afx_msg void OnEditCreateResourceId();
+	afx_msg void OnUpdateEditCreateResourceId(CCmdUI *pCmdUI);
+	afx_msg void OnEditCreateResourceidAuto();
+	void _CreateResourceIDAuto(xml_node root);
 };
 
 #ifndef _DEBUG  // DuiEditorView.cpp 中的调试版本

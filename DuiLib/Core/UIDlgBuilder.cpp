@@ -50,11 +50,11 @@ namespace DuiLib {
 			::FreeResource(hResource);
 			m_pstrtype = type;
 		}
-
-		return Create(pCallback, pManager, pParent);
+		CLangPackage *pkg = pManager->GetLangManager()->AddPackage(xml.m_lpstr);
+		return Create(pCallback, pManager, pParent, pkg);
 	}
 
-	CControlUI* CDialogBuilder::Create(IDialogBuilderCallback* pCallback, CPaintManagerUI* pManager, CControlUI* pParent)
+	CControlUI* CDialogBuilder::Create(IDialogBuilderCallback* pCallback, CPaintManagerUI* pManager, CControlUI* pParent, CLangPackage *pkg)
 	{
 		m_pCallback = pCallback;
 		CMarkupNode root = m_xml.GetRoot();
@@ -383,7 +383,7 @@ namespace DuiLib {
 				}
 			}
 		}
-		return _Parse(&root, pParent, pManager);
+		return _Parse(&root, pParent, pManager, pkg);
 	}
 
 	CMarkup* CDialogBuilder::GetMarkup()
@@ -401,7 +401,7 @@ namespace DuiLib {
 		return m_xml.GetLastErrorLocation(pstrSource, cchMax);
 	}
 
-	CControlUI* CDialogBuilder::_Parse(CMarkupNode* pRoot, CControlUI* pParent, CPaintManagerUI* pManager)
+	CControlUI* CDialogBuilder::_Parse(CMarkupNode* pRoot, CControlUI* pParent, CPaintManagerUI* pManager, CLangPackage *pkg)
 	{
 		IContainerUI* pContainer = NULL;
 		CControlUI* pReturn = NULL;
@@ -465,9 +465,14 @@ namespace DuiLib {
 #endif
 			}
 
+			if(pkg)
+			{
+				pControl->SetSkinFile(pkg->GetSkinFile());
+			}
+
 			// Add children
 			if( node.HasChildren() ) {
-				_Parse(&node, pControl, pManager);
+				_Parse(&node, pControl, pManager, pkg);
 			}
 			// Attach to parent
 			// 因为某些属性和父窗口相关，比如selected，必须先Add到父窗口

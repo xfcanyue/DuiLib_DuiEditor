@@ -62,6 +62,7 @@
 
 #include "Core/UIDefine.h"
 #include "Core/UIResourceManager.h"
+#include "Core/UILangManager.h"
 #include "Core/UIManager.h"
 #include "Core/UIBase.h"
 #include "Core/ControlFactory.h"
@@ -120,6 +121,8 @@
 #include "Control/UIHotKey.h"
 #include "Control/UIFadeButton.h"
 #include "Control/UIRing.h"
+
+#include "Layout/UIChildWindow.h"
 
 #include "Utils/UIApplication.h"
 #include "Utils/UIFrameBase.h"

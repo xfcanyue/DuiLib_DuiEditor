@@ -418,6 +418,12 @@
     <ClInclude Include="..\3rd\scintilla\SciWnd.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="DlgBuildLanguagePackage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgBuildLanguagePackageEx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -598,6 +604,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="UIPropertyGridCtrl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgBuildLanguagePackage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgBuildLanguagePackageEx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

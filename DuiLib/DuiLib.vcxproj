@@ -252,6 +252,7 @@
       <ImportLibrary>Lib/DuiLib_u.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -296,6 +297,7 @@
     <ClCompile Include="Core\UIContainer.cpp" />
     <ClCompile Include="Core\UIControl.cpp" />
     <ClCompile Include="Core\UIDlgBuilder.cpp" />
+    <ClCompile Include="Core\UILangManager.cpp" />
     <ClCompile Include="Core\UIManager.cpp" />
     <ClCompile Include="Core\UIMarkup.cpp" />
     <ClCompile Include="Core\UIRender.cpp" />
@@ -303,6 +305,7 @@
     <ClCompile Include="Layout\UIAnimationTabLayout.cpp" />
     <ClCompile Include="Layout\UIButtonLayout.cpp" />
     <ClCompile Include="Layout\UIChildLayout.cpp" />
+    <ClCompile Include="Layout\UIChildWindow.cpp" />
     <ClCompile Include="Layout\UIHorizontalLayout.cpp" />
     <ClCompile Include="Layout\UILabelLayout.cpp" />
     <ClCompile Include="Layout\UIOptionLayout.cpp" />
@@ -376,6 +379,7 @@
     <ClInclude Include="Core\UIControl.h" />
     <ClInclude Include="Core\UIDefine.h" />
     <ClInclude Include="Core\UIDlgBuilder.h" />
+    <ClInclude Include="Core\UILangManager.h" />
     <ClInclude Include="Core\UIManager.h" />
     <ClInclude Include="Core\UIMarkup.h" />
     <ClInclude Include="Core\UIRender.h" />
@@ -383,6 +387,7 @@
     <ClInclude Include="Layout\UIAnimationTabLayout.h" />
     <ClInclude Include="Layout\UIButtonLayout.h" />
     <ClInclude Include="Layout\UIChildLayout.h" />
+    <ClInclude Include="Layout\UIChildWindow.h" />
     <ClInclude Include="Layout\UIHorizontalLayout.h" />
     <ClInclude Include="Layout\UILabelLayout.h" />
     <ClInclude Include="Layout\UIOptionLayout.h" />

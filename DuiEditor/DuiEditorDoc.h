@@ -66,4 +66,7 @@ public:
 	afx_msg void OnUpdateUiformDebug(CCmdUI *pCmdUI);
 	afx_msg void OnUiformDebugEnd();
 	afx_msg void OnUpdateUiformDebugEnd(CCmdUI *pCmdUI);
+	afx_msg void OnBuildLangPackage();
+	afx_msg void OnBuildLangPackageEx();
+	afx_msg void OnBuildLangStringTable();
 };

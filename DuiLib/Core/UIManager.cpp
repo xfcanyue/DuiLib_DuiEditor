@@ -293,6 +293,7 @@ namespace DuiLib {
 
 		CShadowUI::Initialize(m_hInstance);
 
+		m_pLangManager = new CLangManager;
 		m_bInitWindowParameter = false;
 	}
 
@@ -303,6 +304,8 @@ namespace DuiLib {
 		{
 			(*m_funDeleteScriptEngine)(m_pScriptEngine);
 		}
+
+		if(m_pLangManager){ delete m_pLangManager; m_pLangManager = NULL; }
 
 		// Delete the control-tree structures
 		for( int i = 0; i < m_aDelayedCleanup.GetSize(); i++ ) delete static_cast<CControlUI*>(m_aDelayedCleanup[i]);
@@ -2041,7 +2044,7 @@ namespace DuiLib {
 		// 销毁资源管理器
 		CResourceManager::GetInstance()->Release();
 		CControlFactory::GetInstance()->Release();
-		//CMenuWnd::DestroyMenu();
+		CLangManager::ReleaseStringTable();
 
 		// 清理共享资源
 		// 图片

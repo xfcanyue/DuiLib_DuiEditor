@@ -86,6 +86,7 @@
   <ItemGroup>
     <ClInclude Include="App.h" />
     <ClInclude Include="Dialog1.h" />
+    <ClInclude Include="Dialog2.h" />
     <ClInclude Include="FormAdvanceControl.h" />
     <ClInclude Include="FormSciEditor.h" />
     <ClInclude Include="MainFrame.h" />
@@ -97,6 +98,7 @@
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Dialog1.cpp" />
+    <ClCompile Include="Dialog2.cpp" />
     <ClCompile Include="FormAdvanceControl.cpp" />
     <ClCompile Include="FormSciEditor.cpp" />
     <ClCompile Include="MainFrame.cpp" />

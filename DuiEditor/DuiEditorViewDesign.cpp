@@ -96,6 +96,9 @@ BEGIN_MESSAGE_MAP(CDuiEditorViewDesign, CScrollView)
 	ON_WM_CREATE()
 	ON_WM_MOUSEMOVE()
 	ON_WM_SETFOCUS()
+	ON_COMMAND(ID_EDIT_CREATE_RESOURCE_ID, &CDuiEditorViewDesign::OnEditCreateResourceId)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_CREATE_RESOURCE_ID, &CDuiEditorViewDesign::OnUpdateEditCreateResourceId)
+	ON_COMMAND(ID_EDIT_CREATE_RESOURCEID_AUTO, &CDuiEditorViewDesign::OnEditCreateResourceidAuto)
 END_MESSAGE_MAP()
 
 // CDuiEditorView 构造/析构
@@ -113,6 +116,7 @@ CDuiEditorViewDesign::CDuiEditorViewDesign()
 
 	ZeroMemory( &m_piProcInfo, sizeof(PROCESS_INFORMATION) );
 	ZeroMemory( &m_siStartInfo, sizeof(STARTUPINFO) );
+	_nMaxResourceID = 0;
 }
 
 CDuiEditorViewDesign::~CDuiEditorViewDesign()
@@ -215,6 +219,15 @@ void CDuiEditorViewDesign::OnDestroy()
 
 void CDuiEditorViewDesign::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 {
+//	InsertMsg(_T("CDuiEditorViewDesign::OnContextMenu"));
+
+	CPaintManagerUI *ppm = GetUIManager()->GetManager();
+	xml_node root = GetUIManager()->GetDocument()->m_doc.child(XTEXT("Window"));
+	if(!root) return;
+	
+	_nMaxResourceID = 0;
+	GetMaxResourceID(root, _nMaxResourceID);
+
 #ifndef SHARED_HANDLERS
 	theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EDIT, point.x, point.y, this, TRUE);
 #endif
@@ -1213,3 +1226,106 @@ void CDuiEditorViewDesign::OnSetFocus(CWnd* pOldWnd)
 	//InsertMsg(_T("CDuiEditorViewDesign::OnSetFocus"));
 }
 
+
+BOOL CDuiEditorViewDesign::GetMaxResourceID(xml_node root, int &nMaxResourceID)
+{
+	int resourceid = root.attribute(XTEXT("resourceid")).as_int();
+	if(resourceid > nMaxResourceID)
+	{
+		nMaxResourceID = resourceid;
+	}
+
+	for (xml_node node=root.first_child(); node; node=node.next_sibling())
+	{
+		GetMaxResourceID(node, nMaxResourceID);
+	}
+	
+	return TRUE;
+}
+
+void CDuiEditorViewDesign::OnEditCreateResourceId()
+{
+	_nMaxResourceID++;
+	CString strMaxID; 
+	strMaxID.Format(_T("%d"), _nMaxResourceID);
+
+	CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[0];
+	g_duiProp.AddAttribute(pTrackElem->m_node, _T("resourceid"), strMaxID, GetUIManager());
+	pTrackElem->m_pControl->SetAttribute(_T("resourceid"), strMaxID);
+}
+
+
+void CDuiEditorViewDesign::OnUpdateEditCreateResourceId(CCmdUI *pCmdUI)
+{
+	if(GetUIManager())
+	{
+		if(GetUIManager()->GetUiTracker()->m_arrTracker.GetSize() != 1)
+		{
+			pCmdUI->SetText(_T("生成ResourceID 请选择单个控件"));
+			pCmdUI->Enable(FALSE);
+			return;
+		}
+		
+		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[0];
+		int resourceid = pTrackElem->m_node.attribute(XTEXT("resourceid")).as_int();
+		if(resourceid > 0)
+		{
+			CString temp;
+			temp.Format(_T("生成ResourceID : 已设置当前ID=%d"), resourceid);
+			pCmdUI->SetText(temp);
+			pCmdUI->Enable(FALSE);
+			return;
+		}
+
+		CString temp;
+		temp.Format(_T("生成ResourceID : 最大值ID=%d"), pTrackElem->m_pControl->GetResourceID());
+		pCmdUI->Enable(TRUE);
+		return;
+	}	
+	pCmdUI->Enable(FALSE);
+}
+
+
+void CDuiEditorViewDesign::OnEditCreateResourceidAuto()
+{
+	xml_node root = GetUIManager()->GetDocument()->m_doc.child(XTEXT("Window"));
+	if(!root)
+	{
+		root = GetUIManager()->GetDocument()->m_doc.child(XTEXT("Menu"));
+		if(!root)
+		{
+			AfxMessageBox(_T("只有根节点为Window或Menu才能生成语言包！"));
+			return;
+		}
+	}
+	_CreateResourceIDAuto(root);
+}
+
+void CDuiEditorViewDesign::_CreateResourceIDAuto(xml_node root)
+{
+	xml_attribute attrText = root.attribute(XTEXT("text"));
+	xml_attribute attrTooltip = root.attribute(XTEXT("tooltip"));
+	xml_attribute attrTipvalue = root.attribute(XTEXT("tipvalue"));
+
+	int resourceid = root.attribute(XTEXT("resourceid")).as_int();
+	//有这3种属性，并且还没有定义resourceid的
+	if((attrText || attrTooltip || attrTipvalue) && resourceid==0)
+	{
+		const char *pvalue = attrText.value();
+		const char *ptoolvalue = attrTooltip.value();
+		const char *ptipvalue = attrTipvalue.value();
+		//内容为空的也不处理
+		if((pvalue && pvalue!='\0') || (ptoolvalue && ptoolvalue!='\0') || (ptipvalue && ptipvalue!='\0') )
+		{
+			_nMaxResourceID++;
+			CString strMaxID; 
+			strMaxID.Format(_T("%d"), _nMaxResourceID);
+			g_duiProp.AddAttribute(root, _T("resourceid"), strMaxID, GetUIManager());
+		}
+	}
+
+	for (xml_node node = root.first_child(); node; node=node.next_sibling())
+	{
+		_CreateResourceIDAuto(node);
+	}	
+}

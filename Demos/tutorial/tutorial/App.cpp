@@ -20,6 +20,9 @@ bool CApp::InitInstance(HINSTANCE hInstance)
 	//注册插件库
 	DuiPluginsRegister();
 
+	//语言包路径
+	CLangManager::SetLanguage(_T("Lang\\ChineseSimplified"), _T("chs"));
+
 	//建立主窗口
 	m_pMainWnd = new CMainFrame();
 	if( m_pMainWnd == NULL ) return 0;

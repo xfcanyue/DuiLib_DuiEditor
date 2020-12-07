@@ -1065,6 +1065,12 @@ namespace DuiLib {
 			if( cXY.cx < sz.cx )
 				cXY.cx = sz.cx;
 		}
+
+		if(m_pOwner == NULL) //不判断下面就崩了，暂时先这样啊
+		{
+			return m_cxyFixed;
+		}
+
 		if(cXY.cy == 0) {
 			TListInfoUI* pInfo = m_pOwner->GetListInfo();
 

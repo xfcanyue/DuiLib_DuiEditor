@@ -39,7 +39,7 @@
 #define CXIMAGE_SUPPORT_MNG 0
 #define CXIMAGE_SUPPORT_SKA 0
 #define CXIMAGE_SUPPORT_RAW 0
-#define CXIMAGE_SUPPORT_PSD 0
+#define CXIMAGE_SUPPORT_PSD 1
 
 /////////////////////////////////////////////////////////////////////////////
 #define	CXIMAGE_MAX_MEMORY 268435456

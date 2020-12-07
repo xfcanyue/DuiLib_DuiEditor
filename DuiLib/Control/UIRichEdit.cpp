@@ -2384,8 +2384,18 @@ err:
 		m_sTipValue	= pStrTipValue;
 	}
 
-	LPCTSTR CRichEditUI::GetTipValue()
+	CDuiString CRichEditUI::GetTipValue()
 	{
+		if (IsResourceText()) 
+			return CResourceManager::GetInstance()->GetText(m_sTipValue);
+
+		CLangPackage *pkg = GetLangPackage();
+		if(pkg && GetResourceID() > 0)
+		{
+			CDuiString s = pkg->GetTipValue(GetResourceID());
+			if(!s.IsEmpty()) return s; 
+		}
+
 		return m_sTipValue.GetData();
 	}
 
