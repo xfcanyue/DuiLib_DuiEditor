@@ -66,9 +66,9 @@ void CMainFrame::InitWindow()
 	pRoll3->SetText(pRoll3->GetText() + strText);
 	pRoll4->SetText(pRoll4->GetText() + strText);
 
-	CDuiString str1 = CLangManager::GetString1(1);
-	CDuiString str2 = CLangManager::GetString2(1);
-	CDuiString str3 = CLangManager::GetString3(1);
+	CDuiString str1 = CLangManagerUI::GetString1(1);
+	CDuiString str2 = CLangManagerUI::GetString2(1);
+	CDuiString str3 = CLangManagerUI::GetString3(1);
 }
 
 bool CMainFrame::OnCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -115,19 +115,19 @@ bool CMainFrame::OnMenuCommand(const MenuCmd *cmd)
 	}
 	if(IsMenuCommand(cmd, _T("menu_lang_chs")))
 	{
-		CLangManager::SetLanguage(_T("Lang\\ChineseSimplified"), _T("chs"));
+		CLangManagerUI::SetLanguage(_T("Lang\\ChineseSimplified"), _T("chs"));
 		GetMainWnd()->GetManager()->GetLangManager()->ReloadLanguage();
 		return true;
 	}
 	if(IsMenuCommand(cmd, _T("menu_lang_ChineseTraditional")))
 	{
-		CLangManager::SetLanguage(_T("Lang\\ChineseTraditional"), _T("chtrad"));
+		CLangManagerUI::SetLanguage(_T("Lang\\ChineseTraditional"), _T("chtrad"));
 		GetMainWnd()->GetManager()->GetLangManager()->ReloadLanguage();
 		return true;
 	}
 	if(IsMenuCommand(cmd, _T("menu_lang_english")))
 	{
-		CLangManager::SetLanguage(_T("Lang\\English"), _T("en"));
+		CLangManagerUI::SetLanguage(_T("Lang\\English"), _T("en"));
 		GetMainWnd()->GetManager()->GetLangManager()->ReloadLanguage();
 		return true;
 	}
@@ -177,17 +177,17 @@ bool CMainFrame::OnMenuUpdateCommandUI(CMenuCmdUI *cmdUI)
 	}
 	if(IsMenuCommand(cmdUI, _T("menu_lang_chs")))
 	{
-		cmdUI->SetCheck(CLangManager::GetLangName() == _T("chs"));
+		cmdUI->SetCheck(CLangManagerUI::GetLangName() == _T("chs"));
 		return true;
 	}
 	if(IsMenuCommand(cmdUI, _T("menu_lang_ChineseTraditional")))
 	{
-		cmdUI->SetCheck(CLangManager::GetLangName() == _T("chtrad"));
+		cmdUI->SetCheck(CLangManagerUI::GetLangName() == _T("chtrad"));
 		return true;
 	}
 	if(IsMenuCommand(cmdUI, _T("menu_lang_english")))
 	{
-		cmdUI->SetCheck(CLangManager::GetLangName() == _T("en"));
+		cmdUI->SetCheck(CLangManagerUI::GetLangName() == _T("en"));
 		return true;
 	}
 	return false;

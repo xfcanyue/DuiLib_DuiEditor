@@ -21,7 +21,7 @@ bool CApp::InitInstance(HINSTANCE hInstance)
 	DuiPluginsRegister();
 
 	//语言包路径
-	CLangManager::SetLanguage(_T("Lang\\ChineseSimplified"), _T("chs"));
+	CLangManagerUI::SetLanguage(_T("Lang\\ChineseSimplified"), _T("chs"));
 
 	//建立主窗口
 	m_pMainWnd = new CMainFrame();

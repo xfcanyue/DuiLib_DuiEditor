@@ -30,6 +30,8 @@
 #endif
 
 // CDuiEditorDoc
+static CString s_defdocument = _T("<Window size=\"400,300\">\r\n\t<VerticalLayout />\r\n</Window>");
+
 
 IMPLEMENT_DYNCREATE(CDuiEditorDoc, CDocument)
 
@@ -99,9 +101,10 @@ BOOL CDuiEditorDoc::OnNewDocument()
 		return FALSE;
 
 	// TODO: 在此添加重新初始化代码
-	xml_node nodeWindow = m_doc.child_auto(XTEXT("Window"));
-	nodeWindow.append_attribute(XTEXT("size")).set_value(XTEXT("400,300"));
-	nodeWindow.append_child(XTEXT("VerticalLayout"));
+// 	xml_node nodeWindow = m_doc.child_auto(XTEXT("Window"));
+// 	nodeWindow.append_attribute(XTEXT("size")).set_value(XTEXT("400,300"));
+// 	nodeWindow.append_child(XTEXT("VerticalLayout"));
+	m_doc.load_string(T2XML(s_defdocument));
 
 	//GetUIManager()->GetTreeView()->InitTreeContent();
 	m_strDefaultTitle = m_strTitle;
@@ -117,9 +120,10 @@ BOOL CDuiEditorDoc::OnNewDocumentFromUiTemplate()
 	if(!m_doc.load_file(strFile))
 	{
 		AfxMessageBox(_T("载入模板页失败!"));
-		xml_node nodeWindow = m_doc.root().append_child(XTEXT("Window"));
-		nodeWindow.append_attribute(XTEXT("size")).set_value(XTEXT("400,300"));
-		nodeWindow.append_child(XTEXT("VerticalLayout"));
+// 		xml_node nodeWindow = m_doc.root().append_child(XTEXT("Window"));
+// 		nodeWindow.append_attribute(XTEXT("size")).set_value(XTEXT("400,300"));
+// 		nodeWindow.append_child(XTEXT("VerticalLayout"));
+		m_doc.load_string(T2XML(s_defdocument));
 	}	
 
 	//GetUIManager()->GetTreeView()->InitTreeContent();

@@ -573,12 +573,12 @@ namespace DuiLib {
 		static CStdPtrArray m_aPlugins;
 
 	public: 
-		CLangManager *GetLangManager() { return m_pLangManager; }
+		CLangManagerUI *GetLangManager() { return m_pLangManager; }
 		bool IsInitWindowParameter() { return m_bInitWindowParameter; }
 		void SetInitWindowParameter(bool bInit) { m_bInitWindowParameter = bInit; }
 	private:
 		bool m_bInitWindowParameter; //是否已经初始化了Window属性, window属性只能初始化一次,用来过滤Include文件中的window属性 Modify by liqs99
-		CLangManager *m_pLangManager;		//多语言管理器, add by liqs99
+		CLangManagerUI *m_pLangManager;		//多语言管理器, add by liqs99
 
 
 	//////////////////////////////////////////////////////////////////////////

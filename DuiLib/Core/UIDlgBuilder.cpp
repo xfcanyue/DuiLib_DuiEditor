@@ -50,11 +50,11 @@ namespace DuiLib {
 			::FreeResource(hResource);
 			m_pstrtype = type;
 		}
-		CLangPackage *pkg = pManager->GetLangManager()->AddPackage(xml.m_lpstr);
+		CLangPackageUI *pkg = pManager->GetLangManager()->AddPackage(xml.m_lpstr);
 		return Create(pCallback, pManager, pParent, pkg);
 	}
 
-	CControlUI* CDialogBuilder::Create(IDialogBuilderCallback* pCallback, CPaintManagerUI* pManager, CControlUI* pParent, CLangPackage *pkg)
+	CControlUI* CDialogBuilder::Create(IDialogBuilderCallback* pCallback, CPaintManagerUI* pManager, CControlUI* pParent, CLangPackageUI *pkg)
 	{
 		m_pCallback = pCallback;
 		CMarkupNode root = m_xml.GetRoot();
@@ -401,7 +401,7 @@ namespace DuiLib {
 		return m_xml.GetLastErrorLocation(pstrSource, cchMax);
 	}
 
-	CControlUI* CDialogBuilder::_Parse(CMarkupNode* pRoot, CControlUI* pParent, CPaintManagerUI* pManager, CLangPackage *pkg)
+	CControlUI* CDialogBuilder::_Parse(CMarkupNode* pRoot, CControlUI* pParent, CPaintManagerUI* pManager, CLangPackageUI *pkg)
 	{
 		IContainerUI* pContainer = NULL;
 		CControlUI* pReturn = NULL;

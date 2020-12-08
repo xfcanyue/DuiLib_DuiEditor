@@ -136,7 +136,7 @@ namespace DuiLib {
 // 		{
 // 			int x = 0; x++;
 // 		}
-		CLangPackage *pkg = pThis->GetLangPackage();
+		CLangPackageUI *pkg = pThis->GetLangPackage();
 		if(pkg && GetResourceID() > 0)
 		{
 			CDuiString s = pkg->GetText(GetResourceID());
@@ -191,10 +191,10 @@ namespace DuiLib {
 		Invalidate();
 	}
 
-	CLangPackage *CControlUI::GetLangPackage()
+	CLangPackageUI *CControlUI::GetLangPackage()
 	{
 		if(!GetManager()) return NULL;
-		CLangPackage *pkg = GetManager()->GetLangManager()->GetPackage(m_sSkinFile);
+		CLangPackageUI *pkg = GetManager()->GetLangManager()->GetPackage(m_sSkinFile);
 		return pkg;
 	}
 
@@ -649,7 +649,7 @@ namespace DuiLib {
 			return CResourceManager::GetInstance()->GetText(m_sToolTip);
 
 		CControlUI* pThis = const_cast<CControlUI* >(this);
-		CLangPackage *pkg = pThis->GetLangPackage();
+		CLangPackageUI *pkg = pThis->GetLangPackage();
 		if(pkg && GetResourceID() > 0)
 		{
 			CDuiString s = pkg->GetToolTip(GetResourceID());

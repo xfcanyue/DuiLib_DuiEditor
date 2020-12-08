@@ -599,11 +599,11 @@ namespace DuiLib
 		if (IsResourceText()) 
 			return CResourceManager::GetInstance()->GetText(m_sTipValue);
 
-		CLangPackage *pkg = GetLangPackage();
+		CLangPackageUI *pkg = GetLangPackage();
 		if(pkg && GetResourceID() > 0)
 		{
-			CDuiString s = pkg->GetTipValue(GetResourceID());
-			if(!s.IsEmpty()) return s; 
+			LPCTSTR s = pkg->GetTipValue(GetResourceID());
+			if(s && *s!='\0') return s; 
 		}
 		return m_sTipValue;
 	}

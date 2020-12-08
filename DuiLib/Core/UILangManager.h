@@ -3,11 +3,11 @@
 #pragma once
 
 namespace DuiLib {
-	class UILIB_API CLangPackage
+	class UILIB_API CLangPackageUI
 	{
 	public:
-		CLangPackage();
-		~CLangPackage();
+		CLangPackageUI();
+		~CLangPackageUI();
 	
 	public:
 		void SetSkinFile(LPCTSTR lpstrSkinFile);
@@ -32,7 +32,7 @@ namespace DuiLib {
 	private:
 	};
 
-	class UILIB_API CLangManager
+	class UILIB_API CLangManagerUI
 	{
 	protected:
 		struct tagStringTable 
@@ -43,12 +43,12 @@ namespace DuiLib {
 			CDuiString text3;
 		};
 	public:
-		CLangManager(void);
-		~CLangManager(void);
+		CLangManagerUI(void);
+		~CLangManagerUI(void);
 
 		void ReloadLanguage();
-		CLangPackage *AddPackage(LPCTSTR lpstrSkinFile);
-		CLangPackage *GetPackage(LPCTSTR lpstrSkinFile);
+		CLangPackageUI *AddPackage(LPCTSTR lpstrSkinFile);
+		CLangPackageUI *GetPackage(LPCTSTR lpstrSkinFile);
 	
 		static void SetLanguage(LPCTSTR lpstrPath, LPCTSTR lpstrname); //设置语言包文件夹
 		static CDuiString GetLangPath();
@@ -60,7 +60,7 @@ namespace DuiLib {
 		static LPCTSTR GetString3(int id, LPCTSTR defaultstring = NULL);
 	protected:
 		void ResetPackage();
-		CLangPackage *_addPackage(LPCTSTR lpstrSkinFile);
+		CLangPackageUI *_addPackage(LPCTSTR lpstrSkinFile);
 		static BOOL LoadStringTable();
 		static BOOL LoadStringTableResource(STRINGorID xml, LPCTSTR type);
 		static BOOL LoadStringTableResource(CMarkupNode Root);

@@ -293,7 +293,7 @@ namespace DuiLib {
 
 		CShadowUI::Initialize(m_hInstance);
 
-		m_pLangManager = new CLangManager;
+		m_pLangManager = new CLangManagerUI;
 		m_bInitWindowParameter = false;
 	}
 
@@ -2044,7 +2044,7 @@ namespace DuiLib {
 		// 销毁资源管理器
 		CResourceManager::GetInstance()->Release();
 		CControlFactory::GetInstance()->Release();
-		CLangManager::ReleaseStringTable();
+		CLangManagerUI::ReleaseStringTable();
 
 		// 清理共享资源
 		// 图片

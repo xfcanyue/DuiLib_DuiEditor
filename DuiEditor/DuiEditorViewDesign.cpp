@@ -1315,7 +1315,7 @@ void CDuiEditorViewDesign::_CreateResourceIDAuto(xml_node root)
 		const char *ptoolvalue = attrTooltip.value();
 		const char *ptipvalue = attrTipvalue.value();
 		//内容为空的也不处理
-		if((pvalue && pvalue!='\0') || (ptoolvalue && ptoolvalue!='\0') || (ptipvalue && ptipvalue!='\0') )
+		if((pvalue && *pvalue!='\0') || (ptoolvalue && *ptoolvalue!='\0') || (ptipvalue && *ptipvalue!='\0') )
 		{
 			_nMaxResourceID++;
 			CString strMaxID; 

@@ -3,27 +3,27 @@
 
 namespace DuiLib {
 	
-	CLangPackage::CLangPackage()
+	CLangPackageUI::CLangPackageUI()
 	{
 
 	}
 
-	CLangPackage::~CLangPackage()
+	CLangPackageUI::~CLangPackageUI()
 	{
 		ResetResource();
 	}
 
-	void CLangPackage::SetSkinFile(LPCTSTR lpstrSkinFile)
+	void CLangPackageUI::SetSkinFile(LPCTSTR lpstrSkinFile)
 	{
 		m_sSkinFile = lpstrSkinFile;
 	}
 
-	LPCTSTR CLangPackage::GetSkinFile()
+	LPCTSTR CLangPackageUI::GetSkinFile()
 	{
 		return m_sSkinFile.GetData();
 	}
 
-	BOOL CLangPackage::LoadResource(STRINGorID xml, LPCTSTR type)
+	BOOL CLangPackageUI::LoadResource(STRINGorID xml, LPCTSTR type)
 	{
 		CMarkup xmlMarkup;
 		if( HIWORD(xml.m_lpstr) != NULL ) 
@@ -57,7 +57,7 @@ namespace DuiLib {
 		return LoadResource(xmlMarkup.GetRoot());
 	}
 
-	BOOL CLangPackage::LoadResource(CMarkupNode Root)
+	BOOL CLangPackageUI::LoadResource(CMarkupNode Root)
 	{	
 		if( !Root.IsValid() ) return FALSE;
 
@@ -111,7 +111,7 @@ namespace DuiLib {
 		return TRUE;
 	}
 
-	void CLangPackage::ResetResource()
+	void CLangPackageUI::ResetResource()
 	{
 		CDuiString* lpStr;
 		for (std::map<int, CDuiString *>::iterator it=m_mText.begin(); it!=m_mText.end(); it++)
@@ -134,7 +134,7 @@ namespace DuiLib {
 		m_mTipValue.clear();
 	}
 
-	BOOL CLangPackage::AddText(int resid, LPCTSTR lpstrText)
+	BOOL CLangPackageUI::AddText(int resid, LPCTSTR lpstrText)
 	{
 // 		if(resid == 39)
 // 		{
@@ -149,7 +149,7 @@ namespace DuiLib {
 		return TRUE;
 	}
 
-	LPCTSTR CLangPackage::GetText(int resid)
+	LPCTSTR CLangPackageUI::GetText(int resid)
 	{
 		std::map<int, CDuiString *>::iterator it = m_mText.find(resid);
 		if(it != m_mText.end())
@@ -159,7 +159,7 @@ namespace DuiLib {
 		return _T("");
 	}	
 
-	BOOL CLangPackage::AddToolTip(int resid, LPCTSTR lpstrText)
+	BOOL CLangPackageUI::AddToolTip(int resid, LPCTSTR lpstrText)
 	{
 		std::map<int, CDuiString *>::iterator it = m_mToolTip.find(resid);
 		if(it != m_mToolTip.end())
@@ -170,7 +170,7 @@ namespace DuiLib {
 		return TRUE;
 	}
 
-	LPCTSTR CLangPackage::GetToolTip(int resid)
+	LPCTSTR CLangPackageUI::GetToolTip(int resid)
 	{
 		std::map<int, CDuiString *>::iterator it = m_mToolTip.find(resid);
 		if(it != m_mToolTip.end())
@@ -180,7 +180,7 @@ namespace DuiLib {
 		return _T("");
 	}
 
-	BOOL CLangPackage::AddTipValue(int resid, LPCTSTR lpstrText)
+	BOOL CLangPackageUI::AddTipValue(int resid, LPCTSTR lpstrText)
 	{
 		std::map<int, CDuiString *>::iterator it = m_mTipValue.find(resid);
 		if(it != m_mTipValue.end())
@@ -191,7 +191,7 @@ namespace DuiLib {
 		return TRUE;
 	}
 
-	LPCTSTR CLangPackage::GetTipValue(int resid)
+	LPCTSTR CLangPackageUI::GetTipValue(int resid)
 	{
 		std::map<int, CDuiString *>::iterator it = m_mTipValue.find(resid);
 		if(it != m_mTipValue.end())
@@ -202,15 +202,15 @@ namespace DuiLib {
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	CDuiString CLangManager::s_sLangPath;
-	CDuiString CLangManager::s_sLangName;
-	std::map<int, CLangManager::tagStringTable *> CLangManager::m_mStringTable;
-	CLangManager::CLangManager(void)
+	CDuiString CLangManagerUI::s_sLangPath;
+	CDuiString CLangManagerUI::s_sLangName;
+	std::map<int, CLangManagerUI::tagStringTable *> CLangManagerUI::m_mStringTable;
+	CLangManagerUI::CLangManagerUI(void)
 	{
 		
 	}
 
-	CLangManager::~CLangManager(void)
+	CLangManagerUI::~CLangManagerUI(void)
 	{
 		ResetPackage();
 
@@ -225,28 +225,28 @@ namespace DuiLib {
 		}
 	}
 
-	void CLangManager::ResetPackage()
+	void CLangManagerUI::ResetPackage()
 	{
 		for( int i = 0; i< m_mLangPackage.GetSize(); i++ )
 		{
 			if(LPCTSTR key = m_mLangPackage.GetAt(i))
 			{
-				CLangPackage *pkg = static_cast<CLangPackage *>(m_mLangPackage.Find(key));
+				CLangPackageUI *pkg = static_cast<CLangPackageUI *>(m_mLangPackage.Find(key));
 				delete pkg; pkg = NULL;
 			}
 		}
 		m_mLangPackage.RemoveAll();	
 	}
 
-	CLangPackage *CLangManager::_addPackage(LPCTSTR lpstrSkinFile)
+	CLangPackageUI *CLangManagerUI::_addPackage(LPCTSTR lpstrSkinFile)
 	{
-		CLangPackage *pkg = static_cast<CLangPackage *>(m_mLangPackage.Find(lpstrSkinFile));
+		CLangPackageUI *pkg = static_cast<CLangPackageUI *>(m_mLangPackage.Find(lpstrSkinFile));
 		if(pkg) return FALSE;
 
-		pkg = new CLangPackage;
+		pkg = new CLangPackageUI;
 		pkg->SetSkinFile(lpstrSkinFile);
 
-		CDuiString sPath = CLangManager::GetLangPath();
+		CDuiString sPath = CLangManagerUI::GetLangPath();
 		if(sPath.GetAt(sPath.GetLength()-1) != '\\')	sPath += '\\';
 		CDuiString sFile = lpstrSkinFile;
 		if(sFile.ReverseFind('.') >= 0)
@@ -266,7 +266,7 @@ namespace DuiLib {
 		return pkg;
 	}
 
-	void CLangManager::ReloadLanguage()
+	void CLangManagerUI::ReloadLanguage()
 	{
 		ResetPackage();
 
@@ -280,7 +280,7 @@ namespace DuiLib {
 		}
 	}
 
-	CLangPackage *CLangManager::AddPackage(LPCTSTR lpstrSkinFile)
+	CLangPackageUI *CLangManagerUI::AddPackage(LPCTSTR lpstrSkinFile)
 	{
 		CDuiString *pstr = static_cast<CDuiString *>(m_mSkinFile.Find(lpstrSkinFile));
 		if(pstr) return FALSE;
@@ -289,32 +289,32 @@ namespace DuiLib {
 		return _addPackage(lpstrSkinFile);
 	}
 
-	CLangPackage *CLangManager::GetPackage(LPCTSTR lpstrSkinFile)
+	CLangPackageUI *CLangManagerUI::GetPackage(LPCTSTR lpstrSkinFile)
 	{
-		return static_cast<CLangPackage *>(m_mLangPackage.Find(lpstrSkinFile));
+		return static_cast<CLangPackageUI *>(m_mLangPackage.Find(lpstrSkinFile));
 	}
 	
-	void CLangManager::SetLanguage(LPCTSTR lpstrPath, LPCTSTR lpstrname) //设置语言包文件夹
+	void CLangManagerUI::SetLanguage(LPCTSTR lpstrPath, LPCTSTR lpstrname) //设置语言包文件夹
 	{
 		s_sLangPath = lpstrPath;
 		s_sLangName = lpstrname;
 		LoadStringTable();
 	}
 
-	CDuiString CLangManager::GetLangPath()
+	CDuiString CLangManagerUI::GetLangPath()
 	{
 		return s_sLangPath.GetData();
 	}
 
-	CDuiString CLangManager::GetLangName()
+	CDuiString CLangManagerUI::GetLangName()
 	{
 		return s_sLangName;
 	}
 
-	BOOL CLangManager::LoadStringTable()
+	BOOL CLangManagerUI::LoadStringTable()
 	{
 		ReleaseStringTable();
-		CDuiString sPath = CLangManager::GetLangPath();
+		CDuiString sPath = CLangManagerUI::GetLangPath();
 		if(sPath.GetAt(sPath.GetLength()-1) != '\\')	sPath += '\\';
 		sPath += _T("StringTable.lng");
 
@@ -322,7 +322,7 @@ namespace DuiLib {
 		return LoadStringTableResource(xml, NULL);
 	}
 
-	BOOL CLangManager::LoadStringTableResource(STRINGorID xml, LPCTSTR type)
+	BOOL CLangManagerUI::LoadStringTableResource(STRINGorID xml, LPCTSTR type)
 	{
 		CMarkup xmlMarkup;
 		if( HIWORD(xml.m_lpstr) != NULL ) 
@@ -356,7 +356,7 @@ namespace DuiLib {
 		return LoadStringTableResource(xmlMarkup.GetRoot());
 	}
 
-	BOOL CLangManager::LoadStringTableResource(CMarkupNode Root)
+	BOOL CLangManagerUI::LoadStringTableResource(CMarkupNode Root)
 	{
 		if( !Root.IsValid() ) return FALSE;
 
@@ -415,7 +415,7 @@ namespace DuiLib {
 		return TRUE;
 	}
 
-	void CLangManager::ReleaseStringTable()
+	void CLangManagerUI::ReleaseStringTable()
 	{
 		if(m_mStringTable.size() == 0) return;
 		for (std::map<int, tagStringTable *>::iterator it=m_mStringTable.begin(); it!=m_mStringTable.end(); it++)
@@ -426,7 +426,7 @@ namespace DuiLib {
 		m_mStringTable.clear();
 	}
 
-	LPCTSTR CLangManager::GetString1(int id, LPCTSTR defaultstring)
+	LPCTSTR CLangManagerUI::GetString1(int id, LPCTSTR defaultstring)
 	{
 		if(m_mStringTable.size() == 0) return _T("");
 		std::map<int, tagStringTable *>::iterator it = m_mStringTable.find(id);
@@ -434,7 +434,7 @@ namespace DuiLib {
 		return it->second->text1.GetData();
 	}
 
-	LPCTSTR CLangManager::GetString2(int id, LPCTSTR defaultstring)
+	LPCTSTR CLangManagerUI::GetString2(int id, LPCTSTR defaultstring)
 	{
 		if(m_mStringTable.size() == 0) return _T("");
 		std::map<int, tagStringTable *>::iterator it = m_mStringTable.find(id);
@@ -442,7 +442,7 @@ namespace DuiLib {
 		return it->second->text2.GetData();
 	}
 
-	LPCTSTR CLangManager::GetString3(int id, LPCTSTR defaultstring)
+	LPCTSTR CLangManagerUI::GetString3(int id, LPCTSTR defaultstring)
 	{
 		if(m_mStringTable.size() == 0) return _T("");
 		std::map<int, tagStringTable *>::iterator it = m_mStringTable.find(id);

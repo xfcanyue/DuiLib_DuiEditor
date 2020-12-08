@@ -46,7 +46,7 @@ namespace DuiLib {
 
 		virtual int  GetResourceID() const;			//add by liqs99
 		virtual void SetResourceID(int resid);		//add by liqs99
-		virtual CLangPackage *GetLangPackage();
+		virtual CLangPackageUI *GetLangPackage();
 		virtual void SetSkinFile(LPCTSTR lpstrSkinFile);
 		virtual CDuiString GetSkinFile();
 
