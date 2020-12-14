@@ -1,4 +1,5 @@
 #pragma once
+#include "FormTest.h"
 class CMainFrame : public CUIFrameWnd
 {
 public:

@@ -3,10 +3,16 @@
 <!-- 如有遗漏，欢迎补充：qdtroy(qdtroy@qq.com) -->
 <!-- 落魄书生  53751267@qq.com
 
-1, Attribute节点增加value属性, 标注取值范围, 目前只有STRING类型有用到. 
+1, Attribute节点增加value属性, 标注取值范围
 例如 
+STRING类型:
 <Attribute name="itemalign" default="center" type="STRING" value="left、right、center" comment=""/>
+
+ATTRIBUTELIST:
 <Attribute name="value" default="" type="ATTRIBUTELIST" value="类名" />
+
+INT类型(最小值，最大值)：
+<Attribute name="alpha" default="" type="ATTRIBUTELIST" value="0,255" /> //表示alpha取值范围是：0 ~ 255
 
 2, 图片节点的type属性, 改为IMAGE. 否则程序不能识别为图片属性.
 例如 <Attribute name="bkimage" default="" type="IMAGE" comment=""/>
@@ -128,14 +134,14 @@
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
-		<Attribute name="sepheight" default="0" type="INT" comment="分隔符高度,正负表示分隔符在顶部还是底部,如(4)" />
+		<Attribute name="sepheight" default="0" type="INT" comment="分隔符高度,负数分隔符在顶部,如(-4)，整数分隔符在底部,如(4)" />
 		<Attribute name="sepimm" default="false" type="BOOL" comment="拖动分隔符是否立即改变大小,如(false)" />
 	</VerticalLayout>
 	<HorizontalLayout parent="Container" notifies="setfocus killfocus timer menu windowinit(root)">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
-		<Attribute name="sepwidth" default="0" type="INT" comment="分隔符宽,正负表示分隔符在左边还是右边,如(-4)" />
+		<Attribute name="sepwidth" default="0" type="INT" comment="分隔符宽,负数分隔符在左边,如(-4)，整数分隔符在右边,如(4)" />
 		<Attribute name="sepimm" default="false" type="BOOL" comment="拖动分隔符是否立即改变大小,如(false)" />
 	</HorizontalLayout>
 	<TileLayout parent="Container" notifies="setfocus killfocus timer menu windowinit(root)">
@@ -876,8 +882,8 @@
 		<Attribute name="mask" default="0x00000000" type="DWORD" comment="..." />
 		<Attribute name="fade" default="255" type="INT" comment="透明度" />
 		<Attribute name="hole" default="false" type="BOOL" comment="..." />
-		<Attribute name="xtiled" default="false" type="BOOL" comment="橫向拉伸" />
-		<Attribute name="ytiled" default="false" type="BOOL" comment="纵向拉伸" />
+		<Attribute name="xtiled" default="false" type="BOOL" comment="橫向平铺" />
+		<Attribute name="ytiled" default="false" type="BOOL" comment="纵向平铺" />
 	</IMAGE>
 	<Style>
 		<Attribute name="source" default="" type="STRING" comment="需要包含的xml文件" />

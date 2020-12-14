@@ -4,6 +4,7 @@
 
 // CImageEditorImagePreview 视图
 
+//左边的原图显示窗口内的图片窗口
 class CImageEditorImagePreview : public CScrollView
 {
 	DECLARE_DYNCREATE(CImageEditorImagePreview)
@@ -20,6 +21,11 @@ public:
 
 	CRect m_rcImage;
 	CRectTracker m_tracker;
+
+	//CRectTracker m_trackerSource;	//选取source的tracker
+
+	CxImage m_imgSource;			//选取corner时，显示的图片
+	//CRectTracker m_trackerCorner;	//选取corner的tracker
 protected:
 	virtual void OnDraw(CDC* pDC);      // 重写以绘制该视图
 

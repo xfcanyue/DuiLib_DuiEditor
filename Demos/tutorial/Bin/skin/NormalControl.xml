@@ -3,7 +3,7 @@
 	<VerticalLayout vscrollbar="true" childpadding="10" padding="10,10,10,10" bkcolor="0xFFD1E8F5">
 		<HorizontalLayout height="30" childpadding="10">
 			<Label text="按钮" autocalcwidth="true" resourceid="3" />
-			<Button width="100" normalimage="file='images\common\button\button.png' source='0,0,15,27' corner='5,5,5,5' " hotimage="file='images\common\button\button.png' source='15,0,30,27' corner='5,5,5,5' " text="按钮文本" resourceid="2" />
+			<Button name="btn_test" width="100" normalimage="file='images\common\button\button.png' source='0,0,15,27' corner='5,5,5,5' " hotimage="file='images\common\button\button.png' source='15,0,30,27' corner='5,5,5,5' " text="按钮文本" resourceid="2" />
 			<IconButton iconnormalimage="images\delico.png" width="100" normalimage="file='images\common\button\button.png' source='0,0,15,27' corner='5,5,5,5' " hotimage="file='images\common\button\button.png' source='15,0,30,27' corner='5,5,5,5' " text="图标按钮" resourceid="4" />
 			<ButtonLayout width="150" style="style_button">
 				<HorizontalLayout inset="10,0,10,0" childvalign="vcenter">

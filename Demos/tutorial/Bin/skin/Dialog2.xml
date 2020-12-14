@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Window size="550,500" sizebox="4,4,6,6" caption="0,0,0,25" roundcorner="5,5">
-	<VerticalLayout width="569" height="461" inset="1,1,1,1" bkcolor="0xFF498DFD" bkcolor2="0xFFCFE7F4" bordercolor="0xFF768D9B" bordersize="1">
-		<Label text="string" width="254" height="53" />
+<Window size="800,500" sizebox="4,4,6,6" caption="0,0,0,25" roundcorner="5,5">
+	<Font id="0" name="微软雅黑" size="18" default="true" />
+	<VerticalLayout bkcolor="0xFFA6CAF0">
+		<Button width="166" height="49" text="确认" pos="251,130,417,179" float="true" bkcolor="0xFFE1E1E1" bordercolor="0xFFA0A0A4" bordersize="1" />
 	</VerticalLayout>
 </Window>

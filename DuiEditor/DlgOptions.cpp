@@ -36,6 +36,8 @@ void CDlgOptions::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_MFCCOLORBUTTON4, m_ctrlBkColor4);
 	DDX_Check(pDX, IDC_CHECK1, m_config.bDesignerShowShadow);
 	DDX_Check(pDX, IDC_CHECK5, m_config.bFilterPosWidthHeight);
+	DDX_Check(pDX, IDC_CHECK4, m_config.bLangManager);
+	DDX_Text(pDX, IDC_EDIT6, m_config.strLangPath);
 }
 
 

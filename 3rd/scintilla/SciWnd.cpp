@@ -96,9 +96,7 @@ BOOL CSciWnd::Create (DWORD dwExStyle, DWORD dwStyle, const RECT& rect, CWnd* pP
 {
 	if(CreateEx(0, _T("Scintilla"), _T(""), dwStyle, rect, pParentWnd, nID, NULL))
 	{	
-		m_sendeditor = (int (__cdecl *)(void *,int,int,int))SendMessage(SCI_GETDIRECTFUNCTION,0,0);
-		m_pSendEditor = (void *)SendMessage(SCI_GETDIRECTPOINTER,0,0);
-
+		InitSciApi(m_hWnd);
 		return TRUE;
 	}
 	return FALSE;

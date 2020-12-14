@@ -15,17 +15,18 @@ protected:
 	virtual ~CImageEditorFrame();
 
 public:
-	CImageEditorView		m_wndView;
-	CImageEditorPaneFile	m_wndList;
+	CImageEditorView		m_wndView;			//中间的视图
+	CImageEditorPaneFile	m_wndList;			//左边的文件列表
 	CDockPropertyWnd		m_wndProperty;
 	CMFCToolBar				m_wndToolBar;
-	CImageEditorPaneAdjust	m_wndPaneAdjust;
-	CImageEditorPaneImage	m_wndImage;
+	CImageEditorPaneAdjust	m_wndPaneAdjust;	//下方的pane窗口
+	CImageEditorPaneImage	m_wndImage;			//左边的原图显示窗口
 
 	CUIPropertyGridCtrl		*m_pPropList;
 
 	BOOL m_bPreview;
-
+	BOOL m_bTrackerDest;
+	BOOL m_bTrackSource;
 public:
 	void OnSelectedFile(LPCTSTR lpstrPathName);
 	void ParentPreview();
@@ -51,6 +52,12 @@ public:
 	afx_msg void OnUpdateTbUiPreview(CCmdUI *pCmdUI);
 	afx_msg void OnDestroy();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnTbImageEditorDest();
+	afx_msg void OnUpdateTbImageEditorDest(CCmdUI *pCmdUI);
+	afx_msg void OnTbImageEditorSource();
+	afx_msg void OnUpdateTbImageEditorSource(CCmdUI *pCmdUI);
+	afx_msg void OnTbImageEditorCorner();
+	afx_msg void OnUpdateTbImageEditorCorner(CCmdUI *pCmdUI);
 };
 
 

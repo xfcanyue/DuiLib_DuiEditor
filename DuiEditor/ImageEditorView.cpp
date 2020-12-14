@@ -84,7 +84,8 @@ void CImageEditorView::OnDraw(CDC* pDC)
 	CRenderEngine::DrawImage(memDC->m_hDC, m_pManager, m_rcControl, m_rcControl, m_drawInfo);
 #endif
 
-	m_tracker.Draw(&memDC);
+	if(g_pEditorImage->m_pFrame->m_bTrackerDest)
+		m_tracker.Draw(&memDC);
 }
 
 // CImageEditorView 消息处理程序
@@ -103,6 +104,12 @@ void CImageEditorView::InitData()
 	{
 		temp.Format(_T("%s='%s' "), XML2T(attr.name()), XML2T(attr.value()));
 		strImageInfo += temp;
+	}
+
+	CString file = XML2T(node.attribute("file").as_string());
+	if(!file.IsEmpty())
+	{
+		m_pManager->RemoveImage(file);
 	}
 
 	m_drawInfo.Clear();
@@ -147,6 +154,7 @@ void CImageEditorView::RecalcImageRect()
 	}
 	m_rcControl = rcControl;
 
+	//选取dest框
 	xml_attribute attrDest = g_pEditorImage->m_nodeImage.child(XTEXT("IMAGE")).attribute(XTEXT("dest"));
 	if(attrDest)
 	{
@@ -161,18 +169,23 @@ void CImageEditorView::RecalcImageRect()
 		m_tracker.m_rect = m_rcControl;
 		CPoint pt = GetScrollPosition();
 		m_tracker.m_rect.OffsetRect(-pt.x, -pt.y);
-	}
+	}	
+
 	Invalidate();
 }
 
 void CImageEditorView::OnChangeRect()
 {
+	if(!g_pEditorImage->m_pFrame->m_bTrackerDest)
+	{
+		return;
+	}
+
+	//选取dest框
+
 	CRect rc = m_tracker.m_rect;
 	rc.OffsetRect(-m_rcControl.left, -m_rcControl.top);
 	rc.OffsetRect(GetScrollPosition());
-
-	//CPoint pt = GetScrollPosition();
-	//InsertMsgV(_T("pt.x=%d, pt.y=%d, rc.left=%d, rc.top=%d, rc.right=%d, rc.bottom=%d"), pt.x, pt.y, rc.left, rc.top, rc.right, rc.bottom);
 
 	g_duiProp.AddAttribute(g_pEditorImage->m_nodedata, _T("dest"), RectToString(rc), NULL);
 
@@ -206,6 +219,12 @@ BOOL CImageEditorView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 
 void CImageEditorView::OnLButtonDown(UINT nFlags, CPoint point)
 {
+	if(!g_pEditorImage->m_pFrame->m_bTrackerDest)
+	{
+		CScrollView::OnLButtonDown(nFlags, point);
+		return;
+	}
+
 	SetFocus();
 
 	BOOL bNewRect = FALSE;
@@ -270,7 +289,7 @@ void CImageEditorView::PostNcDestroy()
 BOOL CImageEditorView::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	if (m_tracker.SetCursor( pWnd, nHitTest )) 
+	if (g_pEditorImage->m_pFrame->m_bTrackerDest && m_tracker.SetCursor( pWnd, nHitTest )) 
 		return TRUE;
 	return CScrollView::OnSetCursor(pWnd, nHitTest, message);
 }
@@ -288,6 +307,12 @@ void CImageEditorView::OnSize(UINT nType, int cx, int cy)
 
 void CImageEditorView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
+	if(!g_pEditorImage->m_pFrame->m_bTrackerDest)
+	{
+		CScrollView::OnKeyDown(nChar, nRepCnt, nFlags);
+		return;
+	}
+
 	switch(nChar)
 	{
 	case VK_UP:

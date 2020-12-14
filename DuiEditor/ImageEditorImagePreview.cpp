@@ -23,6 +23,11 @@ CImageEditorImagePreview::CImageEditorImagePreview()
 	m_tracker.m_nStyle = 0;
 	m_tracker.m_nStyle |= CRectTracker::dottedLine;
 	m_tracker.m_nStyle |= CRectTracker::resizeOutside;
+
+	m_tracker.m_rect = CRect(0,0,0,0);
+	m_tracker.m_nStyle = 0;
+	m_tracker.m_nStyle |= CRectTracker::dottedLine;
+	m_tracker.m_nStyle |= CRectTracker::resizeOutside;
 }
 
 CImageEditorImagePreview::~CImageEditorImagePreview()
@@ -79,49 +84,113 @@ void CImageEditorImagePreview::InitData()
 
 void CImageEditorImagePreview::RecalcImageRect()
 {
-	CRect rcControl = g_pEditorImage->m_rcImage;
+	//选取source
+	if(g_pEditorImage->m_pFrame->m_bTrackSource)
+	{
+		CRect rcControl = g_pEditorImage->m_rcImage;
 
-	CRect rcClient;
-	GetClientRect(&rcClient);
-	CPoint pt = rcClient.CenterPoint();
-	CRect rcTemp = rcControl;
-	if(rcClient.Width() > rcControl.Width())
-	{
-		rcControl.left = pt.x - rcTemp.Width()/2;
-		rcControl.right = pt.x + rcTemp.Width()/2;
-	}
-	if(rcClient.Height() > rcControl.Height())
-	{
-		rcControl.top = pt.y - rcTemp.Height()/2;
-		rcControl.bottom = pt.y + rcTemp.Height()/2;
-	}
-	m_rcImage = rcControl;
+		//让图片居中显示
+		CRect rcClient;
+		GetClientRect(&rcClient);
+		CPoint pt = rcClient.CenterPoint();
+		CRect rcTemp = rcControl;
+		if(rcClient.Width() > rcControl.Width())
+		{
+			rcControl.left = pt.x - rcTemp.Width()/2;
+			rcControl.right = pt.x + rcTemp.Width()/2;
+		}
+		if(rcClient.Height() > rcControl.Height())
+		{
+			rcControl.top = pt.y - rcTemp.Height()/2;
+			rcControl.bottom = pt.y + rcTemp.Height()/2;
+		}
+		m_rcImage = rcControl;
 
-	xml_attribute attrDest = g_pEditorImage->m_nodedata.attribute(XTEXT("source"));
-	if(attrDest)
-	{
-		CDuiRect rc(XML2T(attrDest.as_string(XTEXT("0,0,0,0"))));
+		xml_attribute attrSource = g_pEditorImage->m_nodedata.attribute(XTEXT("source"));
+		CDuiRect rc(XML2T(attrSource.as_string(XTEXT("0,0,0,0"))));
+		if(rc.IsNull()) 
+			rc = m_rcImage;
+		else
+			rc.Offset(m_rcImage.left, m_rcImage.top);
+
 		m_tracker.m_rect = rc;
-		m_tracker.m_rect.OffsetRect(m_rcImage.left, m_rcImage.top);
-		CPoint pt = GetScrollPosition();
-		m_tracker.m_rect.OffsetRect(-pt.x, -pt.y);
+		CPoint ptpos = GetScrollPosition();
+		m_tracker.m_rect.OffsetRect(-ptpos.x, -ptpos.y);
 	}
-	else
+	else //选取conrner
 	{
-		m_tracker.m_rect = m_rcImage;
-		m_tracker.m_rect.OffsetRect(m_rcImage.left, m_rcImage.top);
-		CPoint pt = GetScrollPosition();
-		m_tracker.m_rect.OffsetRect(-pt.x, -pt.y);
+		xml_attribute attrDest = g_pEditorImage->m_nodedata.attribute(XTEXT("source"));
+		CDuiRect rcSource(XML2T(attrDest.as_string(XTEXT("0,0,0,0"))));
+		if(rcSource.IsNull()) 
+		{
+			rcSource = g_pEditorImage->m_rcImage;
+		}
+		//把source部分的图片截取出来，方便corner的选取
+		m_imgSource.DestroyFrames(); m_imgSource.Destroy();
+		g_pEditorImage->m_image.Crop(rcSource, &m_imgSource);
+
+		CRect rcControl = rcSource;
+		//让图片居中显示
+		CRect rcClient;
+		GetClientRect(&rcClient);
+		CPoint pt = rcClient.CenterPoint();
+		CRect rcTemp = rcControl;
+		if(rcClient.Width() > rcControl.Width())
+		{
+			rcControl.left = pt.x - rcTemp.Width()/2;
+			rcControl.right = pt.x + rcTemp.Width()/2;
+		}
+		if(rcClient.Height() > rcControl.Height())
+		{
+			rcControl.top = pt.y - rcTemp.Height()/2;
+			rcControl.bottom = pt.y + rcTemp.Height()/2;
+		}
+		m_rcImage = rcControl;
+
+
+		xml_attribute attrCorner = g_pEditorImage->m_nodedata.attribute(XTEXT("corner"));
+		CDuiRect rc(XML2T(attrCorner.as_string(XTEXT("0,0,0,0"))));
+
+		CRect rc1;
+		rc1.left = m_rcImage.left + rc.left;
+		rc1.right = m_rcImage.right - rc.right;
+		rc1.top = m_rcImage.top + rc.top;
+		rc1.bottom = m_rcImage.bottom - rc.bottom;
+
+		m_tracker.m_rect = rc1;
+		CPoint ptpos = GetScrollPosition();
+		m_tracker.m_rect.OffsetRect(-ptpos.x, -ptpos.y);
 	}
 }
 
 void CImageEditorImagePreview::OnChangeRect()
 {
-	CRect rc = m_tracker.m_rect;
-	rc.OffsetRect(-m_rcImage.left, -m_rcImage.top);
-	rc.OffsetRect(GetScrollPosition());
+	//选取source
+	if(g_pEditorImage->m_pFrame->m_bTrackSource)
+	{
+		CRect rc = m_tracker.m_rect;
+		rc.OffsetRect(-m_rcImage.left, -m_rcImage.top);
+		rc.OffsetRect(GetScrollPosition());
+		g_duiProp.AddAttribute(g_pEditorImage->m_nodedata, _T("source"), RectToString(rc), NULL);
+	}
+	else //选取conrner
+	{
+		xml_attribute attrSource = g_pEditorImage->m_nodedata.attribute(XTEXT("source"));
+		CDuiRect rcSource(XML2T(attrSource.as_string(XTEXT("0,0,0,0"))));
+		if(rcSource.IsNull()) 
+			rcSource = m_rcImage;
+		else
+			rcSource.Offset(m_rcImage.left, m_rcImage.top);
 
-	g_duiProp.AddAttribute(g_pEditorImage->m_nodedata, _T("source"), RectToString(rc), NULL);
+		CRect rc = m_tracker.m_rect;
+		rc.OffsetRect(GetScrollPosition());
+ 		CRect rc1;
+		rc1.left = rc.left - m_rcImage.left;
+		rc1.right = m_rcImage.right - rc.right;
+		rc1.top = rc.top - m_rcImage.top;
+		rc1.bottom = m_rcImage.bottom - rc.bottom;
+		g_duiProp.AddAttribute(g_pEditorImage->m_nodedata, _T("corner"), RectToString(rc1), NULL);
+	}
 
 	g_pEditorImage->m_pFrame->m_wndImage.m_pView->InitData();
 	g_pEditorImage->m_pFrame->m_wndView.InitData();
@@ -146,7 +215,17 @@ void CImageEditorImagePreview::OnDraw(CDC* pDC)
 	memDC->FillRect(rcArea, &afxGlobalData.brBlack);
 
 	memDC->FillSolidRect(m_rcImage, g_cfg.crDesignerBkColor);
-	g_pEditorImage->m_image.Draw(memDC->m_hDC, m_rcImage);
+
+	if(g_pEditorImage->m_pFrame->m_bTrackSource)
+	{
+		g_pEditorImage->m_image.Draw(memDC->m_hDC, m_rcImage);
+		//m_trackerSource.Draw(&memDC);
+	}
+	else
+	{
+		m_imgSource.Draw(memDC->m_hDC, m_rcImage);
+		//m_trackerCorner.Draw(&memDC);
+	}
 
 	m_tracker.Draw(&memDC);
 }

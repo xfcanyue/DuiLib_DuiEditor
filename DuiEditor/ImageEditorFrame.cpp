@@ -16,6 +16,8 @@ IMPLEMENT_DYNCREATE(CImageEditorFrame, CFrameWndEx)
 CImageEditorFrame::CImageEditorFrame()
 {
 	m_bPreview = TRUE;	
+	m_bTrackerDest = TRUE;
+	m_bTrackSource = TRUE;
 }
 
 CImageEditorFrame::~CImageEditorFrame()
@@ -36,6 +38,12 @@ BEGIN_MESSAGE_MAP(CImageEditorFrame, CFrameWndEx)
 	ON_UPDATE_COMMAND_UI(ID_TB_UI_PREVIEW, &CImageEditorFrame::OnUpdateTbUiPreview)
 	ON_WM_DESTROY()
 	ON_WM_TIMER()
+	ON_COMMAND(ID_TB_IMAGE_EDITOR_DEST, &CImageEditorFrame::OnTbImageEditorDest)
+	ON_UPDATE_COMMAND_UI(ID_TB_IMAGE_EDITOR_DEST, &CImageEditorFrame::OnUpdateTbImageEditorDest)
+	ON_COMMAND(ID_TB_IMAGE_EDITOR_SOURCE, &CImageEditorFrame::OnTbImageEditorSource)
+	ON_UPDATE_COMMAND_UI(ID_TB_IMAGE_EDITOR_SOURCE, &CImageEditorFrame::OnUpdateTbImageEditorSource)
+	ON_COMMAND(ID_TB_IMAGE_EDITOR_CORNER, &CImageEditorFrame::OnTbImageEditorCorner)
+	ON_UPDATE_COMMAND_UI(ID_TB_IMAGE_EDITOR_CORNER, &CImageEditorFrame::OnUpdateTbImageEditorCorner)
 END_MESSAGE_MAP()
 
 
@@ -393,4 +401,44 @@ void CImageEditorFrame::OnTimer(UINT_PTR nIDEvent)
 		KillTimer(nIDEvent);
 	}
 	CFrameWndEx::OnTimer(nIDEvent);
+}
+
+
+void CImageEditorFrame::OnTbImageEditorDest()
+{
+	m_bTrackerDest = !m_bTrackerDest;
+	m_wndImage.m_pView->Invalidate();
+	Invalidate();
+}
+
+
+void CImageEditorFrame::OnUpdateTbImageEditorDest(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(m_bTrackerDest);
+}
+
+
+void CImageEditorFrame::OnTbImageEditorSource()
+{
+	m_bTrackSource = TRUE;
+	m_wndImage.m_pView->InitData();
+}
+
+
+void CImageEditorFrame::OnUpdateTbImageEditorSource(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(m_bTrackSource);
+}
+
+
+void CImageEditorFrame::OnTbImageEditorCorner()
+{
+	m_bTrackSource = FALSE;
+	m_wndImage.m_pView->InitData();
+}
+
+
+void CImageEditorFrame::OnUpdateTbImageEditorCorner(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(!m_bTrackSource);
 }

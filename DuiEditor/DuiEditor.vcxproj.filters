@@ -224,6 +224,9 @@
     <None Include="res\ToolBox\MsgWnd.ico">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="res\bmp00007.bmp">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

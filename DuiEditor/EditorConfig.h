@@ -24,6 +24,8 @@ struct tagEditorConfig
 	BOOL bViewGrid;			//是否显示网格
 	BOOL bViewMouse;		//是否显示鼠标线
 
+	BOOL bLangManager;		//是否自动管理语言包
+	CString strLangPath;	//语言包路径
 
 	void CopyFrom(const tagEditorConfig &cfg)
 	{
@@ -47,6 +49,9 @@ struct tagEditorConfig
 		bViewRuleBar = cfg.bViewRuleBar;
 		bViewGrid = cfg.bViewGrid;
 		bViewMouse = cfg.bViewMouse;
+
+		bLangManager = cfg.bLangManager;
+		strLangPath = cfg.strLangPath;
 	}
 
 	void LoadConfig(LPCTSTR filename)
@@ -74,6 +79,9 @@ struct tagEditorConfig
 		bViewRuleBar = root.child(XTEXT("ViewRuleBar")).text().as_bool();
 		bViewGrid = root.child(XTEXT("ViewGrid")).text().as_bool();
 		bViewMouse = root.child(XTEXT("ViewMouse")).text().as_bool();
+
+		bLangManager = root.child(XTEXT("LangManager")).text().as_bool();
+		strLangPath = XML2T(root.child(XTEXT("LangPath")).text().as_string());
 	}
 
 	void SaveConfig()
@@ -100,6 +108,9 @@ struct tagEditorConfig
 		root.child_auto(XTEXT("ViewRuleBar")).text().set(bViewRuleBar);
 		root.child_auto(XTEXT("ViewGrid")).text().set(bViewGrid);
 		root.child_auto(XTEXT("ViewMouse")).text().set(bViewMouse);
+
+		root.child_auto(XTEXT("LangManager")).text().set(bLangManager);
+		root.child_auto(XTEXT("LangPath")).text().set(T2XML(strLangPath));
 
 		xml.save_to_default_file();
 	}

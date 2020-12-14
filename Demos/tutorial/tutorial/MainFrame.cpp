@@ -10,6 +10,7 @@ CMainFrame::CMainFrame(void)
 {
 	AttachVirtualForm(new CFormAdvanceControl);
 	AttachVirtualForm(new CFormSciEditor);
+	AttachVirtualForm(new CFormTest);
 	m_bCheckmenu_cmd_2 = TRUE;
 	m_bCheckmenu_cmd_22 = TRUE;
 	m_bCheckmenu_cmd_41 = TRUE;

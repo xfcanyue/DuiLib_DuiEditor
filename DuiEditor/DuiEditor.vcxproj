@@ -195,6 +195,7 @@
     <None Include="res\bmp00004.bmp" />
     <None Include="res\bmp00005.bmp" />
     <None Include="res\bmp00006.bmp" />
+    <None Include="res\bmp00007.bmp" />
     <None Include="res\class_view.ico" />
     <None Include="res\DuiEditor.ico" />
     <None Include="res\DuiEditor.rc2" />

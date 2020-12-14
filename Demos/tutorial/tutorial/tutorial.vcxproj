@@ -89,6 +89,7 @@
     <ClInclude Include="Dialog2.h" />
     <ClInclude Include="FormAdvanceControl.h" />
     <ClInclude Include="FormSciEditor.h" />
+    <ClInclude Include="FormTest.h" />
     <ClInclude Include="MainFrame.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -101,6 +102,7 @@
     <ClCompile Include="Dialog2.cpp" />
     <ClCompile Include="FormAdvanceControl.cpp" />
     <ClCompile Include="FormSciEditor.cpp" />
+    <ClCompile Include="FormTest.cpp" />
     <ClCompile Include="MainFrame.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

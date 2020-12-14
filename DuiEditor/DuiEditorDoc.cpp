@@ -30,7 +30,7 @@
 #endif
 
 // CDuiEditorDoc
-static CString s_defdocument = _T("<Window size=\"400,300\">\r\n\t<VerticalLayout />\r\n</Window>");
+static CString s_defdocument = _T("<Window size=\"400,300\">\r\n\t<VerticalLayout bkcolor=\"0xFFA6CAF0\" />\r\n</Window>");
 
 
 IMPLEMENT_DYNCREATE(CDuiEditorDoc, CDocument)
