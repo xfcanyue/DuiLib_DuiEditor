@@ -40,7 +40,7 @@ BEGIN_MESSAGE_MAP(CDockControlTreeCtrl, CTreeCtrl)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
 	ON_NOTIFY_REFLECT(NM_RCLICK, &CDockControlTreeCtrl::OnNMRClick)
-	ON_NOTIFY_REFLECT(TVN_BEGINDRAG, &CDockControlTreeCtrl::OnTvnBeginrdrag)
+	//ON_NOTIFY_REFLECT(TVN_BEGINDRAG, &CDockControlTreeCtrl::OnTvnBeginrdrag)
 	ON_WM_MOUSEMOVE()
 	ON_NOTIFY_REFLECT(NM_CLICK, &CDockControlTreeCtrl::OnNMClick)
 	ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, &CDockControlTreeCtrl::OnNMCustomdraw)
@@ -377,6 +377,7 @@ BOOL CDockControlTreeCtrl::DeleteXmlNode(xml_node node)
 
 BOOL CDockControlTreeCtrl::OnDragXmlNode(HTREEITEM src, HTREEITEM dest)
 {
+	
 	xml_node nodesrc = xml_node((xml_node_struct *)GetItemData(src));
 	xml_node nodedest = xml_node((xml_node_struct *)GetItemData(dest));
 
