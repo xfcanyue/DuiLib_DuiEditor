@@ -260,6 +260,7 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Control\TxtWinHost.cpp" />
     <ClCompile Include="Control\UIActiveX.cpp" />
     <ClCompile Include="Control\UIAnimation.cpp" />
     <ClCompile Include="Control\UIAnimationPane.cpp" />
@@ -341,6 +342,7 @@
     <ClCompile Include="Utils\WinImplBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Control\TxtWinHost.h" />
     <ClInclude Include="Control\UIActiveX.h" />
     <ClInclude Include="Control\UIAnimation.h" />
     <ClInclude Include="Control\UIAnimationPane.h" />

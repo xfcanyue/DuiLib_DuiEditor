@@ -37,6 +37,9 @@ namespace DuiLib
 
 		virtual bool GetAutoCalcWidth() const;
 		virtual void SetAutoCalcWidth(bool bAutoCalcWidth);
+		virtual bool GetAutoCalcHeight() const;
+		virtual void SetAutoCalcHeight(bool bAutoCalcHeight);
+
 		virtual void SetText(LPCTSTR pstrText);
 		virtual void SetText(int n);		//add by liqs99
 		
@@ -48,6 +51,7 @@ namespace DuiLib
 		RECT	m_rcTextPadding;
 		bool	m_bShowHtml;
 		bool	m_bAutoCalcWidth;
+		bool	m_bAutoCalcHeight;
 	};
 }
 

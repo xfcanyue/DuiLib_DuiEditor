@@ -10,7 +10,7 @@ namespace DuiLib
 		m_dwDisabledTextColor(0),
 		m_iFont(-1),
 		m_bShowHtml(false),
-		m_bAutoCalcWidth(false)
+		m_bAutoCalcWidth(false), m_bAutoCalcHeight(false)
 	{
 		::ZeroMemory(&m_rcTextPadding, sizeof(m_rcTextPadding));
 	}
@@ -104,14 +104,25 @@ namespace DuiLib
 
 	SIZE CLabelUI::EstimateSize(SIZE szAvailable)
 	{
-		if (m_bAutoCalcWidth) {
+		if (m_bAutoCalcWidth || m_bAutoCalcHeight) 
+		{
 			CDuiString sText = GetText();
 
 			RECT rcText = {0, 0, szAvailable.cx, szAvailable.cy};
 			int nLinks = 0;
+			
 			if( m_bShowHtml ) CRenderEngine::DrawHtmlText(m_pManager->GetPaintDC(), m_pManager, rcText, sText, m_dwTextColor, NULL, NULL, nLinks, m_iFont, DT_CALCRECT | m_uTextStyle);
 			else CRenderEngine::DrawText(m_pManager->GetPaintDC(), m_pManager, rcText, sText, m_dwTextColor, m_iFont, DT_CALCRECT | m_uTextStyle);
-			m_cxyFixed.cx = MulDiv(rcText.right - rcText.left + GetManager()->GetDPIObj()->Scale(m_rcTextPadding.left) + GetManager()->GetDPIObj()->Scale(m_rcTextPadding.right), 100, GetManager()->GetDPIObj()->GetScale());
+			
+			if(m_bAutoCalcWidth)
+				m_cxyFixed.cx = MulDiv(rcText.right - rcText.left + GetManager()->GetDPIObj()->Scale(m_rcTextPadding.left) + GetManager()->GetDPIObj()->Scale(m_rcTextPadding.right), 100, GetManager()->GetDPIObj()->GetScale());
+		
+			if(m_bAutoCalcHeight)
+			{
+				m_cxyFixed.cy = MulDiv(rcText.bottom - rcText.top + GetManager()->GetDPIObj()->Scale(m_rcTextPadding.top) + GetManager()->GetDPIObj()->Scale(m_rcTextPadding.bottom), 100, GetManager()->GetDPIObj()->GetScale());		
+			}
+
+			return CDuiSize(GetManager()->GetDPIObj()->Scale(m_cxyFixed.cx), GetManager()->GetDPIObj()->Scale(m_cxyFixed.cy));
 		}
 
 		//注释掉了，不需要自动计算高度，modify by liqs99
@@ -214,6 +225,9 @@ namespace DuiLib
 		else if( _tcsicmp(pstrName, _T("autocalcwidth")) == 0 ) {
 			SetAutoCalcWidth(_tcsicmp(pstrValue, _T("true")) == 0);
 		}
+		else if( _tcsicmp(pstrName, _T("autocalcheight")) == 0 ) {
+			SetAutoCalcHeight(_tcsicmp(pstrValue, _T("true")) == 0);
+		}
 		else CControlUI::SetAttribute(pstrName, pstrValue);
 	}
 
@@ -259,6 +273,16 @@ namespace DuiLib
 	void CLabelUI::SetAutoCalcWidth(bool bAutoCalcWidth)
 	{
 		m_bAutoCalcWidth = bAutoCalcWidth;
+	}
+
+	bool CLabelUI::GetAutoCalcHeight() const
+	{
+		return m_bAutoCalcHeight;
+	}
+
+	void CLabelUI::SetAutoCalcHeight(bool bAutoCalcHeight)
+	{
+		m_bAutoCalcHeight = bAutoCalcHeight;
 	}
 
 	void CLabelUI::SetText( LPCTSTR pstrText )

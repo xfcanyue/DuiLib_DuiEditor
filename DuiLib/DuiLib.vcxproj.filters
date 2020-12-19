@@ -240,6 +240,9 @@
     <ClCompile Include="Core\UILangManager.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
+    <ClCompile Include="Control\TxtWinHost.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Control\UIWebBrowser.h">
@@ -463,6 +466,9 @@
     </ClInclude>
     <ClInclude Include="Core\UILangManager.h">
       <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Control\TxtWinHost.h">
+      <Filter>Header Files\Control</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

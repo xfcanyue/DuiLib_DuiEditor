@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Window size="800,500" sizebox="4,4,6,6" caption="0,0,0,25" roundcorner="5,5">
 	<Font id="0" name="微软雅黑" size="18" default="true" />
-	<VerticalLayout bkcolor="0xFFA6CAF0">
-		<Button width="166" height="49" text="确认" pos="251,130,417,179" float="true" bkcolor="0xFFE1E1E1" bordercolor="0xFFA0A0A4" bordersize="1" />
+	<VerticalLayout childalign="center" childvalign="vcenter" bkcolor="0xFFA6CAF0">
+		<HorizontalLayout width="200" height="200" inset="1,1,1,1" bordercolor="0xFFA0A0A4" bordersize="1">
+			<RichEdit inset="5,5,5,5" autovscroll="true" multiline="true" textpadding="5,5,5,5" autocalcwidth="true" autocalcheight="true" bkcolor="0xFFFFFFFF" minwidth="50" />
+		</HorizontalLayout>
 	</VerticalLayout>
 </Window>
