@@ -258,6 +258,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="textpadding" default="0,0,0,0" type="RECT" comment="文字显示的边距,如(2,2,2,2)" />		
 		<Attribute name="showhtml" default="false" type="BOOL" comment="是否使用类html富文本绘制,如(false)" />
 		<Attribute name="autocalcwidth" default="false" type="BOOL" comment="是否自动调整宽度" />
+		<Attribute name="autocalcheight" default="false" type="BOOL" comment="是否自动调整高度" />
 	</LabelLayout>
 	<Ring parent="Label" notifies="setfocus killfocus timer menu windowinit(root)">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
@@ -625,7 +626,9 @@ INT类型(最小值，最大值)：
 		<Attribute name="disabledimage" default="" type="IMAGE" comment="禁用状态图片" />
 		<Attribute name="textpadding" default="0,0,0,0" type="RECT" comment="文字显示的边距,如(2,2,2,2)" />
 		<Attribute name="tipvalue" default="" type="STRING" comment="文本框内提示文字，当文本框text为空时显示并失去焦点时显示" />
-		<Attribute name="tipvaluecolor" default="0xFFBAC0C5" type="DWORD" comment="文本框内提示文字的颜色" />
+		<Attribute name="tipvaluecolor" default="0xFFBAC0C5" type="DWORD" comment="文本框内提示文字的颜色" />	
+		<Attribute name="autocalcwidth" default="false" type="BOOL" comment="是否自动调整宽度" />
+		<Attribute name="autocalcheight" default="false" type="BOOL" comment="是否自动调整高度" />
 	</RichEdit>
 	<TreeView parent="List" notifies="selectchanged setfocus killfocus timer menu itemselect windowinit(root)">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
