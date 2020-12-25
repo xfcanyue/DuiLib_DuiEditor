@@ -88,25 +88,26 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CMDIFrameWndEx::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
+	CString FontFaceName = _T("微软雅黑");//_T("Courier New");
 	//设置正常字体
 	LOGFONT lf;   
 	afxGlobalData.fontRegular.GetLogFont(&lf);   
 	afxGlobalData.fontRegular.DeleteObject();   
-	lf.lfHeight =-12;   
-	lstrcpy(lf.lfFaceName, _T("微软雅黑"));     // using without style office 2007   
+	lf.lfHeight =-13;   
+	lstrcpy(lf.lfFaceName, FontFaceName);     // using without style office 2007   
 	afxGlobalData.fontRegular.CreateFontIndirect(&lf);  
 
 	//设置加粗的字体 
 	afxGlobalData.fontBold.GetLogFont(&lf);   
 	afxGlobalData.fontBold.DeleteObject();   
-	lf.lfHeight =-12;   
-	lstrcpy(lf.lfFaceName, _T("微软雅黑"));   
+	lf.lfHeight =-13;   
+	lstrcpy(lf.lfFaceName, FontFaceName);   
 	afxGlobalData.fontBold.CreateFontIndirect(&lf);
 
 	afxGlobalData.fontTooltip.GetLogFont(&lf);   
 	afxGlobalData.fontTooltip.DeleteObject();   
-	lf.lfHeight =-12;   
-	lstrcpy(lf.lfFaceName, _T("微软雅黑"));   
+	lf.lfHeight =-13;   
+	lstrcpy(lf.lfFaceName, FontFaceName);   
 	afxGlobalData.fontTooltip.CreateFontIndirect(&lf);
 
 	// 基于持久值设置视觉管理器和样式
@@ -424,10 +425,13 @@ CDuiEditorViewDesign *CMainFrame::GetActiveUIView()
 
 CUIManager *CMainFrame::GetActiveUIManager()
 {
-	CChildFrame *pFrame=(CChildFrame *)MDIGetActive();
-	if(!pFrame)
-		return NULL;
-	return pFrame->GetUIManager();
+	CMDIChildWnd *pFrame= MDIGetActive();
+	if(!pFrame) return NULL;
+
+	if(pFrame->IsKindOf(RUNTIME_CLASS(CChildFrame)))
+		return ((CChildFrame *)pFrame)->GetUIManager();
+
+	return NULL;
 }
 
 void CMainFrame::ShowAllPane()

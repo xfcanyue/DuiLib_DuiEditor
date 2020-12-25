@@ -1,4 +1,6 @@
 #pragma once
+#include "include/SciLexer.h"
+#include "include/Scintilla.h"
 
 // CSciApi
 typedef  int SciDll_void;
@@ -7,7 +9,7 @@ typedef int (*SEND_EDITOR)(void*,int,int,int);
 class SciApi
 {
 public:
-	SciApi() : m_hSciLexer(NULL)
+	SciApi() : m_hSciLexer(NULL), m_sendeditor(NULL), m_pSendEditor(NULL)
 	{
 		//m_hSciLexer = ::LoadLibrary(_T("SciLexer.dll"));
 	}
@@ -20,6 +22,11 @@ public:
 	{
 		m_sendeditor = (int (__cdecl *)(void *,int,int,int))SendMessage(hWnd, SCI_GETDIRECTFUNCTION,0,0);
 		m_pSendEditor = (void *)SendMessage(hWnd, SCI_GETDIRECTPOINTER,0,0);
+	}
+
+	BOOL IsValidSciApi() const
+	{
+		return m_hSciLexer != NULL && m_sendeditor != NULL && m_pSendEditor != NULL;
 	}
 
 	LRESULT SendEditor(UINT msg, WPARAM wParam=0, LPARAM lParam=0)

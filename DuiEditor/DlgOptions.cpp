@@ -166,7 +166,7 @@ void CDlgOptions::SetXmlOptions(CSciWnd *pSciWnd, const tagEditorConfig &opt)
 	pSciWnd->sci_StyleSetBack(STYLE_DEFAULT, opt.crXmlBkColor);
 	pSciWnd->sci_StyleSetBack(STYLE_LINENUMBER, opt.crXmlBkColor);
 	pSciWnd->sci_StyleSetBack(STYLE_INDENTGUIDE, opt.crXmlBkColor);
-	for (int i = SCE_H_DEFAULT; i <= SCE_HPHP_OPERATOR; i++)
+	for (int i = SCE_H_DEFAULT; i <= SCE_H_SGML_BLOCK_DEFAULT; i++)
 	{
 		pSciWnd->sci_StyleSetBack(i,	opt.crXmlBkColor);
 	}

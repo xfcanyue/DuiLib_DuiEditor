@@ -1,0 +1,324 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="头文件\angelscript">
+      <UniqueIdentifier>{23830147-ff20-4cfd-8aa2-a9d794e338f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\angelscript">
+      <UniqueIdentifier>{ff08e830-90a4-466f-b1c5-1fa6aa15a5be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\add_on">
+      <UniqueIdentifier>{0d106b09-dbdf-4c20-9d8b-fe6b69727de6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\add_on">
+      <UniqueIdentifier>{0baed1cc-fde4-468b-a06b-73fbd1ef2c8c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+    <None Include="DuiScript.def">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="angelscript\angelscript\source\as_callfunc_arm_gcc.S" />
+    <None Include="angelscript\angelscript\source\as_callfunc_arm_vita.S" />
+    <None Include="angelscript\angelscript\source\as_callfunc_arm_xcode.S" />
+    <None Include="angelscript\angelscript\source\as_callfunc_arm_msvc.asm">
+      <Filter>源文件\angelscript</Filter>
+    </None>
+    <None Include="angelscript\angelscript\source\as_callfunc_x64_msvc_asm.asm">
+      <Filter>源文件\angelscript</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptEngine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RegCDuiString.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RegCControlUI.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptRegister.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\include\angelscript.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_array.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_variablescope.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_atomic.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_builder.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_bytecode.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_callfunc.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_compiler.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_config.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_configgroup.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_context.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_criticalsection.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_datatype.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_debug.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_gc.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_generic.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_map.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_memory.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_module.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_namespace.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_objecttype.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_outputbuffer.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_parser.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_property.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_restore.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_scriptcode.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_scriptengine.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_scriptfunction.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_scriptnode.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_scriptobject.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_string.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_string_util.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_symboltable.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_texts.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_thread.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_tokendef.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_tokenizer.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\angelscript\source\as_typeinfo.h">
+      <Filter>头文件\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\add_on\scriptbuilder\scriptbuilder.h">
+      <Filter>头文件\add_on</Filter>
+    </ClInclude>
+    <ClInclude Include="LsStringConverter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiScript.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptEngine.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="RegCDuiString.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="RegCControlUI.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptRegister.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_atomic.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_variablescope.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_builder.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_bytecode.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_callfunc.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_callfunc_arm.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_callfunc_mips.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_callfunc_ppc.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_callfunc_ppc_64.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_callfunc_sh4.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_callfunc_x64_gcc.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_callfunc_x64_mingw.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_callfunc_x64_msvc.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_callfunc_x86.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_callfunc_xenon.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_compiler.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_configgroup.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_context.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_datatype.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_gc.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_generic.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_globalproperty.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_memory.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_module.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_objecttype.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_outputbuffer.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_parser.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_restore.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_scriptcode.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_scriptengine.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_scriptfunction.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_scriptnode.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_scriptobject.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_string.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_string_util.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_thread.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_tokenizer.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_typeinfo.cpp">
+      <Filter>源文件\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\add_on\scriptbuilder\scriptbuilder.cpp">
+      <Filter>源文件\add_on</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

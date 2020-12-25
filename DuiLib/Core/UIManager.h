@@ -135,6 +135,8 @@ namespace DuiLib {
 		bool bTiledX;
 		bool bTiledY;
 		bool bHSL;
+		int width;
+		int height;
 	} TDrawInfo;
 
 	typedef struct UILIB_API tagTPercentInfo
@@ -206,10 +208,11 @@ namespace DuiLib {
 	class UILIB_API IScriptEngine
 	{
 	public:
-		virtual bool AddScriptCode(LPCTSTR pScriptCode) = 0;
+		virtual bool AddScriptCode(const char *pUtf8ScriptCode) = 0;
 		virtual bool AddScriptFile(LPCTSTR pstrFileName) = 0;
 		virtual bool ExecuteScript(LPCTSTR funName, CControlUI *pControl) = 0;
 		virtual bool ExecuteScript(LPCTSTR funName, CControlUI *pControl, TEventUI *ev) = 0;
+		virtual bool ExecuteScript(LPCTSTR funName, CControlUI *pControl, TNotifyUI *pMsg) = 0;
 	};
 	typedef IScriptEngine* (__stdcall *CREATE_SCRIPT_ENGINE_INSTANCE)();
 	typedef void (__stdcall *DELETE_SCRIPT_ENGINE_INSTANCE)(IScriptEngine *pEngine);
@@ -332,8 +335,8 @@ namespace DuiLib {
 		TFontInfo* GetFontInfo(HFONT hFont);
 
 		const TImageInfo* GetImage(LPCTSTR bitmap);
-		const TImageInfo* GetImageEx(LPCTSTR bitmap, LPCTSTR type = NULL, DWORD mask = 0, bool bUseHSL = false, HINSTANCE instance = NULL);
-		const TImageInfo* AddImage(LPCTSTR bitmap, LPCTSTR type = NULL, DWORD mask = 0, bool bUseHSL = false, bool bShared = false, HINSTANCE instance = NULL);
+		const TImageInfo* GetImageEx(LPCTSTR bitmap, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, bool bUseHSL = false, HINSTANCE instance = NULL);
+		const TImageInfo* AddImage(LPCTSTR bitmap, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, bool bUseHSL = false, bool bShared = false, HINSTANCE instance = NULL);
 		const TImageInfo* AddImage(LPCTSTR bitmap, HBITMAP hBitmap, int iWidth, int iHeight, bool bAlpha, bool bShared = false);
 		void RemoveImage(LPCTSTR bitmap, bool bShared = false);
 		void RemoveAllImages(bool bShared = false);
@@ -587,13 +590,13 @@ namespace DuiLib {
 	public:
 		static bool LoadScriptPlugin(LPCTSTR pstrModuleName);
 
-		IScriptEngine *GetScriptEngine(bool bShared = false);
-		void AddScriptCode(LPCTSTR pScriptCode, LPCTSTR pLanguageType, bool bShared = false);
-		void AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pLanguageType, bool bShared = false);
+		IScriptEngine *GetScriptEngine();
+		void AddScriptCode(LPCTSTR pScriptCode, LPCTSTR pLanguageType);
+		void AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pLanguageType);
 		bool ExecuteScript(LPCTSTR funName, CControlUI *pControl);
 		bool ExecuteScript(LPCTSTR funName, CControlUI *pControl, TEventUI *ev);
+		bool ExecuteScript(LPCTSTR funName, CControlUI *pControl, TNotifyUI *pMsg);
 	private:
-		IScriptEngine *m_pScriptEngine;
 		static IScriptEngine *m_pSharedScriptEngine;
 		static CREATE_SCRIPT_ENGINE_INSTANCE m_funCreateScriptEngine;
 		static DELETE_SCRIPT_ENGINE_INSTANCE m_funDeleteScriptEngine;

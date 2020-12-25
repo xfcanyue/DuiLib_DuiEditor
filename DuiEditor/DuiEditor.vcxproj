@@ -328,6 +328,7 @@
     <ClInclude Include="xmlMatchedTagsHighlighter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\3rd\scintilla\SciWnd.cpp" />
     <ClCompile Include="ChildFrm.cpp" />
     <ClCompile Include="ChildFrm2.cpp" />
     <ClCompile Include="DefaultEditor.cpp" />

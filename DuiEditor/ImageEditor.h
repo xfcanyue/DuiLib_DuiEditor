@@ -40,6 +40,8 @@ public:
 	void SetControlImage(CxImage &img);
 
 	void SetImageFile(LPCTSTR lpstrPathName);
+
+	static BOOL svg_2_cximage(CxImage &cximg, LPCTSTR strPathName);
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
 

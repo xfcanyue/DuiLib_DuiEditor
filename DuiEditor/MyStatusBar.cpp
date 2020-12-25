@@ -163,6 +163,7 @@ void CMyStatusBar::OnDrawXmlUpdateStatus(CDC* pDC, CMFCStatusBarPaneInfo* pPane)
 	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
 	CUIManager *pManager = pMain->GetActiveUIManager();
 	if(!pManager) return;
+	if(!pManager->GetCodeView()) return;
 	xml_parse_result *pret = pManager->GetCodeView()->GetParseResult();
 
 	CRect rect = pPane->rect;

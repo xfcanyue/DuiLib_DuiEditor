@@ -1,14 +1,11 @@
 #pragma once
 #define INCLUDE_DEPRECATED_FEATURES
-#include "../3rd/scintilla/include/SciLexer.h"
-#include "../3rd/scintilla/include/Scintilla.h"
-#define DLL_SCIWND_
-#include "../3rd/scintilla/SciWnd.h"
+#include "../3rd/scintilla/SciApi.h"
 
 namespace DuiLib
 {
 
-class UILIB_PLUGIN_API CSciEditUI : public CContainerUI
+class UILIB_PLUGIN_API CSciEditUI : public CContainerUI, public SciApi
 {
 	DECLARE_DUICONTROL(CSciEditUI)
 public:
@@ -17,12 +14,13 @@ public:
 
 	LPCTSTR GetClass() const;
 	LPVOID GetInterface(LPCTSTR pstrName);
-	CSciWnd *GetSciWnd() const;
 
 	virtual void DoInit();
 
 	void SetPos(RECT rc, bool bNeedInvalidate  = true);
 	void SetInternVisible(bool bVisible);
+
+	virtual void OnSciNotify(SCNotification *pMsg);
 
 	virtual CDuiString GetText() const;
 	virtual void SetText(LPCTSTR pstrText);

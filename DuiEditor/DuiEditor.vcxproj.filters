@@ -615,6 +615,9 @@
     <ClCompile Include="DlgBuildLanguagePackageEx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\3rd\scintilla\SciWnd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DuiEditor.rc">

@@ -3,6 +3,12 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "..\Utils\stb_image.h"
 
+#define strtoll _strtoi64
+#define NANOSVG_IMPLEMENTATION
+#include "..\Utils\nanosvg.h"
+#define NANOSVGRAST_IMPLEMENTATION
+#include "..\Utils\nanosvgrast.h"
+
 #ifdef USE_XIMAGE_EFFECT
 #	include "../../3rd/CxImage/ximage.h"
 #	include "../../3rd/CxImage/ximage.cpp"
@@ -239,17 +245,17 @@ namespace DuiLib {
 
 	bool DrawImage(HDC hDC, CPaintManagerUI* pManager, const RECT& rc, const RECT& rcPaint, const CDuiString& sImageName, \
 		const CDuiString& sImageResType, RECT rcItem, RECT rcBmpPart, RECT rcCorner, DWORD dwMask, BYTE bFade, \
-		bool bHole, bool bTiledX, bool bTiledY, HINSTANCE instance = NULL)
+		bool bHole, bool bTiledX, bool bTiledY, int width, int height, HINSTANCE instance = NULL)
 	{
 		if (sImageName.IsEmpty()) {
 			return false;
 		}
 		const TImageInfo* data = NULL;
 		if( sImageResType.IsEmpty() ) {
-			data = pManager->GetImageEx((LPCTSTR)sImageName, NULL, dwMask, false, instance);
+			data = pManager->GetImageEx((LPCTSTR)sImageName, NULL, dwMask, width, height, false, instance);
 		}
 		else {
-			data = pManager->GetImageEx((LPCTSTR)sImageName, (LPCTSTR)sImageResType, dwMask, false, instance);
+			data = pManager->GetImageEx((LPCTSTR)sImageName, (LPCTSTR)sImageResType, dwMask, width, height, false, instance);
 		}
 		if( !data ) return false;    
 
@@ -284,7 +290,7 @@ namespace DuiLib {
 		return dwColor;
 	}
 
-	TImageInfo* CRenderEngine::LoadImage(STRINGorID bitmap, LPCTSTR type, DWORD mask, HINSTANCE instance)
+	TImageInfo* CRenderEngine::LoadImage(STRINGorID bitmap, LPCTSTR type, DWORD mask, int width, int height, CPaintManagerUI* pManager, HINSTANCE instance)
 	{
 		LPBYTE pData = NULL;
 		DWORD dwSize = 0;
@@ -399,12 +405,75 @@ namespace DuiLib {
 
 		LPBYTE pImage = NULL;
 		int x,y,n;
-		pImage = stbi_load_from_memory(pData, dwSize, &x, &y, &n, 4);
-		delete[] pData;
-		if( !pImage ) {
-			//::MessageBox(0, _T("解析图片失败"), _T("抓BUG"), MB_OK);
-			return NULL;
+		pImage = stbi_load_from_memory(pData, dwSize, &x, &y, &n, 4);	
+		if( !pImage ) 
+		{
+			float dpi = 96.0f;
+			float scale = 1.0f;
+			if(pManager)
+			{
+				//dpi = pManager->GetDPIObj()->GetDPI();
+				scale = (pManager->GetDPIObj()->GetScale() * 1.0)/100;
+			}
+			//SVG
+			NSVGimage* svg = nsvgParse((LPSTR)(LPVOID)pData, "px", (float)dpi);
+			if (svg == NULL) 
+			{
+				delete[] pData;
+				return NULL;
+			}
+
+			x = (int)svg->width;
+			y = (int)svg->height;
+			if(x==0 || y==0) 
+			{
+				nsvgDelete(svg);
+				delete[] pData;
+				return NULL;
+			}
+
+			//如果指定长宽，则使用当前的长宽比例，否则使用dpi适配
+			if(width > 0 && height > 0)
+			{
+				x = width;
+				scale = width * 1.0 / svg->width;
+				y = svg->height * scale;
+				if (svg->height * scale > y)
+				{
+					scale = y * 1.0 / svg->height;
+					x = svg->width * scale;
+				}
+			}
+			else
+			{
+				if(pManager)
+				{
+					x = pManager->GetDPIObj()->Scale(x);
+					y = pManager->GetDPIObj()->Scale(y);
+				}
+			}
+
+			NSVGrasterizer* rast = nsvgCreateRasterizer();
+			if (rast == NULL)
+			{
+				nsvgDelete(svg);
+				delete[] pData;
+				return NULL;
+			}
+
+			pImage = (LPBYTE)malloc((x + 1) * (y + 1) * 4);//由于使用了小数，防止被四舍五入舍去，因此都加1
+			if (!pImage)
+			{
+				nsvgDeleteRasterizer(rast);
+				nsvgDelete(svg);
+				delete[] pData;
+				return NULL;
+			}
+			nsvgRasterize(rast, svg, 0, 0, scale, pImage, x, y, x * 4);
+			nsvgDeleteRasterizer(rast);
+			nsvgDelete(svg);
 		}
+		delete[] pData;
 
 		BITMAPINFO bmi;
 		::ZeroMemory(&bmi, sizeof(BITMAPINFO));
@@ -419,8 +488,9 @@ namespace DuiLib {
 		bool bAlphaChannel = false;
 		LPBYTE pDest = NULL;
 		HBITMAP hBitmap = ::CreateDIBSection(NULL, &bmi, DIB_RGB_COLORS, (void**)&pDest, NULL, 0);
-		if( !hBitmap ) {
-			//::MessageBox(0, _T("CreateDIBSection失败"), _T("抓BUG"), MB_OK);
+		if( !hBitmap ) 
+		{
+			stbi_image_free(pImage);
 			return NULL;
 		}
 
@@ -757,6 +827,8 @@ namespace DuiLib {
 		bool bHole = false;
 		bool bTiledX = true;
 		bool bTiledY = true;
+		int width = 0;
+		int height = 0;
 		CDuiSize szIcon(0,0);
 
 		int image_count = 0;
@@ -800,7 +872,7 @@ namespace DuiLib {
 					{
 						if( image_count > 0 )
 							DuiLib::DrawImage(hDC, pManager, rc, rcPaint, sImageName, sImageResType,
-							rcItem, rcBmpPart, rcCorner, dwMask, bFade, bHole, bTiledX, bTiledY);
+							rcItem, rcBmpPart, rcCorner, dwMask, bFade, bHole, bTiledX, bTiledY, width, height);
 
 						sImageName = sValue;
 						++image_count;
@@ -809,7 +881,7 @@ namespace DuiLib {
 					{
 						if( image_count > 0 )
 							DuiLib::DrawImage(hDC, pManager, rc, rcPaint, sImageName, sImageResType,
-							rcItem, rcBmpPart, rcCorner, dwMask, bFade, bHole, bTiledX, bTiledY);
+							rcItem, rcBmpPart, rcCorner, dwMask, bFade, bHole, bTiledX, bTiledY, width, height);
 
 						sImageResType = sValue;
 						++image_count;
@@ -877,7 +949,7 @@ namespace DuiLib {
 			}
 		}
 
-		DuiLib::DrawImage(hDC, pManager, rc, rcPaint, sImageName, sImageResType, rcItem, rcBmpPart, rcCorner, dwMask, bFade, bHole, bTiledX, bTiledY);
+		DuiLib::DrawImage(hDC, pManager, rc, rcPaint, sImageName, sImageResType, rcItem, rcBmpPart, rcCorner, dwMask, bFade, bHole, bTiledX, bTiledY, width, height);
 
 		return true;
 	}
@@ -923,7 +995,7 @@ namespace DuiLib {
 		return true;
 	}
 
-	TImageInfo* CRenderEngine::LoadImage(LPCTSTR pStrImage, LPCTSTR type, DWORD mask, HINSTANCE instance)
+	TImageInfo* CRenderEngine::LoadImage(LPCTSTR pStrImage, LPCTSTR type, DWORD mask, int width, int height, CPaintManagerUI* pManager, HINSTANCE instance)
 	{	
 		if(pStrImage == NULL) return NULL;
 
@@ -939,12 +1011,12 @@ namespace DuiLib {
 				}*/
 			}
 		}
-		return LoadImage(STRINGorID(sStrPath.GetData()), type, mask, instance);
+		return LoadImage(STRINGorID(sStrPath.GetData()), type, mask, width, height, pManager, instance);
 	}
 
-	TImageInfo* CRenderEngine::LoadImage(UINT nID, LPCTSTR type, DWORD mask, HINSTANCE instance)
+	TImageInfo* CRenderEngine::LoadImage(UINT nID, LPCTSTR type, DWORD mask, int width, int height, CPaintManagerUI* pManager, HINSTANCE instance)
 	{
-		return LoadImage(STRINGorID(nID), type, mask, instance);
+		return LoadImage(STRINGorID(nID), type, mask, width, height, pManager, instance);
 	}
 
 	void CRenderEngine::DrawText(HDC hDC, CPaintManagerUI* pManager, RECT& rc, LPCTSTR pstrText,DWORD dwTextColor, \
@@ -1419,7 +1491,7 @@ namespace DuiLib {
 				if( rcDest.bottom > rcItem.bottom ) rcDest.bottom = rcItem.bottom;
 		}
 		bool bRet = DuiLib::DrawImage(hDC, pManager, rcItem, rcPaint, pDrawInfo->sImageName, pDrawInfo->sResType, rcDest, \
-			pDrawInfo->rcSource, pDrawInfo->rcCorner, pDrawInfo->dwMask, pDrawInfo->uFade, pDrawInfo->bHole, pDrawInfo->bTiledX, pDrawInfo->bTiledY, instance);
+			pDrawInfo->rcSource, pDrawInfo->rcCorner, pDrawInfo->dwMask, pDrawInfo->uFade, pDrawInfo->bHole, pDrawInfo->bTiledX, pDrawInfo->bTiledY, pDrawInfo->width, pDrawInfo->height, instance);
 
 		return bRet;
 	}

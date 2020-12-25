@@ -28,6 +28,8 @@ CImageEditorImagePreview::CImageEditorImagePreview()
 	m_tracker.m_nStyle = 0;
 	m_tracker.m_nStyle |= CRectTracker::dottedLine;
 	m_tracker.m_nStyle |= CRectTracker::resizeOutside;
+
+	m_zoom = 1;
 }
 
 CImageEditorImagePreview::~CImageEditorImagePreview()
@@ -42,6 +44,7 @@ BEGIN_MESSAGE_MAP(CImageEditorImagePreview, CScrollView)
 	ON_WM_SETCURSOR()
 	ON_WM_KEYDOWN()
 	ON_WM_SIZE()
+	ON_WM_MOUSEWHEEL()
 END_MESSAGE_MAP()
 
 
@@ -219,12 +222,10 @@ void CImageEditorImagePreview::OnDraw(CDC* pDC)
 	if(g_pEditorImage->m_pFrame->m_bTrackSource)
 	{
 		g_pEditorImage->m_image.Draw(memDC->m_hDC, m_rcImage);
-		//m_trackerSource.Draw(&memDC);
 	}
 	else
 	{
 		m_imgSource.Draw(memDC->m_hDC, m_rcImage);
-		//m_trackerCorner.Draw(&memDC);
 	}
 
 	m_tracker.Draw(&memDC);
@@ -351,4 +352,21 @@ BOOL CImageEditorImagePreview::OnScroll(UINT nScrollCode, UINT nPos, BOOL bDoScr
 	// TODO: 在此添加专用代码和/或调用基类
 	RecalcImageRect();
 	return CScrollView::OnScroll(nScrollCode, nPos, bDoScroll);
+}
+
+
+BOOL CImageEditorImagePreview::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
+{
+	if(zDelta < 0)
+	{
+		m_zoom -= 0.2f;
+		if(m_zoom <= 0.2f)
+			m_zoom = 0.2f;
+	}
+	else
+	{
+		m_zoom += 0.2f;
+	}
+	Invalidate();
+	return CScrollView::OnMouseWheel(nFlags, zDelta, pt);
 }

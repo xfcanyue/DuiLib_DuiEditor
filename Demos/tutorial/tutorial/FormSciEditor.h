@@ -6,6 +6,7 @@ public:
 	virtual ~CFormSciEditor(void);
 
 	virtual void InitWindow();
+	void InitXml();
 	virtual void OnNotifySciNotify(TNotifyUI &msg);
 
 	CSciEditUI *m_pSci;

@@ -213,19 +213,15 @@ namespace DuiLib {
 						{
 							pstrLanguage = pstrValue;
 						}
-						else if( _tcsicmp(pstrName, _T("shared")) == 0 ) 
-						{
-							shared = (_tcsicmp(pstrValue, _T("true")) == 0);
-						}
 					}
 
 					if(pstrIncludeFile)
 					{
-						pManager->AddScriptFile(pstrIncludeFile, pstrLanguage, shared);
+						pManager->AddScriptFile(pstrIncludeFile, pstrLanguage);
 					}
 					if(pScriptCode && pScriptCode[0] != '\0')
 					{
-						pManager->AddScriptCode(pScriptCode, pstrLanguage, shared);
+						pManager->AddScriptCode(pScriptCode, pstrLanguage);
 					}
 				}
 			}
@@ -408,7 +404,8 @@ namespace DuiLib {
 		for( CMarkupNode node = pRoot->GetChild() ; node.IsValid(); node = node.GetSibling() ) {
 			LPCTSTR pstrClass = node.GetName();
 			if( _tcsicmp(pstrClass, _T("Image")) == 0 || _tcsicmp(pstrClass, _T("Font")) == 0 \
-				|| _tcsicmp(pstrClass, _T("Default")) == 0 || _tcsicmp(pstrClass, _T("Style")) == 0 ) continue;
+				|| _tcsicmp(pstrClass, _T("Default")) == 0 || _tcsicmp(pstrClass, _T("Style")) == 0 \
+				|| _tcsicmp(pstrClass, _T("Script")) == 0) continue;
 
 			CControlUI* pControl = NULL;
 			if (_tcsicmp(pstrClass, _T("Import")) == 0) continue;

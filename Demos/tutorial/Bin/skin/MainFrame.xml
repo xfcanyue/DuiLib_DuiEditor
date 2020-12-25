@@ -5,6 +5,11 @@
 		<HorizontalLayout height="20" childpadding="5" childvalign="vcenter" bkcolor="0xFFC0DCC0">
 			<Control width="16" height="16" foreimage="images\ico.jpg" />
 			<Label text="DuiLib控件展示" resourceid="7" />
+			<Option name="dpi_96" width="60" height="18" selectedbkcolor="0xFFA6CAF0" group="group_dpi" hotbkcolor="0xFFA6CAF0" pushedbkcolor="0xFFA6CAF0" text="dpi_100%" />
+			<Option name="dpi_120" width="60" height="18" selectedbkcolor="0xFFA6CAF0" group="group_dpi" hotbkcolor="0xFFA6CAF0" pushedbkcolor="0xFFA6CAF0" text="dpi_125%" />
+			<Option name="dpi_144" width="60" height="18" selectedbkcolor="0xFFA6CAF0" group="group_dpi" hotbkcolor="0xFFA6CAF0" pushedbkcolor="0xFFA6CAF0" text="dpi_150%" />
+			<Option name="dpi_168" width="60" height="18" selectedbkcolor="0xFFA6CAF0" group="group_dpi" hotbkcolor="0xFFA6CAF0" pushedbkcolor="0xFFA6CAF0" text="dpi_175%" />
+			<Option name="dpi_192" width="60" height="18" selectedbkcolor="0xFFA6CAF0" group="group_dpi" hotbkcolor="0xFFA6CAF0" pushedbkcolor="0xFFA6CAF0" text="dpi_200%" />
 			<HorizontalLayout width="123">
 				<FadeButton name="windowmenubtn" width="26" height="17" normalimage="file='images\sys_dlg_menu.png' source='52,0,78,17'" hotimage="file='images\sys_dlg_menu.png' source='26,0,52,17'" pushedimage="file='images\sys_dlg_menu.png' source='0,0,26,17'" />
 				<FadeButton name="windowminbtn" width="26" height="17" normalimage="file='images\sys_dlg_min.png' source='52,0,78,17'" hotimage="file='images\sys_dlg_min.png' source='26,0,52,17'" pushedimage="file='images\sys_dlg_min.png' source='0,0,26,17'" />

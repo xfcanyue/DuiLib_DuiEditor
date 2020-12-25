@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include <zmouse.h>
+#include "LsStringConverter.h"
 
 namespace DuiLib {
 
@@ -120,14 +121,16 @@ namespace DuiLib {
 						rcSource.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
 						rcSource.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);    
 						rcSource.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);
-						paintManager->GetDPIObj()->Scale(&rcSource);
+						if(paintManager->IsAdjustDPIRecource())
+							paintManager->GetDPIObj()->Scale(&rcSource);
 					}
 					else if( sItem == _T("corner") ) {
 						rcCorner.left = _tcstol(sValue.GetData(), &pstr, 10);  ASSERT(pstr);    
 						rcCorner.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
 						rcCorner.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);    
 						rcCorner.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);
-						paintManager->GetDPIObj()->Scale(&rcCorner);
+						if(paintManager->IsAdjustDPIRecource())
+							paintManager->GetDPIObj()->Scale(&rcCorner);
 					}
 					else if( sItem == _T("mask") ) {
 						if( sValue[0] == _T('#')) dwMask = _tcstoul(sValue.GetData() + 1, &pstr, 16);
@@ -147,6 +150,16 @@ namespace DuiLib {
 					}
 					else if( sItem == _T("hsl") ) {
 						bHSL = (_tcsicmp(sValue.GetData(), _T("true")) == 0);
+					}
+					else if( sItem == _T("width") ) {
+						width = _ttoi(sValue);
+						//if(paintManager->IsAdjustDPIRecource())
+							width = paintManager->GetDPIObj()->Scale(width);
+					}
+					else if( sItem == _T("height") ) {
+						height = _ttoi(sValue);
+						//if(paintManager->IsAdjustDPIRecource())
+							height = paintManager->GetDPIObj()->Scale(height);
 					}
 				}
 				if( *pStrImage++ != _T(' ') ) break;
@@ -178,6 +191,8 @@ namespace DuiLib {
 		bTiledX = false;
 		bTiledY = false;
 		bHSL = false;
+		width = 0;
+		height = 0;
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -238,8 +253,7 @@ namespace DuiLib {
 		m_bDragMode(false),
 		m_hDragBitmap(NULL),
 		m_pDPI(NULL),
-		m_iHoverTime(400UL),
-		m_pScriptEngine(NULL)
+		m_iHoverTime(400UL)
 	{
 		if (m_SharedResInfo.m_DefaultFontInfo.sFontName.IsEmpty())
 		{
@@ -299,12 +313,6 @@ namespace DuiLib {
 
 	CPaintManagerUI::~CPaintManagerUI()
 	{
-		//Ð¶ÔØ½Å±¾ÒýÇæ
-		if(m_funDeleteScriptEngine)
-		{
-			(*m_funDeleteScriptEngine)(m_pScriptEngine);
-		}
-
 		if(m_pLangManager){ delete m_pLangManager; m_pLangManager = NULL; }
 
 		// Delete the control-tree structures
@@ -961,6 +969,7 @@ namespace DuiLib {
 					m_aAsyncNotify.Remove(0);
 					if( pMsg->pSender != NULL ) {
 						if( pMsg->pSender->OnNotify ) pMsg->pSender->OnNotify(pMsg);
+						if(!pMsg->pSender->m_asOnNotify.IsEmpty()) ExecuteScript(pMsg->pSender->m_asOnNotify, pMsg->pSender, pMsg);
 					}
 					for( int j = 0; j < m_aNotifiers.GetSize(); j++ ) {
 						static_cast<INotifyUI*>(m_aNotifiers[j])->Notify(*pMsg);
@@ -2589,6 +2598,7 @@ namespace DuiLib {
 			// Send to all listeners
 			if( Msg.pSender != NULL ) {
 				if( Msg.pSender->OnNotify ) Msg.pSender->OnNotify(&Msg);
+				if(!Msg.pSender->m_asOnNotify.IsEmpty()) ExecuteScript(Msg.pSender->m_asOnNotify, Msg.pSender, &Msg);
 			}
 			for( int i = 0; i < m_aNotifiers.GetSize(); i++ ) {
 				static_cast<INotifyUI*>(m_aNotifiers[i])->Notify(Msg);
@@ -3202,11 +3212,11 @@ namespace DuiLib {
 		return data;
 	}
 
-	const TImageInfo* CPaintManagerUI::GetImageEx(LPCTSTR bitmap, LPCTSTR type, DWORD mask, bool bUseHSL, HINSTANCE instance)
+	const TImageInfo* CPaintManagerUI::GetImageEx(LPCTSTR bitmap, LPCTSTR type, DWORD mask, int width, int height, bool bUseHSL, HINSTANCE instance)
 	{
 		const TImageInfo* data = GetImage(bitmap);
 		if( !data ) {
-			if( AddImage(bitmap, type, mask, bUseHSL, false, instance) ) {
+			if( AddImage(bitmap, type, mask, width, height, bUseHSL, false, instance) ) {
 				if (m_bForceUseSharedRes) data = static_cast<TImageInfo*>(m_SharedResInfo.m_ImageHash.Find(bitmap));
 				else data = static_cast<TImageInfo*>(m_ResInfo.m_ImageHash.Find(bitmap)); 
 			}
@@ -3215,7 +3225,7 @@ namespace DuiLib {
 		return data;
 	}
 
-	const TImageInfo* CPaintManagerUI::AddImage(LPCTSTR bitmap, LPCTSTR type, DWORD mask, bool bUseHSL, bool bShared, HINSTANCE instance)
+	const TImageInfo* CPaintManagerUI::AddImage(LPCTSTR bitmap, LPCTSTR type, DWORD mask, int width, int height, bool bUseHSL, bool bShared, HINSTANCE instance)
 	{
 		if( bitmap == NULL || bitmap[0] == _T('\0') ) return NULL;
 
@@ -3224,11 +3234,11 @@ namespace DuiLib {
 			if( isdigit(*bitmap) ) {
 				LPTSTR pstr = NULL;
 				int iIndex = _tcstol(bitmap, &pstr, 10);
-				data = CRenderEngine::LoadImage(iIndex, type, mask, instance);
+				data = CRenderEngine::LoadImage(iIndex, type, mask, width, height, this, instance);
 			}
 		}
 		else {
-			data = CRenderEngine::LoadImage(bitmap, NULL, mask, instance);
+			data = CRenderEngine::LoadImage(bitmap, NULL, mask, width, height, this, instance);
 		}
 
 		if( data == NULL ) {
@@ -4217,67 +4227,59 @@ namespace DuiLib {
 		return false;
 	}
 	
-	IScriptEngine *CPaintManagerUI::GetScriptEngine(bool bShared)
+	IScriptEngine *CPaintManagerUI::GetScriptEngine()
 	{
-		if(m_funCreateScriptEngine == NULL)	return NULL;
+		if(m_funCreateScriptEngine == NULL)	
+			return NULL;
 
-		if(bShared)
-		{
-			if(m_pSharedScriptEngine == NULL)
-				m_pSharedScriptEngine = (*m_funCreateScriptEngine)();
-			return m_pSharedScriptEngine;
-		}
-
-		if(m_pScriptEngine == NULL)
-			m_pScriptEngine = (*m_funCreateScriptEngine)();
-		return m_pScriptEngine;
+		if(m_pSharedScriptEngine == NULL)
+			m_pSharedScriptEngine = (*m_funCreateScriptEngine)();
+		return m_pSharedScriptEngine;
 	}
 
-	void CPaintManagerUI::AddScriptCode(LPCTSTR pScriptCode, LPCTSTR pLanguageType, bool bShared)
+	void CPaintManagerUI::AddScriptCode(LPCTSTR pScriptCode, LPCTSTR pLanguageType)
 	{
-		IScriptEngine *pScriptEngine = GetScriptEngine(bShared);
+		IScriptEngine *pScriptEngine = GetScriptEngine();
 		if(pScriptEngine == NULL) return;
-		pScriptEngine->AddScriptCode(pScriptCode);
+		LSSTRING_CONVERSION;
+		pScriptEngine->AddScriptCode(LST2UTF8(pScriptCode));
 	}
 
-	void CPaintManagerUI::AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pLanguageType, bool bShared)
+	void CPaintManagerUI::AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pLanguageType)
 	{
-		IScriptEngine *pScriptEngine = GetScriptEngine(bShared);
+		IScriptEngine *pScriptEngine = GetScriptEngine();
 		if(pScriptEngine == NULL) return;
 		pScriptEngine->AddScriptFile(pstrFileName);
 	}
 
 	bool CPaintManagerUI::ExecuteScript(LPCTSTR funName, CControlUI *pControl)
 	{
-		IScriptEngine *pScriptEngine = GetScriptEngine(false);
+		IScriptEngine *pScriptEngine = GetScriptEngine();
 		if(pScriptEngine)
 		{
-			if(!pScriptEngine->ExecuteScript(funName, pControl))
-			{
-				pScriptEngine = GetScriptEngine(true);
-				if(!pScriptEngine) return false;
-				if(!pScriptEngine->ExecuteScript(funName, pControl)) return false;
-			}
+			return pScriptEngine->ExecuteScript(funName, pControl);
 		}
-		else return false;
-
-		return true;
+		return false;
 	}
 
 	bool CPaintManagerUI::ExecuteScript(LPCTSTR funName, CControlUI *pControl, TEventUI *ev)
 	{
-		IScriptEngine *pScriptEngine = GetScriptEngine(false);
+		IScriptEngine *pScriptEngine = GetScriptEngine();
 		if(pScriptEngine)
 		{
-			if(!pScriptEngine->ExecuteScript(funName, pControl, ev))
-			{
-				pScriptEngine = GetScriptEngine(true);
-				if(!pScriptEngine) return false;
-				if(!pScriptEngine->ExecuteScript(funName, pControl, ev)) return false;
-			}
+			return pScriptEngine->ExecuteScript(funName, pControl, ev);
 		}
-		else return false;
+		return false;
+	}
 
-		return true;
+	bool CPaintManagerUI::ExecuteScript(LPCTSTR funName, CControlUI *pControl, TNotifyUI *pMsg)
+	{
+		IScriptEngine *pScriptEngine = GetScriptEngine();
+		if(pScriptEngine)
+		{
+			return pScriptEngine->ExecuteScript(funName, pControl, pMsg);
+		}
+
+		return false;
 	}
 } // namespace DuiLib

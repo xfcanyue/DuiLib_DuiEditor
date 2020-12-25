@@ -144,7 +144,11 @@ void CImageEditor::SetAttributeValue(LPCTSTR szAttribute)
 	//ÔØÈëÍ¼Æ¬
 	CString strSkinDir = GetUIManager()->GetDocument()->GetSkinPath();
 	m_image.DestroyFrames(); m_image.Destroy();
-	m_image.Load(strSkinDir + XML2T(m_nodedata.attribute(XTEXT("file")).value()));
+	CString strPathName = strSkinDir + XML2T(m_nodedata.attribute(XTEXT("file")).value());
+	if(!m_image.Load(strPathName))
+	{
+		svg_2_cximage(m_image, strPathName);
+	}
 	m_rcImage.SetRect(0, 0, m_image.GetWidth(), m_image.GetHeight());
 
 	//ÉèÖÃÄ¬ÈÏsource
@@ -195,7 +199,10 @@ void CImageEditor::SetImageFile(LPCTSTR lpstrPathName)
 	g_duiProp.AddAttribute(g_pEditorImage->m_nodedata, _T("file"), strFileName, NULL);
 
 	m_image.DestroyFrames(); m_image.Destroy();
-	m_image.Load(lpstrPathName);
+	if(!m_image.Load(lpstrPathName))
+	{
+		svg_2_cximage(m_image, lpstrPathName);
+	}
 	m_rcImage.SetRect(0, 0, m_image.GetWidth(), m_image.GetHeight());
 }
 
@@ -281,4 +288,54 @@ BOOL CImageEditor::PreTranslateMessage(MSG* pMsg)
 		}
 	}
 	return CDialogEx::PreTranslateMessage(pMsg);
+}
+
+#define strtoll _strtoi64
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "nanosvg/src/stb_image_write.h"
+#define NANOSVG_IMPLEMENTATION
+#include "nanosvg/src/nanosvg.h"
+#define NANOSVGRAST_IMPLEMENTATION
+#include "nanosvg/src/nanosvgrast.h"
+
+BOOL CImageEditor::svg_2_cximage(CxImage &cximg, LPCTSTR strPathName)
+{
+	NSVGimage *image = nsvgParseFromFile(LST2A(strPathName), "px", 96.0f);
+	if(image == NULL) return NULL;
+
+	int w = (int)image->width;
+	int h = (int)image->height;
+	if(w==0 || h==0) return FALSE;
+
+	NSVGrasterizer *rast = nsvgCreateRasterizer();
+	if (rast == NULL) 
+	{
+		nsvgDelete(image);
+		return FALSE;
+	}
+
+	unsigned char* img = (unsigned char*)malloc(w*h*4);
+	if (img == NULL) 
+	{
+		nsvgDeleteRasterizer(rast);
+		nsvgDelete(image);
+		return FALSE;
+	}
+
+	nsvgRasterize(rast, image, 0,0,1, img, w, h, w*4);
+
+	//stbi_write_png("c:\\svg.png", w, h, 4, img, w*4);
+
+	int outlen = 0;
+	BYTE *out = stbi_write_png_to_mem(img, w*4, w, h, 4, &outlen);
+
+	cximg.DestroyFrames(); cximg.Destroy();
+	bool bDecode = cximg.Decode(out, outlen, CXIMAGE_FORMAT_PNG);
+	//cximg->Save(_T("c:\\svg2.png"), CXIMAGE_FORMAT_PNG);
+
+	free(out);
+	free(img);
+	nsvgDeleteRasterizer(rast);
+	nsvgDelete(image);
+	return bDecode;
 }

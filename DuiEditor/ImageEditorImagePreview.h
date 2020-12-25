@@ -21,11 +21,9 @@ public:
 
 	CRect m_rcImage;
 	CRectTracker m_tracker;
+	double m_zoom;
 
-	//CRectTracker m_trackerSource;	//选取source的tracker
-
-	CxImage m_imgSource;			//选取corner时，显示的图片
-	//CRectTracker m_trackerCorner;	//选取corner的tracker
+	CxImage m_imgSource;			//选取corner时，显示的source图片部分
 protected:
 	virtual void OnDraw(CDC* pDC);      // 重写以绘制该视图
 
@@ -38,6 +36,7 @@ public:
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	virtual BOOL OnScroll(UINT nScrollCode, UINT nPos, BOOL bDoScroll = TRUE);
+	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 };
 
 

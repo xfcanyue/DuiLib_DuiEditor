@@ -113,6 +113,11 @@ INT类型(最小值，最大值)：
 		<Attribute name="virtualwnd" default="" type="STRING" comment="设置控件的虚拟窗体的名字" />		
 		<Attribute name="style" default="" type="STRING" comment="通过样式名称设置控件的样式" />
 		<Attribute name="innerstyle" default="" type="STRING" comment="通过样式表设置控件的样式" />
+		<Attribute name="OnInit" default="" type="STRING" comment="事件发生时，调用脚本的函数名" />
+		<Attribute name="OnEvent" default="" type="STRING" comment="事件发生时，调用脚本的函数名" />
+		<Attribute name="OnNotify" default="" type="STRING" comment="事件发生时，调用脚本的函数名" />
+		<Attribute name="OnDestroy" default="" type="STRING" comment="事件发生时，调用脚本的函数名" />
+		<Attribute name="OnSize" default="" type="STRING" comment="事件发生时，调用脚本的函数名" />
 	</Control>
 	<Container parent="Control" notifies="setfocus killfocus timer menu windowinit(root)">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />	
@@ -882,11 +887,14 @@ INT类型(最小值，最大值)：
 		<Attribute name="dest" default="0,0,0,0" type="RECT" comment="显示目标区域" />
 		<Attribute name="source" default="0,0,0,0" type="RECT" comment="图片资源的区域." />
 		<Attribute name="corner" default="0,0,0,0" type="RECT" comment="圆角区域" />
-		<Attribute name="mask" default="0x00000000" type="DWORD" comment="..." />
+		<Attribute name="mask" default="0x00000000" type="DWORD" comment="透明色" />
 		<Attribute name="fade" default="255" type="INT" comment="透明度" />
-		<Attribute name="hole" default="false" type="BOOL" comment="..." />
+		<Attribute name="hole" default="false" type="BOOL" comment="corner区域不绘制" />
 		<Attribute name="xtiled" default="false" type="BOOL" comment="橫向平铺" />
 		<Attribute name="ytiled" default="false" type="BOOL" comment="纵向平铺" />
+		<Attribute name="hsl" default="false" type="BOOL" comment="" />
+		<Attribute name="width" default="0" type="INT" comment="矢量图像的宽度" />
+		<Attribute name="height" default="0" type="INT" comment="矢量图像的高度" />
 	</IMAGE>
 	<Style>
 		<Attribute name="source" default="" type="STRING" comment="需要包含的xml文件" />

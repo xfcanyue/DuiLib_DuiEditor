@@ -23,6 +23,19 @@ CScriptEditorView::~CScriptEditorView()
 BEGIN_MESSAGE_MAP(CScriptEditorView, CView)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
+	ON_WM_CONTEXTMENU()
+	ON_COMMAND(ID_EDIT_UNDO, &CScriptEditorView::OnEditUndo)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &CScriptEditorView::OnUpdateEditUndo)
+	ON_COMMAND(ID_EDIT_REDO, &CScriptEditorView::OnEditRedo)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &CScriptEditorView::OnUpdateEditRedo)
+	ON_COMMAND(ID_EDIT_CUT, &CScriptEditorView::OnEditCut)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &CScriptEditorView::OnUpdateEditCut)
+	ON_COMMAND(ID_EDIT_COPY, &CScriptEditorView::OnEditCopy)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &CScriptEditorView::OnUpdateEditCopy)
+	ON_COMMAND(ID_EDIT_CLEAR, &CScriptEditorView::OnEditClear)
+	ON_COMMAND(ID_EDIT_SELECT_ALL, &CScriptEditorView::OnEditSelectAll)
+	ON_COMMAND(ID_EDIT_PASTE, &CScriptEditorView::OnEditPaste)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &CScriptEditorView::OnUpdateEditPaste)
 END_MESSAGE_MAP()
 
 
@@ -50,10 +63,52 @@ int CScriptEditorView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	{
 		return -1;      // 未能创建
 	}
-	//sci.InitCPP();
-	InitLexer();
-	sci.sci_ClearTextAll();
+	sci.InitCpp();
+	sci.sci_UsePopup(FALSE);
 
+	COLORREF crfComment = RGB(0,150,0);
+	sci.sci_StyleSetFore(SCE_C_COMMENT,			crfComment); //块注释  /*...*/
+	sci.sci_StyleSetFore(SCE_C_COMMENTLINE,		crfComment); //行注释  //...
+	sci.sci_StyleSetFore(SCE_C_COMMENTDOC,			crfComment); //文档注释  /**...*/
+	sci.sci_StyleSetFore(SCE_C_COMMENTLINEDOC,		RGB(255,0,0)); //
+	sci.sci_StyleSetFore(SCE_C_COMMENTDOCKEYWORD,	RGB(255,0,0));
+	sci.sci_StyleSetFore(SCE_C_COMMENTDOCKEYWORDERROR, crfComment);
+
+
+	sci.sci_StyleSetFore(SCE_C_NUMBER, RGB(100,100,100));
+
+	sci.sci_StyleSetFore(SCE_C_STRING,			RGB(100,100,100));
+	sci.sci_StyleSetFore(SCE_C_CHARACTER,		RGB(100,100,100));
+	sci.sci_StyleSetFore(SCE_C_UUID,			RGB(100,100,100));
+
+	//预处理，宏定义
+	sci.sci_StyleSetFore(SCE_C_PREPROCESSOR,	RGB(160,0,160));
+
+	//操作符,包括 ( ) { } = ; + - * / % < > <= >= == && || 
+	sci.sci_StyleSetFore(SCE_C_OPERATOR,		RGB(0,0,0));
+
+	//标志符
+	sci.sci_StyleSetFore(SCE_C_IDENTIFIER,		RGB(0,0,0));
+
+	//字符串双引号未封闭时
+	sci.sci_StyleSetFore(SCE_C_STRINGEOL,		RGB(255,0,0));
+
+	//???
+	sci.sci_StyleSetFore(SCE_C_VERBATIM,		RGB(0,128,0));
+
+	//???
+	sci.sci_StyleSetFore(SCE_C_REGEX,			RGB(0,128,0));	
+
+	//???
+	sci.sci_StyleSetFore(SCE_C_GLOBALCLASS,	RGB(255,0,0));
+
+	//???
+	sci.sci_StyleSetFore(SCE_C_STRINGRAW,		RGB(255,0,0));
+
+	//???
+	sci.sci_StyleSetFore(SCE_C_TRIPLEVERBATIM, RGB(0,128,0));
+
+	InitLexer();
 	return 0;
 }
 
@@ -148,6 +203,7 @@ void CScriptEditorView::OnInitialUpdate()
 
 	// TODO: 在此添加专用代码和/或调用基类
 	sci.LoadFile(GetDocument()->GetPathName());
+	sci.sci_SetSavePoint();
 }
 
 
@@ -196,12 +252,12 @@ BOOL CScriptEditorView::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
 		break;
 	case SCN_SAVEPOINTREACHED:	//文件被保存
 		{
-			
+			GetDocument()->SetModifiedFlag(FALSE);
 		}
 		break;
 	case SCN_SAVEPOINTLEFT: //文件被修改
-		{
-			
+		{			
+			GetDocument()->SetModifiedFlag(TRUE);
 		}
 		break;
 	case SCN_UPDATEUI:
@@ -212,4 +268,97 @@ BOOL CScriptEditorView::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
 	// 	temp.Format(_T("sciwnd msg=%d"), pMsg->nmhdr.code);
 	// 	InsertMsg(temp);
 	return __super::OnNotify(wParam, lParam, pResult);
+}
+
+
+BOOL CScriptEditorView::PreCreateWindow(CREATESTRUCT& cs)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	cs.dwExStyle |= WS_EX_CLIENTEDGE;
+	cs.style &= ~WS_BORDER;
+	cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW|CS_VREDRAW|CS_DBLCLKS, 
+		::LoadCursor(NULL, IDC_ARROW), reinterpret_cast<HBRUSH>(COLOR_WINDOW+1), NULL);
+
+	return CView::PreCreateWindow(cs);
+}
+
+
+void CScriptEditorView::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
+{
+	CPoint pt = point;
+	ScreenToClient(&pt);
+	CMenu popmenu;
+	popmenu.LoadMenu(IDR_MENU_SCRIPT_EDIT);
+	theApp.GetContextMenuManager()->ShowPopupMenu(popmenu.GetSubMenu(0)->m_hMenu, point.x, point.y, AfxGetMainWnd(), TRUE);
+}
+
+
+void CScriptEditorView::OnEditUndo()
+{
+	sci.sci_Undo();
+}
+
+
+void CScriptEditorView::OnUpdateEditUndo(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(sci.sci_CanUndo());
+}
+
+
+void CScriptEditorView::OnEditRedo()
+{
+	sci.sci_Redo();
+}
+
+
+void CScriptEditorView::OnUpdateEditRedo(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(sci.sci_CanRedo());
+}
+
+
+void CScriptEditorView::OnEditCut()
+{
+	sci.sci_Cut();
+}
+
+
+void CScriptEditorView::OnUpdateEditCut(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(sci.sci_CanCut());
+}
+
+
+void CScriptEditorView::OnEditCopy()
+{
+	sci.sci_Copy();
+}
+
+
+void CScriptEditorView::OnUpdateEditCopy(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(sci.sci_CanCopy());
+}
+
+
+void CScriptEditorView::OnEditPaste()
+{
+	sci.sci_Paste();
+}
+
+
+void CScriptEditorView::OnUpdateEditPaste(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(sci.sci_CanPaste());
+}
+
+
+void CScriptEditorView::OnEditClear()
+{
+	sci.sci_Clear();
+}
+
+void CScriptEditorView::OnEditSelectAll()
+{
+	sci.sci_SelectAll();
 }

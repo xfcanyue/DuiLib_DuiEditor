@@ -1,5 +1,5 @@
 #pragma once
-
+/*
 #ifdef DLL_SCIWND_
 #	ifdef DLL_SCIWND_EXPORT
 #		define _SCIWNDCTR_ _declspec(dllexport)
@@ -9,7 +9,8 @@
 #else
 #   define _SCIWNDCTR_
 #endif
-
+*/
+#define _SCIWNDCTR_
 #include "SciApi.h"
 
 #define WM_SCIWND_RBUTTONUP		WM_USER+987
@@ -18,7 +19,7 @@
 #define WM_SCIWND_CLICK			WM_USER+990
 #define WM_SCIWND_MOUSEMOVE		WM_USER+991
 
-// CSciWnd
+// CSciWnd, MFC¿‡
 typedef  int SciDll_void;
 typedef int (*SEND_EDITOR)(void*,int,int,int);
 
@@ -43,7 +44,7 @@ public:
 	BOOL SaveFile(LPCTSTR szPath);
 
 	void InitXML();
-	void InitCpp() {}
+	void InitCpp();
 	void InitReceipt() {}
 
 	BOOL OnParentNotify(SCNotification *pMsg);

@@ -309,10 +309,16 @@ CxImage *CImageEditorListCtrl::GetThumbnail(int nItem)
 			m_map[nItem] = pImg;
 			return pImg;
 		}
-// 		else
-// 		{
-// 			m_map[nItem] = NULL;
-// 		}
+		else //³¢ÊÔ½âÎösvg
+		{
+			if(CImageEditor::svg_2_cximage(img, strPath))
+			{
+				CxImage *pImg = new CxImage;
+				pImg->Transfer(img);
+				m_map[nItem] = pImg;
+				return pImg;
+			}		
+		}
 	}
 	return NULL;
 }

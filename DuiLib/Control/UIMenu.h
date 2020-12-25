@@ -404,7 +404,7 @@ public:
 protected:
 	bool _DrawImageMenuDisableIcon(HDC hDC, CPaintManagerUI* pManager, const RECT& rc, const RECT& rcPaint, const CDuiString& sImageName, \
 		const CDuiString& sImageResType, RECT rcItem, RECT rcBmpPart, RECT rcCorner, DWORD dwMask, BYTE bFade, \
-		bool bHole, bool bTiledX, bool bTiledY, HINSTANCE instance = NULL);
+		bool bHole, bool bTiledX, bool bTiledY, int width, int height, HINSTANCE instance = NULL);
 protected:
 	CMenuWnd*	m_pWindow;
 

@@ -100,18 +100,21 @@ int CDuiEditorViewCode::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	sci.SendEditor(SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)(const char *)LST2UTF8(g_cfg.strXmlFontName));
 	sci.sci_StyleSetSize(STYLE_DEFAULT, g_cfg.nXmlFontSize);
+
 	sci.sci_StyleSetBack(STYLE_DEFAULT, g_cfg.crXmlBkColor);
 	sci.sci_StyleSetBack(STYLE_LINENUMBER, g_cfg.crXmlBkColor);
 	sci.sci_StyleSetBack(STYLE_INDENTGUIDE, g_cfg.crXmlBkColor);
-	for (int i = SCE_H_DEFAULT; i <= SCE_HPHP_OPERATOR; i++)
+	for (int i = SCE_H_DEFAULT; i <= SCE_H_SGML_BLOCK_DEFAULT; i++)
 	{
 		sci.sci_StyleSetBack(i,	g_cfg.crXmlBkColor);
 	}
+
 	sci.sci_SetSelBack(STYLE_DEFAULT, g_cfg.crXmlSelBkColor);
 	sci.sci_SetExtraDescent(g_cfg.nXmlLineSpace);
 	sci.sci_SetExtraAscent(g_cfg.nXmlLineSpace);
 	sci.sci_SetCaretLineBack(g_cfg.crXmlCaretLineBkColor);
 
+	sci.execute(SCI_SETPROPERTY, reinterpret_cast<WPARAM>("lexer.xml.allow.scripts"), reinterpret_cast<LPARAM>("0"));
 	return 0;
 }
 

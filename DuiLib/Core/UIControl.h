@@ -300,14 +300,12 @@ namespace DuiLib {
 
 		RECT m_rcCalcPos;	//子控件调用CalcPos时，父控件可能以这个rect来计算
 		bool m_bCalcPosNow;	//标记为正在计算子控件pos，在子控件的GetFixedWidth(),GetFixedHeight(),EstimateSize()可能需要判断这个标记
-	private:
-		CDuiString m_asOnInit;
-		CDuiString m_asOnEvent;
-		CDuiString m_asOnSetCursor;
-		CDuiString m_asOnSetFocus;
-		CDuiString m_asOnKillFocus;
-		CDuiString m_asOnTimer;
-		CDuiString m_asOnContextMenu;
+	public:
+		CDuiString m_asOnInit;		//事件发生时，调用脚本的函数名
+		CDuiString m_asOnEvent;		//事件发生时，调用脚本的函数名
+		CDuiString m_asOnNotify;	//事件发生时，调用脚本的函数名
+		CDuiString m_asOnDestroy;	//事件发生时，调用脚本的函数名
+		CDuiString m_asOnSize;		//事件发生时，调用脚本的函数名
 	};
 
 } // namespace DuiLib

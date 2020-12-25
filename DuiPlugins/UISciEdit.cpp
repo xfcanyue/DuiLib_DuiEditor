@@ -7,20 +7,29 @@ namespace DuiLib
 	class CSciWndUI : public CWindowWnd
 	{
 	public:
-		CSciWndUI(void) : m_hSciLexer(NULL), m_pSciWnd(NULL)
+		CSciWndUI(void)
 		{
-			m_hSciLexer = ::LoadLibrary(g_strDuiPluginsPath + _T("SciLexer.dll"));
+			
 		}
 		~CSciWndUI(void) 
 		{
-			if(m_hSciLexer) ::FreeLibrary(m_hSciLexer);
+			if(m_pOwner)
+			{
+				if(m_pOwner->m_hSciLexer) ::FreeLibrary(m_pOwner->m_hSciLexer);
+				m_pOwner->m_hSciLexer = NULL;
+			}
 		}
 
 		void Init(CSciEditUI* pOwner)
 		{
 			m_pOwner = pOwner;
+			if(m_pOwner->m_hSciLexer == NULL)
+			{
+				m_pOwner->m_hSciLexer = ::LoadLibrary(g_strDuiPluginsPath + _T("SciLexer.dll"));
+			}
+
 			Create(m_pOwner->GetManager()->GetPaintWindow(), NULL, WS_CHILD|WS_VISIBLE, 0, m_rcWindow);
-			SetWindowLong(m_hWnd, GWL_EXSTYLE, GetWindowLong(m_hWnd, GWL_EXSTYLE) & ~(WS_EX_WINDOWEDGE | WS_EX_DLGMODALFRAME | WS_BORDER));  //去边框
+			SetWindowLong(m_hWnd, GWL_EXSTYLE, GetWindowLong(m_hWnd, GWL_EXSTYLE) & ~(WS_EX_WINDOWEDGE | WS_EX_DLGMODALFRAME | WS_BORDER));  //去边框		
 		}
 
 		void SetPos(RECT rc, bool bNeedInvalidate  = true)
@@ -31,13 +40,12 @@ namespace DuiLib
 
 		LPCTSTR GetWindowClassName() const
 		{
-			//return _T("Scintilla");
-			return _T("CSciWndUI");
+			return _T("SciWndUI");
 		}
 
 		void OnFinalMessage(HWND hWnd)
 		{
-			if(m_pSciWnd) { delete m_pSciWnd; m_pSciWnd = NULL; }
+			
 		}
 
 		virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -49,37 +57,28 @@ namespace DuiLib
 			{
 				m_pOwner->GetManager()->AddNativeWindow(m_pOwner, m_hWnd);
 
-				CWnd *pWnd = CWnd::FromHandle(m_hWnd);
-				m_pSciWnd = new CSciWnd();
-				m_pSciWnd->Create(0, WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_CLIPCHILDREN, m_rcWindow, pWnd, 2);
-				ASSERT(m_pSciWnd->m_hWnd);
+				m_hwndScintilla = CreateWindowEx(0, _T("Scintilla"),_T(""), WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_CLIPCHILDREN, 0,0,0,0,
+					GetHWND(),(HMENU)NULL, m_pOwner->GetManager()->GetInstance(),NULL);
+				ASSERT(m_hwndScintilla);
+				m_pOwner->InitSciApi(m_hwndScintilla);
 			}
 			else if( uMsg == WM_SIZE) 
 			{
 				CRect rcClient;
 				::GetClientRect(m_hWnd, &rcClient);
-				m_pSciWnd->MoveWindow(rcClient);
+				::MoveWindow(m_hwndScintilla, rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height(), TRUE);
 			}
 			else if(uMsg == WM_NOTIFY)
 			{
 				bHandled = TRUE;
 				NMHDR *phDR = (NMHDR*)lParam;
-				if (phDR != NULL && phDR->hwndFrom == m_pSciWnd->m_hWnd)
+				if (phDR != NULL && phDR->hwndFrom == m_hwndScintilla)
 				{
 					SCNotification *pMsg = (SCNotification*)lParam;
-					m_pSciWnd->OnParentNotify(pMsg);
-					
-					m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_SCI_NOTIFY, (WPARAM)m_pSciWnd->m_hWnd, lParam);
+					m_pOwner->OnSciNotify(pMsg);
+					m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_SCI_NOTIFY, (WPARAM)m_hwndScintilla, lParam);
 				}
 			}
-// 			else if(uMsg == WM_SCIWND_LBUTTONDOWN)
-// 			{
-// 				::PostMessage(m_pOwner->GetManager()->GetPaintWindow(), WM_LBUTTONDOWN, (WPARAM)m_pSciWnd->m_hWnd, lParam);
-// 			}
-// 			else if(uMsg == WM_SCIWND_LBUTTONUP)
-// 			{
-// 				::PostMessage(m_pOwner->GetManager()->GetPaintWindow(), WM_LBUTTONUP, (WPARAM)m_pSciWnd->m_hWnd, lParam);
-// 			}
 
 			if( !bHandled ) return CWindowWnd::HandleMessage(uMsg, wParam, lParam);
 			return lRes;
@@ -88,8 +87,7 @@ namespace DuiLib
 	public:
 		RECT m_rcWindow;
 		CSciEditUI *m_pOwner;
-		HMODULE m_hSciLexer;
-		CSciWnd *m_pSciWnd;
+		HWND m_hwndScintilla;
 	};
 
 //////////////////////////////////////////////////////////////////////////
@@ -115,19 +113,13 @@ LPVOID CSciEditUI::GetInterface(LPCTSTR pstrName)
 	return __super::GetInterface(pstrName);
 }
 
-CSciWnd *CSciEditUI::GetSciWnd() const
-{
-	if(!m_pWindow) return NULL;
-	return ((CSciWndUI *)m_pWindow)->m_pSciWnd;
-}
-
 void CSciEditUI::DoInit()
 {
 	m_pWindow = new CSciWndUI;
 	((CSciWndUI *)m_pWindow)->Init(this);
-	if(GetSciWnd())
+	if(IsValidSciApi())
 	{
-		GetSciWnd()->sci_SetCodePage(SC_CP_UTF8);	//默认使用UTF8编码
+		sci_SetCodePage(SC_CP_UTF8);	//默认使用UTF8编码
 	}
 }
 
@@ -155,16 +147,96 @@ void CSciEditUI::SetInternVisible(bool bVisible)
 		::ShowWindow(m_pWindow->GetHWND(), bVisible);
 }
 
+void CSciEditUI::OnSciNotify(SCNotification *pMsg)
+{
+	switch (pMsg->nmhdr.code)
+	{
+	case SCN_STYLENEEDED:
+		break;
+	case SCN_CHARADDED:
+		break;
+	case SCN_SAVEPOINTREACHED:
+		break;
+	case SCN_SAVEPOINTLEFT: //文件被修改
+		break;
+	case SCN_MODIFYATTEMPTRO:
+		break;
+	case SCN_KEY:
+		break;
+	case SCN_DOUBLECLICK:
+		break;
+	case SCN_UPDATEUI:
+		break;
+	case SCN_MODIFIED:
+		break;
+	case SCN_MACRORECORD:
+		break;
+	case SCN_MARGINCLICK:
+		break;
+	case SCN_NEEDSHOWN:
+		break;
+	case SCN_PAINTED:
+		break;
+	case SCN_USERLISTSELECTION:
+		break;
+	case SCN_URIDROPPED:
+		break;
+	case SCN_DWELLSTART:
+		break;
+	case SCN_DWELLEND:
+		break;
+	case SCN_ZOOM:
+		break;
+	case SCN_HOTSPOTCLICK:
+		break;
+	case SCN_HOTSPOTDOUBLECLICK:
+		break;
+	case SCN_HOTSPOTRELEASECLICK:
+		break;
+	case SCN_INDICATORCLICK:
+		break;
+	case SCN_INDICATORRELEASE:
+		break;
+	case SCN_CALLTIPCLICK:
+		break;
+	case SCN_AUTOCSELECTION:
+		break;
+	case SCN_AUTOCCANCELLED:
+		break;
+	case SCN_AUTOCCHARDELETED:
+		break;
+	case SCI_SETMODEVENTMASK:
+		break;
+	case SCI_GETMODEVENTMASK:
+		break;
+	case SCI_SETMOUSEDWELLTIME:
+		break;
+	case SCI_GETMOUSEDWELLTIME:
+		break;
+	case SCI_SETIDENTIFIER:
+		break;
+	case SCI_GETIDENTIFIER:
+		break;
+	case SCEN_CHANGE:
+		break;
+	case SCEN_SETFOCUS:
+		break;
+	case SCEN_KILLFOCUS:
+		break;
+	}
+}
+
 CDuiString CSciEditUI::GetText() const
 {
-	CSciWnd *pSciWnd = GetSciWnd();
-	if(pSciWnd == NULL) return _T("");
+	if(!IsValidSciApi()) return _T("");
 
-	int code = pSciWnd->sci_GetCodePage();
+	CSciEditUI *pThis = const_cast<CSciEditUI *>(this);
+
+	int code = pThis->sci_GetCodePage();
 
 	LSSTRING_CONVERSION;
 	CStringA strA;
-	pSciWnd->sci_GetTextAll(strA);
+	pThis->sci_GetTextAll(strA);
 
 	if(code == SC_CP_UTF8)
 		return LSUTF82T(strA);
@@ -173,17 +245,16 @@ CDuiString CSciEditUI::GetText() const
 
 void CSciEditUI::SetText(LPCTSTR pstrText)
 {
-	CSciWnd *pSciWnd = GetSciWnd();
-	if(pSciWnd == NULL) return;
+	if(!IsValidSciApi()) return;
 
-	int code = pSciWnd->sci_GetCodePage();
+	int code = sci_GetCodePage();
 
 	LSSTRING_CONVERSION;
 
 	if(code == SC_CP_UTF8)
-		pSciWnd->sci_SetText(LST2UTF8(pstrText));
+		sci_SetText(LST2UTF8(pstrText));
 	else
-		pSciWnd->sci_SetText(LST2A(pstrText));
+		sci_SetText(LST2A(pstrText));
 }
 
 }

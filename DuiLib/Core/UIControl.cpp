@@ -56,6 +56,7 @@ namespace DuiLib {
 
 	CControlUI::~CControlUI()
 	{
+		if(!m_asOnDestroy.IsEmpty()) GetManager()->ExecuteScript(m_asOnDestroy, this);
 		if( OnDestroy ) OnDestroy(this);
 		RemoveAllCustomAttribute();	
 		if( m_pManager != NULL ) m_pManager->ReapObjects(this);
@@ -441,6 +442,7 @@ namespace DuiLib {
 
 		if( !m_bSetPos ) {
 			m_bSetPos = true;
+			if(!m_asOnSize.IsEmpty()) GetManager()->ExecuteScript(m_asOnSize, this);
 			if( OnSize ) OnSize(this);
 			m_bSetPos = false;
 		}
@@ -889,6 +891,7 @@ namespace DuiLib {
 	void CControlUI::Init()
 	{
 		DoInit();
+		if(!m_asOnInit.IsEmpty()) GetManager()->ExecuteScript(m_asOnInit, this);
 		if( OnInit ) OnInit(this);
 	}
 
@@ -899,16 +902,8 @@ namespace DuiLib {
 
 	void CControlUI::Event(TEventUI& event)
 	{
+		if(!m_asOnEvent.IsEmpty()) GetManager()->ExecuteScript(m_asOnEvent, this, &event);
 		if( OnEvent(&event) ) DoEvent(event);
-
-		if( event.Type == UIEVENT_SETFOCUS ) 
-		{
-			if(!m_asOnSetFocus.IsEmpty()) GetManager()->ExecuteScript(m_asOnSetFocus, this);
-		}
-		if( event.Type == UIEVENT_KILLFOCUS ) 
-		{
-			if(!m_asOnKillFocus.IsEmpty()) GetManager()->ExecuteScript(m_asOnKillFocus, this);
-		}
 	}
 
 	void CControlUI::DoEvent(TEventUI& event)
@@ -1279,11 +1274,9 @@ namespace DuiLib {
 		}
 		else if( _tcscmp(pstrName, _T("OnInit"))		== 0 )		m_asOnInit	= pstrValue;
 		else if( _tcscmp(pstrName, _T("OnEvent"))		== 0 )		m_asOnEvent = pstrValue;
-		else if( _tcscmp(pstrName, _T("OnSetCursor"))	== 0 )		m_asOnSetCursor = pstrValue;
-		else if( _tcscmp(pstrName, _T("OnSetFocus"))	== 0 )		m_asOnSetFocus = pstrValue;
-		else if( _tcscmp(pstrName, _T("OnKillFocus"))	== 0 )		m_asOnKillFocus = pstrValue;
-		else if( _tcscmp(pstrName, _T("OnTimer"))		== 0 )		m_asOnTimer = pstrValue;
-		else if( _tcscmp(pstrName, _T("OnContextMenu")) == 0 )		m_asOnContextMenu = pstrValue;
+		else if( _tcscmp(pstrName, _T("OnNotify"))		== 0 )		m_asOnNotify = pstrValue;
+		else if( _tcscmp(pstrName, _T("OnDestroy"))		== 0 )		m_asOnDestroy = pstrValue;
+		else if( _tcscmp(pstrName, _T("OnSize"))		== 0 )		m_asOnSize = pstrValue;
 		else {
 			AddCustomAttribute(pstrName, pstrValue);
 		}
