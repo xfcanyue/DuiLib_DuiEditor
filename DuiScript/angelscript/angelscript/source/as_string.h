@@ -38,8 +38,6 @@
 #include <stdio.h>
 #include <string.h>
 
-namespace AngelScript {
-
 class asCString
 {
 public:
@@ -133,5 +131,4 @@ private:
 	asCString  *cstring;
 };
 
-}//END_AS_NAMESPACE
 #endif

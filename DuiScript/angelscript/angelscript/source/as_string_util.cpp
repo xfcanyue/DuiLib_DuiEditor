@@ -42,7 +42,7 @@
 #include "as_string.h"
 #include "as_string_util.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 int asCompareStrings(const char *str1, size_t len1, const char *str2, size_t len2)
 {
@@ -379,4 +379,4 @@ int asStringEncodeUTF16(unsigned int value, char *outEncodedBuffer)
 }
 
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE

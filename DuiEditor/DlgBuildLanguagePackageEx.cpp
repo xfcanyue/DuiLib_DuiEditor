@@ -24,6 +24,7 @@ CDlgBuildLanguagePackageEx::~CDlgBuildLanguagePackageEx()
 void CDlgBuildLanguagePackageEx::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_COMBO1, m_cbLang);
 }
 
 
@@ -77,6 +78,27 @@ BOOL CDlgBuildLanguagePackageEx::OnInitDialog()
 	xml.print(w);
 	sci.sci_SetText(w.strText.c_str());
 	sci.sci_SetReadOnly(TRUE);
+
+	CString strSkinDir = GetUIManager()->GetDocument()->GetSkinPath();
+	if(!strSkinDir.IsEmpty())
+	{
+		strSkinDir += g_cfg.strLangPath;
+		strSkinDir += _T("\\");
+	}
+	CFileFind finder;
+	BOOL bFind = finder.FindFile(strSkinDir + _T("*.*"));
+	while (bFind)
+	{
+		bFind = finder.FindNextFile();
+		if(finder.IsDots()) continue;
+		if(finder.IsDirectory())	//是文件夹，检查名称，把里面文件删除
+		{
+			CString lang = finder.GetFileName();
+			m_cbLang.AddString(lang);
+		}
+	}
+	m_cbLang.SetCurSel(0);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
 }
@@ -94,25 +116,19 @@ void CDlgBuildLanguagePackageEx::OnBnClickedOk()
 			return;
 		}
 	}
-	CString file = GetUIManager()->GetDocument()->GetSkinFileName();
-	if(file.IsEmpty())
+
+	CString strLang;
+	m_cbLang.GetWindowText(strLang);
+	if(GetUIManager()->GetDocument()->m_mLangPackage.Find(strLang))
 	{
-		AfxMessageBox(_T("请先保存文件。"));
+		AfxMessageBox(_T("已经存在相同语言的语言包！"));
 		return;
 	}
-	file = file.Left(file.ReverseFind('.'));
-	static TCHAR BASED_CODE szFilter[] = _T("语言包文件(*.lng)|*.lng||");
-	CFileDialog fileDlg(FALSE, _T("lng"), GetUIManager()->GetManager()->GetResourcePath() + (LPCTSTR)file,  
-		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,szFilter);
-	fileDlg.m_ofn.lStructSize = 88;
-	if(fileDlg.DoModal() != IDOK)	return;
 
-	xml_document xml;
-	xml_parse_result ret = xml.load_file(fileDlg.GetPathName());
-
-	xml_node rootLang = xml.child_auto("Language");
+	xml_document *xml = new xml_document;
+	GetUIManager()->GetDocument()->m_mLangPackage.Insert(strLang, xml);
+	xml_node rootLang = xml->child_auto("Language");
 	_buildLangPackage(rootLang, root);
-	xml.save_file(fileDlg.GetPathName());
 
 	CDialogEx::OnOK();
 }

@@ -42,7 +42,7 @@
 
 #include "as_variablescope.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 asCVariableScope::asCVariableScope(asCVariableScope *parent)
 {
@@ -135,7 +135,7 @@ sVariable *asCVariableScope::GetVariableByOffset(int offset)
 	return 0;
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif // AS_NO_COMPILER
 

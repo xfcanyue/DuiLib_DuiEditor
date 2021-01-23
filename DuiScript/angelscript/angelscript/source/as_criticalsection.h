@@ -41,7 +41,7 @@
 
 #include "as_config.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 #ifdef AS_NO_THREADS
 
@@ -73,9 +73,9 @@ inline bool tryEnter() { return true; }
 
 #ifdef AS_POSIX_THREADS
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 #include <pthread.h>
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 class asCThreadCriticalSection
 {
@@ -111,7 +111,7 @@ protected:
 
 #elif defined(AS_WINDOWS_THREADS)
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 #ifdef AS_XBOX360
 #include <xtl.h>
 #else
@@ -121,7 +121,7 @@ protected:
 #endif
 #include <windows.h>
 #endif
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 // Undefine macros that cause problems in our code
 #undef GetObject
@@ -181,7 +181,7 @@ static const asUINT maxReaders = 10;
 
 #endif
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif
 

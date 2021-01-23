@@ -41,7 +41,7 @@
 
 #include "as_array.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 class asCContext;
 class asCScriptEngine;
@@ -144,7 +144,7 @@ struct asSSystemFunctionInterface
 	}
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif
 

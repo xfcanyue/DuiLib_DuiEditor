@@ -17,6 +17,7 @@
 #include "ChildFrm2.h"
 #include "ScriptEditorDoc.h"
 #include "ScriptEditorView.h"
+#include "ScriptEditorDocTemplate.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -30,6 +31,8 @@ AFX_STATIC_DATA const TCHAR _afxPreviewEntry[] = _T("PreviewPages");
 CDuiProject g_proj;
 CString g_strAppPath;
 CDuiPropertyFile g_duiProp;
+//IScriptEngine *g_pScriptEngine = NULL;
+//IScriptHelper *ScriptHelper = NULL;
 HWND g_hWndMsg = NULL;
 
 // CDuiEditorApp
@@ -55,6 +58,8 @@ END_MESSAGE_MAP()
 
 CDuiEditorApp::CDuiEditorApp()
 {
+	m_hModuleScript = NULL;
+
 	m_bHiColorIcons = TRUE;
 
 	// 支持重新启动管理器
@@ -96,7 +101,7 @@ BOOL CDuiEditorApp::InitInstance()
 	CWinAppEx::InitInstance();
 	AfxInitRichEdit2();
 
-	//_CrtSetBreakAlloc(43837);
+	//_CrtSetBreakAlloc(528);
 
 	// 初始化 OLE 库
 	if (!AfxOleInit())
@@ -159,13 +164,35 @@ BOOL CDuiEditorApp::InitInstance()
 	CPaintManagerUI::LoadPlugin(g_strAppPath + _T("DuiPlugins_u.dll"));
 #endif
 
+	//把脚本插件加进来
+#ifdef _DEBUG
+	m_hModuleScript = ::LoadLibrary(g_strAppPath +_T("DuiScript_ud.dll"));
+#else
+	m_hModuleScript = ::LoadLibrary(g_strAppPath +_T("DuiScript_u.dll"));
+#endif
+	if(m_hModuleScript)
+	{
+// 		m_funCreateScriptEngine = (CREATE_SCRIPT_ENGINE_INSTANCE)::GetProcAddress(m_hModuleScript, "CreateScriptEngine");
+// 		m_funDeleteScriptEngine = (DELETE_SCRIPT_ENGINE_INSTANCE)::GetProcAddress(m_hModuleScript, "DeleteScriptEngine");
+// 		if(m_funCreateScriptEngine)
+// 		{
+// 			g_pScriptEngine = (*m_funCreateScriptEngine)();
+// 		}
+		m_funCreateScriptHelper = (CREATE_SCRIPT_HELPER)::GetProcAddress(m_hModuleScript, "CreateScriptHelper");
+		m_funDeleteScriptHelper = (DELETE_SCRIPT_HELPER)::GetProcAddress(m_hModuleScript, "DeleteScriptHelper");
+// 		if(m_funCreateScriptHelper)
+// 		{
+// 			ScriptHelper = (*m_funCreateScriptHelper)();
+// 		}
+	}
+
 	//工厂模式注册扩展控件
 	DuiPluginsRegister();
 
 	//调整DPI时，仅缩放显示图片。
 	CPaintManagerUI::SetAdjustDPIRecource(false);
 
-#endif
+#endif //#ifndef DUILIB_VERSION_ORIGINAL
 
 
 	// 注册应用程序的文档模板。文档模板
@@ -180,7 +207,7 @@ BOOL CDuiEditorApp::InitInstance()
 	AddDocTemplate(pDocTemplate);
 
 	//CMultiDocTemplate* pDocTemplate;
-	pDocTemplate = new CMultiDocTemplate(IDR_DuiScriptTYPE,
+	pDocTemplate = new CScriptEditorDocTemplate(IDR_DuiScriptTYPE,
 		RUNTIME_CLASS(CScriptEditorDoc),
 		RUNTIME_CLASS(CChildFrame2), // 自定义 MDI 子框架
 		RUNTIME_CLASS(CScriptEditorView));
@@ -203,29 +230,35 @@ BOOL CDuiEditorApp::InitInstance()
 
 	// 分析标准 shell 命令、DDE、打开文件操作的命令行
 	CCommandLineInfo cmdInfo;
-	//cmdInfo.m_nShellCommand = CCommandLineInfo::FileOpen;
 	ParseCommandLine(cmdInfo);
 
-	//m_pRecentFileList->m_nSize = 16;
-
-	if(cmdInfo.m_strFileName.GetLength()==0) 
-	{ 
-		if(m_pRecentFileList->m_nSize>0  
-			&& m_pRecentFileList->m_arrNames[0].IsEmpty()==FALSE) 
-		{ 
-			//检查文件是否存在
-			CFileFind find;
-			if(find.FindFile(m_pRecentFileList->m_arrNames[0]))
-			{
-				cmdInfo.m_strFileName = m_pRecentFileList->m_arrNames[0]; 
-				cmdInfo.m_nShellCommand = CCommandLineInfo::FileOpen; 
-			}
-			else
-				cmdInfo.m_nShellCommand =  CCommandLineInfo::FileNothing;
-		} 
-		else 
-			cmdInfo.m_nShellCommand =  CCommandLineInfo::FileNothing; 
-	} 
+	cmdInfo.m_nShellCommand =  CCommandLineInfo::FileNothing;
+	//不知道为什么，这里打开多个文件，mditabs不会刷新 -_-!
+// 	if(ProcessSessionFileList())
+// 	{
+// 		cmdInfo.m_nShellCommand =  CCommandLineInfo::FileNothing;
+// 	}
+// 	else
+// 	{
+// 		if(cmdInfo.m_strFileName.GetLength()==0) 
+// 		{ 
+// 			if(m_pRecentFileList->m_nSize>0  
+// 				&& m_pRecentFileList->m_arrNames[0].IsEmpty()==FALSE) 
+// 			{ 
+// 				//检查文件是否存在
+// 				CFileFind find;
+// 				if(find.FindFile(m_pRecentFileList->m_arrNames[0]))
+// 				{
+// 					cmdInfo.m_strFileName = m_pRecentFileList->m_arrNames[0]; 
+// 					cmdInfo.m_nShellCommand = CCommandLineInfo::FileOpen; 
+// 				}
+// 				else
+// 					cmdInfo.m_nShellCommand =  CCommandLineInfo::FileNothing;
+// 			} 
+// 			else 
+// 				cmdInfo.m_nShellCommand =  CCommandLineInfo::FileNothing; 
+// 		} 
+// 	}
 
 	// 启用“DDE 执行”
 	EnableShellOpen();
@@ -246,6 +279,11 @@ BOOL CDuiEditorApp::InitInstance()
 int CDuiEditorApp::ExitInstance()
 {
 	//TODO: 处理可能已添加的附加资源
+// 	if(m_funDeleteScriptHelper)
+// 	{
+// 		(*m_funDeleteScriptHelper)(ScriptHelper);
+// 		ScriptHelper= NULL;
+// 	}
 
 	CPaintManagerUI::Term();
 	CoUninitialize();
@@ -254,6 +292,95 @@ int CDuiEditorApp::ExitInstance()
 	return CWinAppEx::ExitInstance();
 }
 
+BOOL CDuiEditorApp::ProcessSessionFileList()
+{
+	xml_node nodeSession = g_cfg.Session();
+	if(!nodeSession.child("File")) return FALSE;
+
+	BOOL bMoveNext = TRUE;
+	xml_node node=nodeSession.child("File");
+	while (node)
+	{
+		CString filename = LSUTF82T(node.attribute("filename").as_string());
+		if(PathFileExists(filename))
+		{		
+			CDocTemplate* pTemplate;
+			POSITION pos = m_pDocManager->GetFirstDocTemplatePosition();
+			while(pos != NULL)
+			{
+				pTemplate = m_pDocManager->GetNextDocTemplate(pos);
+				CDocument *pDocument = NULL;
+				CDocTemplate::Confidence match = pTemplate->MatchDocType(filename, pDocument);
+				if(match == CDocTemplate::yesAlreadyOpen) 
+				{
+					//不知道为什么重复了，删除这个节点
+					xml_node nodeTemp = node.next_sibling("File");
+					nodeSession.remove_child(node);
+					bMoveNext = FALSE;
+					node = nodeTemp;
+					g_cfg.SaveConfig();
+					break;
+				}
+				if(match == CDocTemplate::yesAttemptNative)
+				{
+					pTemplate->OpenDocumentFile(filename, TRUE, TRUE);
+					break;
+				}
+			}
+		}
+		else
+		{
+			//文件不存在，删除这个节点
+			xml_node nodeTemp = node.next_sibling("File");
+			nodeSession.remove_child(node);
+			bMoveNext = FALSE;
+			node = nodeTemp;
+			g_cfg.SaveConfig();
+		}
+
+		if(bMoveNext)
+			node=node.next_sibling("File");
+		bMoveNext = TRUE;
+	}
+
+
+	return TRUE;
+}
+
+void CDuiEditorApp::OpenSessionFile(LPCTSTR lpszFileName)
+{
+	OpenDocumentFile(lpszFileName);
+}
+
+CDocTemplate *CDuiEditorApp::GetUIDocTemplate()
+{
+	CDocTemplate* pTemplate;
+	POSITION pos = m_pDocManager->GetFirstDocTemplatePosition();
+	while(pos != NULL)
+	{
+		pTemplate = m_pDocManager->GetNextDocTemplate(pos);
+		if(pTemplate->IsKindOf(RUNTIME_CLASS(CDuiEditorDocTemplate)))
+		{
+			return pTemplate;
+		}
+	}
+	return NULL;
+}
+
+CDocTemplate *CDuiEditorApp::GetScriptDocTemplate()
+{
+	CDocTemplate* pTemplate;
+	POSITION pos = m_pDocManager->GetFirstDocTemplatePosition();
+	while(pos != NULL)
+	{
+		pTemplate = m_pDocManager->GetNextDocTemplate(pos);
+		if(pTemplate->IsKindOf(RUNTIME_CLASS(CScriptEditorDocTemplate)))
+		{
+			return pTemplate;
+		}
+	}
+	return NULL;
+}
 // CDuiEditorApp 消息处理程序
 
 
@@ -377,10 +504,14 @@ void CDuiEditorApp::OnFileNewXml()
 {
 	CDocTemplate* pTemplate;
 	POSITION pos = m_pDocManager->GetFirstDocTemplatePosition();
-	if(pos)
+	while(pos != NULL)
 	{
 		pTemplate = m_pDocManager->GetNextDocTemplate(pos);
-		pTemplate->OpenDocumentFile(NULL);
+		if(pTemplate->IsKindOf(RUNTIME_CLASS(CDuiEditorDocTemplate)))
+		{
+			pTemplate->OpenDocumentFile(NULL);
+			return;
+		}
 	}
 }
 
@@ -388,18 +519,21 @@ void CDuiEditorApp::OnFileNewXmlFromTemplate()
 {
 	CDocTemplate* pTemplate;
 	POSITION pos = m_pDocManager->GetFirstDocTemplatePosition();
-	if(pos)
+	while(pos != NULL)
 	{
 		pTemplate = m_pDocManager->GetNextDocTemplate(pos);
-
-		CDuiEditorDocTemplate *pTemp = dynamic_cast<CDuiEditorDocTemplate *>(pTemplate);
-		if(pTemp != NULL)
+		if(pTemplate->IsKindOf(RUNTIME_CLASS(CDuiEditorDocTemplate)))
 		{
-			pTemp->OpenDocumentFile(NULL, TRUE, TRUE, TRUE);
-		}
-		else
-		{
-			pTemplate->OpenDocumentFile(NULL);
+			CDuiEditorDocTemplate *pTemp = dynamic_cast<CDuiEditorDocTemplate *>(pTemplate);
+			if(pTemp != NULL)
+			{
+				pTemp->OpenDocumentFile(NULL, TRUE, TRUE, TRUE);
+			}
+			else
+			{
+				pTemplate->OpenDocumentFile(NULL);
+			}
+			return;
 		}
 	}
 }
@@ -408,11 +542,14 @@ void CDuiEditorApp::OnFileNewAsScript()
 {
 	CDocTemplate* pTemplate;
 	POSITION pos = m_pDocManager->GetFirstDocTemplatePosition();
-	if(pos)
+	while(pos != NULL)
 	{
 		pTemplate = m_pDocManager->GetNextDocTemplate(pos);
-		pTemplate = m_pDocManager->GetNextDocTemplate(pos);
-		pTemplate->OpenDocumentFile(NULL);
+		if(pTemplate->IsKindOf(RUNTIME_CLASS(CScriptEditorDocTemplate)))
+		{
+			pTemplate->OpenDocumentFile(NULL);
+			return;
+		}
 	}
 }
 

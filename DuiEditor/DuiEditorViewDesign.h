@@ -130,6 +130,8 @@ public:
 	afx_msg void OnUpdateEditCreateResourceId(CCmdUI *pCmdUI);
 	afx_msg void OnEditCreateResourceidAuto();
 	void _CreateResourceIDAuto(xml_node root);
+	afx_msg void OnEditLangText();
+	afx_msg void OnUpdateEditLangText(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // DuiEditorView.cpp 中的调试版本

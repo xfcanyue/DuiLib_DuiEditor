@@ -96,6 +96,7 @@
 using namespace pugi;
 #define XML_PARSER_OPTIONS pugi::parse_full//parse_default|parse_declaration|parse_comments
 
+#include "../DuiScript/Include/DuiScriptInterface.h"
 //////////////////////////////////////////////////////////////////////////
 #include "MemDCEx.h"
 #include "LsStringConverter.h"
@@ -111,15 +112,19 @@ public:
 	CLockWindowUpdate(CWnd *pWnd) 
 	{ 
 		m_pWnd = pWnd;
-		m_pWnd->LockWindowUpdate(); 
+		//m_pWnd->LockWindowUpdate();
+		SetWindowRedraw(m_pWnd->GetSafeHwnd(), FALSE);
 	}
 	~CLockWindowUpdate() 
 	{ 
-		m_pWnd->UnlockWindowUpdate(); 
+		//m_pWnd->UnlockWindowUpdate(); 
+		SetWindowRedraw(m_pWnd->GetSafeHwnd(), TRUE);
+		::InvalidateRect(m_pWnd->GetSafeHwnd(), NULL, TRUE);
 	}
 private:
 	CWnd *m_pWnd;
 };
+
 
 #include "EditorConfig.h"
 extern tagEditorConfig g_cfg;

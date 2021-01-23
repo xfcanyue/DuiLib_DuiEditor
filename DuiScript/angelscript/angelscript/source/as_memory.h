@@ -43,7 +43,7 @@
 
 #include "as_config.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 extern asALLOCFUNC_t userAlloc;
 extern asFREEFUNC_t  userFree;
@@ -100,13 +100,13 @@ bool isAligned(const void* const pointer, asUINT alignment);
 
 #endif
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #include <new>
 #include "as_criticalsection.h"
 #include "as_array.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 class asCMemoryMgr
 {
@@ -130,6 +130,6 @@ protected:
 	asCArray<void *> byteInstructionPool;
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif

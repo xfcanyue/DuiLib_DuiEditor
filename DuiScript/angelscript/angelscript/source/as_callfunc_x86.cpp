@@ -50,7 +50,7 @@
 #include "as_tokendef.h"
 #include "as_context.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 //
 // With some compile level optimizations the functions don't clear the FPU
@@ -1504,7 +1504,7 @@ asQWORD GetReturnedDouble()
 	return d;
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif // AS_X86
 #endif // AS_MAX_PORTABILITY

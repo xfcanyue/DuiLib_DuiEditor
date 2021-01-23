@@ -35,7 +35,7 @@
 #include "as_property.h"
 #include "as_scriptengine.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 asCGlobalProperty::asCGlobalProperty() 
 { 
@@ -134,4 +134,4 @@ asCScriptFunction *asCGlobalProperty::GetInitFunc()
 	return initFunc;
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE

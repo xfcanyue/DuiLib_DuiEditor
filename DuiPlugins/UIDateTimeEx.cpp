@@ -55,7 +55,7 @@ namespace DuiLib
 		Add(m_pLabelTime);
 		m_pLabelTime->OnEvent += MakeDelegate(this, &CDateTimeExUI::OnEventLabelTime);
 	}
-
+ 
 	LPCTSTR CDateTimeExUI::GetClass() const
 	{
 		return DUI_CTR_DATETIMEEX;

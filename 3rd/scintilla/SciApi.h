@@ -2800,6 +2800,7 @@ inline SciDll_void SciApi::sci_AutocGetCurrentText(CStringA &Text)
 	int nRet = execute(SCI_AUTOCGETCURRENTTEXT, 0, (LPARAM)pText);
 	pText[nRet] = '\0';
 	Text = pText;
+	delete []pText;
 	return nRet;
 }
 

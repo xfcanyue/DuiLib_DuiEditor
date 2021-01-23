@@ -43,7 +43,7 @@
 #include "as_array.h"
 #include "as_string.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 class asCScriptCode
 {
@@ -67,6 +67,6 @@ public:
 	asCArray<size_t> linePositions;
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif

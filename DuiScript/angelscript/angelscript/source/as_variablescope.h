@@ -47,7 +47,7 @@
 #include "as_string.h"
 #include "as_datatype.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 struct sVariable
 {
@@ -80,7 +80,7 @@ public:
 	asCArray<sVariable *> variables;
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif // AS_NO_COMPILER
 

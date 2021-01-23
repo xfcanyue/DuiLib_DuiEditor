@@ -40,6 +40,10 @@
     <None Include="angelscript\angelscript\source\as_callfunc_x64_msvc_asm.asm">
       <Filter>源文件\angelscript</Filter>
     </None>
+    <None Include="angelscript\angelscript\source\as_callfunc_arm64_gcc.S" />
+    <None Include="angelscript\angelscript\source\as_callfunc_arm64_msvc.asm">
+      <Filter>源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -48,16 +52,10 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ScriptEngine.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="RegCDuiString.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="RegCControlUI.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ScriptRegister.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="angelscript\angelscript\include\angelscript.h">
@@ -177,7 +175,58 @@
     <ClInclude Include="angelscript\add_on\scriptbuilder\scriptbuilder.h">
       <Filter>头文件\add_on</Filter>
     </ClInclude>
-    <ClInclude Include="LsStringConverter.h">
+    <ClInclude Include="RegTNotifyUI.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RegTEvent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RegPOINT.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="regSIZE.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="regRECT.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptHelper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DuiScriptInterface.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\add_on\scriptstdtime\scriptstdtime.h">
+      <Filter>头文件\add_on</Filter>
+    </ClInclude>
+    <ClInclude Include="angelscript\add_on\scriptstdtime\AsTime.h">
+      <Filter>头文件\add_on</Filter>
+    </ClInclude>
+    <ClInclude Include="regPaintManagerUI.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="regCLangManagerUI.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="basedefine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptEngine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="regCRenderEngine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="regTDrawInfo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="regTImageInfo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="regTFontInfo.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -189,18 +238,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptEngine.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="RegCDuiString.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="RegCControlUI.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptRegister.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="angelscript\angelscript\source\as_atomic.cpp">
@@ -319,6 +356,24 @@
     </ClCompile>
     <ClCompile Include="angelscript\add_on\scriptbuilder\scriptbuilder.cpp">
       <Filter>源文件\add_on</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptHelper.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\add_on\scriptstdtime\AsTime.cpp">
+      <Filter>源文件\add_on</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\add_on\scriptstdtime\scriptstdtime.cpp">
+      <Filter>源文件\add_on</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptEngine.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="angelscript\angelscript\source\as_callfunc_arm64.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

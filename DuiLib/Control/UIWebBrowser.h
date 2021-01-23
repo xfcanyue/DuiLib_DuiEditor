@@ -46,6 +46,8 @@ namespace DuiLib
 		static HRESULT GetProperty(IDispatch *pObj, LPOLESTR pName, VARIANT *pValue);
 		static HRESULT SetProperty(IDispatch *pObj, LPOLESTR pName, VARIANT *pValue);
 
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+
 	protected:
 		IWebBrowser2*			m_pWebBrowser2; //浏览器指针
 		IHTMLWindow2*		_pHtmlWnd2;
@@ -53,7 +55,6 @@ namespace DuiLib
 		DWORD m_dwCookie;
 		virtual void ReleaseControl();
 		HRESULT RegisterEventHandler(BOOL inAdvise);
-		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 		CDuiString m_sHomePage;	// 默认页面
 		bool m_bAutoNavi;	// 是否启动时打开默认页面
 		CWebBrowserEventHandler* m_pWebBrowserEventHandler;	//浏览器事件处理

@@ -43,7 +43,7 @@
 #include "as_texts.h"
 #include "as_context.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 // ref: Member Function Pointers and the Fastest Possible C++ Delegates
 //      describes the structure of class method pointers for most compilers
@@ -886,5 +886,5 @@ int CallSystemFunction(int id, asCContext *context)
 
 #endif // AS_MAX_PORTABILITY
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 

@@ -118,6 +118,14 @@ INT类型(最小值，最大值)：
 		<Attribute name="OnNotify" default="" type="STRING" comment="事件发生时，调用脚本的函数名" />
 		<Attribute name="OnDestroy" default="" type="STRING" comment="事件发生时，调用脚本的函数名" />
 		<Attribute name="OnSize" default="" type="STRING" comment="事件发生时，调用脚本的函数名" />
+		<Attribute name="OnPaint" default="" type="STRING" comment="事件发生时，调用脚本的函数名" />
+		<Attribute name="OnPaintBkColor" default="" type="STRING" comment="事件发生时，调用脚本的函数名" />
+		<Attribute name="OnPaintBkImage" default="" type="STRING" comment="事件发生时，调用脚本的函数名" />
+		<Attribute name="OnPaintStatusImage" default="" type="STRING" comment="事件发生时，调用脚本的函数名" />
+		<Attribute name="OnPaintForeColor" default="" type="STRING" comment="事件发生时，调用脚本的函数名" />
+		<Attribute name="OnPaintForeImage" default="" type="STRING" comment="事件发生时，调用脚本的函数名" />
+		<Attribute name="OnPaintText" default="" type="STRING" comment="事件发生时，调用脚本的函数名" />
+		<Attribute name="OnPaintBorder" default="" type="STRING" comment="事件发生时，调用脚本的函数名" />
 	</Control>
 	<Container parent="Control" notifies="setfocus killfocus timer menu windowinit(root)">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />	

@@ -43,7 +43,7 @@
 #include "as_configgroup.h"
 #include "as_scriptengine.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 asCObjectType::asCObjectType() : asCTypeInfo()
 {
@@ -680,7 +680,7 @@ void asCObjectType::ReleaseAllFunctions()
 	beh.getWeakRefFlag = 0;
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 
 

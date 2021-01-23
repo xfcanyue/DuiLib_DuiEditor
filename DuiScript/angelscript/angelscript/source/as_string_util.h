@@ -34,7 +34,7 @@
 
 #include "as_config.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 int     asCompareStrings(const char *str1, size_t len1, const char *str2, size_t len2);
 
@@ -46,6 +46,6 @@ int     asStringDecodeUTF8(const char *encodedBuffer, unsigned int *outLength);
 
 int     asStringEncodeUTF16(unsigned int value, char *outEncodedBuffer);
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif

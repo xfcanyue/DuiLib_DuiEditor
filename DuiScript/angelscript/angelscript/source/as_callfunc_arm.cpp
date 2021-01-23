@@ -65,7 +65,7 @@
 //
 // The code for iOS, Android, Marmalade and Windows Phone goes here
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 extern "C" asQWORD armFunc          (const asDWORD *, int, asFUNCTION_t);
 extern "C" asQWORD armFuncR0        (const asDWORD *, int, asFUNCTION_t, asDWORD r0);
@@ -275,7 +275,7 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 	return retQW;
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #elif !defined(AS_SOFTFP)
 
@@ -286,7 +286,7 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 #define STACK_OFFSET 6
 #define PARAM_BUFFER_SIZE 104
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 extern "C" asQWORD armFunc          (const asDWORD *, int, asFUNCTION_t);
 extern "C" asQWORD armFuncR0        (const asDWORD *, int, asFUNCTION_t, asDWORD r0);
@@ -653,7 +653,7 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 	return retQW;
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif // AS_LINUX
 

@@ -125,7 +125,7 @@ void CDuiEditorViewCode::OnInitialUpdate()
 	// TODO: 在此添加专用代码和/或调用基类
 	//初始化打开的文档，不应该从xml中载入，因为手写的xml并不标准，容易产生定位错误。
 	CDuiEditorDoc *pDoc = (CDuiEditorDoc *)GetDocument();
-	CString xmlfile = pDoc->GetSkinPath() + pDoc->GetSkinFileName();
+	CString xmlfile = pDoc->m_strLoadFileName;//pDoc->GetSkinPath() + pDoc->GetSkinFileName();
 
 	if(xmlfile.IsEmpty()) //应该是新建的文档
 	{
@@ -159,6 +159,11 @@ void CDuiEditorViewCode::OnInitialUpdate()
 	GetUIManager()->GetDocument()->SetModifiedFlag(FALSE);
 	sci.sci_SetSavePoint();
 	sci.sci_EmptyUndoBuffer(); //清理历史记录
+
+	if(GetUIManager()->GetDocument()->m_bLoadFileFromBackup)
+	{
+		GetUIManager()->GetDocument()->SetModifiedFlag(TRUE);
+	}
 }
 
 void CDuiEditorViewCode::OnSize(UINT nType, int cx, int cy)
@@ -613,6 +618,7 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 						m_bNeedUpdate = FALSE;
 					}
 				}
+				GetUIManager()->GetDocument()->SaveBackupFile();
 			}
 		}
 		break;

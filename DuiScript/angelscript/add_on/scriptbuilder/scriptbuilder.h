@@ -37,7 +37,7 @@
 #include <vector>
 #include <string.h> // _strcmpi
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 class CScriptBuilder;
 
@@ -187,6 +187,6 @@ protected:
 	std::set<std::string>      definedWords;
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif

@@ -108,7 +108,7 @@
 #include <stdlib.h>
 #include <xtl.h>
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 #define AS_PPC_MAX_ARGS         32
 #define AS_PPC_THISCALL_REG     1
@@ -728,7 +728,7 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 	return retQW;
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif // AS_XENON
 #endif // AS_MAX_PORTABILITY

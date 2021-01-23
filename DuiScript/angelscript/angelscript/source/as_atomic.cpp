@@ -36,7 +36,7 @@
 
 #include "as_atomic.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 asCAtomic::asCAtomic()
 {
@@ -96,9 +96,9 @@ int asAtomicDec(int &value)
 
 #elif defined(AS_XENON) /// XBox360
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 #include <xtl.h>
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 int asAtomicInc(int &value)
 {
@@ -112,10 +112,10 @@ int asAtomicDec(int &value)
 
 #elif defined(AS_WIN)
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 #define WIN32_MEAN_AND_LEAN
 #include <windows.h>
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 int asAtomicInc(int &value)
 {
@@ -153,9 +153,9 @@ int asAtomicDec(int &value)
 
 #elif defined(AS_MAC) || defined(AS_IPHONE)
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 #include <libkern/OSAtomic.h>
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 int asAtomicInc(int &value)
 {
@@ -175,5 +175,5 @@ int ERROR_PleaseFixTheConfig[-1];
 
 #endif
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 

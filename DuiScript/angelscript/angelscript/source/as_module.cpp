@@ -44,7 +44,7 @@
 #include "as_debug.h"
 #include "as_restore.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 
 // internal
@@ -1829,5 +1829,5 @@ asDWORD asCModule::SetAccessMask(asDWORD mask)
 	return old;
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 

@@ -45,7 +45,7 @@
 #include "as_map.h"
 #include "as_thread.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 class asCScriptEngine;
 class asCObjectType;
@@ -142,6 +142,6 @@ protected:
 	DECLARECRITICALSECTION(gcCollecting) // Used for processing
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif

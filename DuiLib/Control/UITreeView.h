@@ -41,7 +41,7 @@ namespace DuiLib
 		bool IsHasChild() const;
 		long GetTreeLevel() const;
 		bool AddChildNode(CTreeNodeUI* _pTreeNodeUI);
-		bool RemoveAt(CTreeNodeUI* _pTreeNodeUI);
+		bool RemoveNode(CTreeNodeUI* _pTreeNodeUI);
 		void SetParentNode(CTreeNodeUI* _pParentTreeNode);
 		CTreeNodeUI* GetParentNode();
 		long GetCountChild();

@@ -15,7 +15,7 @@ using namespace std;
 #include <unistd.h> // For getcwd()
 #endif
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 // Helper functions
 static string GetCurrentDir();
@@ -1022,6 +1022,6 @@ string GetCurrentDir()
 #endif
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 

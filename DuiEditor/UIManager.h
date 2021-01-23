@@ -38,6 +38,9 @@ public:
 	BOOL UpdateControlUI(xml_node node, xml_attribute attr);
 
 	BOOL DeleteControl(xml_node node);
+	BOOL IsNeedDeleteLangText(xml_node node);
+	void DeleteLangText(xml_node node);
+
 	void SetScrollSize();
 	void SetZoom(int zoom);
 

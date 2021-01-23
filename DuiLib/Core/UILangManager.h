@@ -40,7 +40,6 @@ namespace DuiLib {
 			int id;
 			CDuiString text1;
 			CDuiString text2;
-			CDuiString text3;
 		};
 	public:
 		CLangManagerUI(void);
@@ -55,9 +54,8 @@ namespace DuiLib {
 		static CDuiString GetLangName();
 
 		static void ReleaseStringTable();
-		static LPCTSTR GetString1(int id, LPCTSTR defaultstring = NULL);
-		static LPCTSTR GetString2(int id, LPCTSTR defaultstring = NULL);
-		static LPCTSTR GetString3(int id, LPCTSTR defaultstring = NULL);
+		static LPCTSTR GetString(int id, LPCTSTR defaultstring = NULL);
+		static LPCTSTR GetStringExtra(int id, LPCTSTR defaultstring = NULL);
 	protected:
 		void ResetPackage();
 		CLangPackageUI *_addPackage(LPCTSTR lpstrSkinFile);

@@ -43,7 +43,7 @@
 #include "as_scriptengine.h"
 #include "as_tokenizer.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 asCDataType::asCDataType()
 {
@@ -687,5 +687,5 @@ bool asCDataType::IsEnumType() const
 	return false;
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 

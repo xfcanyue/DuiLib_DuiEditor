@@ -40,7 +40,7 @@
 #include "as_thread.h"
 #include "as_atomic.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 //=======================================================================
 
@@ -464,5 +464,5 @@ void asCThreadReadWriteLock::ReleaseShared()
 
 //========================================================================
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 

@@ -30,8 +30,9 @@ namespace DuiLib
 	public:	
 		virtual void PaintText(HDC hDC);
 		virtual void DoEvent(TEventUI& event);
-		virtual void SetPos(RECT rc);
+		virtual void SetPos(RECT rc, bool bNeedInvalidate);
 		virtual void SetText(LPCTSTR pstrText);
+		virtual void SetText(int n) { __super::SetText(n); }
 
 	public:
 		void BeginRoll(int nDirect = ROLLTEXT_RIGHT, LONG lTimeSpan = ROLLTEXT_TIMERID_SPAN, LONG lMaxTimeLimited = 60);

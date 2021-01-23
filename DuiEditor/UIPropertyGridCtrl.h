@@ -97,7 +97,7 @@ public:
 	void OnPropertyFontChangedFromFontDialog(CUIPropertyGridFontProperty* pProp) const;
 
 	BOOL IsRepeatName(xml_node nodeDoc, LPCTSTR lpszName) const;
-
+	BOOL IsRepeatResourceID(xml_node nodeDoc, int resID) const;
 	//获取相关属性的那个格子
 	CMFCPropertyGridProperty *GetAttributeCell(LPCTSTR attrName);
 

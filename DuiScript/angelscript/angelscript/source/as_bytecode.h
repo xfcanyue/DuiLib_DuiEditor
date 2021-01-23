@@ -46,7 +46,7 @@
 
 #include "as_array.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 #define BYTECODE_SIZE  4
 #define MAX_DATA_SIZE  8
@@ -195,7 +195,7 @@ public:
 	int  stackSize;
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif // AS_NO_COMPILER
 

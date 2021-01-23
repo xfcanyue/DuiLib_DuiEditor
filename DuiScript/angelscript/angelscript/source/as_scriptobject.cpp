@@ -35,7 +35,7 @@
 #include "as_scriptobject.h"
 #include "as_texts.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 // This helper function will call the default factory, that is a script function
 asIScriptObject *ScriptObjectFactory(const asCObjectType *objType, asCScriptEngine *engine)
@@ -1065,5 +1065,5 @@ AS_API asILockableSharedBool *asCreateLockableSharedBool()
 	return asNEW(asCLockableSharedBool);
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 

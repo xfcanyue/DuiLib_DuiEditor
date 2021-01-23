@@ -46,7 +46,7 @@
 #include "as_texts.h"
 #include "as_context.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 static asQWORD __attribute__((noinline)) CallX64(const asQWORD *args, const asQWORD *floatArgs, const int paramSize, asQWORD func)
 {
@@ -340,7 +340,7 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 	return retQW;
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif // AS_X64_MSVC
 #endif // AS_MAX_PORTABILITY

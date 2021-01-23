@@ -53,7 +53,7 @@
 #include "as_gc.h"
 #include "as_tokenizer.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 class asCBuilder;
 class asCContext;
@@ -540,6 +540,6 @@ public:
 	bool inDestructor;
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif

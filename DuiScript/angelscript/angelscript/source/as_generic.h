@@ -41,7 +41,7 @@
 
 #include "as_config.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 class asCScriptEngine;
 class asCScriptFunction;
@@ -103,6 +103,6 @@ public:
 	asQWORD returnVal;
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif

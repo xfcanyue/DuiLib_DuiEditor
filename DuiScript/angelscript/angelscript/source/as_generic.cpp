@@ -40,7 +40,7 @@
 #include "as_objecttype.h"
 #include "as_scriptengine.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 // TODO: runtime optimize: The access to the arguments should be optimized so that code 
 //                         doesn't have to count the position of the argument with every call
@@ -531,4 +531,4 @@ int asCGeneric::GetReturnTypeId(asDWORD *flags) const
 	return sysFunction->GetReturnTypeId(flags);
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE

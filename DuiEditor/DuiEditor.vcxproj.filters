@@ -427,6 +427,21 @@
     <ClInclude Include="DlgBuildLanguagePackageEx.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="DlgScriptTest.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DockScriptStack.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgLangTextEdit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptEditorDocTemplate.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptLexer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -616,6 +631,21 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\3rd\scintilla\SciWnd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgScriptTest.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DockScriptStack.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgLangTextEdit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptEditorDocTemplate.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptLexer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

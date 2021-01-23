@@ -42,7 +42,7 @@
 #include "as_texts.h"
 #include "as_debug.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 // Macros for doing endianess agnostic bitmask serialization
 #define SAVE_TO_BIT(dst, val, bit) ((dst) |= ((val) << (bit)))
@@ -5296,5 +5296,5 @@ int asCWriter::FindTypeInfoIdx(asCTypeInfo *obj)
 
 #endif // AS_NO_COMPILER
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 

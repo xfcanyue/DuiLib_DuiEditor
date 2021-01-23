@@ -30,4 +30,5 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedOk();
 	void _buildLangPackage(xml_node rootLang, xml_node nodeSkin);
+	CComboBox m_cbLang;
 };

@@ -44,7 +44,7 @@
 #include "as_texts.h"
 #include "as_context.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 // These functions are implemented in as_callfunc_x64_msvc.asm
 extern "C" asQWORD CallX64(const asQWORD *args, const asQWORD *floatArgs, int paramSize, asQWORD func);
@@ -209,7 +209,7 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 	return retQW;
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif // AS_X64_MSVC
 #endif // AS_MAX_PORTABILITY

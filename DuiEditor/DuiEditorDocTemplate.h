@@ -1,6 +1,7 @@
 #pragma once
 class CDuiEditorDocTemplate : public CMultiDocTemplate
 {
+	DECLARE_DYNAMIC(CDuiEditorDocTemplate)
 public:
 	CDuiEditorDocTemplate(UINT nIDResource, CRuntimeClass* pDocClass,
 		CRuntimeClass* pFrameClass, CRuntimeClass* pViewClass);

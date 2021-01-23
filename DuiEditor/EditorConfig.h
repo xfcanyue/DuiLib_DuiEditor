@@ -115,6 +115,10 @@ struct tagEditorConfig
 		xml.save_to_default_file();
 	}
 
+	xml_node Session()
+	{
+		return xml.child_auto(XTEXT("DuiEditor")).child_auto("Session");
+	}
 public:
 	xml_document xml;
 };

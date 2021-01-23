@@ -36,9 +36,7 @@ public:
 
 	void SetAttributeValue(LPCTSTR szAttribute);
 	CString GetAttributeValue();
-
 	void SetControlImage(CxImage &img);
-
 	void SetImageFile(LPCTSTR lpstrPathName);
 
 	static BOOL svg_2_cximage(CxImage &cximg, LPCTSTR strPathName);

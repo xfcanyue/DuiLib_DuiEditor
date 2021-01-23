@@ -20,6 +20,7 @@
 #include "UIManager.h"
 
 #include "DlgTemplateSave.h"
+#include "DlgLangTextEdit.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -99,6 +100,8 @@ BEGIN_MESSAGE_MAP(CDuiEditorViewDesign, CScrollView)
 	ON_COMMAND(ID_EDIT_CREATE_RESOURCE_ID, &CDuiEditorViewDesign::OnEditCreateResourceId)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_CREATE_RESOURCE_ID, &CDuiEditorViewDesign::OnUpdateEditCreateResourceId)
 	ON_COMMAND(ID_EDIT_CREATE_RESOURCEID_AUTO, &CDuiEditorViewDesign::OnEditCreateResourceidAuto)
+	ON_COMMAND(ID_EDIT_LANG_TEXT, &CDuiEditorViewDesign::OnEditLangText)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_LANG_TEXT, &CDuiEditorViewDesign::OnUpdateEditLangText)
 END_MESSAGE_MAP()
 
 // CDuiEditorView ¹¹Ôì/Îö¹¹
@@ -1328,4 +1331,21 @@ void CDuiEditorViewDesign::_CreateResourceIDAuto(xml_node root)
 	{
 		_CreateResourceIDAuto(node);
 	}	
+}
+
+
+void CDuiEditorViewDesign::OnEditLangText()
+{
+	CDlgLangTextEdit dlg;
+	dlg.SetUIManager(GetUIManager());
+	dlg.DoModal();
+}
+
+
+void CDuiEditorViewDesign::OnUpdateEditLangText(CCmdUI *pCmdUI)
+{
+	if(GetUIManager()->GetUiTracker()->m_pFocused)
+		pCmdUI->Enable(GetUIManager()->GetUiTracker()->m_pFocused->m_pControl->GetResourceID() > 0);
+	else
+		pCmdUI->Enable(FALSE);
 }

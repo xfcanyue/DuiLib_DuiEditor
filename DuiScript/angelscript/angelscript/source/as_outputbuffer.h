@@ -47,7 +47,7 @@
 #include "as_string.h"
 #include "as_array.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 struct asSSystemFunctionInterface;
 class asCScriptEngine;
@@ -73,7 +73,7 @@ public:
 	asCArray<message_t*> messages;
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif // AS_NO_COMPILER
 

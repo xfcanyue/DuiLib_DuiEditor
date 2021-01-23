@@ -40,7 +40,7 @@
 #pragma warning(disable:4345) // warning about a change in how the code is handled in this version
 #endif
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 template <class T> class asCArray
 {
@@ -523,6 +523,6 @@ void asCArray<T>::RemoveIndexUnordered(asUINT index)
 		array[index] = PopLast();
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif

@@ -270,7 +270,7 @@ namespace DuiLib
 	//************************************
 	bool CTreeNodeUI::Remove( CControlUI* pControl )
 	{
-		return RemoveAt((CTreeNodeUI*)pControl);
+		return RemoveNode((CTreeNodeUI*)pControl);
 	}
 
 	//************************************
@@ -383,14 +383,14 @@ namespace DuiLib
 	// 参数信息: CTreeNodeUI * _pTreeNodeUI
 	// 函数说明: 
 	//************************************
-	bool CTreeNodeUI::RemoveAt( CTreeNodeUI* _pTreeNodeUI )
+	bool CTreeNodeUI::RemoveNode( CTreeNodeUI* _pTreeNodeUI )
 	{
 		int nIndex = mTreeNodes.Find(_pTreeNodeUI);
 		CTreeNodeUI* pNode = static_cast<CTreeNodeUI*>(mTreeNodes.GetAt(nIndex));
 		if(pNode && pNode == _pTreeNodeUI)
 		{
 			while(pNode->IsHasChild())
-				pNode->RemoveAt(static_cast<CTreeNodeUI*>(pNode->mTreeNodes.GetAt(0)));
+				pNode->RemoveNode(static_cast<CTreeNodeUI*>(pNode->mTreeNodes.GetAt(0)));
 
 			mTreeNodes.Remove(nIndex);
 

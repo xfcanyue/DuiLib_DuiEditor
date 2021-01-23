@@ -45,7 +45,7 @@
 #include "as_map.h"
 #include "as_criticalsection.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 class asCThreadLocalData;
 
@@ -103,6 +103,6 @@ protected:
 	~asCThreadLocalData();
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif

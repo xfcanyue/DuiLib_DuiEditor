@@ -19,7 +19,6 @@
 
 // TODO: 在此处引用程序需要的其他头文件
 #include "angelscript/angelscript/include/angelscript.h"
-using namespace AngelScript;
 
 //using namespace AngelScript;
 
@@ -27,3 +26,5 @@ using namespace AngelScript;
 using namespace DuiLib;
 
 #include "LsStringConverter.h"
+
+#include "basedefine.h"

@@ -60,6 +60,8 @@ CDuiEditorDoc::CDuiEditorDoc()
 {
 	// TODO: 在此添加一次性构造代码
 	m_bMenuWnd = FALSE;
+	m_bHasSaveSession = FALSE;
+	m_bLoadFileFromBackup = FALSE;
 
 	CUIManager *pManager = new CUIManager;
 	SetUIManager(pManager);
@@ -93,6 +95,13 @@ CDuiEditorDoc::~CDuiEditorDoc()
 		delete pUIManager;
 		SetUIManager(NULL);
 	}
+
+	for (int i=0; i<m_mLangPackage.GetSize(); i++)
+	{
+		LPCTSTR key = m_mLangPackage.GetAt(i);
+		xml_document *xml = (xml_document *)m_mLangPackage.Find(key);
+		delete xml; xml = NULL;
+	}
 }
 
 BOOL CDuiEditorDoc::OnNewDocument()
@@ -101,12 +110,7 @@ BOOL CDuiEditorDoc::OnNewDocument()
 		return FALSE;
 
 	// TODO: 在此添加重新初始化代码
-// 	xml_node nodeWindow = m_doc.child_auto(XTEXT("Window"));
-// 	nodeWindow.append_attribute(XTEXT("size")).set_value(XTEXT("400,300"));
-// 	nodeWindow.append_child(XTEXT("VerticalLayout"));
 	m_doc.load_string(T2XML(s_defdocument));
-
-	//GetUIManager()->GetTreeView()->InitTreeContent();
 	m_strDefaultTitle = m_strTitle;
 	return TRUE;
 }
@@ -120,13 +124,9 @@ BOOL CDuiEditorDoc::OnNewDocumentFromUiTemplate()
 	if(!m_doc.load_file(strFile))
 	{
 		AfxMessageBox(_T("载入模板页失败!"));
-// 		xml_node nodeWindow = m_doc.root().append_child(XTEXT("Window"));
-// 		nodeWindow.append_attribute(XTEXT("size")).set_value(XTEXT("400,300"));
-// 		nodeWindow.append_child(XTEXT("VerticalLayout"));
 		m_doc.load_string(T2XML(s_defdocument));
 	}	
 
-	//GetUIManager()->GetTreeView()->InitTreeContent();
 	m_strDefaultTitle = m_strTitle;
 	return TRUE;
 }
@@ -135,24 +135,6 @@ BOOL CDuiEditorDoc::OnNewDocumentFromUiTemplate()
 // 缩略图的支持
 void CDuiEditorDoc::OnDrawThumbnail(CDC& dc, LPRECT lprcBounds)
 {
-// 	CView *pView;
-// 	for (POSITION pos = GetFirstViewPosition(); pos != NULL;)
-// 	{
-// 		pView = GetNextView(pos);
-// 		if(pView->IsKindOf(RUNTIME_CLASS(CDuiEditorViewDesign)))
-// 		{
-// 			CDuiEditorViewDesign *pViewDesign = (CDuiEditorViewDesign *)pView;
-// 
-// 			CImage image;
-// 			CControlUI *pRoot = pViewDesign->m_Manager.GetManager()->GetRoot();
-// 			CSize szForm = pViewDesign->m_Manager.GetManager()->GetInitSize();
-// 			image.Create(szForm.cx, szForm.cy, 32);
-// 			CRect rcPaint(0,0,szForm.cx,szForm.cy);
-// 			pRoot->DoPaint(image.GetDC(), rcPaint, NULL);
-// 			image.Draw(dc.m_hDC, rcPaint);
-// 			image.ReleaseDC();
-// 		}
-// 	}	
 }
 #endif // SHARED_HANDLERS
 
@@ -226,7 +208,56 @@ BOOL CDuiEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
 		return FALSE;
 
 	// TODO:  在此添加您专用的创建代码
-	xml_parse_result ret = m_doc.load_file(lpszPathName, XML_PARSER_OPTIONS);
+	CString filename = lpszPathName;
+
+	xml_node nodeSession = g_cfg.Session();
+	for (xml_node node = nodeSession.child("File"); node; node=node.next_sibling("File"))
+	{
+		if(CompareString(LSUTF82T(node.attribute("filename").as_string()), lpszPathName))
+		{
+			m_fileSession = node;
+		}
+	}
+	if(!m_fileSession)
+	{
+		m_fileSession = g_cfg.Session().append_child("File");
+	}
+
+	//对比时间戳，判断是否载入备份文件
+	BOOL bModify = m_fileSession.attribute("ismodify").as_bool();
+	CString backup = LSUTF82T(m_fileSession.attribute("backup").as_string());
+	if(!backup.IsEmpty() && PathFileExists(backup))
+	{
+		CFileStatus sta1;
+		CFileStatus sta2;
+		if(CFile::GetStatus(lpszPathName, sta1, NULL) && CFile::GetStatus(backup, sta2, NULL) && bModify)
+		{
+			if(sta1.m_mtime > sta2.m_mtime)
+			{
+				CString temp;
+				temp.Format(_T("%s\r\n\r\n上次关闭软件没有保存文件，但是当前文件比备份新。 点\"是\"载入备份文件，点\"否\"载入当前文件。"), lpszPathName);
+				if(AfxMessageBox(temp, MB_OKCANCEL) != IDOK)
+				{
+					m_bLoadFileFromBackup = TRUE;
+					filename = backup;
+				}
+			}
+			else if(sta1.m_mtime < sta2.m_mtime)
+			{
+				CString temp;
+				temp.Format(_T("%s\r\n\r\n由于上次关闭软件没有保存文件，是否选择从备份载入？"), lpszPathName);
+				if(AfxMessageBox(temp, MB_OKCANCEL) == IDOK)
+				{
+					m_bLoadFileFromBackup = TRUE;
+					filename = backup;
+				}
+			}
+		}
+	}
+
+	m_strLoadFileName = filename;
+
+	xml_parse_result ret = m_doc.load_file(filename, XML_PARSER_OPTIONS);
 	if(ret.status != pugi::status_ok)
 	{
 		LSSTRING_CONVERSION;
@@ -245,6 +276,15 @@ BOOL CDuiEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
 			m_bMenuWnd = TRUE;
 		}
 	}
+	LoadLangPackage(filename);
+
+	//每次打开文件，总是创建新的备份文件
+	m_fileSession.attribute("backup").set_value("");
+
+	if(m_bLoadFileFromBackup)
+	{
+		SetModifiedFlag(TRUE);
+	}
 	return TRUE;
 }
 
@@ -260,15 +300,124 @@ BOOL CDuiEditorDoc::OnSaveDocument(LPCTSTR lpszPathName)
 	bool bSave = m_doc.save_file(lpszPathName, PUGIXML_TEXT("\t"), format_default, encoding_utf8);
 	if(!bSave)	return FALSE;
 
+	SaveLangPackage(lpszPathName);
+
 	GetUIManager()->GetCodeView()->GetSciWnd()->sci_SetSavePoint();
 	SetModifiedFlag(FALSE);
 	return TRUE;
 }
 
+void CDuiEditorDoc::LoadLangPackage(LPCTSTR lpszPathName)
+{
+	if(!g_cfg.bLangManager)
+		return;
+
+	CString langFile;
+	CString strSkinDir = lpszPathName;
+	int nPos = strSkinDir.ReverseFind(_T('\\'));
+	if(nPos != -1)
+	{
+		langFile = strSkinDir.Right(strSkinDir.GetLength() - nPos-1);
+		strSkinDir = strSkinDir.Left(nPos + 1);
+	}
+	if(strSkinDir.IsEmpty()) return;
+	if(langFile.IsEmpty()) return;
+
+	strSkinDir += g_cfg.strLangPath;
+	strSkinDir += _T("\\");
+	langFile = langFile.Left(langFile.ReverseFind('.')) + _T(".lng");
+
+	CFileFind finder;
+	BOOL bFind = finder.FindFile(strSkinDir + _T("*.*"));
+	while (bFind)
+	{
+		bFind = finder.FindNextFile();
+		if(finder.IsDots()) continue;
+		if(finder.IsDirectory())	//是文件夹，检查名称，把里面文件删除
+		{
+			CString lang = finder.GetFileName();
+
+			CString langPathName = strSkinDir + lang + _T("\\") + langFile;
+			CFileFind finder;
+			if(!finder.FindFile(langPathName))
+			{
+				continue;
+			}
+
+			xml_document *xml = new xml_document;
+			xml_parse_result ret = xml->load_file(langPathName);	
+			if(ret.status != pugi::status_ok) //解析失败
+			{
+				AfxMessageBox(_T("Parse language xml file failed"));
+				delete xml;
+				continue;
+			}
+			if(!xml->child("Language")) //根节点不是Language
+			{
+				delete xml;
+				continue;
+			}
+			m_mLangPackage.Insert(lang, xml);
+		}
+	}
+}
+
+void CDuiEditorDoc::SaveLangPackage(LPCTSTR lpszPathName)
+{
+	if(!g_cfg.bLangManager)
+		return;
+
+	CString langFile;
+	CString strSkinDir = lpszPathName;
+	int nPos = strSkinDir.ReverseFind(_T('\\'));
+	if(nPos != -1)
+	{
+		langFile = strSkinDir.Right(strSkinDir.GetLength() - nPos-1);
+		strSkinDir = strSkinDir.Left(nPos + 1);
+	}
+	if(strSkinDir.IsEmpty()) return;
+	if(langFile.IsEmpty()) return;
+
+	strSkinDir += g_cfg.strLangPath;
+	strSkinDir += _T("\\");
+	langFile = langFile.Left(langFile.ReverseFind('.')) + _T(".lng");
+
+	for (int i=0; i<m_mLangPackage.GetSize(); i++)
+	{
+		LPCTSTR key = m_mLangPackage.GetAt(i);
+		xml_document *xml = (xml_document *)m_mLangPackage.Find(key);
+		CString langPath = strSkinDir + key + _T("\\");
+		CreateDirectory(langPath, NULL);
+		xml->save_file(langPath + langFile);
+	}
+}
 
 void CDuiEditorDoc::OnCloseDocument()
 {
+ 	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
+	if(pMain->IsClosingNow())
+	{
+		if(m_fileSession && !m_bHasSaveSession)
+		{
+			CString filename = GetPathName();
+			if(filename.IsEmpty()) filename = m_strDefaultTitle;
+			m_fileSession.attribute_auto("filename").set_value(LST2UTF8(filename));
+			g_cfg.SaveConfig();
+			m_bHasSaveSession = TRUE;
+		}
+	}
+	else //正常关闭文件，不要保存session
+	{
+		if(m_fileSession)
+		{
+			g_cfg.Session().remove_child(m_fileSession);
+			g_cfg.SaveConfig();
+		}
+	}
+	
+
 	CDocument::OnCloseDocument();
+	if(pMain->IsClosingNow()) return;
 
 	POSITION pos = ((CDuiEditorApp *)AfxGetApp())->GetFirstDocTemplatePosition();
 	while (pos != NULL)
@@ -280,9 +429,7 @@ void CDuiEditorDoc::OnCloseDocument()
 			return;
 		}
 	}
-
 	//如果没有打开任何文档，左侧切换到文件列表
-	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
 	pMain->m_wndFileView.ShowPane(TRUE, FALSE,TRUE);
 }
 
@@ -290,10 +437,9 @@ void CDuiEditorDoc::SetModifiedFlag(BOOL bModified)
 {
 	if(m_bModified != bModified)
 	{
-		CString strTitle;
 		if(GetPathName().IsEmpty())
 		{
-			strTitle = m_strDefaultTitle;
+			m_strMyTitle = m_strDefaultTitle;
 		}
 		else
 		{
@@ -308,16 +454,65 @@ void CDuiEditorDoc::SetModifiedFlag(BOOL bModified)
 					lpszTemp = (LPTSTR)_tcsinc(lpsz);
 			}
 
-			strTitle = lpszTemp;
+			m_strMyTitle = lpszTemp;
 		}
 
 		if(bModified)
-			SetTitle(strTitle + " *");
+			SetTitle(m_strMyTitle + " *");
 		else
-			SetTitle(strTitle);
+			SetTitle(m_strMyTitle);
 	}
 
+	if(bModified)
+	{
+		SaveBackupFile();
+	}
+
+	if(m_fileSession.attribute("ismodify").as_bool() != (bModified==TRUE))
+	{
+		m_fileSession.attribute_auto("ismodify").set_value(bModified);
+		g_cfg.SaveConfig();
+	}
 	__super::SetModifiedFlag(bModified);
+}
+
+void CDuiEditorDoc::SaveBackupFile()
+{
+	if(!m_fileSession) return;
+
+	CString filename = GetPathName();
+	if(filename.IsEmpty()) return; //没有保存过的文件，不要备份
+	m_fileSession.attribute_auto("filename").set_value(LST2UTF8(filename));
+
+	xml_attribute attrBackup = m_fileSession.attribute_auto("backup");
+	CString backupfile = LSUTF82T(attrBackup.as_string());
+	if(backupfile.IsEmpty())
+	{
+		// always capture the complete file name including extension (if present)
+		LPCTSTR lpszPathName = (LPCTSTR)filename;
+		LPTSTR lpszTemp = (LPTSTR)lpszPathName;
+		for (LPCTSTR lpsz = lpszPathName; *lpsz != '\0'; lpsz = _tcsinc(lpsz))
+		{
+			// remember last directory/drive separator
+			if (*lpsz == '\\' || *lpsz == '/' || *lpsz == ':')
+				lpszTemp = (LPTSTR)_tcsinc(lpsz);
+		}
+		CString fileTitle = lpszTemp;
+
+		SYSTEMTIME st;
+		GetLocalTime(&st);
+		CString file;
+		file.Format(_T("%s %04d-%02d-%02d %02d.%02d.%02d.%d.xml"), fileTitle, 
+			st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+		backupfile = g_strAppPath + _T("DuiBackup\\");
+		CreateDirectory(backupfile,NULL);
+		backupfile += file;
+
+		attrBackup.set_value(LST2UTF8(backupfile));
+		g_cfg.SaveConfig();
+	}
+	GetUIManager()->GetCodeView()->GetSciWnd()->SaveFile(backupfile);
+	//m_doc.save_file(backupfile, PUGIXML_TEXT("\t"), format_default, encoding_utf8);
 }
 
 BOOL CDuiEditorDoc::IsModified()
@@ -612,7 +807,6 @@ void CDuiEditorDoc::OnBuildLangStringTable()
 		node1.append_attribute("id").set_value("1");
 		node1.append_attribute("text1").set_value("");
 		node1.append_attribute("text2").set_value("");
-		node1.append_attribute("text3").set_value("");
 	}
 	xml.save_file(fileDlg.GetPathName());
 }

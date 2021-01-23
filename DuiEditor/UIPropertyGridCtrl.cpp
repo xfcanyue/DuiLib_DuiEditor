@@ -902,6 +902,21 @@ void CUIPropertyGridCtrl::OnPropertyChanged(CMFCPropertyGridProperty* pProp) con
 
 	if(CompareString(attrType.value(), _T("INT")))
 	{
+		//是否设置resourceid
+		if(GetUIManager())
+		{
+			if(CompareString(attrName.value(), _T("resourceid")) && g_duiProp.IsControlUI(m_TreeNode))
+			{
+				xml_node nodeDoc = GetUIManager()->GetDocument()->m_doc.root().child(XTEXT("Window"));
+				if(IsRepeatResourceID(nodeDoc, pProp->GetValue().intVal))
+				{
+					AfxMessageBox(_T("已存在相同的resourceid!"));
+					pProp->SetValue(pProp->GetOriginalValue());
+					return;
+				}
+			}
+		}
+
 		attrTree = g_duiProp.AddAttribute(m_TreeNode, XML2T(attrName.value()), pProp->GetValue().intVal, GetUIManager());
 	}
 	else if(CompareString(attrType.value(), _T("DWORD")))
@@ -1040,6 +1055,25 @@ BOOL CUIPropertyGridCtrl::IsRepeatName(xml_node nodeDoc, LPCTSTR lpszName) const
 	return FALSE;
 }
 
+BOOL CUIPropertyGridCtrl::IsRepeatResourceID(xml_node nodeDoc, int resID) const
+{
+	xml_attribute attr = nodeDoc.attribute(XTEXT("resourceid"));
+	if(attr)
+	{
+		if(resID == attr.as_int())
+		{
+			return TRUE;
+		}
+	}
+
+	for (pugi::xml_node node = nodeDoc.first_child(); node; node = node.next_sibling())
+	{
+		if(IsRepeatResourceID(node, resID))
+			return TRUE;
+	}
+
+	return FALSE;
+}
 
 void CUIPropertyGridCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 {

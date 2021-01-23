@@ -40,7 +40,7 @@
 #include "as_config.h"
 #include "as_scriptcode.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 asCScriptCode::asCScriptCode()
 {
@@ -148,4 +148,4 @@ bool asCScriptCode::TokenEquals(size_t pos, size_t len, const char *str)
 	return false;
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE

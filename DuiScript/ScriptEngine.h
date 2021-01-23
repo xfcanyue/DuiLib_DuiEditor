@@ -1,26 +1,25 @@
 #pragma once
 
-#include "angelscript/add_on/scriptbuilder/scriptbuilder.h"
 
-class CScriptEngine : public IScriptEngine
+namespace DuiLib
+{
+
+class CScriptEngine
 {
 public:
 	CScriptEngine(void);
-	virtual ~CScriptEngine(void);
+	~CScriptEngine(void);
 
-	virtual bool AddScriptCode(const char *pUtf8ScriptCode);
-	virtual bool AddScriptFile(LPCTSTR pstrFileName);
-	virtual bool ExecuteScript(LPCTSTR funName, CControlUI *pControl);
-	virtual bool ExecuteScript(LPCTSTR funName, CControlUI *pControl, TEventUI *ev);
-	virtual bool ExecuteScript(LPCTSTR funName, CControlUI *pControl, TNotifyUI *pMsg);
-
+	asIScriptEngine *GetEngine();
 protected:
+	void Init();
+	void reg_GlobalProperty(); //注册全局属性
+	void reg_ControlHierarchies(); //统一注册类的层次关系
+
 	void MessageCallback(const asSMessageInfo &msg);
-private:
 	asIScriptEngine  *engine;
-	asIScriptContext *ctx;
-
-	int m_nModuleCount;
-
-	CStdStringPtrMap m_mapContent;
 };
+
+extern CScriptEngine g_ScriptEngine;
+
+} //namespace DuiLib

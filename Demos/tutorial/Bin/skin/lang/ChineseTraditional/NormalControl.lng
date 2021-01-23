@@ -38,5 +38,7 @@
 	<Text id="36" text="单行文本" />
 	<Text id="37" text="多行文本" />
 	<Text id="38" text="IP地址" />
-	<Text id="39" tipvalue="編輯框" />
+	<Text id="39" tooltip="真的是编辑框" tipvalue="编辑框" />
+	<Text id="40" text="svg图标" />
+	<Text id="44" text="svg图标" />
 </Language>

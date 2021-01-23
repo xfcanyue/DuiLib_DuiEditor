@@ -395,7 +395,7 @@ namespace DuiLib {
 		if ( !m_bDragable ) m_uButtonState &= ~UISTATE_CAPTURED;
 	}
 
-	DWORD CListContainerHeaderItemUI::GetSepWidth() const
+	int CListContainerHeaderItemUI::GetSepWidth() const
 	{
 		return m_iSepWidth;
 	}
@@ -755,7 +755,7 @@ namespace DuiLib {
 		return CContainerUI::EstimateSize(szAvailable);
 	}
 
-	RECT CListContainerHeaderItemUI::GetThumbRect() const
+	RECT CListContainerHeaderItemUI::GetThumbRect(bool bUseNew) const
 	{
 		if( m_iSepWidth >= 0 ) return CDuiRect(m_rcItem.right - m_iSepWidth, m_rcItem.top, m_rcItem.right, m_rcItem.bottom);
 		else return CDuiRect(m_rcItem.left, m_rcItem.top, m_rcItem.left - m_iSepWidth, m_rcItem.bottom);

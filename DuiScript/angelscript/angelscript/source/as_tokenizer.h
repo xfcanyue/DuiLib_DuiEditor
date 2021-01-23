@@ -45,7 +45,7 @@
 #include "as_map.h"
 #include "as_string.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 class asCTokenizer
 {
@@ -73,7 +73,7 @@ protected:
 	const sTokenWord **keywordTable[256];
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif
 

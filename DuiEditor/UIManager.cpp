@@ -448,10 +448,21 @@ BOOL CUIManager::DeleteControl(xml_node node)
 	CControlUI *pControl = (CControlUI *)node.get_tag();
 	xml_node nodeContainer = node.parent();
 
+	//有没有语言包要删除的，如果有，做出提示
+	BOOL bDeleteLangText = FALSE;
+	if(IsNeedDeleteLangText(node))
+	{
+		if(AfxMessageBox(_T("是否删除相关的语言包内容？\r\n此内容删除无法撤销。"), MB_OKCANCEL) == IDOK)
+			bDeleteLangText = TRUE;
+	}
+
 	GetCodeView()->DeleteNode(node);
 	GetTreeView()->DeleteXmlNode(node);
 
-//	GetCmdHistory()->AddDeleteControl(node);
+	if(bDeleteLangText)
+	{
+		DeleteLangText(node);
+	}
 
 	if(nodeContainer)
 	{
@@ -469,7 +480,46 @@ BOOL CUIManager::DeleteControl(xml_node node)
 	return TRUE;
 }
 
+BOOL CUIManager::IsNeedDeleteLangText(xml_node node)
+{
+	if(node.attribute("resourceid").as_int() > 0)
+		return TRUE;
+	
+	for (xml_node node1=node.first_child(); node1; node1=node1.next_sibling())
+	{
+		if(IsNeedDeleteLangText(node1))
+			return TRUE;
+	}
+	return FALSE;
+}
 
+void CUIManager::DeleteLangText(xml_node node)
+{
+	for (xml_node node1=node.first_child(); node1; node1=node1.next_sibling())
+	{
+		DeleteLangText(node1);
+	}
+
+	int resID = node.attribute("resourceid").as_int();
+	if(resID > 0)
+	{
+		for (int i=0; i<GetDocument()->m_mLangPackage.GetSize(); i++)
+		{
+			LPCTSTR key = GetDocument()->m_mLangPackage.GetAt(i);
+			xml_document *xml = (xml_document *)GetDocument()->m_mLangPackage.Find(key);
+			if(!xml) continue;
+			for (xml_node xmlText=xml->child("Language").first_child(); xmlText; xmlText=xmlText.next_sibling())
+			{
+				if(xmlText.attribute("id").as_int() == resID)
+				{
+					xml->child("Language").remove_child(xmlText);
+					break;
+				}
+			}
+		}
+	}
+
+}
 
 void CUIManager::SetScrollSize()
 {

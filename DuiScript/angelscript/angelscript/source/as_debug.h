@@ -91,7 +91,7 @@ typedef double float64_t;
 #include "as_map.h"
 #include "as_string_util.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 struct TimeCount
 {
@@ -253,7 +253,7 @@ protected:
 
 #define TimeIt(x) CProfilerScope profilescope(x)
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #else // !(_MSC_VER && AS_PROFILE)
 

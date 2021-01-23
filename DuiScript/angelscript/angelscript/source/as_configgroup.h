@@ -45,7 +45,7 @@
 #include "as_array.h"
 #include "as_objecttype.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 class asCConfigGroup
 {
@@ -79,6 +79,6 @@ public:
 	asCArray<asCObjectType*>     generatedTemplateInstances;
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif

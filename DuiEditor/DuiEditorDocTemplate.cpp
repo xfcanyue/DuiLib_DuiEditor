@@ -2,6 +2,8 @@
 #include "DuiEditorDocTemplate.h"
 #include "DuiEditorDoc.h"
 
+
+IMPLEMENT_DYNAMIC(CDuiEditorDocTemplate, CMultiDocTemplate)
 CDuiEditorDocTemplate::CDuiEditorDocTemplate(UINT nIDResource, CRuntimeClass* pDocClass,
 	CRuntimeClass* pFrameClass, CRuntimeClass* pViewClass) 
 	: CMultiDocTemplate(nIDResource, pDocClass, pFrameClass, pViewClass)

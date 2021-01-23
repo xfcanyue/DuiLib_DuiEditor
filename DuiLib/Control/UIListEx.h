@@ -87,7 +87,7 @@ namespace DuiLib {
 
 		BOOL IsDragable() const;
 		void SetDragable(BOOL bDragable);
-		DWORD GetSepWidth() const;
+		int GetSepWidth() const;
 		void SetSepWidth(int iWidth);
 		DWORD GetTextStyle() const;
 		void SetTextStyle(UINT uStyle);
@@ -112,7 +112,7 @@ namespace DuiLib {
 		void DoEvent(TEventUI& event);
 		SIZE EstimateSize(SIZE szAvailable);
 		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
-		RECT GetThumbRect() const;
+		RECT GetThumbRect(bool bUseNew = false) const;
 
 		void PaintText(HDC hDC);
 		void PaintStatusImage(HDC hDC);

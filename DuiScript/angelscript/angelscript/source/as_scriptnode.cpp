@@ -40,7 +40,7 @@
 #include "as_scriptnode.h"
 #include "as_scriptengine.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 asCScriptNode::asCScriptNode(eScriptNode type)
 {
@@ -174,5 +174,5 @@ void asCScriptNode::DisconnectParent()
 	prev = 0;
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 

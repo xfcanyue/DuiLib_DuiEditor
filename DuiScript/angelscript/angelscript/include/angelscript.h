@@ -44,19 +44,17 @@
 #include <stdint.h>
 #endif
 
-#define AS_USE_NAMESPACE
-
 #ifdef AS_USE_NAMESPACE
-#define BEGIN_AS_NAMESPACE namespace AngelScript {
-#define END_AS_NAMESPACE }
-#define AS_NAMESPACE_QUALIFIER AngelScript::
+ #define BEGIN_AS_NAMESPACE namespace AngelScript {
+ #define END_AS_NAMESPACE }
+ #define AS_NAMESPACE_QUALIFIER AngelScript::
 #else
-#define BEGIN_AS_NAMESPACE
-#define END_AS_NAMESPACE
-#define AS_NAMESPACE_QUALIFIER ::
+ #define BEGIN_AS_NAMESPACE
+ #define END_AS_NAMESPACE
+ #define AS_NAMESPACE_QUALIFIER ::
 #endif
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 // AngelScript version
 
@@ -589,9 +587,9 @@ extern "C"
 // Relies on C++11 features so it can not be used with non-compliant compilers
 #ifdef AS_CAN_USE_CPP11
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 #include <type_traits>
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 template<typename T>
 asUINT asGetTypeTraits()
@@ -1980,6 +1978,6 @@ const asSBCInfo asBCInfo[256] =
 #define asBC_SWORDARG2(x) (*(((short*)x)+3))
 
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif

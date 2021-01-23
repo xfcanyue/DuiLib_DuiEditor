@@ -58,7 +58,7 @@ namespace DuiLib {
 
 		// 图形相关
 		LPCTSTR GetGradient();
-		void SetGradient(LPCTSTR pStrImage);
+		virtual void SetGradient(LPCTSTR pStrImage);
 		DWORD GetBkColor() const;
 		void SetBkColor(DWORD dwBackColor);
 		DWORD GetBkColor2() const;
@@ -68,7 +68,7 @@ namespace DuiLib {
 		DWORD GetForeColor() const;
 		void SetForeColor(DWORD dwForeColor);
 		LPCTSTR GetBkImage();
-		void SetBkImage(LPCTSTR pStrImage);
+		virtual void SetBkImage(LPCTSTR pStrImage);
 		LPCTSTR GetForeImage() const;
 		void SetForeImage(LPCTSTR pStrImage);
 
@@ -149,7 +149,7 @@ namespace DuiLib {
 		virtual void SetContextMenuUsed(bool bMenuUsed);
 
 		// 用户属性
-		virtual const CDuiString& GetUserData(); // 辅助函数，供用户使用
+		virtual CDuiString GetUserData(); // 辅助函数，供用户使用
 		virtual void SetUserData(LPCTSTR pstrText); // 辅助函数，供用户使用
 		virtual UINT_PTR GetTag() const; // 辅助函数，供用户使用
 		virtual void SetTag(UINT_PTR pTag); // 辅助函数，供用户使用
@@ -301,11 +301,30 @@ namespace DuiLib {
 		RECT m_rcCalcPos;	//子控件调用CalcPos时，父控件可能以这个rect来计算
 		bool m_bCalcPosNow;	//标记为正在计算子控件pos，在子控件的GetFixedWidth(),GetFixedHeight(),EstimateSize()可能需要判断这个标记
 	public:
-		CDuiString m_asOnInit;		//事件发生时，调用脚本的函数名
-		CDuiString m_asOnEvent;		//事件发生时，调用脚本的函数名
-		CDuiString m_asOnNotify;	//事件发生时，调用脚本的函数名
-		CDuiString m_asOnDestroy;	//事件发生时，调用脚本的函数名
-		CDuiString m_asOnSize;		//事件发生时，调用脚本的函数名
+// 		CDuiString m_asOnInit;		//事件发生时，调用脚本的函数名
+// 		CDuiString m_asOnEvent;		//事件发生时，调用脚本的函数名
+// 		CDuiString m_asOnNotify;	//事件发生时，调用脚本的函数名
+// 		CDuiString m_asOnDestroy;	//事件发生时，调用脚本的函数名
+// 		CDuiString m_asOnSize;		//事件发生时，调用脚本的函数名
+
+		void *m_asOnInit;		//事件发生时，调用脚本的函数指针
+		void *m_asOnEvent;		
+		void *m_asOnNotify;	
+		void *m_asOnDestroy;	
+		void *m_asOnSize;
+		void *m_asOnPaint;
+		void *m_asOnPaintBkColor;
+		void *m_asOnPaintBkImage;
+		void *m_asOnPaintStatusImage;
+		void *m_asOnPaintForeColor;
+		void *m_asOnPaintForeImage;
+		void *m_asOnPaintText;
+		void *m_asOnPaintBorder;
+
+		void __AddRef();
+		void __ReleaseRef();
+	private:
+		int __refCount;
 	};
 
 } // namespace DuiLib

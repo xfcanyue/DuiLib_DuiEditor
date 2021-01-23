@@ -52,7 +52,7 @@
 #pragma warning(disable:4702) // unreachable code
 #endif
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 // We need at least 2 PTRs reserved for exception handling
 // We need at least 1 PTR reserved for calling system functions
@@ -5774,7 +5774,7 @@ asQWORD as_powu64(asQWORD base, asQWORD exponent, bool& isOverflow)
 	}
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 
 

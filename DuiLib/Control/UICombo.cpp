@@ -277,6 +277,8 @@ namespace DuiLib {
 	{
 		m_szDropBox = CDuiSize(0, 150);
 		::ZeroMemory(&m_rcTextPadding, sizeof(m_rcTextPadding));
+		m_rcTextPadding.left = 5;
+		m_rcTextPadding.right = 5;
 
 		m_ListInfo.nColumns = 0;
 		m_ListInfo.nFont = -1;

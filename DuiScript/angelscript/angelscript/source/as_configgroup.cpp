@@ -42,7 +42,7 @@
 #include "as_scriptengine.h"
 #include "as_texts.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 asCConfigGroup::asCConfigGroup()
 {
@@ -209,4 +209,4 @@ void asCConfigGroup::RemoveConfiguration(asCScriptEngine *engine, bool notUsed)
 	referencedConfigGroups.SetLength(0);
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE

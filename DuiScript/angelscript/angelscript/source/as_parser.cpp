@@ -59,7 +59,7 @@
 #pragma warning(disable:4702) // unreachable code
 #endif
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 asCParser::asCParser(asCBuilder *builder)
 {
@@ -4424,6 +4424,6 @@ void asCParser::ParseMethodOverrideBehaviors(asCScriptNode *funcNode)
 }
 #endif
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 

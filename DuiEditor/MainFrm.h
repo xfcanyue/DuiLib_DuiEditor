@@ -5,6 +5,7 @@
 #pragma once
 #include "DockFileViewWnd.h"
 #include "DockControlTreeWnd.h"
+#include "DockScriptStack.h"
 #include "DockPropertyWnd.h"
 #include "DockOutputWnd.h"
 #include "ToolBoxWnd.h"
@@ -33,9 +34,11 @@ public:
 	void ShowAllPane();
 	void HideAllPane();
 
+	BOOL IsClosingNow() { return m_bClosing; }
 // ÷ÿ–¥
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
 //  µœ÷
 public:
@@ -44,6 +47,7 @@ public:
 	CMFCToolBar			 m_wndToolBar2;
 	CDockPropertyWnd	 m_wndProperty;
 	CDockControlTreeWnd	 m_wndControl;
+	CDockScriptStackWnd	 m_wndStack;
 	CDockFileViewWnd	 m_wndFileView;
 	CMyStatusBar		m_wndStatusBar;
 
@@ -78,6 +82,7 @@ public:
 	afx_msg void OnViewOutputBar();
 	afx_msg void OnUpdateViewOutputBar(CCmdUI *pCmdUI);
 	afx_msg void OnEditFind();
+	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
 };
 
 

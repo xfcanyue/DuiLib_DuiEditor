@@ -46,7 +46,7 @@
 #include "as_objecttype.h"
 #include "as_callfunc.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 class asCScriptFunction;
 class asCScriptEngine;
@@ -240,6 +240,6 @@ T as_powi(T base, T exponent)
 }
 #endif
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif

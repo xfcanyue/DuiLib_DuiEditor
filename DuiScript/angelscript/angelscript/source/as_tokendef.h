@@ -41,7 +41,7 @@
 
 #include "as_config.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 enum eTokenType
 {
@@ -314,6 +314,6 @@ const char * const ABSTRACT_TOKEN  = "abstract";
 const char * const FUNCTION_TOKEN  = "function";
 const char * const IF_HANDLE_TOKEN = "if_handle_then_const";
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif

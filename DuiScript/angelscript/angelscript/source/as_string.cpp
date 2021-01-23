@@ -41,8 +41,6 @@
 #include "as_string.h"
 #include "as_string_util.h"
 
-namespace AngelScript {
-
 asCString::asCString()
 {
 	length = 0;
@@ -483,5 +481,3 @@ bool asCStringPointer::operator<(const asCStringPointer& other) const
 {
 	return asCompareStrings(AddressOf(), GetLength(), other.AddressOf(), other.GetLength()) < 0;
 }
-
-}//END_AS_NAMESPACE

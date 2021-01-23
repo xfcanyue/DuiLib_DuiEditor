@@ -281,6 +281,11 @@ namespace DuiLib {
 		ReplaceSel(pstrText, FALSE);
 	}
 
+	void CRichEditUI::SetText(int n)
+	{
+		__super::SetText(n);
+	}
+
 	bool CRichEditUI::IsModify() const
 	{ 
 		if( !m_pTwh ) return false;

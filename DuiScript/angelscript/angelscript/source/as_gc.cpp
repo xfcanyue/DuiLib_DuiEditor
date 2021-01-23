@@ -43,7 +43,7 @@
 #include "as_scriptobject.h"
 #include "as_texts.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 asCGarbageCollector::asCGarbageCollector()
 {
@@ -971,5 +971,5 @@ void asCGarbageCollector::GCEnumCallback(void *reference)
 	}
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 

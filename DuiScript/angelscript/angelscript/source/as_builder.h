@@ -49,7 +49,7 @@
 #include "as_datatype.h"
 #include "as_property.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 #ifdef AS_NO_COMPILER
 // Forward declare the structure, as it is part of some function signatures used even without the compiler
@@ -254,6 +254,6 @@ protected:
 #endif
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif

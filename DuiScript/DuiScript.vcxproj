@@ -89,7 +89,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;DUISCRIPT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;DUISCRIPT_EXPORTS;ANGELSCRIPT_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\3rd\DuiAngelScript\DuiAngelScript\angelscript\angelscript\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -104,8 +104,9 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;DUISCRIPT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;DUISCRIPT_EXPORTS;ANGELSCRIPT_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>angelscript\angelscript\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -121,7 +122,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;DUISCRIPT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;DUISCRIPT_EXPORTS;ANGELSCRIPT_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\3rd\DuiAngelScript\DuiAngelScript\angelscript\angelscript\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -140,7 +141,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;DUISCRIPT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;DUISCRIPT_EXPORTS;ANGELSCRIPT_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>angelscript\angelscript\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -150,9 +151,13 @@
       <OptimizeReferences>true</OptimizeReferences>
       <OutputFile>../../Exec/DuiScript_u.dll</OutputFile>
       <ModuleDefinitionFile>DuiScript.def</ModuleDefinitionFile>
+      <ShowProgress>NotSet</ShowProgress>
+      <LinkStatus>false</LinkStatus>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="angelscript\angelscript\source\as_callfunc_arm64_gcc.S" />
+    <None Include="angelscript\angelscript\source\as_callfunc_arm64_msvc.asm" />
     <None Include="angelscript\angelscript\source\as_callfunc_arm_gcc.S" />
     <None Include="angelscript\angelscript\source\as_callfunc_arm_msvc.asm" />
     <None Include="angelscript\angelscript\source\as_callfunc_arm_vita.S" />
@@ -163,6 +168,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="angelscript\add_on\scriptbuilder\scriptbuilder.h" />
+    <ClInclude Include="angelscript\add_on\scriptstdtime\AsTime.h" />
+    <ClInclude Include="angelscript\add_on\scriptstdtime\scriptstdtime.h" />
     <ClInclude Include="angelscript\angelscript\include\angelscript.h" />
     <ClInclude Include="angelscript\angelscript\source\as_array.h" />
     <ClInclude Include="angelscript\angelscript\source\as_atomic.h" />
@@ -201,21 +208,37 @@
     <ClInclude Include="angelscript\angelscript\source\as_tokenizer.h" />
     <ClInclude Include="angelscript\angelscript\source\as_typeinfo.h" />
     <ClInclude Include="angelscript\angelscript\source\as_variablescope.h" />
-    <ClInclude Include="LsStringConverter.h" />
+    <ClInclude Include="basedefine.h" />
+    <ClInclude Include="Include\DuiScriptInterface.h" />
     <ClInclude Include="RegCControlUI.h" />
     <ClInclude Include="RegCDuiString.h" />
+    <ClInclude Include="regCLangManagerUI.h" />
+    <ClInclude Include="regCRenderEngine.h" />
+    <ClInclude Include="regPaintManagerUI.h" />
+    <ClInclude Include="RegPOINT.h" />
+    <ClInclude Include="regRECT.h" />
+    <ClInclude Include="regSIZE.h" />
+    <ClInclude Include="regTDrawInfo.h" />
+    <ClInclude Include="RegTEvent.h" />
+    <ClInclude Include="regTFontInfo.h" />
+    <ClInclude Include="regTImageInfo.h" />
+    <ClInclude Include="RegTNotifyUI.h" />
     <ClInclude Include="ScriptEngine.h" />
-    <ClInclude Include="ScriptRegister.h" />
+    <ClInclude Include="ScriptManager.h" />
+    <ClInclude Include="ScriptHelper.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="angelscript\add_on\scriptbuilder\scriptbuilder.cpp" />
+    <ClCompile Include="angelscript\add_on\scriptstdtime\AsTime.cpp" />
+    <ClCompile Include="angelscript\add_on\scriptstdtime\scriptstdtime.cpp" />
     <ClCompile Include="angelscript\angelscript\source\as_atomic.cpp" />
     <ClCompile Include="angelscript\angelscript\source\as_builder.cpp" />
     <ClCompile Include="angelscript\angelscript\source\as_bytecode.cpp" />
     <ClCompile Include="angelscript\angelscript\source\as_callfunc.cpp" />
     <ClCompile Include="angelscript\angelscript\source\as_callfunc_arm.cpp" />
+    <ClCompile Include="angelscript\angelscript\source\as_callfunc_arm64.cpp" />
     <ClCompile Include="angelscript\angelscript\source\as_callfunc_mips.cpp" />
     <ClCompile Include="angelscript\angelscript\source\as_callfunc_ppc.cpp" />
     <ClCompile Include="angelscript\angelscript\source\as_callfunc_ppc_64.cpp" />
@@ -264,10 +287,9 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="DuiScript.cpp" />
-    <ClCompile Include="RegCControlUI.cpp" />
-    <ClCompile Include="RegCDuiString.cpp" />
     <ClCompile Include="ScriptEngine.cpp" />
-    <ClCompile Include="ScriptRegister.cpp" />
+    <ClCompile Include="ScriptManager.cpp" />
+    <ClCompile Include="ScriptHelper.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">Create</PrecompiledHeader>

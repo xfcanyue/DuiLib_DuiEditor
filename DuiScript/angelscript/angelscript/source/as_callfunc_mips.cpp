@@ -58,7 +58,7 @@
 #include <regdef.h>
 #endif
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 #if defined(__linux__) && defined(_ABIO32)
 
@@ -725,7 +725,7 @@ asm(
 
 #endif // PSP and PS2 MIPS ABI
 	
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif // AS_MIPS
 #endif // AS_MAX_PORTABILITY

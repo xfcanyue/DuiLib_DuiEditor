@@ -2,8 +2,5 @@
 <!-- xxxxx -->
 <Window size="800,500" sizebox="4,4,6,6" caption="0,0,0,25" roundcorner="5,5">
 	<Font id="0" name="微软雅黑" size="18" default="true" />
-	<Script language="cplusplus" include="script.as" />
-	<VerticalLayout childalign="center" childvalign="vcenter" bkcolor="0xFFA6CAF0">
-		<Button width="134" height="115" normalimage="file='images\si-glyph-suitcase.svg' dest='19,29,35,45' width='16' height='16' " pos="115,77,249,192" float="true" OnInit="main2" />
-	</VerticalLayout>
+	<VerticalLayout childalign="center" childvalign="vcenter" bkcolor="0xFFA6CAF0" />
 </Window>

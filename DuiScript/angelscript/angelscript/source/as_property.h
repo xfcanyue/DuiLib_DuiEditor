@@ -46,7 +46,7 @@
 #include "as_scriptfunction.h"
 #include "as_symboltable.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 struct asSNameSpace;
 
@@ -122,6 +122,6 @@ private:
 	asCCompGlobPropType &operator=(const asCCompGlobPropType &) {return *this;}
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif

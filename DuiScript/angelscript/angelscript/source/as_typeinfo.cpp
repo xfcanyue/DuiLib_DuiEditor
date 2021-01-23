@@ -38,7 +38,7 @@
 #include "as_typeinfo.h"
 #include "as_scriptengine.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 asCTypeInfo::asCTypeInfo()
 {
@@ -468,6 +468,6 @@ asITypeInfo *asCFuncdefType::GetParentType() const
 	return parentClass;
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 

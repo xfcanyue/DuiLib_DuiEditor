@@ -46,6 +46,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_COMMAND(ID_VIEW_OUTPUT_BAR, &CMainFrame::OnViewOutputBar)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_OUTPUT_BAR, &CMainFrame::OnUpdateViewOutputBar)
 	ON_COMMAND(ID_EDIT_FIND, &CMainFrame::OnEditFind)
+	ON_WM_ACTIVATE()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -215,6 +216,15 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	HICON hClassViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(IDI_ICON_CLASS_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
 	m_wndControl.SetIcon(hClassViewIcon, FALSE);
 
+	if (!m_wndStack.Create(_T("脚本调试"), this, 
+		CRect(0, 0, 300, 200), TRUE, ID_VIEW_STACK, 
+		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))//,AFX_CBRS_REGULAR_TABS, AFX_CBRS_RESIZE))
+	{
+		return FALSE; // 未能创建
+	}
+	HICON hStackViewIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(IDI_ICON_CLASS_VIEW), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
+	m_wndStack.SetIcon(hStackViewIcon, FALSE);
+
 	if (!m_wndToolBox.Create(_T("控件箱"), this, CRect(0, 0, 150, 200), TRUE, ID_TOOLBOX_WND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT))
 	{
 		return FALSE; // 未能创建
@@ -256,6 +266,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	CDockablePane* pTabbedBar = NULL;
 	m_wndControl.AttachToTabWnd(&m_wndFileView, DM_SHOW, TRUE, &pTabbedBar);
+	m_wndStack.AttachToTabWnd(&m_wndFileView, DM_SHOW, TRUE, &pTabbedBar);
 
 	// 启用 Visual Studio 2005 样式停靠窗口行为
 	CDockingManager::SetDockingMode(DT_SMART);
@@ -268,6 +279,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 #endif
 
 	CThreadPipe::CreatePipe();
+
+	SetTimer(2, 1, NULL);
 	return 0;
 }
 
@@ -279,6 +292,16 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	//  CREATESTRUCT cs 来修改窗口类或样式
 
 	return TRUE;
+}
+
+BOOL CMainFrame::PreTranslateMessage(MSG* pMsg)
+{
+	//取消F10默认激活菜单的行为
+	if(pMsg->message == WM_SYSKEYUP && pMsg->wParam == VK_F10)
+	{
+		return TRUE;
+	}
+	return CMDIFrameWndEx::PreTranslateMessage(pMsg);
 }
 
 // CMainFrame 消息处理程序
@@ -403,13 +426,11 @@ LRESULT CMainFrame::OnChangeActiveTab(WPARAM wparam, LPARAM lparam)
 
 void CMainFrame::OnClose()
 {
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	if(g_hThreadTestHandle != NULL)
 	{
 		TerminateProcess(g_pThreadTest->m_piProcInfo.hProcess, 0);
 		WaitForSingleObject(g_pThreadTest->m_piProcInfo.hProcess, 1000);
 	}
-
 	CThreadPipe::ClosePipe();
 	CMDIFrameWndEx::OnClose();
 }
@@ -437,6 +458,7 @@ CUIManager *CMainFrame::GetActiveUIManager()
 void CMainFrame::ShowAllPane()
 {
 	m_wndFileView.ShowPane(TRUE, TRUE, TRUE);
+	m_wndStack.ShowPane(TRUE, TRUE, TRUE);
 	m_wndControl.ShowPane(TRUE, TRUE, TRUE);
 
 	m_wndToolBox.ShowPane(TRUE, TRUE, TRUE);
@@ -448,6 +470,7 @@ void CMainFrame::HideAllPane()
 {
 	m_wndFileView.ShowPane(FALSE, TRUE, TRUE);
 	m_wndControl.ShowPane(FALSE, TRUE, TRUE);
+	m_wndStack.ShowPane(FALSE, TRUE, TRUE);
 
 	m_wndToolBox.ShowPane(FALSE, TRUE, TRUE);
 	m_wndProperty.ShowPane(FALSE, TRUE, TRUE);
@@ -529,6 +552,12 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 		__LABEL_END:;
 	}
 
+	if(nIDEvent == 2)
+	{
+		KillTimer(nIDEvent);
+		((CDuiEditorApp *)AfxGetApp())->ProcessSessionFileList();
+	}
+
 	CMDIFrameWndEx::OnTimer(nIDEvent);
 }
 
@@ -570,4 +599,18 @@ void CMainFrame::OnEditFind()
 	m_pDlgFind->ShowWindow(SW_SHOW);
 
 	m_hDlgFind = m_pDlgFind->m_hWnd;
+}
+
+
+
+void CMainFrame::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
+{
+	CMDIFrameWndEx::OnActivate(nState, pWndOther, bMinimized);
+
+	// TODO: 在此处添加消息处理程序代码
+	//InsertMsgV(_T("void CMainFrame::OnActivate, nState=%d"), nState);
+	if(nState == WA_ACTIVE)
+	{
+		//InsertMsg(_T("WA_ACTIVE"));
+	}
 }

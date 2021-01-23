@@ -53,7 +53,7 @@
 #include "as_bytecode.h"
 #include "as_debug.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 
 
@@ -6493,5 +6493,5 @@ asSNameSpace *asCScriptEngine::GetParentNameSpace(asSNameSpace *ns) const
 	return nameSpaces[0];
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 

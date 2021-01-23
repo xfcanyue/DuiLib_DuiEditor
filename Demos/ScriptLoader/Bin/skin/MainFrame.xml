@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window size="522,400" sizebox="0,0,4,4" caption="0,0,0,20" showshadow="true" shadowsize="2" shadowposition="2,2" shadowcolor="0xFF4B4B4B">
+	<Include source="config.xml" />
+	<script source="testbutton.as" />
+	<VerticalLayout inset="1,1,1,1" bkcolor="0xFFD1E8F5" bordercolor="0xFF969696" bordersize="1">
+		<HorizontalLayout height="20" childpadding="5" childvalign="vcenter" bkcolor="0xFFC0DCC0">
+			<Control width="16" height="16" foreimage="images\ico.jpg" />
+			<Label text="DuiLib脚本演示" resourceid="7" />
+			<HorizontalLayout width="123">
+				<FadeButton name="windowmenubtn" width="26" height="17" normalimage="file='images\sys_dlg_menu.png' source='52,0,78,17'" hotimage="file='images\sys_dlg_menu.png' source='26,0,52,17'" pushedimage="file='images\sys_dlg_menu.png' source='0,0,26,17'" />
+				<FadeButton name="windowminbtn" width="26" height="17" normalimage="file='images\sys_dlg_min.png' source='52,0,78,17'" hotimage="file='images\sys_dlg_min.png' source='26,0,52,17'" pushedimage="file='images\sys_dlg_min.png' source='0,0,26,17'" />
+				<FadeButton name="windowmaxbtn" width="26" height="17" normalimage="file='images\sys_dlg_max.png' source='52,0,78,17'" hotimage="file='images\sys_dlg_max.png' source='26,0,52,18'" pushedimage="file='images\sys_dlg_max.png' source='0,0,26,17'" />
+				<FadeButton name="windowrestorebtn" width="26" height="17" normalimage="file='images\sys_dlg_restore.png' source='52,0,78,17'" hotimage="file='images\sys_dlg_restore.png' source='26,0,52,17'" pushedimage="file='images\sys_dlg_restore.png' source='0,0,26,17'" visible="false" />
+				<FadeButton name="windowclosebtn" width="45" height="17" normalimage="file='images\sys_dlg_close.png' source='90,0,135,17'" hotimage="file='images\sys_dlg_close.png' source='45,0,90,17'" pushedimage="file='images\sys_dlg_close.png' source='0,0,45,17'" />
+			</HorizontalLayout>
+		</HorizontalLayout>
+		<VerticalLayout>
+			<Button name="btn_test" width="292" height="69" pos="36,38,328,107" float="true" OnInit="OnTestButtonInit" OnEvent="OnTestButtonEvent" OnNotify="OnTestButtonNotify" OnDestroy="OnTestButtonDestroy" OnSize="OnTestButtonSize" OnPaint="On_Test_Paint" />
+		</VerticalLayout>
+		<Label text="日志输出窗口:" height="20" resourceid="88" />
+		<VerticalLayout height="100" sepheight="-8" sepimm="true" inset="0,8,0,0">
+			<MsgWnd name="msgwnd_frame" bordercolor="0xFFC0C0C0" bordersize="1" />
+		</VerticalLayout>
+	</VerticalLayout>
+</Window>

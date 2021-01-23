@@ -371,7 +371,6 @@ namespace DuiLib {
 				LPCTSTR pstrId = NULL;
 				LPCTSTR pstrText1 = NULL;
 				LPCTSTR pstrText2 = NULL;
-				LPCTSTR pstrText3 = NULL;
 
 				int nAttributes = node.GetAttributeCount();
 				for( int i = 0; i < nAttributes; i++ ) 
@@ -391,10 +390,6 @@ namespace DuiLib {
 					{
 						pstrText2 = pstrValue;
 					}
-					else if( _tcsicmp(pstrName, _T("text3")) == 0 ) 
-					{
-						pstrText3 = pstrValue;
-					}
 				}
 				if( pstrId == NULL) continue;
 
@@ -406,7 +401,6 @@ namespace DuiLib {
 					st->id = id;
 					st->text1 = pstrText1;
 					st->text2 = pstrText2;
-					st->text3 = pstrText3;
 					m_mStringTable[id] = st;
 				}
 			}
@@ -426,7 +420,7 @@ namespace DuiLib {
 		m_mStringTable.clear();
 	}
 
-	LPCTSTR CLangManagerUI::GetString1(int id, LPCTSTR defaultstring)
+	LPCTSTR CLangManagerUI::GetString(int id, LPCTSTR defaultstring)
 	{
 		if(m_mStringTable.size() == 0) return _T("");
 		std::map<int, tagStringTable *>::iterator it = m_mStringTable.find(id);
@@ -434,19 +428,11 @@ namespace DuiLib {
 		return it->second->text1.GetData();
 	}
 
-	LPCTSTR CLangManagerUI::GetString2(int id, LPCTSTR defaultstring)
+	LPCTSTR CLangManagerUI::GetStringExtra(int id, LPCTSTR defaultstring)
 	{
 		if(m_mStringTable.size() == 0) return _T("");
 		std::map<int, tagStringTable *>::iterator it = m_mStringTable.find(id);
 		if(it == m_mStringTable.end()) return _T("");
 		return it->second->text2.GetData();
-	}
-
-	LPCTSTR CLangManagerUI::GetString3(int id, LPCTSTR defaultstring)
-	{
-		if(m_mStringTable.size() == 0) return _T("");
-		std::map<int, tagStringTable *>::iterator it = m_mStringTable.find(id);
-		if(it == m_mStringTable.end()) return _T("");
-		return it->second->text3.GetData();
 	}
 } // namespace DuiLib

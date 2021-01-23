@@ -365,6 +365,10 @@ void CSciXmlParse::AddControlAttribute(xml_node node, xml_attribute attr)
 		//修改控件名字，需要更新控件树
 		GetUIManager()->GetTreeView()->UpdateXmlNode(node);
 	}
+	else if(CompareString(_T("resourceid"), attr.name()))
+	{
+		//手动修改resourceid
+	}
 }
 
 void CSciXmlParse::DeleteControlAttribute(xml_node node, xml_attribute attr)
@@ -388,6 +392,10 @@ void CSciXmlParse::DeleteControlAttribute(xml_node node, xml_attribute attr)
 		//修改控件名字，需要更新控件树
 		node.attribute(XTEXT("name")).set_value(nodeAttr.attribute(XTEXT("default")).value());
 		GetUIManager()->GetTreeView()->UpdateXmlNode(node);
+	}
+	else if(CompareString(_T("resourceid"), attr.name()))
+	{
+		//删除resourceid
 	}
 
 	GetUIManager()->UpdateControlUI(pControl);

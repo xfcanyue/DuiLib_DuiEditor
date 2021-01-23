@@ -2,7 +2,7 @@
 <Language>
 	<Text id="1" text="button text" />
 	<Text id="3" text="button" />
-	<Text id="2" text="按钮文本" />
+	<Text id="2" text="button text" />
 	<Text id="4" text="图标按钮" />
 	<Text id="5" text="按钮容器" />
 	<Text id="6" text="打开模态对话框" />
@@ -38,5 +38,7 @@
 	<Text id="36" text="单行文本" />
 	<Text id="37" text="多行文本" />
 	<Text id="38" text="IP地址" />
-	<Text id="39" tipvalue="edit" />
+	<Text id="39" tipvalue="edit" tooltip="真的是编辑框" />
+	<Text id="40" text="svg图标" />
+	<Text id="44" text="svg图标" />
 </Language>

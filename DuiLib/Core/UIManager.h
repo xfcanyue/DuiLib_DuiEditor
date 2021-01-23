@@ -205,17 +205,19 @@ namespace DuiLib {
 	};
 
 	//duilib script interface  add by liqs99
-	class UILIB_API IScriptEngine
+	class UILIB_API IScriptManager
 	{
 	public:
-		virtual bool AddScriptCode(const char *pUtf8ScriptCode) = 0;
 		virtual bool AddScriptFile(LPCTSTR pstrFileName) = 0;
-		virtual bool ExecuteScript(LPCTSTR funName, CControlUI *pControl) = 0;
-		virtual bool ExecuteScript(LPCTSTR funName, CControlUI *pControl, TEventUI *ev) = 0;
-		virtual bool ExecuteScript(LPCTSTR funName, CControlUI *pControl, TNotifyUI *pMsg) = 0;
+		virtual bool CompileScript() = 0;
+		virtual void *GetFunAddress(LPCTSTR lpszFunName) = 0;
+		virtual bool ExecuteScript(void *pFun, CControlUI *pControl) = 0;
+		virtual bool ExecuteScript(void *pFun, CControlUI *pControl, TEventUI *ev) = 0;
+		virtual bool ExecuteScript(void *pFun, CControlUI *pControl, TNotifyUI *pMsg) = 0;
+		virtual bool ExecuteScript(void *pFun, CControlUI *pControl, HDC hDC, const RECT& rcPaint, CControlUI* pStopControl) = 0;
 	};
-	typedef IScriptEngine* (__stdcall *CREATE_SCRIPT_ENGINE_INSTANCE)();
-	typedef void (__stdcall *DELETE_SCRIPT_ENGINE_INSTANCE)(IScriptEngine *pEngine);
+	typedef IScriptManager* (__stdcall *CREATE_SCRIPT_ENGINE_INSTANCE)();
+	typedef void (__stdcall *DELETE_SCRIPT_ENGINE_INSTANCE)(IScriptManager *pEngine);
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
@@ -590,18 +592,29 @@ namespace DuiLib {
 	public:
 		static bool LoadScriptPlugin(LPCTSTR pstrModuleName);
 
-		IScriptEngine *GetScriptEngine();
-		void AddScriptCode(LPCTSTR pScriptCode, LPCTSTR pLanguageType);
-		void AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pLanguageType);
-		bool ExecuteScript(LPCTSTR funName, CControlUI *pControl);
-		bool ExecuteScript(LPCTSTR funName, CControlUI *pControl, TEventUI *ev);
-		bool ExecuteScript(LPCTSTR funName, CControlUI *pControl, TNotifyUI *pMsg);
+		IScriptManager *GetScriptEngine();
+		void AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pLanguageType=NULL);
+		bool CompileScript();
+		void *GetScriptFunAddress(LPCTSTR lpszFunName);
+		bool ExecuteScript(void *pFun, CControlUI *pControl);
+		bool ExecuteScript(void *pFun, CControlUI *pControl, TEventUI *ev);
+		bool ExecuteScript(void *pFun, CControlUI *pControl, TNotifyUI *pMsg);
+		bool ExecuteScript(void *pFun, CControlUI *pControl, HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
 	private:
-		static IScriptEngine *m_pSharedScriptEngine;
+		static IScriptManager *m_pSharedScriptEngine;
 		static CREATE_SCRIPT_ENGINE_INSTANCE m_funCreateScriptEngine;
 		static DELETE_SCRIPT_ENGINE_INSTANCE m_funDeleteScriptEngine;
 	};
 
+	//先锁定窗口更新，然后强制刷新整个窗口
+	class UILIB_API CLockWindowUpdateUI
+	{
+	public:
+		CLockWindowUpdateUI(CPaintManagerUI *pManager);
+		~CLockWindowUpdateUI();
+	private:
+		CPaintManagerUI *m_pManager;
+	};
 } // namespace DuiLib
 
 #endif // __UIMANAGER_H__

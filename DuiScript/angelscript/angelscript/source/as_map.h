@@ -39,8 +39,6 @@
 #ifndef AS_MAP_H
 #define AS_MAP_H
 
-namespace AngelScript {
-
 template <class KEY, class VAL> struct asSMapNode;
 
 template <class KEY, class VAL> class asCMap
@@ -781,7 +779,7 @@ bool asCMap<KEY, VAL>::MovePrev(asSMapNode<KEY,VAL> **out, asSMapNode<KEY,VAL> *
 	return true;
 }
 
-}//END_AS_NAMESPACE
+
 
 
 #endif

@@ -12,9 +12,16 @@ protected: // 仅从序列化创建
 
 // 特性
 public:
-	pugi::xml_document m_doc;
+	pugi::xml_document m_doc;		 //布局文件
+	CStdStringPtrMap m_mLangPackage; //相关语言包
 	BOOL m_bMenuWnd;
 
+	CString m_strMyTitle;
+	xml_node m_fileSession;
+	BOOL m_bHasSaveSession;
+
+	BOOL m_bLoadFileFromBackup;
+	CString m_strLoadFileName;
 public:
 	CUIManager *GetUIManager() const { return m_pUIManager; }
 	void SetUIManager(CUIManager *pManager) { m_pUIManager = pManager; }
@@ -30,6 +37,9 @@ public:
 	CString GetSkinFileName();
 
 	void InitFileView(CDocument *pDocCurrentClose);
+
+	void LoadLangPackage(LPCTSTR lpszPathName);
+	void SaveLangPackage(LPCTSTR lpszPathName);
 // 重写
 public:
 	virtual BOOL OnNewDocument();
@@ -54,6 +64,7 @@ public:
 	virtual void OnCloseDocument();
 	virtual void SetModifiedFlag(BOOL bModified = TRUE);
 	virtual BOOL IsModified();
+	void SaveBackupFile();
 	afx_msg void OnFileReopen();	
 	afx_msg void OnEditInsertFont();
 	afx_msg void OnEditInsertDefault();

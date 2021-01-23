@@ -82,14 +82,14 @@ public:
 	CStringA A_to_utf8(const void *buffer)
 	{
 		LsStringConverter conv;
-		LPCWSTR wstr = conv.A_to_W(buffer);
+		CStringW wstr = conv.A_to_W(buffer);
 		return W_to_utf8(wstr);
 	}
 
 	CStringA utf8_to_A(const void *buffer)
 	{
 		LsStringConverter conv;
-		LPCWSTR wstr = conv.utf8_to_W(buffer);
+		CStringW wstr = conv.utf8_to_W(buffer);
 		return W_to_A(wstr);
 	}
 

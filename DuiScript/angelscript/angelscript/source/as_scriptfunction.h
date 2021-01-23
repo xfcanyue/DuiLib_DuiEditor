@@ -46,7 +46,7 @@
 #include "as_datatype.h"
 #include "as_atomic.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 class asCScriptEngine;
 class asCModule;
@@ -338,6 +338,6 @@ public:
 const char * const DELEGATE_FACTORY = "$dlgte";
 asCScriptFunction *CreateDelegate(asCScriptFunction *func, void *obj);
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif

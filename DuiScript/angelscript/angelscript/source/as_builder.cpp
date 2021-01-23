@@ -47,7 +47,7 @@
 #include "as_scriptobject.h"
 #include "as_debug.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 #ifndef AS_NO_COMPILER
 
@@ -5871,4 +5871,4 @@ int asCBuilder::GetEnumValue(const char *name, asCDataType &outDt, asDWORD &outV
 
 #endif // AS_NO_COMPILER
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE

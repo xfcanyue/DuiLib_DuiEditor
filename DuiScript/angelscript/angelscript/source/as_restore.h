@@ -43,7 +43,7 @@
 #include "as_context.h"
 #include "as_map.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 class asCReader
 {
@@ -250,6 +250,6 @@ protected:
 
 #endif
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif // AS_RESTORE_H

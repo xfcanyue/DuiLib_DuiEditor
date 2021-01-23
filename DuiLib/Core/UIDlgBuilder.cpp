@@ -199,13 +199,12 @@ namespace DuiLib {
 					nAttributes = node.GetAttributeCount();
 					LPCTSTR pstrIncludeFile = NULL;
 					LPCTSTR pstrLanguage = NULL;
-					LPCTSTR pScriptCode = node.GetValue();
 					bool shared = false;
 					for( int i = 0; i < nAttributes; i++ ) 
 					{
 						pstrName = node.GetAttributeName(i);
 						pstrValue = node.GetAttributeValue(i);
-						if( _tcsicmp(pstrName, _T("include")) == 0 ) 
+						if( _tcsicmp(pstrName, _T("source")) == 0 ) 
 						{
 							pstrIncludeFile = pstrValue;
 						}
@@ -218,10 +217,6 @@ namespace DuiLib {
 					if(pstrIncludeFile)
 					{
 						pManager->AddScriptFile(pstrIncludeFile, pstrLanguage);
-					}
-					if(pScriptCode && pScriptCode[0] != '\0')
-					{
-						pManager->AddScriptCode(pScriptCode, pstrLanguage);
 					}
 				}
 			}
@@ -379,6 +374,8 @@ namespace DuiLib {
 				}
 			}
 		}
+
+		pManager->CompileScript();
 		return _Parse(&root, pParent, pManager, pkg);
 	}
 

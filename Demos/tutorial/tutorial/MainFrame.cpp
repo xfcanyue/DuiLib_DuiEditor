@@ -67,13 +67,13 @@ void CMainFrame::InitWindow()
 	pRoll3->SetText(pRoll3->GetText() + strText);
 	pRoll4->SetText(pRoll4->GetText() + strText);
 
-	CDuiString str1 = CLangManagerUI::GetString1(1);
-	CDuiString str2 = CLangManagerUI::GetString2(1);
-	CDuiString str3 = CLangManagerUI::GetString3(1);
+	CDuiString str1 = CLangManagerUI::GetString(1);
+	CDuiString str2 = CLangManagerUI::GetStringExtra(1);
 }
 
 bool CMainFrame::OnCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+
 	return false;
 }
 

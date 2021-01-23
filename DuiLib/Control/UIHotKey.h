@@ -43,6 +43,7 @@ namespace DuiLib{
 		UINT GetControlFlags() const;
 		void SetEnabled(bool bEnable = true);
 		void SetText(LPCTSTR pstrText);
+		void SetText(int n) { __super::SetText(n); }
 		LPCTSTR GetNormalImage();
 		void SetNormalImage(LPCTSTR pStrImage);
 		LPCTSTR GetHotImage();
@@ -54,7 +55,7 @@ namespace DuiLib{
 		void SetNativeBkColor(DWORD dwBkColor);
 		DWORD GetNativeBkColor() const;
 
-		void SetPos(RECT rc);
+		void SetPos(RECT rc, bool bNeedInvalidate = true);
 		void SetVisible(bool bVisible = true);
 		void SetInternVisible(bool bVisible = true);
 		SIZE EstimateSize(SIZE szAvailable);

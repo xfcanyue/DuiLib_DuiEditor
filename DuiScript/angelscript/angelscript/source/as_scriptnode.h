@@ -42,7 +42,7 @@
 #include "as_config.h"
 #include "as_tokendef.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 enum eScriptNode
 {
@@ -132,6 +132,6 @@ protected:
 	~asCScriptNode() {}
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif

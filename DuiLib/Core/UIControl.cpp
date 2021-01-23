@@ -36,7 +36,10 @@ namespace DuiLib {
 		m_nBorderStyle(PS_SOLID),
 		m_nTooltipWidth(300),
 		m_wCursor(0),
-		m_instance(NULL)
+		m_instance(NULL),
+		m_asOnInit(NULL),m_asOnEvent(NULL), m_asOnNotify(NULL), m_asOnDestroy(NULL), m_asOnSize(NULL), 
+		m_asOnPaintBkColor(NULL), m_asOnPaintBkImage(NULL), m_asOnPaintStatusImage(NULL), 
+		m_asOnPaint(NULL), m_asOnPaintForeColor(NULL), m_asOnPaintForeImage(NULL), m_asOnPaintText(NULL), m_asOnPaintBorder(NULL)
 	{
 		m_cXY.cx = m_cXY.cy = 0;
 		m_cxyFixed.cx = m_cxyFixed.cy = 0;
@@ -52,11 +55,13 @@ namespace DuiLib {
 
 		::ZeroMemory(&m_rcCalcPos, sizeof(m_rcCalcPos));
 		m_bCalcPosNow = false;
+
+		__refCount = 1;
 	}
 
 	CControlUI::~CControlUI()
 	{
-		if(!m_asOnDestroy.IsEmpty()) GetManager()->ExecuteScript(m_asOnDestroy, this);
+		if(m_asOnDestroy) GetManager()->ExecuteScript(m_asOnDestroy, this);
 		if( OnDestroy ) OnDestroy(this);
 		RemoveAllCustomAttribute();	
 		if( m_pManager != NULL ) m_pManager->ReapObjects(this);
@@ -442,7 +447,9 @@ namespace DuiLib {
 
 		if( !m_bSetPos ) {
 			m_bSetPos = true;
-			if(!m_asOnSize.IsEmpty()) GetManager()->ExecuteScript(m_asOnSize, this);
+			if(m_asOnSize) 
+				if(GetManager()->ExecuteScript(m_asOnSize, this))
+					return;
 			if( OnSize ) OnSize(this);
 			m_bSetPos = false;
 		}
@@ -710,7 +717,7 @@ namespace DuiLib {
 		m_bMenuUsed = bMenuUsed;
 	}
 
-	const CDuiString& CControlUI::GetUserData()
+	CDuiString CControlUI::GetUserData()
 	{
 		return m_sUserData;
 	}
@@ -891,7 +898,9 @@ namespace DuiLib {
 	void CControlUI::Init()
 	{
 		DoInit();
-		if(!m_asOnInit.IsEmpty()) GetManager()->ExecuteScript(m_asOnInit, this);
+		if(m_asOnInit) 
+			if(GetManager()->ExecuteScript(m_asOnInit, this))
+				return;
 		if( OnInit ) OnInit(this);
 	}
 
@@ -902,7 +911,9 @@ namespace DuiLib {
 
 	void CControlUI::Event(TEventUI& event)
 	{
-		if(!m_asOnEvent.IsEmpty()) GetManager()->ExecuteScript(m_asOnEvent, this, &event);
+		if(m_asOnEvent) 
+			if(GetManager()->ExecuteScript(m_asOnEvent, this, &event))
+				return;
 		if( OnEvent(&event) ) DoEvent(event);
 	}
 
@@ -1272,11 +1283,19 @@ namespace DuiLib {
 				if( *pstrList++ != _T(' ') && *pstrList++ != _T(',') ) return;
 			}
 		}
-		else if( _tcscmp(pstrName, _T("OnInit"))		== 0 )		m_asOnInit	= pstrValue;
-		else if( _tcscmp(pstrName, _T("OnEvent"))		== 0 )		m_asOnEvent = pstrValue;
-		else if( _tcscmp(pstrName, _T("OnNotify"))		== 0 )		m_asOnNotify = pstrValue;
-		else if( _tcscmp(pstrName, _T("OnDestroy"))		== 0 )		m_asOnDestroy = pstrValue;
-		else if( _tcscmp(pstrName, _T("OnSize"))		== 0 )		m_asOnSize = pstrValue;
+		else if( _tcscmp(pstrName, _T("OnInit"))			== 0 )		m_asOnInit	= GetManager()->GetScriptFunAddress(pstrValue);
+		else if( _tcscmp(pstrName, _T("OnEvent"))			== 0 )		m_asOnEvent = GetManager()->GetScriptFunAddress(pstrValue);
+		else if( _tcscmp(pstrName, _T("OnNotify"))			== 0 )		m_asOnNotify = GetManager()->GetScriptFunAddress(pstrValue);
+		else if( _tcscmp(pstrName, _T("OnDestroy"))			== 0 )		m_asOnDestroy = GetManager()->GetScriptFunAddress(pstrValue);
+		else if( _tcscmp(pstrName, _T("OnSize"))			== 0 )		m_asOnSize = GetManager()->GetScriptFunAddress(pstrValue);
+		else if( _tcscmp(pstrName, _T("OnPaint"))			== 0 )		m_asOnPaint = GetManager()->GetScriptFunAddress(pstrValue);
+		else if( _tcscmp(pstrName, _T("OnPaintBkColor"))	== 0 )		m_asOnPaintBkColor = GetManager()->GetScriptFunAddress(pstrValue);
+		else if( _tcscmp(pstrName, _T("OnPaintBkImage"))	== 0 )		m_asOnPaintBkImage = GetManager()->GetScriptFunAddress(pstrValue);
+		else if( _tcscmp(pstrName, _T("OnPaintStatusImage"))== 0 )		m_asOnPaintStatusImage = GetManager()->GetScriptFunAddress(pstrValue);
+		else if( _tcscmp(pstrName, _T("OnPaintForeColor"))	== 0 )		m_asOnPaintForeColor = GetManager()->GetScriptFunAddress(pstrValue);
+		else if( _tcscmp(pstrName, _T("OnPaintForeImage"))	== 0 )		m_asOnPaintForeImage = GetManager()->GetScriptFunAddress(pstrValue);
+		else if( _tcscmp(pstrName, _T("OnPaintText"))	== 0 )			m_asOnPaintText = GetManager()->GetScriptFunAddress(pstrValue);
+		else if( _tcscmp(pstrName, _T("OnPaintBorder"))	== 0 )			m_asOnPaintBorder = GetManager()->GetScriptFunAddress(pstrValue);
 		else {
 			AddCustomAttribute(pstrName, pstrValue);
 		}
@@ -1335,6 +1354,11 @@ namespace DuiLib {
 	{
 		if (pStopControl == this) return false;
 		if( !::IntersectRect(&m_rcPaint, &rcPaint, &m_rcItem) ) return true;
+		if(m_asOnPaint)
+		{
+			if(GetManager()->ExecuteScript(m_asOnPaint, this, hDC, rcPaint, pStopControl)) 
+				return true;
+		}
 		//if( OnPaint ) {
 		//	if( !OnPaint(this) ) return true;
 		//}
@@ -1582,5 +1606,16 @@ namespace DuiLib {
 	bool CControlUI::IsCalPosNow()
 	{
 		return m_bCalcPosNow;
+	}
+
+	void CControlUI::__AddRef()
+	{
+		__refCount++;
+	}
+
+	void CControlUI::__ReleaseRef()
+	{
+		if( --__refCount == 0 )
+			delete this;
 	}
 } // namespace DuiLib

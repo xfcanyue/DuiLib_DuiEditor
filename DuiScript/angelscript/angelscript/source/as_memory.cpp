@@ -47,7 +47,7 @@
 #include "as_scriptnode.h"
 #include "as_bytecode.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 #ifdef WIP_16BYTE_ALIGN
 
@@ -270,7 +270,7 @@ void asCMemoryMgr::FreeByteInstruction(void *ptr)
 
 #endif // AS_NO_COMPILER
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 
 

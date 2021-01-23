@@ -45,7 +45,7 @@
 #include "as_builder.h"
 #include "as_tokenizer.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 class asCParser
 {
@@ -190,6 +190,6 @@ protected:
 	size_t       sourcePos;
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif

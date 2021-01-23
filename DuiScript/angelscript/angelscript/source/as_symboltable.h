@@ -49,7 +49,7 @@
 #include "as_namespace.h"
 
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 
 
@@ -562,6 +562,6 @@ asCSymbolTableIterator<T, T2>& asCSymbolTableIterator<T, T2>::operator--(int)
 }
 
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif // AS_SYMBOLTABLE_H

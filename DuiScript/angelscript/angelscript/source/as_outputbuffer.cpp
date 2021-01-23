@@ -43,7 +43,7 @@
 #include "as_outputbuffer.h"
 #include "as_scriptengine.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 asCOutputBuffer::~asCOutputBuffer()
 {
@@ -103,7 +103,7 @@ void asCOutputBuffer::SendToCallback(asCScriptEngine *engine, asSSystemFunctionI
 	Clear();
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif // AS_NO_COMPILER
 

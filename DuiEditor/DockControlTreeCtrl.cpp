@@ -68,7 +68,7 @@ BOOL CDockControlTreeCtrl::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResu
 
 void CDockControlTreeCtrl::InitTreeContent()
 {
-	LockWindowUpdate();
+	CLockWindowUpdate lockwindow(this);
 
 	DeleteAllItems();
 
@@ -86,8 +86,6 @@ void CDockControlTreeCtrl::InitTreeContent()
 
 	SelectItem(hRootItem);
 	GetUIManager()->GetPropList()->InitProp(root);
-
-	UnlockWindowUpdate();
 }
 
 void CDockControlTreeCtrl::OpenXmlDocument(pugi::xml_node elem, HTREEITEM hTreeParent)

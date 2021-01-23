@@ -57,7 +57,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 #define AS_SH4_MAX_ARGS 32
 // The array used to send values to the correct places.
@@ -385,7 +385,7 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 	return retQW;
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif // AS_SH4
 #endif // AS_MAX_PORTABILITY

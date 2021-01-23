@@ -51,7 +51,7 @@
 #include "as_texts.h"
 #include "as_context.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 enum argTypes { x64INTARG = 0, x64FLOATARG = 1 };
 typedef asQWORD ( *funcptr_t )( void );
@@ -470,7 +470,7 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 	return retQW;
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif // AS_X64_GCC
 #endif // AS_MAX_PORTABILITY

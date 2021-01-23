@@ -419,6 +419,10 @@ namespace DuiLib
 		Invalidate();
 	}
 
+	void CEditUI::SetText(int n)
+	{
+		__super::SetText(n);
+	}
 	void CEditUI::SetMaxChar(UINT uMax)
 	{
 		m_uMaxChar = uMax;

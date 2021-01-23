@@ -52,7 +52,7 @@
 
 #include <stdlib.h>
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 // This part was originally written by Pecan Heber, June 2006, for
 // use on MacOS X with 32bit PPC processor. He based the code on the
@@ -667,7 +667,7 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 	return retQW;
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif // AS_PPC
 #endif // AS_MAX_PORTABILITY

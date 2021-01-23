@@ -34,7 +34,7 @@
 
 #include "as_string.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 struct asSNameSpace
 {
@@ -71,7 +71,7 @@ struct asSNameSpaceNamePair
 	}
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif
 

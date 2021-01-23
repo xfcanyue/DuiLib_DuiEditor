@@ -48,7 +48,7 @@
 #include "as_scriptfunction.h"
 #include "as_property.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 // TODO: import: Remove this when the imported functions are removed
 const int FUNC_IMPORTED = 0x40000000;
@@ -241,6 +241,6 @@ public:
 	asCArray<asCFuncdefType*>      funcDefs; // increases ref count
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif

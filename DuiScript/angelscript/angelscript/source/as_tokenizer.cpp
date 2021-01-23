@@ -45,7 +45,7 @@
 #endif
 #include <string.h> // strcmp()
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 asCTokenizer::asCTokenizer()
 {
@@ -471,5 +471,5 @@ bool asCTokenizer::IsKeyWord(const char *source, size_t sourceLength, size_t &to
 	return false;
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 

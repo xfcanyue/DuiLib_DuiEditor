@@ -48,7 +48,7 @@
 #include "as_scriptengine.h"
 #include "as_debug.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 asCByteCode::asCByteCode(asCScriptEngine *engine)
 {
@@ -2923,7 +2923,7 @@ void asCByteInstruction::Remove()
 	next = 0;
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif // AS_NO_COMPILER
 

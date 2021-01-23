@@ -50,7 +50,7 @@
 #include "as_debug.h"
 #include "as_context.h"  // as_powi()
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 //
 // The calling convention rules for script functions:
@@ -15180,7 +15180,7 @@ void asCExprContext::Merge(asCExprContext *after)
 
 
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif // AS_NO_COMPILER
 

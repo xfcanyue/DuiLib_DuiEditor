@@ -50,7 +50,7 @@
 
 #include <cstdlib> // qsort
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 #ifdef AS_MAX_PORTABILITY
 
@@ -1694,5 +1694,5 @@ bool asCScriptFunction::IsOverride() const
 	return isOverride;
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 

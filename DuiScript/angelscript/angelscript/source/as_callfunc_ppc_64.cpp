@@ -60,7 +60,7 @@
 #endif
 
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 // This part was written and tested by Jeff Slutter 
 // from Reactor Zero, Abril, 2007, for PlayStation 3, which 
@@ -765,7 +765,7 @@ asQWORD CallSystemFunctionNative(asCContext *context, asCScriptFunction *descr, 
 	return retQW;
 }
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif // AS_PTR_SIZE == 2
 #endif // AS_PPC_64

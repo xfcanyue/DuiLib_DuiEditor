@@ -51,7 +51,7 @@
 #include "as_array.h"
 #include "as_datatype.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 // This class represents the value of an expression as evaluated by the compiler.
 // It holds information such as the type of the value, stack offset for a local 
@@ -394,7 +394,7 @@ protected:
 	int  noCodeOutput;
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif // AS_NO_COMPILER
 

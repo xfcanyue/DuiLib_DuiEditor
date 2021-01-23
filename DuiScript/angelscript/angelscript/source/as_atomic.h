@@ -44,7 +44,7 @@
 
 #include "as_config.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 class asCAtomic
 {
@@ -64,6 +64,6 @@ protected:
 	asDWORD value;
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif

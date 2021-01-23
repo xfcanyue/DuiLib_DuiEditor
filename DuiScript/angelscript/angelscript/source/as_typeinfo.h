@@ -43,7 +43,7 @@
 #include "as_atomic.h"
 #include "as_datatype.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 class asCScriptEngine;
 class asCModule;
@@ -236,6 +236,6 @@ protected:
 	asCFuncdefType() : asCTypeInfo(), funcdef(0), parentClass(0) {}
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif

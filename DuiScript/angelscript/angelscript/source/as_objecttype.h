@@ -46,7 +46,7 @@
 #include "as_scriptfunction.h"
 #include "as_typeinfo.h"
 
-namespace AngelScript {
+BEGIN_AS_NAMESPACE
 
 struct asSTypeBehaviour
 {
@@ -166,6 +166,6 @@ protected:
 	asCObjectType();
 };
 
-}//END_AS_NAMESPACE
+END_AS_NAMESPACE
 
 #endif
