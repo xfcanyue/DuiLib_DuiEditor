@@ -4,7 +4,7 @@
 namespace DuiLib
 {
 
-class regPaintManagerUI
+class regCPaintManagerUI
 {
 protected:
 	DECL_FACTORY(CPaintManagerUI);
@@ -15,13 +15,7 @@ public:
 
 		int r = 0;
 		r = engine->RegisterObjectType(classname, 0, asOBJ_REF|asOBJ_NOCOUNT); 
-
-		std::string factoryName = classname; factoryName += "@ f()";
-		std::string factoryFunc = classname; factoryFunc += "_Ref_Factory";
-
-		r = engine->RegisterObjectBehaviour(classname, asBEHAVE_FACTORY, factoryName.c_str(), asFUNCTION(factoryFunc.c_str()), asCALL_CDECL);  assert( r >= 0 );
-//		r = engine->RegisterObjectBehaviour(classname, asBEHAVE_ADDREF, "void f()", asMETHOD(CPaintManagerUI, __AddRef), asCALL_THISCALL); assert( r >= 0 );
-//		r = engine->RegisterObjectBehaviour(classname, asBEHAVE_RELEASE, "void f()", asMETHOD(CPaintManagerUI, __ReleaseRef), asCALL_THISCALL); assert( r >= 0 );
+		REG_FACTORY(CPaintManagerUI);
 
 		return r>=0;
 	}

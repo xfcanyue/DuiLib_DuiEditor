@@ -28,3 +28,6 @@
 	
 	DuiLib中图片属性的编辑
 	https://blog.csdn.net/mmcanyu/article/details/111148886
+	
+	正式发布DuiLib脚本系统 结合angelscript 
+	https://blog.csdn.net/mmcanyu/article/details/112685524

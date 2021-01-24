@@ -59,7 +59,7 @@ bool OnTestButtonSize(CControlUI &obj)
 }
 bool On_Test_Paint(CControlUI &obj, HDC &hDC, const RECT& rcPaint, CControlUI@ pStopControl)
 {
-	//CPaintManagerUI @pManager = obj.GetManager();
-	//DrawText(hDC, pManager, rcPaint, "On_Test_Paint", 0xFFFF0000, -1, 0);
-	return false;
+	CPaintManagerUI @pManager = obj.GetManager();
+	DrawText(hDC, pManager, obj.GetPos(), "On_Test_Paint", 0xFFFF0000, -1, 0);
+	return true;
 }

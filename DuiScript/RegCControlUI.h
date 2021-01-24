@@ -7,22 +7,19 @@ template <typename T>
 class regCControlUI
 {
 public:
+	asIScriptEngine *engine;
 	CStringA classname;
-	DECL_CONTROL_FACTORY(T);
+	DECL_CONTROL_FACTORY(CControlUI);
+	DECL_CONTROL_REGFACT(CControlUI);
 public:
-	virtual void reg(asIScriptEngine *engine)
+	virtual void reg(asIScriptEngine *engine_)
 	{
+		engine = engine_;
 		int r = 0;
 		r = engine->RegisterObjectType(classname, 0, asOBJ_REF|asOBJ_NOCOUNT); 
-		//r = engine->RegisterObjectType(classname, 0, asOBJ_REF); 
 
-		std::string factoryName = classname; factoryName += "@ f()";
-		std::string factoryFunc = classname; factoryFunc += "_Ref_Factory";
+		REG_CONTROL_FACTORY();
 
-		r = engine->RegisterObjectBehaviour(classname, asBEHAVE_FACTORY, factoryName.c_str(), asFUNCTION(factoryFunc.c_str()), asCALL_CDECL);  assert( r >= 0 );
-		//r = engine->RegisterObjectBehaviour(classname, asBEHAVE_ADDREF, "void f()", asMETHOD(T, __AddRef), asCALL_THISCALL); assert( r >= 0 );
-		//r = engine->RegisterObjectBehaviour(classname, asBEHAVE_RELEASE, "void f()", asMETHOD(T, __ReleaseRef), asCALL_THISCALL); assert( r >= 0 );
-		
 		REG_CONTROL_FUNPR(void,		 SetName,			(LPCTSTR)		);
 		REG_CONTROL_FUNPR(CDuiString,  GetName,			() const		);
 		REG_CONTROL_FUNPR(LPCTSTR,	 GetClass,			() const		);
@@ -218,6 +215,8 @@ public:
 template <typename T>
 class regCActiveXUI : public regCControlUI<T>
 {
+	DECL_CONTROL_FACTORY(CActiveXUI);
+	DECL_CONTROL_REGFACT(CActiveXUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -241,6 +240,8 @@ public:
 template <typename T>
 class regCWebBrowserUI : public regCActiveXUI<T>
 {
+	DECL_CONTROL_FACTORY(CWebBrowserUI);
+	DECL_CONTROL_REGFACT(CWebBrowserUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -268,6 +269,8 @@ public:
 template <typename T>
 class regCColorPaletteUI : public regCControlUI<T>
 {
+	DECL_CONTROL_FACTORY(CColorPaletteUI);
+	DECL_CONTROL_REGFACT(CColorPaletteUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -293,6 +296,8 @@ public:
 template <typename T>
 class regCContainerUI : public regCControlUI<T>
 {
+	DECL_CONTROL_FACTORY(CContainerUI);
+	DECL_CONTROL_REGFACT(CContainerUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -362,6 +367,8 @@ public:
 template <typename T>
 class regCGifAnimUI : public regCControlUI<T>
 {
+	DECL_CONTROL_FACTORY(CGifAnimUI);
+	DECL_CONTROL_REGFACT(CGifAnimUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -379,10 +386,12 @@ public:
 };
 
 //////////////////////////////////////////////////////////////////////////
-//CGifAnimUI
+//CLabelUI
 template <typename T>
 class regCLabelUI : public regCControlUI<T>
 {
+	DECL_CONTROL_FACTORY(CLabelUI);
+	DECL_CONTROL_REGFACT(CLabelUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -411,9 +420,12 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 //CListElementUI
+
 template <typename T>
 class regCListElementUI : public regCControlUI<T>
 {
+//	DECL_CONTROL_FACTORY(CListElementUI);
+//	DECL_CONTROL_REGFACT(CListElementUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -444,6 +456,8 @@ public:
 template <typename T>
 class regCListLabelElementUI : public regCListElementUI<T>
 {
+	DECL_CONTROL_FACTORY(CListLabelElementUI);
+	DECL_CONTROL_REGFACT(CListLabelElementUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -457,6 +471,8 @@ public:
 template <typename T>
 class regCScrollBarUI : public regCControlUI<T>
 {
+	DECL_CONTROL_FACTORY(CScrollBarUI);
+	DECL_CONTROL_REGFACT(CScrollBarUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -537,6 +553,8 @@ public:
 template <typename T>
 class regCVerticalLayoutUI : public regCContainerUI<T>
 {
+	DECL_CONTROL_FACTORY(CVerticalLayoutUI);
+	DECL_CONTROL_REGFACT(CVerticalLayoutUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -556,6 +574,8 @@ public:
 template <typename T>
 class regCGroupBoxUI : public regCVerticalLayoutUI<T>
 {
+	DECL_CONTROL_FACTORY(CGroupBoxUI);
+	DECL_CONTROL_REGFACT(CGroupBoxUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -573,9 +593,12 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 //CListBodyUI
+
 template <typename T>
 class regCListBodyUI : public regCVerticalLayoutUI<T>
 {
+//	DECL_CONTROL_FACTORY(CListBodyUI);
+//	DECL_CONTROL_REGFACT(CListBodyUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -590,6 +613,8 @@ public:
 template <typename T>
 class regCListUI : public regCVerticalLayoutUI<T>
 {
+	DECL_CONTROL_FACTORY(CListUI);
+	DECL_CONTROL_REGFACT(CListUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -669,6 +694,8 @@ public:
 template <typename T>
 class regCHorizontalLayoutUI : public regCContainerUI<T>
 {
+	DECL_CONTROL_FACTORY(CHorizontalLayoutUI);
+	DECL_CONTROL_REGFACT(CHorizontalLayoutUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -688,6 +715,8 @@ public:
 template <typename T>
 class regCListContainerElementUI : public regCHorizontalLayoutUI<T>
 {
+	DECL_CONTROL_FACTORY(CListContainerElementUI);
+	DECL_CONTROL_REGFACT(CListContainerElementUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -716,6 +745,8 @@ public:
 template <typename T>
 class regCListContainerHeaderItemUI : public regCHorizontalLayoutUI<T>
 {
+	DECL_CONTROL_FACTORY(CListContainerHeaderItemUI);
+	DECL_CONTROL_REGFACT(CListContainerHeaderItemUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -751,6 +782,8 @@ public:
 template <typename T>
 class regCListHeaderUI : public regCHorizontalLayoutUI<T>
 {
+	DECL_CONTROL_FACTORY(CListHeaderUI);
+	DECL_CONTROL_REGFACT(CListHeaderUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -767,6 +800,8 @@ public:
 template <typename T>
 class regCTreeNodeUI : public regCListContainerElementUI<T>
 {
+	DECL_CONTROL_FACTORY(CTreeNodeUI);
+	DECL_CONTROL_REGFACT(CTreeNodeUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -819,6 +854,8 @@ public:
 template <typename T>
 class regCTreeViewUI : public regCListUI<T>
 {
+	DECL_CONTROL_FACTORY(CTreeViewUI);
+	DECL_CONTROL_REGFACT(CTreeViewUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -826,8 +863,8 @@ public:
 		int r = 0;
 
 		REG_CONTROL_FUNPR(UINT, GetListType, ());
-		REG_CONTROL_FUNPR2("bool SetItemCheckBox(bool _Selected, CTreeNodeUI@ _TreeNode)", bool, SetItemCheckBox, (bool _Selected, CTreeNodeUI* _TreeNode));
-		REG_CONTROL_FUNPR2("void SetItemExpand(bool _Expanded, CTreeNodeUI@ _TreeNode)", void, SetItemExpand, (bool _Expanded, CTreeNodeUI* _TreeNode));
+		REG_CONTROL_FUNPR(bool, SetItemCheckBox, (bool _Selected, CTreeNodeUI* _TreeNode));
+		REG_CONTROL_FUNPR(void, SetItemExpand, (bool _Expanded, CTreeNodeUI* _TreeNode));
 		REG_CONTROL_FUNPR(void, SetVisibleFolderBtn, (bool _IsVisibled));
 		REG_CONTROL_FUNPR(bool, GetVisibleFolderBtn, ());
 		REG_CONTROL_FUNPR(void, SetVisibleCheckBtn, (bool _IsVisibled));
@@ -846,6 +883,8 @@ public:
 template <typename T>
 class regCAnimationPaneUI : public regCContainerUI<T>
 {
+	DECL_CONTROL_FACTORY(CAnimationPaneUI);
+	DECL_CONTROL_REGFACT(CAnimationPaneUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -870,6 +909,8 @@ public:
 template <typename T>
 class regCChildLayoutUI : public regCContainerUI<T>
 {
+	DECL_CONTROL_FACTORY(CChildLayoutUI);
+	DECL_CONTROL_REGFACT(CChildLayoutUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -886,6 +927,8 @@ public:
 template <typename T>
 class regCChildWindowUI : public regCContainerUI<T>
 {
+	DECL_CONTROL_FACTORY(CChildWindowUI);
+	DECL_CONTROL_REGFACT(CChildWindowUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -900,6 +943,8 @@ public:
 template <typename T>
 class regCComboUI : public regCContainerUI<T>
 {
+	DECL_CONTROL_FACTORY(CComboUI);
+	DECL_CONTROL_REGFACT(CComboUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -989,6 +1034,8 @@ public:
 template <typename T>
 class regCLabelLayoutUI : public regCContainerUI<T>
 {
+	DECL_CONTROL_FACTORY(CLabelLayoutUI);
+	DECL_CONTROL_REGFACT(CLabelLayoutUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -1020,6 +1067,8 @@ public:
 template <typename T>
 class regCButtonLayoutUI : public regCLabelLayoutUI<T>
 {
+	DECL_CONTROL_FACTORY(CButtonLayoutUI);
+	DECL_CONTROL_REGFACT(CButtonLayoutUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -1083,6 +1132,8 @@ public:
 template <typename T>
 class regCOptionLayoutUI : public regCButtonLayoutUI<T>
 {
+	DECL_CONTROL_FACTORY(COptionLayoutUI);
+	DECL_CONTROL_REGFACT(COptionLayoutUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -1130,6 +1181,8 @@ public:
 template <typename T>
 class regCListHeaderItemUI : public regCContainerUI<T>
 {
+	DECL_CONTROL_FACTORY(CListHeaderItemUI);
+	DECL_CONTROL_REGFACT(CListHeaderItemUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -1169,6 +1222,8 @@ public:
 template <typename T>
 class regCRichEditUI : public regCContainerUI<T>
 {
+	DECL_CONTROL_FACTORY(CRichEditUI);
+	DECL_CONTROL_REGFACT(CRichEditUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -1284,6 +1339,8 @@ public:
 template <typename T>
 class regCTabLayoutUI : public regCContainerUI<T>
 {
+	DECL_CONTROL_FACTORY(CTabLayoutUI);
+	DECL_CONTROL_REGFACT(CTabLayoutUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -1301,6 +1358,8 @@ public:
 template <typename T>
 class regCAnimationTabLayoutUI : public regCTabLayoutUI<T>
 {
+	DECL_CONTROL_FACTORY(CAnimationTabLayoutUI);
+	DECL_CONTROL_REGFACT(CAnimationTabLayoutUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -1320,6 +1379,8 @@ public:
 template <typename T>
 class regCTileLayoutUI : public regCContainerUI<T>
 {
+	DECL_CONTROL_FACTORY(CTileLayoutUI);
+	DECL_CONTROL_REGFACT(CTileLayoutUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -1343,6 +1404,8 @@ public:
 template <typename T>
 class regCButtonUI : public regCLabelUI<T>
 {
+	DECL_CONTROL_FACTORY(CButtonUI);
+	DECL_CONTROL_REGFACT(CButtonUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -1405,6 +1468,8 @@ public:
 template <typename T>
 class regCFadeButtonUI : public regCButtonUI<T>
 {
+	DECL_CONTROL_FACTORY(CFadeButtonUI);
+	DECL_CONTROL_REGFACT(CFadeButtonUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -1419,6 +1484,8 @@ public:
 template <typename T>
 class regCOptionUI : public regCButtonUI<T>
 {
+	DECL_CONTROL_FACTORY(COptionUI);
+	DECL_CONTROL_REGFACT(COptionUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -1466,6 +1533,8 @@ public:
 template <typename T>
 class regCCheckBoxUI : public regCOptionUI<T>
 {
+	DECL_CONTROL_FACTORY(CCheckBoxUI);
+	DECL_CONTROL_REGFACT(CCheckBoxUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -1482,6 +1551,8 @@ public:
 template <typename T>
 class regCTabCtrlUI : public regCOptionUI<T>
 {
+	DECL_CONTROL_FACTORY(CTabCtrlUI);
+	DECL_CONTROL_REGFACT(CTabCtrlUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -1496,6 +1567,8 @@ public:
 template <typename T>
 class regCDateTimeUI : public regCLabelUI<T>
 {
+	DECL_CONTROL_FACTORY(CDateTimeUI);
+	DECL_CONTROL_REGFACT(CDateTimeUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -1518,6 +1591,8 @@ public:
 template <typename T>
 class regCEditUI : public regCLabelUI<T>
 {
+	DECL_CONTROL_FACTORY(CEditUI);
+	DECL_CONTROL_REGFACT(CEditUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -1567,6 +1642,8 @@ public:
 template <typename T>
 class regCHotKeyUI : public regCLabelUI<T>
 {
+	DECL_CONTROL_FACTORY(CHotKeyUI);
+	DECL_CONTROL_REGFACT(CHotKeyUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -1591,6 +1668,8 @@ public:
 template <typename T>
 class regCIPAddressUI : public regCLabelUI<T>
 {
+	DECL_CONTROL_FACTORY(CIPAddressUI);
+	DECL_CONTROL_REGFACT(CIPAddressUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -1607,6 +1686,8 @@ public:
 template <typename T>
 class regCProgressUI : public regCLabelUI<T>
 {
+	DECL_CONTROL_FACTORY(CProgressUI);
+	DECL_CONTROL_REGFACT(CProgressUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -1633,6 +1714,8 @@ public:
 template <typename T>
 class regCSliderUI : public regCProgressUI<T>
 {
+	DECL_CONTROL_FACTORY(CSliderUI);
+	DECL_CONTROL_REGFACT(CSliderUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -1660,6 +1743,8 @@ public:
 template <typename T>
 class regCRingUI : public regCLabelUI<T>
 {
+	DECL_CONTROL_FACTORY(CRingUI);
+	DECL_CONTROL_REGFACT(CRingUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -1674,6 +1759,8 @@ public:
 template <typename T>
 class regCRollTextUI : public regCLabelUI<T>
 {
+	DECL_CONTROL_FACTORY(CRollTextUI);
+	DECL_CONTROL_REGFACT(CRollTextUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -1690,6 +1777,8 @@ public:
 template <typename T>
 class regCTextUI : public regCLabelUI<T>
 {
+	DECL_CONTROL_FACTORY(CTextUI);
+	DECL_CONTROL_REGFACT(CTextUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{

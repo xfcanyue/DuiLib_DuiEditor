@@ -21,13 +21,11 @@ public:
 	static void Register(asIScriptEngine *engine)
 	{
 		CStringA classname = "TFontInfo";
-		std::string factoryName = classname; factoryName += "@ f()";
-		std::string factoryFunc = classname; factoryFunc += "_Ref_Factory";
 
 		int r = 0;
 		r = engine->RegisterObjectType(classname, 0, asOBJ_REF|asOBJ_NOCOUNT); 
-		r = engine->RegisterObjectBehaviour(classname, asBEHAVE_FACTORY, factoryName.c_str(), asFUNCTION(factoryFunc.c_str()), asCALL_CDECL);  assert( r >= 0 );
-
+		REG_FACTORY(TFontInfo);
+		
 		REG_OBJECT_PROPERTY(TFontInfo, HFONT, hFont);
 		REG_OBJECT_PROPERTY(TFontInfo, CDuiString, sFontName);
 		REG_OBJECT_PROPERTY(TFontInfo, int, iSize);

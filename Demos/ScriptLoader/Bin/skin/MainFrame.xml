@@ -15,7 +15,7 @@
 			</HorizontalLayout>
 		</HorizontalLayout>
 		<VerticalLayout>
-			<Button name="btn_test" width="292" height="69" pos="36,38,328,107" float="true" OnInit="OnTestButtonInit" OnEvent="OnTestButtonEvent" OnNotify="OnTestButtonNotify" OnDestroy="OnTestButtonDestroy" OnSize="OnTestButtonSize" OnPaint="On_Test_Paint" />
+			<Button name="btn_test" width="292" height="69" pos="36,38,328,107" float="true" bkcolor="0xFFFFFFFF" OnInit="OnTestButtonInit" OnEvent="OnTestButtonEvent" OnNotify="OnTestButtonNotify" OnDestroy="OnTestButtonDestroy" OnSize="OnTestButtonSize" OnPaint="On_Test_Paint" />
 		</VerticalLayout>
 		<Label text="日志输出窗口:" height="20" resourceid="88" />
 		<VerticalLayout height="100" sepheight="-8" sepimm="true" inset="0,8,0,0">

@@ -3,6 +3,10 @@
 
 #include "angelscript/add_on/scriptstdtime/AsTime.h"
 #include "angelscript/add_on/scriptstdtime/scriptstdtime.h"
+#include "angelscript/add_on/scriptmath/scriptmath.h"
+#include "angelscript/add_on/scriptmath/scriptmath.cpp"
+#include "angelscript/add_on/scriptarray/scriptarray.h"
+#include "angelscript/add_on/scriptarray/scriptarray.cpp"
 #include "RegCDuiString.h"
 #include "RegPoint.h"
 #include "regSIZE.h"
@@ -276,9 +280,16 @@ void CScriptEngine::Init()
 	//把CDuiString注册到脚本中，使成为脚本标准字符串类型
 	regCDuiString::Register(engine);
 
+	//时间类
 	RegisterStdTime(engine);
 	//需要把datetime格式字符串也改成CDuiString
 	r = engine->RegisterObjectMethod("datetime", "string Format(string &in)", asFUNCTION(formatdatetime), asCALL_CDECL_OBJLAST);assert( r >= 0 );
+	
+	//注册一些数学公式
+	RegisterScriptMath_Native(engine);
+
+	//数组类
+	RegisterScriptArray(engine, true);
 
 	//注册各种define/enum,由于脚本中不能注册define，全部都定义成全局属性
 	reg_GlobalProperty();
@@ -289,7 +300,7 @@ void CScriptEngine::Init()
 	regSIZE::Register(engine);
 
 	regCLangManagerUI::Register(engine);
-	regPaintManagerUI::Register_Prepare(engine);
+	regCPaintManagerUI::Register_Prepare(engine);
 	regTEventUI::Register_Prepare(engine);
 
 	REGISTER_CONTROL( CControlUI ); 
@@ -307,7 +318,7 @@ void CScriptEngine::Init()
 
 	REGISTER_CONTROL( CVerticalLayoutUI );
 	REGISTER_CONTROL( CGroupBoxUI );
-	REGISTER_CONTROL( CListBodyUI );
+	//REGISTER_CONTROL( CListBodyUI );
 	REGISTER_CONTROL( CHorizontalLayoutUI );
 	REGISTER_CONTROL( CListContainerElementUI );
 	REGISTER_CONTROL( CListContainerHeaderItemUI );
@@ -341,13 +352,13 @@ void CScriptEngine::Init()
 	REGISTER_CONTROL( CIPAddressUI );
 	REGISTER_CONTROL( CProgressUI );
 	REGISTER_CONTROL( CSliderUI );
-	REGISTER_CONTROL( CRingUI );
+	//REGISTER_CONTROL( CRingUI );
 	REGISTER_CONTROL( CRollTextUI );
 	REGISTER_CONTROL( CTextUI );
 	
 	reg_ControlHierarchies(); 
 
-	regPaintManagerUI::Register_Extra(engine);
+	regCPaintManagerUI::Register_Extra(engine);
 	regTNotifyUI::Register(engine);
 	regTEventUI::Register_Extra(engine);
 	regTFontInfo::Register(engine);
@@ -537,7 +548,7 @@ void CScriptEngine::reg_ControlHierarchies()
 	REG_CLASS_HIERARCHIES(CTabLayoutUI, CAnimationTabLayoutUI);
 
 	REG_CLASS_HIERARCHIES(CVerticalLayoutUI, CGroupBoxUI);
-	REG_CLASS_HIERARCHIES(CVerticalLayoutUI, CListBodyUI);
+	//REG_CLASS_HIERARCHIES(CVerticalLayoutUI, CListBodyUI);
 	REG_CLASS_HIERARCHIES(CVerticalLayoutUI, CListUI);
 
 	REG_CLASS_HIERARCHIES(CLabelUI, CButtonUI);
@@ -546,7 +557,7 @@ void CScriptEngine::reg_ControlHierarchies()
 	REG_CLASS_HIERARCHIES(CLabelUI, CHotKeyUI);
 	REG_CLASS_HIERARCHIES(CLabelUI, CIPAddressUI);
 	REG_CLASS_HIERARCHIES(CLabelUI, CProgressUI);
-	REG_CLASS_HIERARCHIES(CLabelUI, CRingUI);
+	//REG_CLASS_HIERARCHIES(CLabelUI, CRingUI);
 	REG_CLASS_HIERARCHIES(CLabelUI, CRollTextUI);
 	REG_CLASS_HIERARCHIES(CLabelUI, CTextUI);
 

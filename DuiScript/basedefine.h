@@ -1,7 +1,20 @@
 #pragma once
 
-//注册类工厂
+#define DEFUNC(x)	#x
+
+#define REG_OBJECT_TYPE(class) { \
+	r = engine->RegisterObjectType(#class, 0, asOBJ_REF|asOBJ_NOCOUNT);	\
+	assert( r >= 0 );	\
+}
+
+//定义类工厂函数
 #define DECL_FACTORY(x) static x *x##_Ref_Factory() { return new x(); }
+
+//注册类工厂
+#define REG_FACTORY(x) {	\
+	r = engine->RegisterObjectBehaviour(#x, asBEHAVE_FACTORY, DEFUNC(x##@ f()), asFUNCTION( x##_Ref_Factory), asCALL_CDECL);  \
+	assert( r >= 0 );	\
+}
 
 //注册AddRef
 #define DECL_ADD_REF(class, fun) {	\
@@ -17,7 +30,6 @@
 
 //////////////////////////////////////////////////////////////////////////
 //注册类函数
-#define DEFUNC(x)	#x
 #define REG_METHOD_FUNPR(class, ret, n, p)	{	\
 	CStringA sFun = DEFUNC(ret n##p);			\
 	sFun.Replace("CDuiString", "string");		\
@@ -60,8 +72,11 @@
 	assert( r >= 0 ); \
 }
 
-//注册控件类工厂
-#define DECL_CONTROL_FACTORY(x) static x *x##_Ref_Factory() { classname=#x; return new x(); }
+//定义控件类工厂
+#define DECL_CONTROL_FACTORY(x)	static x *x##_Ref_Factory() { return new x(); }
+#define DECL_CONTROL_REGFACT(x) virtual void reg_factory() { int r = 0; REG_FACTORY(x); }
+#define REG_CONTROL_FACTORY() reg_factory()
+
 
 //注册控件的成员函数
 #define REG_CONTROL_FUNPR(ret,n,p)	{			\
