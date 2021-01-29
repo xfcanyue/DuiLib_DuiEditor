@@ -14,6 +14,42 @@
 #define _LIBPATH_(p,f)   p##f
 #endif
 
+//////////////////////////////////////////////////////////////////////////
+#ifdef CXIMAGE_STATIC
+#ifdef _WIN64
+#	ifdef _UNICODE
+#		ifdef _DEBUG
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/CxImage64u_staticd.lib"))
+#		else
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/CxImage64u_static.lib"))
+#		endif
+#	else
+#		ifdef _DEBUG
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/CxImage64_staticd.lib"))
+#		else
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/CxImage64_static.lib"))
+#		endif
+#	endif
+#else
+#	ifdef _UNICODE
+#		ifdef _DEBUG
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/CxImageu_staticd.lib"))
+#		else
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/CxImageu_static.lib"))
+#		endif
+#	else
+#		ifdef _DEBUG
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/CxImage_staticd.lib"))
+#		else
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/CxImage_static.lib"))
+#		endif
+#	endif
+#endif
+
+
+#else
+
+
 #ifdef _WIN64
 #	ifdef _UNICODE
 #		ifdef _DEBUG
@@ -42,4 +78,7 @@
 #			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/CxImage.lib"))
 #		endif
 #	endif
+#endif
+
+
 #endif

@@ -60,7 +60,7 @@ BOOL CScriptEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
 	}
 	if(!m_fileSession)
 	{
-		m_fileSession = g_cfg.Session().append_child("File");
+		m_fileSession = nodeSession.append_child("File");
 	}
 
 	//对比时间戳，判断是否载入备份文件

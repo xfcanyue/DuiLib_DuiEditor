@@ -18,7 +18,7 @@ public:
 
 	CString m_strMyTitle;
 	xml_node m_fileSession;
-	BOOL m_bHasSaveSession;
+	CString m_strBackupFileName;
 
 	BOOL m_bLoadFileFromBackup;
 	CString m_strLoadFileName;
@@ -40,6 +40,8 @@ public:
 
 	void LoadLangPackage(LPCTSTR lpszPathName);
 	void SaveLangPackage(LPCTSTR lpszPathName);
+
+	xml_node GetFileSession();
 // ÖØÐ´
 public:
 	virtual BOOL OnNewDocument();

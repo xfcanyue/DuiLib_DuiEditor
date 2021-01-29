@@ -20,8 +20,11 @@ DuiPlugins.vcxproj.filters
     在特定节点下以分组形式显示具有相似扩展名的文件。
     例如，“.cpp”文件与“源文件”筛选器关联。
 
+DuiPlugins.h
+    这是 DLL 的主头文件。  它声明了 CDuiPluginsApp 类。
+
 DuiPlugins.cpp
-    这是包含 DllMain() 定义的主 DLL 源文件。
+    这是主 DLL 源文件。  它包含 CDuiPluginsApp 类。
 
 DuiPlugins.rc
     这是程序使用的所有 Microsoft Windows 资源的列表。  它包括 RES 

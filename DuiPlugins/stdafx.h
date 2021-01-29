@@ -36,12 +36,18 @@
 #include <afxcmn.h>                     // MFC 对 Windows 公共控件的支持
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
-#define UILIB_PLUGIN_API __declspec(dllexport)
+//////////////////////////////////////////////////////////////////////////
+
+//#define UILIB_PLUGIN_API __declspec(dllexport)
 
 #include "../Duilib/Duilib.h"
 #include "Include/DuiPlugins.h"
+
+#ifdef UILIB_STATIC
+#define CXIMAGE_STATIC
+#endif
 #include "../3rd/CxImage/Include/image.h"
-#include "LsStringConverter.h"
+#include "DuiLib/LsStringConverter.h"
 
 inline DWORD LoadImage2Memory(const STRINGorID &bitmap, LPCTSTR type,LPBYTE &pData)
 {

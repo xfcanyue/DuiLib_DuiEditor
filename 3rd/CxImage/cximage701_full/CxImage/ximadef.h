@@ -3,13 +3,21 @@
 
 #include "ximacfg.h"
 
-#if /*defined(_AFXDLL)||*/defined(_USRDLL)
- #define DLL_EXP __declspec(dllexport)
-#elif defined(_MSC_VER)&&(_MSC_VER<1200)
- #define DLL_EXP __declspec(dllimport)
+#ifdef CXIMAGE_STATIC
+	#define DLL_EXP
+#elif CXIMAGE_EXPORT
+	#define DLL_EXP __declspec(dllexport)
 #else
- #define DLL_EXP
+	#define DLL_EXP __declspec(dllimport)
 #endif
+
+// #if /*defined(_AFXDLL)||*/defined(_USRDLL)
+// 	#define DLL_EXP __declspec(dllexport)
+// #elif defined(_MSC_VER)&&(_MSC_VER<1200)
+// 	#define DLL_EXP __declspec(dllimport)
+// #else
+//  #define DLL_EXP
+// #endif
 
 
 #if CXIMAGE_SUPPORT_EXCEPTION_HANDLING

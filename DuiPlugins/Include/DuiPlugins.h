@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef UILIB_STATIC
-#define UILIB_PLUGIN_API 
+#	define UILIB_PLUGIN_API 
 #else
 #if defined(UILIB_PLUGIN_API_EXPORTS)
 #	if defined(_MSC_VER)
@@ -19,45 +19,45 @@
 #endif
 
 
-#include "../UIDataExchange.h"
+#include "../DuiLib/UIDataExchange.h"
 
 #define DUI_CTR_COMBOEX						(_T("ComboEx"))
-#include "../UIComboEx.h"
+#include "../DuiLib/UIComboEx.h"
 
 #define DUI_CTR_GRIDCTRL					(_T("GridCtrl"))
 #include "../MFCGridCtrl/GridCtrl.h"
-#include "../UIGridCtrl.h"
+#include "../DuiLib/UIGridCtrl.h"
 
 #define DUI_CTR_ICONBUTTON					(_T("IconButton"))
-#include "../UIIconButton.h"
+#include "../DuiLib/UIIconButton.h"
 
 #define DUI_CTR_MSGWND						(_T("RichEdit"))
-#include "../UIMsgWnd.h"
+#include "../DuiLib/UIMsgWnd.h"
 
-#include "../UIKeyBoard.h"
-#include "../UIKeyBoardNumber.h"
-#include "../UIKeyBoardSimple.h"
+#include "../DuiLib/UIKeyBoard.h"
+#include "../DuiLib/UIKeyBoardNumber.h"
+#include "../DuiLib/UIKeyBoardSimple.h"
 
 #define DUI_CTR_PICTURECONTROL				(_T("PictureControl"))
-#include "../UIPictureControl.h"
+#include "../DuiLib/UIPictureControl.h"
 
 #define DUI_CTR_DATETIMEEX					(_T("DateTimeEx"))
-#include "../UIDateTimeEx.h"
+#include "../DuiLib/UIDateTimeEx.h"
 
 #define DUI_CTR_ACCORDIONPANE				(_T("AccordionPane"))	
-#include "../UIAccordionPane.h"
+#include "../DuiLib/UIAccordionPane.h"
 
 #define DUI_CTR_IMAGEBOX					(_T("ImageBox"))
-#include "../UIImageBox.h"
+#include "../DuiLib/UIImageBox.h"
 
 #define DUI_CTR_IMAGEBOXEX					(_T("ImageBoxEx"))
-#include "../UIImageBoxEx.h"
+#include "../DuiLib/UIImageBoxEx.h"
 
 #define DUI_CTR_ROLLTEXTEX					(_T("RollTextEx"))
-#include "../UIRollTextEx.h"
+#include "../DuiLib/UIRollTextEx.h"
 
 #define DUI_CTR_SCIEDIT						(_T("SciEdit"))
-#include "../UISciEdit.h"
+#include "../DuiLib/UISciEdit.h"
 
 //extern "C" 
 UILIB_PLUGIN_API void DuiPluginsRegister();
@@ -74,6 +74,42 @@ extern "C" UILIB_PLUGIN_API CControlUI *CreateControl(LPCTSTR pstrClass);
 #ifndef _LIBPATH_
 #define _LIBPATH_(p,f)   p##f
 #endif
+
+//////////////////////////////////////////////////////////////////////////
+#ifdef UILIB_STATIC
+
+
+#ifdef _WIN64
+#	ifdef _UNICODE
+#		ifdef _DEBUG
+#			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../../Lib/DuiPlugins_64usd.lib"))
+#		else
+#			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../../Lib/DuiPlugins_64us.lib"))
+#		endif
+#	else
+#		ifdef _DEBUG
+#			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../../Lib/DuiPlugins_64sd.lib"))
+#		else
+#			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../../Lib/DuiPlugins_64s.lib"))
+#		endif
+#	endif
+#else
+#	ifdef _UNICODE
+#		ifdef _DEBUG
+#			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../../Lib/DuiPlugins_usd.lib"))
+#		else
+#			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../../Lib/DuiPlugins_us.lib"))
+#		endif
+#	else
+#		ifdef _DEBUG
+#			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../../Lib/DuiPlugins_sd.lib"))
+#		else
+#			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../../Lib/DuiPluginss.lib"))
+#		endif
+#	endif
+#endif
+
+#else //#ifdef UILIB_STATIC
 
 #ifdef _WIN64
 #	ifdef _UNICODE
@@ -104,5 +140,7 @@ extern "C" UILIB_PLUGIN_API CControlUI *CreateControl(LPCTSTR pstrClass);
 #		endif
 #	endif
 #endif
+
+#endif //#ifdef UILIB_STATIC
 
 #endif

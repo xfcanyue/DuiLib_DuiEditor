@@ -6,6 +6,42 @@
 #define _LIBPATH_(p,f)   p##f
 #endif
 
+//////////////////////////////////////////////////////////////////////////
+#ifdef UILIB_STATIC
+
+#ifdef _WIN64
+#	ifdef _UNICODE
+#		ifdef _DEBUG
+#			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../Lib/DuiLib_64usd.lib"))
+#		else
+#			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../Lib/DuiLib_64us.lib"))
+#		endif
+#	else
+#		ifdef _DEBUG
+#			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../Lib/DuiLib_64sd.lib"))
+#		else
+#			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../Lib/DuiLib_64s.lib"))
+#		endif
+#	endif
+#else
+#	ifdef _UNICODE
+#		ifdef _DEBUG
+#			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../Lib/DuiLib_usd.lib"))
+#		else
+#			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../Lib/DuiLib_us.lib"))
+#		endif
+#	else
+#		ifdef _DEBUG
+#			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../Lib/DuiLib_sd.lib"))
+#		else
+#			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../Lib/DuiLibs.lib"))
+#		endif
+#	endif
+#endif
+
+//////////////////////////////////////////////////////////////////////////
+#else
+
 #ifdef _WIN64
 #	ifdef _UNICODE
 #		ifdef _DEBUG
@@ -34,4 +70,9 @@
 #			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../Lib/DuiLib.lib"))
 #		endif
 #	endif
+#endif
+
+
+
+//////////////////////////////////////////////////////////////////////////
 #endif

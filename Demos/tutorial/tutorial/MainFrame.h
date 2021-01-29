@@ -23,7 +23,7 @@ public:
 	void OnShowHideBottomPane();
 
 
-	CImageBoxUI *m_pImageBox;
+	//CImageBoxUI *m_pImageBox;
 	CProgressUI *m_pProgress;
 
 	CStdStringPtrMap m_MenuInfos; //²Ëµ¥Ñ¡ÖÐ×´Ì¬

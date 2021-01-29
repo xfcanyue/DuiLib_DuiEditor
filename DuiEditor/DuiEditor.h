@@ -146,6 +146,7 @@ public:
 // й╣ож
 	UINT  m_nAppLook;
 	BOOL  m_bHiColorIcons;
+	BOOL  m_bIsDDEOpen;
 
 	virtual void PreLoadState();
 	virtual void LoadCustomState();

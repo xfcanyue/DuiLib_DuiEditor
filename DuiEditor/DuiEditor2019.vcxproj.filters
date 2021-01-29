@@ -1,0 +1,657 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+    <None Include="UserImages.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\Toolbar.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\Toolbar256.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\TabLayout.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\Active.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\Button.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\Combo.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\Container.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\Control.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\Edit.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\HorizontalLayout.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\Label.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\Option.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\Pointer.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\Progress.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\ScrollBar.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\Slider.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\Text.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\TileLayout.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\VerticalLayout.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\Window.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\Unknow.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\Default.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\Font.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\movehandle.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\toolbar1.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\properties.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\properties_hc.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\toolbar2.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\bmp00001.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\bmp00002.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\List.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\RichEdit.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\CheckBox.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\Grid.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\ie.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\libcef.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\TreeCtrl.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\TreeNode.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\CustomControl.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\DateTime.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\ChildLayout.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\ImageBox.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\GroupBox.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\Menu.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\GifAnim.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\Style.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\bmp00003.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\class_view.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\file_view.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\bmp00004.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="DuiEditor.reg" />
+    <None Include="res\DuiEditor.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\DuiEditor.rc2">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\DuiEditorDoc.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\bmp00005.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\project.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\bmp00006.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ico_close.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ico_stop.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\00290.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\toolbox\icon1.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\ColorPalette.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\00764.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\keyboard.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\Picture.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\xml_err.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\xml_ok.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\ListItem.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ToolBox\MsgWnd.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\bmp00007.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ChildFrm.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolBoxCtrl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolBoxWnd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIBuilder.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIView.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DuiPropertyFile.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DockPropertyWnd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DockControlTreeWnd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DockControlTreeCtrl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DockOutputWnd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultEditor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultEditorFrame.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageEditor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageEditorFrame.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageEditorView.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgOptions.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadPipe.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadTest.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TinyXml2\tinyxml2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgCustomControl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SciFind.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DockFileViewWnd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DockFileViewCtrl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptEditorView.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptEditorDoc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ChildFrm2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DuiEditor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DuiEditorDoc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DuiEditorViewCode.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DuiEditorViewDesign.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIWindowEx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UITracker.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UITrackerMuliti.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Tracker.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultEditorView.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgInsertControl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgCreateDuiDocument.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgStringEditor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticImageView.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgTemplateSave.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DuiEditorDocTemplate.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="LsStringConverter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DuiProject.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SciXmlWriter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="xmlMatchedTagsHighlighter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="EditSearchCtrl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorConfig.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DuiEditorView.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MySplitterWnd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MyStatusBar.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SciXmlParse.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageEditorPane.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageEditorPaneDialog.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageEditorImagePreview.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageEditorPaneFile.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageEditorPaneImage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPropertyGridCtrl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\scintilla\SciWnd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgBuildLanguagePackage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgBuildLanguagePackageEx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgScriptTest.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DockScriptStack.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgLangTextEdit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptEditorDocTemplate.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptLexer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ChildFrm.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolBoxCtrl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolBoxWnd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIBuilder.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIView.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiPropertyFile.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DockPropertyWnd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DockControlTreeWnd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DockControlTreeCtrl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DockOutputWnd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultEditor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultEditorFrame.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageEditor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageEditorFrame.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageEditorView.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgOptions.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadPipe.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadTest.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TinyXml2\tinyxml2.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgCustomControl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SciFind.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DockFileViewWnd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DockFileViewCtrl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptEditorView.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptEditorDoc.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ChildFrm2.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiEditor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiEditorDoc.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiEditorViewCode.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiEditorViewDesign.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIWindowEx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UITracker.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UITrackerMuliti.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Tracker.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultEditorView.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgInsertControl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgCreateDuiDocument.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgStringEditor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticImageView.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgTemplateSave.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiEditorDocTemplate.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiProject.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SciXmlWriter.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="xmlMatchedTagsHighlighter.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="EditSearchCtrl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiEditorView.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MySplitterWnd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MyStatusBar.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SciXmlParse.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageEditorPane.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageEditorPaneDialog.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageEditorImagePreview.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageEditorPaneFile.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageEditorPaneFile.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageEditorPaneImage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPropertyGridCtrl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgBuildLanguagePackage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgBuildLanguagePackageEx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\scintilla\SciWnd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgScriptTest.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DockScriptStack.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgLangTextEdit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptEditorDocTemplate.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptLexer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DuiEditor.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

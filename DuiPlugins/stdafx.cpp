@@ -5,3 +5,4 @@
 #include "stdafx.h"
 CString g_strDuiPluginsPath;
 
+

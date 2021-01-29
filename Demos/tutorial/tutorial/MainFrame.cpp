@@ -42,7 +42,7 @@ void CMainFrame::Notify(TNotifyUI& msg)
 void CMainFrame::InitWindow()
 {
 	//绑定控件指针
-	UI_BINDCONTROL(CImageBoxUI, m_pImageBox, _T("imagebox_1"));
+	//UI_BINDCONTROL(CImageBoxUI, m_pImageBox, _T("imagebox_1"));
 	UI_BINDCONTROL(CProgressUI, m_pProgress, _T("progress_1"));
 
 	//进度条

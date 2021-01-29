@@ -2,17 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tutorial", "tutorial\tutorial.vcxproj", "{C3EA50E0-1257-468F-AA07-E91A0A7C2011}"
-	ProjectSection(ProjectDependencies) = postProject
-		{AEBE2742-393C-489D-962E-94B52CC02114} = {AEBE2742-393C-489D-962E-94B52CC02114}
-		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E} = {E106ACD7-4E53-4AEE-942B-D0DD426DB34E}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DuiLib", "..\..\DuiLib\DuiLib.vcxproj", "{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DuiPlugins", "..\..\DuiPlugins\DuiPlugins.vcxproj", "{AEBE2742-393C-489D-962E-94B52CC02114}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E} = {E106ACD7-4E53-4AEE-942B-D0DD426DB34E}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +9,10 @@ Global
 		Release|Win32 = Release|Win32
 		UnicodeDebug|Win32 = UnicodeDebug|Win32
 		UnicodeRelease|Win32 = UnicodeRelease|Win32
+		xsDebug|Win32 = xsDebug|Win32
+		xsRelease|Win32 = xsRelease|Win32
+		xsUnicodeDebug|Win32 = xsUnicodeDebug|Win32
+		xsUnicodeRelease|Win32 = xsUnicodeRelease|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{C3EA50E0-1257-468F-AA07-E91A0A7C2011}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -30,22 +23,14 @@ Global
 		{C3EA50E0-1257-468F-AA07-E91A0A7C2011}.UnicodeDebug|Win32.Build.0 = Debug|Win32
 		{C3EA50E0-1257-468F-AA07-E91A0A7C2011}.UnicodeRelease|Win32.ActiveCfg = Release|Win32
 		{C3EA50E0-1257-468F-AA07-E91A0A7C2011}.UnicodeRelease|Win32.Build.0 = Release|Win32
-		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.Debug|Win32.ActiveCfg = UnicodeDebug|Win32
-		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.Debug|Win32.Build.0 = UnicodeDebug|Win32
-		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.Release|Win32.ActiveCfg = UnicodeRelease|Win32
-		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.Release|Win32.Build.0 = UnicodeRelease|Win32
-		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.UnicodeDebug|Win32.ActiveCfg = UnicodeDebug|Win32
-		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.UnicodeDebug|Win32.Build.0 = UnicodeDebug|Win32
-		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.UnicodeRelease|Win32.ActiveCfg = UnicodeRelease|Win32
-		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.UnicodeRelease|Win32.Build.0 = UnicodeRelease|Win32
-		{AEBE2742-393C-489D-962E-94B52CC02114}.Debug|Win32.ActiveCfg = UnicodeDebug|Win32
-		{AEBE2742-393C-489D-962E-94B52CC02114}.Debug|Win32.Build.0 = UnicodeDebug|Win32
-		{AEBE2742-393C-489D-962E-94B52CC02114}.Release|Win32.ActiveCfg = UnicodeRelease|Win32
-		{AEBE2742-393C-489D-962E-94B52CC02114}.Release|Win32.Build.0 = UnicodeRelease|Win32
-		{AEBE2742-393C-489D-962E-94B52CC02114}.UnicodeDebug|Win32.ActiveCfg = UnicodeDebug|Win32
-		{AEBE2742-393C-489D-962E-94B52CC02114}.UnicodeDebug|Win32.Build.0 = UnicodeDebug|Win32
-		{AEBE2742-393C-489D-962E-94B52CC02114}.UnicodeRelease|Win32.ActiveCfg = UnicodeRelease|Win32
-		{AEBE2742-393C-489D-962E-94B52CC02114}.UnicodeRelease|Win32.Build.0 = UnicodeRelease|Win32
+		{C3EA50E0-1257-468F-AA07-E91A0A7C2011}.xsDebug|Win32.ActiveCfg = xsDebug|Win32
+		{C3EA50E0-1257-468F-AA07-E91A0A7C2011}.xsDebug|Win32.Build.0 = xsDebug|Win32
+		{C3EA50E0-1257-468F-AA07-E91A0A7C2011}.xsRelease|Win32.ActiveCfg = xsRelease|Win32
+		{C3EA50E0-1257-468F-AA07-E91A0A7C2011}.xsRelease|Win32.Build.0 = xsRelease|Win32
+		{C3EA50E0-1257-468F-AA07-E91A0A7C2011}.xsUnicodeDebug|Win32.ActiveCfg = xsUnicodeDebug|Win32
+		{C3EA50E0-1257-468F-AA07-E91A0A7C2011}.xsUnicodeDebug|Win32.Build.0 = xsUnicodeDebug|Win32
+		{C3EA50E0-1257-468F-AA07-E91A0A7C2011}.xsUnicodeRelease|Win32.ActiveCfg = xsUnicodeRelease|Win32
+		{C3EA50E0-1257-468F-AA07-E91A0A7C2011}.xsUnicodeRelease|Win32.Build.0 = xsUnicodeRelease|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -84,7 +84,7 @@ struct tagEditorConfig
 		strLangPath = XML2T(root.child(XTEXT("LangPath")).text().as_string());
 	}
 
-	void SaveConfig()
+	void SaveConfig(LPCTSTR filename=NULL)
 	{
 		xml_node root = xml.child_auto(XTEXT("DuiEditor"));
 
@@ -112,7 +112,10 @@ struct tagEditorConfig
 		root.child_auto(XTEXT("LangManager")).text().set(bLangManager);
 		root.child_auto(XTEXT("LangPath")).text().set(T2XML(strLangPath));
 
-		xml.save_to_default_file();
+		if(filename == NULL)
+			xml.save_to_default_file();
+		else
+			xml.save_file(filename);
 	}
 
 	xml_node Session()

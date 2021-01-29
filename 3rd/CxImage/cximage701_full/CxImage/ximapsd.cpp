@@ -59,7 +59,7 @@ namespace MyPSD
 			//		9		Lab				The first three values in the color data are lightness, a chrominance,
 			//								and b chrominance.
 			//								Lightness is a 16–bit value from 0...100. The chromanance components
-			//								are each 16–bit values from –128...127. Gray values
+			//								are each 16–bit values from ?28...127. Gray values
 			//								are represented by chrominance components of 0. Pure
 			//								white=100,0,0.
 			short nChannels;
@@ -80,7 +80,7 @@ namespace MyPSD
 
 		struct IMAGE_RESOURCE
 		{
-			// Table 2–1: Image resource block
+			// Table 2?: Image resource block
 			//	Type		Name	Description
 			//-------------------------------------------
 			//	OSType		Type	Photoshop always uses its signature, 8BIM
@@ -151,7 +151,7 @@ namespace MyPSD
 			//		7		Lab			The first three values in the color data are lightness, a chrominance,
 			//							and b chrominance.
 			//							Lightness is a 16–bit value from 0...10000. The chromanance components
-			//							are each 16–bit values from –12800...12700. Gray values
+			//							are each 16–bit values from ?2800...12700. Gray values
 			//							are represented by chrominance components of 0. Pure
 			//							white=10000,0,0.
 			//		8		grayscale	The first value in the color data is the gray value, from 0...10000.
@@ -171,7 +171,7 @@ namespace MyPSD
 			// thumbnail information in the same format except the data section is
 			// (blue, green, red). The Adobe Photoshop 4.0 format is at resource ID
 			// and the Adobe Photoshop 5.0 format is at resource ID 1036.
-			// Table 2–5: Thumnail resource header
+			// Table 2?: Thumnail resource header
 			//	Type		Name		Description
 			//-------------------------------------------
 			//	4 bytes		format			= 1 (kJpegRGB). Also supports kRawRGB (0).

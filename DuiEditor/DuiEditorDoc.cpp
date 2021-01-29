@@ -60,7 +60,6 @@ CDuiEditorDoc::CDuiEditorDoc()
 {
 	// TODO: 在此添加一次性构造代码
 	m_bMenuWnd = FALSE;
-	m_bHasSaveSession = FALSE;
 	m_bLoadFileFromBackup = FALSE;
 
 	CUIManager *pManager = new CUIManager;
@@ -202,30 +201,40 @@ void CDuiEditorDoc::InitFileView(CDocument *pDocCurrentClose)
 	}
 }
 
+xml_node CDuiEditorDoc::GetFileSession()
+{
+	if(GetPathName().IsEmpty()) return xml_node();
+	if(m_fileSession) return m_fileSession;
+
+	xml_node nodeSession = g_cfg.Session();
+	for (xml_node node = nodeSession.child("File"); node; node=node.next_sibling("File"))
+	{
+		if(CompareString(LSUTF82T(node.attribute("filename").as_string()), GetPathName()))
+		{
+			m_fileSession = node;
+			break;
+		}
+	}
+
+	m_fileSession = nodeSession.append_child("File");
+	return m_fileSession;
+}
+
 BOOL CDuiEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
 {
 	if (!CDocument::OnOpenDocument(lpszPathName))
 		return FALSE;
 
+	//AfxMessageBox(_T("BOOL CDuiEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)"));
+
 	// TODO:  在此添加您专用的创建代码
 	CString filename = lpszPathName;
 
-	xml_node nodeSession = g_cfg.Session();
-	for (xml_node node = nodeSession.child("File"); node; node=node.next_sibling("File"))
-	{
-		if(CompareString(LSUTF82T(node.attribute("filename").as_string()), lpszPathName))
-		{
-			m_fileSession = node;
-		}
-	}
-	if(!m_fileSession)
-	{
-		m_fileSession = g_cfg.Session().append_child("File");
-	}
+	xml_node fileSession = GetFileSession();
 
 	//对比时间戳，判断是否载入备份文件
-	BOOL bModify = m_fileSession.attribute("ismodify").as_bool();
-	CString backup = LSUTF82T(m_fileSession.attribute("backup").as_string());
+	BOOL bModify = fileSession.attribute("ismodify").as_bool();
+	CString backup = LSUTF82T(fileSession.attribute("backup").as_string());
 	if(!backup.IsEmpty() && PathFileExists(backup))
 	{
 		CFileStatus sta1;
@@ -279,7 +288,7 @@ BOOL CDuiEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
 	LoadLangPackage(filename);
 
 	//每次打开文件，总是创建新的备份文件
-	m_fileSession.attribute("backup").set_value("");
+	fileSession.attribute("backup").set_value("");
 
 	if(m_bLoadFileFromBackup)
 	{
@@ -394,23 +403,23 @@ void CDuiEditorDoc::SaveLangPackage(LPCTSTR lpszPathName)
 
 void CDuiEditorDoc::OnCloseDocument()
 {
+	xml_node fileSession = GetFileSession();
  	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
 	if(pMain->IsClosingNow())
 	{
-		if(m_fileSession && !m_bHasSaveSession)
+		if(fileSession)
 		{
 			CString filename = GetPathName();
 			if(filename.IsEmpty()) filename = m_strDefaultTitle;
-			m_fileSession.attribute_auto("filename").set_value(LST2UTF8(filename));
+			fileSession.attribute_auto("filename").set_value(LST2UTF8(filename));
 			g_cfg.SaveConfig();
-			m_bHasSaveSession = TRUE;
 		}
 	}
 	else //正常关闭文件，不要保存session
 	{
-		if(m_fileSession)
+		if(fileSession)
 		{
-			g_cfg.Session().remove_child(m_fileSession);
+			g_cfg.Session().remove_child(fileSession);
 			g_cfg.SaveConfig();
 		}
 	}
@@ -468,9 +477,10 @@ void CDuiEditorDoc::SetModifiedFlag(BOOL bModified)
 		SaveBackupFile();
 	}
 
-	if(m_fileSession.attribute("ismodify").as_bool() != (bModified==TRUE))
+	xml_node fileSession;
+	if(fileSession.attribute("ismodify").as_bool() != (bModified==TRUE))
 	{
-		m_fileSession.attribute_auto("ismodify").set_value(bModified);
+		fileSession.attribute_auto("ismodify").set_value(bModified);
 		g_cfg.SaveConfig();
 	}
 	__super::SetModifiedFlag(bModified);
@@ -478,13 +488,14 @@ void CDuiEditorDoc::SetModifiedFlag(BOOL bModified)
 
 void CDuiEditorDoc::SaveBackupFile()
 {
-	if(!m_fileSession) return;
+	xml_node fileSession = GetFileSession();
+	if(!fileSession) return;
 
 	CString filename = GetPathName();
 	if(filename.IsEmpty()) return; //没有保存过的文件，不要备份
-	m_fileSession.attribute_auto("filename").set_value(LST2UTF8(filename));
+	fileSession.attribute_auto("filename").set_value(LST2UTF8(filename));
 
-	xml_attribute attrBackup = m_fileSession.attribute_auto("backup");
+	xml_attribute attrBackup = fileSession.attribute_auto("backup");
 	CString backupfile = LSUTF82T(attrBackup.as_string());
 	if(backupfile.IsEmpty())
 	{
@@ -509,8 +520,10 @@ void CDuiEditorDoc::SaveBackupFile()
 		backupfile += file;
 
 		attrBackup.set_value(LST2UTF8(backupfile));
+		m_strBackupFileName = backupfile;
 		g_cfg.SaveConfig();
 	}
+
 	GetUIManager()->GetCodeView()->GetSciWnd()->SaveFile(backupfile);
 	//m_doc.save_file(backupfile, PUGIXML_TEXT("\t"), format_default, encoding_utf8);
 }

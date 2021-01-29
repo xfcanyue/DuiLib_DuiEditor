@@ -17,9 +17,25 @@
       <Configuration>UnicodeRelease</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="xsDebug|Win32">
+      <Configuration>xsDebug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="xsRelease|Win32">
+      <Configuration>xsRelease</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="xsUnicodeDebug|Win32">
+      <Configuration>xsUnicodeDebug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="xsUnicodeRelease|Win32">
+      <Configuration>xsUnicodeRelease</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{AEBE2742-393C-489D-962E-94B52CC02114}</ProjectGuid>
+    <ProjectGuid>{EA00BBA9-1515-4FB6-9DC4-52738AC67267}</ProjectGuid>
     <RootNamespace>DuiPlugins</RootNamespace>
     <Keyword>MFCDLLProj</Keyword>
   </PropertyGroup>
@@ -30,11 +46,23 @@
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsDebug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsUnicodeDebug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -43,6 +71,13 @@
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsRelease|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -50,19 +85,38 @@
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsUnicodeRelease|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='xsDebug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='xsUnicodeDebug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='xsRelease|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='xsUnicodeRelease|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -71,35 +125,75 @@
     <OutDir>Lib\</OutDir>
     <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsDebug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>Lib\</OutDir>
+    <TargetName>$(ProjectName)_sd</TargetName>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>Lib\</OutDir>
     <TargetName>$(ProjectName)_ud</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsUnicodeDebug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>Lib\</OutDir>
+    <TargetName>$(ProjectName)_usd</TargetName>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>$(ProjectName)</TargetName>
     <OutDir>Lib\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsRelease|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>Lib\</OutDir>
+    <TargetName>$(ProjectName)_s</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>$(ProjectName)_u</TargetName>
     <OutDir>Lib\</OutDir>
+    <TargetName>$(ProjectName)_u</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsUnicodeRelease|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>Lib\</OutDir>
+    <TargetName>$(ProjectName)_us</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_AFXEXT;UILIB_PLUGIN_API_EXPORTS;DLL_SCIWND_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_USRDLL;UILIB_PLUGIN_API_EXPORTS;DLL_SCIWND_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>.\DuiPlugins.def</ModuleDefinitionFile>
       <OutputFile>../../Exec/DuiPlugins_d.dll</OutputFile>
-      <ImportLibrary>
-      </ImportLibrary>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='xsDebug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_USRDLL;UILIB_STATIC;UILIB_PLUGIN_API_EXPORTS;DLL_SCIWND_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ModuleDefinitionFile>.\DuiPlugins.def</ModuleDefinitionFile>
+      <OutputFile>../../Exec/DuiPlugins_d.dll</OutputFile>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -116,15 +210,37 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_AFXEXT;UILIB_PLUGIN_API_EXPORTS;DLL_SCIWND_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_USRDLL;UILIB_PLUGIN_API_EXPORTS;DLL_SCIWND_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>.\DuiPlugins.def</ModuleDefinitionFile>
-      <OutputFile>../../Exec/DuiPlugins_ud.dll</OutputFile>
-      <ImportLibrary>
-      </ImportLibrary>
+      <OutputFile>../../Exec/DuiPlugins_d.dll</OutputFile>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='xsUnicodeDebug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_USRDLL;UILIB_STATIC;UILIB_PLUGIN_API_EXPORTS;DLL_SCIWND_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ModuleDefinitionFile>.\DuiPlugins.def</ModuleDefinitionFile>
+      <OutputFile>../../Exec/DuiPlugins_d.dll</OutputFile>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -143,7 +259,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_AFXEXT;UILIB_PLUGIN_API_EXPORTS;DLL_SCIWND_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;UILIB_PLUGIN_API_EXPORTS;DLL_SCIWND_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -152,8 +268,33 @@
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>.\DuiPlugins.def</ModuleDefinitionFile>
       <OutputFile>../../Exec/DuiPlugins.dll</OutputFile>
-      <ImportLibrary>
-      </ImportLibrary>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='xsRelease|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;UILIB_STATIC;UILIB_PLUGIN_API_EXPORTS;DLL_SCIWND_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>.\DuiPlugins.def</ModuleDefinitionFile>
+      <OutputFile>../../Exec/DuiPlugins.dll</OutputFile>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -172,7 +313,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_AFXEXT;UILIB_PLUGIN_API_EXPORTS;DLL_SCIWND_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -180,9 +321,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>.\DuiPlugins.def</ModuleDefinitionFile>
-      <OutputFile>../../Exec/DuiPlugins_u.dll</OutputFile>
-      <ImportLibrary>
-      </ImportLibrary>
+      <OutputFile>../../Exec/DuiPlugins.dll</OutputFile>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -194,6 +333,49 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='xsUnicodeRelease|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>.\DuiPlugins.def</ModuleDefinitionFile>
+      <OutputFile>../../Exec/DuiPlugins.dll</OutputFile>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">
+    <Link>
+      <OutputFile>../../Exec/DuiPlugins_u.dll</OutputFile>
+    </Link>
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;UILIB_PLUGIN_API_EXPORTS;DLL_SCIWND_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='xsUnicodeRelease|Win32'">
+    <Link>
+      <OutputFile>../../Exec/DuiPlugins_u.dll</OutputFile>
+    </Link>
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;UILIB_STATIC;UILIB_PLUGIN_API_EXPORTS;DLL_SCIWND_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="DuiPlugins.def" />
     <None Include="ReadMe.txt" />
@@ -201,8 +383,24 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\3rd\scintilla\SciWnd.cpp" />
-    <ClCompile Include="UIComboEditWnd.cpp" />
-    <ClCompile Include="UIComboEx.cpp" />
+    <ClCompile Include="DuiLib\UIAccordionPane.cpp" />
+    <ClCompile Include="DuiLib\UIComboEditWnd.cpp" />
+    <ClCompile Include="DuiLib\UIComboEx.cpp" />
+    <ClCompile Include="DuiLib\UIDataExchange.cpp" />
+    <ClCompile Include="DuiLib\UIDateTimeEx.cpp" />
+    <ClCompile Include="DuiLib\UIDateTimeExWnd.cpp" />
+    <ClCompile Include="DuiLib\UIGridCtrl.cpp" />
+    <ClCompile Include="DuiLib\UIIconButton.cpp" />
+    <ClCompile Include="DuiLib\UIImageBox.cpp" />
+    <ClCompile Include="DuiLib\UIImageBoxEx.cpp" />
+    <ClCompile Include="DuiLib\UIKeyBoard.cpp" />
+    <ClCompile Include="DuiLib\UIKeyBoardNumber.cpp" />
+    <ClCompile Include="DuiLib\UIKeyBoardSimple.cpp" />
+    <ClCompile Include="DuiLib\UIMsgWnd.cpp" />
+    <ClCompile Include="DuiLib\UIPictureControl.cpp" />
+    <ClCompile Include="DuiLib\UIRollTextEx.cpp" />
+    <ClCompile Include="DuiLib\UISciEdit.cpp" />
+    <ClCompile Include="DuiPlugins.cpp" />
     <ClCompile Include="MFCGridCtrl\CellType\GridCellCheck.cpp" />
     <ClCompile Include="MFCGridCtrl\CellType\GridCellCombo.cpp" />
     <ClCompile Include="MFCGridCtrl\CellType\GridCellDateTime.cpp" />
@@ -214,48 +412,38 @@
     <ClCompile Include="MFCGridCtrl\GridDropTarget.cpp" />
     <ClCompile Include="MFCGridCtrl\InPlaceEdit.cpp" />
     <ClCompile Include="MFCGridCtrl\TitleTip.cpp" />
-    <ClCompile Include="UIDateTimeExWnd.cpp" />
-    <ClCompile Include="dllmain.cpp">
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">false</CompileAsManaged>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">
-      </PrecompiledHeader>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">false</CompileAsManaged>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="DuiPlugins.cpp" />
-    <ClCompile Include="UIGridCtrl.cpp" />
-    <ClCompile Include="UIIconButton.cpp" />
-    <ClCompile Include="UIImageBox.cpp" />
-    <ClCompile Include="UIKeyBoardSimple.cpp" />
-    <ClCompile Include="UIKeyBoardNumber.cpp" />
-    <ClCompile Include="UIKeyBoard.cpp" />
-    <ClCompile Include="UIMsgWnd.cpp" />
-    <ClCompile Include="UIPictureControl.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='xsDebug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='xsUnicodeDebug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='xsRelease|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='xsUnicodeRelease|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="UIAccordionPane.cpp" />
-    <ClCompile Include="UIDataExchange.cpp" />
-    <ClCompile Include="UIDateTimeEx.cpp" />
-    <ClCompile Include="UIImageBoxEx.cpp" />
-    <ClCompile Include="UIRollTextEx.cpp" />
-    <ClCompile Include="UISciEdit.cpp" />
+    <ClCompile Include="TinyXml2\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\3rd\scintilla\SciWnd.h" />
-    <ClInclude Include="LsStringConverter.h" />
-    <ClInclude Include="UIComboEditWnd.h" />
-    <ClInclude Include="UIComboEx.h" />
+    <ClInclude Include="DuiLib\UIAccordionPane.h" />
+    <ClInclude Include="DuiLib\UIComboEditWnd.h" />
+    <ClInclude Include="DuiLib\UIComboEx.h" />
+    <ClInclude Include="DuiLib\UIDataExchange.h" />
+    <ClInclude Include="DuiLib\UIDateTimeEx.h" />
+    <ClInclude Include="DuiLib\UIDateTimeExWnd.h" />
+    <ClInclude Include="DuiLib\UIGridCtrl.h" />
+    <ClInclude Include="DuiLib\UIIconButton.h" />
+    <ClInclude Include="DuiLib\UIImageBox.h" />
+    <ClInclude Include="DuiLib\UIImageBoxEx.h" />
+    <ClInclude Include="DuiLib\UIKeyBoard.h" />
+    <ClInclude Include="DuiLib\UIKeyBoardNumber.h" />
+    <ClInclude Include="DuiLib\UIKeyBoardSimple.h" />
+    <ClInclude Include="DuiLib\UIMsgWnd.h" />
+    <ClInclude Include="DuiLib\UIPictureControl.h" />
+    <ClInclude Include="DuiLib\UIRollTextEx.h" />
+    <ClInclude Include="DuiLib\UISciEdit.h" />
+    <ClInclude Include="DuiPlugins.h" />
     <ClInclude Include="MFCGridCtrl\CellRange.h" />
     <ClInclude Include="MFCGridCtrl\CellType\GridCellCheck.h" />
     <ClInclude Include="MFCGridCtrl\CellType\GridCellCombo.h" />
@@ -269,25 +457,10 @@
     <ClInclude Include="MFCGridCtrl\GridMemDC.h" />
     <ClInclude Include="MFCGridCtrl\InPlaceEdit.h" />
     <ClInclude Include="MFCGridCtrl\TitleTip.h" />
-    <ClInclude Include="UIDateTimeExWnd.h" />
-    <ClInclude Include="UIGridCtrl.h" />
-    <ClInclude Include="UIIconButton.h" />
-    <ClInclude Include="UIImageBox.h" />
-    <ClInclude Include="Include\DuiPlugins.h" />
-    <ClInclude Include="UIKeyBoardSimple.h" />
-    <ClInclude Include="UIKeyBoardNumber.h" />
-    <ClInclude Include="UIKeyBoard.h" />
-    <ClInclude Include="UIMsgWnd.h" />
-    <ClInclude Include="UIPictureControl.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="UIAccordionPane.h" />
-    <ClInclude Include="UIDataExchange.h" />
-    <ClInclude Include="UIDateTimeEx.h" />
-    <ClInclude Include="UIImageBoxEx.h" />
-    <ClInclude Include="UIRollTextEx.h" />
-    <ClInclude Include="UISciEdit.h" />
+    <ClInclude Include="TinyXml2\tinyxml2.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DuiPlugins.rc" />

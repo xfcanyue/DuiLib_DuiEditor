@@ -62,6 +62,7 @@ CDuiEditorApp::CDuiEditorApp()
 
 	m_bHiColorIcons = TRUE;
 
+	m_bIsDDEOpen = FALSE;
 	// 支持重新启动管理器
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_ALL_ASPECTS;
 #ifdef _MANAGED
@@ -172,18 +173,8 @@ BOOL CDuiEditorApp::InitInstance()
 #endif
 	if(m_hModuleScript)
 	{
-// 		m_funCreateScriptEngine = (CREATE_SCRIPT_ENGINE_INSTANCE)::GetProcAddress(m_hModuleScript, "CreateScriptEngine");
-// 		m_funDeleteScriptEngine = (DELETE_SCRIPT_ENGINE_INSTANCE)::GetProcAddress(m_hModuleScript, "DeleteScriptEngine");
-// 		if(m_funCreateScriptEngine)
-// 		{
-// 			g_pScriptEngine = (*m_funCreateScriptEngine)();
-// 		}
 		m_funCreateScriptHelper = (CREATE_SCRIPT_HELPER)::GetProcAddress(m_hModuleScript, "CreateScriptHelper");
 		m_funDeleteScriptHelper = (DELETE_SCRIPT_HELPER)::GetProcAddress(m_hModuleScript, "DeleteScriptHelper");
-// 		if(m_funCreateScriptHelper)
-// 		{
-// 			ScriptHelper = (*m_funCreateScriptHelper)();
-// 		}
 	}
 
 	//工厂模式注册扩展控件
@@ -194,7 +185,7 @@ BOOL CDuiEditorApp::InitInstance()
 
 #endif //#ifndef DUILIB_VERSION_ORIGINAL
 
-
+	
 	// 注册应用程序的文档模板。文档模板
 	// 将用作文档、框架窗口和视图之间的连接
 	CMultiDocTemplate* pDocTemplate;
@@ -232,38 +223,21 @@ BOOL CDuiEditorApp::InitInstance()
 	CCommandLineInfo cmdInfo;
 	ParseCommandLine(cmdInfo);
 
-	cmdInfo.m_nShellCommand =  CCommandLineInfo::FileNothing;
-	//不知道为什么，这里打开多个文件，mditabs不会刷新 -_-!
-// 	if(ProcessSessionFileList())
-// 	{
-// 		cmdInfo.m_nShellCommand =  CCommandLineInfo::FileNothing;
-// 	}
-// 	else
-// 	{
-// 		if(cmdInfo.m_strFileName.GetLength()==0) 
-// 		{ 
-// 			if(m_pRecentFileList->m_nSize>0  
-// 				&& m_pRecentFileList->m_arrNames[0].IsEmpty()==FALSE) 
-// 			{ 
-// 				//检查文件是否存在
-// 				CFileFind find;
-// 				if(find.FindFile(m_pRecentFileList->m_arrNames[0]))
-// 				{
-// 					cmdInfo.m_strFileName = m_pRecentFileList->m_arrNames[0]; 
-// 					cmdInfo.m_nShellCommand = CCommandLineInfo::FileOpen; 
-// 				}
-// 				else
-// 					cmdInfo.m_nShellCommand =  CCommandLineInfo::FileNothing;
-// 			} 
-// 			else 
-// 				cmdInfo.m_nShellCommand =  CCommandLineInfo::FileNothing; 
-// 		} 
-// 	}
+	if(cmdInfo.m_nShellCommand == CCommandLineInfo::FileOpen || cmdInfo.m_nShellCommand == CCommandLineInfo::FileNew)
+		cmdInfo.m_nShellCommand =  CCommandLineInfo::FileNothing;
+
+	//不知道为什么，这里打开多个文件，mdi tabs不会刷新 -_-!
 
 	// 启用“DDE 执行”
 	EnableShellOpen();
 	RegisterShellFileTypes(TRUE);
 
+	if(cmdInfo.m_nShellCommand == CCommandLineInfo::FileDDE)
+	{
+		m_bIsDDEOpen = TRUE;
+		//AfxMessageBox(_T("cmdInfo.m_nShellCommand == CCommandLineInfo::FileDDE"));
+		//AfxMessageBox(GetCommandLine());
+	}
 
 	// 调度在命令行中指定的命令。如果
 	// 用 /RegServer、/Register、/Unregserver 或 /Unregister 启动应用程序，则返回 FALSE。
@@ -294,8 +268,13 @@ int CDuiEditorApp::ExitInstance()
 
 BOOL CDuiEditorApp::ProcessSessionFileList()
 {
+//	if(m_bIsDDEOpen) return TRUE;
 	xml_node nodeSession = g_cfg.Session();
-	if(!nodeSession.child("File")) return FALSE;
+	if(!nodeSession.child("File")) 
+	{
+		//AfxMessageBox(_T("if(!nodeSession.child(\"File\"))"));
+		return FALSE;
+	}
 
 	BOOL bMoveNext = TRUE;
 	xml_node node=nodeSession.child("File");

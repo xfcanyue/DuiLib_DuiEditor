@@ -541,7 +541,26 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 		break;
 	case SCN_CHARADDED:	//ÊäÈë×Ö·û
 		{
-			if(pMsg->ch == '<' || pMsg->ch == '/')
+			//while input char is enter, auto indentation
+			int lineEndings = sci.sci_GetEolMode();
+			if((lineEndings==SC_EOL_CRLF && pMsg->ch=='\n') || (lineEndings==SC_EOL_LF  && pMsg->ch=='\n') || (lineEndings==SC_EOL_CR  && pMsg->ch=='\r'))
+			{	
+				int tabWidth = sci.sci_GetTabWidth();
+				int pos = sci.sci_GetCurrentPos();
+				int line = sci.sci_LineFromPosition(pos);	
+				int lineIndent = sci.sci_GetLineIndentation(line-1);
+				int tabcount = lineIndent / tabWidth;
+				if(line > 1)
+				{
+					for (int i=0; i<tabcount; i++)
+					{
+						pos = sci.sci_GetCurrentPos();
+						sci.sci_InsertText(pos, "\t");
+						sci.sci_GoToPos(pos+1);
+					}
+				}
+			}
+			else if(pMsg->ch == '<' || pMsg->ch == '/')
 			{
 				AutoCompleteNode(_T(""));
 			}

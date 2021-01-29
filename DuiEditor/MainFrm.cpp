@@ -280,7 +280,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	CThreadPipe::CreatePipe();
 
-	SetTimer(2, 1, NULL);
+	SetTimer(2, 200, NULL);
 	return 0;
 }
 
