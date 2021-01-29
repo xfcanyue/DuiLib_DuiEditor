@@ -19,6 +19,7 @@ IMPLEMENT_DYNCREATE(CDuiEditorViewCode, CView)
 
 CDuiEditorViewCode::CDuiEditorViewCode()
 {
+	m_bFirstLoading = TRUE;
 	m_pUIManager = NULL;
 	m_nTargetLine = -1;
 	m_bAutoUpdateDesign = TRUE;
@@ -122,16 +123,14 @@ void CDuiEditorViewCode::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
 
-	// TODO: 在此添加专用代码和/或调用基类
 	//初始化打开的文档，不应该从xml中载入，因为手写的xml并不标准，容易产生定位错误。
-	CDuiEditorDoc *pDoc = (CDuiEditorDoc *)GetDocument();
-	CString xmlfile = pDoc->m_strLoadFileName;//pDoc->GetSkinPath() + pDoc->GetSkinFileName();
+	CString xmlfile = GetUIManager()->GetDocument()->m_strSessionFile;
 
 	if(xmlfile.IsEmpty()) //应该是新建的文档
 	{
 		m_bAutoUpdateDesign = FALSE;
 		xml_writer_string w;
-		pDoc->m_doc.print(w);
+		GetUIManager()->GetDocument()->m_doc.print(w);
 		sci.sci_SetText(w.strText.c_str());
 		m_bAutoUpdateDesign = TRUE;
 	}
@@ -155,15 +154,9 @@ void CDuiEditorViewCode::OnInitialUpdate()
 		m_bAutoUpdateDesign = TRUE;
 	}
 
-	
-	GetUIManager()->GetDocument()->SetModifiedFlag(FALSE);
-	sci.sci_SetSavePoint();
-	sci.sci_EmptyUndoBuffer(); //清理历史记录
-
-	if(GetUIManager()->GetDocument()->m_bLoadFileFromBackup)
-	{
-		GetUIManager()->GetDocument()->SetModifiedFlag(TRUE);
-	}
+// 	GetUIManager()->GetDocument()->SetModifiedFlag(FALSE);
+ 	sci.sci_SetSavePoint();
+ 	sci.sci_EmptyUndoBuffer(); //清理历史记录
 }
 
 void CDuiEditorViewCode::OnSize(UINT nType, int cx, int cy)
@@ -649,8 +642,13 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 		break;
 	case SCN_SAVEPOINTLEFT: //文件被修改
 		{			
-			//InsertMsg(_T("SCN_SAVEPOINTLEFT"));
-			GetUIManager()->GetDocument()->SetModifiedFlag(TRUE);
+			//第一次载入文件不做标记
+			if(m_bFirstLoading) 
+			{
+				m_bFirstLoading = FALSE;
+				sci.sci_SetSavePoint();
+			}
+			else GetUIManager()->GetDocument()->SetModifiedFlag(TRUE);
 		}
 		break;
 	case SCN_UPDATEUI:

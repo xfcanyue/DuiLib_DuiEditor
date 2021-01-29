@@ -73,21 +73,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\Exec\</OutDir>
-    <TargetName>$(ProjectName)d</TargetName>
+    <OutDir>..\bin\</OutDir>
+    <TargetName>DuiEditord</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\Exec\</OutDir>
+    <OutDir>..\bin\</OutDir>
     <TargetName>DuiEditord</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\Exec\</OutDir>
+    <OutDir>..\bin\</OutDir>
+    <TargetName>DuiEditor</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\Exec\</OutDir>
+    <OutDir>..\bin\</OutDir>
     <TargetName>DuiEditor</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -308,6 +309,7 @@
     <ClInclude Include="ScriptEditorDocTemplate.h" />
     <ClInclude Include="ScriptEditorView.h" />
     <ClInclude Include="ScriptLexer.h" />
+    <ClInclude Include="SessionList.h" />
     <ClInclude Include="StaticImageView.h" />
     <ClInclude Include="ThreadPipe.h" />
     <ClInclude Include="ThreadTest.h" />
@@ -379,6 +381,7 @@
     <ClCompile Include="ScriptEditorDocTemplate.cpp" />
     <ClCompile Include="ScriptEditorView.cpp" />
     <ClCompile Include="ScriptLexer.cpp" />
+    <ClCompile Include="SessionList.cpp" />
     <ClCompile Include="StaticImageView.cpp" />
     <ClCompile Include="ThreadPipe.cpp" />
     <ClCompile Include="ThreadTest.cpp" />

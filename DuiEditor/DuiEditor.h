@@ -17,6 +17,8 @@ extern CDuiProject g_proj;
 extern CString g_strAppPath;							//应用程序路径
 extern CDuiPropertyFile g_duiProp;
 
+#include "SessionList.h"
+
 //extern IScriptEngine *g_pScriptEngine;
 //extern IScriptHelper *ScriptHelper;
 
@@ -139,8 +141,6 @@ public:
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
 
-	BOOL ProcessSessionFileList();
-	void OpenSessionFile(LPCTSTR lpszFileName);
 	CDocTemplate *GetUIDocTemplate();
 	CDocTemplate *GetScriptDocTemplate();
 // 实现

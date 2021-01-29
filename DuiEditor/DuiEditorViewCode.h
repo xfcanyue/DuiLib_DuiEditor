@@ -33,6 +33,7 @@ public:
 
 public:
 	CSciWnd *GetSciWnd() { return &sci; }
+	BOOL m_bFirstLoading;
 	xml_parse_result *GetParseResult() { return &m_xmlParseResult; }
 	CUIManager *GetUIManager() const { return m_pUIManager; }
 	void SetUIManager(CUIManager *pManager) { m_pUIManager = pManager; }

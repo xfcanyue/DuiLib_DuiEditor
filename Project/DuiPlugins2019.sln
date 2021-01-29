@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DuiPlugins", "DuiPlugins\DuiPlugins2019.vcxproj", "{AEBE2742-393C-489D-962E-94B52CC02114}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DuiPlugins", "..\DuiPlugins\DuiPlugins2019.vcxproj", "{AEBE2742-393C-489D-962E-94B52CC02114}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

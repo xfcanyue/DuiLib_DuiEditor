@@ -179,7 +179,7 @@
       <Culture>0x0809</Culture>
     </ResourceCompile>
     <Link>
-      <OutputFile>../../../../../../Exec/CxImageud.dll</OutputFile>
+      <OutputFile>../../../../../bin/CxImageud.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\Unicode_Debug/cximagecrtdu.pdb</ProgramDatabaseFile>
@@ -222,7 +222,7 @@
       <Culture>0x0809</Culture>
     </ResourceCompile>
     <Link>
-      <OutputFile>../../../../../../Exec/CxImaged.dll</OutputFile>
+      <OutputFile>../../../../../bin/CxImaged.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\Debug/cximagecrtd.pdb</ProgramDatabaseFile>
@@ -265,7 +265,7 @@
       <Culture>0x0809</Culture>
     </ResourceCompile>
     <Link>
-      <OutputFile>../../../../../../Exec/CxImage.dll</OutputFile>
+      <OutputFile>../../../../../bin/CxImage.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ProgramDatabaseFile>.\Release/cximagecrt.pdb</ProgramDatabaseFile>
       <ImportLibrary>
@@ -307,7 +307,7 @@
       <Culture>0x0809</Culture>
     </ResourceCompile>
     <Link>
-      <OutputFile>../../../../../../Exec/CxImageu.dll</OutputFile>
+      <OutputFile>../../../../../bin/CxImageu.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ProgramDatabaseFile>.\Unicode_Release/cximagecrtu.pdb</ProgramDatabaseFile>
       <ImportLibrary>
@@ -349,7 +349,7 @@
       <Culture>0x0809</Culture>
     </ResourceCompile>
     <Link>
-      <OutputFile>../../../../../../Exec/CxImageu64d.dll</OutputFile>
+      <OutputFile>../../../../../bin/CxImageu64d.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\Unicode_Debug/cximagecrtdu.pdb</ProgramDatabaseFile>
@@ -392,7 +392,7 @@
       <Culture>0x0809</Culture>
     </ResourceCompile>
     <Link>
-      <OutputFile>../../../../../../Exec/CxImage64d.dll</OutputFile>
+      <OutputFile>../../../../../bin/CxImage64d.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\Debug/cximagecrtd.pdb</ProgramDatabaseFile>
@@ -435,7 +435,7 @@
       <Culture>0x0809</Culture>
     </ResourceCompile>
     <Link>
-      <OutputFile>../../../../../../Exec/CxImage64.dll</OutputFile>
+      <OutputFile>../../../../../bin/CxImage64.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ProgramDatabaseFile>.\Release/cximagecrt.pdb</ProgramDatabaseFile>
       <ImportLibrary>
@@ -477,7 +477,7 @@
       <Culture>0x0809</Culture>
     </ResourceCompile>
     <Link>
-      <OutputFile>../../../../../../Exec/CxImageu64.dll</OutputFile>
+      <OutputFile>../../../../../bin/CxImageu64.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ProgramDatabaseFile>.\Unicode_Release/cximagecrtu.pdb</ProgramDatabaseFile>
       <ImportLibrary>

@@ -555,7 +555,7 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 	if(nIDEvent == 2)
 	{
 		KillTimer(nIDEvent);
-		((CDuiEditorApp *)AfxGetApp())->ProcessSessionFileList();
+		g_session.ProcessSessionFileList();
 	}
 
 	CMDIFrameWndEx::OnTimer(nIDEvent);

@@ -17,11 +17,7 @@ public:
 	BOOL m_bMenuWnd;
 
 	CString m_strMyTitle;
-	xml_node m_fileSession;
-	CString m_strBackupFileName;
-
-	BOOL m_bLoadFileFromBackup;
-	CString m_strLoadFileName;
+	CString m_strSessionFile;
 public:
 	CUIManager *GetUIManager() const { return m_pUIManager; }
 	void SetUIManager(CUIManager *pManager) { m_pUIManager = pManager; }
@@ -41,7 +37,6 @@ public:
 	void LoadLangPackage(LPCTSTR lpszPathName);
 	void SaveLangPackage(LPCTSTR lpszPathName);
 
-	xml_node GetFileSession();
 // ÖØÐ´
 public:
 	virtual BOOL OnNewDocument();

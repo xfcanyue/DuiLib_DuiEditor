@@ -13,8 +13,6 @@ IMPLEMENT_DYNCREATE(CScriptEditorDoc, CDocument)
 
 CScriptEditorDoc::CScriptEditorDoc()
 {
-	m_bHasSaveSession = FALSE;
-	m_bLoadFileFromBackup = FALSE;
 	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
 	m_pPropList = pMain->m_wndStack.CreateStackView();
 }
@@ -48,54 +46,6 @@ BOOL CScriptEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
 		return FALSE;
 
 	// TODO:  在此添加您专用的创建代码
-	CString filename = lpszPathName;
-
-	xml_node nodeSession = g_cfg.Session();
-	for (xml_node node = nodeSession.child("File"); node; node=node.next_sibling("File"))
-	{
-		if(CompareString(LSUTF82T(node.attribute("filename").as_string()), lpszPathName))
-		{
-			m_fileSession = node;
-		}
-	}
-	if(!m_fileSession)
-	{
-		m_fileSession = nodeSession.append_child("File");
-	}
-
-	//对比时间戳，判断是否载入备份文件
-	BOOL bModify = m_fileSession.attribute("ismodify").as_bool();
-	CString backup = LSUTF82T(m_fileSession.attribute("backup").as_string());
-	if(!backup.IsEmpty() && PathFileExists(backup))
-	{
-		CFileStatus sta1;
-		CFileStatus sta2;
-		if(CFile::GetStatus(lpszPathName, sta1, NULL) && CFile::GetStatus(backup, sta2, NULL) && bModify)
-		{
-			if(sta1.m_mtime > sta2.m_mtime)
-			{
-				CString temp;
-				temp.Format(_T("%s\r\n\r\n上次关闭软件没有保存文件，但是当前文件比备份新。 点\"是\"载入备份文件，点\"否\"载入当前文件。"), lpszPathName);
-				if(AfxMessageBox(temp, MB_OKCANCEL) != IDOK)
-				{
-					m_bLoadFileFromBackup = TRUE;
-					filename = backup;
-				}
-			}
-			else if(sta1.m_mtime < sta2.m_mtime)
-			{
-				CString temp;
-				temp.Format(_T("%s\r\n\r\n由于上次关闭软件没有保存文件，是否选择从备份载入？"), lpszPathName);
-				if(AfxMessageBox(temp, MB_OKCANCEL) == IDOK)
-				{
-					m_bLoadFileFromBackup = TRUE;
-					filename = backup;
-				}
-			}
-		}
-	}
-
-	m_strLoadFileName = filename;
 	return TRUE;
 }
 
@@ -186,27 +136,13 @@ void CScriptEditorDoc::InitFileView(CDocument *pDocCurrentClose)
 void CScriptEditorDoc::OnCloseDocument()
 {
 	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
-	if(pMain->IsClosingNow())
+	if(!pMain->IsClosingNow()) //正常关闭文件，不要保存session
 	{
-		if(m_fileSession && !m_bHasSaveSession)
-		{
-			CString filename = GetPathName();
-			if(filename.IsEmpty()) filename = m_strDefaultTitle;
-			m_fileSession.attribute_auto("filename").set_value(LST2UTF8(filename));
-			g_cfg.SaveConfig();
-			m_bHasSaveSession = TRUE;
-		}
-	}
-	else //正常关闭文件，不要保存session
-	{
-		if(m_fileSession)
-		{
-			g_cfg.Session().remove_child(m_fileSession);
-			g_cfg.SaveConfig();
-		}
+		g_session.DeleteSession(GetPathName());
 	}
 
 	CDocument::OnCloseDocument();
+	if(pMain->IsClosingNow()) return;
 
 	POSITION pos = ((CDuiEditorApp *)AfxGetApp())->GetFirstDocTemplatePosition();
 	while (pos != NULL)
@@ -252,12 +188,6 @@ void CScriptEditorDoc::SetModifiedFlag(BOOL bModified)
 			SetTitle(strTitle + " *");
 		else
 			SetTitle(strTitle);
-	}
-
-	if(m_fileSession.attribute("ismodify").as_bool() != (bModified==TRUE))
-	{
-		m_fileSession.attribute_auto("ismodify").set_value(bModified);
-		g_cfg.SaveConfig();
 	}
 
 	__super::SetModifiedFlag(bModified);

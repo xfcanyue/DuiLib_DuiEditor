@@ -72,20 +72,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\..\Exec\</OutDir>
+    <OutDir>..\..\bin\</OutDir>
+    <TargetName>DuiPreviewerd</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\..\Exec\</OutDir>
+    <OutDir>..\..\bin\</OutDir>
     <TargetName>DuiPreviewerd</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\..\Exec\</OutDir>
+    <OutDir>..\..\bin\</OutDir>
+    <TargetName>DuiPreviewer</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\..\Exec\</OutDir>
+    <OutDir>..\..\bin\</OutDir>
     <TargetName>DuiPreviewer</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

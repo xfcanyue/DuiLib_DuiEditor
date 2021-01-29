@@ -155,6 +155,7 @@ BOOL CDuiEditorApp::InitInstance()
 	}
 
 	g_cfg.LoadConfig(g_strAppPath + _T("DuiEditor.xml"));
+	g_session.Init();
 
 #ifndef DUILIB_VERSION_ORIGINAL
 
@@ -264,71 +265,6 @@ int CDuiEditorApp::ExitInstance()
 	AfxOleTerm(FALSE);
 	CleanState();
 	return CWinAppEx::ExitInstance();
-}
-
-BOOL CDuiEditorApp::ProcessSessionFileList()
-{
-//	if(m_bIsDDEOpen) return TRUE;
-	xml_node nodeSession = g_cfg.Session();
-	if(!nodeSession.child("File")) 
-	{
-		//AfxMessageBox(_T("if(!nodeSession.child(\"File\"))"));
-		return FALSE;
-	}
-
-	BOOL bMoveNext = TRUE;
-	xml_node node=nodeSession.child("File");
-	while (node)
-	{
-		CString filename = LSUTF82T(node.attribute("filename").as_string());
-		if(PathFileExists(filename))
-		{		
-			CDocTemplate* pTemplate;
-			POSITION pos = m_pDocManager->GetFirstDocTemplatePosition();
-			while(pos != NULL)
-			{
-				pTemplate = m_pDocManager->GetNextDocTemplate(pos);
-				CDocument *pDocument = NULL;
-				CDocTemplate::Confidence match = pTemplate->MatchDocType(filename, pDocument);
-				if(match == CDocTemplate::yesAlreadyOpen) 
-				{
-					//不知道为什么重复了，删除这个节点
-					xml_node nodeTemp = node.next_sibling("File");
-					nodeSession.remove_child(node);
-					bMoveNext = FALSE;
-					node = nodeTemp;
-					g_cfg.SaveConfig();
-					break;
-				}
-				if(match == CDocTemplate::yesAttemptNative)
-				{
-					pTemplate->OpenDocumentFile(filename, TRUE, TRUE);
-					break;
-				}
-			}
-		}
-		else
-		{
-			//文件不存在，删除这个节点
-			xml_node nodeTemp = node.next_sibling("File");
-			nodeSession.remove_child(node);
-			bMoveNext = FALSE;
-			node = nodeTemp;
-			g_cfg.SaveConfig();
-		}
-
-		if(bMoveNext)
-			node=node.next_sibling("File");
-		bMoveNext = TRUE;
-	}
-
-
-	return TRUE;
-}
-
-void CDuiEditorApp::OpenSessionFile(LPCTSTR lpszFileName)
-{
-	OpenDocumentFile(lpszFileName);
 }
 
 CDocTemplate *CDuiEditorApp::GetUIDocTemplate()

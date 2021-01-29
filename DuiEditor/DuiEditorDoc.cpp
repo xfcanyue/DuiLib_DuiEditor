@@ -60,7 +60,6 @@ CDuiEditorDoc::CDuiEditorDoc()
 {
 	// TODO: 在此添加一次性构造代码
 	m_bMenuWnd = FALSE;
-	m_bLoadFileFromBackup = FALSE;
 
 	CUIManager *pManager = new CUIManager;
 	SetUIManager(pManager);
@@ -201,72 +200,17 @@ void CDuiEditorDoc::InitFileView(CDocument *pDocCurrentClose)
 	}
 }
 
-xml_node CDuiEditorDoc::GetFileSession()
-{
-	if(GetPathName().IsEmpty()) return xml_node();
-	if(m_fileSession) return m_fileSession;
-
-	xml_node nodeSession = g_cfg.Session();
-	for (xml_node node = nodeSession.child("File"); node; node=node.next_sibling("File"))
-	{
-		if(CompareString(LSUTF82T(node.attribute("filename").as_string()), GetPathName()))
-		{
-			m_fileSession = node;
-			break;
-		}
-	}
-
-	m_fileSession = nodeSession.append_child("File");
-	return m_fileSession;
-}
-
 BOOL CDuiEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
 {
-	if (!CDocument::OnOpenDocument(lpszPathName))
-		return FALSE;
+	//if (!CDocument::OnOpenDocument(lpszPathName))
+	//	return FALSE;
 
 	//AfxMessageBox(_T("BOOL CDuiEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)"));
 
 	// TODO:  在此添加您专用的创建代码
-	CString filename = lpszPathName;
+	m_strSessionFile = g_session.GetSessionFile(lpszPathName);
 
-	xml_node fileSession = GetFileSession();
-
-	//对比时间戳，判断是否载入备份文件
-	BOOL bModify = fileSession.attribute("ismodify").as_bool();
-	CString backup = LSUTF82T(fileSession.attribute("backup").as_string());
-	if(!backup.IsEmpty() && PathFileExists(backup))
-	{
-		CFileStatus sta1;
-		CFileStatus sta2;
-		if(CFile::GetStatus(lpszPathName, sta1, NULL) && CFile::GetStatus(backup, sta2, NULL) && bModify)
-		{
-			if(sta1.m_mtime > sta2.m_mtime)
-			{
-				CString temp;
-				temp.Format(_T("%s\r\n\r\n上次关闭软件没有保存文件，但是当前文件比备份新。 点\"是\"载入备份文件，点\"否\"载入当前文件。"), lpszPathName);
-				if(AfxMessageBox(temp, MB_OKCANCEL) != IDOK)
-				{
-					m_bLoadFileFromBackup = TRUE;
-					filename = backup;
-				}
-			}
-			else if(sta1.m_mtime < sta2.m_mtime)
-			{
-				CString temp;
-				temp.Format(_T("%s\r\n\r\n由于上次关闭软件没有保存文件，是否选择从备份载入？"), lpszPathName);
-				if(AfxMessageBox(temp, MB_OKCANCEL) == IDOK)
-				{
-					m_bLoadFileFromBackup = TRUE;
-					filename = backup;
-				}
-			}
-		}
-	}
-
-	m_strLoadFileName = filename;
-
-	xml_parse_result ret = m_doc.load_file(filename, XML_PARSER_OPTIONS);
+	xml_parse_result ret = m_doc.load_file(m_strSessionFile, XML_PARSER_OPTIONS);
 	if(ret.status != pugi::status_ok)
 	{
 		LSSTRING_CONVERSION;
@@ -285,12 +229,9 @@ BOOL CDuiEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
 			m_bMenuWnd = TRUE;
 		}
 	}
-	LoadLangPackage(filename);
+	LoadLangPackage(lpszPathName);
 
-	//每次打开文件，总是创建新的备份文件
-	fileSession.attribute("backup").set_value("");
-
-	if(m_bLoadFileFromBackup)
+	if(m_strSessionFile != lpszPathName)
 	{
 		SetModifiedFlag(TRUE);
 	}
@@ -403,27 +344,11 @@ void CDuiEditorDoc::SaveLangPackage(LPCTSTR lpszPathName)
 
 void CDuiEditorDoc::OnCloseDocument()
 {
-	xml_node fileSession = GetFileSession();
  	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
-	if(pMain->IsClosingNow())
+	if(!pMain->IsClosingNow()) //正常关闭文件，不要保存session
 	{
-		if(fileSession)
-		{
-			CString filename = GetPathName();
-			if(filename.IsEmpty()) filename = m_strDefaultTitle;
-			fileSession.attribute_auto("filename").set_value(LST2UTF8(filename));
-			g_cfg.SaveConfig();
-		}
+		g_session.DeleteSession(GetPathName());
 	}
-	else //正常关闭文件，不要保存session
-	{
-		if(fileSession)
-		{
-			g_cfg.Session().remove_child(fileSession);
-			g_cfg.SaveConfig();
-		}
-	}
-	
 
 	CDocument::OnCloseDocument();
 	if(pMain->IsClosingNow()) return;
@@ -472,60 +397,21 @@ void CDuiEditorDoc::SetModifiedFlag(BOOL bModified)
 			SetTitle(m_strMyTitle);
 	}
 
-	if(bModified)
+	if(IsModified())
 	{
 		SaveBackupFile();
-	}
-
-	xml_node fileSession;
-	if(fileSession.attribute("ismodify").as_bool() != (bModified==TRUE))
-	{
-		fileSession.attribute_auto("ismodify").set_value(bModified);
-		g_cfg.SaveConfig();
 	}
 	__super::SetModifiedFlag(bModified);
 }
 
 void CDuiEditorDoc::SaveBackupFile()
 {
-	xml_node fileSession = GetFileSession();
-	if(!fileSession) return;
-
-	CString filename = GetPathName();
-	if(filename.IsEmpty()) return; //没有保存过的文件，不要备份
-	fileSession.attribute_auto("filename").set_value(LST2UTF8(filename));
-
-	xml_attribute attrBackup = fileSession.attribute_auto("backup");
-	CString backupfile = LSUTF82T(attrBackup.as_string());
-	if(backupfile.IsEmpty())
+	//没有保存过的文件，不要备份
+	CString backupfile = g_session.GetSessionBackup(GetPathName());
+	if(!backupfile.IsEmpty())
 	{
-		// always capture the complete file name including extension (if present)
-		LPCTSTR lpszPathName = (LPCTSTR)filename;
-		LPTSTR lpszTemp = (LPTSTR)lpszPathName;
-		for (LPCTSTR lpsz = lpszPathName; *lpsz != '\0'; lpsz = _tcsinc(lpsz))
-		{
-			// remember last directory/drive separator
-			if (*lpsz == '\\' || *lpsz == '/' || *lpsz == ':')
-				lpszTemp = (LPTSTR)_tcsinc(lpsz);
-		}
-		CString fileTitle = lpszTemp;
-
-		SYSTEMTIME st;
-		GetLocalTime(&st);
-		CString file;
-		file.Format(_T("%s %04d-%02d-%02d %02d.%02d.%02d.%d.xml"), fileTitle, 
-			st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
-		backupfile = g_strAppPath + _T("DuiBackup\\");
-		CreateDirectory(backupfile,NULL);
-		backupfile += file;
-
-		attrBackup.set_value(LST2UTF8(backupfile));
-		m_strBackupFileName = backupfile;
-		g_cfg.SaveConfig();
+		GetUIManager()->GetCodeView()->GetSciWnd()->SaveFile(backupfile);
 	}
-
-	GetUIManager()->GetCodeView()->GetSciWnd()->SaveFile(backupfile);
-	//m_doc.save_file(backupfile, PUGIXML_TEXT("\t"), format_default, encoding_utf8);
 }
 
 BOOL CDuiEditorDoc::IsModified()

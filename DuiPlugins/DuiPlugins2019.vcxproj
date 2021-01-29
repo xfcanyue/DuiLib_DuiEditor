@@ -176,7 +176,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>.\DuiPlugins.def</ModuleDefinitionFile>
-      <OutputFile>../../Exec/DuiPlugins_d.dll</OutputFile>
+      <OutputFile>../../bin/DuiPlugins_d.dll</OutputFile>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -222,7 +222,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>.\DuiPlugins.def</ModuleDefinitionFile>
-      <OutputFile>../../Exec/DuiPlugins_d.dll</OutputFile>
+      <OutputFile>../bin/DuiPlugins_d.dll</OutputFile>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -273,7 +273,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>.\DuiPlugins.def</ModuleDefinitionFile>
-      <OutputFile>../../Exec/DuiPlugins.dll</OutputFile>
+      <OutputFile>../../bin/DuiPlugins.dll</OutputFile>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -368,7 +368,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">
     <Link>
-      <OutputFile>../../Exec/DuiPlugins_u.dll</OutputFile>
+      <OutputFile>../bin/DuiPlugins_u.dll</OutputFile>
     </Link>
     <ClCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;UILIB_PLUGIN_API_EXPORTS;DLL_SCIWND_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>

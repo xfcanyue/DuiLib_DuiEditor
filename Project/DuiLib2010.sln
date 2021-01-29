@@ -1,8 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30907.101
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DuiLib", "DuiLib\DuiLib2019.vcxproj", "{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DuiLib", "..\DuiLib\DuiLib.vcxproj", "{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,6 +9,10 @@ Global
 		Release|Win32 = Release|Win32
 		UnicodeDebug|Win32 = UnicodeDebug|Win32
 		UnicodeRelease|Win32 = UnicodeRelease|Win32
+		xsDebug|Win32 = xsDebug|Win32
+		xsRelease|Win32 = xsRelease|Win32
+		xsUnicodeDebug|Win32 = xsUnicodeDebug|Win32
+		xsUnicodeRelease|Win32 = xsUnicodeRelease|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -20,6 +23,14 @@ Global
 		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.UnicodeDebug|Win32.Build.0 = UnicodeDebug|Win32
 		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.UnicodeRelease|Win32.ActiveCfg = UnicodeRelease|Win32
 		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.UnicodeRelease|Win32.Build.0 = UnicodeRelease|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsDebug|Win32.ActiveCfg = xsDebug|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsDebug|Win32.Build.0 = xsDebug|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsRelease|Win32.ActiveCfg = xsRelease|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsRelease|Win32.Build.0 = xsRelease|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsUnicodeDebug|Win32.ActiveCfg = xsUnicodeDebug|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsUnicodeDebug|Win32.Build.0 = xsUnicodeDebug|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsUnicodeRelease|Win32.ActiveCfg = xsUnicodeRelease|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsUnicodeRelease|Win32.Build.0 = xsUnicodeRelease|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

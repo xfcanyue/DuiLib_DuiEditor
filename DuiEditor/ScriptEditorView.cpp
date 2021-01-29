@@ -523,12 +523,15 @@ void CScriptEditorView::OnInitialUpdate()
 
 	// TODO: 在此添加专用代码和/或调用基类
 	m_bFirstLoad = TRUE;
-	sci.LoadFile(GetDocument()->m_strLoadFileName);
+
+	CString filename = g_session.GetSessionFile(GetDocument()->GetPathName());
+
+	sci.LoadFile(filename);
 	sci.sci_GetTextAll(m_strTextCode);
 	m_lexer.ParseToken(m_strTextCode, m_strTextCode.GetLength());
 	sci.sci_SetSavePoint();
 
-	if(GetDocument()->m_bLoadFileFromBackup)
+	if(filename != GetDocument()->GetPathName())
 	{
 		GetDocument()->SetModifiedFlag(TRUE);
 	}
@@ -629,38 +632,9 @@ BOOL CScriptEditorView::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
 			//保存备份文件
 			if((pMsg->modificationType & SC_MOD_INSERTTEXT) || (pMsg->modificationType & SC_MOD_DELETETEXT))
 			{
-				CString filename = GetDocument()->GetPathName();
-				if(!filename.IsEmpty())
-				{
-					GetDocument()->m_fileSession.attribute_auto("filename").set_value(LST2UTF8(filename));
-
-					xml_attribute attrBackup = GetDocument()->m_fileSession.attribute_auto("backup");
-					CString backupfile = LSUTF82T(attrBackup.as_string());
-					if(backupfile.IsEmpty())
-					{
-						// always capture the complete file name including extension (if present)
-						LPCTSTR lpszPathName = (LPCTSTR)filename;
-						LPTSTR lpszTemp = (LPTSTR)lpszPathName;
-						for (LPCTSTR lpsz = lpszPathName; *lpsz != '\0'; lpsz = _tcsinc(lpsz))
-						{
-							// remember last directory/drive separator
-							if (*lpsz == '\\' || *lpsz == '/' || *lpsz == ':')
-								lpszTemp = (LPTSTR)_tcsinc(lpsz);
-						}
-						CString fileTitle = lpszTemp;
-
-						SYSTEMTIME st;
-						GetLocalTime(&st);
-						CString file;
-						file.Format(_T("%s %04d-%02d-%02d %02d.%02d.%02d.%d.as"), fileTitle, 
-							st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
-						backupfile = g_strAppPath + _T("DuiBackup\\");
-						CreateDirectory(backupfile,NULL);
-						backupfile += file;
-
-						attrBackup.set_value(LST2UTF8(backupfile));
-						g_cfg.SaveConfig();
-					}
+				CString backupfile = g_session.GetSessionBackup(GetDocument()->GetPathName());
+				if(!backupfile.IsEmpty())
+				{					
 					sci.SaveFile(backupfile);
 				}		
 			}

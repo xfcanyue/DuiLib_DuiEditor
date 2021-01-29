@@ -11,14 +11,7 @@ public:
 	virtual ~CScriptEditorDoc();
 
 	CMFCPropertyGridCtrl *m_pPropList;
-
 	CString m_strDefaultTitle;
-
-	xml_node m_fileSession;
-	BOOL m_bHasSaveSession;
-
-	BOOL m_bLoadFileFromBackup;
-	CString m_strLoadFileName;
 protected:
 	virtual BOOL OnNewDocument();
 

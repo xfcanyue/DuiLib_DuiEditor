@@ -149,7 +149,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <OutputFile>../../Exec/DuiScript_d.dll</OutputFile>
+      <OutputFile>../bin/DuiScript_d.dll</OutputFile>
       <ModuleDefinitionFile>DuiScript.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
@@ -180,7 +180,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <OutputFile>../../Exec/DuiScript_ud.dll</OutputFile>
+      <OutputFile>../bin/DuiScript_ud.dll</OutputFile>
       <ModuleDefinitionFile>DuiScript.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
@@ -215,7 +215,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <OutputFile>../../Exec/DuiScript.dll</OutputFile>
+      <OutputFile>../bin/DuiScript.dll</OutputFile>
       <ModuleDefinitionFile>DuiScript.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
@@ -234,7 +234,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <OutputFile>../../Exec/DuiScript_u.dll</OutputFile>
+      <OutputFile>../bin/DuiScript_u.dll</OutputFile>
       <ModuleDefinitionFile>DuiScript.def</ModuleDefinitionFile>
       <ShowProgress>NotSet</ShowProgress>
       <LinkStatus>false</LinkStatus>
