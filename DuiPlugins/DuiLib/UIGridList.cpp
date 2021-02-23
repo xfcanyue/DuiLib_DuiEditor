@@ -206,7 +206,7 @@ void CGridListUI::SetPos(RECT rc, bool bNeedInvalidate)
 		iPosX -= m_pHorizontalScrollBar->GetScrollPos();
 	}
 	
-	if(IsExpandColumnToFit())
+	if(IsExpandColumnToFit() && GetColumnCount() > 0)
 	{
 		int cxFixed = 0;
 		for (int i=0; i<GetColumnCount(); i++)
@@ -1965,6 +1965,8 @@ void CGridListUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 		DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
 		SetFixedCellBorderColor(clrColor);
 	}
+	//////////////////////////////////////////////////////////////////////////
+	else if( _tcsicmp(pstrName, _T("font")) == 0 ) { SetFont(_ttoi(pstrValue)); Invalidate(); }
 	//////////////////////////////////////////////////////////////////////////
 	else if( _tcsicmp(pstrName, _T("edit")) == 0 )
 	{

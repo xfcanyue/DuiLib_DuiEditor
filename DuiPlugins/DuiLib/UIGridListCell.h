@@ -45,12 +45,20 @@ public:
 
 	virtual int  GetText_to_int();
 	virtual void SetText(int n);
+	virtual void SetTextV(LPCTSTR lpszFormat, ...);
+#ifdef _AFX
+	virtual void  SetText(const COleDateTime &dt) { if(dt.GetStatus() == COleDateTime::valid) SetText(dt.Format(_T("%Y-%m-%d %H:%M:%S"))); }
+	virtual void  SetText(const COleCurrency &cy) { SetText(cy.Format()); }
+#endif
 
 	void SetTextStyle(UINT uStyle);
 	UINT GetTextStyle() const;
 
 	RECT GetTextPadding() const;
 	void SetTextPadding(RECT rc);
+
+	void SetFont(int index);
+	int GetFont() const;
 
 	void CreateInnerControl();
 	void DeleteInnerControl();

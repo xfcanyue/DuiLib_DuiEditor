@@ -248,6 +248,10 @@ public:
 	LPCTSTR GetStyleDate()							{ return m_sStyleDate; }
 	void SetStyleTime(LPCTSTR pstrValue)			{ m_sStyleTime = pstrValue; }
 	LPCTSTR GetStyleTime()							{ return m_sStyleTime; }
+
+	//////////////////////////////////////////////////////////////////////////
+	void SetFont(int index)							{ m_iFont = index; }
+	int GetFont() const								{ return m_iFont; }
 protected:
 	BOOL  m_bVirtualGrid;				//virtual grid
 
@@ -304,6 +308,8 @@ protected:
 	DWORD m_dwFixedCellSelectedTextColor;
 	int   m_nFixedCellSelectedFont;
 	DWORD m_dwFixedCellSelectedBorderColor;
+
+	int		m_iFont;
 
 	CDuiString m_sStyleEdit;
 	CDuiString m_sStyleCheckBox;

@@ -207,7 +207,6 @@ namespace DuiLib
 		int __cdecl Format(LPCTSTR pstrFormat, ...);
 		int __cdecl SmallFormat(LPCTSTR pstrFormat, ...);
 
-	protected:
 		int __cdecl InnerFormat(LPCTSTR pstrFormat, va_list Args);
 
 	protected:

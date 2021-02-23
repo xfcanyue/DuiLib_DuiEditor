@@ -226,6 +226,16 @@ void CGridListCellUI::SetText(int n)
 	__super::SetText(n);
 }
 
+void CGridListCellUI::SetTextV(LPCTSTR lpszFormat, ...)
+{
+	va_list argList;
+	va_start(argList, lpszFormat);
+	CDuiString s;
+	s.InnerFormat(lpszFormat, argList);
+	SetText(s);
+	va_end(argList);
+}
+
 void CGridListCellUI::SetTextStyle(UINT uStyle)
 {
 	m_uTextStyle = uStyle;
@@ -246,6 +256,17 @@ void CGridListCellUI::SetTextPadding(RECT rc)
 {
 	m_rcTextPadding = rc;
 	Invalidate();
+}
+
+void CGridListCellUI::SetFont(int index)
+{
+	m_iFont = index;
+	Invalidate();
+}
+
+int CGridListCellUI::GetFont() const
+{
+	return m_iFont;
 }
 
 void CGridListCellUI::CreateInnerControl()
@@ -770,22 +791,27 @@ void CGridListCellUI::PaintText(HDC hDC)
 		sText = GetText();
 	}
 	if( sText.IsEmpty() ) return;
+
+	int iFont = GetFont();
+	if(iFont < 0) iFont = GetOwner()->GetCellFont();
+	if(iFont < 0) iFont = GetOwner()->GetFont();
+
 	int nLinks = 0;
 	if( IsEnabled() ) {
 		if( m_bShowHtml )
 			CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, sText, m_dwTextColor, \
-			NULL, NULL, nLinks, m_iFont, m_uTextStyle);
+			NULL, NULL, nLinks, iFont, m_uTextStyle);
 		else
 			CRenderEngine::DrawText(hDC, m_pManager, rc, sText, m_dwTextColor, \
-			m_iFont, m_uTextStyle);
+			iFont, m_uTextStyle);
 	}
 	else {
 		if( m_bShowHtml )
 			CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, sText, m_dwDisabledTextColor, \
-			NULL, NULL, nLinks, m_iFont, m_uTextStyle);
+			NULL, NULL, nLinks, iFont, m_uTextStyle);
 		else
 			CRenderEngine::DrawText(hDC, m_pManager, rc, sText, m_dwDisabledTextColor, \
-			m_iFont, m_uTextStyle);
+			iFont, m_uTextStyle);
 	}
 }
 
@@ -923,6 +949,7 @@ void CGridListCellUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 		rcTextPadding.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);    
 		SetTextPadding(rcTextPadding);
 	}
+	else if( _tcsicmp(pstrName, _T("font")) == 0 ) SetFont(_ttoi(pstrValue));
 	else if( _tcsicmp(pstrName, _T("merge")) == 0 )
 	{
 		RECT rcRange;
