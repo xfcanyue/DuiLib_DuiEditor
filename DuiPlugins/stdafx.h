@@ -37,11 +37,27 @@
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
 //////////////////////////////////////////////////////////////////////////
-
+// #include "ExcelFile/ExcelFile.h"
+// #include "ExcelFile/ExcelFile.cpp"
+// #include "ExcelFile/ExcelApplication.h"
+// #include "ExcelFile/ExcelBook.h"
+// #include "ExcelFile/ExcelBooks.h"
+// #include "ExcelFile/ExcelSheet.h"
+// #include "ExcelFile/ExcelSheets.h"
+// #include "ExcelFile/ExcelRange.h"
+// #include "ExcelFile/ExcelRangeEx.h"
+// #include "ExcelFile/ExcelRangeEx.cpp"
 //#define UILIB_PLUGIN_API __declspec(dllexport)
 
 #include "../Duilib/Duilib.h"
 #include "Include/DuiPlugins.h"
+
+#ifdef _UNICODE
+	#define PUGIXML_WCHAR_MODE
+#endif
+#define PUGIXML_HEADER_ONLY
+#include "pugixml/pugixml.hpp"
+using namespace pugi;
 
 #ifdef UILIB_STATIC
 #define CXIMAGE_STATIC

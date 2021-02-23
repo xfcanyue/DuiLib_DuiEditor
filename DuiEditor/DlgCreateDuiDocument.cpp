@@ -47,7 +47,7 @@ BOOL CDlgCreateDuiDocument::OnInitDialog()
 	CFileFind finder;
 	BOOL bFind;
 	CString FileName;
-	bFind = finder.FindFile(g_strAppPath + _T("DuiTemplate\\*.*"));
+	bFind = finder.FindFile(g_strAppPath + _T("template\\*.*"));
 	while(bFind)
 	{
 		bFind = finder.FindNextFile();
@@ -85,6 +85,6 @@ void CDlgCreateDuiDocument::OnSelchangeList1()
 		CString strFolder;
 		m_listBox.GetText(nSel, strFolder);
 
-		m_staPicture.SetPreviewImage(g_strAppPath + _T("DuiTemplate\\") + strFolder + _T("\\skin.jpg"));
+		m_staPicture.SetPreviewImage(g_strAppPath + _T("template\\") + strFolder + _T("\\skin.jpg"));
 	}
 }

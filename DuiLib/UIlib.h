@@ -122,6 +122,23 @@
 #include "Control/UIFadeButton.h"
 #include "Control/UIRing.h"
 
+#define UIARGB(a,r,g,b)  ((COLORREF)((((BYTE)(b)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(r))<<16))  |(((DWORD)(BYTE)(a))<<24))  )
+#define UIARGB_GetRValue(rgb)      (LOBYTE((rgb)>>16))
+#define UIARGB_GetGValue(rgb)      (LOBYTE(((WORD)(rgb)) >> 8))
+#define UIARGB_GetBValue(rgb)      (LOBYTE(rgb))
+
+#define UIRGB(r,g,b)	((COLORREF)((((BYTE)(b)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(r))<<16))  |(((DWORD)(BYTE)(255))<<24))  )
+#define UIARGB_2_RGB(argb)	(RGB(UIARGB_GetRValue(argb), UIARGB_GetGValue(argb), UIARGB_GetBValue(argb)))
+
+#include "Control/UIIconButton.h"
+#include "Control/UIDateTimeEx.h"
+#include "Control/UIAccordionPane.h"
+#include "Control/UIComboEx.h"
+#include "Control/UIImageBoxEx.h"
+#include "Control/UIRollTextEx.h"
+#include "Control/UIMsgWnd.h"
+//#include "Control/UIGridList.h"
+
 #include "Layout/UIChildWindow.h"
 
 #include "Utils/UIApplication.h"
@@ -130,13 +147,6 @@
 #include "Utils/UIForm.h"
 #include "Utils/UIDialog.h"
 
-#define UIARGB(a,r,g,b)  ((COLORREF)((((BYTE)(b)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(r))<<16))  |(((DWORD)(BYTE)(a))<<24))  )
-#define UIARGB_GetRValue(rgb)      (LOBYTE((rgb)>>16))
-#define UIARGB_GetGValue(rgb)      (LOBYTE(((WORD)(rgb)) >> 8))
-#define UIARGB_GetBValue(rgb)      (LOBYTE(rgb))
-
-#define UIRGB(r,g,b)	((COLORREF)((((BYTE)(b)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(r))<<16))  |(((DWORD)(BYTE)(255))<<24))  )
-#define UIARGB_2_RGB(argb)	(RGB(UIARGB_GetRValue(argb), UIARGB_GetGValue(argb), UIARGB_GetBValue(argb)))
 
 #pragma comment( lib, "comctl32.lib" )
 #pragma comment( lib, "GdiPlus.lib" )

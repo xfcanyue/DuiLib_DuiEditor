@@ -193,6 +193,7 @@ UINT CScriptHelper::ThreadFunDebug()
 			asIScriptFunction *func = ctx->GetExceptionFunction();
 			sprintf_s(MsgStr, "func: %s\r\nmodl: %s\r\nsect: %s\r\nline: %d\r\ndesc: %s", 
 				func->GetDeclaration(),
+				func->GetModuleName(),
 				func->GetScriptSectionName(),
 				ctx->GetExceptionLineNumber(),
 				ctx->GetExceptionString());

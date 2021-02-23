@@ -120,7 +120,6 @@ namespace DuiLib {
 		}
 		m_mText.clear();
 
-		m_mToolTip.clear();
 		for (std::map<int, CDuiString *>::iterator it=m_mToolTip.begin(); it!=m_mToolTip.end(); it++)
 		{
 			lpStr = it->second; delete lpStr;

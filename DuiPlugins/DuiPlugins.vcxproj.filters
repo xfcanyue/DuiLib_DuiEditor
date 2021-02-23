@@ -75,40 +75,13 @@
     <ClCompile Include="MFCGridCtrl\TitleTip.cpp">
       <Filter>源文件\MFCGridCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="TinyXml2\tinyxml2.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIAccordionPane.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
     <ClCompile Include="DuiLib\UISciEdit.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIComboEditWnd.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIComboEx.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIDataExchange.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIDateTimeEx.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIDateTimeExWnd.cpp">
       <Filter>源文件\DuiLib</Filter>
     </ClCompile>
     <ClCompile Include="DuiLib\UIGridCtrl.cpp">
       <Filter>源文件\DuiLib</Filter>
     </ClCompile>
-    <ClCompile Include="DuiLib\UIIconButton.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
     <ClCompile Include="DuiLib\UIImageBox.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIImageBoxEx.cpp">
       <Filter>源文件\DuiLib</Filter>
     </ClCompile>
     <ClCompile Include="DuiLib\UIKeyBoard.cpp">
@@ -120,17 +93,26 @@
     <ClCompile Include="DuiLib\UIKeyBoardSimple.cpp">
       <Filter>源文件\DuiLib</Filter>
     </ClCompile>
-    <ClCompile Include="DuiLib\UIMsgWnd.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
     <ClCompile Include="DuiLib\UIPictureControl.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIRollTextEx.cpp">
       <Filter>源文件\DuiLib</Filter>
     </ClCompile>
     <ClCompile Include="..\3rd\scintilla\SciWnd.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiLib\UIGridListRowUI.cpp">
+      <Filter>源文件\DuiLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiLib\UIGridList.cpp">
+      <Filter>源文件\DuiLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiLib\UIGridListCell.cpp">
+      <Filter>源文件\DuiLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiLib\UIGridListBody.cpp">
+      <Filter>源文件\DuiLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiLib\UIGridListHeader.cpp">
+      <Filter>源文件\DuiLib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -185,40 +167,13 @@
     <ClInclude Include="MFCGridCtrl\TitleTip.h">
       <Filter>头文件\MFCGridCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="TinyXml2\tinyxml2.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="DuiLib\UIAccordionPane.h">
-      <Filter>头文件\DuiLib</Filter>
-    </ClInclude>
     <ClInclude Include="DuiLib\UISciEdit.h">
-      <Filter>头文件\DuiLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DuiLib\UIComboEditWnd.h">
-      <Filter>头文件\DuiLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DuiLib\UIComboEx.h">
-      <Filter>头文件\DuiLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DuiLib\UIDataExchange.h">
-      <Filter>头文件\DuiLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DuiLib\UIDateTimeEx.h">
-      <Filter>头文件\DuiLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DuiLib\UIDateTimeExWnd.h">
       <Filter>头文件\DuiLib</Filter>
     </ClInclude>
     <ClInclude Include="DuiLib\UIGridCtrl.h">
       <Filter>头文件\DuiLib</Filter>
     </ClInclude>
-    <ClInclude Include="DuiLib\UIIconButton.h">
-      <Filter>头文件\DuiLib</Filter>
-    </ClInclude>
     <ClInclude Include="DuiLib\UIImageBox.h">
-      <Filter>头文件\DuiLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DuiLib\UIImageBoxEx.h">
       <Filter>头文件\DuiLib</Filter>
     </ClInclude>
     <ClInclude Include="DuiLib\UIKeyBoard.h">
@@ -230,16 +185,28 @@
     <ClInclude Include="DuiLib\UIKeyBoardSimple.h">
       <Filter>头文件\DuiLib</Filter>
     </ClInclude>
-    <ClInclude Include="DuiLib\UIMsgWnd.h">
-      <Filter>头文件\DuiLib</Filter>
-    </ClInclude>
     <ClInclude Include="DuiLib\UIPictureControl.h">
       <Filter>头文件\DuiLib</Filter>
     </ClInclude>
-    <ClInclude Include="DuiLib\UIRollTextEx.h">
+    <ClInclude Include="..\3rd\scintilla\SciWnd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DuiLib\UIGridListRowUI.h">
       <Filter>头文件\DuiLib</Filter>
     </ClInclude>
-    <ClInclude Include="..\3rd\scintilla\SciWnd.h">
+    <ClInclude Include="DuiLib\UIGridList.h">
+      <Filter>头文件\DuiLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DuiLib\UIGridListCell.h">
+      <Filter>头文件\DuiLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DuiLib\UIGridListBody.h">
+      <Filter>头文件\DuiLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DuiLib\UIGridListHeader.h">
+      <Filter>头文件\DuiLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DuiLib\IGridListUI.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

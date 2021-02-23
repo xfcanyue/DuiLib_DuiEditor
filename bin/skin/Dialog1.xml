@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window size="550,500" sizebox="4,4,6,6" caption="0,0,0,25" roundcorner="5,5">
+	<VerticalLayout width="569" height="461" inset="1,1,1,1" bkcolor="0xFF498DFD" bkcolor2="0xFFCFE7F4" bordercolor="0xFF768D9B" bordersize="1">
+		<HorizontalLayout name="dialog_header" height="25">
+			<HorizontalLayout childvalign="vcenter" padding="5,0,0,0">
+				<Control name="dialog_icon" width="20" height="20" foreimage="images\ico.jpg" />
+				<Label name="dialog_caption" text="弹出对话框" padding="5,0,0,0" />
+			</HorizontalLayout>
+			<HorizontalLayout width="97">
+				<FadeButton name="windowminbtn" width="26" height="17" normalimage="file='images\sys_dlg_min.png' source='52,0,78,17'" hotimage="file='images\sys_dlg_min.png' source='26,0,52,17'" pushedimage="file='images\sys_dlg_min.png' source='0,0,26,17'" />
+				<FadeButton name="windowmaxbtn" width="26" height="17" normalimage="file='images\sys_dlg_max.png' source='52,0,78,17'" hotimage="file='images\sys_dlg_max.png' source='26,0,52,18'" pushedimage="file='images\sys_dlg_max.png' source='0,0,26,17'" />
+				<FadeButton name="windowrestorebtn" width="26" height="17" normalimage="file='images\sys_dlg_restore.png' source='52,0,78,17'" hotimage="file='images\sys_dlg_restore.png' source='26,0,52,17'" pushedimage="file='images\sys_dlg_restore.png' source='0,0,26,17'" visible="false" />
+				<FadeButton name="windowclosebtn" width="45" height="17" normalimage="file='images\sys_dlg_close.png' source='90,0,135,17'" hotimage="file='images\sys_dlg_close.png' source='45,0,90,17'" pushedimage="file='images\sys_dlg_close.png' source='0,0,45,17'" />
+			</HorizontalLayout>
+		</HorizontalLayout>
+		<VerticalLayout name="dialog_body" inset="20,20,20,20" padding="5,0,5,0" bkcolor="0xFFFFFFFF" borderround="5,5">
+			<GroupBox text="这里使用的都是float控件，并且演示数据交换(DataExchange)" bkcolor="0xFFFFFFFF" bordercolor="0xFFC0C0C0" bordersize="1" inset="10,10,10,10">
+				<Label text="Edit" width="70" height="31" pos="35,37,105,68" float="true" />
+				<Label text="Combo 1" width="70" height="31" pos="35,75,105,106" float="true" />
+				<Label text="CheckBox" width="70" height="31" pos="35,157,105,188" float="true" />
+				<DateTimeEx name="datetime_1" width="217" height="36" datelabelstyle="align=&quot;center&quot; " timelabelstyle="align=&quot;center&quot; " pos="121,190,338,226" float="true" bordercolor="0xFFC0C0C0" bordersize="1" />
+				<CheckBox name="chk_1" width="16" height="16" pos="121,165,137,181" float="true" style="style_checkbox" />
+				<Label text="DateTimeEx" width="70" height="31" pos="35,193,105,224" float="true" />
+				<Edit name="edit_1" width="152" height="29" textpadding="5,0,5,0" pos="121,38,273,67" float="true" style="style_edit" />
+				<ComboEx name="combo_1" width="154" height="33" textpadding="5,0,5,0" pos="121,76,275,109" float="true" style="style_comboex">
+					<ListLabelElement text="Text0" />
+					<ListLabelElement text="Text1" />
+					<ListLabelElement text="Text2" />
+					<ListLabelElement text="Text3" />
+				</ComboEx>
+				<Label text="Combo 2" width="70" height="31" pos="35,117,105,148" float="true" />
+				<ComboEx name="combo_2" type="dropdown" width="154" height="33" textpadding="5,0,5,0" pos="121,118,275,151" float="true" style="style_comboex">
+					<ListLabelElement text="id 1" />
+					<ListLabelElement text="id 2" />
+					<ListLabelElement text="id 3" />
+					<ListLabelElement text="id 4" />
+					<ListLabelElement text="id 5" />
+				</ComboEx>
+				<Label text="Date" width="70" height="31" pos="35,237,105,268" float="true" />
+				<DateTime name="datetime_2" width="120" height="31" textpadding="5,0,5,0" pos="121,238,241,269" float="true" bordercolor="0xFFC0C0C0" bordersize="1" />
+				<Label text="Time" width="70" height="31" pos="35,278,105,309" float="true" />
+				<Label text="Money" width="70" height="31" pos="35,315,105,346" float="true" />
+				<RichEdit name="edit_money" width="121" height="31" valign="center" textpadding="5,0,5,0" pos="121,315,242,346" float="true" bordercolor="0xFFC0C0C0" bordersize="1" />
+				<DateTime name="datetime_3" width="121" height="31" formatstyle="time" textpadding="5,0,5,0" pos="121,278,242,309" float="true" bordercolor="0xFFC0C0C0" bordersize="1" />
+			</GroupBox>
+		</VerticalLayout>
+		<HorizontalLayout name="dialog_bottom" height="55" inset="10,0,10,0" childpadding="10" childalign="right" childvalign="vcenter">
+			<Button name="btn_ok" width="100" height="30" hotbkcolor="0xFFB8CFE9" pushedbkcolor="0xFFC9DDF6" text="确定" bkcolor="0xFF6EC673" bordercolor="0xFF707070" bordersize="1" borderround="5,5" cursor="hand" />
+			<Button name="btn_cancel" width="100" height="30" hotbkcolor="0xFFB8CFE9" pushedbkcolor="0xFFC9DDF6" text="取消" bkcolor="0xFF6EC673" bordercolor="0xFF707070" bordersize="1" borderround="5,5" cursor="hand" />
+		</HorizontalLayout>
+	</VerticalLayout>
+</Window>

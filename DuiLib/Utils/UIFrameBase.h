@@ -33,6 +33,7 @@ public:
 	virtual void OnNotifyTimer(TNotifyUI& msg) {}
 	virtual void OnNotifyReturn(TNotifyUI& msg) {}
 	virtual void OnNotifyScroll(TNotifyUI& msg) {}
+	virtual void OnNotifyPreDropDown(TNotifyUI& msg) {}
 	virtual void OnNotifyDropDown(TNotifyUI& msg) {}
 	virtual void OnNotifySetFocus(TNotifyUI& msg) {}
 	virtual void OnNotifyKillFocus(TNotifyUI& msg) {}
@@ -53,6 +54,11 @@ public:
 	virtual void OnNotifyItemActivate(TNotifyUI& msg) {}
 	virtual void OnNotifyValueChanged(TNotifyUI& msg) {}
 	virtual void OnNotifySelectChanged(TNotifyUI& msg) {}   
+
+	virtual void OnNotifyDrawItem(TNotifyUI& msg) {}
+	virtual void OnNotifySortItem(TNotifyUI& msg) {}
+	virtual void OnNotifyStartEdit(TNotifyUI& msg) {}
+	virtual void OnNotifyEndEdit(TNotifyUI& msg) {}
 
 	virtual void OnNotityGridStartEdit(TNotifyUI &msg) {}
 	virtual void OnNotityGridEndEdit(TNotifyUI &msg) {}

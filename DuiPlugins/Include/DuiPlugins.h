@@ -19,20 +19,20 @@
 #endif
 
 
-#include "../DuiLib/UIDataExchange.h"
+//#include "../DuiLib/UIDataExchange.h"
 
-#define DUI_CTR_COMBOEX						(_T("ComboEx"))
-#include "../DuiLib/UIComboEx.h"
+// #define DUI_CTR_COMBOEX						(_T("ComboEx"))
+// #include "../DuiLib/UIComboEx.h"
 
 #define DUI_CTR_GRIDCTRL					(_T("GridCtrl"))
 #include "../MFCGridCtrl/GridCtrl.h"
 #include "../DuiLib/UIGridCtrl.h"
 
-#define DUI_CTR_ICONBUTTON					(_T("IconButton"))
-#include "../DuiLib/UIIconButton.h"
+// #define DUI_CTR_ICONBUTTON					(_T("IconButton"))
+// #include "../DuiLib/UIIconButton.h"
 
-#define DUI_CTR_MSGWND						(_T("RichEdit"))
-#include "../DuiLib/UIMsgWnd.h"
+// #define DUI_CTR_MSGWND						(_T("RichEdit"))
+// #include "../DuiLib/UIMsgWnd.h"
 
 #include "../DuiLib/UIKeyBoard.h"
 #include "../DuiLib/UIKeyBoardNumber.h"
@@ -41,23 +41,30 @@
 #define DUI_CTR_PICTURECONTROL				(_T("PictureControl"))
 #include "../DuiLib/UIPictureControl.h"
 
-#define DUI_CTR_DATETIMEEX					(_T("DateTimeEx"))
-#include "../DuiLib/UIDateTimeEx.h"
+//#define DUI_CTR_DATETIMEEX					(_T("DateTimeEx"))
+//#include "../DuiLib/UIDateTimeEx.h"
 
-#define DUI_CTR_ACCORDIONPANE				(_T("AccordionPane"))	
-#include "../DuiLib/UIAccordionPane.h"
+// #define DUI_CTR_ACCORDIONPANE				(_T("AccordionPane"))	
+// #include "../DuiLib/UIAccordionPane.h"
 
 #define DUI_CTR_IMAGEBOX					(_T("ImageBox"))
 #include "../DuiLib/UIImageBox.h"
 
-#define DUI_CTR_IMAGEBOXEX					(_T("ImageBoxEx"))
-#include "../DuiLib/UIImageBoxEx.h"
+// #define DUI_CTR_IMAGEBOXEX					(_T("ImageBoxEx"))
+// #include "../DuiLib/UIImageBoxEx.h"
 
-#define DUI_CTR_ROLLTEXTEX					(_T("RollTextEx"))
-#include "../DuiLib/UIRollTextEx.h"
+// #define DUI_CTR_ROLLTEXTEX					(_T("RollTextEx"))
+// #include "../DuiLib/UIRollTextEx.h"
 
 #define DUI_CTR_SCIEDIT						(_T("SciEdit"))
 #include "../DuiLib/UISciEdit.h"
+
+#define DUI_CTR_GRIDLIST					(_T("GridList"))
+#define DUI_CTR_GRIDLISTHEADER				(_T("GridListHeader"))
+#define DUI_CTR_GRIDLISTBODY				(_T("GridListBody"))
+#define DUI_CTR_GRIDLISTROW					(_T("GridListRow"))
+#define DUI_CTR_GRIDLISTCELL				(_T("GridListCell"))
+#include "../DuiLib/UIGridList.h"
 
 //extern "C" 
 UILIB_PLUGIN_API void DuiPluginsRegister();

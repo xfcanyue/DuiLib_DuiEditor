@@ -77,6 +77,9 @@ namespace DuiLib
 		void Inflate(int cx, int cy);
 		void Deflate(int cx, int cy);
 		void Union(CDuiRect& rc);
+		BOOL IntersectRect(const RECT &rect1, const RECT &rect2);
+		POINT CenterPoint() const;
+		void AlignRect(const RECT &rc, UINT uAlign = DT_CENTER|DT_VCENTER);
 	};
 
 	/////////////////////////////////////////////////////////////////////////////////////

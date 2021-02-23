@@ -67,7 +67,8 @@
 	using namespace DuiLib;
 #endif
 
-
+#ifdef _UNICODE
 #define PUGIXML_WCHAR_MODE
+#endif
 #include "../pugixml/pugixml.hpp"
 	using namespace pugi;

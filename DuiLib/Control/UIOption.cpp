@@ -101,15 +101,15 @@ namespace DuiLib
 
 	bool COptionUI::Activate()
 	{
-		//if( !CButtonUI::Activate() ) return false;
 		if( !CControlUI::Activate() ) return false;
+		if( !m_sGroupName.IsEmpty() ) Selected(true);
+		else Selected(!m_bSelected);
+
 		if( m_pManager != NULL )
 		{
 			m_pManager->SendNotify(this, DUI_MSGTYPE_CLICK);
 			BindTriggerTabSel();
 		}
-		if( !m_sGroupName.IsEmpty() ) Selected(true);
-		else Selected(!m_bSelected);
 
 		SwitchControlVisible();
 		SwitchPaneVisible();

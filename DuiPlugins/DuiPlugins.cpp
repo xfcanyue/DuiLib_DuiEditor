@@ -76,19 +76,24 @@ BOOL CDuiPluginsApp::InitInstance()
 UILIB_PLUGIN_API void DuiPluginsRegister()
 {
 	REGIST_DUICONTROL(CGridCtrlUI);
-	REGIST_DUICONTROL(CMsgWndUI);
+//	REGIST_DUICONTROL(CMsgWndUI);
 	REGIST_DUICONTROL(CKeyBoardUI);
 	REGIST_DUICONTROL(CKeyBoardNumberUI);
 	REGIST_DUICONTROL(CKeyBoardSimpleUI);
 	REGIST_DUICONTROL(CImageBoxUI);
 	REGIST_DUICONTROL(CPictureControlUI);
-	REGIST_DUICONTROL(CComboExUI);
-	REGIST_DUICONTROL(CIconButtonUI);
-	REGIST_DUICONTROL(CDateTimeExUI);
-	REGIST_DUICONTROL(CAccordionPaneUI);
-	REGIST_DUICONTROL(CImageBoxExUI);
-	REGIST_DUICONTROL(CRollTextExUI);
+// 	REGIST_DUICONTROL(CComboExUI);
+// 	REGIST_DUICONTROL(CIconButtonUI);
+// 	REGIST_DUICONTROL(CDateTimeExUI);
+// 	REGIST_DUICONTROL(CAccordionPaneUI);
+// 	REGIST_DUICONTROL(CImageBoxExUI);
+// 	REGIST_DUICONTROL(CRollTextExUI);
 	REGIST_DUICONTROL(CSciEditUI);
+	REGIST_DUICONTROL(CGridListUI);
+	REGIST_DUICONTROL(CGridListHeaderUI);
+	REGIST_DUICONTROL(CGridListBodyUI);
+	REGIST_DUICONTROL(CGridListRowUI);
+	REGIST_DUICONTROL(CGridListCellUI);
 }
 
 
@@ -98,10 +103,10 @@ extern "C" UILIB_PLUGIN_API CControlUI *CreateControl(LPCTSTR pstrClass)
 	{
 		return new CGridCtrlUI;
 	}
-	else if( _tcscmp(pstrClass, _T("MsgWnd")) == 0 ) 
-	{
-		return new CMsgWndUI;
-	}
+// 	else if( _tcscmp(pstrClass, _T("MsgWnd")) == 0 ) 
+// 	{
+// 		return new CMsgWndUI;
+// 	}
 	else if( _tcscmp(pstrClass, _T("KeyBoard")) == 0 ) 
 	{
 		return new CKeyBoardUI;
@@ -126,29 +131,49 @@ extern "C" UILIB_PLUGIN_API CControlUI *CreateControl(LPCTSTR pstrClass)
 	{
 		return new CComboExUI;
 	}
-	else if( _tcscmp(pstrClass, _T("IconButton")) == 0 ) 
-	{
-		return new CIconButtonUI;
-	}
-	else if( _tcscmp(pstrClass, _T("DateTimeEx")) == 0 ) 
-	{
-		return new CDateTimeExUI;
-	}
-	else if( _tcscmp(pstrClass, _T("AccordionPane")) == 0 ) 
-	{
-		return new CAccordionPaneUI;
-	}
-	else if( _tcscmp(pstrClass, _T("ImageBoxEx")) == 0 ) 
-	{
-		return new CImageBoxExUI;
-	}
-	else if( _tcscmp(pstrClass, _T("RollTextEx")) == 0 ) 
-	{
-		return new CRollTextExUI;
-	}
+// 	else if( _tcscmp(pstrClass, _T("IconButton")) == 0 ) 
+// 	{
+// 		return new CIconButtonUI;
+// 	}
+// 	else if( _tcscmp(pstrClass, _T("DateTimeEx")) == 0 ) 
+// 	{
+// 		return new CDateTimeExUI;
+// 	}
+// 	else if( _tcscmp(pstrClass, _T("AccordionPane")) == 0 ) 
+// 	{
+// 		return new CAccordionPaneUI;
+// 	}
+// 	else if( _tcscmp(pstrClass, _T("ImageBoxEx")) == 0 ) 
+// 	{
+// 		return new CImageBoxExUI;
+// 	}
+// 	else if( _tcscmp(pstrClass, _T("RollTextEx")) == 0 ) 
+// 	{
+// 		return new CRollTextExUI;
+// 	}
 	else if( _tcscmp(pstrClass, _T("SciEdit")) == 0 ) 
 	{
 		return new CSciEditUI;
+	}
+	else if( _tcscmp(pstrClass, DUI_CTR_GRIDLIST) == 0 ) 
+	{
+		return new CGridListUI;
+	}
+	else if( _tcscmp(pstrClass, DUI_CTR_GRIDLISTHEADER) == 0 ) 
+	{
+		return new CGridListHeaderUI;
+	}
+	else if( _tcscmp(pstrClass, DUI_CTR_GRIDLISTBODY) == 0 ) 
+	{
+		return new CGridListBodyUI;
+	}
+	else if( _tcscmp(pstrClass, DUI_CTR_GRIDLISTROW) == 0 ) 
+	{
+		return new CGridListRowUI;
+	}
+	else if( _tcscmp(pstrClass, DUI_CTR_GRIDLISTCELL) == 0 ) 
+	{
+		return new CGridListCellUI;
 	}
 	return NULL;
 }

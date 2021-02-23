@@ -521,6 +521,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Control\TxtWinHost.cpp" />
+    <ClCompile Include="Control\UIAccordionPane.cpp" />
     <ClCompile Include="Control\UIActiveX.cpp" />
     <ClCompile Include="Control\UIAnimation.cpp" />
     <ClCompile Include="Control\UIAnimationPane.cpp" />
@@ -528,7 +529,11 @@
     <ClCompile Include="Control\UIColorPalette.cpp" />
     <ClCompile Include="Control\UICombo.cpp" />
     <ClCompile Include="Control\UIComboBox.cpp" />
+    <ClCompile Include="Control\UIComboEditWnd.cpp" />
+    <ClCompile Include="Control\UIComboEx.cpp" />
     <ClCompile Include="Control\UIDateTime.cpp" />
+    <ClCompile Include="Control\UIDateTimeEx.cpp" />
+    <ClCompile Include="Control\UIDateTimeExWnd.cpp" />
     <ClCompile Include="Control\UIEdit.cpp" />
     <ClCompile Include="Control\UIFadeButton.cpp" />
     <ClCompile Include="Control\UIFlash.cpp" />
@@ -536,17 +541,21 @@
     <ClCompile Include="Control\UIGifAnimEx.cpp" />
     <ClCompile Include="Control\UIGroupBox.cpp" />
     <ClCompile Include="Control\UIHotKey.cpp" />
+    <ClCompile Include="Control\UIIconButton.cpp" />
+    <ClCompile Include="Control\UIImageBoxEx.cpp" />
     <ClCompile Include="Control\UIIPAddress.cpp" />
     <ClCompile Include="Control\UIIPAddressEx.cpp" />
     <ClCompile Include="Control\UILabel.cpp" />
     <ClCompile Include="Control\UIList.cpp" />
     <ClCompile Include="Control\UIListEx.cpp" />
     <ClCompile Include="Control\UIMenu.cpp" />
+    <ClCompile Include="Control\UIMsgWnd.cpp" />
     <ClCompile Include="Control\UIOption.cpp" />
     <ClCompile Include="Control\UIProgress.cpp" />
     <ClCompile Include="Control\UIRichEdit.cpp" />
     <ClCompile Include="Control\UIRing.cpp" />
     <ClCompile Include="Control\UIRollText.cpp" />
+    <ClCompile Include="Control\UIRollTextEx.cpp" />
     <ClCompile Include="Control\UIScrollBar.cpp" />
     <ClCompile Include="Control\UISlider.cpp" />
     <ClCompile Include="Control\UITabCtrl.cpp" />
@@ -613,6 +622,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Control\TxtWinHost.h" />
+    <ClInclude Include="Control\UIAccordionPane.h" />
     <ClInclude Include="Control\UIActiveX.h" />
     <ClInclude Include="Control\UIAnimation.h" />
     <ClInclude Include="Control\UIAnimationPane.h" />
@@ -620,7 +630,11 @@
     <ClInclude Include="Control\UIColorPalette.h" />
     <ClInclude Include="Control\UICombo.h" />
     <ClInclude Include="Control\UIComboBox.h" />
+    <ClInclude Include="Control\UIComboEditWnd.h" />
+    <ClInclude Include="Control\UIComboEx.h" />
     <ClInclude Include="Control\UIDateTime.h" />
+    <ClInclude Include="Control\UIDateTimeEx.h" />
+    <ClInclude Include="Control\UIDateTimeExWnd.h" />
     <ClInclude Include="Control\UIEdit.h" />
     <ClInclude Include="Control\UIFadeButton.h" />
     <ClInclude Include="Control\UIFlash.h" />
@@ -628,17 +642,21 @@
     <ClInclude Include="Control\UIGifAnimEx.h" />
     <ClInclude Include="Control\UIGroupBox.h" />
     <ClInclude Include="Control\UIHotKey.h" />
+    <ClInclude Include="Control\UIIconButton.h" />
+    <ClInclude Include="Control\UIImageBoxEx.h" />
     <ClInclude Include="Control\UIIPAddress.h" />
     <ClInclude Include="Control\UIIPAddressEx.h" />
     <ClInclude Include="Control\UILabel.h" />
     <ClInclude Include="Control\UIList.h" />
     <ClInclude Include="Control\UIListEx.h" />
     <ClInclude Include="Control\UIMenu.h" />
+    <ClInclude Include="Control\UIMsgWnd.h" />
     <ClInclude Include="Control\UIOption.h" />
     <ClInclude Include="Control\UIProgress.h" />
     <ClInclude Include="Control\UIRichEdit.h" />
     <ClInclude Include="Control\UIRing.h" />
     <ClInclude Include="Control\UIRollText.h" />
+    <ClInclude Include="Control\UIRollTextEx.h" />
     <ClInclude Include="Control\UIScrollBar.h" />
     <ClInclude Include="Control\UISlider.h" />
     <ClInclude Include="Control\UITabCtrl.h" />

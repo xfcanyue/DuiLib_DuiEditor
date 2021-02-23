@@ -383,22 +383,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\3rd\scintilla\SciWnd.cpp" />
-    <ClCompile Include="DuiLib\UIAccordionPane.cpp" />
-    <ClCompile Include="DuiLib\UIComboEditWnd.cpp" />
-    <ClCompile Include="DuiLib\UIComboEx.cpp" />
-    <ClCompile Include="DuiLib\UIDataExchange.cpp" />
-    <ClCompile Include="DuiLib\UIDateTimeEx.cpp" />
-    <ClCompile Include="DuiLib\UIDateTimeExWnd.cpp" />
+    <ClCompile Include="DuiLib\UIGridListBody.cpp" />
     <ClCompile Include="DuiLib\UIGridCtrl.cpp" />
-    <ClCompile Include="DuiLib\UIIconButton.cpp" />
+    <ClCompile Include="DuiLib\UIGridListHeader.cpp" />
+    <ClCompile Include="DuiLib\UIGridList.cpp" />
+    <ClCompile Include="DuiLib\UIGridListCell.cpp" />
+    <ClCompile Include="DuiLib\UIGridListRowUI.cpp" />
     <ClCompile Include="DuiLib\UIImageBox.cpp" />
-    <ClCompile Include="DuiLib\UIImageBoxEx.cpp" />
     <ClCompile Include="DuiLib\UIKeyBoard.cpp" />
     <ClCompile Include="DuiLib\UIKeyBoardNumber.cpp" />
     <ClCompile Include="DuiLib\UIKeyBoardSimple.cpp" />
-    <ClCompile Include="DuiLib\UIMsgWnd.cpp" />
     <ClCompile Include="DuiLib\UIPictureControl.cpp" />
-    <ClCompile Include="DuiLib\UIRollTextEx.cpp" />
     <ClCompile Include="DuiLib\UISciEdit.cpp" />
     <ClCompile Include="DuiPlugins.cpp" />
     <ClCompile Include="MFCGridCtrl\CellType\GridCellCheck.cpp" />
@@ -422,26 +417,21 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='xsUnicodeRelease|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TinyXml2\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\3rd\scintilla\SciWnd.h" />
-    <ClInclude Include="DuiLib\UIAccordionPane.h" />
-    <ClInclude Include="DuiLib\UIComboEditWnd.h" />
-    <ClInclude Include="DuiLib\UIComboEx.h" />
-    <ClInclude Include="DuiLib\UIDataExchange.h" />
-    <ClInclude Include="DuiLib\UIDateTimeEx.h" />
-    <ClInclude Include="DuiLib\UIDateTimeExWnd.h" />
+    <ClInclude Include="DuiLib\IGridListUI.h" />
+    <ClInclude Include="DuiLib\UIGridListBody.h" />
     <ClInclude Include="DuiLib\UIGridCtrl.h" />
-    <ClInclude Include="DuiLib\UIIconButton.h" />
+    <ClInclude Include="DuiLib\UIGridListHeader.h" />
+    <ClInclude Include="DuiLib\UIGridList.h" />
+    <ClInclude Include="DuiLib\UIGridListCell.h" />
+    <ClInclude Include="DuiLib\UIGridListRowUI.h" />
     <ClInclude Include="DuiLib\UIImageBox.h" />
-    <ClInclude Include="DuiLib\UIImageBoxEx.h" />
     <ClInclude Include="DuiLib\UIKeyBoard.h" />
     <ClInclude Include="DuiLib\UIKeyBoardNumber.h" />
     <ClInclude Include="DuiLib\UIKeyBoardSimple.h" />
-    <ClInclude Include="DuiLib\UIMsgWnd.h" />
     <ClInclude Include="DuiLib\UIPictureControl.h" />
-    <ClInclude Include="DuiLib\UIRollTextEx.h" />
     <ClInclude Include="DuiLib\UISciEdit.h" />
     <ClInclude Include="DuiPlugins.h" />
     <ClInclude Include="MFCGridCtrl\CellRange.h" />
@@ -460,7 +450,6 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="TinyXml2\tinyxml2.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DuiPlugins.rc" />

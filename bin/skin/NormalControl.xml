@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window size="800,800">
+	<VerticalLayout vscrollbar="true" childpadding="10" padding="10,10,10,10" bkcolor="0xFFD1E8F5">
+		<HorizontalLayout height="30" childpadding="10">
+			<Label text="按钮" autocalcwidth="true" resourceid="3" />
+			<Button name="btn_test" width="100" normalimage="file='images\common\button\button.png' source='0,0,15,27' corner='5,5,5,5' " hotimage="file='images\common\button\button.png' source='15,0,30,27' corner='5,5,5,5' " text="按钮文本" resourceid="2" />
+			<IconButton iconnormalimage="images\delico.png" width="100" normalimage="file='images\common\button\button.png' source='0,0,15,27' corner='5,5,5,5' " hotimage="file='images\common\button\button.png' source='15,0,30,27' corner='5,5,5,5' " text="图标按钮" resourceid="4" />
+			<ButtonLayout width="150" style="style_button">
+				<HorizontalLayout inset="10,0,10,0" childvalign="vcenter">
+					<Control width="16" height="16" foreimage="images\check-select.png" />
+					<Text text="按钮容器" align="center" resourceid="5" />
+					<Control width="16" height="16" foreimage="images\check-unselect.png" />
+				</HorizontalLayout>
+			</ButtonLayout>
+			<Button name="btn_domodal" width="120" text="打开模态对话框" resourceid="6" style="style_button" />
+			<Button name="btn_show_dialog" width="120" text="打开非模态对话框" resourceid="7" style="style_button" />
+		</HorizontalLayout>
+		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
+			<Label text="单选框" autocalcwidth="true" resourceid="8" />
+			<Option width="16" height="16" selectedimage="file='images\common\checkbox\btn_wnd_radio.png' source='60,0,75,16' " selectedhotimage="file='images\common\checkbox\btn_wnd_radio.png' source='75,0,90,16' " selectedpushedimage="file='images\common\checkbox\btn_wnd_radio.png' source='90,0,105,16' " group="group_options_1" normalimage="file='images\common\checkbox\btn_wnd_radio.png' source='0,0,15,16' " hotimage="file='images\common\checkbox\btn_wnd_radio.png' source='15,0,30,16' " pushedimage="file='images\common\checkbox\btn_wnd_radio.png' source='30,0,45,16' " disabledimage="file='images\common\checkbox\btn_wnd_radio.png' source='45,0,60,16' " />
+			<Option width="16" height="16" selectedimage="file='images\common\checkbox\btn_wnd_radio.png' source='60,0,75,16' " selectedhotimage="file='images\common\checkbox\btn_wnd_radio.png' source='75,0,90,16' " selectedpushedimage="file='images\common\checkbox\btn_wnd_radio.png' source='90,0,105,16' " group="group_options_1" selected="true" normalimage="file='images\common\checkbox\btn_wnd_radio.png' source='0,0,15,16' " hotimage="file='images\common\checkbox\btn_wnd_radio.png' source='15,0,30,16' " pushedimage="file='images\common\checkbox\btn_wnd_radio.png' source='30,0,45,16' " disabledimage="file='images\common\checkbox\btn_wnd_radio.png' source='45,0,60,16' " />
+			<Option width="16" height="16" selectedimage="file='images\common\checkbox\btn_wnd_radio.png' source='60,0,75,16' " selectedhotimage="file='images\common\checkbox\btn_wnd_radio.png' source='75,0,90,16' " selectedpushedimage="file='images\common\checkbox\btn_wnd_radio.png' source='90,0,105,16' " normalimage="file='images\common\checkbox\btn_wnd_radio.png' source='0,0,15,16' " hotimage="file='images\common\checkbox\btn_wnd_radio.png' source='15,0,30,16' " pushedimage="file='images\common\checkbox\btn_wnd_radio.png' source='30,0,45,16' " disabledimage="file='images\common\checkbox\btn_wnd_radio.png' source='45,0,60,16' " enabled="false" />
+			<Option width="16" height="16" selectedimage="file='images\common\checkbox\btn_wnd_radio.png' source='60,0,75,16' " selectedhotimage="file='images\common\checkbox\btn_wnd_radio.png' source='75,0,90,16' " selectedpushedimage="file='images\common\checkbox\btn_wnd_radio.png' source='90,0,105,16' " selected="true" normalimage="file='images\common\checkbox\btn_wnd_radio.png' source='0,0,15,16' " hotimage="file='images\common\checkbox\btn_wnd_radio.png' source='15,0,30,16' " pushedimage="file='images\common\checkbox\btn_wnd_radio.png' source='30,0,45,16' " focusedimage="file='images\common\checkbox\btn_wnd_radio.png' source='30,0,45,16' " disabledimage="file='images\common\checkbox\btn_wnd_radio.png' source='45,0,60,16' " enabled="false" />
+			<Option width="100" height="32" selectedimage="file='images\common\checkbox\btn_wnd_radio.png' dest='5,6,21,22' source='60,0,75,16' " selectedhotimage="file='images\common\checkbox\btn_wnd_radio.png' dest='5,6,21,22' source='75,0,90,16' " selectedpushedimage="file='images\common\checkbox\btn_wnd_radio.png' dest='5,6,21,22' source='90,0,105,16' " group="group_options_2" normalimage="file='images\common\checkbox\btn_wnd_radio.png' dest='5,6,21,22' source='0,0,15,16' " hotimage="file='images\common\checkbox\btn_wnd_radio.png' dest='5,6,21,22' source='15,0,30,16' " pushedimage="file='images\common\checkbox\btn_wnd_radio.png' dest='5,6,21,22' source='30,0,45,16' " disabledimage="file='images\common\checkbox\btn_wnd_radio.png' dest='5,6,21,22' source='45,0,60,16' " text="文本内容" textpadding="14,0,0,0" bordercolor="0xFFC0C0C0" bordersize="1" resourceid="9" />
+			<Option width="100" height="32" selectedimage="file='images\common\checkbox\btn_wnd_radio.png' dest='5,6,21,22' source='60,0,75,16' " selectedhotimage="file='images\common\checkbox\btn_wnd_radio.png' dest='5,6,21,22' source='75,0,90,16' " selectedpushedimage="file='images\common\checkbox\btn_wnd_radio.png' dest='5,6,21,22' source='90,0,105,16' " group="group_options_2" selected="true" normalimage="file='images\common\checkbox\btn_wnd_radio.png' dest='5,6,21,22' source='0,0,15,16' " hotimage="file='images\common\checkbox\btn_wnd_radio.png' dest='5,6,21,22' source='15,0,30,16' " pushedimage="file='images\common\checkbox\btn_wnd_radio.png' dest='5,6,21,22' source='30,0,45,16' " disabledimage="file='images\common\checkbox\btn_wnd_radio.png' dest='5,6,21,22' source='45,0,60,16' " text="文本内容" textpadding="14,0,0,0" bordercolor="0xFFC0C0C0" bordersize="1" resourceid="10" />
+		</HorizontalLayout>
+		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
+			<Label text="复选框" autocalcwidth="true" resourceid="11" />
+			<Option width="16" height="16" selectedimage="file='images\common\checkbox\btn_wnd_checkbox.png' source='60,0,75,16' " selectedhotimage="file='images\common\checkbox\btn_wnd_checkbox.png' source='75,0,90,16' " selectedpushedimage="file='images\common\checkbox\btn_wnd_checkbox.png' source='90,0,105,16' " normalimage="file='images\common\checkbox\btn_wnd_checkbox.png' source='0,0,15,16' " hotimage="file='images\common\checkbox\btn_wnd_checkbox.png' source='15,0,30,16' " pushedimage="file='images\common\checkbox\btn_wnd_checkbox.png' source='30,0,45,16' " disabledimage="file='images\common\checkbox\btn_wnd_checkbox.png' source='45,0,60,16' " />
+			<Option width="16" height="16" selectedimage="file='images\common\checkbox\btn_wnd_checkbox.png' source='60,0,75,16' " selectedhotimage="file='images\common\checkbox\btn_wnd_checkbox.png' source='75,0,90,16' " selectedpushedimage="file='images\common\checkbox\btn_wnd_checkbox.png' source='90,0,105,16' " selected="true" normalimage="file='images\common\checkbox\btn_wnd_checkbox.png' source='0,0,15,16' " hotimage="file='images\common\checkbox\btn_wnd_checkbox.png' source='15,0,30,16' " pushedimage="file='images\common\checkbox\btn_wnd_checkbox.png' source='30,0,45,16' " disabledimage="file='images\common\checkbox\btn_wnd_checkbox.png' source='45,0,60,16' " />
+			<Option width="100" height="32" selectedimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='60,0,75,16' " selectedhotimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='75,0,90,16' " selectedpushedimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='90,0,105,16' " normalimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='0,0,15,16' " hotimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='15,0,30,16' " pushedimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='30,0,45,16' " disabledimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='45,0,60,16' " text="文本内容" textpadding="14,0,0,0" bordercolor="0xFFC0C0C0" bordersize="1" resourceid="12" />
+			<Option width="100" height="32" selectedimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='60,0,75,16' " selectedhotimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='75,0,90,16' " selectedpushedimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='90,0,105,16' " selected="true" normalimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='0,0,15,16' " hotimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='15,0,30,16' " pushedimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='30,0,45,16' " disabledimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='45,0,60,16' " text="文本内容" textpadding="14,0,0,0" bordercolor="0xFFC0C0C0" bordersize="1" resourceid="13" />
+			<Label text="svg图标" textpadding="5,0,5,0" autocalcwidth="true" resourceid="44" />
+			<Button width="16" height="16" normalimage="images\si-glyph-suitcase.svg" />
+			<Button width="32" height="32" normalimage="file='images\si-glyph-suitcase-person.svg' width='32' height='32' " />
+		</HorizontalLayout>
+		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
+			<Label text="下拉框" autocalcwidth="true" resourceid="14" />
+			<ComboEx dropbuttonsize="21,21" dropbuttonnormalimage="file='images\common\combobox\dropbtn.png' source='0,0,21,21' " dropbuttonhotimage="file='images\common\combobox\dropbtn.png' source='21,0,42,21' " dropbuttonpushedimage="file='images\common\combobox\dropbtn.png' source='21,0,42,21' " width="150" textpadding="5,0,5,0" bkcolor="0xFFFFFFFF" bordercolor="0xFFA0A0A4" hotbordercolor="0xFF06A8FF" bordersize="1">
+				<ListLabelElement resourceid="15" text="Text1" />
+				<ListLabelElement resourceid="16" text="Text2" />
+			</ComboEx>
+			<Label text="可编辑的下拉框" autocalcwidth="true" resourceid="17" />
+			<ComboEx dropbuttonsize="21,21" dropbuttonnormalimage="file='images\common\combobox\dropbtn.png' source='0,0,21,21' " dropbuttonhotimage="file='images\common\combobox\dropbtn.png' source='21,0,42,21' " dropbuttonpushedimage="file='images\common\combobox\dropbtn.png' source='21,0,42,21' " type="dropdown" width="150" textpadding="5,0,5,0" bkcolor="0xFFFFFFFF" bordercolor="0xFFA0A0A4" hotbordercolor="0xFF06A8FF" bordersize="1">
+				<ListLabelElement resourceid="18" text="Text1" />
+				<ListLabelElement resourceid="19" text="Text2" />
+			</ComboEx>
+		</HorizontalLayout>
+		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
+			<Label text="编辑框" autocalcwidth="true" resourceid="20" />
+			<Edit width="150" tipvalue="编辑框" bordercolor="0xFFC0C0C0" bordersize="1" resourceid="39" tooltip="真的是编辑框" />
+		</HorizontalLayout>
+		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
+			<Label text="日期" autocalcwidth="true" resourceid="21" />
+			<DateTime width="100" align="center" bordercolor="0xFFC0C0C0" bordersize="1" />
+			<Label text="时间" autocalcwidth="true" resourceid="22" />
+			<DateTime width="100" formatstyle="time" align="center" bordercolor="0xFFC0C0C0" bordersize="1" />
+			<Label text="日期时间" autocalcwidth="true" resourceid="23" />
+			<DateTimeEx width="200" formatstyle="datetime" datelabelstyle="align=&quot;center&quot; " timelabelstyle="align=&quot;center&quot; " bordercolor="0xFFC0C0C0" bordersize="1" />
+		</HorizontalLayout>
+		<HorizontalLayout height="85" childpadding="10" childvalign="vcenter">
+			<HorizontalLayout>
+				<Label text="组合框" autocalcwidth="true" resourceid="24" />
+				<GroupBox text="我是组合框" bkcolor="0xFFD1E8F5" bordercolor="0xFFC0C0C0" bordersize="1" resourceid="25">
+					<Label text="Label1" resourceid="26" />
+					<Label text="Label2" resourceid="27" />
+				</GroupBox>
+			</HorizontalLayout>
+			<HorizontalLayout height="100" childpadding="10" childvalign="vcenter">
+				<Label text="脚本控件测试" autocalcwidth="true" />
+				<Label width="200" height="100" OnInit="OnControlInit" OnNotify="OnControlNotify" />
+			</HorizontalLayout>
+		</HorizontalLayout>
+		<HorizontalLayout height="120" childpadding="10" childvalign="vcenter">
+			<Label text="图像控件" autocalcwidth="true" resourceid="28" />
+			<VerticalLayout width="100" inset="1,1,1,1" bordercolor="0xFF969696" bordersize="1">
+				<PictureControl fileimage="images\loading.gif" framedelay="100" width="100" />
+				<Text height="20" text="GIF" align="center" bkcolor="0xFFE1E1E1" resourceid="29" />
+			</VerticalLayout>
+			<VerticalLayout width="100" inset="1,1,1,1" bordercolor="0xFF969696" bordersize="1">
+				<VerticalLayout childalign="center" childvalign="vcenter">
+					<PictureControl fileimage="images\ico.jpg" autosize="true" />
+				</VerticalLayout>
+				<Text height="20" text="JPG" align="center" bkcolor="0xFFE1E1E1" resourceid="30" />
+			</VerticalLayout>
+			<VerticalLayout width="100" inset="1,1,1,1" bordercolor="0xFF969696" bordersize="1">
+				<VerticalLayout childalign="center" childvalign="vcenter">
+					<PictureControl fileimage="images\common\webbrowser\load_error.png" autosize="true" />
+				</VerticalLayout>
+				<Text height="20" text="PNG" align="center" bkcolor="0xFFE1E1E1" resourceid="31" />
+			</VerticalLayout>
+			<VerticalLayout width="100" inset="1,1,1,1" bordercolor="0xFF969696" bordersize="1">
+				<VerticalLayout childalign="center" childvalign="vcenter">
+					<PictureControl fileimage="images\bmp.bmp" autosize="true" />
+				</VerticalLayout>
+				<Text height="20" text="BMP" align="center" bkcolor="0xFFE1E1E1" resourceid="32" />
+			</VerticalLayout>
+			<VerticalLayout width="100" inset="1,1,1,1" bordercolor="0xFF969696" bordersize="1">
+				<VerticalLayout childalign="center" childvalign="vcenter">
+					<PictureControl fileimage="images\ico.ico" autosize="true" />
+				</VerticalLayout>
+				<Text height="20" text="ICO" align="center" bkcolor="0xFFE1E1E1" resourceid="33" />
+			</VerticalLayout>
+		</HorizontalLayout>
+		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
+			<Label text="进度条" autocalcwidth="true" resourceid="34" />
+			<Progress name="progress_1" height="16" value="50" bkcolor="0xFFE1E1E1" forecolor="0xFF0000FF" />
+		</HorizontalLayout>
+		<HorizontalLayout height="80" childpadding="10" childvalign="vcenter">
+			<Label text="RichEdit" autocalcwidth="true" resourceid="35" />
+			<RichEdit height="30" inset="5,5,5,5" bkcolor="0xFFFFFFFF" bordercolor="0xFFC0C0C0" bordersize="1" resourceid="36" text="单行文本" />
+			<RichEdit inset="5,5,5,5" vscrollbar="true" autovscroll="true" hscrollbar="true" autohscroll="true" wanttab="true" wantreturn="true" wantctrlreturn="true" multiline="true" bkcolor="0xFFFFFFFF" bordercolor="0xFFC0C0C0" bordersize="1" resourceid="37" text="多行文本" />
+		</HorizontalLayout>
+		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
+			<Label text="IP地址" autocalcwidth="true" resourceid="38" />
+			<IPAddress width="150" align="center" bordercolor="0xFFC0C0C0" bordersize="1" />
+		</HorizontalLayout>
+		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
+			<Label autocalcwidth="true" />
+		</HorizontalLayout>
+		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
+			<Label autocalcwidth="true" />
+		</HorizontalLayout>
+		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
+			<Label autocalcwidth="true" />
+		</HorizontalLayout>
+	</VerticalLayout>
+</Window>

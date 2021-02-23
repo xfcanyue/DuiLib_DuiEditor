@@ -326,8 +326,8 @@ void CDuiEditorViewCode::SelectXmlNode(xml_node node)
 	}
 
 #ifdef _DEBUG
-	InsertMsgV(_T("node:%s, open_start_pos=%d, open_end_pos=%d, close_start_pos=%d, close_end_pos=%d"), 
-		XML2T(node.name()), node.get_open_start_pos(), node.get_open_end_pos(), node.get_close_start_pos(), node.get_close_end_pos());
+//	InsertMsgV(_T("node:%s, open_start_pos=%d, open_end_pos=%d, close_start_pos=%d, close_end_pos=%d"), 
+//		XML2T(node.name()), node.get_open_start_pos(), node.get_open_end_pos(), node.get_close_start_pos(), node.get_close_end_pos());
 #endif
 }
 
@@ -391,16 +391,16 @@ BOOL CDuiEditorViewCode::SelectControlUI(int pos, xml_node node)
 		}
 		
 #ifdef _DEBUG
-		InsertMsgV(_T("node:%s, open_start_pos=%d, open_end_pos=%d, close_start_pos=%d, close_end_pos=%d"), 
-			XML2T(node.name()), node.get_open_start_pos(), node.get_open_end_pos(), node.get_close_start_pos(), node.get_close_end_pos());
+//		InsertMsgV(_T("node:%s, open_start_pos=%d, open_end_pos=%d, close_start_pos=%d, close_end_pos=%d"), 
+//			XML2T(node.name()), node.get_open_start_pos(), node.get_open_end_pos(), node.get_close_start_pos(), node.get_close_end_pos());
 #endif
 		for (xml_attribute attr=node.first_attribute(); attr; attr=attr.next_attribute())
 		{
 			if(pos >= attr.get_name_start_pos() && pos <= attr.get_value_end_pos()+1)
 			{
 #ifdef _DEBUG
-				InsertMsgV(_T("attr: %s, name_start_pos=%d, name_end_pos=%d, value_start_pos=%d, value_end_pos=%d"), 
-					XML2T(attr.name()), attr.get_name_start_pos(), attr.get_name_end_pos(), attr.get_value_start_pos(), attr.get_value_end_pos());
+//				InsertMsgV(_T("attr: %s, name_start_pos=%d, name_end_pos=%d, value_start_pos=%d, value_end_pos=%d"), 
+//					XML2T(attr.name()), attr.get_name_start_pos(), attr.get_name_end_pos(), attr.get_value_start_pos(), attr.get_value_end_pos());
 #endif
 				continue;
 			}
@@ -434,16 +434,16 @@ LRESULT CDuiEditorViewCode::OnSciClick(WPARAM WParam, LPARAM LParam)
 			(pos>=node.get_close_start_pos() && pos<=node.get_close_end_pos()))
 		{
 #ifdef _DEBUG
-			InsertMsgV(_T("node:%s, open_start_pos=%d, open_end_pos=%d, close_start_pos=%d, close_end_pos=%d"), 
-				XML2T(node.name()), node.get_open_start_pos(), node.get_open_end_pos(), node.get_close_start_pos(), node.get_close_end_pos());
+//			InsertMsgV(_T("node:%s, open_start_pos=%d, open_end_pos=%d, close_start_pos=%d, close_end_pos=%d"), 
+//				XML2T(node.name()), node.get_open_start_pos(), node.get_open_end_pos(), node.get_close_start_pos(), node.get_close_end_pos());
 #endif
 			for (xml_attribute attr=node.first_attribute(); attr; attr=attr.next_attribute())
 			{
 				if(pos >= attr.get_name_start_pos() && pos <= attr.get_value_end_pos()+1)
 				{
 #ifdef _DEBUG
-					InsertMsgV(_T("attr: %s, name_start_pos=%d, name_end_pos=%d, value_start_pos=%d, value_end_pos=%d"), 
-						XML2T(attr.name()), attr.get_name_start_pos(), attr.get_name_end_pos(), attr.get_value_start_pos(), attr.get_value_end_pos());
+//					InsertMsgV(_T("attr: %s, name_start_pos=%d, name_end_pos=%d, value_start_pos=%d, value_end_pos=%d"), 
+//						XML2T(attr.name()), attr.get_name_start_pos(), attr.get_name_end_pos(), attr.get_value_start_pos(), attr.get_value_end_pos());
 #endif
 					continue;
 				}

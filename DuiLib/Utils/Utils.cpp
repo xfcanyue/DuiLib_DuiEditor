@@ -210,6 +210,54 @@ namespace DuiLib
 		::UnionRect(this, this, &rc);
 	}
 
+	BOOL CDuiRect::IntersectRect(const RECT &rect1, const RECT &rect2)
+	{
+		return ::IntersectRect(this, (LPRECT)&rect1, (LPRECT)&rect2);
+	}
+
+	POINT CDuiRect::CenterPoint() const
+	{
+		POINT pt = {(left+right)/2, (top+bottom)/2};
+		return pt;
+	}
+
+	void CDuiRect::AlignRect(const RECT &rc, UINT uAlign)
+	{
+		POINT ptCenter = {(rc.left+rc.right)/2, (rc.top+rc.bottom)/2};
+		int width = right - left;
+		int height = bottom - top;
+		if((uAlign & DT_CENTER) == DT_CENTER)
+		{
+			left = ptCenter.x - width/2;
+			right = ptCenter.x + width/2;
+		}
+		else if((uAlign & DT_LEFT) == DT_LEFT)
+		{
+			left = rc.left;
+			right = rc.left + width;
+		}
+		else if((uAlign & DT_RIGHT) == DT_RIGHT)
+		{
+			left = rc.right - width;
+			right = rc.right;
+		}
+
+		if((uAlign & DT_VCENTER) == DT_VCENTER)
+		{
+			top = ptCenter.y - height/2;
+			bottom = ptCenter.y + height/2;
+		}
+		else if((uAlign & DT_TOP) == DT_TOP)
+		{
+			top = rc.top;
+			bottom = rc.top + height;
+		}
+		else if((uAlign & DT_BOTTOM) == DT_BOTTOM)
+		{
+			top = rc.bottom - height;
+			bottom = rc.bottom;
+		}
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	//

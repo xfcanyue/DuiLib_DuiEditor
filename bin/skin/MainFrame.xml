@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window size="800,658" sizebox="0,0,4,4" caption="0,0,0,20" showshadow="true" shadowsize="2" shadowposition="2,2" shadowcolor="0xFF4B4B4B">
+	<Include source="config.xml" />
+	<VerticalLayout inset="1,1,1,1" bkcolor="0xFFD1E8F5" bordercolor="0xFF969696" bordersize="1">
+		<HorizontalLayout height="20" childpadding="5" childvalign="vcenter" bkcolor="0xFFC0DCC0">
+			<Control width="16" height="16" foreimage="images\ico.jpg" />
+			<Label text="DuiLib控件展示" resourceid="7" />
+			<Option name="dpi_96" width="60" height="18" selectedbkcolor="0xFFA6CAF0" group="group_dpi" hotbkcolor="0xFFA6CAF0" pushedbkcolor="0xFFA6CAF0" text="dpi_100%" />
+			<Option name="dpi_120" width="60" height="18" selectedbkcolor="0xFFA6CAF0" group="group_dpi" hotbkcolor="0xFFA6CAF0" pushedbkcolor="0xFFA6CAF0" text="dpi_125%" />
+			<Option name="dpi_144" width="60" height="18" selectedbkcolor="0xFFA6CAF0" group="group_dpi" hotbkcolor="0xFFA6CAF0" pushedbkcolor="0xFFA6CAF0" text="dpi_150%" />
+			<Option name="dpi_168" width="60" height="18" selectedbkcolor="0xFFA6CAF0" group="group_dpi" hotbkcolor="0xFFA6CAF0" pushedbkcolor="0xFFA6CAF0" text="dpi_175%" />
+			<Option name="dpi_192" width="60" height="18" selectedbkcolor="0xFFA6CAF0" group="group_dpi" hotbkcolor="0xFFA6CAF0" pushedbkcolor="0xFFA6CAF0" text="dpi_200%" />
+			<HorizontalLayout width="123">
+				<FadeButton name="windowmenubtn" width="26" height="17" normalimage="file='images\sys_dlg_menu.png' source='52,0,78,17'" hotimage="file='images\sys_dlg_menu.png' source='26,0,52,17'" pushedimage="file='images\sys_dlg_menu.png' source='0,0,26,17'" />
+				<FadeButton name="windowminbtn" width="26" height="17" normalimage="file='images\sys_dlg_min.png' source='52,0,78,17'" hotimage="file='images\sys_dlg_min.png' source='26,0,52,17'" pushedimage="file='images\sys_dlg_min.png' source='0,0,26,17'" />
+				<FadeButton name="windowmaxbtn" width="26" height="17" normalimage="file='images\sys_dlg_max.png' source='52,0,78,17'" hotimage="file='images\sys_dlg_max.png' source='26,0,52,18'" pushedimage="file='images\sys_dlg_max.png' source='0,0,26,17'" />
+				<FadeButton name="windowrestorebtn" width="26" height="17" normalimage="file='images\sys_dlg_restore.png' source='52,0,78,17'" hotimage="file='images\sys_dlg_restore.png' source='26,0,52,17'" pushedimage="file='images\sys_dlg_restore.png' source='0,0,26,17'" visible="false" />
+				<FadeButton name="windowclosebtn" width="45" height="17" normalimage="file='images\sys_dlg_close.png' source='90,0,135,17'" hotimage="file='images\sys_dlg_close.png' source='45,0,90,17'" pushedimage="file='images\sys_dlg_close.png' source='0,0,45,17'" />
+			</HorizontalLayout>
+		</HorizontalLayout>
+		<HorizontalLayout height="60" inset="10,10,10,10" childvalign="vcenter">
+			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" selected="true" bindtablayoutname="tab_main" bindtabindex="0" text="基本控件" bottombordersize="2" resourceid="1" tooltip="基本控件" style="style_option_header" />
+			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="1" text="高级控件" bottombordersize="2" resourceid="2" style="style_option_header" />
+			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="2" text="动画控件" bottombordersize="2" resourceid="3" style="style_option_header" />
+			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="3" text="键盘" bottombordersize="2" resourceid="4" style="style_option_header" />
+			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="4" text="表格" bottombordersize="2" resourceid="5" style="style_option_header" />
+			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="5" text="代码编辑器" bottombordersize="2" resourceid="6" style="style_option_header" />
+		</HorizontalLayout>
+		<TabLayout name="tab_main">
+			<VerticalLayout childpadding="10" padding="10,10,10,10">
+				<Include source="NormalControl.xml" />
+			</VerticalLayout>
+			<VerticalLayout childpadding="5" padding="10,10,10,10">
+				<Label text="列表" height="20" resourceid="8" />
+				<List inset="1,1,1,1" vscrollbar="true" hscrollbar="true" bkcolor="0xFFFFFFFF" bordercolor="0xFFD2D2D2" bordersize="1">
+					<ListHeader bkimage="images\list_header_bg.png">
+						<ListHeaderItem sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" resourceid="9" text="姓名" />
+						<ListHeaderItem sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" resourceid="10" text="用户名" />
+						<ListHeaderItem sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" resourceid="11" text="手机号码" />
+						<ListHeaderItem sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" resourceid="12" text="固定电话" />
+						<ListHeaderItem sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" resourceid="13" text="操作" />
+					</ListHeader>
+					<ListContainerElement height="30">
+						<Label text="text1" align="center" resourceid="14" />
+						<Label text="text2" align="center" resourceid="15" />
+						<Label text="text3" align="center" resourceid="16" />
+						<Label text="text4" align="center" resourceid="17" />
+						<HorizontalLayout childpadding="15" childalign="center" childvalign="vcenter">
+							<Button width="16" height="16" normalimage="images\addico.png" cursor="hand" />
+							<Button width="16" height="16" normalimage="images\edtico.png" cursor="hand" />
+							<Button width="16" height="16" normalimage="images\delico.png" cursor="hand" />
+						</HorizontalLayout>
+					</ListContainerElement>
+					<ListContainerElement height="30">
+						<Label text="text1" align="center" resourceid="18" />
+						<Label text="text2" align="center" resourceid="19" />
+						<Label text="text3" align="center" resourceid="20" />
+						<Label text="text4" align="center" resourceid="21" />
+						<HorizontalLayout childpadding="15" childalign="center" childvalign="vcenter">
+							<Button width="16" height="16" normalimage="images\addico.png" cursor="hand" />
+							<Button width="16" height="16" normalimage="images\edtico.png" cursor="hand" />
+							<Button width="16" height="16" normalimage="images\delico.png" cursor="hand" />
+						</HorizontalLayout>
+					</ListContainerElement>
+					<ListContainerElement height="30">
+						<Label text="text1" align="center" resourceid="22" />
+						<Label text="text2" align="center" resourceid="23" />
+						<Label text="text3" align="center" resourceid="24" />
+						<Label text="text4" align="center" resourceid="25" />
+						<HorizontalLayout childpadding="15" childalign="center" childvalign="vcenter">
+							<Button width="16" height="16" normalimage="images\addico.png" cursor="hand" />
+							<Button width="16" height="16" normalimage="images\edtico.png" cursor="hand" />
+							<Button width="16" height="16" normalimage="images\delico.png" cursor="hand" />
+						</HorizontalLayout>
+					</ListContainerElement>
+					<ListContainerElement height="30">
+						<Label text="text1" align="center" resourceid="26" />
+						<Label text="text2" align="center" resourceid="27" />
+						<Label text="text3" align="center" resourceid="28" />
+						<Label text="text4" align="center" resourceid="29" />
+						<HorizontalLayout childpadding="15" childalign="center" childvalign="vcenter">
+							<Button width="16" height="16" normalimage="images\addico.png" cursor="hand" />
+							<Button width="16" height="16" normalimage="images\edtico.png" cursor="hand" />
+							<Button width="16" height="16" normalimage="images\delico.png" cursor="hand" />
+						</HorizontalLayout>
+					</ListContainerElement>
+					<ListContainerElement height="30">
+						<Label text="text1" align="center" resourceid="30" />
+						<Label text="text2" align="center" resourceid="31" />
+						<Label text="text3" align="center" resourceid="32" />
+						<Label text="text4" align="center" resourceid="33" />
+						<HorizontalLayout childpadding="15" childalign="center" childvalign="vcenter">
+							<Button width="16" height="16" normalimage="images\addico.png" cursor="hand" />
+							<Button width="16" height="16" normalimage="images\edtico.png" cursor="hand" />
+							<Button width="16" height="16" normalimage="images\delico.png" cursor="hand" />
+						</HorizontalLayout>
+					</ListContainerElement>
+					<ListContainerElement height="30">
+						<Label text="text1" align="center" resourceid="34" />
+						<Label text="text2" align="center" resourceid="35" />
+						<Label text="text3" align="center" resourceid="36" />
+						<Label text="text4" align="center" resourceid="37" />
+						<HorizontalLayout childpadding="15" childalign="center" childvalign="vcenter">
+							<Button width="16" height="16" normalimage="images\addico.png" cursor="hand" />
+							<Button width="16" height="16" normalimage="images\edtico.png" cursor="hand" />
+							<Button width="16" height="16" normalimage="images\delico.png" cursor="hand" />
+						</HorizontalLayout>
+					</ListContainerElement>
+					<ListContainerElement height="30">
+						<Label text="text1" align="center" resourceid="38" />
+						<Label text="text2" align="center" resourceid="39" />
+						<Label text="text3" align="center" resourceid="40" />
+						<Label text="text4" align="center" resourceid="41" />
+						<HorizontalLayout childpadding="15" childalign="center" childvalign="vcenter">
+							<Button width="16" height="16" normalimage="images\addico.png" cursor="hand" />
+							<Button width="16" height="16" normalimage="images\edtico.png" cursor="hand" />
+							<Button width="16" height="16" normalimage="images\delico.png" cursor="hand" />
+						</HorizontalLayout>
+					</ListContainerElement>
+					<ListContainerElement height="30">
+						<Label text="text1" align="center" resourceid="42" />
+						<Label text="text2" align="center" resourceid="43" />
+						<Label text="text3" align="center" resourceid="44" />
+						<Label text="text4" align="center" resourceid="45" />
+						<HorizontalLayout childpadding="15" childalign="center" childvalign="vcenter">
+							<Button width="16" height="16" normalimage="images\addico.png" cursor="hand" />
+							<Button width="16" height="16" normalimage="images\edtico.png" cursor="hand" />
+							<Button width="16" height="16" normalimage="images\delico.png" cursor="hand" />
+						</HorizontalLayout>
+					</ListContainerElement>
+				</List>
+				<HorizontalLayout>
+					<VerticalLayout>
+						<Label text="TreeView" height="20" resourceid="46" />
+						<TreeView visiblecheckbtn="true" itemselectedbkcolor="0x00000000" itemhotbkcolor="0x00000000" vscrollbar="true" hscrollbar="true" bkcolor="0xFFFFFFFF">
+							<TreeNode text="TreeView" horizattr="style_tree_horizattr" folderattr="style_tree_folder" checkboxattr="style_tree_check_box" resourceid="47">
+								<TreeNode text="TreeNode" horizattr="style_tree_horizattr" folderattr="style_tree_folder" checkboxattr="style_tree_check_box" resourceid="48">
+									<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="16,0,0,0" resourceid="49" />
+									<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="16,0,0,0" resourceid="50" />
+									<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="16,0,0,0" resourceid="51" />
+									<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="16,0,0,0" resourceid="52" />
+									<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="16,0,0,0" resourceid="53" />
+									<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="16,0,0,0" resourceid="54" />
+									<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="16,0,0,0" resourceid="55" />
+									<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="16,0,0,0" resourceid="56" />
+									<TreeNode text="TreeNode" horizattr="style_tree_horizattr" folderattr="style_tree_folder" checkboxattr="style_tree_check_box" inset="16,0,0,0" resourceid="57">
+										<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="32,0,0,0" resourceid="58" />
+										<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="32,0,0,0" resourceid="59" />
+										<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="32,0,0,0" resourceid="60" />
+										<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="32,0,0,0" resourceid="61" />
+										<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="32,0,0,0" resourceid="62" />
+										<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="32,0,0,0" resourceid="63" />
+										<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="32,0,0,0" resourceid="64" />
+										<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="32,0,0,0" resourceid="65" />
+										<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="32,0,0,0" resourceid="66" />
+									</TreeNode>
+								</TreeNode>
+							</TreeNode>
+						</TreeView>
+					</VerticalLayout>
+				</HorizontalLayout>
+			</VerticalLayout>
+			<VerticalLayout padding="10,10,10,10">
+				<Label text="Animation TabLayout" height="20" resourceid="67" />
+				<HorizontalLayout height="25">
+					<Option width="120" selectedimage="images\tabbar_pushed.png" group="group_tab_unimation" selected="true" normalimage="images\tabbar_normal.png" hotimage="images\tabbar_hover.png" bindtablayoutname="tab_animation" bindtabindex="0" text="手风琴" resourceid="68" />
+					<Option width="120" selectedimage="images\tabbar_pushed.png" group="group_tab_unimation" normalimage="images\tabbar_normal.png" hotimage="images\tabbar_hover.png" bindtablayoutname="tab_animation" bindtabindex="1" text="侧边栏动画" resourceid="69" />
+					<Option width="120" selectedimage="images\tabbar_pushed.png" group="group_tab_unimation" normalimage="images\tabbar_normal.png" hotimage="images\tabbar_hover.png" bindtablayoutname="tab_animation" bindtabindex="2" text="图片轮播" resourceid="70" />
+					<Option width="120" selectedimage="images\tabbar_pushed.png" group="group_tab_unimation" normalimage="images\tabbar_normal.png" hotimage="images\tabbar_hover.png" bindtablayoutname="tab_animation" bindtabindex="3" text="图片轮播2" resourceid="71" />
+					<Option width="120" selectedimage="images\tabbar_pushed.png" group="group_tab_unimation" normalimage="images\tabbar_normal.png" hotimage="images\tabbar_hover.png" bindtablayoutname="tab_animation" bindtabindex="4" text="滚动字幕" resourceid="72" />
+				</HorizontalLayout>
+				<AnimationTabLayout name="tab_animation">
+					<HorizontalLayout childpadding="5" bkcolor="0xFFFFFFFF">
+						<VerticalLayout width="200">
+							<AccordionPane name="accordion_1" headerstyle="bkcolor=&quot;0xFFA6CAF0&quot; " iconstyle="foreimage=&quot;images\icon0.png&quot; " textstyle="text=&quot;Pane&quot; " checkboxstyle="selectedimage=&quot;images\leftjt02.png&quot; group=&quot;accordion_group&quot; normalimage=&quot;images\leftjt01.png&quot; " bodystyle="bkcolor=&quot;0xFFC0DCC0&quot; " />
+							<AccordionPane name="accordion_2" headerstyle="bkcolor=&quot;0xFFA6CAF0&quot; " iconstyle="foreimage=&quot;images\icon0.png&quot; " textstyle="text=&quot;Pane&quot; " checkboxstyle="selectedimage=&quot;images\leftjt02.png&quot; group=&quot;accordion_group&quot; normalimage=&quot;images\leftjt01.png&quot; " bodystyle="bkcolor=&quot;0xFFC0DCC0&quot; " panevisible="false" />
+						</VerticalLayout>
+						<VerticalLayout width="200">
+							<AccordionPane name="accordion_3" height="150" headerstyle="bkcolor=&quot;0xFFA6CAF0&quot; " iconstyle="foreimage=&quot;images\icon0.png&quot; " textstyle="text=&quot;Pane&quot; " checkboxstyle="selectedimage=&quot;images\leftjt02.png&quot; group=&quot;accordion_group2&quot; normalimage=&quot;images\leftjt01.png&quot; " bodystyle="bkcolor=&quot;0xFFC0DCC0&quot; " />
+							<AccordionPane name="accordion_4" height="150" headerstyle="bkcolor=&quot;0xFFA6CAF0&quot; " iconstyle="foreimage=&quot;images\icon0.png&quot; " textstyle="text=&quot;Pane&quot; " checkboxstyle="selectedimage=&quot;images\leftjt02.png&quot; group=&quot;accordion_group2&quot; normalimage=&quot;images\leftjt01.png&quot; " bodystyle="bkcolor=&quot;0xFFC0DCC0&quot; " panevisible="false" />
+						</VerticalLayout>
+						<VerticalLayout width="200" />
+					</HorizontalLayout>
+					<HorizontalLayout bkcolor="0xFFFFFFFF">
+						<AnimationPane name="pane_3" animation="horizontal" framecount="10" framedelay="10" bkcolor="0xFF800080" resourceid="73" text="左边">
+							<Text text="左边栏" align="center" font="2" resourceid="74" />
+						</AnimationPane>
+						<VerticalLayout minwidth="353">
+							<AnimationPane name="pane_1" animation="vertical" bkcolor="0xFFC0DCC0">
+								<Text text="上边栏" align="center" font="2" resourceid="75" />
+							</AnimationPane>
+							<VerticalLayout inset="10,10,10,10" childpadding="10" childalign="center" childvalign="vcenter" minheight="225">
+								<Control />
+								<Button name="btn_showhide_top_pane" width="150" height="40" normalimage="file='images\common\button\button.png' source='0,0,15,27' corner='5,5,5,5' " hotimage="file='images\common\button\button.png' source='15,0,30,27' corner='5,5,5,5' " switchpanevisible="pane_1" text="隐藏/显示上边栏" resourceid="76" />
+								<HorizontalLayout height="40" childpadding="10" childvalign="vcenter">
+									<Control />
+									<Button name="btn_showhide_left_pane" width="150" height="40" normalimage="file='images\common\button\button.png' source='0,0,15,27' corner='5,5,5,5' " hotimage="file='images\common\button\button.png' source='15,0,30,27' corner='5,5,5,5' " switchpanevisible="pane_3" text="隐藏/显示左边栏" resourceid="77" />
+									<Button name="btn_showhide_right_pane" width="150" height="40" normalimage="file='images\common\button\button.png' source='0,0,15,27' corner='5,5,5,5' " hotimage="file='images\common\button\button.png' source='15,0,30,27' corner='5,5,5,5' " switchpanevisible="pane_4" text="隐藏/显示右边栏" resourceid="78" />
+									<Control />
+								</HorizontalLayout>
+								<Button name="btn_showhide_bottom_pane" width="150" height="40" normalimage="file='images\common\button\button.png' source='0,0,15,27' corner='5,5,5,5' " hotimage="file='images\common\button\button.png' source='15,0,30,27' corner='5,5,5,5' " switchpanevisible="pane_2" text="隐藏/显示底边栏" resourceid="79" />
+								<Control />
+							</VerticalLayout>
+							<AnimationPane name="pane_2" animation="vertical" childvalign="bottom" bkcolor="0xFF0000FF">
+								<Text text="底边栏" align="center" font="2" resourceid="80" />
+							</AnimationPane>
+						</VerticalLayout>
+						<AnimationPane name="pane_4" animation="horizontal" bkcolor="0xFF008080">
+							<Text text="右边栏" align="center" font="2" resourceid="81" />
+						</AnimationPane>
+					</HorizontalLayout>
+					<VerticalLayout bkcolor="0xFFFFFFFF">
+						<ImageBoxEx name="imagebox_1" imagepath="ad" duration="3000" />
+					</VerticalLayout>
+					<VerticalLayout bkcolor="0xFFFFFFFF">
+						<ImageBox name="imagebox_2" imagepath="ad" retention="5000" duration="3000" />
+					</VerticalLayout>
+					<HorizontalLayout bkcolor="0xFFFFFFFF">
+						<RollTextEx name="rolltext_1" rolldirection="up" rollspeed="10" rollstep="1" text="我是字幕，我向上滚动。" bkcolor="0xFFC0C0C0" resourceid="82" />
+						<RollTextEx name="rolltext_2" rolldirection="down" rollspeed="10" rollstep="1" text="我是字幕，我向下滚动。" bkcolor="0xFFC0DCC0" resourceid="83" />
+						<VerticalLayout>
+							<RollTextEx name="rolltext_3" rollspeed="10" rollstep="1" text="我是字幕，我向左滚动。" bkcolor="0xFFA6CAF0" resourceid="84" />
+							<RollTextEx name="rolltext_4" rolldirection="right" rollspeed="10" rollstep="1" text="我是字幕，我向右滚动。" bkcolor="0xFF008080" resourceid="85" />
+						</VerticalLayout>
+					</HorizontalLayout>
+				</AnimationTabLayout>
+			</VerticalLayout>
+			<VerticalLayout inset="0,0,1,0" vscrollbar="true" hscrollbar="true" childpadding="10" childalign="center" childvalign="vcenter" padding="10,0,10,0">
+				<HorizontalLayout height="30" />
+				<HorizontalLayout height="30">
+					<Label text="RichEdit   " autocalcwidth="true" resourceid="86" />
+					<RichEdit height="30" inset="5,5,5,5" bkcolor="0xFFFFFFFF" bordercolor="0xFFC0C0C0" bordersize="1" resourceid="87" text="这是一个简易的键盘控件" />
+				</HorizontalLayout>
+				<KeyBoard keywidth="60" keyheight="60" keypadding="2" font="3" height="450" />
+			</VerticalLayout>
+			<VerticalLayout>
+				<GridCtrl name="gridctrl_1" columncount="6" fixedcolumntext="姓名,用户名,手机号码,固定电话,使用日期" />
+			</VerticalLayout>
+			<VerticalLayout>
+				<SciEdit name="sciedit_1" inset="0,1,0,0" bordercolor="0xFFC0C0C0" topbordersize="1" />
+			</VerticalLayout>
+		</TabLayout>
+		<Label text="日志输出窗口:" height="20" resourceid="88" />
+		<VerticalLayout height="100" sepheight="-8" sepimm="true" inset="0,8,0,0">
+			<MsgWnd name="msgwnd_frame" bordercolor="0xFFC0C0C0" bordersize="1" />
+		</VerticalLayout>
+	</VerticalLayout>
+</Window>

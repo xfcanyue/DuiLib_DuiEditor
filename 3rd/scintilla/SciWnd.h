@@ -1,15 +1,5 @@
 #pragma once
-/*
-#ifdef DLL_SCIWND_
-#	ifdef DLL_SCIWND_EXPORT
-#		define _SCIWNDCTR_ _declspec(dllexport)
-#	else
-#		define _SCIWNDCTR_ _declspec(dllimport)
-#	endif
-#else
-#   define _SCIWNDCTR_
-#endif
-*/
+
 #define _SCIWNDCTR_
 #include "SciApi.h"
 

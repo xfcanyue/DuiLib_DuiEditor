@@ -118,7 +118,7 @@ BOOL CDuiEditorDoc::OnNewDocumentFromUiTemplate()
 	CDlgCreateDuiDocument dlg;
 	if(dlg.DoModal() != IDOK) return FALSE;
 
-	CString strFile = g_strAppPath + _T("DuiTemplate\\") + dlg.m_strModuleName + _T("\\skin.xml");
+	CString strFile = g_strAppPath + _T("template\\") + dlg.m_strModuleName + _T("\\skin.xml");
 	if(!m_doc.load_file(strFile))
 	{
 		AfxMessageBox(_T("‘ÿ»Îƒ£∞Â“≥ ß∞‹!"));

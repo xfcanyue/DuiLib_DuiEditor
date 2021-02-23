@@ -119,6 +119,11 @@ namespace DuiLib
 #define DUI_MSGTYPE_LISTHEADITEMCHECKED		(_T("listheaditemchecked"))
 #define DUI_MSGTYPE_LISTPAGECHANGED			(_T("listpagechanged"))
 
+#define DUI_MSGTYPE_DRAWITEM				(_T("drawitem"))
+#define DUI_MSGTYPE_SORTITEM				(_T("sortitem"))
+#define DUI_MSGTYPE_STARTEDIT				(_T("startedit"))
+#define DUI_MSGTYPE_ENDEDIT					(_T("endedit"))
+
 #define DUI_MSGTYPE_GRID_STARTEDIT          (_T("gridstartedit"))		//add by liqs99
 #define DUI_MSGTYPE_GRID_ENDEDIT			(_T("gridendedit"))			//add by liqs99
 #define DUI_MSGTYPE_GRID_STARTSELCHANGE		(_T("gridstartselchange"))	//add by liqs99
@@ -330,8 +335,23 @@ protected:                                                                \
 #define DUI_CTR_ANIMATIONPANE					(_T("AnimationPane"))
 
 #define DUI_CTR_CHILDWINDOW					(_T("ChildWindow"))
-	///
-	//////////////END控件名称宏定义//////////////////////////////////////////////////
 
-	}// namespace DuiLib
+#define DUI_CTR_COMBOEX						(_T("ComboEx"))
+#define DUI_CTR_ICONBUTTON					(_T("IconButton"))
+#define DUI_CTR_MSGWND						(_T("RichEdit"))
+#define DUI_CTR_ACCORDIONPANE				(_T("AccordionPane"))
+#define DUI_CTR_IMAGEBOXEX					(_T("ImageBoxEx"))
+#define DUI_CTR_DATETIMEEX					(_T("DateTimeEx"))
+#define DUI_CTR_ROLLTEXTEX					(_T("RollTextEx"))
+
+// #define DUI_CTR_GRIDLIST					(_T("GridList"))
+// #define DUI_CTR_GRIDLISTHEADER				(_T("GridListHeader"))
+// #define DUI_CTR_GRIDLISTBODY				(_T("GridListBody"))
+// #define DUI_CTR_GRIDLISTROW					(_T("GridListRow"))
+// #define DUI_CTR_GRIDLISTCELL				(_T("GridListCell"))
+
+///
+//////////////END控件名称宏定义//////////////////////////////////////////////////
+
+}// namespace DuiLib
 

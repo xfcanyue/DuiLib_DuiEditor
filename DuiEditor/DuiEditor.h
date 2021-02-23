@@ -24,7 +24,7 @@ extern CDuiPropertyFile g_duiProp;
 
 inline BOOL CompareString(const wchar_t *str1, const wchar_t *str2)
 {
-	return _tcscmp(str1, str2) == 0;
+	return wcscmp(str1, str2) == 0;
 }
 
 inline BOOL CompareString(const char *str1, const char *str2)

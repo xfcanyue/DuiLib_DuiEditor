@@ -57,7 +57,7 @@ void CDlgTemplateSave::OnBnClickedOk()
 	CFileFind finder;
 	BOOL bFind;
 	CString FileName;
-	bFind = finder.FindFile(g_strAppPath + _T("DuiTemplate\\*.*"));
+	bFind = finder.FindFile(g_strAppPath + _T("template\\*.*"));
 	while(bFind)
 	{
 		bFind = finder.FindNextFile();
@@ -75,10 +75,10 @@ void CDlgTemplateSave::OnBnClickedOk()
 	}
 	finder.Close();	
 
-	CreateDirectory(g_strAppPath + _T("DuiTemplate\\"), NULL);
+	CreateDirectory(g_strAppPath + _T("template\\"), NULL);
 
 	//创建目录
-	CString strPath = g_strAppPath + _T("DuiTemplate\\") + m_strTemplateName;
+	CString strPath = g_strAppPath + _T("template\\") + m_strTemplateName;
 	CreateDirectory(strPath, NULL);
 
 	//保存截图
