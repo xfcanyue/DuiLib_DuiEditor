@@ -174,8 +174,7 @@ void CMainFrame::OnNotifyClick(TNotifyUI& msg)
 	}
 	else if(IsControl(msg, _T("btn_delete_row")))
 	{
-		CGridListRowUI *pRow = m_pGrid->GetSelectRow();
-		int row = pRow->GetRowIndex();
+		int row = m_pGrid->GetSelectRow();
 		if(row >= m_pGrid->GetFixedRowCount())
 			m_pGrid->DeleteRow(row);
 	}

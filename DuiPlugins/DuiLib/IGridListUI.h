@@ -23,7 +23,7 @@ struct TGridCell
 {
 	int row;
 	int col;
-	bool IsValid() { return row >= 0 && col >= 0; }
+	bool IsValid() { return row >= 0 && col >= 0 && col < MAX_GRID_COLUMN_COUNT; }
 };
 
 class IGridListUI

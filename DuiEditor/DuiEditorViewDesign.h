@@ -24,10 +24,10 @@ public:
 	BOOL m_bViewGrid;		//是否显示网格
 	BOOL m_bViewMouse;		//是否显示鼠标线
 
-
 	PROCESS_INFORMATION m_piProcInfo; 
 	STARTUPINFO m_siStartInfo; 
 
+	CStringArray m_arrTempStyles;
 public:
 	CUIManager *GetUIManager() const { return m_pUIManager; }
 	void SetUIManager(CUIManager *pManager) { m_pUIManager = pManager; }
@@ -132,6 +132,8 @@ public:
 	void _CreateResourceIDAuto(xml_node root);
 	afx_msg void OnEditLangText();
 	afx_msg void OnUpdateEditLangText(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateStyleList(CCmdUI *pCmdUI);
+	afx_msg BOOL OnStyleListRange(UINT uID);
 };
 
 #ifndef _DEBUG  // DuiEditorView.cpp 中的调试版本

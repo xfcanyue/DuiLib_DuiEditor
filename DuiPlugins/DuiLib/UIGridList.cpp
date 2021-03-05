@@ -155,6 +155,12 @@ void CGridListUI::DoEvent(TEventUI& event)
 	{
 		if( ::PtInRect(&m_rcItem, event.ptMouse) ) 
 		{
+			if(!GetCellFromPt(event.ptMouse))
+			{
+				ClearSelectedCells();
+				ClearSelectedRows();
+			}
+
 			if(GetManager()) GetManager()->SendNotify(this, DUI_MSGTYPE_RCLICK);
 		}
 		return;
@@ -1215,7 +1221,7 @@ int CGridListUI::GetSelectRowCount()
 	return m_aSelectedRow.GetSize();
 }
 
-CGridListRowUI *CGridListUI::GetSelectRow()
+int CGridListUI::GetSelectRow()
 {
 	m_iteratorRow = 0;
 	CGridListRowUI *pRow = NULL;
@@ -1225,10 +1231,15 @@ CGridListRowUI *CGridListUI::GetSelectRow()
 			break;
 		pRow = GetRow((int)m_aSelectedRow.GetAt(m_iteratorRow));
 	}
-	return pRow;
+
+	if(pRow)
+	{
+		return pRow->GetRowIndex();
+	}
+	return -1;
 }
 
-CGridListRowUI *CGridListUI::GetNextSelectRow()
+int CGridListUI::GetNextSelectRow()
 {
 	m_iteratorRow++;
 	CGridListRowUI *pRow = NULL;
@@ -1238,7 +1249,11 @@ CGridListRowUI *CGridListUI::GetNextSelectRow()
 			break;
 		pRow = GetRow((int)m_aSelectedRow.GetAt(m_iteratorRow));
 	}
-	return pRow;
+	if(pRow)
+	{
+		return pRow->GetRowIndex();
+	}
+	return -1;
 }
 
 int CGridListUI::GetSelectCellCount()

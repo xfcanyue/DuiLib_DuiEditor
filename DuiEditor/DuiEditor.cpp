@@ -398,6 +398,7 @@ void CDuiEditorApp::OnUpdateRecentFileMenu(CCmdUI* pCmdUI)
 		}
 	}
 	*/
+	//InsertMsg(_T("OnUpdateRecentFileMenu"));
 	CWinAppEx::OnUpdateRecentFileMenu(pCmdUI);
 }
 

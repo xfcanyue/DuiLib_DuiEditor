@@ -79,7 +79,7 @@ void CImageEditorView::OnDraw(CDC* pDC)
 	}
 
 #ifndef DUILIB_VERSION_ORIGINAL
-	CRenderEngine::DrawImageInfo(memDC->m_hDC, m_pManager, m_rcControl, m_rcControl, &m_drawInfo);
+	CRenderEngine::DrawImageInfo(memDC->m_hDC, m_pManager, m_rcControl, m_rcControl, &m_drawInfo, AfxGetResourceHandle());
 #else
 	CRenderEngine::DrawImage(memDC->m_hDC, m_pManager, m_rcControl, m_rcControl, m_drawInfo);
 #endif

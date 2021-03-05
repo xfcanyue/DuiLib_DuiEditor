@@ -15,10 +15,10 @@ set slnFile1=CxImgLibVC2010.sln
 "%devenvcmd%" "%slnFile1%" /Clean "Release|Win32"
 "%devenvcmd%" "%slnFile1%" /Build "Release|Win32"
 
-"%devenvcmd%" "%slnFile1%" /Clean "UnicodeDebug|Win32"  
-"%devenvcmd%" "%slnFile1%" /Build "UnicodeDebug|Win32"  
+"%devenvcmd%" "%slnFile1%" /Clean "Unicode Debug|Win32"  
+"%devenvcmd%" "%slnFile1%" /Build "Unicode Debug|Win32"  
 
-"%devenvcmd%" "%slnFile1%" /Clean "UnicodeRelease|Win32"
-"%devenvcmd%" "%slnFile1%" /Build "UnicodeRelease|Win32"
+"%devenvcmd%" "%slnFile1%" /Clean "Unicode Release|Win32"
+"%devenvcmd%" "%slnFile1%" /Build "Unicode Release|Win32"
 
 pause

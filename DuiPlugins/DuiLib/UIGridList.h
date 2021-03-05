@@ -71,8 +71,8 @@ public:
 	void SelectRect(const RECT &rc);
 
 	int GetSelectRowCount();
-	CGridListRowUI *GetSelectRow();
-	CGridListRowUI *GetNextSelectRow();
+	int GetSelectRow();
+	int GetNextSelectRow();
 
 	int GetSelectCellCount();
 	CGridListCellUI *GetSelectCell();

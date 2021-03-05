@@ -74,7 +74,25 @@ BOOL CDlgLangTextEdit::OnInitDialog()
 	m_Grid.ExpandColumnsToFit(TRUE);
 
 	m_Tree.SelectItem(m_Tree.GetRootItem());
-	LoadText();
+	//LoadText(_T(""));
+
+	CRect rcWindow;
+	GetClientRect(rcWindow);
+	m_uidlg = new CDlgLangTextEditUI;
+	m_uidlg->m_pParentDlg = this;
+	m_uidlg->Create(this->m_hWnd, _T("DlgLangTextEdit"), UI_WNDSTYLE_CHILD, WS_EX_WINDOWEDGE, rcWindow);
+
+	CVerticalLayoutUI *pVerti = (CVerticalLayoutUI *)m_uidlg->FindControl(_T("verti_lang_list"));
+	for (int i=0; i<map->GetSize(); i++)
+	{
+		LPCTSTR key = map->GetAt(i);
+		COptionUI *pOpt = new COptionUI;
+		pVerti->Add(pOpt);
+		pOpt->SetText(key);
+		pOpt->SetName(key);
+		pOpt->ApplyAttributeList(_T("opt_lang"));
+	}
+	SendMessage(WM_SIZE);
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
 }
@@ -96,19 +114,19 @@ void CDlgLangTextEdit::OnNMClickTree(NMHDR *pNMHDR, LRESULT *pResult)
 	if(hItem)
 	{
 		m_Tree.SelectItem(hItem);
-		LoadText();
+		//LoadText(_T(""));
 	}
 
 	*pResult = 0;
 }
 
-void CDlgLangTextEdit::LoadText()
+void CDlgLangTextEdit::LoadText(LPCTSTR langtype)
 {
-	m_Grid.SetRowCount(1);
+	m_strCurLangType = langtype;
+	m_uidlg->m_pGrid->SetRowCount(1);
 
 	m_currentid = 0;
-	CString lang = m_Tree.GetItemText(m_Tree.GetSelectedItem());
-	xml_document *xml = (xml_document *)GetUIManager()->GetDocument()->m_mLangPackage.Find(lang);
+	xml_document *xml = (xml_document *)GetUIManager()->GetDocument()->m_mLangPackage.Find(langtype);
 	if(!xml) return;
 	xml_node root = xml->child("Language");
 	if(!root) return;
@@ -202,14 +220,10 @@ void CDlgLangTextEdit::LoadText()
 
 void CDlgLangTextEdit::InsertGridRow(LPCTSTR attrName, LPCTSTR attrValue)
 {
-	int row = m_Grid.InsertRow(_T(""));
-	m_Grid.SetRowHeight(row,40);
-	m_Grid.Cell(row,1).SetText(attrName);
-	m_Grid.Cell(row,2).SetText(attrValue);
-	if(_tcscmp(attrName, _T("id")) == 0)
-	{
-		m_Grid.Cell(row,2).SetEditable(FALSE);
-	}
+	int row = m_uidlg->m_pGrid->InsertRow();
+	m_uidlg->m_pGrid->SetRowHeight(row, 40);
+	m_uidlg->m_pGrid->Cell(row,1).SetText(attrName);
+	m_uidlg->m_pGrid->Cell(row,2).SetText(attrValue);
 }
 
 void CDlgLangTextEdit::OnGridEndEdit(NMHDR *pNotifyStruct, LRESULT* pResult)
@@ -274,11 +288,37 @@ void CDlgLangTextEdit::OnSize(UINT nType, int cx, int cy)
 	if(!m_Grid.GetSafeHwnd())	return;
 	if(!m_Tree.GetSafeHwnd())	return;
 
-	CRect rcClient, rcTree, rcGrid;
-	GetClientRect(rcClient);
-	m_Tree.GetWindowRect(rcTree);
 
-	m_Tree.MoveWindow(0,0, rcTree.Width(), rcClient.Height());
-	m_Grid.MoveWindow(rcTree.Width(), 0, rcClient.Width()-rcTree.Width(), rcClient.Height());
-	m_Grid.ExpandColumnsToFit(TRUE);
+	CRect rcClient;
+	GetClientRect(rcClient);
+	::MoveWindow(m_uidlg->GetHWND(), 0,0,rcClient.Width(), rcClient.Height(), TRUE);
+
+	m_Tree.MoveWindow(0,0, 0, 0);
+	m_Grid.MoveWindow(0,0,0,0);
+	return;
+
+
+// 	CRect rcClient, rcTree, rcGrid;
+// 	GetClientRect(rcClient);
+// 	m_Tree.GetWindowRect(rcTree);
+// 
+// 	m_Tree.MoveWindow(0,0, rcTree.Width(), rcClient.Height());
+// 	m_Grid.MoveWindow(rcTree.Width(), 0, rcClient.Width()-rcTree.Width(), rcClient.Height());
+// 	m_Grid.ExpandColumnsToFit(TRUE);
+}
+
+
+void CDlgLangTextEdit::OnClickLangType()
+{
+
+}
+
+BOOL CDlgLangTextEdit::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	if(pMsg->message == WM_CHAR)
+	{
+		InsertMsg(_T("WM_CHAR"));
+	}
+	return CDialogEx::PreTranslateMessage(pMsg);
 }

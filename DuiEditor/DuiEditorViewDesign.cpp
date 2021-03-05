@@ -21,6 +21,7 @@
 
 #include "DlgTemplateSave.h"
 #include "DlgLangTextEdit.h"
+#include "UIDlgLangTextEdit.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -102,6 +103,8 @@ BEGIN_MESSAGE_MAP(CDuiEditorViewDesign, CScrollView)
 	ON_COMMAND(ID_EDIT_CREATE_RESOURCEID_AUTO, &CDuiEditorViewDesign::OnEditCreateResourceidAuto)
 	ON_COMMAND(ID_EDIT_LANG_TEXT, &CDuiEditorViewDesign::OnEditLangText)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_LANG_TEXT, &CDuiEditorViewDesign::OnUpdateEditLangText)
+	ON_UPDATE_COMMAND_UI(ID_STYLE_LIST1, &CDuiEditorViewDesign::OnUpdateStyleList)
+	ON_COMMAND_EX_RANGE(ID_STYLE_LIST1, ID_STYLE_LIST32, &CDuiEditorViewDesign::OnStyleListRange)
 END_MESSAGE_MAP()
 
 // CDuiEditorView ¹¹Ôì/Îö¹¹
@@ -231,9 +234,10 @@ void CDuiEditorViewDesign::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 	_nMaxResourceID = 0;
 	GetMaxResourceID(root, _nMaxResourceID);
 
-#ifndef SHARED_HANDLERS
-	theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EDIT, point.x, point.y, this, TRUE);
-#endif
+	CMenu popmenu;
+	popmenu.LoadMenu(IDR_POPUP_EDIT);
+	theApp.GetContextMenuManager()->ShowPopupMenu(popmenu.GetSubMenu(0)->m_hMenu, point.x, point.y, this, FALSE);
+	return;
 }
 
 #ifdef _DEBUG
@@ -1336,7 +1340,7 @@ void CDuiEditorViewDesign::_CreateResourceIDAuto(xml_node root)
 
 void CDuiEditorViewDesign::OnEditLangText()
 {
-	CDlgLangTextEdit dlg;
+	CDlgLangTextEditUI dlg;
 	dlg.SetUIManager(GetUIManager());
 	dlg.DoModal();
 }
@@ -1348,4 +1352,69 @@ void CDuiEditorViewDesign::OnUpdateEditLangText(CCmdUI *pCmdUI)
 		pCmdUI->Enable(GetUIManager()->GetUiTracker()->m_pFocused->m_pControl->GetResourceID() > 0);
 	else
 		pCmdUI->Enable(FALSE);
+}
+
+
+void CDuiEditorViewDesign::OnUpdateStyleList(CCmdUI *pCmdUI)
+{
+	if(!GetUIManager()) return;
+	CPaintManagerUI *pManager = GetUIManager()->GetManager();
+
+	int nStyle = pManager->GetStyles(false).GetSize();
+	int nStyleShared = pManager->GetStyles(true).GetSize();
+	if(nStyle == 0 && nStyleShared == 0)
+	{
+		pCmdUI->Enable(FALSE);
+		return;
+	}
+
+	if (pCmdUI->m_pSubMenu == NULL)
+		return;
+	CMenu* pMenu = pCmdUI->m_pSubMenu;
+
+	for (UINT id=ID_STYLE_LIST1; id<=ID_STYLE_LIST32; id++)
+	{
+		pMenu->DeleteMenu(id, MF_BYCOMMAND);
+	}
+	m_arrTempStyles.RemoveAll();
+
+	int nID = ID_STYLE_LIST1;
+	for (int i=0; i<nStyle; i++)
+	{
+		pMenu->InsertMenu(nID, MF_STRING|MF_BYCOMMAND, nID, pManager->GetStyles(false).GetAt(i));
+		m_arrTempStyles.Add(pManager->GetStyles(false).GetAt(i));
+
+		nID++;
+		if(nID > ID_STYLE_LIST32) return;
+	}
+
+	for (int i=0; i<nStyleShared; i++)
+	{
+		pMenu->InsertMenu(nID, MF_STRING|MF_BYCOMMAND, nID, pManager->GetStyles(true).GetAt(i));
+		m_arrTempStyles.Add(pManager->GetStyles(true).GetAt(i));
+
+		nID++;
+		if(nID > ID_STYLE_LIST32) return;
+	}
+}
+
+BOOL CDuiEditorViewDesign::OnStyleListRange(UINT uID)
+{
+	int n = uID - ID_STYLE_LIST1;
+	if(n < m_arrTempStyles.GetSize())
+	{
+		CString styleName = m_arrTempStyles.GetAt(n);
+
+		CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
+		for (int i=0; i<GetUIManager()->GetUiTracker()->m_arrTracker.GetSize(); i++)
+		{
+			CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker.GetAt(i);
+			if(pTrackElem)
+			{
+				g_duiProp.AddAttribute(pTrackElem->m_node, _T("style"), styleName, GetUIManager());
+				pTrackElem->m_pControl->SetAttribute(_T("style"), styleName);
+			}
+		}
+	}
+	return TRUE;
 }

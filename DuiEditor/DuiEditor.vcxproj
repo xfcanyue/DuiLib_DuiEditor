@@ -370,9 +370,11 @@
     <None Include="res\bmp00006.bmp" />
     <None Include="res\bmp00007.bmp" />
     <None Include="res\class_view.ico" />
+    <None Include="res\DlgLangTextEdit.xml" />
     <None Include="res\DuiEditor.ico" />
     <None Include="res\DuiEditor.rc2" />
     <None Include="res\DuiEditorDoc.ico" />
+    <None Include="res\edtico.png" />
     <None Include="res\file_view.ico" />
     <None Include="res\ico_close.ico" />
     <None Include="res\ico_stop.ico" />
@@ -380,12 +382,19 @@
     <None Include="res\project.ico" />
     <None Include="res\properties.bmp" />
     <None Include="res\properties_hc.bmp" />
+    <None Include="res\scrollbar.bmp" />
+    <None Include="res\skin.zip" />
+    <None Include="res\sys_dlg_close.png" />
+    <None Include="res\sys_dlg_max.png" />
+    <None Include="res\sys_dlg_min.png" />
+    <None Include="res\sys_dlg_restore.png" />
     <None Include="res\Toolbar.bmp" />
     <None Include="res\toolbar1.bmp" />
     <None Include="res\toolbar2.bmp" />
     <None Include="res\Toolbar256.bmp" />
     <None Include="res\ToolBox\00764.ico" />
     <None Include="res\ToolBox\Active.ico" />
+    <None Include="res\toolbox\bmp1.bin" />
     <None Include="res\ToolBox\Button.ico" />
     <None Include="res\ToolBox\CheckBox.ico" />
     <None Include="res\ToolBox\ChildLayout.ico" />
@@ -445,6 +454,7 @@
     <ClInclude Include="DlgCustomControl.h" />
     <ClInclude Include="DlgInsertControl.h" />
     <ClInclude Include="DlgLangTextEdit.h" />
+    <ClInclude Include="UIDlgLangTextEdit.h" />
     <ClInclude Include="DlgOptions.h" />
     <ClInclude Include="DlgScriptTest.h" />
     <ClInclude Include="DlgStringEditor.h" />
@@ -519,6 +529,7 @@
     <ClCompile Include="DlgCustomControl.cpp" />
     <ClCompile Include="DlgInsertControl.cpp" />
     <ClCompile Include="DlgLangTextEdit.cpp" />
+    <ClCompile Include="UIDlgLangTextEdit.cpp" />
     <ClCompile Include="DlgOptions.cpp" />
     <ClCompile Include="DlgScriptTest.cpp" />
     <ClCompile Include="DlgStringEditor.cpp" />

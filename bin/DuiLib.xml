@@ -962,7 +962,7 @@ INT类型(最小值，最大值)：
 	</Font>
 	<Image>
 		<Attribute name="name" default="" type="STRING" comment="控件名称" />
-		<Attribute name="restype" default="0" type="STRING" comment="ImageResType" />
+		<Attribute name="restype" default="" type="STRING" comment="ImageResType" />
 		<Attribute name="mask" default="0x00000000" type="DWORD" comment="mask" />
 		<Attribute name="shared" default="true" type="BOOL" comment="是否共享" />
 	</Image>
@@ -980,7 +980,7 @@ INT类型(最小值，最大值)：
 	<IMAGE>
 		<Attribute name="file" default="" type="STRING" comment="" />
 		<Attribute name="res" default="" type="STRING" comment="载入的图片资源名称" />
-		<Attribute name="restype" default="0" type="INT" comment="" />
+		<Attribute name="restype" default="" type="STRING" comment="" />
 		<Attribute name="dest" default="0,0,0,0" type="RECT" comment="显示目标区域" />
 		<Attribute name="source" default="0,0,0,0" type="RECT" comment="图片资源的区域." />
 		<Attribute name="corner" default="0,0,0,0" type="RECT" comment="圆角区域" />

@@ -2,7 +2,7 @@
 <Language>
 	<Text id="1" text="按鈕文本" />
 	<Text id="3" text="按钮" />
-	<Text id="2" text="按钮文本" />
+	<Text id="2" text="按鈕文本" />
 	<Text id="4" text="图标按钮" />
 	<Text id="5" text="按钮容器" />
 	<Text id="6" text="打开模态对话框" />

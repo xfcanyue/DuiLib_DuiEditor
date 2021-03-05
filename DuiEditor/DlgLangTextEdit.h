@@ -1,5 +1,5 @@
 #pragma once
-
+#include "UIDlgLangTextEdit.h"
 
 // CDlgLangTextEdit ¶Ô»°¿ò
 
@@ -16,6 +16,8 @@ public:
 	enum { IDD = IDD_DLG_LANG_TEXT_EDIT };
 	CGridCtrl m_Grid;
 	int m_currentid;
+	CDlgLangTextEditUI *m_uidlg;
+	CString m_strCurLangType;
 public:
 	CUIManager *GetUIManager() const { return m_pUIManager; }
 	void SetUIManager(CUIManager *pManager) { m_pUIManager = pManager; }
@@ -30,9 +32,11 @@ public:
 	CTreeCtrl m_Tree;
 	afx_msg void OnNMClickTree(NMHDR *pNMHDR, LRESULT *pResult);
 	void OnGridEndEdit(NMHDR *pNotifyStruct, LRESULT* pResult);
-	void LoadText();
+	void LoadText(LPCTSTR langtype);
 	void InsertGridRow(LPCTSTR attrName, LPCTSTR attrValue);
 	afx_msg void OnDestroy();
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	void OnClickLangType();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

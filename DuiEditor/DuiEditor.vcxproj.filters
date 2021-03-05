@@ -227,6 +227,29 @@
     <None Include="res\bmp00007.bmp">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="res\skin.zip" />
+    <None Include="res\DlgLangTextEdit.xml" />
+    <None Include="res\scrollbar.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\sys_dlg_close.png">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\sys_dlg_max.png">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\sys_dlg_min.png">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\sys_dlg_restore.png">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\edtico.png">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\toolbox\bmp1.bin">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -445,6 +468,9 @@
     <ClInclude Include="SessionList.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="UIDlgLangTextEdit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -652,6 +678,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SessionList.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIDlgLangTextEdit.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
