@@ -188,7 +188,8 @@ namespace DuiLib {
 	m_pOwner(NULL),
 		m_pLayout(),
 		m_xml(_T("")),
-		isClosing(false)
+		isClosing(false),
+		m_bAutoDestroy(false)
 	{
 		m_dwAlignment = eMenuAlignment_Left | eMenuAlignment_Top;
 	}
@@ -255,6 +256,7 @@ namespace DuiLib {
 				}
 			}
 			mCheckInfos->Resize(0);
+			CMenuWnd::GetGlobalContextMenuObserver().SetMenuCheckInfo(NULL);
 		}
 	}
 	
@@ -362,6 +364,15 @@ namespace DuiLib {
 
 			// 内部创建的内部删除
 			delete this;
+		}
+		else
+		{
+			if(m_bAutoDestroy)
+			{
+				DestroyMenu();
+				// 外部创建的也删除
+				delete this;
+			}
 		}
 	}
 
@@ -1483,10 +1494,6 @@ namespace DuiLib {
 		//	return;
 
 		CMenuCmdUI cmdUI(this);
-// 		cmdUI.m_bEnable = IsEnabled();
-// 		cmdUI.m_bCheck = true;
-// 		cmdUI.m_sName = GetName();
-// 		cmdUI.m_sText = GetText();
 		LRESULT lRet = ::SendMessage(CMenuWnd::GetGlobalContextMenuObserver().GetManager()->GetPaintWindow(), WM_MENU_UPDATE_COMMAND_UI, (WPARAM)&cmdUI, (LPARAM)this);		
 	}
 

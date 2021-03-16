@@ -23,6 +23,12 @@ namespace DuiLib
 		DWORD GetIP();
 		void SetIP(DWORD dwIP);
 
+		virtual void SetText(LPCTSTR pstrText);
+		virtual CDuiString GetText() const;
+
+		virtual int  GetText_to_int();
+		virtual void SetText(int n);
+
 		void SetReadOnly(bool bReadOnly);
 		bool IsReadOnly() const;
 

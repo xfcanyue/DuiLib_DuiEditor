@@ -16,11 +16,14 @@ CMainFrame::CMainFrame(void)
 	m_bCheckmenu_cmd_41 = TRUE;
 	m_bCheckmenu_cmd_42 = FALSE;
 	m_nMenuSelected = 0;
+
+	m_pMenuWnd = NULL;
 }
 
 
 CMainFrame::~CMainFrame(void)
 {
+	//if(m_pMenuWnd){ delete m_pMenuWnd; m_pMenuWnd = NULL; }
 }
 
 void CMainFrame::Notify(TNotifyUI& msg)
@@ -218,8 +221,9 @@ void CMainFrame::OnNotifyClick(TNotifyUI& msg)
 
 	if(IsControl(msg, _T("btn_domodal")))
 	{
-		CDialog2 dlg;
+		CDialog1 dlg;
 		dlg.DoModal(this);
+		GetManager()->RebuildFont(GetManager()->GetFontInfo(-1));
 	}
 
 	if(IsControl(msg, _T("btn_show_dialog")))
@@ -236,7 +240,8 @@ void CMainFrame::OnNotifyClick(TNotifyUI& msg)
 		//…Ë÷√◊¥Ã¨
 		//CMenuWnd::SetMenuItemInfo(_T("menu_cmd_2"), m_bCheckmenu_cmd_2 == TRUE);
 
-		CreateMenu(_T("Menu.xml"));
+		//if(m_pMenuWnd){ delete m_pMenuWnd; m_pMenuWnd = NULL; }
+		m_pMenuWnd = CreateMenu(_T("Menu.xml"));
 	}
 
 	if(IsControl(msg, _T("dpi_96")))

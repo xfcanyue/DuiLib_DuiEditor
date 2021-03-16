@@ -2054,6 +2054,7 @@ namespace DuiLib {
 		// 销毁资源管理器
 		CResourceManager::GetInstance()->Release();
 		CControlFactory::GetInstance()->Release();
+		CMenuWnd::DestroyMenu();
 		CLangManagerUI::ReleaseStringTable();
 
 		// 清理共享资源

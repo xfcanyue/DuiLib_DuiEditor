@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Window size="550,500" sizebox="4,4,6,6" caption="0,0,0,25" roundcorner="5,5">
+<Window size="550,543" sizebox="4,4,6,6" caption="0,0,0,25" roundcorner="5,5">
 	<VerticalLayout width="569" height="461" inset="1,1,1,1" bkcolor="0xFF498DFD" bkcolor2="0xFFCFE7F4" bordercolor="0xFF768D9B" bordersize="1">
 		<HorizontalLayout name="dialog_header" height="25">
 			<HorizontalLayout childvalign="vcenter" padding="5,0,0,0">
@@ -42,6 +42,8 @@
 				<Label text="Money" width="70" height="31" pos="35,315,105,346" float="true" />
 				<RichEdit name="edit_money" width="121" height="31" valign="center" textpadding="5,0,5,0" pos="121,315,242,346" float="true" bordercolor="0xFFC0C0C0" bordersize="1" />
 				<DateTime name="datetime_3" width="121" height="31" formatstyle="time" textpadding="5,0,5,0" pos="121,278,242,309" float="true" bordercolor="0xFFC0C0C0" bordersize="1" />
+				<Label text="IP Address" width="70" height="31" pos="35,360,105,391" float="true" />
+				<IPAddress width="159" height="31" textpadding="5,0,5,0" pos="122,361,281,392" float="true" bordercolor="0xFFC0C0C0" bordersize="1" />
 			</GroupBox>
 		</VerticalLayout>
 		<HorizontalLayout name="dialog_bottom" height="55" inset="10,0,10,0" childpadding="10" childalign="right" childvalign="vcenter">

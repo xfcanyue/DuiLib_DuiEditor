@@ -352,6 +352,7 @@ public:
     CMenuElementUI* m_pOwner;
     CMenuUI*	m_pLayout;
 	DWORD		m_dwAlignment;	//菜单对齐方式
+	bool		m_bAutoDestroy;
 };
 
 class CListContainerElementUI;

@@ -49,6 +49,7 @@ inline CMenuWnd *DuiCreateMenu(LPCTSTR xmlFile, CPaintManagerUI *pManager)
 	CDuiPoint pt;
 	::GetCursorPos(&pt);
 	CMenuWnd *pMenuWnd = CMenuWnd::CreateMenu(NULL, xmlFile, pt, pManager);
+	pMenuWnd->m_bAutoDestroy = true;
 	if(pMenuWnd)
 	{
 		pMenuWnd->ResizeMenu();

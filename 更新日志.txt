@@ -6,6 +6,10 @@
 
     由于duilib有许多的个人维护版本, 为了更大的兼容, 设计器从duilib.xml载入控件属性. 需要给设计器增加新控件的话, 只需要编辑duilib.xml就可以. 如果一个控件在duilib.xml定义, 但界面库没定义, 设计器依然可以编辑属性, 但无法预览. 
 
+BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助. 
+    QQ群：819272442。
+
+
 1,  控件的默认属性float=false, 非float控件的pos.left和pos.top总是为0, 不要用鼠标直接拖拽非float控件的位置. 这是duilib的布局特点决定的.
 
 2,  关于pos,width,height属性值的冗余, 实际上duilib代码里面, width和height属性就是冗余的. 实在纠结这个的话, 非float控件不要用鼠标或键盘方向键调准位置大小,直接在属性面板中设置pos的值. 毕竟float控件用的很少.
@@ -149,6 +153,9 @@
    1,设计界面，右键菜单增加命令“设置Style属性”。 这个命令支持选中多个控件去设置。
 
 
+2021-03-16
+   1，通过框架创建的菜单，自动析构, 不需要外部delete m_pMenuWnd。
+   2，CIPAddressUI控件,SetWindowFont(m_hWnd, m_pOwner->GetManager()->GetFontInfo(m_pOwner->GetFont())->hFont, TRUE)，窗口关闭时，会把相关hFont一起卸载掉。暂时找不到原因。所以在类的内部创建自己的hFont。
+   3, 优化设置Style属性的菜单
 
-    BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助. 
-    QQ群：819272442。
+

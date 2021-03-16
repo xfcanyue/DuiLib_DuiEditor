@@ -439,6 +439,7 @@
     <ClInclude Include="DuiLib\UIPictureControl.h" />
     <ClInclude Include="DuiLib\UISciEdit.h" />
     <ClInclude Include="DuiPlugins.h" />
+    <ClInclude Include="Include\DuiPlugins.h" />
     <ClInclude Include="MFCGridCtrl\CellRange.h" />
     <ClInclude Include="MFCGridCtrl\CellType\GridCellCheck.h" />
     <ClInclude Include="MFCGridCtrl\CellType\GridCellCombo.h" />

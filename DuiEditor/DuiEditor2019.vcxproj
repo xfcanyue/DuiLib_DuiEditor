@@ -328,6 +328,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ToolBoxCtrl.h" />
     <ClInclude Include="ToolBoxWnd.h" />
+    <ClInclude Include="UIDlgLangTextEdit.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="DockControlTreeCtrl.h" />
     <ClInclude Include="DockControlTreeWnd.h" />
@@ -403,6 +404,7 @@
     </ClCompile>
     <ClCompile Include="ToolBoxCtrl.cpp" />
     <ClCompile Include="ToolBoxWnd.cpp" />
+    <ClCompile Include="UIDlgLangTextEdit.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="DockControlTreeCtrl.cpp" />
     <ClCompile Include="DockControlTreeWnd.cpp" />

@@ -23,6 +23,7 @@
 #define new DEBUG_NEW
 #endif
 
+// 注册表写入的位置 HKEY_CURRENT_USER\SOFTWARE\DuiEditor  == name
 AFX_STATIC_DATA const TCHAR _afxFileSection[] = _T("Recent File List");
 AFX_STATIC_DATA const TCHAR _afxFileEntry[] = _T("File%d");
 AFX_STATIC_DATA const TCHAR _afxPreviewSection[] = _T("Settings");

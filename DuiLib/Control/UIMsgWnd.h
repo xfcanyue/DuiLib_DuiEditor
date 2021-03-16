@@ -21,7 +21,7 @@ public:
 	bool OnInsertMsg(void* param);
 public:
 	static CMsgWndUI *m_pStaticWindow;
-	static void InsertMsg(LPCTSTR pstring, COLORREF cr);
+	static void InsertMsg(LPCTSTR pstring, COLORREF cr=RGB(0,0,0));
 };
 
 }

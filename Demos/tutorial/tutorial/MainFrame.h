@@ -33,5 +33,6 @@ public:
 	BOOL m_bCheckmenu_cmd_42;
 
 	int m_nMenuSelected;
+	CMenuWnd *m_pMenuWnd;
 };
 

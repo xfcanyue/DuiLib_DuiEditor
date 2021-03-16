@@ -134,6 +134,7 @@ public:
 	afx_msg void OnUpdateEditLangText(CCmdUI *pCmdUI);
 	afx_msg void OnUpdateStyleList(CCmdUI *pCmdUI);
 	afx_msg BOOL OnStyleListRange(UINT uID);
+	afx_msg void OnUpdateStyleListRange(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // DuiEditorView.cpp 中的调试版本

@@ -445,6 +445,9 @@
     <ClInclude Include="SessionList.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="UIDlgLangTextEdit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -652,6 +655,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SessionList.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIDlgLangTextEdit.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

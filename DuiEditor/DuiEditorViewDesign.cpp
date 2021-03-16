@@ -103,8 +103,9 @@ BEGIN_MESSAGE_MAP(CDuiEditorViewDesign, CScrollView)
 	ON_COMMAND(ID_EDIT_CREATE_RESOURCEID_AUTO, &CDuiEditorViewDesign::OnEditCreateResourceidAuto)
 	ON_COMMAND(ID_EDIT_LANG_TEXT, &CDuiEditorViewDesign::OnEditLangText)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_LANG_TEXT, &CDuiEditorViewDesign::OnUpdateEditLangText)
-	ON_UPDATE_COMMAND_UI(ID_STYLE_LIST1, &CDuiEditorViewDesign::OnUpdateStyleList)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_SET_STYLE_PROPERTY, &CDuiEditorViewDesign::OnUpdateStyleList)
 	ON_COMMAND_EX_RANGE(ID_STYLE_LIST1, ID_STYLE_LIST32, &CDuiEditorViewDesign::OnStyleListRange)
+	ON_UPDATE_COMMAND_UI_RANGE(ID_STYLE_LIST1, ID_STYLE_LIST32, &CDuiEditorViewDesign::OnUpdateStyleListRange)
 END_MESSAGE_MAP()
 
 // CDuiEditorView ¹¹Ôì/Îö¹¹
@@ -1372,6 +1373,7 @@ void CDuiEditorViewDesign::OnUpdateStyleList(CCmdUI *pCmdUI)
 		return;
 	CMenu* pMenu = pCmdUI->m_pSubMenu;
 
+	pMenu->DeleteMenu(ID_EDIT_SET_STYLE_PROPERTY, MF_BYCOMMAND);
 	for (UINT id=ID_STYLE_LIST1; id<=ID_STYLE_LIST32; id++)
 	{
 		pMenu->DeleteMenu(id, MF_BYCOMMAND);
@@ -1417,4 +1419,26 @@ BOOL CDuiEditorViewDesign::OnStyleListRange(UINT uID)
 		}
 	}
 	return TRUE;
+}
+
+void CDuiEditorViewDesign::OnUpdateStyleListRange(CCmdUI *pCmdUI)
+{
+	int n = pCmdUI->m_nID - ID_STYLE_LIST1;
+	if(n < m_arrTempStyles.GetSize())
+	{
+		CString styleName = m_arrTempStyles.GetAt(n);
+
+		CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
+		for (int i=0; i<GetUIManager()->GetUiTracker()->m_arrTracker.GetSize(); i++)
+		{
+			CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker.GetAt(i);
+			if(pTrackElem)
+			{
+				if(CompareString(pTrackElem->m_node.attribute(XTEXT("style")).as_string(), styleName))
+				{
+					pCmdUI->SetCheck(TRUE);
+				}
+			}
+		}
+	}
 }
