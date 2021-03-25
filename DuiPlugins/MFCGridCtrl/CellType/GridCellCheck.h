@@ -33,7 +33,7 @@
 #include "../GridCell.h"
 
 
-class UILIB_PLUGIN_API CGridCellCheck : public CGridCell
+class UILIB_API CGridCellCheck : public CGridCell
 {
     friend class CGridCtrl;
     DECLARE_DYNCREATE(CGridCellCheck)

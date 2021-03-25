@@ -43,7 +43,7 @@ namespace DuiLib {
 
 		//modify by liqs99 
 		CRichEditUI::CRichEditUI() : m_pTwh(NULL), m_bVScrollBarFixing(false), m_bWantTab(true), m_bWantReturn(false), 
-		m_bWantCtrlReturn(false), m_bTransparent(true), m_bRich(true), m_bReadOnly(false), m_bWordWrap(false), m_dwTextColor(0), m_iFont(-1), 
+		m_bWantCtrlReturn(false), m_bTransparent(true), m_bRich(false), m_bReadOnly(false), m_bWordWrap(false), m_dwTextColor(0), m_iFont(-1), 
 		m_iLimitText(cInitTextMax), m_lTwhStyle(ES_LEFT|ES_VERTICAL|ECO_VERTICAL), m_bDrawCaret(true), m_bInited(false), m_chLeadByte(0),m_uButtonState(0),
 		m_dwTipValueColor(0xFFBAC0C5), m_uTipValueAlign(DT_SINGLELINE | DT_LEFT), m_uTextStyle(DT_TOP), m_bAutoCalcWidth(false), m_bAutoCalcHeight(false),
 		m_bReturnFixedWidth(true), m_bReturnFixedHeight(true)

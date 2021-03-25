@@ -197,7 +197,7 @@ typedef BOOL (CALLBACK* GRIDCALLBACK)(GV_DISPINFO *, LPARAM);
 
 class CGridCtrl;
 
-class UILIB_PLUGIN_API CGridTracker: public CRectTracker
+class UILIB_API CGridTracker: public CRectTracker
 {
 public:
 	virtual void DrawTrackerRect(LPCRECT lpRect, CWnd* pWndClipTo, CDC* pDC, CWnd* pWnd);
@@ -211,7 +211,7 @@ public:
 
 typedef bool (*PVIRTUALCOMPARE)(int, int);
 
-class UILIB_PLUGIN_API CGridCtrl : public CWnd
+class UILIB_API CGridCtrl : public CWnd
 {
     DECLARE_DYNCREATE(CGridCtrl)
     friend class CGridCell;

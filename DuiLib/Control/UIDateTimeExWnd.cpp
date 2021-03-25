@@ -33,6 +33,7 @@ void CDateTimeExWnd::Init(CDateTimeExUI* pOwner, UINT uFormatStyle)
 	}
 
 	memcpy(&m_oldSysTime, &m_pOwner->GetTime(), sizeof(SYSTEMTIME));
+	memcpy(&m_dtTemp, &m_pOwner->GetTime(), sizeof(SYSTEMTIME));
 	::SendMessage(m_hWnd, DTM_SETSYSTEMTIME, 0, (LPARAM)&m_pOwner->GetTime());
 	::ShowWindow(m_hWnd, SW_SHOWNOACTIVATE);
 	::SetFocus(m_hWnd);
@@ -102,17 +103,35 @@ LRESULT CDateTimeExWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		NMHDR* pHeader=(NMHDR*)lParam;
 		if(pHeader != NULL && pHeader->hwndFrom == m_hWnd) {
-			if(pHeader->code == DTN_DATETIMECHANGE) {
-				LPNMDATETIMECHANGE lpChage=(LPNMDATETIMECHANGE)lParam;
-				::SendMessage(m_hWnd, DTM_GETSYSTEMTIME, 0, (LPARAM)&m_pOwner->GetTime());
+			if(pHeader->code == DTN_DATETIMECHANGE) 
+			{
+// 				LPNMDATETIMECHANGE lpChage=(LPNMDATETIMECHANGE)lParam;
+// 				::SendMessage(m_hWnd, DTM_GETSYSTEMTIME, 0, (LPARAM)&m_pOwner->GetTime());
+// 				m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_TEXTCHANGED);
+
+				//CMsgWndUI::InsertMsg(_T("DTN_DATETIMECHANGE"));
+				::SendMessage(m_hWnd, DTM_GETSYSTEMTIME, 0, (LPARAM)&m_dtTemp);
+				if(memcmp(&m_pOwner->GetTime(), &m_dtTemp, sizeof(SYSTEMTIME)) != 0)
+				{
+					m_pOwner->GetTime() = m_dtTemp;
+					m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_TEXTCHANGED);
+				}
 			}
 			else if(pHeader->code == DTN_DROPDOWN) {
+				//CMsgWndUI::InsertMsg(_T("DTN_DROPDOWN"));
 				m_bDropOpen = true;
 
 			}
 			else if(pHeader->code == DTN_CLOSEUP) {
-				::SendMessage(m_hWnd, DTM_GETSYSTEMTIME, 0, (LPARAM)&m_pOwner->GetTime());
-				PostMessage(WM_CLOSE);
+				//::SendMessage(m_hWnd, DTM_GETSYSTEMTIME, 0, (LPARAM)&m_pOwner->GetTime());
+				//CMsgWndUI::InsertMsg(_T("DTN_CLOSEUP"));
+				::SendMessage(m_hWnd, DTM_GETSYSTEMTIME, 0, (LPARAM)&m_dtTemp);
+				if(memcmp(&m_pOwner->GetTime(), &m_dtTemp, sizeof(SYSTEMTIME)) != 0)
+				{
+					m_pOwner->GetTime() = m_dtTemp;
+					m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_TEXTCHANGED);
+				}
+				//PostMessage(WM_CLOSE);
 				m_bDropOpen = false;
 			}
 		}

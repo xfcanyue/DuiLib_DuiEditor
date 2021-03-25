@@ -103,6 +103,26 @@ CControlUI *CComboExUI::AddString(LPCTSTR pstrText, UINT_PTR ptrItemData)
 	return pLabel;
 }
 
+int CComboExUI::DeleteString(LPCTSTR pstrText) //返回删除项的下标
+{
+	for( int it = 0; it < GetCount(); it++ ) {
+		CControlUI* pControl = static_cast<CControlUI*>(GetItemAt(it));
+		if( !pControl->IsVisible() ) continue;
+
+		if(pControl->GetText() == pstrText)
+		{
+			if(m_iCurSel  == it)
+			{
+				SetCurSel(-1);
+				SetText(_T(""));
+			}
+			Remove(pControl);
+			return true;
+		}
+	}
+	return -1;
+}
+
 bool CComboExUI::SelectString(LPCTSTR pstrText)
 {
 	for( int it = 0; it < GetCount(); it++ ) {

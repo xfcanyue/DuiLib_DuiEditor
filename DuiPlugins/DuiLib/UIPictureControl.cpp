@@ -1,17 +1,17 @@
 #include "StdAfx.h"
 #include "UIPictureControl.h"
 
-#include "../../DuiLib/Utils/unzip.cpp"
-
 namespace DuiLib
 {
 
-static CMapPtrToPtr g_MapTimerID_TO_CPictureControlUI;
+
+static std::map<UINT, CControlUI *> g_MapTimerID_TO_CPictureControlUI;
 static void CALLBACK TimerProc(HWND hWnd,UINT nMsg,UINT idEvent,DWORD dwTime)  
 {
-	CPictureControlUI *pObject;
-	if (g_MapTimerID_TO_CPictureControlUI.Lookup((void *) idEvent, (void*&)pObject))
+	std::map<UINT, CControlUI *>::iterator it = g_MapTimerID_TO_CPictureControlUI.find(idEvent);
+	if(it != g_MapTimerID_TO_CPictureControlUI.end())
 	{
+		CPictureControlUI *pObject = (CPictureControlUI *)it->second;
 		pObject->OnTimer(idEvent);
 	}
 }
@@ -21,6 +21,26 @@ struct CPictureControlUI::Imp
 	CxImage img;
 };
 
+static bool LoadGifImageX(CxImage &img, STRINGorID bitmap, LPCTSTR type , DWORD mask)
+{
+	LPBYTE pData = NULL;
+	DWORD dwSize = CRenderEngine::LoadImage2Memory(bitmap,type,pData);
+	if(dwSize == 0U || !pData)
+		return false;
+
+	img.DestroyFrames();
+	img.Destroy();
+
+	img.SetRetreiveAllFrames(TRUE);
+	if(!img.Decode(pData,dwSize,CXIMAGE_FORMAT_UNKNOWN))
+	{
+		delete[] pData; pData = NULL;
+		return false;
+	}
+
+	delete[] pData; pData = NULL;
+	return true;
+}
 IMPLEMENT_DUICONTROL(CPictureControlUI)
 //////////////////////////////////////////////////////////////////////////
 CPictureControlUI::CPictureControlUI(void):m_pImp(new CPictureControlUI::Imp())
@@ -219,7 +239,7 @@ void CPictureControlUI::StartAnim()
 	if(m_idEventTimer == 0)
 	{
 		m_idEventTimer = ::SetTimer(NULL, NULL, m_nDelay, TimerProc);
-		g_MapTimerID_TO_CPictureControlUI.SetAt((void *) m_idEventTimer, this);
+		g_MapTimerID_TO_CPictureControlUI[m_idEventTimer] = this;
 	}
 }
 
@@ -228,7 +248,9 @@ void CPictureControlUI::StopAnim()
 	if(m_idEventTimer != 0)
 	{
 		::KillTimer(NULL, m_idEventTimer);
-		g_MapTimerID_TO_CPictureControlUI.RemoveKey((void *) m_idEventTimer);
+		std::map<UINT, CControlUI *>::iterator it = g_MapTimerID_TO_CPictureControlUI.find(m_idEventTimer);
+		if(it != g_MapTimerID_TO_CPictureControlUI.end())
+			g_MapTimerID_TO_CPictureControlUI.erase(it);
 		m_idEventTimer = 0;
 	}
 }

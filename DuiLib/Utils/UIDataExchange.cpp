@@ -44,6 +44,9 @@ implfun bool CUIDataExchange::UpdateDataUI(bool bSaveAndValidate)
 		case _control_combo:
 			_UpdateCombo(pData, bSaveAndValidate);
 			break;
+		case _control_tablayout:
+			_UpdateTabLayout(pData, bSaveAndValidate);
+			break;
 		}
 	}
 	return true;
@@ -201,6 +204,28 @@ implfun bool CUIDataExchange::_UpdateCombo(_ddx_data *pData, bool bSaveAndValida
 	return true;
 }
 
+implfun bool CUIDataExchange::_UpdateTabLayout(_ddx_data *pData, bool bSaveAndValidate)
+{
+	CTabLayoutUI *pControl = static_cast<CTabLayoutUI *>(pData->pControl->GetInterface(DUI_CTR_TABLAYOUT));
+	if(!pControl)	return false;
+
+	if(bSaveAndValidate)
+	{
+		if(pData->valueType == _value_int)
+		{
+			*((int *)(pData->pValue)) = pControl->GetCurSel();
+		}
+	}
+	else
+	{
+		if(pData->valueType == _value_int)
+		{
+			pControl->SelectItem(*((int *)(pData->pValue)));
+		}
+	}
+	return true;
+}
+
 implfun bool CUIDataExchange::ddxText(CControlUI *pControl, PVOID pValue, _ddx_value_type type)
 {
 	_ddx_data *dd = new _ddx_data;
@@ -346,6 +371,28 @@ implfun bool CUIDataExchange::ddxCombo(LPCTSTR pControlName, int &va)
 	return ddxCombo(pControl, va);
 }
 
+implfun bool CUIDataExchange::ddxTabLayout(CControlUI *pControl, int &va) //cursel
+{
+	ASSERT(pControl);
+	ASSERT(pControl->GetInterface(DUI_CTR_TABLAYOUT));
+
+	if(pControl->GetInterface(DUI_CTR_TABLAYOUT) == NULL)
+		return false;
+
+	_ddx_data *dd = new _ddx_data;
+	dd->pControl = pControl;
+	dd->controlType = _control_tablayout;
+	dd->valueType = _value_int;
+	dd->pValue = &va;
+	m_arrData.Add(dd);
+	return true;
+}
+
+implfun bool CUIDataExchange::ddxTabLayout(LPCTSTR pControlName, int &va) //cursel
+{
+	CControlUI *pControl = m_pManager->FindControl(pControlName);
+	return ddxTabLayout(pControl, va);
+}
 
 //////////////////////////////////////////////////////////////////////////
 #ifdef _AFX

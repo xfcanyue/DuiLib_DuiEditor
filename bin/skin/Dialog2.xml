@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- xxxxx -->
-<Window size="800,500" sizebox="4,4,6,6" caption="0,0,0,25" roundcorner="5,5">
+<Window size="500,300" sizebox="4,4,6,6" caption="0,0,0,25" roundcorner="5,5">
 	<Font id="0" name="微软雅黑" size="18" default="true" />
-	<VerticalLayout childalign="center" childvalign="vcenter" bkcolor="0xFFA6CAF0" />
+	<VerticalLayout childalign="center" childvalign="vcenter" bkcolor="0xFFA6CAF0">
+		<PictureControl />
+	</VerticalLayout>
 </Window>

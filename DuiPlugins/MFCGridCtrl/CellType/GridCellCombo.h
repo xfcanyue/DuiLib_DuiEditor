@@ -33,7 +33,7 @@
 #include "../GridCell.h"
 
 
-class UILIB_PLUGIN_API CGridCellCombo : public CGridCell
+class UILIB_API CGridCellCombo : public CGridCell
 {
     friend class CGridCtrl;
 	friend class CInPlaceList;

@@ -207,6 +207,21 @@
     <ClCompile Include="Control\UITabCtrl.cpp">
       <Filter>Source Files\Control</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\UIForm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\UIFrameWnd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\UIDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\UIApplication.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\UIFrameBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Layout\UIOptionLayout.cpp">
       <Filter>Source Files\Layout</Filter>
     </ClCompile>
@@ -243,32 +258,17 @@
     <ClCompile Include="Control\UIDateTimeExWnd.cpp">
       <Filter>Source Files\Control</Filter>
     </ClCompile>
-    <ClCompile Include="Control\UIRollTextEx.cpp">
-      <Filter>Source Files\Control</Filter>
-    </ClCompile>
-    <ClCompile Include="Control\UIMsgWnd.cpp">
+    <ClCompile Include="Control\UIIconButton.cpp">
       <Filter>Source Files\Control</Filter>
     </ClCompile>
     <ClCompile Include="Control\UIImageBoxEx.cpp">
       <Filter>Source Files\Control</Filter>
     </ClCompile>
-    <ClCompile Include="Control\UIIconButton.cpp">
+    <ClCompile Include="Control\UIMsgWnd.cpp">
       <Filter>Source Files\Control</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\UIFrameWnd.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils\UIApplication.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils\UIDialog.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils\UIForm.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils\UIFrameBase.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="Control\UIRollTextEx.cpp">
+      <Filter>Source Files\Control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -461,6 +461,21 @@
     <ClInclude Include="Control\UITabCtrl.h">
       <Filter>Header Files\Control</Filter>
     </ClInclude>
+    <ClInclude Include="Utils\UIForm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\UIFrameWnd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\UIDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\UIApplication.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\UIFrameBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Layout\UIOptionLayout.h">
       <Filter>Header Files\Layout</Filter>
     </ClInclude>
@@ -482,16 +497,7 @@
     <ClInclude Include="Control\TxtWinHost.h">
       <Filter>Header Files\Control</Filter>
     </ClInclude>
-    <ClInclude Include="Control\UIComboEditWnd.h">
-      <Filter>Header Files\Control</Filter>
-    </ClInclude>
-    <ClInclude Include="Control\UIComboEx.h">
-      <Filter>Header Files\Control</Filter>
-    </ClInclude>
-    <ClInclude Include="Control\UIDateTimeEx.h">
-      <Filter>Header Files\Control</Filter>
-    </ClInclude>
-    <ClInclude Include="Control\UIDateTimeExWnd.h">
+    <ClInclude Include="Control\UIAccordionPane.h">
       <Filter>Header Files\Control</Filter>
     </ClInclude>
     <ClInclude Include="Control\UIRollTextEx.h">
@@ -506,23 +512,17 @@
     <ClInclude Include="Control\UIIconButton.h">
       <Filter>Header Files\Control</Filter>
     </ClInclude>
-    <ClInclude Include="Control\UIAccordionPane.h">
+    <ClInclude Include="Control\UIDateTimeExWnd.h">
       <Filter>Header Files\Control</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\UIApplication.h">
-      <Filter>Header Files\Utils</Filter>
+    <ClInclude Include="Control\UIDateTimeEx.h">
+      <Filter>Header Files\Control</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\UIDialog.h">
-      <Filter>Header Files\Utils</Filter>
+    <ClInclude Include="Control\UIComboEx.h">
+      <Filter>Header Files\Control</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\UIForm.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\UIFrameBase.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\UIFrameWnd.h">
-      <Filter>Header Files\Utils</Filter>
+    <ClInclude Include="Control\UIComboEditWnd.h">
+      <Filter>Header Files\Control</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

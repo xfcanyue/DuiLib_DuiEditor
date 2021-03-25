@@ -13,17 +13,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\MFCGridCtrl">
-      <UniqueIdentifier>{e72328a3-4c4f-4965-950b-737431a66e7b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\MFCGridCtrl">
-      <UniqueIdentifier>{3d1d5ade-e5d0-4299-a6d4-29aa85eac1a0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="头文件\DuiLib">
-      <UniqueIdentifier>{d20d66f1-6856-4609-acbf-e763790c2599}</UniqueIdentifier>
+      <UniqueIdentifier>{b121e364-f9ce-4604-a083-6bd856333f2f}</UniqueIdentifier>
     </Filter>
     <Filter Include="源文件\DuiLib">
-      <UniqueIdentifier>{c8576117-c587-41a4-840a-8e96e0f7b3e4}</UniqueIdentifier>
+      <UniqueIdentifier>{5e40f750-aa1e-426d-9fd7-9f38ff2f8c77}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -31,149 +25,33 @@
     <None Include="DuiPlugins.def">
       <Filter>源文件</Filter>
     </None>
-    <None Include="res\DuiPlugins.rc2">
-      <Filter>资源文件</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DuiPlugins.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="MFCGridCtrl\GridCell.cpp">
-      <Filter>源文件\MFCGridCtrl</Filter>
-    </ClCompile>
-    <ClCompile Include="MFCGridCtrl\InPlaceEdit.cpp">
-      <Filter>源文件\MFCGridCtrl</Filter>
-    </ClCompile>
-    <ClCompile Include="MFCGridCtrl\GridCellBase.cpp">
-      <Filter>源文件\MFCGridCtrl</Filter>
-    </ClCompile>
-    <ClCompile Include="MFCGridCtrl\CellType\GridCellCheck.cpp">
-      <Filter>源文件\MFCGridCtrl</Filter>
-    </ClCompile>
-    <ClCompile Include="MFCGridCtrl\CellType\GridCellCombo.cpp">
-      <Filter>源文件\MFCGridCtrl</Filter>
-    </ClCompile>
-    <ClCompile Include="MFCGridCtrl\CellType\GridCellDateTime.cpp">
-      <Filter>源文件\MFCGridCtrl</Filter>
-    </ClCompile>
-    <ClCompile Include="MFCGridCtrl\CellType\GridCellNumeric.cpp">
-      <Filter>源文件\MFCGridCtrl</Filter>
-    </ClCompile>
-    <ClCompile Include="MFCGridCtrl\GridCtrl.cpp">
-      <Filter>源文件\MFCGridCtrl</Filter>
-    </ClCompile>
-    <ClCompile Include="MFCGridCtrl\GridDropTarget.cpp">
-      <Filter>源文件\MFCGridCtrl</Filter>
-    </ClCompile>
-    <ClCompile Include="MFCGridCtrl\CellType\GridURLCell.cpp">
-      <Filter>源文件\MFCGridCtrl</Filter>
-    </ClCompile>
-    <ClCompile Include="MFCGridCtrl\TitleTip.cpp">
-      <Filter>源文件\MFCGridCtrl</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UISciEdit.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIGridCtrl.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIImageBox.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIKeyBoard.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIKeyBoardNumber.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIKeyBoardSimple.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIPictureControl.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3rd\scintilla\SciWnd.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIGridList.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIGridListBody.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIGridListCell.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIGridListHeader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIGridListRowUI.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="DuiPlugins.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Resource.h">
+    <ClInclude Include="Include\DuiPlugins.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="MFCGridCtrl\CellRange.h">
-      <Filter>头文件\MFCGridCtrl</Filter>
-    </ClInclude>
-    <ClInclude Include="MFCGridCtrl\GridCell.h">
-      <Filter>头文件\MFCGridCtrl</Filter>
-    </ClInclude>
-    <ClInclude Include="MFCGridCtrl\InPlaceEdit.h">
-      <Filter>头文件\MFCGridCtrl</Filter>
-    </ClInclude>
-    <ClInclude Include="MFCGridCtrl\GridCellBase.h">
-      <Filter>头文件\MFCGridCtrl</Filter>
-    </ClInclude>
-    <ClInclude Include="MFCGridCtrl\CellType\GridCellCheck.h">
-      <Filter>头文件\MFCGridCtrl</Filter>
-    </ClInclude>
-    <ClInclude Include="MFCGridCtrl\CellType\GridCellCombo.h">
-      <Filter>头文件\MFCGridCtrl</Filter>
-    </ClInclude>
-    <ClInclude Include="MFCGridCtrl\CellType\GridCellDateTime.h">
-      <Filter>头文件\MFCGridCtrl</Filter>
-    </ClInclude>
-    <ClInclude Include="MFCGridCtrl\CellType\GridCellNumeric.h">
-      <Filter>头文件\MFCGridCtrl</Filter>
-    </ClInclude>
-    <ClInclude Include="MFCGridCtrl\GridCtrl.h">
-      <Filter>头文件\MFCGridCtrl</Filter>
-    </ClInclude>
-    <ClInclude Include="MFCGridCtrl\GridDropTarget.h">
-      <Filter>头文件\MFCGridCtrl</Filter>
-    </ClInclude>
-    <ClInclude Include="MFCGridCtrl\GridMemDC.h">
-      <Filter>头文件\MFCGridCtrl</Filter>
-    </ClInclude>
-    <ClInclude Include="MFCGridCtrl\CellType\GridURLCell.h">
-      <Filter>头文件\MFCGridCtrl</Filter>
-    </ClInclude>
-    <ClInclude Include="MFCGridCtrl\TitleTip.h">
-      <Filter>头文件\MFCGridCtrl</Filter>
-    </ClInclude>
-    <ClInclude Include="TinyXml2\tinyxml2.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="DuiLib\UIGridList.h">
+      <Filter>头文件\DuiLib</Filter>
     </ClInclude>
     <ClInclude Include="DuiLib\UISciEdit.h">
       <Filter>头文件\DuiLib</Filter>
     </ClInclude>
-    <ClInclude Include="DuiLib\UIGridCtrl.h">
+    <ClInclude Include="DuiLib\UIGridListBody.h">
+      <Filter>头文件\DuiLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DuiLib\UIGridListCell.h">
+      <Filter>头文件\DuiLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DuiLib\UIGridListHeader.h">
+      <Filter>头文件\DuiLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DuiLib\UIGridListRowUI.h">
       <Filter>头文件\DuiLib</Filter>
     </ClInclude>
     <ClInclude Include="DuiLib\UIImageBox.h">
@@ -191,31 +69,130 @@
     <ClInclude Include="DuiLib\UIPictureControl.h">
       <Filter>头文件\DuiLib</Filter>
     </ClInclude>
-    <ClInclude Include="..\3rd\scintilla\SciWnd.h">
+    <ClInclude Include="DuiLib\IGridListUI.h">
+      <Filter>头文件\DuiLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DuiLib\UIGridCtrl.h">
+      <Filter>头文件\DuiLib</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCGridCtrl\CellRange.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="DuiLib\UIGridList.h">
+    <ClInclude Include="MFCGridCtrl\GridCell.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="DuiLib\UIGridListBody.h">
+    <ClInclude Include="MFCGridCtrl\GridCellBase.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="DuiLib\UIGridListCell.h">
+    <ClInclude Include="MFCGridCtrl\GridCtrl.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="DuiLib\UIGridListHeader.h">
+    <ClInclude Include="MFCGridCtrl\GridDropTarget.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="DuiLib\UIGridListRowUI.h">
+    <ClInclude Include="MFCGridCtrl\GridMemDC.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Include\DuiPlugins.h">
+    <ClInclude Include="MFCGridCtrl\InPlaceEdit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCGridCtrl\TitleTip.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCGridCtrl\CellType\GridCellCheck.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCGridCtrl\CellType\GridCellCombo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCGridCtrl\CellType\GridCellDateTime.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCGridCtrl\CellType\GridCellNumeric.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCGridCtrl\CellType\GridURLCell.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="DuiPlugins.rc">
-      <Filter>资源文件</Filter>
-    </ResourceCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiPlugins.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiLib\UIGridList.cpp">
+      <Filter>源文件\DuiLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiLib\UISciEdit.cpp">
+      <Filter>源文件\DuiLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiLib\UIGridListBody.cpp">
+      <Filter>源文件\DuiLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiLib\UIGridListCell.cpp">
+      <Filter>源文件\DuiLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiLib\UIGridListHeader.cpp">
+      <Filter>源文件\DuiLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiLib\UIGridListRowUI.cpp">
+      <Filter>源文件\DuiLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiLib\UIImageBox.cpp">
+      <Filter>源文件\DuiLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiLib\UIKeyBoard.cpp">
+      <Filter>源文件\DuiLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiLib\UIKeyBoardNumber.cpp">
+      <Filter>源文件\DuiLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiLib\UIKeyBoardSimple.cpp">
+      <Filter>源文件\DuiLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiLib\UIPictureControl.cpp">
+      <Filter>源文件\DuiLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiLib\UIGridCtrl.cpp">
+      <Filter>源文件\DuiLib</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCGridCtrl\GridCell.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCGridCtrl\GridCellBase.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCGridCtrl\GridCtrl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCGridCtrl\GridDropTarget.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCGridCtrl\InPlaceEdit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCGridCtrl\TitleTip.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCGridCtrl\CellType\GridCellCheck.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCGridCtrl\CellType\GridCellCombo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCGridCtrl\CellType\GridCellDateTime.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCGridCtrl\CellType\GridCellNumeric.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCGridCtrl\CellType\GridURLCell.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

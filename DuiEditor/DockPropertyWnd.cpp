@@ -127,7 +127,7 @@ int CDockPropertyWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 	m_wndFindText.SetFont(&afxGlobalData.fontRegular);
 	m_wndFindText.EnableFolderBrowseButton();
-	m_wndFindText.SetImage();
+	m_wndFindText.SetImage(IDB_BITMAP_DELETE);
 
 	m_tabClass.Create (CMFCTabCtrl::STYLE_3D_ONENOTE,
 		CRect(0,0,0,0), this, ID_VIEW_CONTROL_TAB, CMFCTabCtrl::LOCATION_TOP); 

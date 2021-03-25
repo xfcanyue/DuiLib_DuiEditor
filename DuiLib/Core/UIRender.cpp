@@ -1,9 +1,13 @@
 #include "StdAfx.h"
+#include "LsStringConverter.h"
 
+#ifndef strtoll
+#define strtoll _strtoi64
+#endif
 #define STB_IMAGE_IMPLEMENTATION
 #include "..\Utils\stb_image.h"
-
-#define strtoll _strtoi64
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "..\Utils\stb_image_write.h"
 #define NANOSVG_IMPLEMENTATION
 #include "..\Utils\nanosvg.h"
 #define NANOSVGRAST_IMPLEMENTATION
@@ -530,6 +534,50 @@ namespace DuiLib {
 		data->nY = y;
 		data->bAlpha = bAlphaChannel;
 		return data;
+	}
+
+	DWORD CRenderEngine::LoadSvgImage(LPCTSTR filepathname, LPBYTE &pData)
+	{
+		LSSTRING_CONVERSION;
+		NSVGimage *image = nsvgParseFromFile(LST2A(filepathname), "px", 96.0f);
+		if(image == NULL) return 0;
+
+		int w = (int)image->width;
+		int h = (int)image->height;
+		if(w==0 || h==0) return 0;
+
+		NSVGrasterizer *rast = nsvgCreateRasterizer();
+		if (rast == NULL) 
+		{
+			nsvgDelete(image);
+			return 0;
+		}
+
+		unsigned char* img = (unsigned char*)malloc(w*h*4);
+		if (img == NULL) 
+		{
+			nsvgDeleteRasterizer(rast);
+			nsvgDelete(image);
+			return 0;
+		}
+
+		nsvgRasterize(rast, image, 0,0,1, img, w, h, w*4);
+
+		int outlen = 0;
+		BYTE *out = stbi_write_png_to_mem(img, w*4, w, h, 4, &outlen);
+
+		if(outlen > 0)
+		{
+			pData = new BYTE[outlen];
+			memcpy(pData, out, outlen);
+		}
+
+
+		free(out);
+		free(img);
+		nsvgDeleteRasterizer(rast);
+		nsvgDelete(image);
+		return outlen;
 	}
 
 	DWORD CRenderEngine::LoadImage2Memory(const STRINGorID &bitmap, LPCTSTR type,LPBYTE &pData)

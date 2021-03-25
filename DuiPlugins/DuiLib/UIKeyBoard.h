@@ -4,7 +4,7 @@ namespace DuiLib
 {
 
 class CKeyBoardUI;
-class UILIB_PLUGIN_API CKeyButtonUI : public CButtonUI
+class UILIB_API CKeyButtonUI : public CButtonUI
 {
 public:
 	CKeyButtonUI();
@@ -38,7 +38,7 @@ private:
 	CKeyBoardUI *m_pKeyBoard;
 };
 
-class UILIB_PLUGIN_API CKeyBoardUI : public CVerticalLayoutUI//CHorizontalLayoutUI
+class UILIB_API CKeyBoardUI : public CVerticalLayoutUI//CHorizontalLayoutUI
 {
 	DECLARE_DUICONTROL(CKeyBoardUI)
 	friend class CKeyButtonUI;

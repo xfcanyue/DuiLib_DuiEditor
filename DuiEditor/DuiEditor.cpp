@@ -24,16 +24,14 @@
 #endif
 
 // 注册表写入的位置 HKEY_CURRENT_USER\SOFTWARE\DuiEditor  == name
-AFX_STATIC_DATA const TCHAR _afxFileSection[] = _T("Recent File List");
-AFX_STATIC_DATA const TCHAR _afxFileEntry[] = _T("File%d");
-AFX_STATIC_DATA const TCHAR _afxPreviewSection[] = _T("Settings");
-AFX_STATIC_DATA const TCHAR _afxPreviewEntry[] = _T("PreviewPages");
+static const TCHAR _afxFileSection[] = _T("Recent File List");
+static const TCHAR _afxFileEntry[] = _T("File%d");
+static const TCHAR _afxPreviewSection[] = _T("Settings");
+static const TCHAR _afxPreviewEntry[] = _T("PreviewPages");
 
 CDuiProject g_proj;
 CString g_strAppPath;
 CDuiPropertyFile g_duiProp;
-//IScriptEngine *g_pScriptEngine = NULL;
-//IScriptHelper *ScriptHelper = NULL;
 HWND g_hWndMsg = NULL;
 
 // CDuiEditorApp
@@ -101,8 +99,8 @@ BOOL CDuiEditorApp::InitInstance()
 	InitCommonControlsEx(&InitCtrls);
 
 	CWinAppEx::InitInstance();
+	InitShellManager();
 	AfxInitRichEdit2();
-
 	//_CrtSetBreakAlloc(528);
 
 	// 初始化 OLE 库
@@ -159,7 +157,7 @@ BOOL CDuiEditorApp::InitInstance()
 	g_session.Init();
 
 #ifndef DUILIB_VERSION_ORIGINAL
-
+/*
 	//插件方式载入扩展控件
 #ifdef _DEBUG
 	CPaintManagerUI::LoadPlugin(g_strAppPath + _T("DuiPlugins_ud.dll"));
@@ -168,6 +166,7 @@ BOOL CDuiEditorApp::InitInstance()
 #endif
 
 	//把脚本插件加进来
+
 #ifdef _DEBUG
 	m_hModuleScript = ::LoadLibrary(g_strAppPath +_T("DuiScript_ud.dll"));
 #else
@@ -175,9 +174,12 @@ BOOL CDuiEditorApp::InitInstance()
 #endif
 	if(m_hModuleScript)
 	{
-		m_funCreateScriptHelper = (CREATE_SCRIPT_HELPER)::GetProcAddress(m_hModuleScript, "CreateScriptHelper");
-		m_funDeleteScriptHelper = (DELETE_SCRIPT_HELPER)::GetProcAddress(m_hModuleScript, "DeleteScriptHelper");
+		m_funCreateScriptHelper = CreateScriptHelper; //(CREATE_SCRIPT_HELPER)::GetProcAddress(m_hModuleScript, "CreateScriptHelper");
+		m_funDeleteScriptHelper = DeleteScriptHelper;//(DELETE_SCRIPT_HELPER)::GetProcAddress(m_hModuleScript, "DeleteScriptHelper");
 	}
+*/
+	m_funCreateScriptHelper = CreateScriptHelper;
+	m_funDeleteScriptHelper = DeleteScriptHelper;
 
 	//工厂模式注册扩展控件
 	DuiPluginsRegister();

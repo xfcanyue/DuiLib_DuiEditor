@@ -9,6 +9,16 @@
 #include "../ExcelFile/ExcelSheets.h"
 #include "../ExcelFile/ExcelRange.h"
 #include "../ExcelFile/ExcelRangeEx.h"
+// #include "../ExcelFile/ExcelFile.h"
+// #include "../ExcelFile/ExcelFile.cpp"
+// #include "../ExcelFile/ExcelApplication.h"
+// #include "../ExcelFile/ExcelBook.h"
+// #include "../ExcelFile/ExcelBooks.h"
+// #include "../ExcelFile/ExcelSheet.h"
+// #include "../ExcelFile/ExcelSheets.h"
+// #include "../ExcelFile/ExcelRange.h"
+// #include "../ExcelFile/ExcelRangeEx.h"
+// #include "../ExcelFile/ExcelRangeEx.cpp"
 
 namespace DuiLib
 {
@@ -261,7 +271,7 @@ void CGridListUI::SetPos(RECT rc, bool bNeedInvalidate)
 	}
 
 	int cxNeeded = max(szHeader.cx, szBody.cx);
-	int cyNeeded = szHeader.cy + szBody.cy;
+	int cyNeeded = szBody.cy; //szHeader.cy + szBody.cy;
 	if(IsVirtualGrid())
 		cyNeeded =  (GetRowCount() - GetFixedRowCount()) * GetDefRowHeight();
 

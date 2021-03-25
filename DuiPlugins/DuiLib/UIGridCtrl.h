@@ -3,7 +3,7 @@
 namespace DuiLib
 {
 
-class UILIB_PLUGIN_API CGridCtrlUI : public CContainerUI
+class UILIB_API CGridCtrlUI : public CContainerUI
 {
 	DECLARE_DUICONTROL(CGridCtrlUI)
 public:

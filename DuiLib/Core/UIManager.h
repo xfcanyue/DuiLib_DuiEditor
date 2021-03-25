@@ -590,7 +590,8 @@ namespace DuiLib {
 	// ½Å±¾
 	//////////////////////////////////////////////////////////////////////////
 	public:
-		static bool LoadScriptPlugin(LPCTSTR pstrModuleName);
+		//static bool LoadScriptPlugin(LPCTSTR pstrModuleName);
+		static bool LoadScriptPlugin(CREATE_SCRIPT_ENGINE_INSTANCE pFunCreate, DELETE_SCRIPT_ENGINE_INSTANCE pFunDelete);
 
 		IScriptManager *GetScriptEngine();
 		void AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pLanguageType=NULL);

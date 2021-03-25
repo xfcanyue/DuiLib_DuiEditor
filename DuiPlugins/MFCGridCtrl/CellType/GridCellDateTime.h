@@ -17,7 +17,7 @@
 #include "../GridCell.h"
 #include "afxdtctl.h"	// for CDateTimeCtrl
 
-class UILIB_PLUGIN_API CGridCellDateTime : public CGridCell  
+class UILIB_API CGridCellDateTime : public CGridCell  
 {
   friend class CGridCtrl;
   DECLARE_DYNCREATE(CGridCellDateTime)

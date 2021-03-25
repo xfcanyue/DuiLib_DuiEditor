@@ -3,10 +3,10 @@
 
 
 // various GDI objects we need to draw
-AFX_STATIC_DATA HCURSOR _afxCursors[11] = { 0, };
-AFX_STATIC_DATA HBRUSH _afxHatchBrush = 0;
-AFX_STATIC_DATA HPEN _afxBlackDottedPen = 0;
-AFX_STATIC_DATA int _afxHandleSize = 0;
+static HCURSOR _afxCursors[11] = { 0, };
+static HBRUSH _afxHatchBrush = 0;
+static HPEN _afxBlackDottedPen = 0;
+static int _afxHandleSize = 0;
 
 // the struct below is used to determine the qualities of a particular handle
 struct tag_HANDLEINFO
@@ -22,7 +22,7 @@ struct tag_HANDLEINFO
 };
 
 // this array describes all 8 handles (clock-wise)
-AFX_STATIC_DATA const tag_HANDLEINFO _afxHandleInfo[] =
+static const tag_HANDLEINFO _afxHandleInfo[] =
 {
 	// corner handles (top-left, top-right, bottom-right, bottom-left
 	{ offsetof(RECT, left), offsetof(RECT, top),        0, 0,  0,  0, 1, 3 },
@@ -46,7 +46,7 @@ struct tag_RECTINFO
 };
 
 // this array is indexed by the offset of the RECT member / sizeof(int)
-AFX_STATIC_DATA const tag_RECTINFO _afxRectInfo[] =
+static const tag_RECTINFO _afxRectInfo[] =
 {
 	{ offsetof(RECT, right), +1 },
 	{ offsetof(RECT, bottom), +1 },
@@ -123,21 +123,33 @@ void CTracker::Construct()
 		}
 
 		// Note: all track cursors must live in same module
-		HINSTANCE hInst = AfxFindResourceHandle(
-			ATL_MAKEINTRESOURCE(AFX_IDC_TRACK4WAY), ATL_RT_GROUP_CURSOR);
+//		HINSTANCE hInst = AfxFindResourceHandle(
+//			ATL_MAKEINTRESOURCE(AFX_IDC_TRACK4WAY), ATL_RT_GROUP_CURSOR);
 
 		// initialize the cursor array
-		_afxCursors[0] = ::LoadCursorW(hInst, ATL_MAKEINTRESOURCEW(AFX_IDC_TRACKNWSE));
-		_afxCursors[1] = ::LoadCursorW(hInst, ATL_MAKEINTRESOURCEW(AFX_IDC_TRACKNESW));
+// 		_afxCursors[0] = ::LoadCursor(hInst, ATL_MAKEINTRESOURCE(AFX_IDC_TRACKNWSE));
+// 		_afxCursors[1] = ::LoadCursor(hInst, ATL_MAKEINTRESOURCE(AFX_IDC_TRACKNESW));
+// 		_afxCursors[2] = _afxCursors[0];
+// 		_afxCursors[3] = _afxCursors[1];
+// 		_afxCursors[4] = ::LoadCursor(hInst, ATL_MAKEINTRESOURCE(AFX_IDC_TRACKNS));
+// 		_afxCursors[5] = ::LoadCursor(hInst, ATL_MAKEINTRESOURCE(AFX_IDC_TRACKWE));
+// 		_afxCursors[6] = _afxCursors[4];
+// 		_afxCursors[7] = _afxCursors[5];
+// 		_afxCursors[8] = ::LoadCursor(hInst, ATL_MAKEINTRESOURCE(AFX_IDC_TRACK4WAY));
+// 		_afxCursors[9] = ::LoadCursor(hInst, ATL_MAKEINTRESOURCE(AFX_IDC_MOVE4WAY));
+// 		_afxCursors[10] = ::LoadCursor(hInst, ATL_MAKEINTRESOURCE(AFX_IDC_NODROPCRSR));
+
+		_afxCursors[0] = ::LoadCursor(NULL, IDC_SIZENWSE);
+		_afxCursors[1] = ::LoadCursor(NULL, IDC_SIZENESW);
 		_afxCursors[2] = _afxCursors[0];
 		_afxCursors[3] = _afxCursors[1];
-		_afxCursors[4] = ::LoadCursorW(hInst, ATL_MAKEINTRESOURCEW(AFX_IDC_TRACKNS));
-		_afxCursors[5] = ::LoadCursorW(hInst, ATL_MAKEINTRESOURCEW(AFX_IDC_TRACKWE));
+		_afxCursors[4] = ::LoadCursor(NULL, IDC_SIZENS);
+		_afxCursors[5] = ::LoadCursor(NULL, IDC_SIZEWE);
 		_afxCursors[6] = _afxCursors[4];
 		_afxCursors[7] = _afxCursors[5];
-		_afxCursors[8] = ::LoadCursorW(hInst, ATL_MAKEINTRESOURCEW(AFX_IDC_TRACK4WAY));
-		_afxCursors[9] = ::LoadCursorW(hInst, ATL_MAKEINTRESOURCEW(AFX_IDC_MOVE4WAY));
-		_afxCursors[10] = ::LoadCursorW(hInst, ATL_MAKEINTRESOURCEW(AFX_IDC_NODROPCRSR));
+		_afxCursors[8] = ::LoadCursor(NULL, IDC_SIZEALL);
+		_afxCursors[9] = ::LoadCursor(NULL, IDC_SIZEALL);
+		_afxCursors[10] = ::LoadCursor(NULL, IDC_NO);
 
 		// get default handle size from Windows profile setting
 		static const TCHAR szWindows[] = _T("windows");

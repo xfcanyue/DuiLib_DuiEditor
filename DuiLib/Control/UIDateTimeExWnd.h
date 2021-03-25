@@ -25,6 +25,7 @@ protected:
 	bool m_bDropOpen;
 	SYSTEMTIME m_oldSysTime;
 	UINT m_uFormatStyle;
+	SYSTEMTIME m_dtTemp;
 };
 
 }

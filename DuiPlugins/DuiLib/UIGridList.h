@@ -7,7 +7,7 @@
 namespace DuiLib
 {
 
-class UILIB_PLUGIN_API CGridListUI : public CVerticalLayoutUI, public IGridListUI
+class UILIB_API CGridListUI : public CVerticalLayoutUI, public IGridListUI
 {
 	DECLARE_DUICONTROL(CGridListUI)
 	friend class CGridListHeaderUI;

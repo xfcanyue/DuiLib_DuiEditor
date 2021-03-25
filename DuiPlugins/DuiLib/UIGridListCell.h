@@ -4,7 +4,7 @@
 namespace DuiLib
 {
 
-class UILIB_PLUGIN_API CGridListCellUI : public CHorizontalLayoutUI
+class UILIB_API CGridListCellUI : public CHorizontalLayoutUI
 {
 	DECLARE_DUICONTROL(CGridListCellUI)
 public:

@@ -35,7 +35,7 @@ namespace DuiLib {
 		static HBITMAP CreateARGB32Bitmap(HDC hDC, int cx, int cy, BYTE** pBits);
 		static void AdjustImage(bool bUseHSL, TImageInfo* imageInfo, short H, short S, short L);
 		static TImageInfo* LoadImage(STRINGorID bitmap, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL);
-
+		static DWORD LoadSvgImage(LPCTSTR filepathname, LPBYTE &pData);
 		static DWORD CRenderEngine::LoadImage2Memory(const STRINGorID &bitmap, LPCTSTR type,LPBYTE &pData);
 		static void  CRenderEngine::FreeMemory(LPBYTE &pData);
 #ifdef USE_XIMAGE_EFFECT

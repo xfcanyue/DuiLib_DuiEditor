@@ -38,6 +38,9 @@ public:
 
 		//combo¿Ø¼þ
 		_control_combo,	
+
+		//tablayout, cursel
+		_control_tablayout,
 	};
 
 	struct _ddx_data 
@@ -75,11 +78,15 @@ public:
 
 	bool ddxCombo(CControlUI *pControl, int &va); //cursel
 	bool ddxCombo(LPCTSTR pControlName, int &va); //cursel
+
+	bool ddxTabLayout(CControlUI *pControl, int &va); //cursel
+	bool ddxTabLayout(LPCTSTR pControlName, int &va); //cursel
 protected:
 	bool ddxText(CControlUI *pControl, PVOID pValue, _ddx_value_type type);
 	bool _UpdateText(_ddx_data *pData, bool bSaveAndValidate);
 	bool _UpdateCheckBox(_ddx_data *pData, bool bSaveAndValidate);
 	bool _UpdateCombo(_ddx_data *pData, bool bSaveAndValidate);
+	bool _UpdateTabLayout(_ddx_data *pData, bool bSaveAndValidate);
 private:
 	CPaintManagerUI *m_pManager;
 	CStdPtrArray m_arrData;

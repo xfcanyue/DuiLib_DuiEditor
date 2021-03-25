@@ -4,7 +4,7 @@
 namespace DuiLib
 {
 
-class UILIB_PLUGIN_API CKeyBoardSimpleUI : public CKeyBoardUI
+class UILIB_API CKeyBoardSimpleUI : public CKeyBoardUI
 {
 	DECLARE_DUICONTROL(CKeyBoardSimpleUI)
 public:

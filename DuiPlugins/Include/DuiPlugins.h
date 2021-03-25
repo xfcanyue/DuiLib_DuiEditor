@@ -1,38 +1,36 @@
 #pragma once
 
+#ifndef __DUIPLUGINS_H__
+#define __DUIPLUGINS_H__
+
 #ifdef UILIB_STATIC
-#	define UILIB_PLUGIN_API 
+#define UILIB_EXP_API 
 #else
-#if defined(UILIB_PLUGIN_API_EXPORTS)
+#if defined(UILIB_EXPORTS)
 #	if defined(_MSC_VER)
-#		define UILIB_PLUGIN_API __declspec(dllexport)
+#		define UILIB_EXP_API extern "C" __declspec(dllexport)
 #	else
-#		define UILIB_PLUGIN_API 
+#		define UILIB_EXP_API 
 #	endif
 #else
 #	if defined(_MSC_VER)
-#		define UILIB_PLUGIN_API __declspec(dllimport)
+#		define UILIB_EXP_API extern "C" __declspec(dllimport)
 #	else
-#		define UILIB_PLUGIN_API 
+#		define UILIB_EXP_API 
 #	endif
 #endif
 #endif
 
-
-//#include "../DuiLib/UIDataExchange.h"
-
-// #define DUI_CTR_COMBOEX						(_T("ComboEx"))
-// #include "../DuiLib/UIComboEx.h"
+//////////////////////////////////////////////////////////////////////////
+#ifdef UILIB_STATIC
+#define CXIMAGE_STATIC
+#endif
+#include "../../3rd/CxImage/Include/image.h"
+//////////////////////////////////////////////////////////////////////////
 
 #define DUI_CTR_GRIDCTRL					(_T("GridCtrl"))
 #include "../MFCGridCtrl/GridCtrl.h"
 #include "../DuiLib/UIGridCtrl.h"
-
-// #define DUI_CTR_ICONBUTTON					(_T("IconButton"))
-// #include "../DuiLib/UIIconButton.h"
-
-// #define DUI_CTR_MSGWND						(_T("RichEdit"))
-// #include "../DuiLib/UIMsgWnd.h"
 
 #include "../DuiLib/UIKeyBoard.h"
 #include "../DuiLib/UIKeyBoardNumber.h"
@@ -41,20 +39,8 @@
 #define DUI_CTR_PICTURECONTROL				(_T("PictureControl"))
 #include "../DuiLib/UIPictureControl.h"
 
-//#define DUI_CTR_DATETIMEEX					(_T("DateTimeEx"))
-//#include "../DuiLib/UIDateTimeEx.h"
-
-// #define DUI_CTR_ACCORDIONPANE				(_T("AccordionPane"))	
-// #include "../DuiLib/UIAccordionPane.h"
-
 #define DUI_CTR_IMAGEBOX					(_T("ImageBox"))
 #include "../DuiLib/UIImageBox.h"
-
-// #define DUI_CTR_IMAGEBOXEX					(_T("ImageBoxEx"))
-// #include "../DuiLib/UIImageBoxEx.h"
-
-// #define DUI_CTR_ROLLTEXTEX					(_T("RollTextEx"))
-// #include "../DuiLib/UIRollTextEx.h"
 
 #define DUI_CTR_SCIEDIT						(_T("SciEdit"))
 #include "../DuiLib/UISciEdit.h"
@@ -66,17 +52,17 @@
 #define DUI_CTR_GRIDLISTCELL				(_T("GridListCell"))
 #include "../DuiLib/UIGridList.h"
 
-//extern "C" 
-UILIB_PLUGIN_API void DuiPluginsRegister();
+UILIB_EXP_API void __stdcall DuiPluginsRegister();
 
-//extern "C" 
-UILIB_PLUGIN_API void InsertMsgUI(LPCTSTR pstring, COLORREF cr=RGB(0,0,0));
-UILIB_PLUGIN_API void InsertMsgUiV(LPCTSTR lpszFormat, ...);
+UILIB_EXP_API void __stdcall InsertMsgUI(LPCTSTR pstring, COLORREF cr=RGB(0,0,0));
+UILIB_EXP_API void __stdcall InsertMsgUiV(LPCTSTR lpszFormat, ...);
 
-extern "C" UILIB_PLUGIN_API CControlUI *CreateControl(LPCTSTR pstrClass);
+#ifndef UILIB_STATIC
+UILIB_EXP_API CControlUI *CreateControl(LPCTSTR pstrClass);
+#endif
 
 
-#ifndef UILIB_PLUGIN_API_EXPORTS
+#ifndef UILIB_EXPORTS
 
 #ifndef _LIBPATH_
 #define _LIBPATH_(p,f)   p##f
@@ -111,7 +97,7 @@ extern "C" UILIB_PLUGIN_API CControlUI *CreateControl(LPCTSTR pstrClass);
 #		ifdef _DEBUG
 #			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../../Lib/DuiPlugins_sd.lib"))
 #		else
-#			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../../Lib/DuiPluginss.lib"))
+#			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../../Lib/DuiPlugins_s.lib"))
 #		endif
 #	endif
 #endif
@@ -150,4 +136,7 @@ extern "C" UILIB_PLUGIN_API CControlUI *CreateControl(LPCTSTR pstrClass);
 
 #endif //#ifdef UILIB_STATIC
 
-#endif
+#endif //#ifndef UILIB_EXPORTS
+
+
+#endif //#ifndef __DUIPLUGINS_H__

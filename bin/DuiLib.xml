@@ -441,7 +441,9 @@ INT类型(最小值，最大值)：
 		<Attribute name="numberonly" default="false" type="BOOL" comment="是否只允许数字输入,如(false)" />
 		<Attribute name="password" default="false" type="BOOL" comment="是否显示密码字符,如(false)" />
 		<Attribute name="passwordchar" default="" type="STRING" comment="设置密码字符" />
-		<Attribute name="maxchar" default="255" type="INT" comment="输入字符最大长度，如(100)" />		
+		<Attribute name="maxchar" default="255" type="INT" comment="输入字符最大长度，如(100)" />
+		<Attribute name="lowercase" default="false" type="BOOL" comment="强制小写" />	
+		<Attribute name="uppercase" default="false" type="BOOL" comment="强制大写" />	
 		<Attribute name="normalimage" default="" type="IMAGE" comment="普通状态图片" />
 		<Attribute name="hotimage" default="" type="IMAGE" comment="鼠标悬浮状态图片" />
 		<Attribute name="focusedimage" default="" type="IMAGE" comment="获得焦点状态图片" />
@@ -624,7 +626,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="wantreturn" default="false" type="BOOL" comment="是否接受return按键消息,如(true)" />
 		<Attribute name="wantctrlreturn" default="false" type="BOOL" comment="是否接受ctrl+return按键消息,如(true)" />
 		<Attribute name="transparent" default="true" type="BOOL" comment="是否背景透明,如(true)" />
-		<Attribute name="rich" default="true" type="BOOL" comment="是否使用富格式,如(true)" />
+		<Attribute name="rich" default="false" type="BOOL" comment="是否使用富格式,如(true)" />
 		<Attribute name="multiline" default="false" type="BOOL" comment="是否使用多行,如(true)" />
 		<Attribute name="readonly" default="false" type="BOOL" comment="是否只读,如(false)" />
 		<Attribute name="password" default="false" type="BOOL" comment="是否显示密码符,如(true)" />		

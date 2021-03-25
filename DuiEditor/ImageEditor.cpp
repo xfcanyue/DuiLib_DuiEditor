@@ -290,6 +290,17 @@ BOOL CImageEditor::PreTranslateMessage(MSG* pMsg)
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
+BOOL CImageEditor::svg_2_cximage(CxImage &cximg, LPCTSTR strPathName)
+{
+	LPBYTE pData = NULL;
+	DWORD imgsize = CRenderEngine::LoadSvgImage(strPathName, pData);
+	if(!pData || imgsize == 0) return FALSE;
+	cximg.DestroyFrames(); cximg.Destroy();
+	bool bDecode = cximg.Decode((uint8_t *)pData, imgsize, CXIMAGE_FORMAT_PNG);
+	return bDecode;
+}
+
+/*
 #define strtoll _strtoi64
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "nanosvg/src/stb_image_write.h"
@@ -301,7 +312,7 @@ BOOL CImageEditor::PreTranslateMessage(MSG* pMsg)
 BOOL CImageEditor::svg_2_cximage(CxImage &cximg, LPCTSTR strPathName)
 {
 	NSVGimage *image = nsvgParseFromFile(LST2A(strPathName), "px", 96.0f);
-	if(image == NULL) return NULL;
+	if(image == NULL) return FALSE;
 
 	int w = (int)image->width;
 	int h = (int)image->height;
@@ -339,3 +350,5 @@ BOOL CImageEditor::svg_2_cximage(CxImage &cximg, LPCTSTR strPathName)
 	nsvgDelete(image);
 	return bDecode;
 }
+
+*/

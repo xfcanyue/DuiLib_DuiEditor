@@ -5,7 +5,7 @@
 namespace DuiLib
 {
 
-class UILIB_PLUGIN_API CSciEditUI : public CContainerUI, public SciApi
+class UILIB_API CSciEditUI : public CContainerUI, public SciApi
 {
 	DECLARE_DUICONTROL(CSciEditUI)
 public:

@@ -5,12 +5,14 @@
 #include "Dialog2.h"
 #include "FormAdvanceControl.h"
 #include "FormSciEditor.h"
+#include "FormGridList.h"
 
 CMainFrame::CMainFrame(void)
 {
 	AttachVirtualForm(new CFormAdvanceControl);
 	AttachVirtualForm(new CFormSciEditor);
 	AttachVirtualForm(new CFormTest);
+	AttachVirtualForm(new CFormGridList);
 	m_bCheckmenu_cmd_2 = TRUE;
 	m_bCheckmenu_cmd_22 = TRUE;
 	m_bCheckmenu_cmd_41 = TRUE;

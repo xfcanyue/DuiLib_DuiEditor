@@ -31,10 +31,11 @@
 #include <atlbase.h>
 #include <atlstr.h>
 
+#define UILIB_STATIC
+
 // TODO: 在此处引用程序需要的其他头文件
-#include "E:/MyLibrary/DuiLib/DuiLib/Duilib.h"
-#include "E:/Mylibrary/GridControl/Include/GridControl.h"
-#include "E:/Mylibrary/Duilib/DuiPlugins/Include/DuiPlugins.h"
+#include "../../../DuiLib/Duilib.h"
+#include "../../../DuiPlugins/Include/DuiPlugins.h"
 using namespace DuiLib;
 
 extern HINSTANCE g_hInstance;

@@ -465,6 +465,32 @@ namespace DuiLib
 		return (m_iWindowStyls & ES_NUMBER) ? true:false;
 	}
 
+	void CEditUI::SetLowerCase(bool bLowerCase)
+	{
+		if( bLowerCase )
+		{
+			m_iWindowStyls |= ES_LOWERCASE;
+		}
+		else
+		{
+			m_iWindowStyls &= ~ES_LOWERCASE;
+		}
+	}
+	bool CEditUI::IsLowerCase() const { return (m_iWindowStyls & ES_LOWERCASE) ? true:false; }
+
+	void CEditUI::SetUpperCase(bool bUpperCase)
+	{
+		if( bUpperCase )
+		{
+			m_iWindowStyls |= ES_UPPERCASE;
+		}
+		else
+		{
+			m_iWindowStyls &= ~ES_UPPERCASE;
+		}
+	}
+	bool CEditUI::IsUpperCase() const { return (m_iWindowStyls & ES_UPPERCASE) ? true:false; }
+
 	int CEditUI::GetWindowStyls() const 
 	{
 		return m_iWindowStyls;
@@ -672,6 +698,8 @@ namespace DuiLib
 		else if( _tcsicmp(pstrName, _T("password")) == 0 ) SetPasswordMode(_tcsicmp(pstrValue, _T("true")) == 0);
 		else if( _tcsicmp(pstrName, _T("passwordchar")) == 0 ) SetPasswordChar(*pstrValue);
 		else if( _tcsicmp(pstrName, _T("maxchar")) == 0 ) SetMaxChar(_ttoi(pstrValue));
+		else if( _tcsicmp(pstrName, _T("lowercase")) == 0 ) SetLowerCase(_tcsicmp(pstrValue, _T("true")) == 0);
+		else if( _tcsicmp(pstrName, _T("uppercase")) == 0 ) SetUpperCase(_tcsicmp(pstrValue, _T("true")) == 0);
 		else if( _tcsicmp(pstrName, _T("normalimage")) == 0 ) SetNormalImage(pstrValue);
 		else if( _tcsicmp(pstrName, _T("hotimage")) == 0 ) SetHotImage(pstrValue);
 		else if( _tcsicmp(pstrName, _T("focusedimage")) == 0 ) SetFocusedImage(pstrValue);

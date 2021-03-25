@@ -47,10 +47,11 @@
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #endif
 #endif
+
 //////////////////////////////////////////////////////////////////////////
-#ifdef _UNICODE
+//#ifdef _UNICODE
 //#define PUGIXML_WCHAR_MODE
-#endif
+//#endif
  
 #ifdef PUGIXML_WCHAR_MODE
 	#define XTEXT(x) L ## x
@@ -62,6 +63,8 @@
 
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
+
+
 /*
 	使用官方版或者根据官方版改造的同学，请打开这个宏（UILIB_VERSION_ORIGINAL）进行编译
 	保留这个，只是为了使用官方版的同学能够编译成功，具体细化，需要您自己努力了。
@@ -77,14 +80,12 @@
 	#else
 		#pragma comment (lib, "DuiLibOriginal/Lib/DuiLib_u.lib")
 	#endif
-	using namespace DuiLib;
 #else
 	#include "../DuiLib/DuiLib.h"
-	using namespace DuiLib;
 	#include "../DuiPlugins/Include/DuiPlugins.h"
 #endif
+using namespace DuiLib;
 
-#include "../3rd/CxImage/Include/image.h"
 //////////////////////////////////////////////////////////////////////////
 #define INCLUDE_DEPRECATED_FEATURES
 #include "../3rd/scintilla/include/SciLexer.h"

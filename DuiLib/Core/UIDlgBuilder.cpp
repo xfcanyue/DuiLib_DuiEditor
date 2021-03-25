@@ -529,9 +529,19 @@ namespace DuiLib {
 			if( node.HasAttributes() ) {
 				TCHAR szValue[500] = { 0 };
 				SIZE_T cchLen = lengthof(szValue) - 1;
-				// Set ordinary attributes
+
 				int nAttributes = node.GetAttributeCount();
+
+				//first find style attribute
+				for( int i = 0; i < nAttributes; i++ ) 
+				{
+					if(_tcsicmp(node.GetAttributeName(i), _T("style")) == 0)
+						pControl->SetAttribute(node.GetAttributeName(i), node.GetAttributeValue(i));
+				}
+
+				// Set ordinary attributes
 				for( int i = 0; i < nAttributes; i++ ) {
+					if(_tcsicmp(node.GetAttributeName(i), _T("style")) != 0)
 					pControl->SetAttribute(node.GetAttributeName(i), node.GetAttributeValue(i));
 				}
 			}

@@ -76,7 +76,7 @@ typedef struct _GV_ITEM {
 // will usually have acces to them in other ways, and they are an extra 8 bytes per
 // cell that is probably unnecessary.
 
-class UILIB_PLUGIN_API CGridCellBase : public CObject
+class UILIB_API CGridCellBase : public CObject
 {
     friend class CGridCtrl;
     DECLARE_DYNAMIC(CGridCellBase)

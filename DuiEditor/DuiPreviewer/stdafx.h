@@ -64,6 +64,7 @@
 	using namespace DuiLib;
 #else
 	#include "../../DuiLib/DuiLib.h"
+	#include "../../DuiPlugins/Include/DuiPlugins.h"
 	using namespace DuiLib;
 #endif
 

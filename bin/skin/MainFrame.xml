@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Window size="800,658" sizebox="0,0,4,4" caption="0,0,0,20" showshadow="true" shadowsize="2" shadowposition="2,2" shadowcolor="0xFF4B4B4B">
 	<Include source="config.xml" />
+	<script source="script.as" />
 	<VerticalLayout inset="1,1,1,1" bkcolor="0xFFD1E8F5" bordercolor="0xFF969696" bordersize="1">
 		<HorizontalLayout height="20" childpadding="5" childvalign="vcenter" bkcolor="0xFFC0DCC0">
 			<Control width="16" height="16" foreimage="images\ico.jpg" />
@@ -24,7 +25,8 @@
 			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="2" text="动画控件" bottombordersize="2" resourceid="3" style="style_option_header" />
 			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="3" text="键盘" bottombordersize="2" resourceid="4" style="style_option_header" />
 			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="4" text="表格" bottombordersize="2" resourceid="5" style="style_option_header" />
-			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="5" text="代码编辑器" bottombordersize="2" resourceid="6" style="style_option_header" />
+			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="5" text="表格2" bottombordersize="2" style="style_option_header" />
+			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="6" text="代码编辑器6" bottombordersize="2" resourceid="6" style="style_option_header" />
 		</HorizontalLayout>
 		<TabLayout name="tab_main">
 			<VerticalLayout childpadding="10" padding="10,10,10,10">
@@ -235,6 +237,9 @@
 			</VerticalLayout>
 			<VerticalLayout>
 				<GridCtrl name="gridctrl_1" columncount="6" fixedcolumntext="姓名,用户名,手机号码,固定电话,使用日期" />
+			</VerticalLayout>
+			<VerticalLayout>
+				<Include source="GridWindow.xml" />
 			</VerticalLayout>
 			<VerticalLayout>
 				<SciEdit name="sciedit_1" inset="0,1,0,0" bordercolor="0xFFC0C0C0" topbordersize="1" />

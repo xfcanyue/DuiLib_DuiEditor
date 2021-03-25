@@ -3,7 +3,7 @@
 namespace DuiLib
 {
 
-class UILIB_PLUGIN_API CPictureControlUI : public CContainerUI
+class UILIB_API CPictureControlUI : public CContainerUI
 {
 	DECLARE_DUICONTROL(CPictureControlUI)
 public:

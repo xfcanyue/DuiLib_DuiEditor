@@ -4213,21 +4213,27 @@ namespace DuiLib {
 	DELETE_SCRIPT_ENGINE_INSTANCE CPaintManagerUI::m_funDeleteScriptEngine = NULL;	//add by liqs99
 	IScriptManager* CPaintManagerUI::m_pSharedScriptEngine = NULL;					//add by liqs99
 
-	bool CPaintManagerUI::LoadScriptPlugin(LPCTSTR pstrModuleName)
+// 	bool CPaintManagerUI::LoadScriptPlugin(LPCTSTR pstrModuleName)
+// 	{
+// 		ASSERT( !::IsBadStringPtr(pstrModuleName,-1) || pstrModuleName == NULL );
+// 		if( pstrModuleName == NULL ) return false;
+// 		HMODULE hModule = ::LoadLibrary(pstrModuleName);
+// 		if( hModule != NULL ) 
+// 		{
+// 			m_funCreateScriptEngine = (CREATE_SCRIPT_ENGINE_INSTANCE)::GetProcAddress(hModule, "CreateScriptEngine");
+// 			m_funDeleteScriptEngine = (DELETE_SCRIPT_ENGINE_INSTANCE)::GetProcAddress(hModule, "DeleteScriptEngine");
+// 			if(m_funCreateScriptEngine != NULL || m_funDeleteScriptEngine != NULL)
+// 			{
+// 				return true;
+// 			}
+// 		}
+// 		return false;
+// 	}
+	bool CPaintManagerUI::LoadScriptPlugin(CREATE_SCRIPT_ENGINE_INSTANCE pFunCreate, DELETE_SCRIPT_ENGINE_INSTANCE pFunDelete)
 	{
-		ASSERT( !::IsBadStringPtr(pstrModuleName,-1) || pstrModuleName == NULL );
-		if( pstrModuleName == NULL ) return false;
-		HMODULE hModule = ::LoadLibrary(pstrModuleName);
-		if( hModule != NULL ) 
-		{
-			m_funCreateScriptEngine = (CREATE_SCRIPT_ENGINE_INSTANCE)::GetProcAddress(hModule, "CreateScriptEngine");
-			m_funDeleteScriptEngine = (DELETE_SCRIPT_ENGINE_INSTANCE)::GetProcAddress(hModule, "DeleteScriptEngine");
-			if(m_funCreateScriptEngine != NULL || m_funDeleteScriptEngine != NULL)
-			{
-				return true;
-			}
-		}
-		return false;
+		m_funCreateScriptEngine = (CREATE_SCRIPT_ENGINE_INSTANCE)pFunCreate;
+		m_funDeleteScriptEngine = (DELETE_SCRIPT_ENGINE_INSTANCE)pFunDelete;
+		return true;
 	}
 	
 	IScriptManager *CPaintManagerUI::GetScriptEngine()

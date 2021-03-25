@@ -35,7 +35,7 @@
 #		ifdef _DEBUG
 #			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../Lib/DuiLib_sd.lib"))
 #		else
-#			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../Lib/DuiLibs.lib"))
+#			pragma comment(lib,  _LIBPATH_(__FILE__,   "/../Lib/DuiLib_s.lib"))
 #		endif
 #	endif
 #endif

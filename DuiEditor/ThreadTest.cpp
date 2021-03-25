@@ -36,6 +36,37 @@ BOOL CThreadTest::InitInstance()
 	m_siStartInfo.hStdOutput = hChildStdoutWr;//GetStdHandle(STD_OUTPUT_HANDLE);
 	m_siStartInfo.wShowWindow=SW_SHOW;
 
+	CString strAppName;
+#ifdef UILIB_STATIC
+#	ifdef _UNICODE
+#		ifdef _DEBUG
+			strAppName = _T("DuiPreviewer_Sd.exe");	
+#		else
+			strAppName = _T("DuiPreviewer.exe");	
+#		endif
+#	else
+#		ifdef _DEBUG
+			strAppName = _T("DuiPreviewer_ASd.exe");	
+#		else
+			strAppName = _T("DuiPreviewer_AS.exe");	
+#		endif
+#	endif
+#else
+#	ifdef _UNICODE
+#		ifdef _DEBUG
+			strAppName = _T("DuiPreviewerd.exe");	
+#		else
+			strAppName = _T("DuiPreviewer.exe");	
+#		endif
+#	else
+#		ifdef _DEBUG
+			strAppName = _T("DuiPreviewer_Ad.exe");	
+#		else
+			strAppName = _T("DuiPreviewer_A.exe");	
+#		endif
+#	endif
+#endif
+
 	CString strCmd;
 	if(m_nTestFrom == 0)
 	{
@@ -47,23 +78,13 @@ BOOL CThreadTest::InitInstance()
 			strPath = m_pDoc->GetSkinPath();
 			strFileName = m_pDoc->GetSkinFileName();
 		}
-#ifdef _DEBUG
-		strCmd.Format(_T("%sDuiPreviewerd.exe \"-f %s%s\" \"-o %d\""), 
-			g_strAppPath, strPath, strFileName, hChildStdoutWr);
-#else
-		strCmd.Format(_T("%sDuiPreviewer.exe \"-f %s%s\" \"-o %d\""), 
-			g_strAppPath, strPath, strFileName, hChildStdoutWr);
-#endif
+		strCmd.Format(_T("%s%s \"-f %s%s\" \"-o %d\""), 
+			g_strAppPath, strAppName, strPath, strFileName, hChildStdoutWr);
 	}
 	else if(m_nTestFrom == 1)
 	{
-#ifdef _DEBUG
-		strCmd.Format(_T("%sDuiPreviewerd.exe \"-f %s\" \"-o %d\""), 
-			g_strAppPath, m_strSpacialFile, hChildStdoutWr);
-#else
-		strCmd.Format(_T("%sDuiPreviewer.exe \"-f %s\" \"-o %d\""), 
-			g_strAppPath, m_strSpacialFile, hChildStdoutWr);
-#endif
+		strCmd.Format(_T("%s%s \"-f %s\" \"-o %d\""), 
+			g_strAppPath, strAppName, m_strSpacialFile, hChildStdoutWr);
 	}
 	else
 	{

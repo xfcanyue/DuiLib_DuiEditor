@@ -36,7 +36,7 @@ class CGridCtrl;
 // will usually have acces to them in other ways, and they are an extra 8 bytes per
 // cell that is probably unnecessary.
 
-class UILIB_PLUGIN_API CGridCell : public CGridCellBase
+class UILIB_API CGridCell : public CGridCellBase
 {  
     friend class CGridCtrl;
     DECLARE_DYNCREATE(CGridCell)

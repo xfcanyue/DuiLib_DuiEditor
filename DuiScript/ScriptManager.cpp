@@ -198,7 +198,7 @@ bool CScriptManager::ExecuteScript(void *pFun, CControlUI *pControl, HDC hDC, co
 	if(ctx->Prepare((asIScriptFunction *)pFun) < 0) return false;
 
 	asIScriptFunction *pFun1 =(asIScriptFunction *)pFun;
-	for (int i=0; i<pFun1->GetParamCount(); i++)
+	for (asUINT i=0; i<pFun1->GetParamCount(); i++)
 	{
 		int typeId;
 		DWORD flag;

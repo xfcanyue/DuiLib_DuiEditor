@@ -20,7 +20,7 @@ void CMainFrame::InitWindow()
 {
 	UI_BINDCONTROL(CGridListUI, m_pGrid, _T("grid_main"));
 
-	m_pGrid->SetRowCount(12);
+	m_pGrid->SetRowCount(120);
 	for (int i=0; i<m_pGrid->GetRowCount(); i++)
 	{
 		for (int j=1; j<m_pGrid->GetColumnCount(); j++)

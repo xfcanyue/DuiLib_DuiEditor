@@ -31,6 +31,10 @@ namespace DuiLib
 		TCHAR GetPasswordChar() const;
 		void SetNumberOnly(bool bNumberOnly);
 		bool IsNumberOnly() const;
+		void SetLowerCase(bool bLowerCase);
+		bool IsLowerCase() const;
+		void SetUpperCase(bool bUpperCase);
+		bool IsUpperCase() const;
 		int GetWindowStyls() const;
 
 		LPCTSTR GetNormalImage();

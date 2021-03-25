@@ -89,7 +89,6 @@
 #define CLAMP(x,a,b) (MIN(b,MAX(a,x)))
 
 
-
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 

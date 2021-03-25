@@ -121,6 +121,7 @@ namespace DuiLib
 				if(pHeader->code == DTN_DATETIMECHANGE) {
 					LPNMDATETIMECHANGE lpChage=(LPNMDATETIMECHANGE)lParam;
 					::SendMessage(m_hWnd, DTM_GETSYSTEMTIME, 0, (LPARAM)&m_pOwner->m_sysTime);
+					m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_TEXTCHANGED);
 				}
 				else if(pHeader->code == DTN_DROPDOWN) {
 					m_bDropOpen = true;

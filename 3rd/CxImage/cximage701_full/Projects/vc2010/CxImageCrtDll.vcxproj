@@ -117,16 +117,16 @@
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|Win32'">..\..\..\Lib\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|Win32'">..\..\cximage\cximagedll\Unicode_Debug\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|Win32'">cximagedll\Unicode_Debug\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|Win32'">true</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\Lib\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\cximage\cximagedll\Debug\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cximagedll\Debug\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\Lib\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\cximage\cximagedll\Release\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cximagedll\Release\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Unicode Release|Win32'">..\..\..\Lib\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Unicode Release|Win32'">..\..\cximage\cximagedll\Unicode_Release\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Unicode Release|Win32'">cximagedll\Unicode_Release\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Unicode Release|Win32'">false</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|x64'">..\..\..\Lib\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
@@ -155,7 +155,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>.\Unicode_Debug/CxImageCrtDll.tlb</TypeLibraryName>
+      <TypeLibraryName>.\cximagedll\Unicode_Debug/CxImageCrtDll.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -166,10 +166,10 @@
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>.\Unicode_Debug/CxImageCrtDll.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Unicode_Debug/</AssemblerListingLocation>
-      <ObjectFileName>.\Unicode_Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Unicode_Debug/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\cximagedll\Unicode_Debug/CxImageCrtDll.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\cximagedll\Unicode_Debug/</AssemblerListingLocation>
+      <ObjectFileName>.\cximagedll\Unicode_Debug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\cximagedll\Unicode_Debug/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -182,14 +182,14 @@
       <OutputFile>../../../../../bin/CxImageud.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\Unicode_Debug/cximagecrtdu.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\cximagedll\Unicode_Debug/cximagecrtdu.pdb</ProgramDatabaseFile>
       <ImportLibrary>
       </ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Unicode_Debug/CxImageCrtDll.bsc</OutputFile>
+      <OutputFile>.\cximagedll\Unicode_Debug/CxImageCrtDll.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -198,7 +198,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>.\Debug/CxImageCrtDll.tlb</TypeLibraryName>
+      <TypeLibraryName>.\cximagedll\Debug/CxImageCrtDll.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -209,10 +209,10 @@
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>.\Debug/CxImageCrtDll.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
-      <ObjectFileName>.\Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Debug/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\cximagedll\Debug/CxImageCrtDll.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\cximagedll\Debug/</AssemblerListingLocation>
+      <ObjectFileName>.\cximagedll\Debug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\cximagedll\Debug/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -225,14 +225,14 @@
       <OutputFile>../../../../../bin/CxImaged.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\Debug/cximagecrtd.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\cximagedll\Debug/cximagecrtd.pdb</ProgramDatabaseFile>
       <ImportLibrary>
       </ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Debug/CxImageCrtDll.bsc</OutputFile>
+      <OutputFile>.\cximagedll\Debug/CxImageCrtDll.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -241,7 +241,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>.\Release/CxImageCrtDll.tlb</TypeLibraryName>
+      <TypeLibraryName>.\cximagedll\Release/CxImageCrtDll.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -253,10 +253,10 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>.\Release/CxImageCrtDll.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Release/</AssemblerListingLocation>
-      <ObjectFileName>.\Release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Release/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\cximagedll\Release/CxImageCrtDll.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\cximagedll\Release/</AssemblerListingLocation>
+      <ObjectFileName>.\cximagedll\Release/</ObjectFileName>
+      <ProgramDataBaseFileName>.\cximagedll\Release/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -267,14 +267,14 @@
     <Link>
       <OutputFile>../../../../../bin/CxImage.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <ProgramDatabaseFile>.\Release/cximagecrt.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\cximagedll\Release/cximagecrt.pdb</ProgramDatabaseFile>
       <ImportLibrary>
       </ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Release/CxImageCrtDll.bsc</OutputFile>
+      <OutputFile>.\cximagedll\Release/CxImageCrtDll.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Release|Win32'">
@@ -283,7 +283,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>.\Unicode_Release/CxImageCrtDll.tlb</TypeLibraryName>
+      <TypeLibraryName>.\cximagedll\Unicode_Release/CxImageCrtDll.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -295,10 +295,10 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>.\Unicode_Release/CxImageCrtDll.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Unicode_Release/</AssemblerListingLocation>
-      <ObjectFileName>.\Unicode_Release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Unicode_Release/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\cximagedll\Unicode_Release/CxImageCrtDll.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\cximagedll\Unicode_Release/</AssemblerListingLocation>
+      <ObjectFileName>.\cximagedll\Unicode_Release/</ObjectFileName>
+      <ProgramDataBaseFileName>.\cximagedll\Unicode_Release/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -309,14 +309,14 @@
     <Link>
       <OutputFile>../../../../../bin/CxImageu.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <ProgramDatabaseFile>.\Unicode_Release/cximagecrtu.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\cximagedll\Unicode_Release/cximagecrtu.pdb</ProgramDatabaseFile>
       <ImportLibrary>
       </ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Unicode_Release/CxImageCrtDll.bsc</OutputFile>
+      <OutputFile>.\cximagedll\Unicode_Release/CxImageCrtDll.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|x64'">
@@ -325,7 +325,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>X64</TargetEnvironment>
-      <TypeLibraryName>.\Unicode_Debug/CxImageCrtDll.tlb</TypeLibraryName>
+      <TypeLibraryName>.\cximagedll\Unicode_Debug/CxImageCrtDll.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -336,10 +336,10 @@
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>.\Unicode_Debug/CxImageCrtDll.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Unicode_Debug/</AssemblerListingLocation>
-      <ObjectFileName>.\Unicode_Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Unicode_Debug/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\cximagedll\Unicode_Debug/CxImageCrtDll.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\cximagedll\Unicode_Debug/</AssemblerListingLocation>
+      <ObjectFileName>.\cximagedll\Unicode_Debug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\cximagedll\Unicode_Debug/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -352,14 +352,14 @@
       <OutputFile>../../../../../bin/CxImageu64d.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\Unicode_Debug/cximagecrtdu.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\cximagedll\Unicode_Debug/cximagecrtdu.pdb</ProgramDatabaseFile>
       <ImportLibrary>
       </ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Unicode_Debug/CxImageCrtDll.bsc</OutputFile>
+      <OutputFile>.\cximagedll\Unicode_Debug/CxImageCrtDll.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -368,7 +368,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>X64</TargetEnvironment>
-      <TypeLibraryName>.\Debug/CxImageCrtDll.tlb</TypeLibraryName>
+      <TypeLibraryName>.\cximagedll\Debug/CxImageCrtDll.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -379,10 +379,10 @@
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>.\Debug/CxImageCrtDll.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
-      <ObjectFileName>.\Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Debug/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\cximagedll\Debug/CxImageCrtDll.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\cximagedll\Debug/</AssemblerListingLocation>
+      <ObjectFileName>.\cximagedll\Debug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\cximagedll\Debug/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -395,14 +395,14 @@
       <OutputFile>../../../../../bin/CxImage64d.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\Debug/cximagecrtd.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\cximagedll\Debug/cximagecrtd.pdb</ProgramDatabaseFile>
       <ImportLibrary>
       </ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Debug/CxImageCrtDll.bsc</OutputFile>
+      <OutputFile>.\cximagedll\Debug/CxImageCrtDll.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -411,7 +411,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>X64</TargetEnvironment>
-      <TypeLibraryName>.\Release/CxImageCrtDll.tlb</TypeLibraryName>
+      <TypeLibraryName>.\cximagedll\Release/CxImageCrtDll.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -423,10 +423,10 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>.\Release/CxImageCrtDll.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Release/</AssemblerListingLocation>
-      <ObjectFileName>.\Release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Release/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\cximagedll\Release/CxImageCrtDll.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\cximagedll\Release/</AssemblerListingLocation>
+      <ObjectFileName>.\cximagedll\Release/</ObjectFileName>
+      <ProgramDataBaseFileName>.\cximagedll\Release/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -437,14 +437,14 @@
     <Link>
       <OutputFile>../../../../../bin/CxImage64.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <ProgramDatabaseFile>.\Release/cximagecrt.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\cximagedll\Release/cximagecrt.pdb</ProgramDatabaseFile>
       <ImportLibrary>
       </ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Release/CxImageCrtDll.bsc</OutputFile>
+      <OutputFile>.\cximagedll\Release/CxImageCrtDll.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Release|x64'">
@@ -453,7 +453,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>X64</TargetEnvironment>
-      <TypeLibraryName>.\Unicode_Release/CxImageCrtDll.tlb</TypeLibraryName>
+      <TypeLibraryName>.\cximagedll\Unicode_Release/CxImageCrtDll.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -465,10 +465,10 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>.\Unicode_Release/CxImageCrtDll.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Unicode_Release/</AssemblerListingLocation>
-      <ObjectFileName>.\Unicode_Release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Unicode_Release/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\cximagedll\Unicode_Release/CxImageCrtDll.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\cximagedll\Unicode_Release/</AssemblerListingLocation>
+      <ObjectFileName>.\cximagedll\Unicode_Release/</ObjectFileName>
+      <ProgramDataBaseFileName>.\cximagedll\Unicode_Release/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -479,14 +479,14 @@
     <Link>
       <OutputFile>../../../../../bin/CxImageu64.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <ProgramDatabaseFile>.\Unicode_Release/cximagecrtu.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\cximagedll\Unicode_Release/cximagecrtu.pdb</ProgramDatabaseFile>
       <ImportLibrary>
       </ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Unicode_Release/CxImageCrtDll.bsc</OutputFile>
+      <OutputFile>.\cximagedll\Unicode_Release/CxImageCrtDll.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -552,39 +552,39 @@
     <ClInclude Include="..\..\CxImage\xmemfile.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\jasper\jasper.vcxproj">
+    <ProjectReference Include="jasper.vcxproj">
       <Project>{ffda5da1-bb65-4695-b678-be59b4a1355d}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\jbig\jbig.vcxproj">
+    <ProjectReference Include="jbig.vcxproj">
       <Project>{764c3a2d-fb0f-428e-b1c7-62d1dd2ce239}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\jpeg\Jpeg.vcxproj">
+    <ProjectReference Include="Jpeg.vcxproj">
       <Project>{818753f2-dbb9-4d3b-898a-a604309be470}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\libpsd\libpsd.vcxproj">
+    <ProjectReference Include="libpsd.vcxproj">
       <Project>{0debb3cc-712b-4ac1-84df-e2d9d7d5f859}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\mng\mng.vcxproj">
+    <ProjectReference Include="mng.vcxproj">
       <Project>{40a69f40-063e-43fd-8543-455495d8733e}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\png\png.vcxproj">
+    <ProjectReference Include="png.vcxproj">
       <Project>{43a0e60e-5c4a-4c09-a29b-7683f503bbd7}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\raw\libdcr.vcxproj">
+    <ProjectReference Include="libdcr.vcxproj">
       <Project>{df861d33-9bc1-418c-82b1-581f590fe169}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\tiff\Tiff.vcxproj">
+    <ProjectReference Include="Tiff.vcxproj">
       <Project>{0588563c-f05c-428c-b21a-dd74756628b3}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\zlib\zlib.vcxproj">
+    <ProjectReference Include="zlib.vcxproj">
       <Project>{7b53d2c7-1b4a-4a53-a7d3-e25b92470b81}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>

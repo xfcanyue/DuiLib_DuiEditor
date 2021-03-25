@@ -123,42 +123,42 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\..\..\Bin\</OutDir>
-    <TargetName>$(ProjectName)d</TargetName>
+    <TargetName>tutorial_Ad</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\..\..\Bin\</OutDir>
-    <TargetName>$(ProjectName)d</TargetName>
+    <TargetName>tutoriald</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsUnicodeDebug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\Bin\</OutDir>
-    <TargetName>$(ProjectName)d</TargetName>
+    <OutDir>..\..\..\Bin\</OutDir>
+    <TargetName>tutorial_Sd</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsDebug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\Bin\</OutDir>
-    <TargetName>$(ProjectName)d</TargetName>
+    <OutDir>..\..\..\Bin\</OutDir>
+    <TargetName>tutorial_ASd</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\..\..\Bin\</OutDir>
-    <TargetName>DuiLib控件展示</TargetName>
+    <TargetName>tutorial_A</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\..\..\Bin\</OutDir>
-    <TargetName>DuiLib控件展示</TargetName>
+    <TargetName>tutorial</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsRelease|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\Bin\</OutDir>
-    <TargetName>DuiLib控件展示</TargetName>
+    <OutDir>..\..\..\Bin\</OutDir>
+    <TargetName>tutorial_AS</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsUnicodeRelease|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\Bin\</OutDir>
-    <TargetName>DuiLib控件展示</TargetName>
+    <OutDir>..\..\..\Bin\</OutDir>
+    <TargetName>tutorial_S</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -284,6 +284,7 @@
     <ClInclude Include="Dialog1.h" />
     <ClInclude Include="Dialog2.h" />
     <ClInclude Include="FormAdvanceControl.h" />
+    <ClInclude Include="FormGridList.h" />
     <ClInclude Include="FormSciEditor.h" />
     <ClInclude Include="FormTest.h" />
     <ClInclude Include="MainFrame.h" />
@@ -297,6 +298,7 @@
     <ClCompile Include="Dialog1.cpp" />
     <ClCompile Include="Dialog2.cpp" />
     <ClCompile Include="FormAdvanceControl.cpp" />
+    <ClCompile Include="FormGridList.cpp" />
     <ClCompile Include="FormSciEditor.cpp" />
     <ClCompile Include="FormTest.cpp" />
     <ClCompile Include="MainFrame.cpp" />

@@ -88,12 +88,14 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	CoInitialize(NULL);
 	CPaintManagerUI::SetInstance(hInstance);
-
+	DuiPluginsRegister();
+/*
 #ifdef _DEBUG
 	CPaintManagerUI::LoadPlugin( CPaintManagerUI::GetInstancePath() + _T("DuiPlugins_ud.dll"));
 #else
 	CPaintManagerUI::LoadPlugin(CPaintManagerUI::GetInstancePath() + _T("DuiPlugins_u.dll"));
 #endif
+
 
 #ifndef DUILIB_VERSION_ORIGINAL
 #ifdef _DEBUG
@@ -102,7 +104,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	CPaintManagerUI::LoadScriptPlugin(CPaintManagerUI::GetInstancePath() + _T("DuiScript_u.dll"));
 #endif
 #endif
-
+*/
 	CPaintManagerUI::SetResourcePath(strSkinPath);
 
 	try
