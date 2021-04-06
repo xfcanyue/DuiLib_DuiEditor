@@ -343,6 +343,8 @@ protected:                                                                \
 #define DUI_CTR_IMAGEBOXEX					(_T("ImageBoxEx"))
 #define DUI_CTR_DATETIMEEX					(_T("DateTimeEx"))
 #define DUI_CTR_ROLLTEXTEX					(_T("RollTextEx"))
+#define DUI_CTR_PICTURE						(_T("Picture"))
+#define DUI_CTR_PICTUREBOX					(_T("PictureBox"))
 
 // #define DUI_CTR_GRIDLIST					(_T("GridList"))
 // #define DUI_CTR_GRIDLISTHEADER				(_T("GridListHeader"))

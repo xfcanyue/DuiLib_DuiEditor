@@ -122,6 +122,7 @@ public:
 };
 
 #define WM_REOPEN_FILE			WM_USER + 221
+#define WM_CHANGE_RECT			WM_USER + 222
 // CDuiEditorApp:
 // 有关此类的实现，请参阅 DuiEditor.cpp
 //

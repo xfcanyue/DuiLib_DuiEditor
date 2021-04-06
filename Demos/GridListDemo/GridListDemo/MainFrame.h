@@ -38,6 +38,5 @@ public:
 	BOOL m_bViewRowLine;
 	BOOL m_bViewColLine;
 	BOOL m_bSelectRect;
-
 };
 

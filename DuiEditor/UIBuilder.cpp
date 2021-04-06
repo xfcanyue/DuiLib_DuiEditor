@@ -521,7 +521,9 @@ CControlUI* CUIBuilder::_Parse(pugi::xml_node root,  CControlUI* pParent, CPaint
 		// Process attributes
 		for (xml_attribute attr=node.first_attribute(); attr; attr=attr.next_attribute())
 		{
-			pControl->SetAttribute(XML2T(attr.name()), XML2T(attr.value()));
+			const char *pValue = attr.value();
+			if(pValue && *pValue != '\0')
+				pControl->SetAttribute(XML2T(attr.name()), XML2T(attr.value()));
 		}
 
 		if( pManager ) {

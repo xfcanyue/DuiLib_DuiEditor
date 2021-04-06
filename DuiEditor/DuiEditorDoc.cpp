@@ -235,6 +235,7 @@ BOOL CDuiEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
 	{
 		SetModifiedFlag(TRUE);
 	}
+	g_session.OpenSession(lpszPathName);
 	return TRUE;
 }
 
@@ -397,7 +398,7 @@ void CDuiEditorDoc::SetModifiedFlag(BOOL bModified)
 			SetTitle(m_strMyTitle);
 	}
 
-	if(IsModified())
+	if(bModified)
 	{
 		SaveBackupFile();
 	}
@@ -417,6 +418,15 @@ void CDuiEditorDoc::SaveBackupFile()
 BOOL CDuiEditorDoc::IsModified()
 {
 	return GetUIManager()->GetCodeView()->GetSciWnd()->sci_GetModify() || m_bModified;
+}
+
+BOOL CDuiEditorDoc::SaveModified()
+{
+	BOOL bRet = CDocument::SaveModified();
+
+	g_session.CloseSession(GetPathName());
+
+	return bRet;
 }
 
 CString CDuiEditorDoc::GetSkinPath()

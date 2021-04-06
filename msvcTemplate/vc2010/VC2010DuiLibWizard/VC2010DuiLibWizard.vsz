@@ -1,0 +1,6 @@
+VSWIZARD 7.0
+Wizard=VsWizard.VsWizardEngine.10.0
+
+Param="WIZARD_NAME = VC2010DuiLibWizard"
+Param="ABSOLUTE_PATH = E:\MyLibrary\DuiLib\msvcTemplate\vc2010\VC2010DuiLibWizard"
+Param="FALLBACK_LCID = 2052"

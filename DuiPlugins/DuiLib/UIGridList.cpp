@@ -83,7 +83,7 @@ void CGridListUI::DoInit()
 
 	if(GetFixedColumnCount() > 0 && GetLeftFixedColWidth() > 0)
 	{
-		SetColumnWidth(0, GetLeftFixedColWidth());
+		m_mapColumnWidthFixed[0] = GetLeftFixedColWidth();
 	}
 
 	m_nRowCount = m_pHeader->GetCount() + m_pBody->GetCount();
@@ -221,37 +221,69 @@ void CGridListUI::SetPos(RECT rc, bool bNeedInvalidate)
 		szAvailable.cx += m_pHorizontalScrollBar->GetScrollRange();
 		iPosX -= m_pHorizontalScrollBar->GetScrollPos();
 	}
+
+	if(IsFitRows() && GetRowCount() > 0)
+	{
+		int rowCount = GetRowCount();
+		int nAverage = (rc.bottom - rc.top -1) / rowCount;
+		for (int i=0; i<rowCount; i++)
+		{
+			SetRowHeight(i, nAverage);
+		}
+	}
 	
-	if(IsExpandColumnToFit() && GetColumnCount() > 0)
+	//自动调整表格最后一列，使铺满表格
+	if(IsExpandLastColumn() && GetColumnCount() > 0 && GetColumnCount() < MAX_GRID_COLUMN_COUNT)
 	{
 		int cxFixed = 0;
+		int colCount = GetColumnCount();
+		for (int i=0; i<colCount-1; i++)
+		{
+			cxFixed += GetColumnWidth(i);
+		}
+
+		//最后一列大于默认列宽才能扩展
+		if(rc.right - rc.left - cxFixed > GetDefColWidth())
+		{
+			m_mapColumnWidthFixed[colCount-1] = rc.right - rc.left - cxFixed - 1;
+
+		}
+		else
+			m_mapColumnWidthFixed[colCount-1] = GetDefColWidth();
+	}
+	//自动调整表格所有列，使铺满表格
+	else if(IsFitColumns() && GetColumnCount() > 0 && GetColumnCount() < MAX_GRID_COLUMN_COUNT)
+	{
+		int cxFixed = 0;
+		int nFixedCount = 0;
 		for (int i=0; i<GetColumnCount(); i++)
 		{
 			if(GetFixedColumnCount() > 0 && GetLeftFixedColWidth() > 0 && i == 0)
 			{
 				cxFixed += GetLeftFixedColWidth();
+				nFixedCount++;
 				continue;
 			}
-			if(i < MAX_GRID_COLUMN_COUNT)
+			else if(m_mapColumnWidthFixed[i] > 0)
 			{
 				cxFixed += m_mapColumnWidthFixed[i];
+				nFixedCount++;
 			}
 		}
-		int nAverage = ( szAvailable.cx - cxFixed ) / GetColumnCount();
-		if(GetFixedColumnCount() > 0 && GetLeftFixedColWidth() > 0)
+		int nNoFixedCols = GetColumnCount() - nFixedCount;
+		if(nNoFixedCols > 0)
 		{
-			nAverage = ( szAvailable.cx - cxFixed ) / (GetColumnCount() - 1);
-		}
-		for (int i=0; i<GetColumnCount(); i++)
-		{
-			if(GetFixedColumnCount() > 0 && GetLeftFixedColWidth() > 0 && i == 0)
+			int nAverage = ( szAvailable.cx - cxFixed ) / nNoFixedCols;
+			for (int i=0; i<GetColumnCount(); i++)
 			{
-				SetColumnWidth(i, GetLeftFixedColWidth());
-				continue;
-			}
-			if(i < MAX_GRID_COLUMN_COUNT)
-			{
-				SetColumnWidth(i, nAverage + m_mapColumnWidthFixed[i]);
+				if(GetFixedColumnCount() > 0 && GetLeftFixedColWidth() > 0 && i == 0)
+				{
+					m_mapColumnWidth[i] = (i, GetLeftFixedColWidth());
+				}
+				else if(m_mapColumnWidthFixed[i] == 0)
+				{
+					m_mapColumnWidth[i] = (i, nAverage);
+				}
 			}
 		}
 	}
@@ -1005,16 +1037,16 @@ int CGridListUI::GetRowHeight(int nRow)
 BOOL CGridListUI::SetColumnWidth(int nCol, int width)
 {
 	if(nCol<0 || nCol >= MAX_GRID_COLUMN_COUNT) return FALSE;
-	m_mapColumnWidth[nCol] = width;
-	m_mapColumnWidthFixed[nCol] = width - GetDefColWidth();
+	m_mapColumnWidthFixed[nCol] = width;
 	return TRUE;
 }
 
 int CGridListUI::GetColumnWidth(int nCol)
 {
 	if(nCol<0 || nCol >= MAX_GRID_COLUMN_COUNT) return 0;
-
-	return m_mapColumnWidth[nCol] > 0 ? m_mapColumnWidth[nCol] : GetDefColWidth();
+	if(m_mapColumnWidthFixed[nCol] > 0) return m_mapColumnWidthFixed[nCol];
+	if(m_mapColumnWidth[nCol] > 0) return m_mapColumnWidth[nCol];
+	return GetDefColWidth();
 }
 
 void CGridListUI::ClearSelectedRows()
@@ -1320,6 +1352,9 @@ void CGridListUI::MergeCells(int nStartRow, int nStartCol, int nEndRow, int nEnd
 		}
 	}
 }
+
+void CGridListUI::SetSortCallbackFun(PFNLVCOMPARE pfnCompare) { m_pfnCompare = pfnCompare; }
+PFNLVCOMPARE CGridListUI::GetSortCallbackFun() const { return m_pfnCompare; }
 
 void CGridListUI::SortItems(int col)
 {
@@ -1760,6 +1795,8 @@ bool  CGridListUI::SaveExcelFile(LPCTSTR filename, bool bOpenFileDialog)
 	f.SaveAs(strFileName);
 	return true;
 }
+
+
 //////////////////////////////////////////////////////////////////////////
 void CGridListUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 {
@@ -1829,13 +1866,21 @@ void CGridListUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
 		EnableSizeRowInBody(_tcsicmp(pstrValue, _T("true")) == 0);
 	}
-	else if( _tcsicmp(pstrName, _T("expandcolumntofit")) == 0 )	
+	else if( _tcsicmp(pstrName, _T("fitcolumnbytext")) == 0 )	
 	{
-		ExpandColumnToFit(_tcsicmp(pstrValue, _T("true")) == 0);
+		SetExpandColumnByText(_tcsicmp(pstrValue, _T("true")) == 0);
 	}	
-	else if( _tcsicmp(pstrName, _T("expandrowtofit")) == 0 )
+	else if( _tcsicmp(pstrName, _T("fitlastcolumn")) == 0 )	
 	{
-		ExpandRowToFit(_tcsicmp(pstrValue, _T("true")) == 0);
+		SetExpandLastColumn(_tcsicmp(pstrValue, _T("true")) == 0);
+	}	
+	else if( _tcsicmp(pstrName, _T("fitcolumns")) == 0 )	
+	{
+		SetFitColumns(_tcsicmp(pstrValue, _T("true")) == 0);
+	}	
+	else if( _tcsicmp(pstrName, _T("fitrows")) == 0 )
+	{
+		SetFitRows(_tcsicmp(pstrValue, _T("true")) == 0);
 	}
 	else if( _tcsicmp(pstrName, _T("listmode")) == 0 )
 	{

@@ -649,6 +649,24 @@ namespace DuiLib
 		}
 	}
 
+	SIZE CContainerUI::EstimateSize(SIZE szAvailable)
+	{
+		if(IsAutoCalcWidth() || IsAutoCalcHeight())
+		{
+			SIZE sz = {0};
+			for (int it=0; it<GetCount(); it++)
+			{
+				SIZE szControl = {0};
+				CControlUI *pControl = GetItemAt(it);
+				szControl = pControl->EstimateSize(szAvailable);
+				sz.cx += szControl.cx;
+				sz.cy += szControl.cy;
+			}
+			return sz;
+		}
+		return __super::EstimateSize(szAvailable);
+	}
+
 	void CContainerUI::SetPos(RECT rc, bool bNeedInvalidate)
 	{
 		CControlUI::SetPos(rc, bNeedInvalidate);

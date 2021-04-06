@@ -20,6 +20,6 @@ void CFormTest::OnNotifyClick(TNotifyUI& msg)
 {
 	if(IsControl(msg, _T("btn_test")))
 	{
-		MessageBox(NULL, _T(""), _T(""), MB_OK);
+		MessageBox(NULL, _T("btn_test"), _T("btn_test"), MB_OK);
 	}
 }

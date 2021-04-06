@@ -137,10 +137,10 @@ void CGridListRowUI::SetPos(RECT rc, bool bNeedInvalidate)
 
 SIZE CGridListRowUI::EstimateSize(SIZE szAvailable)
 {
-	SIZE sz = m_cxyFixed;
+	SIZE sz = GetManager()->GetDPIObj()->Scale(m_cxyFixed);
 
 	if(sz.cy == 0 && GetOwner()) 
-		sz.cy = GetOwner()->GetDefRowHeight();
+		sz.cy = GetManager()->GetDPIObj()->Scale(GetOwner()->GetDefRowHeight());
 
 	return sz;
 }

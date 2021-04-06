@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="模板文件">
+      <UniqueIdentifier>{4cf700f1-f3d6-4c8f-9f6e-6c1ec95676d1}</UniqueIdentifier>
+      <Extensions>txt</Extensions>
+    </Filter>
+    <Filter Include="HTML 文件">
+      <UniqueIdentifier>{d4095977-f4d1-4aa5-9fc5-3fe7d9061a5b}</UniqueIdentifier>
+      <Extensions>htm</Extensions>
+    </Filter>
+    <Filter Include="图像文件">
+      <UniqueIdentifier>{fcf43216-baba-46a7-bd87-b72565b368dc}</UniqueIdentifier>
+      <Extensions>bmp</Extensions>
+    </Filter>
+    <Filter Include="脚本文件">
+      <UniqueIdentifier>{04de3278-e90e-45b5-bdb4-0477bfcace51}</UniqueIdentifier>
+      <Extensions>js</Extensions>
+    </Filter>
+    <Filter Include="杂项文件">
+      <UniqueIdentifier>{b7bd6b8d-5b2f-4c02-8818-c2d79c9fd846}</UniqueIdentifier>
+      <Extensions>vsz;vsdir;ico;vcxproj;csproj;css;inf</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Templates\2052\ReadMe.txt">
+      <Filter>模板文件</Filter>
+    </None>
+    <None Include="Templates\2052\Templates.inf">
+      <Filter>杂项文件</Filter>
+    </None>
+    <None Include="VC2010DuiLibWizard.vsz">
+      <Filter>杂项文件</Filter>
+    </None>
+    <None Include="Scripts\2052\default.js">
+      <Filter>脚本文件</Filter>
+    </None>
+    <None Include="default.vcxproj">
+      <Filter>杂项文件</Filter>
+    </None>
+    <None Include="VC2010DuiLibWizard.vsdir">
+      <Filter>杂项文件</Filter>
+    </None>
+    <None Include="VC2010DuiLibWizard.ico">
+      <Filter>杂项文件</Filter>
+    </None>
+    <None Include="HTML\2052\default.htm">
+      <Filter>HTML 文件</Filter>
+    </None>
+    <None Include="Templates\2052\Sample.txt">
+      <Filter>模板文件</Filter>
+    </None>
+    <None Include="Images\VC2010DuiLibWizard.gif" />
+    <None Include="Images\VC2010DuiLibWizard_Background.gif" />
+    <None Include="2052\NewStyles.css">
+      <Filter>杂项文件</Filter>
+    </None>
+    <None Include="2052\Images\DottedHori.gif" />
+    <None Include="2052\Images\DottedVert.gif" />
+    <None Include="2052\Images\spacer.gif" />
+  </ItemGroup>
+</Project>

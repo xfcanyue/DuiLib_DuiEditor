@@ -602,6 +602,8 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 		break;
 	case SCN_MODIFIED:
 		{
+			//InsertMsg(_T("SCN_MODIFIED"));
+			GetUIManager()->GetDocument()->SaveBackupFile();
 			if(m_bAutoUpdateDesign && 
 				((pMsg->modificationType & SC_MOD_INSERTTEXT) || (pMsg->modificationType & SC_MOD_DELETETEXT)) )
 			{
@@ -630,7 +632,6 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 						m_bNeedUpdate = FALSE;
 					}
 				}
-				GetUIManager()->GetDocument()->SaveBackupFile();
 			}
 		}
 		break;
@@ -641,7 +642,8 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 		}
 		break;
 	case SCN_SAVEPOINTLEFT: //文件被修改
-		{			
+		{
+			//InsertMsg(_T("SCN_SAVEPOINTLEFT"));
 			//第一次载入文件不做标记
 			if(m_bFirstLoading) 
 			{

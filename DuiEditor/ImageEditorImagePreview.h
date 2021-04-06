@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Tracker.h"
 
 
 // CImageEditorImagePreview 视图
@@ -20,10 +20,10 @@ public:
 	void OnChangeRect();
 
 	CRect m_rcImage;
-	CRectTracker m_tracker;
+	CTracker m_tracker;
 	double m_zoom;
 
-	CxImage m_imgSource;			//选取corner时，显示的source图片部分
+	CDuiRect m_rcSource;
 protected:
 	virtual void OnDraw(CDC* pDC);      // 重写以绘制该视图
 

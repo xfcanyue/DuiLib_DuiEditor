@@ -15,6 +15,7 @@ public:
 
 	CImageEditorImagePreview *m_pView;
 	CString m_strCaption;
+
 protected:
 	DECLARE_MESSAGE_MAP()
 public:

@@ -2927,6 +2927,9 @@ NSVGimage* nsvgParse(char* input, const char* units, float dpi)
 
 	nsvg__parseXML(input, nsvg__startElement, nsvg__endElement, nsvg__content, p);
 
+	//if(p->image) p->image->shapes->fill.color = 0xffff0000;
+	//if(p->image) p->image->shapes->stroke.color = 0xffff0000;
+
 	// Scale to viewBox
 	nsvg__scaleToViewbox(p, units);
 

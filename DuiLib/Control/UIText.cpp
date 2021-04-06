@@ -110,7 +110,7 @@ namespace DuiLib
 		CDuiString sText = GetText();
 		RECT m_rcTextPadding = GetTextPadding();
 
-		RECT rcText = { 0, 0, m_bAutoCalcWidth ? 9999 : GetManager()->GetDPIObj()->Scale(m_cxyFixed.cx), 9999 };
+		RECT rcText = { 0, 0, IsAutoCalcWidth() ? 9999 : GetManager()->GetDPIObj()->Scale(m_cxyFixed.cx), 9999 };
 		rcText.left += m_rcTextPadding.left;
 		rcText.right -= m_rcTextPadding.right;
 
@@ -124,7 +124,7 @@ namespace DuiLib
 		SIZE cXY = {rcText.right - rcText.left + m_rcTextPadding.left + m_rcTextPadding.right,
 			rcText.bottom - rcText.top + m_rcTextPadding.top + m_rcTextPadding.bottom};
 		
-		if (m_bAutoCalcWidth)
+		if (IsAutoCalcWidth())
 		{
 			m_cxyFixed.cx = MulDiv(cXY.cx, 100.0, GetManager()->GetDPIObj()->GetScale());
 		}

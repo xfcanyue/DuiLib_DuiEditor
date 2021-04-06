@@ -16,7 +16,6 @@
 
 #include "DockControlTreeWnd.h"
 
-#include "UIWindowEx.h"
 #include "UIManager.h"
 
 #include "DlgTemplateSave.h"
@@ -103,9 +102,19 @@ BEGIN_MESSAGE_MAP(CDuiEditorViewDesign, CScrollView)
 	ON_COMMAND(ID_EDIT_CREATE_RESOURCEID_AUTO, &CDuiEditorViewDesign::OnEditCreateResourceidAuto)
 	ON_COMMAND(ID_EDIT_LANG_TEXT, &CDuiEditorViewDesign::OnEditLangText)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_LANG_TEXT, &CDuiEditorViewDesign::OnUpdateEditLangText)
+
 	ON_UPDATE_COMMAND_UI(ID_EDIT_SET_STYLE_PROPERTY, &CDuiEditorViewDesign::OnUpdateStyleList)
 	ON_COMMAND_EX_RANGE(ID_STYLE_LIST1, ID_STYLE_LIST32, &CDuiEditorViewDesign::OnStyleListRange)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_STYLE_LIST1, ID_STYLE_LIST32, &CDuiEditorViewDesign::OnUpdateStyleListRange)
+
+	ON_UPDATE_COMMAND_UI(ID_EDIT_SET_FONT_PROPERTY, &CDuiEditorViewDesign::OnUpdateFontList)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_SET_HOTFONT_PROPERTY, &CDuiEditorViewDesign::OnUpdateHotFontList)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_SET_PUSHEDFONT_PROPERTY, &CDuiEditorViewDesign::OnUpdatePushedFontList)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_SET_FOCUSEDFONT_PROPERTY, &CDuiEditorViewDesign::OnUpdateFocusedFontList)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_SET_SELECTEDFONT_PROPERTY, &CDuiEditorViewDesign::OnUpdateSelectedFontList)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_SET_ITEMFONT_PROPERTY, &CDuiEditorViewDesign::OnUpdateItemFontList)
+	ON_COMMAND_EX_RANGE(ID_FONT_LIST1, ID_FONT_LIST192, &CDuiEditorViewDesign::OnFontListRange)
+	ON_UPDATE_COMMAND_UI_RANGE(ID_FONT_LIST1, ID_FONT_LIST192, &CDuiEditorViewDesign::OnUpdateFontListRange)
 END_MESSAGE_MAP()
 
 // CDuiEditorView 构造/析构
@@ -146,7 +155,7 @@ int CDuiEditorViewDesign::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	SetUIManager(GetDocument()->GetUIManager());
 	GetUIManager()->_setDesignView(this);
 
-	CUIWindow *pUiWindow = new CUIWindowEx;
+	CUIWindow *pUiWindow = new CUIWindowDesignView;
 	pUiWindow->SetUIManager(GetUIManager());
 	pUiWindow->CreateUiWindow(this->m_hWnd, _T("ViewDesign"), UI_WNDSTYLE_CHILD, 0);
 
@@ -1372,7 +1381,6 @@ void CDuiEditorViewDesign::OnUpdateStyleList(CCmdUI *pCmdUI)
 	if (pCmdUI->m_pSubMenu == NULL)
 		return;
 	CMenu* pMenu = pCmdUI->m_pSubMenu;
-
 	pMenu->DeleteMenu(ID_EDIT_SET_STYLE_PROPERTY, MF_BYCOMMAND);
 	for (UINT id=ID_STYLE_LIST1; id<=ID_STYLE_LIST32; id++)
 	{
@@ -1441,4 +1449,210 @@ void CDuiEditorViewDesign::OnUpdateStyleListRange(CCmdUI *pCmdUI)
 			}
 		}
 	}
+}
+
+CString CDuiEditorViewDesign::GetFontAttributeName(UINT uFontType)
+{
+	switch (uFontType)
+	{
+	case ID_EDIT_SET_FONT_PROPERTY:
+		return _T("font");
+	case ID_EDIT_SET_HOTFONT_PROPERTY:
+		return _T("hotfont");
+	case ID_EDIT_SET_PUSHEDFONT_PROPERTY:
+		return _T("pushedfont");
+	case ID_EDIT_SET_FOCUSEDFONT_PROPERTY:
+		return _T("focuedfont");
+	case ID_EDIT_SET_SELECTEDFONT_PROPERTY:
+		return _T("selectedfont");
+	case ID_EDIT_SET_ITEMFONT_PROPERTY:
+		return _T("itemfont");
+	}
+	return _T("font");
+}
+
+void CDuiEditorViewDesign::UpdateFontPropertyMenu(CCmdUI *pCmdUI, UINT uFontType)
+{
+	if(!GetUIManager()) return;
+	CPaintManagerUI *pManager = GetUIManager()->GetManager();
+
+	int nFont = pManager->GetCustomFontCount(false);
+	int nFontShared = pManager->GetCustomFontCount(true);
+	if(nFont == 0 && nFontShared == 0)
+	{
+		pCmdUI->Enable(FALSE);
+		return;
+	}
+
+	if (pCmdUI->m_pSubMenu == NULL)
+		return;
+
+	//resource.h定义了很多菜单项 -_-!，根据菜单类型计算每个菜单对应的ID，最多32个。
+	UINT id_font_begin	= ID_EDIT_SET_FONT_PROPERTY + 6 + (uFontType - ID_EDIT_SET_FONT_PROPERTY) * 32;
+	UINT id_font_end	= id_font_end = id_font_begin + 31;
+	//InsertMsgV(_T("%d - %d"), id_font_begin, id_font_end);
+
+	CMenu* pMenu = pCmdUI->m_pSubMenu;
+	pMenu->DeleteMenu(uFontType, MF_BYCOMMAND);
+	for (UINT id=id_font_begin; id<=id_font_end; id++)
+	{
+		pMenu->DeleteMenu(id, MF_BYCOMMAND);
+	}
+
+	//如果在DuiLib.xml文件中没有对应相关的font属性，则不加载菜单啊。
+	CString attrName = GetFontAttributeName(uFontType);
+	CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker.GetAt(0);
+	if(!pTrackElem)	return;
+	if(!pTrackElem->m_node) return;
+	xml_node nodeAttr = g_duiProp.FindAttribute(XML2T(pTrackElem->m_node.name()), attrName);
+	if(!nodeAttr) return;
+
+	int nID = id_font_begin;
+	tagTFontInfo *pDefaultFont = (TFontInfo *)GetUIManager()->GetManager()->GetDefaultFontInfo();
+	if(pDefaultFont)
+	{
+		CString sMenuFontName;
+		sMenuFontName.Format(_T("默认 %s size=%d "), pDefaultFont->sFontName.GetData(), pDefaultFont->iSize);
+		if(pDefaultFont->bBold) sMenuFontName += _T("Bold ");
+		if(pDefaultFont->bUnderline) sMenuFontName += _T("Underline ");
+		if(pDefaultFont->bItalic) sMenuFontName += _T("Italic ");
+
+		pMenu->InsertMenu(nID, MF_STRING|MF_BYCOMMAND, nID, sMenuFontName);
+
+		tagFontMenu *p = new tagFontMenu;
+		p->cmdID = nID;
+		p->attrName = GetFontAttributeName(uFontType);
+		p->pFontInfo = pDefaultFont;
+		m_mapFontMenu[nID] = p;
+
+		nID++;
+		if(nID > id_font_end) return;
+	}
+
+	for (int i=0; i<nFont; i++)
+	{
+		TFontInfo *pFontInfo = pManager->GetFontInfo(i, false);
+		CString sMenuFontName;
+		sMenuFontName.Format(_T("id=%d %s size=%d "), pFontInfo->id, pFontInfo->sFontName.GetData(), pFontInfo->iSize);
+		if(pFontInfo->bBold) sMenuFontName += _T("Bold ");
+		if(pFontInfo->bUnderline) sMenuFontName += _T("Underline ");
+		if(pFontInfo->bItalic) sMenuFontName += _T("Italic ");
+
+		pMenu->InsertMenu(nID, MF_STRING|MF_BYCOMMAND, nID, sMenuFontName);
+
+		tagFontMenu *p = new tagFontMenu;
+		p->cmdID = nID;
+		p->attrName = GetFontAttributeName(uFontType);
+		p->pFontInfo = pFontInfo;
+		m_mapFontMenu[nID] = p;
+
+		nID++;
+		if(nID > id_font_end) return;
+	}
+
+	for (int i=0; i<nFontShared; i++)
+	{
+		TFontInfo *pFontInfo = pManager->GetFontInfo(i, true);
+		CString sMenuFontName;
+		sMenuFontName.Format(_T("id=%d %s size=%d "), pFontInfo->id, pFontInfo->sFontName.GetData(), pFontInfo->iSize);
+		if(pFontInfo->bBold) sMenuFontName += _T("Bold ");
+		if(pFontInfo->bUnderline) sMenuFontName += _T("Underline ");
+		if(pFontInfo->bItalic) sMenuFontName += _T("Italic ");
+		sMenuFontName += _T("Shared");
+
+		pMenu->InsertMenu(nID, MF_STRING|MF_BYCOMMAND, nID, sMenuFontName);
+
+		tagFontMenu *p = new tagFontMenu;
+		p->cmdID = nID;
+		p->attrName = GetFontAttributeName(uFontType);
+		p->pFontInfo = pFontInfo;
+		m_mapFontMenu[nID] = p;
+
+		nID++;
+		if(nID > id_font_end) return;
+	}
+}
+
+void CDuiEditorViewDesign::OnUpdateFontList(CCmdUI *pCmdUI)
+{
+	UpdateFontPropertyMenu(pCmdUI, ID_EDIT_SET_FONT_PROPERTY);
+}
+
+void CDuiEditorViewDesign::OnUpdateHotFontList(CCmdUI *pCmdUI)
+{
+	UpdateFontPropertyMenu(pCmdUI, ID_EDIT_SET_HOTFONT_PROPERTY);
+}
+
+void CDuiEditorViewDesign::OnUpdatePushedFontList(CCmdUI *pCmdUI)
+{
+	UpdateFontPropertyMenu(pCmdUI, ID_EDIT_SET_PUSHEDFONT_PROPERTY);
+}
+
+void CDuiEditorViewDesign::OnUpdateFocusedFontList(CCmdUI *pCmdUI)
+{
+	UpdateFontPropertyMenu(pCmdUI, ID_EDIT_SET_FOCUSEDFONT_PROPERTY);
+}
+
+void CDuiEditorViewDesign::OnUpdateSelectedFontList(CCmdUI *pCmdUI)
+{
+	UpdateFontPropertyMenu(pCmdUI, ID_EDIT_SET_SELECTEDFONT_PROPERTY);
+}
+
+void CDuiEditorViewDesign::OnUpdateItemFontList(CCmdUI *pCmdUI)
+{
+	UpdateFontPropertyMenu(pCmdUI, ID_EDIT_SET_ITEMFONT_PROPERTY);
+}
+
+BOOL CDuiEditorViewDesign::OnFontListRange(UINT uID)
+{
+	std::map<UINT, tagFontMenu *>::iterator it = m_mapFontMenu.find(uID);
+	if(it == m_mapFontMenu.end()) return FALSE;
+
+	tagFontMenu *pFontMenu = it->second;
+	int iFont = pFontMenu->pFontInfo->bDefault ? -1 : pFontMenu->pFontInfo->id; 
+
+	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
+	for (int i=0; i<GetUIManager()->GetUiTracker()->m_arrTracker.GetSize(); i++)
+	{
+		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker.GetAt(i);
+		if(pTrackElem)
+		{
+			g_duiProp.AddAttribute(pTrackElem->m_node, pFontMenu->attrName, iFont, GetUIManager());
+			TCHAR idBuffer[16];
+			::ZeroMemory(idBuffer, sizeof(idBuffer));
+			_itot(iFont, idBuffer, 10);
+			pTrackElem->m_pControl->SetAttribute(pFontMenu->attrName, idBuffer);
+		}
+	}	
+
+	for (it=m_mapFontMenu.begin(); it!=m_mapFontMenu.end(); it++)
+	{
+		delete it->second;
+	}
+	m_mapFontMenu.clear();
+
+	return TRUE;
+}
+
+void CDuiEditorViewDesign::OnUpdateFontListRange(CCmdUI *pCmdUI)
+{
+	std::map<UINT, tagFontMenu *>::iterator it = m_mapFontMenu.find(pCmdUI->m_nID);
+	if(it == m_mapFontMenu.end()) 
+		return;
+
+	tagFontMenu *pFontMenu = it->second;
+	int iFont = pFontMenu->pFontInfo->bDefault ? -1 : pFontMenu->pFontInfo->id; 
+
+	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
+	for (int i=0; i<GetUIManager()->GetUiTracker()->m_arrTracker.GetSize(); i++)
+	{
+		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker.GetAt(i);
+		if(pTrackElem)
+		{
+			if(pTrackElem->m_node.attribute(T2XML(pFontMenu->attrName)).as_int(-1) == iFont)
+			{
+				pCmdUI->SetCheck(TRUE);
+			}
+		}
+	}	
 }

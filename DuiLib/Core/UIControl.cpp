@@ -37,6 +37,7 @@ namespace DuiLib {
 		m_nTooltipWidth(300),
 		m_wCursor(0),
 		m_instance(NULL),
+		m_bAutoCalcWidth(false), m_bAutoCalcHeight(false),
 		m_asOnInit(NULL),m_asOnEvent(NULL), m_asOnNotify(NULL), m_asOnDestroy(NULL), m_asOnSize(NULL), 
 		m_asOnPaintBkColor(NULL), m_asOnPaintBkImage(NULL), m_asOnPaintStatusImage(NULL), 
 		m_asOnPaint(NULL), m_asOnPaintForeColor(NULL), m_asOnPaintForeImage(NULL), m_asOnPaintText(NULL), m_asOnPaintBorder(NULL)
@@ -651,6 +652,11 @@ namespace DuiLib {
 	{
 		return m_uFloatAlign;
 	}
+
+	bool CControlUI::IsAutoCalcWidth() const { return m_bAutoCalcWidth; }
+	void CControlUI::SetAutoCalcWidth(bool bAutoCalcWidth) { m_bAutoCalcWidth = bAutoCalcWidth; }
+	bool CControlUI::IsAutoCalcHeight() const { return m_bAutoCalcHeight; }
+	void CControlUI::SetAutoCalcHeight(bool bAutoCalcHeight) { m_bAutoCalcHeight = bAutoCalcHeight; }
 
 	CDuiString CControlUI::GetToolTip() const
 	{
@@ -1282,6 +1288,12 @@ namespace DuiLib {
 				SetAttribute(sItem, sValue);
 				if( *pstrList++ != _T(' ') && *pstrList++ != _T(',') ) return;
 			}
+		}
+		else if( _tcsicmp(pstrName, _T("autocalcwidth")) == 0 ) {
+			SetAutoCalcWidth(_tcsicmp(pstrValue, _T("true")) == 0);
+		}
+		else if( _tcsicmp(pstrName, _T("autocalcheight")) == 0 ) {
+			SetAutoCalcHeight(_tcsicmp(pstrValue, _T("true")) == 0);
 		}
 		else if( _tcscmp(pstrName, _T("OnInit"))			== 0 )		m_asOnInit	= GetManager()->GetScriptFunAddress(pstrValue);
 		else if( _tcscmp(pstrName, _T("OnEvent"))			== 0 )		m_asOnEvent = GetManager()->GetScriptFunAddress(pstrValue);

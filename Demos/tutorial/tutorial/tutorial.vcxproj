@@ -158,7 +158,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsUnicodeRelease|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\..\..\Bin\</OutDir>
-    <TargetName>tutorial_S</TargetName>
+    <TargetName>tutorial</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

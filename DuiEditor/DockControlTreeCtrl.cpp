@@ -338,11 +338,13 @@ HTREEITEM CDockControlTreeCtrl::SelectXmlNode(xml_node node)
 	if(hItem)
 	{
 		SelectItem(hItem);
+		EnsureVisible(hItem);
 	}
 	else
 	{
 		hItem = GetRootItem();
 		SelectItem(hItem);
+		EnsureVisible(hItem);
 	}
 
 	GetUIManager()->GetPropList()->InitProp(node);

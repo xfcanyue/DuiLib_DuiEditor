@@ -1,0 +1,12 @@
+﻿生成启动时间为 2021/3/25 18:55:28。
+     1>项目“E:\MyLibrary\DuiLibTemplate\VC2010DuiLibWizard\VC2010DuiLibWizard\VC2010DuiLibWizard.vcxproj”在节点 2 上(build 个目标)。
+     1>InitializeBuildStatus:
+         正在创建“Debug\VC2010DuiLibWizard.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       FinalizeBuildStatus:
+         正在删除文件“Debug\VC2010DuiLibWizard.unsuccessfulbuild”。
+         正在对“Debug\VC2010DuiLibWizard.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“E:\MyLibrary\DuiLibTemplate\VC2010DuiLibWizard\VC2010DuiLibWizard\VC2010DuiLibWizard.vcxproj”(build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:00.04

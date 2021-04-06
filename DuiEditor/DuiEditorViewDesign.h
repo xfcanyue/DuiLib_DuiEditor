@@ -28,6 +28,14 @@ public:
 	STARTUPINFO m_siStartInfo; 
 
 	CStringArray m_arrTempStyles;
+
+	struct tagFontMenu
+	{
+		UINT cmdID;
+		CString attrName;
+		TFontInfo *pFontInfo;
+	};
+	std::map<UINT, tagFontMenu *> m_mapFontMenu;
 public:
 	CUIManager *GetUIManager() const { return m_pUIManager; }
 	void SetUIManager(CUIManager *pManager) { m_pUIManager = pManager; }
@@ -132,9 +140,21 @@ public:
 	void _CreateResourceIDAuto(xml_node root);
 	afx_msg void OnEditLangText();
 	afx_msg void OnUpdateEditLangText(CCmdUI *pCmdUI);
+
 	afx_msg void OnUpdateStyleList(CCmdUI *pCmdUI);
 	afx_msg BOOL OnStyleListRange(UINT uID);
 	afx_msg void OnUpdateStyleListRange(CCmdUI *pCmdUI);
+
+	CString GetFontAttributeName(UINT uFontType);
+	void UpdateFontPropertyMenu(CCmdUI *pCmdUI, UINT uFontType);
+	afx_msg void OnUpdateFontList(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateHotFontList(CCmdUI *pCmdUI);
+	afx_msg void OnUpdatePushedFontList(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateFocusedFontList(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateSelectedFontList(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateItemFontList(CCmdUI *pCmdUI);
+	afx_msg BOOL OnFontListRange(UINT uID);
+	afx_msg void OnUpdateFontListRange(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // DuiEditorView.cpp 中的调试版本

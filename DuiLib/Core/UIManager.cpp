@@ -121,16 +121,12 @@ namespace DuiLib {
 						rcSource.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
 						rcSource.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);    
 						rcSource.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);
-						if(paintManager->IsAdjustDPIRecource())
-							paintManager->GetDPIObj()->Scale(&rcSource);
 					}
 					else if( sItem == _T("corner") ) {
 						rcCorner.left = _tcstol(sValue.GetData(), &pstr, 10);  ASSERT(pstr);    
 						rcCorner.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
 						rcCorner.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);    
 						rcCorner.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);
-						if(paintManager->IsAdjustDPIRecource())
-							paintManager->GetDPIObj()->Scale(&rcCorner);
 					}
 					else if( sItem == _T("mask") ) {
 						if( sValue[0] == _T('#')) dwMask = _tcstoul(sValue.GetData() + 1, &pstr, 16);
@@ -151,30 +147,78 @@ namespace DuiLib {
 					else if( sItem == _T("hsl") ) {
 						bHSL = (_tcsicmp(sValue.GetData(), _T("true")) == 0);
 					}
+					else if( sItem == _T("padding") ) {
+						rcPadding.left = _tcstol(sValue.GetData(), &pstr, 10);  ASSERT(pstr);    
+						rcPadding.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
+						rcPadding.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);    
+						rcPadding.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);  
+						if(paintManager != NULL) paintManager->GetDPIObj()->Scale(&rcPadding);
+					}
+					else if( sItem == _T("align")){
+						if(_tcsicmp(sValue.GetData(), _T("left")) == 0){
+							uAlign &= ~(DT_CENTER | DT_RIGHT);
+							uAlign |= DT_LEFT;
+						}
+						else if(_tcsicmp(sValue.GetData(), _T("right")) == 0){
+							uAlign &= ~(DT_LEFT | DT_CENTER);
+							uAlign |= DT_RIGHT;
+						}
+						else if(_tcsicmp(sValue.GetData(), _T("center")) == 0){
+							uAlign &= ~(DT_LEFT | DT_RIGHT);
+							uAlign |= DT_CENTER;
+						}
+					}
+					else if( sItem == _T("valign")){
+						if(_tcsicmp(sValue.GetData(), _T("top")) == 0){
+							uAlign &= ~(DT_BOTTOM | DT_VCENTER);
+							uAlign |= DT_TOP;
+						}
+						else if(_tcsicmp(sValue.GetData(), _T("bottom")) == 0){
+							uAlign &= ~(DT_TOP | DT_VCENTER);
+							uAlign |= DT_BOTTOM;
+						}
+						else if(_tcsicmp(sValue.GetData(), _T("vcenter")) == 0){
+							uAlign &= ~(DT_TOP | DT_BOTTOM);
+							uAlign |= DT_VCENTER;
+						}
+					}
 					else if( sItem == _T("width") ) {
 						width = _ttoi(sValue);
-						//if(paintManager->IsAdjustDPIRecource())
-							width = paintManager->GetDPIObj()->Scale(width);
+						width = paintManager->GetDPIObj()->Scale(width);
 					}
 					else if( sItem == _T("height") ) {
 						height = _ttoi(sValue);
-						//if(paintManager->IsAdjustDPIRecource())
-							height = paintManager->GetDPIObj()->Scale(height);
+						height = paintManager->GetDPIObj()->Scale(height);
+					}
+					else if( sItem == _T("fillcolor") ) {
+						if( sValue[0] == _T('#')) fillcolor = _tcstoul(sValue.GetData() + 1, &pstr, 16);
+						else fillcolor = _tcstoul(sValue.GetData(), &pstr, 16);
 					}
 				}
 				if( *pStrImage++ != _T(' ') ) break;
 			}
 		}
 
-		if(paintManager->GetDPIObj()->IsAdjustDPIRecource()) //Modify by liqs99
-		{
 			// 调整DPI资源
-			if (paintManager->GetDPIObj()->GetScale() != 100) {
+			if (paintManager && paintManager->GetDPIObj()->GetScale() != 100) {
 				CDuiString sScale;
 				sScale.Format(_T("@%d."), paintManager->GetDPIObj()->GetScale());
-				sImageName.Replace(_T("."), sScale);
+				//sImageName.Replace(_T("."), sScale);
+
+				//如果对应dpi的图像不存在，就不要替换了。
+				CDuiString sImageNameTemp = sImageName;
+				sImageNameTemp.Replace(_T("."), sScale);
+				LPBYTE pData = NULL;
+				DWORD dwSize = CRenderEngine::LoadImage2Memory(sImageNameTemp.GetData(), NULL, pData);
+				if(dwSize > 0)
+				{
+					paintManager->GetDPIObj()->Scale(&rcSource);
+					paintManager->GetDPIObj()->Scale(&rcCorner);
+
+					sImageName = sImageNameTemp;
+					CRenderEngine::FreeMemory(pData);
+				}
 			}
-		}
 	}
 	void tagTDrawInfo::Clear()
 	{
@@ -191,8 +235,11 @@ namespace DuiLib {
 		bTiledX = false;
 		bTiledY = false;
 		bHSL = false;
+		memset(&rcPadding, 0, sizeof(RECT));
+		uAlign = DT_LEFT;
 		width = 0;
 		height = 0;
+		fillcolor = 0;
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -2157,16 +2204,6 @@ namespace DuiLib {
 		}
 	}
 
-	void DuiLib::CPaintManagerUI::SetAdjustDPIRecource(bool bAdjust) //是否动态调整DPI资源, add by liqs99
-	{
-		CDPI::SetAdjustDPIRecource(bAdjust);
-	}
-
-	bool DuiLib::CPaintManagerUI::IsAdjustDPIRecource() //是否动态调整DPI资源, add by liqs99
-	{
-		return CDPI::IsAdjustDPIRecource();
-	}
-
 	void DuiLib::CPaintManagerUI::ResetDPIAssets()
 	{
 		RemoveAllDrawInfos();
@@ -2774,12 +2811,14 @@ namespace DuiLib {
 		if (bShared)
 		{
 			::DeleteObject(m_SharedResInfo.m_DefaultFontInfo.hFont);
+			m_SharedResInfo.m_DefaultFontInfo.id = -1;
 			m_SharedResInfo.m_DefaultFontInfo.hFont = hFont;
 			m_SharedResInfo.m_DefaultFontInfo.sFontName = lf.lfFaceName;
 			m_SharedResInfo.m_DefaultFontInfo.iSize =nSize;
 			m_SharedResInfo.m_DefaultFontInfo.bBold = bBold;
 			m_SharedResInfo.m_DefaultFontInfo.bUnderline = bUnderline;
 			m_SharedResInfo.m_DefaultFontInfo.bItalic = bItalic;
+			m_SharedResInfo.m_DefaultFontInfo.bDefault = true;
 			::ZeroMemory(&m_SharedResInfo.m_DefaultFontInfo.tm, sizeof(m_SharedResInfo.m_DefaultFontInfo.tm));
 			if( m_hDcPaint ) {
 				HFONT hOldFont = (HFONT) ::SelectObject(m_hDcPaint, hFont);
@@ -2790,12 +2829,14 @@ namespace DuiLib {
 		else
 		{
 			::DeleteObject(m_ResInfo.m_DefaultFontInfo.hFont);
+			m_ResInfo.m_DefaultFontInfo.id = -1;
 			m_ResInfo.m_DefaultFontInfo.hFont = hFont;
 			m_ResInfo.m_DefaultFontInfo.sFontName = lf.lfFaceName;
 			m_ResInfo.m_DefaultFontInfo.iSize = nSize;
 			m_ResInfo.m_DefaultFontInfo.bBold = bBold;
 			m_ResInfo.m_DefaultFontInfo.bUnderline = bUnderline;
 			m_ResInfo.m_DefaultFontInfo.bItalic = bItalic;
+			m_ResInfo.m_DefaultFontInfo.bDefault = true;
 			::ZeroMemory(&m_ResInfo.m_DefaultFontInfo.tm, sizeof(m_ResInfo.m_DefaultFontInfo.tm));
 			if( m_hDcPaint ) {
 				HFONT hOldFont = (HFONT) ::SelectObject(m_hDcPaint, hFont);
@@ -2833,6 +2874,7 @@ namespace DuiLib {
 		TFontInfo* pFontInfo = new TFontInfo;
 		if( !pFontInfo ) return false;
 		::ZeroMemory(pFontInfo, sizeof(TFontInfo));
+		pFontInfo->id = id;
 		pFontInfo->hFont = hFont;
 		pFontInfo->sFontName = lf.lfFaceName;
 		pFontInfo->iSize = nSize;
@@ -3208,6 +3250,22 @@ namespace DuiLib {
 		return pFontInfo;
 	}
 
+	TFontInfo* CPaintManagerUI::GetFontInfo(int nIndex, bool bShared)
+	{
+		TFontInfo *pFontInfo = NULL;
+		if (bShared)
+		{
+			LPCTSTR key = m_SharedResInfo.m_CustomFonts.GetAt(nIndex);
+			pFontInfo = static_cast<TFontInfo*>(m_SharedResInfo.m_CustomFonts.Find(key));
+		}
+		else
+		{
+			LPCTSTR key = m_ResInfo.m_CustomFonts.GetAt(nIndex);
+			pFontInfo = static_cast<TFontInfo*>(m_ResInfo.m_CustomFonts.Find(key));
+		}
+		return pFontInfo;
+	}
+
 	const TImageInfo* CPaintManagerUI::GetImage(LPCTSTR bitmap)
 	{
 		TImageInfo* data = static_cast<TImageInfo*>(m_ResInfo.m_ImageHash.Find(bitmap));
@@ -3215,33 +3273,45 @@ namespace DuiLib {
 		return data;
 	}
 
-	const TImageInfo* CPaintManagerUI::GetImageEx(LPCTSTR bitmap, LPCTSTR type, DWORD mask, int width, int height, bool bUseHSL, HINSTANCE instance)
+	const TImageInfo* CPaintManagerUI::GetImageEx(LPCTSTR bitmap, LPCTSTR type, DWORD mask, int width, int height, DWORD fillcolor, bool bUseHSL, HINSTANCE instance)
 	{
-		const TImageInfo* data = GetImage(bitmap);
+		CDuiString sImageName = bitmap;
+		if(width !=0 || height != 0 || fillcolor != 0)
+		{
+			sImageName.Format(_T("%s-%d-%d-%08X"), bitmap, width, height, fillcolor);
+		}
+
+		const TImageInfo* data = GetImage(sImageName);
 		if( !data ) {
-			if( AddImage(bitmap, type, mask, width, height, bUseHSL, false, instance) ) {
-				if (m_bForceUseSharedRes) data = static_cast<TImageInfo*>(m_SharedResInfo.m_ImageHash.Find(bitmap));
-				else data = static_cast<TImageInfo*>(m_ResInfo.m_ImageHash.Find(bitmap)); 
+			if( AddImage(bitmap, type, mask, width, height, fillcolor, bUseHSL, false, instance) ) {
+				if (m_bForceUseSharedRes) data = static_cast<TImageInfo*>(m_SharedResInfo.m_ImageHash.Find(sImageName));
+				else data = static_cast<TImageInfo*>(m_ResInfo.m_ImageHash.Find(sImageName)); 
 			}
 		}
 
 		return data;
 	}
 
-	const TImageInfo* CPaintManagerUI::AddImage(LPCTSTR bitmap, LPCTSTR type, DWORD mask, int width, int height, bool bUseHSL, bool bShared, HINSTANCE instance)
+	const TImageInfo* CPaintManagerUI::AddImage(LPCTSTR bitmap, LPCTSTR type, DWORD mask, int width, int height, DWORD fillcolor, bool bUseHSL, bool bShared, HINSTANCE instance)
 	{
 		if( bitmap == NULL || bitmap[0] == _T('\0') ) return NULL;
+
+		CDuiString sImageName = bitmap;
+		if(width !=0 || height != 0 || fillcolor != 0)
+		{
+			sImageName.Format(_T("%s-%d-%d-%08X"), bitmap, width, height, fillcolor);
+		}
 
 		TImageInfo* data = NULL;
 		if( type != NULL && lstrlen(type) > 0) {
 			if( isdigit(*bitmap) ) {
 				LPTSTR pstr = NULL;
 				int iIndex = _tcstol(bitmap, &pstr, 10);
-				data = CRenderEngine::LoadImage(iIndex, type, mask, width, height, this, instance);
+				data = CRenderEngine::LoadImage(iIndex, type, mask, width, height, fillcolor, this, instance);
 			}
 		}
 		else {
-			data = CRenderEngine::LoadImage(bitmap, NULL, mask, width, height, this, instance);
+			data = CRenderEngine::LoadImage(bitmap, NULL, mask, width, height, fillcolor, this, instance);
 		}
 
 		if( data == NULL ) {
@@ -3260,28 +3330,28 @@ namespace DuiLib {
 		{
 			if (bShared || m_bForceUseSharedRes)
 			{
-				TImageInfo* pOldImageInfo = static_cast<TImageInfo*>(m_SharedResInfo.m_ImageHash.Find(bitmap));
+				TImageInfo* pOldImageInfo = static_cast<TImageInfo*>(m_SharedResInfo.m_ImageHash.Find(sImageName));
 				if (pOldImageInfo)
 				{
 					CRenderEngine::FreeImage(pOldImageInfo);
-					m_SharedResInfo.m_ImageHash.Remove(bitmap);
+					m_SharedResInfo.m_ImageHash.Remove(sImageName);
 				}
 
-				if( !m_SharedResInfo.m_ImageHash.Insert(bitmap, data) ) {
+				if( !m_SharedResInfo.m_ImageHash.Insert(sImageName, data) ) {
 					CRenderEngine::FreeImage(data);
 					data = NULL;
 				}
 			}
 			else
 			{
-				TImageInfo* pOldImageInfo = static_cast<TImageInfo*>(m_ResInfo.m_ImageHash.Find(bitmap));
+				TImageInfo* pOldImageInfo = static_cast<TImageInfo*>(m_ResInfo.m_ImageHash.Find(sImageName));
 				if (pOldImageInfo)
 				{
 					CRenderEngine::FreeImage(pOldImageInfo);
-					m_ResInfo.m_ImageHash.Remove(bitmap);
+					m_ResInfo.m_ImageHash.Remove(sImageName);
 				}
 
-				if( !m_ResInfo.m_ImageHash.Insert(bitmap, data) ) {
+				if( !m_ResInfo.m_ImageHash.Insert(sImageName, data) ) {
 					CRenderEngine::FreeImage(data);
 					data = NULL;
 				}
@@ -3308,6 +3378,7 @@ namespace DuiLib {
 		data->bUseHSL = false;
 		data->pSrcBits = NULL;
 		data->dwMask = 0;
+		data->delay = 0;
 
 		if (bShared || m_bForceUseSharedRes)
 		{

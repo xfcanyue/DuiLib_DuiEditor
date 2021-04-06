@@ -563,6 +563,8 @@
     <ClCompile Include="Control\UIMenu.cpp" />
     <ClCompile Include="Control\UIMsgWnd.cpp" />
     <ClCompile Include="Control\UIOption.cpp" />
+    <ClCompile Include="Control\UIPicture.cpp" />
+    <ClCompile Include="Control\UIPictureBox.cpp" />
     <ClCompile Include="Control\UIProgress.cpp" />
     <ClCompile Include="Control\UIRichEdit.cpp" />
     <ClCompile Include="Control\UIRing.cpp" />
@@ -664,6 +666,8 @@
     <ClInclude Include="Control\UIMenu.h" />
     <ClInclude Include="Control\UIMsgWnd.h" />
     <ClInclude Include="Control\UIOption.h" />
+    <ClInclude Include="Control\UIPicture.h" />
+    <ClInclude Include="Control\UIPictureBox.h" />
     <ClInclude Include="Control\UIProgress.h" />
     <ClInclude Include="Control\UIRichEdit.h" />
     <ClInclude Include="Control\UIRing.h" />

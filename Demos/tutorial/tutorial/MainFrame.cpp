@@ -230,7 +230,7 @@ void CMainFrame::OnNotifyClick(TNotifyUI& msg)
 
 	if(IsControl(msg, _T("btn_show_dialog")))
 	{
-		CDialog1 *pDlg = new CDialog1;
+		CDialog2 *pDlg = new CDialog2;
 		pDlg->ShowDialog(this);
 	}
 

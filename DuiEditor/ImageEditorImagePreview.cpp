@@ -71,8 +71,8 @@ void CImageEditorImagePreview::OnInitialUpdate()
 void CImageEditorImagePreview::InitData()
 {
 	CSize sizeTotal;
-	sizeTotal.cx = g_pEditorImage->m_image.GetWidth() + 20;
-	sizeTotal.cy = g_pEditorImage->m_image.GetHeight() + 20;
+	sizeTotal.cx = g_pEditorImage->m_rcImage.Width() + 20;
+	sizeTotal.cy = g_pEditorImage->m_rcImage.Height() + 20;
 	SetScrollSizes(MM_TEXT, sizeTotal);
 
 	RecalcImageRect();
@@ -80,7 +80,7 @@ void CImageEditorImagePreview::InitData()
 	Invalidate(TRUE);
 
 	CString strCaption;
-	strCaption.Format(_T("原始图片  %d * %d"), g_pEditorImage->m_image.GetWidth(), g_pEditorImage->m_image.GetHeight());
+	strCaption.Format(_T("原始图片  %d * %d"), g_pEditorImage->m_rcImage.Width(), g_pEditorImage->m_rcImage.Height());
 	CImageEditorPaneImage *pPane = (CImageEditorPaneImage *)GetParent();
 	pPane->SetCaptionText(strCaption);
 }
@@ -128,9 +128,7 @@ void CImageEditorImagePreview::RecalcImageRect()
 		{
 			rcSource = g_pEditorImage->m_rcImage;
 		}
-		//把source部分的图片截取出来，方便corner的选取
-		m_imgSource.DestroyFrames(); m_imgSource.Destroy();
-		g_pEditorImage->m_image.Crop(rcSource, &m_imgSource);
+		m_rcSource = rcSource;
 
 		CRect rcControl = rcSource;
 		//让图片居中显示
@@ -218,16 +216,28 @@ void CImageEditorImagePreview::OnDraw(CDC* pDC)
 	memDC->FillRect(rcArea, &afxGlobalData.brBlack);
 
 	memDC->FillSolidRect(m_rcImage, g_cfg.crDesignerBkColor);
-
+	
 	if(g_pEditorImage->m_pFrame->m_bTrackSource)
 	{
-		g_pEditorImage->m_image.Draw(memDC->m_hDC, m_rcImage);
+		TImageInfo *pImageInfo = (TImageInfo *)g_pEditorImage->m_imageFrames.GetAt(0);
+		if(pImageInfo)
+		{
+			CDuiRect rcSource = m_rcSource;
+			if(rcSource.IsNull())
+			{
+				rcSource.right = m_rcImage.Width();
+				rcSource.bottom = m_rcImage.Height();
+			}
+			CRenderEngine::DrawImage(memDC->m_hDC, pImageInfo->hBitmap, m_rcImage, m_rcImage, rcSource, CDuiRect(0,0,0,0), pImageInfo->bAlpha);	
+		}
 	}
 	else
 	{
-		m_imgSource.Draw(memDC->m_hDC, m_rcImage);
+		TImageInfo *pImageInfo = (TImageInfo *)g_pEditorImage->m_imageFrames.GetAt(0);
+		if(pImageInfo)
+			CRenderEngine::DrawImage(memDC->m_hDC, pImageInfo->hBitmap, m_rcImage, m_rcImage, m_rcSource, CDuiRect(0,0,0,0), pImageInfo->bAlpha);
 	}
-
+	
 	m_tracker.Draw(&memDC);
 }
 

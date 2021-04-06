@@ -1840,6 +1840,7 @@ namespace DuiLib {
 		if( event.Type == UIEVENT_MOUSEMOVE )
 		{
 			if( (m_uButtonState & UISTATE_CAPTURED) != 0 ) {
+				RECT rcPadding = GetPadding();
 				RECT rc = m_rcItem;
 				if( m_iSepWidth >= 0 ) {
 					rc.right -= ptLastMouse.x - event.ptMouse.x;
@@ -1848,8 +1849,8 @@ namespace DuiLib {
 					rc.left -= ptLastMouse.x - event.ptMouse.x;
 				}
 
-				if( rc.right - rc.left > GetMinWidth() ) {
-					m_cxyFixed.cx = rc.right - rc.left;
+				if( rc.right - rc.left - rcPadding.right > GetMinWidth() ) {
+					m_cxyFixed.cx = rc.right - rc.left - rcPadding.right;
 					ptLastMouse = event.ptMouse;
 					if( GetParent() ) 
 						GetParent()->NeedParentUpdate();
@@ -1963,8 +1964,7 @@ namespace DuiLib {
 		CListElementUI::CListElementUI() : m_iIndex(-1),
 		m_pOwner(NULL), 
 		m_bSelected(false),
-		m_uButtonState(0),
-		m_bAutoCalcWidth(true)
+		m_uButtonState(0)
 	{
 	}
 
@@ -2219,15 +2219,10 @@ namespace DuiLib {
 		}
 	}
 
-	bool CListElementUI::GetAutoCalcWidth() const
-	{
-		return m_bAutoCalcWidth;
-	}
-
-	void CListElementUI::SetAutoCalcWidth(bool bAutoCalcWidth)
-	{
-		m_bAutoCalcWidth = bAutoCalcWidth;
-	}
+	bool CListElementUI::IsAutoCalcWidth() const { return m_bAutoCalcWidth; }
+	void CListElementUI::SetAutoCalcWidth(bool bAutoCalcWidth) { m_bAutoCalcWidth = bAutoCalcWidth; }
+	bool CListElementUI::IsAutoCalcHeight() const { return m_bAutoCalcHeight; }
+	void CListElementUI::SetAutoCalcHeight(bool bAutoCalcHeight) { m_bAutoCalcHeight = bAutoCalcHeight; }
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
 	//
@@ -2338,7 +2333,7 @@ namespace DuiLib {
 			cXY.cy += pInfo->rcTextPadding.top + pInfo->rcTextPadding.bottom;
 		}
 
-		if( GetAutoCalcWidth() && cXY.cx == 0 && m_pManager != NULL ) {
+		if( IsAutoCalcWidth() && cXY.cx == 0 && m_pManager != NULL ) {
 			RECT rcText = { 0, 0, 9999, cXY.cy };
 			if( pInfo->bShowHtml ) {
 				int nLinks = 0;
@@ -2596,8 +2591,7 @@ namespace DuiLib {
 		m_iIndex(-1),
 		m_pOwner(NULL), 
 		m_bSelected(false),
-		m_uButtonState(0),
-		m_bAutoCalcWidth(true)
+		m_uButtonState(0)
 	{
 	}
 
@@ -2990,13 +2984,8 @@ namespace DuiLib {
 		}
 	}
 
-	bool CListContainerElementUI::GetAutoCalcWidth() const
-	{
-		return m_bAutoCalcWidth;
-	}
-
-	void CListContainerElementUI::SetAutoCalcWidth(bool bAutoCalcWidth)
-	{
-		m_bAutoCalcWidth = bAutoCalcWidth;
-	}
+	bool CListContainerElementUI::IsAutoCalcWidth() const { return m_bAutoCalcWidth; }
+	void CListContainerElementUI::SetAutoCalcWidth(bool bAutoCalcWidth) { m_bAutoCalcWidth = bAutoCalcWidth; }
+	bool CListContainerElementUI::IsAutoCalcHeight() const { return m_bAutoCalcHeight; }
+	void CListContainerElementUI::SetAutoCalcHeight(bool bAutoCalcHeight) { m_bAutoCalcHeight = bAutoCalcHeight; }
 } // namespace DuiLib

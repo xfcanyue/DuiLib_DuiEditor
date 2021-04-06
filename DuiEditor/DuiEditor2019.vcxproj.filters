@@ -357,9 +357,6 @@
     <ClInclude Include="DuiEditorViewDesign.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="UIWindowEx.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="UITracker.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -471,6 +468,12 @@
     <ClInclude Include="UIDlgLangTextEdit.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="UIWindowContainer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIWindowDesignView.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -570,9 +573,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DuiEditorViewDesign.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="UIWindowEx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="UITracker.cpp">
@@ -681,6 +681,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="UIDlgLangTextEdit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIWindowContainer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIWindowDesignView.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

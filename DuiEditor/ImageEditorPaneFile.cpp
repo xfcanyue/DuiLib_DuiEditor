@@ -124,8 +124,8 @@ void CImageEditorListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
-	//*pResult = CDRF_DODEFAULT; //控件自己绘制
-	//return;
+// 	*pResult = CDRF_DODEFAULT; //控件自己绘制
+// 	return;
 	if((GetStyle () & LVS_TYPEMASK) != LVS_ICON)
 		return;
 
@@ -173,7 +173,6 @@ void CImageEditorListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 		}
 
 		// Get the rect that holds the item's icon.
-		//m_agentList.GetItemRect ( nItem, &rcItem, LVIR_ICON );
 		GetItemRect ( nItem, &rcItem, LVIR_ICON );
 
 		// Draw the icon.
@@ -186,11 +185,11 @@ void CImageEditorListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 		CRect rcIcon = rcItem;
 		rcIcon.left += 5;
 		rcIcon.right -= 5;
-		CxImage *pImg = GetThumbnail(nItem);
-		if(pImg)
+		TImageInfo *pImageInfo = GetThumbnail(nItem);
+		if(pImageInfo)
 		{
 			CRect rcImage;
-			CRect rcTemp(0, 0, pImg->GetWidth(), pImg->GetHeight());
+			CRect rcTemp(0, 0, pImageInfo->nX, pImageInfo->nY);
 			if( rcTemp.Width() < rcIcon.Width())
 			{
 				CPoint pt = rcItem.CenterPoint();
@@ -214,7 +213,16 @@ void CImageEditorListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 				rcImage.bottom = rcIcon.bottom;
 			}
 
-			pImg->Draw(pDC->m_hDC, rcImage);
+			RECT rcSource = {0};
+			if( rcSource.left == 0 && rcSource.right == 0 && rcSource.top == 0 && rcSource.bottom == 0 ) {
+				rcSource.right = pImageInfo->nX;
+				rcSource.bottom = pImageInfo->nY;
+			}
+			if (rcSource.right > pImageInfo->nX) rcSource.right = pImageInfo->nX;
+			if (rcSource.bottom > pImageInfo->nY) rcSource.bottom = pImageInfo->nY;
+
+			RECT rcCorner = {0};
+			CRenderEngine::DrawImage(pDC->GetSafeHdc(), pImageInfo->hBitmap, rcImage, rcImage, rcSource, rcCorner, pImageInfo->bAlpha, 255, false, false, false);
 		}
 		else
 		{
@@ -285,14 +293,13 @@ BOOL CImageEditorListCtrl::InitList()
 	m_imageEmpty.Create(60, 60, ILC_COLOR32 | ILC_MASK, 1, 1);
 	SetImageList(&m_imageEmpty, LVSIL_NORMAL);
 
-	//SetIconSpacing(100,100);
 	m_imageShell.Attach(GetShellImageList(TRUE));
 	return TRUE;
 }
 
-CxImage *CImageEditorListCtrl::GetThumbnail(int nItem)
+TImageInfo *CImageEditorListCtrl::GetThumbnail(int nItem)
 {
-	std::map<int, CxImage *>::iterator it = m_map.find(nItem);
+	std::map<int, TImageInfo *>::iterator it = m_map.find(nItem);
 	if(it != m_map.end())
 	{
 		return it->second;
@@ -301,23 +308,11 @@ CxImage *CImageEditorListCtrl::GetThumbnail(int nItem)
 	{
 		CString strPath;
 		GetItemPath(strPath, nItem);
-		CxImage img;
-		if(img.Load(strPath))
+		TImageInfo *pImage = CRenderEngine::LoadImage(strPath);
+		if(pImage)
 		{
-			CxImage *pImg = new CxImage;
-			pImg->Transfer(img);
-			m_map[nItem] = pImg;
-			return pImg;
-		}
-		else //尝试解析svg
-		{
-			if(CImageEditor::svg_2_cximage(img, strPath))
-			{
-				CxImage *pImg = new CxImage;
-				pImg->Transfer(img);
-				m_map[nItem] = pImg;
-				return pImg;
-			}		
+			m_map[nItem] = pImage;
+			return pImage;
 		}
 	}
 	return NULL;
@@ -325,10 +320,10 @@ CxImage *CImageEditorListCtrl::GetThumbnail(int nItem)
 
 void CImageEditorListCtrl::ClearThumbnail()
 {
-	std::map<int,CxImage*>::iterator it;
+	std::map<int, TImageInfo *>::iterator it;
 	for(it=m_map.begin(); it!=m_map.end(); it++)
 	{
-		delete it->second;
+		CRenderEngine::FreeImage(it->second);
 	}
 	m_map.clear();
 }

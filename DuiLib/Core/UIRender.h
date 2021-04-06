@@ -34,16 +34,23 @@ namespace DuiLib {
 		static DWORD AdjustColor(DWORD dwColor, short H, short S, short L);
 		static HBITMAP CreateARGB32Bitmap(HDC hDC, int cx, int cy, BYTE** pBits);
 		static void AdjustImage(bool bUseHSL, TImageInfo* imageInfo, short H, short S, short L);
-		static TImageInfo* LoadImage(STRINGorID bitmap, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL);
-		static DWORD LoadSvgImage(LPCTSTR filepathname, LPBYTE &pData);
-		static DWORD CRenderEngine::LoadImage2Memory(const STRINGorID &bitmap, LPCTSTR type,LPBYTE &pData);
+		static TImageInfo* LoadImage(STRINGorID bitmap, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL);
+		
+		//从内存中载入图像
+		static TImageInfo *LoadImageFromMemory(const LPBYTE pData, DWORD dwSize, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, CPaintManagerUI* pManager=NULL);
+
+		static bool LoadGifImageFromMemory(const LPBYTE pData, DWORD dwSize, CStdPtrArray &arrImageInfo);
+
+		//载入资源文件到内存中
+		static DWORD CRenderEngine::LoadImage2Memory(const STRINGorID &bitmap, LPCTSTR type, LPBYTE &pData, HINSTANCE instance=NULL);
+
 		static void  CRenderEngine::FreeMemory(LPBYTE &pData);
 #ifdef USE_XIMAGE_EFFECT
 		static CxImage *LoadGifImageX(STRINGorID bitmap, LPCTSTR type = NULL, DWORD mask = 0);
 #endif
 		static void FreeImage(TImageInfo* bitmap, bool bDelete = true);
-		static TImageInfo* LoadImage(LPCTSTR pStrImage, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL);
-		static TImageInfo* LoadImage(UINT nID, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL);
+		static TImageInfo* LoadImage(LPCTSTR pStrImage, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL);
+		static TImageInfo* LoadImage(UINT nID, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL);
 
 		static Gdiplus::Image*	GdiplusLoadImage(LPCTSTR pstrPath);
 		static Gdiplus::Image* GdiplusLoadImage(LPVOID pBuf, size_t dwSize);

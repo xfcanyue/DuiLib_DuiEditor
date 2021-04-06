@@ -166,6 +166,7 @@ namespace DuiLib
 		}
 
 		RECT rcCaption = m_pm.GetCaptionRect();
+		rcCaption = m_pm.GetDPIObj()->Scale(rcCaption);
 		if (-1 == rcCaption.bottom)
 		{
 			rcCaption.bottom = rcClient.bottom;

@@ -20,7 +20,7 @@ void CMainFrame::InitWindow()
 {
 	UI_BINDCONTROL(CGridListUI, m_pGrid, _T("grid_main"));
 
-	m_pGrid->SetRowCount(120);
+	m_pGrid->SetRowCount(10);
 	for (int i=0; i<m_pGrid->GetRowCount(); i++)
 	{
 		for (int j=1; j<m_pGrid->GetColumnCount(); j++)
@@ -43,10 +43,9 @@ void CMainFrame::InitWindow()
 	ddxCheckBox(_T("chk_view_grid_row_line"), m_bViewRowLine);
 	ddxCheckBox(_T("chk_view_grid_col_line"), m_bViewColLine);
 	ddxCheckBox(_T("chk_select_rect"), m_bSelectRect);
-
 	
 	GetGridPara();
-	m_pGrid->Cell(1,1).SetCellType(celltypeCheckBox);
+	m_pGrid->Cell(0,1).SetCellType(celltypeCheckBox);
 	m_pGrid->SetColumnCellType(1, celltypeCheckBox);
 	m_pGrid->SetColumnCellType(2, celltypeEdit);
 	m_pGrid->SetColumnCellType(3, celltypeCombo);

@@ -5,6 +5,7 @@
 #include "DuiEditor.h"
 #include "ImageEditorPaneImage.h"
 
+#include "UIBuilder.h"
 
 // CImageEditorThumbnail
 
@@ -40,11 +41,6 @@ int CImageEditorPaneImage::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	// TODO:  在此添加您专用的创建代码
-// 	if (!m_wndView.Create(NULL, NULL, AFX_WS_DEFAULT_VIEW, CRect(0, 0, 0, 0), this, AFX_IDW_PANE_FIRST, NULL))
-// 	{
-// 		TRACE0("未能创建视图窗口\n");
-// 		return -1;
-// 	}
 	m_pView = new CImageEditorImagePreview;
 	if (!m_pView->Create(NULL, NULL, AFX_WS_DEFAULT_VIEW, CRect(0, 0, 0, 0), this, AFX_IDW_PANE_FIRST, NULL))
 	{
@@ -52,6 +48,7 @@ int CImageEditorPaneImage::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 	}
 	m_pView->OnInitialUpdate();
+
 	return 0;
 }
 

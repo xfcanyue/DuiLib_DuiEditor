@@ -80,12 +80,13 @@ CString CSessionList::GetSessionFile(LPCTSTR lpszPathName)
 
 	//对比时间戳，判断是否载入备份文件
 	BOOL bModify = fileSession.attribute("ismodify").as_bool();
+	BOOL bSafeClose = fileSession.attribute_auto(XTEXT("safeclose")).as_bool();
 	CString backup = LSUTF82T(fileSession.attribute("backup").as_string());
 	if(!backup.IsEmpty() && PathFileExists(backup))
 	{
 		CFileStatus sta1;
 		CFileStatus sta2;
-		if(CFile::GetStatus(lpszPathName, sta1, NULL) && CFile::GetStatus(backup, sta2, NULL) && bModify)
+		if(CFile::GetStatus(lpszPathName, sta1, NULL) && CFile::GetStatus(backup, sta2, NULL) && bModify && !bSafeClose)
 		{
 			if(sta1.m_mtime > sta2.m_mtime)
 			{
@@ -159,6 +160,26 @@ void CSessionList::DeleteSession(LPCTSTR lpszPathName)
 	}
 }
 
+void CSessionList::OpenSession(LPCTSTR lpszPathName)
+{
+	xml_node fileSession = GetSession(lpszPathName);
+	if(fileSession)
+	{
+		fileSession.attribute_auto(XTEXT("safeclose")).set_value(false);
+		Save();
+	}
+}
+
+//正常关闭文件
+void CSessionList::CloseSession(LPCTSTR lpszPathName)
+{
+	xml_node fileSession = GetSession(lpszPathName);
+	if(fileSession)
+	{
+		fileSession.attribute_auto(XTEXT("safeclose")).set_value(true);
+		Save();
+	}
+}
 
 void CSessionList::ProcessSessionFileList()
 {

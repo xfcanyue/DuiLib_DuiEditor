@@ -130,6 +130,12 @@ namespace DuiLib {
 		virtual void SetFloatPercent(TPercentInfo piFloatPercent);
 		virtual void SetFloatAlign(UINT uAlign);
 		virtual UINT GetFloatAlign() const;
+
+		virtual bool IsAutoCalcWidth() const;
+		virtual void SetAutoCalcWidth(bool bAutoCalcWidth);
+		virtual bool IsAutoCalcHeight() const;
+		virtual void SetAutoCalcHeight(bool bAutoCalcHeight);
+
 		// 鼠标提示
 		virtual CDuiString GetToolTip() const;
 		virtual void SetToolTip(LPCTSTR pstrText);
@@ -262,6 +268,9 @@ namespace DuiLib {
 		TPercentInfo m_piFloatPercent;
 		UINT m_uFloatAlign;
 		bool m_bSetPos; // 防止SetPos循环调用
+
+		bool	m_bAutoCalcWidth;	//根据子控件或者文本等等自动计算宽度
+		bool	m_bAutoCalcHeight;	//根据子控件或者文本等等自动计算高度
 
 		bool m_bDragEnabled;
 		bool m_bDropEnabled;

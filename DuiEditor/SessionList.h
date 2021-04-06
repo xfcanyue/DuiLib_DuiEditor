@@ -22,6 +22,12 @@ public:
 	//删除File节点
 	void DeleteSession(LPCTSTR lpszPathName);
 
+	//打开文件
+	void OpenSession(LPCTSTR lpszPathName);
+
+	//正常关闭文件
+	void CloseSession(LPCTSTR lpszPathName);
+
 	void ProcessSessionFileList();
 private:
 	xml_document xml;

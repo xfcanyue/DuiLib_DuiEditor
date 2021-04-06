@@ -92,8 +92,10 @@ namespace DuiLib {
 		virtual bool IsExpanded() const = 0;
 		virtual bool Expand(bool bExpand = true) = 0;
 		virtual void DrawItemText(HDC hDC, const RECT& rcItem) = 0;
-		virtual bool GetAutoCalcWidth() const = 0;
+		virtual bool IsAutoCalcWidth() const = 0;
 		virtual void SetAutoCalcWidth(bool bAutoCalcWidth) = 0;
+		virtual bool IsAutoCalcHeight() const = 0;
+		virtual void SetAutoCalcHeight(bool bAutoCalcWidth) = 0;
 	};
 
 
@@ -404,14 +406,15 @@ namespace DuiLib {
 
 		void DrawItemBk(HDC hDC, const RECT& rcItem);
 
-		virtual bool GetAutoCalcWidth() const;
+		virtual bool IsAutoCalcWidth() const;
 		virtual void SetAutoCalcWidth(bool bAutoCalcWidth);
+		virtual bool IsAutoCalcHeight() const;
+		virtual void SetAutoCalcHeight(bool bAutoCalcHeight);
 	protected:
 		int m_iIndex;
 		bool m_bSelected;
 		UINT m_uButtonState;
 		IListOwnerUI* m_pOwner;
-		bool	m_bAutoCalcWidth;
 	};
 
 
@@ -511,14 +514,16 @@ namespace DuiLib {
 
 		void SetPos(RECT rc, bool bNeedInvalidate = true);
 
-		virtual bool GetAutoCalcWidth() const;
+		virtual bool IsAutoCalcWidth() const;
 		virtual void SetAutoCalcWidth(bool bAutoCalcWidth);
+		virtual bool IsAutoCalcHeight() const;
+		virtual void SetAutoCalcHeight(bool bAutoCalcHeight);
+
 	protected:
 		int m_iIndex;
 		bool m_bSelected;
 		UINT m_uButtonState;
 		IListOwnerUI* m_pOwner;
-		bool	m_bAutoCalcWidth;
 	};
 
 } // namespace DuiLib

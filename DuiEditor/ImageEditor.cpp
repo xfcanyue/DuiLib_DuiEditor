@@ -92,6 +92,7 @@ void CImageEditor::OnDestroy()
 	{
 		m_pFrame->DestroyWindow();
 	}
+	ClearImage();
 	g_pEditorImage = NULL;
 }
 
@@ -121,46 +122,10 @@ void CImageEditor::SetAttributeValue(LPCTSTR szAttribute)
 		m_nodedata = m_nodeImage.child(XTEXT("IMAGE"));
 	}
 
-	/*
-	//先把所有属性用默认的填上，不存在就创建
-	xml_node nodePropertyControl = g_duiProp.FindControl(_T("IMAGE"));
-	if(!nodePropertyControl) return;
-	
-	for (xml_node node=nodePropertyControl.first_child(); node; node=node.next_sibling())
-	{
-		if(node.type() != node_element) continue;
-		if(!CompareString(node.name(), _T("Attribute"))) continue;
-
-		CString strName = XML2T(node.attribute(XTEXT("name")).as_string());
-		xml_attribute attr = m_nodedata.attribute(node.attribute(XTEXT("name")).as_string());
-		if(!attr)
-		{
-			CString strDefault = XML2T(node.attribute(XTEXT("default")).as_string());
-			g_duiProp.AddAttribute(m_nodedata, strName, strDefault, NULL);
-		}
-	}
-	*/
-
 	//载入图片
 	CString strSkinDir = GetUIManager()->GetDocument()->GetSkinPath();
-	m_image.DestroyFrames(); m_image.Destroy();
 	CString strPathName = strSkinDir + XML2T(m_nodedata.attribute(XTEXT("file")).value());
-	if(!m_image.Load(strPathName))
-	{
-		svg_2_cximage(m_image, strPathName);
-	}
-	m_rcImage.SetRect(0, 0, m_image.GetWidth(), m_image.GetHeight());
-
-	//设置默认source
-// 	xml_attribute attr = m_nodedata.attribute(XTEXT("file"));
-// 	if(attr)
-// 	{
-// 		xml_attribute attr2 = m_nodedata.attribute(XTEXT("source"));
-// 		if(!attr2)
-// 		{
-// 			m_nodedata.attribute_auto(XTEXT("source")).set_value(T2XML(RectToString(m_rcImage)));
-// 		}
-// 	}
+	LoadImageFile(strPathName);
 
 	return;
 }
@@ -171,13 +136,6 @@ void CImageEditor::SetControlImage(CxImage &img)
 
 	CRect rc(0, 0, m_imgControlX.GetWidth(), m_imgControlX.GetHeight());
 	m_rcControl = rc;
-
-	//设置默认dest
-// 	xml_attribute attrDest = m_nodedata.attribute(XTEXT("dest"));
-// 	if(!attrDest)
-// 	{
-// 		m_nodedata.attribute_auto(XTEXT("dest")).set_value(T2XML(RectToString(rc)));
-// 	}
 }
 
 void CImageEditor::SetImageFile(LPCTSTR lpstrPathName)
@@ -198,12 +156,67 @@ void CImageEditor::SetImageFile(LPCTSTR lpstrPathName)
 
 	g_duiProp.AddAttribute(g_pEditorImage->m_nodedata, _T("file"), strFileName, NULL);
 
-	m_image.DestroyFrames(); m_image.Destroy();
-	if(!m_image.Load(lpstrPathName))
+	LoadImageFile(lpstrPathName);
+}
+
+void CImageEditor::LoadImageFile(LPCTSTR lpstrPathName)
+{
+	m_strSelectedFile = lpstrPathName;
+	m_rcImage.SetRect(0,0,0,0);
+	ClearImage();
+
+	TImageInfo *pImageInfo = NULL;
+	LPBYTE pData = NULL; 
+	DWORD dwSize = 0;
+	do 
 	{
-		svg_2_cximage(m_image, lpstrPathName);
+		//文件载入内存
+		dwSize = CRenderEngine::LoadImage2Memory(lpstrPathName, NULL, pData);
+		if(!pData || dwSize == 0) break;
+
+		//尝试解析GIF
+		CStdPtrArray arrImageInfo;
+		if(CRenderEngine::LoadGifImageFromMemory(pData, dwSize, arrImageInfo))
+		{
+			for (int i=0; i<arrImageInfo.GetSize(); i++)
+			{
+				TImageInfo *pImageInfo2 = (TImageInfo *)arrImageInfo.GetAt(i);
+				if(pImageInfo2->nX > m_rcImage.right) m_rcImage.right = pImageInfo2->nX; 
+				if(pImageInfo2->nY > m_rcImage.bottom) m_rcImage.bottom = pImageInfo2->nY; 
+				m_imageFrames.Add(pImageInfo2);
+			}
+			break;
+		}
+
+		//尝试其他格式的图像
+		pImageInfo = CRenderEngine::LoadImageFromMemory(pData, dwSize);
+		if(!pImageInfo) break;
+
+		if(m_imageFrames.Add(pImageInfo))
+		{
+			m_rcImage.SetRect(0, 0, pImageInfo->nX, pImageInfo->nY);
+			pImageInfo = NULL;
+			break;
+		}
+
+	} while (false);
+
+	if(pImageInfo)	delete pImageInfo;
+	if(pData)		CRenderEngine::FreeMemory(pData);
+
+// 	m_image.DestroyFrames(); m_image.Destroy();
+// 	m_image.Load(lpstrPathName);
+// 	m_rcImage.SetRect(0, 0, m_image.GetWidth(), m_image.GetHeight());
+}
+
+void CImageEditor::ClearImage()
+{
+	for (int i=0; i<m_imageFrames.GetSize(); i++)
+	{
+		TImageInfo *pImageInfo = (TImageInfo *)m_imageFrames.GetAt(i);
+		CRenderEngine::FreeImage(pImageInfo);
 	}
-	m_rcImage.SetRect(0, 0, m_image.GetWidth(), m_image.GetHeight());
+	m_imageFrames.Empty();
 }
 
 CString CImageEditor::GetAttributeValue()
@@ -288,16 +301,6 @@ BOOL CImageEditor::PreTranslateMessage(MSG* pMsg)
 		}
 	}
 	return CDialogEx::PreTranslateMessage(pMsg);
-}
-
-BOOL CImageEditor::svg_2_cximage(CxImage &cximg, LPCTSTR strPathName)
-{
-	LPBYTE pData = NULL;
-	DWORD imgsize = CRenderEngine::LoadSvgImage(strPathName, pData);
-	if(!pData || imgsize == 0) return FALSE;
-	cximg.DestroyFrames(); cximg.Destroy();
-	bool bDecode = cximg.Decode((uint8_t *)pData, imgsize, CXIMAGE_FORMAT_PNG);
-	return bDecode;
 }
 
 /*

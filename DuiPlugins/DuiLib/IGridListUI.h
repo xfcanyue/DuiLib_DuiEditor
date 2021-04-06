@@ -50,8 +50,10 @@ public:
 		m_bEnableSizeColumnInBody = FALSE;
 		m_bEnableSizeRowInBody = FALSE;
 
-		m_bExpandColumnToFit = TRUE;
-		m_bExpandRowToFit = FALSE;
+		m_bAutoExpandLastColumn = FALSE;
+		m_bAutoExpandColumnByText = FALSE;
+		m_bAutoFitColumns = TRUE;
+		m_bAutoFitRows = FALSE;
 
 		m_bListMode = TRUE;
 		m_bSingleRowSelection = TRUE;
@@ -147,11 +149,17 @@ public:
 	void EnableSizeRowInBody(BOOL bEnable)		{ m_bEnableSizeRowInBody = bEnable; }
 	BOOL IsEnableSizeRowInBody()				{ return m_bEnableSizeRowInBody; }
 
-	void ExpandColumnToFit(BOOL bExpand)		{ m_bExpandColumnToFit = bExpand; }
-	BOOL IsExpandColumnToFit()					{ return m_bExpandColumnToFit; }
+	void SetExpandColumnByText(BOOL bExpand)	{ m_bAutoExpandColumnByText = bExpand; }
+	BOOL IsExpandColumnByText()				{ return m_bAutoExpandColumnByText; }
 
-	void ExpandRowToFit(BOOL bExpand)			{ m_bExpandRowToFit = bExpand; }
-	BOOL IsExpandRowToFit()						{ return m_bExpandRowToFit; }
+	void SetExpandLastColumn(BOOL bExpand)		{ m_bAutoExpandLastColumn = bExpand; }
+	BOOL IsExpandLastColumn()					{ return m_bAutoExpandLastColumn; }
+
+	void SetFitColumns(BOOL bFit)		{ m_bAutoFitColumns = bFit; }
+	BOOL IsFitColumns()					{ return m_bAutoFitColumns; }
+
+	void SetFitRows(BOOL bFit)			{ m_bAutoFitRows = bFit; }
+	BOOL IsFitRows()						{ return m_bAutoFitRows; }
 
 	void SetListMode(BOOL bList)				{ m_bListMode = bList; }
 	BOOL IsListMode()							{ return m_bListMode; }
@@ -255,8 +263,8 @@ public:
 protected:
 	BOOL  m_bVirtualGrid;				//virtual grid
 
-	int   m_nDefRowHeight;
-	int   m_nDefColWidth;
+	int   m_nDefRowHeight;				//default row's height
+	int   m_nDefColWidth;				//default column's width
 	int   m_nLeftFixedColWidth;			//leftmost fixed column width
 	BOOL  m_bViewListNo;				//view list index on leftmost fixed column
 	int	  m_nFixedColCount;				//count of the fixed columns on the left side by grid
@@ -272,16 +280,18 @@ protected:
 	BOOL  m_bEnableSizeColumnInBody;	//enable drag column size in grid body
 	BOOL  m_bEnableSizeRowInBody;		//enable drag row height in grid body
 
-	BOOL  m_bExpandColumnToFit;
-	BOOL  m_bExpandRowToFit;
-
-	BOOL  m_bListMode;
-	BOOL  m_bSingleRowSelection;
+	BOOL  m_bAutoExpandColumnByText;	//enable auto expand the column's with by text
+	BOOL  m_bAutoExpandLastColumn;		//enable auto expand the last of column's with  to fit list
+	BOOL  m_bAutoFitColumns;			//enable auto expand width of columns  to fit list
+	BOOL  m_bAutoFitRows;				//enable auto expand height of rows  to fit list
+		
+	BOOL  m_bListMode;					//click to select a full row
+	BOOL  m_bSingleRowSelection;		//only single row can be selected, not multi rows selected.
 
 
 	BOOL  m_bHeaderSort;				//enable click fixed row to sort column
-	CDuiString m_sSortAscendingImage;
-	CDuiString m_sSortDescendingImage;
+	CDuiString m_sSortAscendingImage;	//ascending icon
+	CDuiString m_sSortDescendingImage;	//descending icon
 	SIZE m_szSortIconSize;
 
 	DWORD m_dwRowSelectedBkColor;

@@ -80,6 +80,9 @@ public:
 
 	void MergeCells(int nStartRow, int nStartCol, int nEndRow, int nEndCol); //merge the selected cells
 
+	void SetSortCallbackFun(PFNLVCOMPARE pfnCompare);	//special callback function to compare cells, default is _tcscmp()
+	PFNLVCOMPARE GetSortCallbackFun() const;
+
 	void SortItems(int col);
 	int GetSortColumn() const		{ return m_nSortCol; }
 	BOOL GetSortAscending() const	{ return m_bSortAscending; }
@@ -114,7 +117,6 @@ public:
 	bool SaveExcelFile(LPCTSTR filename=NULL, bool bOpenFileDialog=true);	
 
 	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
-
 protected:
 	BOOL SortItems(PFNLVCOMPARE pfnCompare, int nCol, BOOL bAscending, LPARAM data, int low, int high);
 	static int CALLBACK pfnCellTextCompare(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);

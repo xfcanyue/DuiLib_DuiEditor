@@ -103,7 +103,7 @@ SIZE CGridListBodyUI::EstimateSize(SIZE szAvailable)
 
 	for (int i=0; i<GetCount(); i++)
 	{
-		sz.cy += GetOwner()->GetRowHeight(i);
+		sz.cy += GetManager()->GetDPIObj()->Scale(GetOwner()->GetRowHeight(i));
 	}
 
 	if(GetOwner())

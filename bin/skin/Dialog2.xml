@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- xxxxx -->
-<Window size="500,300" sizebox="4,4,6,6" caption="0,0,0,25" roundcorner="5,5">
+<Window size="740,300" sizebox="4,4,6,6" caption="0,0,0,25" roundcorner="5,5">
 	<Font id="0" name="微软雅黑" size="18" default="true" />
 	<VerticalLayout childalign="center" childvalign="vcenter" bkcolor="0xFFA6CAF0">
-		<PictureControl />
+		<HorizontalLayout>
+			<Picture name="pic_1" fileimage="file='images\si-glyph-suitcase-person.svg' dest='0,0,300,300' width='300' height='300' fillcolor='0xFF008000' " framedelay="100" />
+			<Button normalimage="file='images\si-glyph-suitcase-person.svg' dest='50,77,150,177' width='100' height='100' fillcolor='0xFF008000' " />
+			<Button normalimage="file='images\si-glyph-suitcase-person.svg' dest='57,78,185,206' width='128' height='128' fillcolor='0xFF000080' " />
+		</HorizontalLayout>
 	</VerticalLayout>
 </Window>

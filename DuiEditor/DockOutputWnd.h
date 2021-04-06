@@ -16,6 +16,8 @@ public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg LRESULT OnInsertMsg(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
+	afx_msg void OnListmsgCopy();
+	afx_msg void OnUpdateListmsgCopy(CCmdUI *pCmdUI);
 	afx_msg void OnListmsgClear();
 	afx_msg void OnUpdateListmsgClear(CCmdUI *pCmdUI);
 	afx_msg void OnListmsgSaveAs();

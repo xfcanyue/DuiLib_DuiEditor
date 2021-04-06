@@ -25,6 +25,11 @@ public:
 	bool IsFixedRow();
 	bool IsFixedColumn();
 
+	virtual int GetFixedWidth() const;
+	virtual void SetFixedWidth(int cx);
+	virtual int GetFixedHeight() const;
+	virtual void SetFixedHeight(int cy);
+
 	void Selected(BOOL bSelect);
 	BOOL IsSelected() { return m_bSelected; }
 

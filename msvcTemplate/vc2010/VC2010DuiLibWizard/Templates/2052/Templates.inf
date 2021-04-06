@@ -1,0 +1,15 @@
+readme.txt
+
+App.h
+App.cpp
+DuiLibTemplate.h
+DuiLibTemplate.cpp
+DuiLibTemplate.ico
+DuiLibTemplate.rc
+MainFrame.h
+MainFrame.cpp
+resource.h
+stdafx.h
+stdafx.cpp
+targetver.h
+skin.zip

@@ -1,6 +1,6 @@
 #pragma once
 #include "UIBuilder.h"
-#include "UIWindowEx.h"
+#include "UIWindowDesignView.h"
 #include "UIView.h"
 #include "DuiEditorDoc.h"
 #include "DuiEditorViewDesign.h"

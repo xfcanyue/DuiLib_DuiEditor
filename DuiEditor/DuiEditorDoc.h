@@ -61,6 +61,7 @@ public:
 	virtual void OnCloseDocument();
 	virtual void SetModifiedFlag(BOOL bModified = TRUE);
 	virtual BOOL IsModified();
+	virtual BOOL SaveModified();
 	void SaveBackupFile();
 	afx_msg void OnFileReopen();	
 	afx_msg void OnEditInsertFont();

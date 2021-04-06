@@ -1518,22 +1518,22 @@ namespace DuiLib {
 				if( rcDest.bottom > rcItem.bottom ) rcDest.bottom = rcItem.bottom;
 		}
 		bool bRet = _DrawImageMenuDisableIcon(hDC, pManager, rcItem, rcPaint, pDrawInfo->sImageName, pDrawInfo->sResType, rcDest, \
-			pDrawInfo->rcSource, pDrawInfo->rcCorner, pDrawInfo->dwMask, pDrawInfo->uFade, pDrawInfo->bHole, pDrawInfo->bTiledX, pDrawInfo->bTiledY, pDrawInfo->width, pDrawInfo->height, m_instance);
+			pDrawInfo->rcSource, pDrawInfo->rcCorner, pDrawInfo->dwMask, pDrawInfo->uFade, pDrawInfo->bHole, pDrawInfo->bTiledX, pDrawInfo->bTiledY, pDrawInfo->width, pDrawInfo->height, pDrawInfo->fillcolor, m_instance);
 
 	}
 	bool CMenuElementUI::_DrawImageMenuDisableIcon(HDC hDC, CPaintManagerUI* pManager, const RECT& rc, const RECT& rcPaint, const CDuiString& sImageName, \
 		const CDuiString& sImageResType, RECT rcItem, RECT rcBmpPart, RECT rcCorner, DWORD dwMask, BYTE bFade, \
-		bool bHole, bool bTiledX, bool bTiledY, int width, int height, HINSTANCE instance)
+		bool bHole, bool bTiledX, bool bTiledY, int width, int height, DWORD fillcolor, HINSTANCE instance)
 	{
 		if (sImageName.IsEmpty()) {
 			return false;
 		}
 		const TImageInfo* data = NULL;
 		if( sImageResType.IsEmpty() ) {
-			data = pManager->GetImageEx((LPCTSTR)sImageName, NULL, dwMask, width, height, false, instance);
+			data = pManager->GetImageEx((LPCTSTR)sImageName, NULL, dwMask, width, height, fillcolor, false, instance);
 		}
 		else {
-			data = pManager->GetImageEx((LPCTSTR)sImageName, (LPCTSTR)sImageResType, dwMask, width, height, false, instance);
+			data = pManager->GetImageEx((LPCTSTR)sImageName, (LPCTSTR)sImageResType, dwMask, width, height, fillcolor, false, instance);
 		}
 		if( !data ) return false;    
 

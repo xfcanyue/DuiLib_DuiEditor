@@ -158,7 +158,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsUnicodeRelease|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\bin\</OutDir>
-    <TargetName>DuiEditor_S</TargetName>
+    <TargetName>DuiEditor</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -456,6 +456,7 @@
     <ClInclude Include="DlgCustomControl.h" />
     <ClInclude Include="DlgInsertControl.h" />
     <ClInclude Include="DlgLangTextEdit.h" />
+    <ClInclude Include="UIWindowContainer.h" />
     <ClInclude Include="UIDlgLangTextEdit.h" />
     <ClInclude Include="DlgOptions.h" />
     <ClInclude Include="DlgScriptTest.h" />
@@ -515,7 +516,7 @@
     <ClInclude Include="UITrackerMuliti.h" />
     <ClInclude Include="UIView.h" />
     <ClInclude Include="UIWindow.h" />
-    <ClInclude Include="UIWindowEx.h" />
+    <ClInclude Include="UIWindowDesignView.h" />
     <ClInclude Include="xmlMatchedTagsHighlighter.h" />
   </ItemGroup>
   <ItemGroup>
@@ -531,6 +532,7 @@
     <ClCompile Include="DlgCustomControl.cpp" />
     <ClCompile Include="DlgInsertControl.cpp" />
     <ClCompile Include="DlgLangTextEdit.cpp" />
+    <ClCompile Include="UIWindowContainer.cpp" />
     <ClCompile Include="UIDlgLangTextEdit.cpp" />
     <ClCompile Include="DlgOptions.cpp" />
     <ClCompile Include="DlgScriptTest.cpp" />
@@ -595,7 +597,7 @@
     <ClCompile Include="UITrackerMuliti.cpp" />
     <ClCompile Include="UIView.cpp" />
     <ClCompile Include="UIWindow.cpp" />
-    <ClCompile Include="UIWindowEx.cpp" />
+    <ClCompile Include="UIWindowDesignView.cpp" />
     <ClCompile Include="xmlMatchedTagsHighlighter.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -184,9 +184,6 @@ BOOL CDuiEditorApp::InitInstance()
 	//工厂模式注册扩展控件
 	DuiPluginsRegister();
 
-	//调整DPI时，仅缩放显示图片。
-	CPaintManagerUI::SetAdjustDPIRecource(false);
-
 #endif //#ifndef DUILIB_VERSION_ORIGINAL
 
 	

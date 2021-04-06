@@ -39,7 +39,7 @@
 		<HorizontalLayout height="30" pos="0,0,0,30">
 			<CheckBox name="chk_select_rect" selectedimage="file='images\check-select.png' dest='8,6,26,22' " normalimage="file='images\check-unselect.png' dest='8,6,26,22' " text="允许框选" bordercolor="0xFFC0C0C0" bordersize="1" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" pos="0,0,0,30" text="保存为">
+		<HorizontalLayout height="30" pos="0,0,0,30">
 			<ComboEx name="cb_cell_type" bkcolor="0xFFFFFFFF" style="style_comboex">
 				<ListLabelElement text="text" />
 				<ListLabelElement text="edit" />

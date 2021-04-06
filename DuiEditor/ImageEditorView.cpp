@@ -107,9 +107,17 @@ void CImageEditorView::InitData()
 	}
 
 	CString file = XML2T(node.attribute("file").as_string());
-	if(!file.IsEmpty())
+	int width = node.attribute("width").as_int(0);
+	int height = node.attribute("height").as_int(0);
+	DWORD fillcolor = node.attribute("fillcolor").as_uint(0);
+	CDuiString sImageName = file;
+	if(width !=0 || height != 0 || fillcolor != 0)
 	{
-		m_pManager->RemoveImage(file);
+		sImageName.Format(_T("%s-%d-%d-%08X"), file, width, height, fillcolor);
+	}
+	if(!sImageName.IsEmpty())
+	{
+		m_pManager->RemoveImage(sImageName);
 	}
 
 	m_drawInfo.Clear();

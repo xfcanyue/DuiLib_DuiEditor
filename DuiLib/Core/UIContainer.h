@@ -72,6 +72,7 @@ namespace DuiLib {
 		virtual int FindSelectable(int iIndex, bool bForward = true) const;
 
 		RECT GetClientPos() const;
+		virtual SIZE EstimateSize(SIZE szAvailable);
 		void SetPos(RECT rc, bool bNeedInvalidate = true);
 		void Move(SIZE szOffset, bool bNeedInvalidate = true);
 		bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);

@@ -27,7 +27,6 @@ namespace DuiLib
 		);
 
 
-	bool CDPI::m_bAdjustDPIRecource = true; //add by liqs99
 	CDPI::CDPI()
 	{
 		m_nScaleFactor = 0;
@@ -76,14 +75,6 @@ namespace DuiLib
 		return GetDPIOfMonitorNearestToPoint(pt);
 	}
 
-	void CDPI::SetAdjustDPIRecource(bool bAdjust) //是否动态调整DPI资源, add by liqs99
-	{
-		m_bAdjustDPIRecource = bAdjust;
-	}
-	bool CDPI::IsAdjustDPIRecource() //是否动态调整DPI资源, add by liqs99
-	{
-		return m_bAdjustDPIRecource;
-	}
 	PROCESS_DPI_AWARENESS CDPI::GetDPIAwareness()
 	{
 		if (IsWindows8Point1OrGreater()) {

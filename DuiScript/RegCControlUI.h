@@ -123,6 +123,13 @@ public:
 		//REG_CONTROL_FUN(void,			  SetFloatPercent,	(TPercentInfo piFloatPercent));
 		REG_CONTROL_FUNPR(void,			  SetFloatAlign,	(UINT uAlign)			);
 		REG_CONTROL_FUNPR(UINT,			  GetFloatAlign,	() const				);
+
+
+		REG_CONTROL_FUNPR(bool,	 IsAutoCalcWidth,		() const				);
+		REG_CONTROL_FUNPR(void,	 SetAutoCalcWidth,		(bool bAutoCalcWidth)	);
+		REG_CONTROL_FUNPR(bool,	 IsAutoCalcHeight,		() const				);
+		REG_CONTROL_FUNPR(void,	 SetAutoCalcHeight,		(bool bAutoCalcHeight)	);
+
 		//  Û±ÍÃ· æ
 		REG_CONTROL_FUNPR(CDuiString,	  GetToolTip,		() const				);
 		REG_CONTROL_FUNPR(void,			  SetToolTip,		(LPCTSTR pstrText)		);
@@ -410,11 +417,6 @@ public:
 		REG_CONTROL_FUNPR(void,	 SetTextPadding,		(RECT rc)			);
 		REG_CONTROL_FUNPR(bool,	 IsShowHtml,			()					);
 		REG_CONTROL_FUNPR(void,	 SetShowHtml,			(bool bShowHtml)	);
-
-		REG_CONTROL_FUNPR(bool,	 GetAutoCalcWidth,		() const				);
-		REG_CONTROL_FUNPR(void,	 SetAutoCalcWidth,		(bool bAutoCalcWidth)	);
-		REG_CONTROL_FUNPR(bool,	 GetAutoCalcHeight,		() const				);
-		REG_CONTROL_FUNPR(void,	 SetAutoCalcHeight,		(bool bAutoCalcHeight)	);
 	}
 };
 
@@ -445,9 +447,6 @@ public:
 		REG_CONTROL_FUNPR(bool,	 Expand,			(bool bExpand)			);
 
 		//REG_CONTROL_FUN(void,	 DrawItemBk,		(HDC hDC, const RECT& rcItem)	);
-
-		REG_CONTROL_FUNPR(bool,	 GetAutoCalcWidth,	() const				);
-		REG_CONTROL_FUNPR(void,	 SetAutoCalcWidth,	(bool bAutoCalcWidth)	);
 	}
 };
 
@@ -733,10 +732,6 @@ public:
 		REG_CONTROL_FUNPR(bool,	SelectMulti,	(bool bSelect)	);
 		REG_CONTROL_FUNPR(bool,	IsExpanded,		() const		);
 		REG_CONTROL_FUNPR(bool,	Expand,			(bool bExpand)	);
-
-
-		REG_CONTROL_FUNPR(bool,	GetAutoCalcWidth,	() const				);
-		REG_CONTROL_FUNPR(void,	SetAutoCalcWidth,	(bool bAutoCalcWidth)	);
 	}
 };
 

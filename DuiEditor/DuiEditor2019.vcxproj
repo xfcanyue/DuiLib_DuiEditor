@@ -524,7 +524,8 @@
     <ClInclude Include="UITrackerMuliti.h" />
     <ClInclude Include="UIView.h" />
     <ClInclude Include="UIWindow.h" />
-    <ClInclude Include="UIWindowEx.h" />
+    <ClInclude Include="UIWindowContainer.h" />
+    <ClInclude Include="UIWindowDesignView.h" />
     <ClInclude Include="xmlMatchedTagsHighlighter.h" />
   </ItemGroup>
   <ItemGroup>
@@ -604,7 +605,8 @@
     <ClCompile Include="UITrackerMuliti.cpp" />
     <ClCompile Include="UIView.cpp" />
     <ClCompile Include="UIWindow.cpp" />
-    <ClCompile Include="UIWindowEx.cpp" />
+    <ClCompile Include="UIWindowContainer.cpp" />
+    <ClCompile Include="UIWindowDesignView.cpp" />
     <ClCompile Include="xmlMatchedTagsHighlighter.cpp" />
   </ItemGroup>
   <ItemGroup>

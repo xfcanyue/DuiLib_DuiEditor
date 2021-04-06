@@ -45,7 +45,7 @@ namespace DuiLib {
 		CRichEditUI::CRichEditUI() : m_pTwh(NULL), m_bVScrollBarFixing(false), m_bWantTab(true), m_bWantReturn(false), 
 		m_bWantCtrlReturn(false), m_bTransparent(true), m_bRich(false), m_bReadOnly(false), m_bWordWrap(false), m_dwTextColor(0), m_iFont(-1), 
 		m_iLimitText(cInitTextMax), m_lTwhStyle(ES_LEFT|ES_VERTICAL|ECO_VERTICAL), m_bDrawCaret(true), m_bInited(false), m_chLeadByte(0),m_uButtonState(0),
-		m_dwTipValueColor(0xFFBAC0C5), m_uTipValueAlign(DT_SINGLELINE | DT_LEFT), m_uTextStyle(DT_TOP), m_bAutoCalcWidth(false), m_bAutoCalcHeight(false),
+		m_dwTipValueColor(0xFFBAC0C5), m_uTipValueAlign(DT_SINGLELINE | DT_LEFT), m_uTextStyle(DT_TOP), 
 		m_bReturnFixedWidth(true), m_bReturnFixedHeight(true)
 	{
 #ifndef _UNICODE
@@ -784,7 +784,7 @@ namespace DuiLib {
 		case EN_CHANGE:
 			{
 				GetManager()->SendNotify(this, DUI_MSGTYPE_TEXTCHANGED);
-				if(m_bAutoCalcWidth || m_bAutoCalcHeight)
+				if(IsAutoCalcWidth() || IsAutoCalcHeight())
 					NeedParentUpdate();
 				break;
 			}
@@ -1005,11 +1005,6 @@ namespace DuiLib {
 		CContainerUI::DoEvent(event);
 	}
 
-	bool CRichEditUI::GetAutoCalcWidth() const { return m_bAutoCalcWidth; }
-	void CRichEditUI::SetAutoCalcWidth(bool bAutoCalcWidth) { m_bAutoCalcWidth = bAutoCalcWidth; }
-	bool CRichEditUI::GetAutoCalcHeight() const { return m_bAutoCalcHeight; }
-	void CRichEditUI::SetAutoCalcHeight(bool bAutoCalcHeight) { m_bAutoCalcHeight = bAutoCalcHeight; }
-
 	int CRichEditUI::GetFixedWidth() const
 	{
 		if(!m_bReturnFixedWidth) return 0; //告诉父容器，预设宽度需要重新计算。
@@ -1024,7 +1019,7 @@ namespace DuiLib {
 
 	SIZE CRichEditUI::EstimateSize(SIZE szAvailable)
 	{
-		if (m_pTwh && (m_bAutoCalcWidth || m_bAutoCalcHeight))
+		if (m_pTwh && (IsAutoCalcWidth() || IsAutoCalcHeight()))
 		{
 			RECT rc = {0, 0, szAvailable.cx, szAvailable.cy};
 			rc.left += m_rcInset.left;
@@ -1080,17 +1075,17 @@ namespace DuiLib {
 				&lWidth,
 				&lHeight);
 
-			if(m_bAutoCalcWidth)
+			if(IsAutoCalcWidth())
 				m_cxyFixed.cx = lWidth + m_rcTextPadding.left + m_rcTextPadding.right + m_rcInset.left + m_rcInset.right;;
-			if(m_bAutoCalcHeight)
+			if(IsAutoCalcHeight())
 				m_cxyFixed.cy = lHeight + m_rcTextPadding.top + m_rcTextPadding.bottom + m_rcInset.top + m_rcInset.bottom;
 
-			if(m_bAutoCalcWidth && m_cxyFixed.cx < szAvailable.cx) //如果宽度还有多，下次要重新计算宽度
+			if(IsAutoCalcWidth() && m_cxyFixed.cx < szAvailable.cx) //如果宽度还有多，下次要重新计算宽度
 			{
 				m_bReturnFixedWidth = false;
 				m_bReturnFixedHeight = true;
 			}
-			else if(m_bAutoCalcHeight && m_cxyFixed.cy < szAvailable.cy) //宽度不够的前提下，高度有剩下的，下次重新计算高度
+			else if(IsAutoCalcHeight() && m_cxyFixed.cy < szAvailable.cy) //宽度不够的前提下，高度有剩下的，下次重新计算高度
 			{
 				m_bReturnFixedWidth = true;
 				m_bReturnFixedHeight = false;
@@ -1573,12 +1568,6 @@ namespace DuiLib {
 				m_uTextStyle &= ~(DT_TOP | DT_CENTER);
 				m_uTextStyle |= DT_BOTTOM;
 			}
-		}
-		else if( _tcsicmp(pstrName, _T("autocalcwidth")) == 0 ) {
-			SetAutoCalcWidth(_tcsicmp(pstrValue, _T("true")) == 0);
-		}
-		else if( _tcsicmp(pstrName, _T("autocalcheight")) == 0 ) {
-			SetAutoCalcHeight(_tcsicmp(pstrValue, _T("true")) == 0);
 		}
 		//////////////////////////////////////////////////////////////////////////
 		else if( _tcscmp(pstrName, _T("font")) == 0 ) SetFont(_ttoi(pstrValue));

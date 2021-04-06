@@ -243,23 +243,155 @@ namespace DuiLib {
 		return TRUE;
 	}
 
+	static LPBYTE WINAPI svg_load_from_memory(const LPBYTE buffer, int &out_width, int &out_height, int hope_width, int hope_height, DWORD fillcolor, CPaintManagerUI* pManager)
+	{
+		LPBYTE pImage = NULL;
+		float dpi = 96.0f;
+		float scale = 1.0f;
+		if(pManager)
+		{
+			scale = (pManager->GetDPIObj()->GetScale() * 1.0)/100;
+		}
+		//SVG
+		NSVGimage* svg = nsvgParse((LPSTR)(LPVOID)buffer, "px", (float)dpi);
+		if (svg == NULL) 
+		{
+			return NULL;
+		}
+
+		if(fillcolor != 0)
+		{
+			NSVGshape *shapes = svg->shapes;
+			while (shapes)
+			{
+				if(shapes->fill.color != 0)
+					shapes->fill.color = UIRGB(GetRValue(fillcolor), GetGValue(fillcolor), GetBValue(fillcolor));
+				shapes = shapes->next;
+			}
+		}
+
+		out_width = (int)svg->width;
+		out_height = (int)svg->height;
+		if(out_width==0 || out_height==0) 
+		{
+			nsvgDelete(svg);
+			return NULL;
+		}
+
+		//如果指定长宽，则使用当前的长宽比例，否则使用dpi适配
+		if(hope_width > 0 && hope_height > 0)
+		{
+			out_width = hope_width;
+			scale = hope_width * 1.0 / svg->width;
+			out_height = svg->height * scale;
+			if (svg->height * scale > out_height)
+			{
+				scale = out_height * 1.0 / svg->height;
+				out_width = svg->width * scale;
+			}
+		}
+		else
+		{
+			if(pManager)
+			{
+				out_width = pManager->GetDPIObj()->Scale(out_width);
+				out_height = pManager->GetDPIObj()->Scale(out_height);
+			}
+		}
+
+		NSVGrasterizer* rast = nsvgCreateRasterizer();
+		if (rast == NULL)
+		{
+			nsvgDelete(svg);
+			return NULL;
+		}
+
+		pImage = (LPBYTE)malloc((out_width + 1) * (out_height + 1) * 4);//由于使用了小数，防止被四舍五入舍去，因此都加1
+		if (!pImage)
+		{
+			nsvgDeleteRasterizer(rast);
+			nsvgDelete(svg);
+			return NULL;
+		}
+		nsvgRasterize(rast, svg, 0, 0, scale, pImage, out_width, out_height, out_width * 4);
+		nsvgDeleteRasterizer(rast);
+		nsvgDelete(svg);
+		return pImage;
+	}
+	
+	static TImageInfo *make_imageinfo_from_stbi_memory(LPBYTE pImage, int x, int y, DWORD mask, int delay=0)
+	{
+		BITMAPINFO bmi;
+		::ZeroMemory(&bmi, sizeof(BITMAPINFO));
+		bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+		bmi.bmiHeader.biWidth = x;
+		bmi.bmiHeader.biHeight = -y;
+		bmi.bmiHeader.biPlanes = 1;
+		bmi.bmiHeader.biBitCount = 32;
+		bmi.bmiHeader.biCompression = BI_RGB;
+		bmi.bmiHeader.biSizeImage = x * y * 4;
+
+		bool bAlphaChannel = false;
+		LPBYTE pDest = NULL;
+		HBITMAP hBitmap = ::CreateDIBSection(NULL, &bmi, DIB_RGB_COLORS, (void**)&pDest, NULL, 0);
+		if( !hBitmap ) 
+		{
+			return NULL;
+		}
+
+		for( int i = 0; i < x * y; i++ ) 
+		{
+			pDest[i*4 + 3] = pImage[i*4 + 3];
+			if( pDest[i*4 + 3] < 255 )
+			{
+				pDest[i*4] = (BYTE)(DWORD(pImage[i*4 + 2])*pImage[i*4 + 3]/255);
+				pDest[i*4 + 1] = (BYTE)(DWORD(pImage[i*4 + 1])*pImage[i*4 + 3]/255);
+				pDest[i*4 + 2] = (BYTE)(DWORD(pImage[i*4])*pImage[i*4 + 3]/255); 
+				bAlphaChannel = true;
+			}
+			else
+			{
+				pDest[i*4] = pImage[i*4 + 2];
+				pDest[i*4 + 1] = pImage[i*4 + 1];
+				pDest[i*4 + 2] = pImage[i*4]; 
+			}
+
+			if( *(DWORD*)(&pDest[i*4]) == mask ) {
+				pDest[i*4] = (BYTE)0;
+				pDest[i*4 + 1] = (BYTE)0;
+				pDest[i*4 + 2] = (BYTE)0; 
+				pDest[i*4 + 3] = (BYTE)0;
+				bAlphaChannel = true;
+			}
+		}
+
+		TImageInfo* data = new TImageInfo;
+		data->pBits = NULL;
+		data->pSrcBits = NULL;
+		data->hBitmap = hBitmap;
+		data->nX = x;
+		data->nY = y;
+		data->bAlpha = bAlphaChannel;
+		data->delay = delay;
+		return data;
+	}
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
 	//
 
 	bool DrawImage(HDC hDC, CPaintManagerUI* pManager, const RECT& rc, const RECT& rcPaint, const CDuiString& sImageName, \
 		const CDuiString& sImageResType, RECT rcItem, RECT rcBmpPart, RECT rcCorner, DWORD dwMask, BYTE bFade, \
-		bool bHole, bool bTiledX, bool bTiledY, int width, int height, HINSTANCE instance = NULL)
+		bool bHole, bool bTiledX, bool bTiledY, int width, int height, DWORD fillcolor, HINSTANCE instance = NULL)
 	{
 		if (sImageName.IsEmpty()) {
 			return false;
 		}
 		const TImageInfo* data = NULL;
 		if( sImageResType.IsEmpty() ) {
-			data = pManager->GetImageEx((LPCTSTR)sImageName, NULL, dwMask, width, height, false, instance);
+			data = pManager->GetImageEx((LPCTSTR)sImageName, NULL, dwMask, width, height, fillcolor, false, instance);
 		}
 		else {
-			data = pManager->GetImageEx((LPCTSTR)sImageName, (LPCTSTR)sImageResType, dwMask, width, height, false, instance);
+			data = pManager->GetImageEx((LPCTSTR)sImageName, (LPCTSTR)sImageResType, dwMask, width, height, fillcolor, false, instance);
 		}
 		if( !data ) return false;    
 
@@ -294,7 +426,7 @@ namespace DuiLib {
 		return dwColor;
 	}
 
-	TImageInfo* CRenderEngine::LoadImage(STRINGorID bitmap, LPCTSTR type, DWORD mask, int width, int height, CPaintManagerUI* pManager, HINSTANCE instance)
+	TImageInfo* CRenderEngine::LoadImage(STRINGorID bitmap, LPCTSTR type, DWORD mask, int width, int height, DWORD fillcolor, CPaintManagerUI* pManager, HINSTANCE instance)
 	{
 		LPBYTE pData = NULL;
 		DWORD dwSize = 0;
@@ -407,180 +539,53 @@ namespace DuiLib {
 			return NULL;
 		}
 
-		LPBYTE pImage = NULL;
-		int x,y,n;
-		pImage = stbi_load_from_memory(pData, dwSize, &x, &y, &n, 4);	
-		if( !pImage ) 
-		{
-			float dpi = 96.0f;
-			float scale = 1.0f;
-			if(pManager)
-			{
-				//dpi = pManager->GetDPIObj()->GetDPI();
-				scale = (pManager->GetDPIObj()->GetScale() * 1.0)/100;
-			}
-			//SVG
-			NSVGimage* svg = nsvgParse((LPSTR)(LPVOID)pData, "px", (float)dpi);
-			if (svg == NULL) 
-			{
-				delete[] pData;
-				return NULL;
-			}
-
-			x = (int)svg->width;
-			y = (int)svg->height;
-			if(x==0 || y==0) 
-			{
-				nsvgDelete(svg);
-				delete[] pData;
-				return NULL;
-			}
-
-			//如果指定长宽，则使用当前的长宽比例，否则使用dpi适配
-			if(width > 0 && height > 0)
-			{
-				x = width;
-				scale = width * 1.0 / svg->width;
-				y = svg->height * scale;
-				if (svg->height * scale > y)
-				{
-					scale = y * 1.0 / svg->height;
-					x = svg->width * scale;
-				}
-			}
-			else
-			{
-				if(pManager)
-				{
-					x = pManager->GetDPIObj()->Scale(x);
-					y = pManager->GetDPIObj()->Scale(y);
-				}
-			}
-
-			NSVGrasterizer* rast = nsvgCreateRasterizer();
-			if (rast == NULL)
-			{
-				nsvgDelete(svg);
-				delete[] pData;
-				return NULL;
-			}
-
-			pImage = (LPBYTE)malloc((x + 1) * (y + 1) * 4);//由于使用了小数，防止被四舍五入舍去，因此都加1
-			if (!pImage)
-			{
-				nsvgDeleteRasterizer(rast);
-				nsvgDelete(svg);
-				delete[] pData;
-				return NULL;
-			}
-			nsvgRasterize(rast, svg, 0, 0, scale, pImage, x, y, x * 4);
-			nsvgDeleteRasterizer(rast);
-			nsvgDelete(svg);
-		}
-		delete[] pData;
-
-		BITMAPINFO bmi;
-		::ZeroMemory(&bmi, sizeof(BITMAPINFO));
-		bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-		bmi.bmiHeader.biWidth = x;
-		bmi.bmiHeader.biHeight = -y;
-		bmi.bmiHeader.biPlanes = 1;
-		bmi.bmiHeader.biBitCount = 32;
-		bmi.bmiHeader.biCompression = BI_RGB;
-		bmi.bmiHeader.biSizeImage = x * y * 4;
-
-		bool bAlphaChannel = false;
-		LPBYTE pDest = NULL;
-		HBITMAP hBitmap = ::CreateDIBSection(NULL, &bmi, DIB_RGB_COLORS, (void**)&pDest, NULL, 0);
-		if( !hBitmap ) 
-		{
-			stbi_image_free(pImage);
-			return NULL;
-		}
-
-		for( int i = 0; i < x * y; i++ ) 
-		{
-			pDest[i*4 + 3] = pImage[i*4 + 3];
-			if( pDest[i*4 + 3] < 255 )
-			{
-				pDest[i*4] = (BYTE)(DWORD(pImage[i*4 + 2])*pImage[i*4 + 3]/255);
-				pDest[i*4 + 1] = (BYTE)(DWORD(pImage[i*4 + 1])*pImage[i*4 + 3]/255);
-				pDest[i*4 + 2] = (BYTE)(DWORD(pImage[i*4])*pImage[i*4 + 3]/255); 
-				bAlphaChannel = true;
-			}
-			else
-			{
-				pDest[i*4] = pImage[i*4 + 2];
-				pDest[i*4 + 1] = pImage[i*4 + 1];
-				pDest[i*4 + 2] = pImage[i*4]; 
-			}
-
-			if( *(DWORD*)(&pDest[i*4]) == mask ) {
-				pDest[i*4] = (BYTE)0;
-				pDest[i*4 + 1] = (BYTE)0;
-				pDest[i*4 + 2] = (BYTE)0; 
-				pDest[i*4 + 3] = (BYTE)0;
-				bAlphaChannel = true;
-			}
-		}
-
-		stbi_image_free(pImage);
-
-		TImageInfo* data = new TImageInfo;
-		data->pBits = NULL;
-		data->pSrcBits = NULL;
-		data->hBitmap = hBitmap;
-		data->nX = x;
-		data->nY = y;
-		data->bAlpha = bAlphaChannel;
+		TImageInfo *data = LoadImageFromMemory(pData, dwSize, mask, width, height, fillcolor, pManager);
+		delete []pData;
 		return data;
 	}
 
-	DWORD CRenderEngine::LoadSvgImage(LPCTSTR filepathname, LPBYTE &pData)
+	//从内存中载入图像
+	TImageInfo *CRenderEngine::LoadImageFromMemory(const LPBYTE pData, DWORD dwSize, DWORD mask, int width, int height, DWORD fillcolor, CPaintManagerUI* pManager)
 	{
-		LSSTRING_CONVERSION;
-		NSVGimage *image = nsvgParseFromFile(LST2A(filepathname), "px", 96.0f);
-		if(image == NULL) return 0;
-
-		int w = (int)image->width;
-		int h = (int)image->height;
-		if(w==0 || h==0) return 0;
-
-		NSVGrasterizer *rast = nsvgCreateRasterizer();
-		if (rast == NULL) 
+		LPBYTE pImage = NULL;
+		int x,y,comp;
+		pImage = stbi_load_from_memory(pData, dwSize, &x, &y, &comp, 4);	
+		if( !pImage ) 
 		{
-			nsvgDelete(image);
-			return 0;
+			pImage = svg_load_from_memory(pData, x, y, width, height, fillcolor, pManager);		
 		}
+		if(!pImage) return NULL;
 
-		unsigned char* img = (unsigned char*)malloc(w*h*4);
-		if (img == NULL) 
-		{
-			nsvgDeleteRasterizer(rast);
-			nsvgDelete(image);
-			return 0;
-		}
-
-		nsvgRasterize(rast, image, 0,0,1, img, w, h, w*4);
-
-		int outlen = 0;
-		BYTE *out = stbi_write_png_to_mem(img, w*4, w, h, 4, &outlen);
-
-		if(outlen > 0)
-		{
-			pData = new BYTE[outlen];
-			memcpy(pData, out, outlen);
-		}
-
-
-		free(out);
-		free(img);
-		nsvgDeleteRasterizer(rast);
-		nsvgDelete(image);
-		return outlen;
+		TImageInfo *pdata = make_imageinfo_from_stbi_memory(pImage, x, y, mask);
+		stbi_image_free(pImage);
+		return pdata;
 	}
 
-	DWORD CRenderEngine::LoadImage2Memory(const STRINGorID &bitmap, LPCTSTR type,LPBYTE &pData)
+	bool CRenderEngine::LoadGifImageFromMemory(const LPBYTE pData, DWORD dwSize, CStdPtrArray &arrImageInfo)
+	{
+		LPBYTE pImage = NULL;
+		int x,y,comp;
+		int layers = 0;
+		int *delays = 0;
+		pImage = stbi_load_gif_from_memory(pData, dwSize, &delays, &x, &y, &layers, &comp, 4);
+		if(!pImage) return false;
+
+		for (int f=0; f<layers; f++)
+		{
+			LPBYTE pFrame = pImage + x * y * f * 4;
+			TImageInfo *data = make_imageinfo_from_stbi_memory(pFrame, x, y, 0, delays[f]);
+			if(!arrImageInfo.Add(data)) 
+			{
+				FreeImage(data);
+				break;
+			}
+		}
+		stbi_image_free(delays);
+		stbi_image_free(pImage);
+		return true;
+	}
+
+	DWORD CRenderEngine::LoadImage2Memory(const STRINGorID &bitmap, LPCTSTR type, LPBYTE &pData, HINSTANCE instance)
 	{
 		assert(pData == NULL);
 		pData = NULL;
@@ -654,17 +659,25 @@ namespace DuiLib {
 			}
 			else 
 			{
-				HINSTANCE hDll = CPaintManagerUI::GetResourceDll();
-				HRSRC hResource = ::FindResource(hDll, bitmap.m_lpstr, type);
+				HINSTANCE dllinstance = NULL;
+				if (instance)
+				{
+					dllinstance = instance;
+				}
+				else
+				{
+					dllinstance = CPaintManagerUI::GetResourceDll();
+				}
+				HRSRC hResource = ::FindResource(dllinstance, bitmap.m_lpstr, type);
 				if( hResource == NULL ) break;
-				HGLOBAL hGlobal = ::LoadResource(hDll, hResource);
+				HGLOBAL hGlobal = ::LoadResource(dllinstance, hResource);
 				if( hGlobal == NULL ) 
 				{
 					FreeResource(hResource);
 					break;
 				}
 
-				dwSize = ::SizeofResource(hDll, hResource);
+				dwSize = ::SizeofResource(dllinstance, hResource);
 				if( dwSize == 0 ) break;
 				pData = new BYTE[ dwSize ];
 				::CopyMemory(pData, (LPBYTE)::LockResource(hGlobal), dwSize);
@@ -877,6 +890,7 @@ namespace DuiLib {
 		bool bTiledY = true;
 		int width = 0;
 		int height = 0;
+		DWORD fillcolor = 0;
 		CDuiSize szIcon(0,0);
 
 		int image_count = 0;
@@ -920,7 +934,7 @@ namespace DuiLib {
 					{
 						if( image_count > 0 )
 							DuiLib::DrawImage(hDC, pManager, rc, rcPaint, sImageName, sImageResType,
-							rcItem, rcBmpPart, rcCorner, dwMask, bFade, bHole, bTiledX, bTiledY, width, height);
+							rcItem, rcBmpPart, rcCorner, dwMask, bFade, bHole, bTiledX, bTiledY, width, height, fillcolor);
 
 						sImageName = sValue;
 						++image_count;
@@ -929,7 +943,7 @@ namespace DuiLib {
 					{
 						if( image_count > 0 )
 							DuiLib::DrawImage(hDC, pManager, rc, rcPaint, sImageName, sImageResType,
-							rcItem, rcBmpPart, rcCorner, dwMask, bFade, bHole, bTiledX, bTiledY, width, height);
+							rcItem, rcBmpPart, rcCorner, dwMask, bFade, bHole, bTiledX, bTiledY, width, height, fillcolor);
 
 						sImageResType = sValue;
 						++image_count;
@@ -997,7 +1011,7 @@ namespace DuiLib {
 			}
 		}
 
-		DuiLib::DrawImage(hDC, pManager, rc, rcPaint, sImageName, sImageResType, rcItem, rcBmpPart, rcCorner, dwMask, bFade, bHole, bTiledX, bTiledY, width, height);
+		DuiLib::DrawImage(hDC, pManager, rc, rcPaint, sImageName, sImageResType, rcItem, rcBmpPart, rcCorner, dwMask, bFade, bHole, bTiledX, bTiledY, width, height, fillcolor);
 
 		return true;
 	}
@@ -1043,7 +1057,7 @@ namespace DuiLib {
 		return true;
 	}
 
-	TImageInfo* CRenderEngine::LoadImage(LPCTSTR pStrImage, LPCTSTR type, DWORD mask, int width, int height, CPaintManagerUI* pManager, HINSTANCE instance)
+	TImageInfo* CRenderEngine::LoadImage(LPCTSTR pStrImage, LPCTSTR type, DWORD mask, int width, int height, DWORD fillcolor, CPaintManagerUI* pManager, HINSTANCE instance)
 	{	
 		if(pStrImage == NULL) return NULL;
 
@@ -1059,12 +1073,12 @@ namespace DuiLib {
 				}*/
 			}
 		}
-		return LoadImage(STRINGorID(sStrPath.GetData()), type, mask, width, height, pManager, instance);
+		return LoadImage(STRINGorID(sStrPath.GetData()), type, mask, width, height, fillcolor, pManager, instance);
 	}
 
-	TImageInfo* CRenderEngine::LoadImage(UINT nID, LPCTSTR type, DWORD mask, int width, int height, CPaintManagerUI* pManager, HINSTANCE instance)
+	TImageInfo* CRenderEngine::LoadImage(UINT nID, LPCTSTR type, DWORD mask, int width, int height, DWORD fillcolor, CPaintManagerUI* pManager, HINSTANCE instance)
 	{
-		return LoadImage(STRINGorID(nID), type, mask, width, height, pManager, instance);
+		return LoadImage(STRINGorID(nID), type, mask, width, height, fillcolor, pManager, instance);
 	}
 
 	void CRenderEngine::DrawText(HDC hDC, CPaintManagerUI* pManager, RECT& rc, LPCTSTR pstrText,DWORD dwTextColor, \
@@ -1538,8 +1552,32 @@ namespace DuiLib {
 				rcDest.bottom = rcItem.top + pDrawInfo->rcDest.bottom;
 				if( rcDest.bottom > rcItem.bottom ) rcDest.bottom = rcItem.bottom;
 		}
+
+		if((pDrawInfo->uAlign & DT_RIGHT) == DT_RIGHT){
+			rcDest.left = rcItem.right - (pDrawInfo->rcDest.right - pDrawInfo->rcDest.left);
+			rcDest.right = rcItem.right;
+		}
+		else if((pDrawInfo->uAlign & DT_CENTER) == DT_CENTER){
+			rcDest.left = rcItem.left + ((rcItem.right - rcItem.left) - (pDrawInfo->rcDest.right - pDrawInfo->rcDest.left))/2;
+			rcDest.right = rcDest.left + (pDrawInfo->rcDest.right - pDrawInfo->rcDest.left);
+		}
+
+		if((pDrawInfo->uAlign & DT_BOTTOM) == DT_BOTTOM){
+			rcDest.top = rcItem.bottom - (pDrawInfo->rcDest.bottom - pDrawInfo->rcDest.top);
+			rcDest.bottom = rcItem.bottom;
+		}
+		else if((pDrawInfo->uAlign & DT_VCENTER) == DT_VCENTER){
+			rcDest.top = rcItem.top + ((rcItem.bottom - rcItem.top) - (pDrawInfo->rcDest.bottom - pDrawInfo->rcDest.top))/2;
+			rcDest.bottom = rcDest.top + (pDrawInfo->rcDest.bottom - pDrawInfo->rcDest.top);
+		}
+
+		::OffsetRect(&rcDest, pDrawInfo->rcPadding.left, pDrawInfo->rcPadding.top);		
+		::OffsetRect(&rcDest, -pDrawInfo->rcPadding.right, -pDrawInfo->rcPadding.bottom);
+		if( rcDest.right > rcItem.right ) rcDest.right = rcItem.right;
+		if( rcDest.bottom > rcItem.bottom ) rcDest.bottom = rcItem.bottom;
+
 		bool bRet = DuiLib::DrawImage(hDC, pManager, rcItem, rcPaint, pDrawInfo->sImageName, pDrawInfo->sResType, rcDest, \
-			pDrawInfo->rcSource, pDrawInfo->rcCorner, pDrawInfo->dwMask, pDrawInfo->uFade, pDrawInfo->bHole, pDrawInfo->bTiledX, pDrawInfo->bTiledY, pDrawInfo->width, pDrawInfo->height, instance);
+			pDrawInfo->rcSource, pDrawInfo->rcCorner, pDrawInfo->dwMask, pDrawInfo->uFade, pDrawInfo->bHole, pDrawInfo->bTiledX, pDrawInfo->bTiledY, pDrawInfo->width, pDrawInfo->height, pDrawInfo->fillcolor, instance);
 
 		return bRet;
 	}

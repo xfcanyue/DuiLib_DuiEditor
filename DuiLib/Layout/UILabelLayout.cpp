@@ -9,8 +9,7 @@ namespace DuiLib
 	CLabelLayoutUI::CLabelLayoutUI() : m_uTextStyle(DT_VCENTER | DT_SINGLELINE), m_dwTextColor(0), 
 		m_dwDisabledTextColor(0),
 		m_iFont(-1),
-		m_bShowHtml(false),
-		m_bAutoCalcWidth(false)
+		m_bShowHtml(false)
 	{
 		::ZeroMemory(&m_rcTextPadding, sizeof(m_rcTextPadding));
 	}
@@ -104,7 +103,7 @@ namespace DuiLib
 
 	SIZE CLabelLayoutUI::EstimateSize(SIZE szAvailable)
 	{
-		if (m_bAutoCalcWidth) {
+		if (IsAutoCalcWidth()) {
 			CDuiString sText = GetText();
 
 			RECT rcText = {0, 0, szAvailable.cx, szAvailable.cy};
@@ -211,9 +210,6 @@ namespace DuiLib
 			SetTextPadding(rcTextPadding);
 		}
 		else if( _tcsicmp(pstrName, _T("showhtml")) == 0 ) SetShowHtml(_tcsicmp(pstrValue, _T("true")) == 0);
-		else if( _tcsicmp(pstrName, _T("autocalcwidth")) == 0 ) {
-			SetAutoCalcWidth(_tcsicmp(pstrValue, _T("true")) == 0);
-		}
 		else __super::SetAttribute(pstrName, pstrValue);
 	}
 
@@ -251,20 +247,10 @@ namespace DuiLib
 		}
 	}
 
-	bool CLabelLayoutUI::GetAutoCalcWidth() const
-	{
-		return m_bAutoCalcWidth;
-	}
-
-	void CLabelLayoutUI::SetAutoCalcWidth(bool bAutoCalcWidth)
-	{
-		m_bAutoCalcWidth = bAutoCalcWidth;
-	}
-
 	void CLabelLayoutUI::SetText( LPCTSTR pstrText )
 	{
 		CControlUI::SetText(pstrText);
-		if(GetAutoCalcWidth()) {
+		if(IsAutoCalcWidth()) {
 			NeedParentUpdate();
 		}
 	}

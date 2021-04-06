@@ -19,8 +19,8 @@ public:
 // 		static void  CRenderEngine::FreeMemory(LPBYTE &pData);
 // 
  		REG_GLOBAL_FUNPR(void, CRenderEngine::FreeImage, (TImageInfo* bitmap, bool bDelete));
- 		REG_GLOBAL_FUNPR(TImageInfo*, CRenderEngine::LoadImage, (LPCTSTR pStrImage, LPCTSTR type, DWORD mask, int width, int height, CPaintManagerUI* pManager, HINSTANCE instance));
- 		REG_GLOBAL_FUNPR(TImageInfo*, CRenderEngine::LoadImage, (UINT nID, LPCTSTR type, DWORD mask, int width, int height, CPaintManagerUI* pManager, HINSTANCE instance));
+ 		REG_GLOBAL_FUNPR(TImageInfo*, CRenderEngine::LoadImage, (LPCTSTR pStrImage, LPCTSTR type, DWORD mask, int width, int height, DWORD fillcolor, CPaintManagerUI* pManager, HINSTANCE instance));
+ 		REG_GLOBAL_FUNPR(TImageInfo*, CRenderEngine::LoadImage, (UINT nID, LPCTSTR type, DWORD mask, int width, int height, DWORD fillcolor, CPaintManagerUI* pManager, HINSTANCE instance));
 
 // 		static Gdiplus::Image*	GdiplusLoadImage(LPCTSTR pstrPath);
 // 		static Gdiplus::Image* GdiplusLoadImage(LPVOID pBuf, size_t dwSize);

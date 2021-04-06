@@ -102,6 +102,52 @@ bool CGridListCellUI::IsFixedColumn()
 	return false;
 }
 
+int CGridListCellUI::GetFixedWidth() const
+{
+	CGridListCellUI* pThis = const_cast<CGridListCellUI* >(this);
+	CGridListUI *pGrid = static_cast<CGridListUI *>(pThis->GetOwner());
+	if(pGrid)
+	{
+		if(GetManager())
+			return GetManager()->GetDPIObj()->Scale(pGrid->GetColumnWidth(pThis->GetColIndex()));
+		else
+			return pGrid->GetColumnWidth(pThis->GetColIndex());
+	}
+	return 0;
+}
+
+void CGridListCellUI::SetFixedWidth(int cx)
+{
+	CGridListUI *pGrid = static_cast<CGridListUI *>(GetOwner());
+	if(pGrid)
+	{
+		pGrid->SetColumnWidth(GetColIndex(), cx);
+	}
+}
+
+int CGridListCellUI::GetFixedHeight() const
+{
+	CGridListCellUI* pThis = const_cast<CGridListCellUI* >(this);
+	CGridListUI *pGrid = static_cast<CGridListUI *>(pThis->GetOwner());
+	if(pGrid)
+	{
+		if(GetManager())
+			return GetManager()->GetDPIObj()->Scale(pGrid->GetRowHeight(pThis->GetRowIndex()));
+		else
+			return pGrid->GetRowHeight(pThis->GetRowIndex());
+	}
+	return 0;
+}
+
+void CGridListCellUI::SetFixedHeight(int cy)
+{
+	CGridListUI *pGrid = static_cast<CGridListUI *>(GetOwner());
+	if(pGrid)
+	{
+		pGrid->SetRowHeight(GetRowIndex(), cy);
+	}
+}
+
 void CGridListCellUI::Selected(BOOL bSelect)
 {
 	if(m_bSelected = bSelect) return;
@@ -405,6 +451,39 @@ bool CGridListCellUI::OnNotifyInnerControl(void* param)
 		}
 	}
 
+	if(GetCellType() == celltypeCheckBox)
+	{
+		if(pNotify->sType == DUI_MSGTYPE_SELECTCHANGED)
+		{
+			CCheckBoxUI *pCheckBox = (CCheckBoxUI *)m_pInnerControl;
+			if(!pCheckBox) return true;
+			CGridListUI *pGrid = (CGridListUI *)GetOwner();
+			if(!pGrid) return true;
+
+			if(GetManager())
+				GetManager()->SendNotify(pGrid, DUI_MSGTYPE_SELECTCHANGED, GetRowIndex(), GetColIndex());
+
+			if(IsFixedRow())
+			{
+				bool bCheck = pCheckBox->IsSelected();
+				int col = GetColIndex();
+				//如果点击固定行的checkbox, 操作整列的checkbox
+				for (int i=pGrid->GetFixedRowCount(); i<pGrid->GetRowCount(); i++)
+				{
+					CGridListCellUI *pCell = pGrid->GetCell(i, col);
+					if(pCell->GetCellType() == celltypeCheckBox)
+					{
+						pCheckBox = (CCheckBoxUI *)pCell->m_pInnerControl;
+						pCheckBox->Selected(bCheck, false);
+
+						if(GetManager())
+							GetManager()->SendNotify(pGrid, DUI_MSGTYPE_SELECTCHANGED, GetRowIndex(), GetColIndex());
+					}
+				}
+			}
+		}
+	}
+
 	if(GetCellType() == celltypeCombo)
 	{
 		if(pNotify->sType == DUI_MSGTYPE_PREDROPDOWN)
@@ -455,6 +534,7 @@ void CGridListCellUI::OnCellKillFocus()
 void CGridListCellUI::OnClickCheckBox()
 {
 	CCheckBoxUI *pCheckBox = (CCheckBoxUI *)m_pInnerControl;
+	if(!pCheckBox) return;
 	pCheckBox->Selected(!pCheckBox->IsSelected(), false);
 
 	CGridListUI *pGrid = (CGridListUI *)GetOwner();
@@ -516,7 +596,26 @@ SIZE CGridListCellUI::EstimateSize(SIZE szAvailable)
 	SIZE sz = {0,0};
 
 	if(GetOwner())
+	{
 		sz.cx = GetOwner()->GetColumnWidth(GetColIndex());
+
+		if(GetOwner()->IsExpandColumnByText())
+		{
+			CDuiString sText = GetText();
+
+			RECT rcText = {0, 0, szAvailable.cx, szAvailable.cy};
+			int nLinks = 0;
+
+			if( m_bShowHtml ) CRenderEngine::DrawHtmlText(m_pManager->GetPaintDC(), m_pManager, rcText, sText, m_dwTextColor, NULL, NULL, nLinks, m_iFont, DT_CALCRECT | m_uTextStyle);
+			else CRenderEngine::DrawText(m_pManager->GetPaintDC(), m_pManager, rcText, sText, m_dwTextColor, m_iFont, DT_CALCRECT | m_uTextStyle);
+			
+			if(rcText.right - rcText.left > sz.cx)
+			{
+				sz.cx = rcText.right - rcText.left;
+				GetOwner()->SetColumnWidth(GetColIndex(), sz.cx);
+			}
+		}
+	}
 
 	return sz;
 }
@@ -731,10 +830,15 @@ void CGridListCellUI::PaintBorder(HDC hDC)
 	DWORD dwBorderColor = GetOwner()->GetLineColor();
 	RECT rcItem = GetCellPos();
 
+	if(GetRowIndex() == 1 && GetColIndex() == 0)
+	{
+		RECT rcItem11 = GetManager()->GetDPIObj()->Scale(GetCellPos());
+		int x = 0; x++;
+	}
 	if(IsSelected())
 	{
 		dwBorderColor = pGrid->GetCellSelectedBorderColor();
-		RECT rcBorder = m_rcItem;
+		RECT rcBorder = rcItem;
 		rcBorder.left++;
 		rcBorder.top++;
 		rcBorder.right--;

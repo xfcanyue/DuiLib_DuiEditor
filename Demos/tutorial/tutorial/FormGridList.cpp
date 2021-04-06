@@ -42,7 +42,6 @@ void CFormGridList::InitWindow()
 
 
 	GetGridPara();
-	m_pGrid->Cell(1,1).SetCellType(celltypeCheckBox);
 	m_pGrid->SetColumnCellType(1, celltypeCheckBox);
 	m_pGrid->SetColumnCellType(2, celltypeEdit);
 	m_pGrid->SetColumnCellType(3, celltypeCombo);

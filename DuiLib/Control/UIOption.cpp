@@ -290,7 +290,7 @@ namespace DuiLib
 			{
 				TDrawInfo info;
 				info.Parse(m_sSelectedStateImage, _T(""), m_pManager);
-				const TImageInfo* pImage = m_pManager->GetImageEx(info.sImageName, info.sResType, info.dwMask, info.bHSL);
+				const TImageInfo* pImage = m_pManager->GetImageEx(info.sImageName, info.sResType, info.dwMask, info.width, info.height, info.fillcolor, info.bHSL);
 				if(m_sSelectedImage.IsEmpty() && pImage != NULL)
 				{
 					SIZE szImage = {pImage->nX, pImage->nY};

@@ -182,7 +182,6 @@ void CUIPropertyGridImageProperty::OnClickButton(CPoint point)
 		imgx.CreateFromHBITMAP(hBitmap);
 		imgx.Crop(pControl->GetPos());
 		::DeleteObject(hBitmap);
-
 		dlg.SetControlImage(imgx);
 		pControl->SetAttribute(GetName(), (LPCTSTR)GetValue().bstrVal);
 	}

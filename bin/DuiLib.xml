@@ -70,7 +70,9 @@ INT类型(最小值，最大值)：
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
 		<Attribute name="float" default="false" type="BOOL" comment="是否使用绝对定位,如(true)" />
-		<Attribute name="floatalign" default="" type="STRING" value="left,right,center,top,bottom,vcenter" comment="用于控制float控件先对于父控件的对齐方式（left\center\right、top\vcenter\bottom）" />		
+		<Attribute name="floatalign" default="" type="STRING" value="left,right,center,top,bottom,vcenter" comment="用于控制float控件先对于父控件的对齐方式（left\center\right、top\vcenter\bottom）" />				
+		<Attribute name="autocalcwidth" default="false" type="BOOL" comment="根据子控件或者文本等等自动计算宽度" />
+		<Attribute name="autocalcheight" default="false" type="BOOL" comment="根据子控件或者文本等等自动计算高度" />
 		<Attribute name="padding" default="0,0,0,0" type="RECT" comment="外边距,如(2,2,2,2)" />
 		<Attribute name="gradient" default="" type="STRING" value="hor" comment="梯度" />
 		<Attribute name="bkcolor" default="0x00000000" type="DWORD" comment="背景颜色,如(0xFFFF0000)" />
@@ -780,7 +782,8 @@ INT类型(最小值，最大值)：
 		<Attribute name="celltype" default="text" type="STRING" value="text,edit,check,combo,datetime,date,time,container" comment="单元格类型" />	
 		<Attribute name="merge" default="0,0,0,0" type="RECT" comment="需要被合并的目标单元格, left与top为当前格子行列, right与bottom被合并的格子行列. " />
 		<Attribute name="mergedwithothers" default="false" type="BOOL" comment="单元格是否被合并" />
-		<Attribute name="inset" default="1,1,1,1" type="RECT" comment="单元格内边距" />
+		<Attribute name="inset" default="1,1,1,1" type="RECT" comment="单元格内边距" />		
+		<Attribute name="text" default="" type="STRING" comment="单元格文本" />
 		<Attribute name="align" default="center" type="STRING" value="left,right,center" comment="对齐方式,取值left、right、center" />		
 		<Attribute name="valign" default="vcenter" type="STRING" value="top,bottom,vcenter" comment="对齐方式,取值top,bottom,center" />	
 		<Attribute name="textpadding" default="0,0,0,0" type="RECT" comment="文字显示的边距" />
@@ -801,12 +804,15 @@ INT类型(最小值，最大值)：
 		<Attribute name="selectrect" default="true" type="BOOL" comment="允许拖拽选取框选取表格行或者单元格" />	
 		<Attribute name="dragrectcolor" default="0xff808080" type="DWORD" comment="拖拽选取框的颜色" />
 		
-		<Attribute name="sizecolumn" default="true" type="BOOL" comment="是否允许调整列宽" />
-		<Attribute name="sizerow" default="true" type="BOOL" comment="是否允许调整行高" />	
+		<Attribute name="sizecolumn" default="true" type="BOOL" comment="是否允许在固定行调整列宽" />
+		<Attribute name="sizerow" default="true" type="BOOL" comment="是否允许在固定列调整行高" />	
 		<Attribute name="sizecolumninbody" default="false" type="BOOL" comment="是否允许表格body中调整列宽" />
-		<Attribute name="sizerowinbody" default="false" type="BOOL" comment="是否允许表格body中调整行高" />	
-		<Attribute name="expandcolumntofit" default="true" type="BOOL" comment="横向拉伸占满整个表格" />	
-		<Attribute name="expandrowtofit" default="false" type="BOOL" comment="纵向向拉伸占满整个表格" />
+		<Attribute name="sizerowinbody" default="false" type="BOOL" comment="是否允许表格body中调整行高" />
+		
+		<Attribute name="fitcolumnbytext" default="false" type="BOOL" comment="根据单元格文本内容调整列宽" />
+		<Attribute name="fitlastcolumn" default="false" type="BOOL" comment="拉伸最后一列占满整个表格，优先于fitcolumns" />	
+		<Attribute name="fitcolumns" default="true" type="BOOL" comment="横向拉伸占满整个表格, 设置fitlastcolumn时，该值无效。" />	
+		<Attribute name="fitrows" default="false" type="BOOL" comment="纵向向拉伸占满整个表格" />
 
 		<Attribute name="listmode" default="true" type="BOOL" comment="列表模式,点击单元格时选中整行，否则开启单元格多选" />
 		<Attribute name="singlerowselection" default="true" type="BOOL" comment="仅允许选中单行" />		
@@ -887,20 +893,31 @@ INT类型(最小值，最大值)：
 		<Attribute name="name" default="" type="STRING" comment="控件名字"/>	
 		<Attribute name="entercontroltext" default="En" type="STRING" comment="回车键的显示的文字"/>
 	</KeyBoardNumber>
-	<PictureControl parent="Container" >
-		<Attribute name="name" default="" type="STRING" comment="控件名字，同一窗口内必须唯一，如(testbtn)"/>
+	<Picture parent="Container" >
+		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
+		<Attribute name="fileimage" default="" type="IMAGE" comment="图片文件路径, 只能是文件，不支持dest,source等属性"/>
+		<Attribute name="framedelay" default="0" type="INT" comment="每帧延迟时间(毫秒)"/>
+		<Attribute name="autoplay" default="true" type="BOOL" comment="是否自动播放GIF动画" />
+		<Attribute name="autosize" default="false" type="BOOL" comment="是否根据图片自动设置控件大小(开启后width和height属性失效)" />
+	</Picture>
+	<PictureBox parent="Picture" comment="简单图片轮播" >
+		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
+		<Attribute name="imagepath" default="" type="STRING" comment="图片文件夹(从资源目录载入图片)"/>
+	</PictureBox>
+	<PictureControl parent="Container" comment="图片显示控件，使用CxImage">
+		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
 		<Attribute name="fileimage" default="" type="IMAGE" comment="图片文件路径, 只能是文件，不支持dest,source等属性"/>
 		<Attribute name="framedelay" default="0" type="INT" comment="gif每帧延迟时间(毫秒)"/>
 		<Attribute name="autoplay" default="true" type="BOOL" comment="是否自动播放GIF动画" />
 		<Attribute name="autosize" default="false" type="BOOL" comment="是否根据图片自动设置控件大小(开启后width和height属性失效)" />
 	</PictureControl>
-	<ImageBox parent="Control" >
-		<Attribute name="name" default="" type="STRING" comment="控件名字，同一窗口内必须唯一，如(testbtn)"/>
+	<ImageBox parent="Control" comment="简单图片轮播，使用CxImage" >
+		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
 		<Attribute name="imagepath" default="" type="STRING" comment="图片文件夹(从资源目录载入图片)"/>
 		<Attribute name="retention" default="200" type="INT" comment="每张图片停留时间(毫秒)"/>
 	</ImageBox>
 	<ImageBoxEx parent="Control" >
-		<Attribute name="name" default="" type="STRING" comment="控件名字，同一窗口内必须唯一，如(testbtn)"/>
+		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
 		<Attribute name="imagepath" default="" type="STRING" comment="图片文件夹(从资源目录载入图片)"/>
 		<Attribute name="refresh" default="200" type="INT" comment="定时器刷新时间(毫秒)"/>
 		<Attribute name="duration" default="2000" type="INT" comment="动画过渡时间(毫秒)"/>
@@ -992,8 +1009,12 @@ INT类型(最小值，最大值)：
 		<Attribute name="xtiled" default="false" type="BOOL" comment="橫向平铺" />
 		<Attribute name="ytiled" default="false" type="BOOL" comment="纵向平铺" />
 		<Attribute name="hsl" default="false" type="BOOL" comment="" />
-		<Attribute name="width" default="0" type="INT" comment="矢量图像的宽度" />
-		<Attribute name="height" default="0" type="INT" comment="矢量图像的高度" />
+		<Attribute name="padding" default="0,0,0,0" type="RECT" comment="外边距" />
+		<Attribute name="align" default="left" type="STRING" value="left,right,center" comment="对齐方式,取值left、right、center" />		
+		<Attribute name="valign" default="top" type="STRING" value="top,bottom,vcenter" comment="对齐方式,取值top,bottom,center" />	
+		<Attribute name="width" default="0" type="INT" comment="svg图片的宽度" />
+		<Attribute name="height" default="0" type="INT" comment="svg图片的高度" />
+		<Attribute name="fillcolor" default="0x00000000" type="DWORD" comment="svg图片的填充颜色" />
 	</IMAGE>
 	<Style>
 		<Attribute name="source" default="" type="STRING" comment="需要包含的xml文件" />

@@ -94,12 +94,14 @@ namespace DuiLib {
 
 	typedef struct UILIB_API tagTFontInfo
 	{
+		int id;
 		HFONT hFont;
 		CDuiString sFontName;
 		int iSize;
 		bool bBold;
 		bool bUnderline;
 		bool bItalic;
+		bool bDefault;
 		TEXTMETRIC tm;
 	} TFontInfo;
 
@@ -114,6 +116,7 @@ namespace DuiLib {
 		bool bUseHSL;
 		CDuiString sResType;
 		DWORD dwMask;
+		int delay;
 	} TImageInfo;
 
 	typedef struct UILIB_API tagTDrawInfo
@@ -135,8 +138,11 @@ namespace DuiLib {
 		bool bTiledX;
 		bool bTiledY;
 		bool bHSL;
-		int width;
-		int height;
+		RECT rcPadding;		//外边距
+		UINT uAlign;		//对齐方式
+		int width;			//SVG的宽度
+		int height;			//SVG的高度
+		DWORD fillcolor;	//SVG的填充颜色
 	} TDrawInfo;
 
 	typedef struct UILIB_API tagTPercentInfo
@@ -335,10 +341,11 @@ namespace DuiLib {
 		void RemoveAllFonts(bool bShared = false);
 		TFontInfo* GetFontInfo(int id);
 		TFontInfo* GetFontInfo(HFONT hFont);
+		TFontInfo* GetFontInfo(int nIndex, bool bShared);
 
 		const TImageInfo* GetImage(LPCTSTR bitmap);
-		const TImageInfo* GetImageEx(LPCTSTR bitmap, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, bool bUseHSL = false, HINSTANCE instance = NULL);
-		const TImageInfo* AddImage(LPCTSTR bitmap, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, bool bUseHSL = false, bool bShared = false, HINSTANCE instance = NULL);
+		const TImageInfo* GetImageEx(LPCTSTR bitmap, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, bool bUseHSL = false, HINSTANCE instance = NULL);
+		const TImageInfo* AddImage(LPCTSTR bitmap, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, bool bUseHSL = false, bool bShared = false, HINSTANCE instance = NULL);
 		const TImageInfo* AddImage(LPCTSTR bitmap, HBITMAP hBitmap, int iWidth, int iHeight, bool bAlpha, bool bShared = false);
 		void RemoveImage(LPCTSTR bitmap, bool bShared = false);
 		void RemoveAllImages(bool bShared = false);
@@ -447,8 +454,6 @@ namespace DuiLib {
 		void RebuildFont(TFontInfo* pFontInfo);
 		void SetDPI(int iDPI);
 		static void SetAllDPI(int iDPI);
-		static void SetAdjustDPIRecource(bool bAdjust); //是否动态调整DPI资源, add by liqs99
-		static bool IsAdjustDPIRecource(); //是否动态调整DPI资源, add by liqs99
 
 		bool MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& lRes);
 		bool PreMessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& lRes);

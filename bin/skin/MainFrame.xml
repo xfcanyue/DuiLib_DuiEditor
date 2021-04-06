@@ -5,7 +5,7 @@
 	<VerticalLayout inset="1,1,1,1" bkcolor="0xFFD1E8F5" bordercolor="0xFF969696" bordersize="1">
 		<HorizontalLayout height="20" childpadding="5" childvalign="vcenter" bkcolor="0xFFC0DCC0">
 			<Control width="16" height="16" foreimage="images\ico.jpg" />
-			<Label text="DuiLib控件展示" resourceid="7" />
+			<Label text="DuiLib控件大全     QQ群：819272442" resourceid="7" />
 			<Option name="dpi_96" width="60" height="18" selectedbkcolor="0xFFA6CAF0" group="group_dpi" hotbkcolor="0xFFA6CAF0" pushedbkcolor="0xFFA6CAF0" text="dpi_100%" />
 			<Option name="dpi_120" width="60" height="18" selectedbkcolor="0xFFA6CAF0" group="group_dpi" hotbkcolor="0xFFA6CAF0" pushedbkcolor="0xFFA6CAF0" text="dpi_125%" />
 			<Option name="dpi_144" width="60" height="18" selectedbkcolor="0xFFA6CAF0" group="group_dpi" hotbkcolor="0xFFA6CAF0" pushedbkcolor="0xFFA6CAF0" text="dpi_150%" />
@@ -36,11 +36,11 @@
 				<Label text="列表" height="20" resourceid="8" />
 				<List inset="1,1,1,1" vscrollbar="true" hscrollbar="true" bkcolor="0xFFFFFFFF" bordercolor="0xFFD2D2D2" bordersize="1">
 					<ListHeader bkimage="images\list_header_bg.png">
-						<ListHeaderItem sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" resourceid="9" text="姓名" />
-						<ListHeaderItem sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" resourceid="10" text="用户名" />
-						<ListHeaderItem sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" resourceid="11" text="手机号码" />
-						<ListHeaderItem sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" resourceid="12" text="固定电话" />
-						<ListHeaderItem sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" resourceid="13" text="操作" />
+						<ListHeaderItem sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" minwidth="80" resourceid="9" text="姓名" />
+						<ListHeaderItem sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" minwidth="80" resourceid="10" text="用户名" />
+						<ListHeaderItem sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" minwidth="80" resourceid="11" text="手机号码" />
+						<ListHeaderItem sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" minwidth="80" resourceid="12" text="固定电话" />
+						<ListHeaderItem sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" minwidth="80" resourceid="13" text="操作" />
 					</ListHeader>
 					<ListContainerElement height="30">
 						<Label text="text1" align="center" resourceid="14" />

@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "DuiEditor.h"
-#include "UIWindowEx.h"
+#include "UIWindowDesignView.h"
 
 #include "MainFrm.h"
 #include "DuiEditorViewDesign.h"
@@ -15,17 +15,17 @@
 #include "wm.c"
 // CUIWindowEx
 
-CUIWindowEx::CUIWindowEx()
+CUIWindowDesignView::CUIWindowDesignView()
 {
-	m_bOpenConfigFile = false;
+	
 }
 
-CUIWindowEx::~CUIWindowEx()
+CUIWindowDesignView::~CUIWindowDesignView()
 {
 }
 
 // CUIWindowEx 消息处理程序
-void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
+void CUIWindowDesignView::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 {
 	CUIManager *pManager = GetUIManager();
 	//当前节点，从控件树获取
@@ -287,7 +287,7 @@ void CUIWindowEx::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
 	m_tracker.Add(nodeNewControl, pNewControl->GetPos());
 }
 
-void CUIWindowEx::OnSelectingControl(CControlUI *pControl, const CRect &rcTracker)
+void CUIWindowDesignView::OnSelectingControl(CControlUI *pControl, const CRect &rcTracker)
 {
 	xml_node nodeControl((xml_node_struct *)pControl->GetTag());
 	if(!nodeControl)
@@ -307,7 +307,7 @@ void CUIWindowEx::OnSelectingControl(CControlUI *pControl, const CRect &rcTracke
 	}
 }
 
-void CUIWindowEx::ResizeWindow()
+void CUIWindowDesignView::ResizeWindow()
 {
 	if(!GetUIManager()->GetDocument()->m_bMenuWnd)	return;
 
@@ -353,7 +353,7 @@ void CUIWindowEx::ResizeWindow()
 	MoveWindow(rc.left, rc.top, rc.GetWidth(), rc.GetHeight(), FALSE);
 }
 
-LRESULT CUIWindowEx::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CUIWindowDesignView::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	LRESULT lRes = 0;
 	BOOL bHandled = TRUE;
@@ -413,7 +413,7 @@ LRESULT CUIWindowEx::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return CWindowWnd::HandleMessage(uMsg, wParam, lParam);
 }
 
-LRESULT CUIWindowEx::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT CUIWindowDesignView::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	//创建一个隐藏光标, 此光标用于在控件上直接输入文字
 	//::CreateCaret(m_hWnd,(HBITMAP) NULL, 0, 0);
@@ -471,13 +471,13 @@ LRESULT CUIWindowEx::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHa
 	return 0;
 }
 
-LRESULT CUIWindowEx::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT CUIWindowDesignView::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	bHandled = FALSE;
 	return 0;
 }
 
-LRESULT CUIWindowEx::OnKillFocus(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
+LRESULT CUIWindowDesignView::OnKillFocus(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
 {
 	bHandled = FALSE;
 
@@ -487,7 +487,7 @@ LRESULT CUIWindowEx::OnKillFocus(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPar
 	return 0;
 }
 
-LRESULT CUIWindowEx::OnSetFocus(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
+LRESULT CUIWindowDesignView::OnSetFocus(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
 {
 	HWND hWnd = GetHWND();
 	bHandled = FALSE;
@@ -498,7 +498,7 @@ LRESULT CUIWindowEx::OnSetFocus(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPara
 	return 0;
 }
 
-LRESULT CUIWindowEx::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT CUIWindowDesignView::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	CUIManager *pManager = GetUIManager();
 	bHandled = FALSE;
@@ -541,7 +541,7 @@ LRESULT CUIWindowEx::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHand
 	return 0;
 }
 
-LRESULT CUIWindowEx::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT CUIWindowDesignView::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	CUIManager *pManager = GetUIManager();
 	LRESULT lRes = 0;
@@ -600,7 +600,7 @@ LRESULT CUIWindowEx::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHan
 	return 0;
 }
 
-LRESULT CUIWindowEx::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT CUIWindowDesignView::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	SetFocus(GetSafeHwnd());
 
@@ -733,7 +733,7 @@ LRESULT CUIWindowEx::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 	return 0;
 }
 
-LRESULT CUIWindowEx::OnRButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT CUIWindowDesignView::OnRButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	if(GetUIManager()->GetDesignView()->m_bShowUiPreview)
 	{
@@ -799,7 +799,7 @@ LRESULT CUIWindowEx::OnRButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL
 	return 0;
 }
 
-LRESULT CUIWindowEx::OnMouseMove(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT CUIWindowDesignView::OnMouseMove(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	CDuiEditorViewDesign *pDesignView = GetUIManager()->GetDesignView();
 	if(pDesignView && pDesignView->m_bShowUiPreview)
@@ -828,7 +828,7 @@ LRESULT CUIWindowEx::OnMouseMove(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 	return 0;
 }
 
-LRESULT CUIWindowEx::OnSetCursor(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT CUIWindowDesignView::OnSetCursor(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	CDuiEditorViewDesign *pDesignView = GetUIManager()->GetDesignView();
 	if(pDesignView->m_bShowUiPreview)
@@ -857,7 +857,7 @@ LRESULT CUIWindowEx::OnSetCursor(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 	return 0;
 }
 
-LRESULT CUIWindowEx::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT CUIWindowDesignView::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	__super::OnKeyDown(uMsg, wParam, lParam, bHandled);
 

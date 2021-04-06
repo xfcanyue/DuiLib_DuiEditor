@@ -1,0 +1,16 @@
+﻿生成启动时间为 2021/3/27 11:17:25。
+     1>项目“E:\MyLibrary\DuiLib\msvcTemplate\vc2010\VC2010DuiLibWizard\VC2010DuiLibWizard.vcxproj”在节点 2 上(rebuild 个目标)。
+     1>_PrepareForClean:
+         正在删除文件“Release\VC2010DuiLibWizard.lastbuildstate”。
+       PrepareForBuild:
+         正在创建目录“E:\MyLibrary\DuiLib\msvcTemplate\vc2010\Release\”。
+       InitializeBuildStatus:
+         正在创建“Release\VC2010DuiLibWizard.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       FinalizeBuildStatus:
+         正在删除文件“Release\VC2010DuiLibWizard.unsuccessfulbuild”。
+         正在对“Release\VC2010DuiLibWizard.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“E:\MyLibrary\DuiLib\msvcTemplate\vc2010\VC2010DuiLibWizard\VC2010DuiLibWizard.vcxproj”(rebuild 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:00.19

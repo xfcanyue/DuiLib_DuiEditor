@@ -1,0 +1,11 @@
+
+    一般的话，打开这个项目编译一次就行了，创建项目时选择 向导 -- DuiLib创建向导
+    
+    如果没有，这三个文件
+    VC2010DuiLibWizard.vsz
+    VC2010DuiLibWizard.vsdir
+    VC2010DuiLibWizard.ico
+    拷贝到“我的文档\Visual Studio 2010\Wizards”，然后打开VC2010DuiLibWizard.vsz，里面有个路径需要改一下。
+
+
+    向导创建的项目已经添加了zip资源，所以Release版本可以直接运行，Debug版本会提示载入资源失败。

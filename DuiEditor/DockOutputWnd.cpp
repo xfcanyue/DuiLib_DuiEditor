@@ -26,6 +26,8 @@ BEGIN_MESSAGE_MAP(CDockOutputWnd, CDockablePane)
 	ON_WM_SIZE()
 	ON_MESSAGE(WM_INSERT_MSG, OnInsertMsg)
 	ON_WM_CONTEXTMENU()
+	ON_COMMAND(ID_LISTMSG_COPY, &CDockOutputWnd::OnListmsgCopy)
+	ON_UPDATE_COMMAND_UI(ID_LISTMSG_COPY, &CDockOutputWnd::OnUpdateListmsgCopy)
 	ON_COMMAND(ID_LISTMSG_CLEAR, &CDockOutputWnd::OnListmsgClear)
 	ON_UPDATE_COMMAND_UI(ID_LISTMSG_CLEAR, &CDockOutputWnd::OnUpdateListmsgClear)
 	ON_COMMAND(ID_LISTMSG_SAVE_AS, &CDockOutputWnd::OnListmsgSaveAs)
@@ -96,6 +98,17 @@ void CDockOutputWnd::OnContextMenu(CWnd* pWnd, CPoint point)
 	CMenu popmenu;
 	popmenu.LoadMenu(IDR_MENU_LIST_MSG);
 	theApp.GetContextMenuManager()->ShowPopupMenu(popmenu.GetSubMenu(0)->m_hMenu, point.x, point.y, this, TRUE);
+}
+
+void CDockOutputWnd::OnListmsgCopy()
+{
+	m_ctrlRichEdit.Copy();
+}
+
+
+void CDockOutputWnd::OnUpdateListmsgCopy(CCmdUI *pCmdUI)
+{
+	
 }
 
 

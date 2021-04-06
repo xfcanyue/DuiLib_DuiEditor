@@ -15,22 +15,13 @@
 			</HorizontalLayout>
 		</HorizontalLayout>
 		<HorizontalLayout name="dialog_body" inset="0,0,0,10" padding="5,0,5,0" borderround="5,5">
-			<GridList name="grid_main" columnwith="150" ascendingimage="file='images\common\list\listhead_arrow.png' source='0,0,18,18' " descendingimage="file='images\common\list\listhead_arrow.png' source='18,0,36,18' " sorticonsize="18,18" edit="align=&quot;center&quot; valign=&quot;center&quot; " checkbox="width=&quot;18&quot; height=&quot;16&quot; selectedimage=&quot;images\check-select.png&quot; normalimage=&quot;images\check-unselect.png&quot; " combo="dropbuttonsize=&quot;21,21&quot; dropbuttonnormalimage=&quot;file='images\common\combobox\dropbtn.png' source='21,0,42,21' &quot; dropbuttonhotimage=&quot;file='images\common\combobox\dropbtn.png' source='21,0,42,21' &quot; dropbuttonpushedimage=&quot;file='images\common\combobox\dropbtn.png' source='42,0,63,21' &quot; " bkcolor="0xFFFFFFFF">
+			<GridList name="grid_main" columnwith="150" selectrect="false" fitcolumns="false" expandcolumntofit="false" ascendingimage="file='images\common\list\listhead_arrow.png' source='0,0,18,18' " descendingimage="file='images\common\list\listhead_arrow.png' source='18,0,36,18' " sorticonsize="18,18" edit="align=&quot;center&quot; valign=&quot;center&quot; " checkbox="width=&quot;18&quot; height=&quot;16&quot; selectedimage=&quot;images\check-select.png&quot; normalimage=&quot;images\check-unselect.png&quot; " combo="dropbuttonsize=&quot;21,21&quot; dropbuttonnormalimage=&quot;file='images\common\combobox\dropbtn.png' source='21,0,42,21' &quot; dropbuttonhotimage=&quot;file='images\common\combobox\dropbtn.png' source='21,0,42,21' &quot; dropbuttonpushedimage=&quot;file='images\common\combobox\dropbtn.png' source='42,0,63,21' &quot; " bkcolor="0xFFFFFFFF">
 				<GridListHeader>
 					<GridListRow>
 						<GridListCell />
-						<GridListCell merge="0,1,0,2" text="col1" />
-						<GridListCell mergedwithothers="true" text="col2" />
-						<GridListCell text="col3" />
-						<GridListCell text="col4" />
-						<GridListCell text="col5" />
-						<GridListCell text="col6" />
-					</GridListRow>
-					<GridListRow>
-						<GridListCell />
-						<GridListCell celltype="edit" text="col1" />
+						<GridListCell text="col1" textpadding="10,0,10,0" height="30" pos="0,0,0,30" />
 						<GridListCell text="col2" />
-						<GridListCell merge="1,3,1,4" text="col3" />
+						<GridListCell text="col3" />
 						<GridListCell text="col4" />
 						<GridListCell text="col5" />
 						<GridListCell text="col6" />
@@ -39,7 +30,7 @@
 				<GridListBody bkcolor="0xFFFFFBF0" />
 			</GridList>
 			<VerticalLayout width="210" vscrollbar="true" pos="0,0,210,0">
-				<ChildLayout xmlfile="GridOptions.xml" height="860" pos="0,0,0,860" />
+				<ChildLayout xmlfile="GridOptions.xml" height="1000" pos="0,0,0,1000" />
 			</VerticalLayout>
 		</HorizontalLayout>
 		<HorizontalLayout name="dialog_bottom" height="160" inset="5,0,5,10" childpadding="10" childalign="center" childvalign="vcenter" pos="0,0,0,160">

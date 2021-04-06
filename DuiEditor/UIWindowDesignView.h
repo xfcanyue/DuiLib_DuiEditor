@@ -4,11 +4,11 @@
 #include <list>
 // CUIWindowEx
 
-class CUIWindowEx : public CUIWindow, public WindowImplBase
+class CUIWindowDesignView : public CUIWindow, public WindowImplBase
 {
 public:
-	CUIWindowEx();
-	virtual ~CUIWindowEx();
+	CUIWindowDesignView();
+	virtual ~CUIWindowDesignView();
 	virtual CDuiString GetSkinFolder() { return _T(""); }
 	virtual CDuiString GetSkinFile() { return _T(""); }
 	virtual LPCTSTR GetWindowClassName(void) const { return _T("UIWindowEx"); }
@@ -23,7 +23,6 @@ public:
 	{ return CreateDuiWindow(hwndParent, pstrWindowName, dwStyle, dwExStyle); }
 public:
 	CUITrackerMuliti m_tracker;
-	bool m_bOpenConfigFile;
 
 public:
 	void AddNewControlFromToolBox(xml_node nodeToolBox, CPoint pt);

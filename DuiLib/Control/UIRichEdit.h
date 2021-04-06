@@ -145,11 +145,6 @@ namespace DuiLib {
 		void HomeLeft();
 		void EndRight();
 
-		bool GetAutoCalcWidth() const;
-		void SetAutoCalcWidth(bool bAutoCalcWidth);
-		bool GetAutoCalcHeight() const;
-		void SetAutoCalcHeight(bool bAutoCalcHeight);
-
 		virtual int GetFixedWidth() const;
 		virtual int GetFixedHeight() const;
 		SIZE EstimateSize(SIZE szAvailable);
@@ -198,8 +193,6 @@ namespace DuiLib {
 		CDuiString m_sTipValue;
 		DWORD m_dwTipValueColor;
 		UINT m_uTipValueAlign;
-		bool	m_bAutoCalcWidth;
-		bool	m_bAutoCalcHeight;
 		bool	m_bReturnFixedWidth;
 		bool	m_bReturnFixedHeight;
 	};
