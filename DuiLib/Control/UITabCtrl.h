@@ -16,6 +16,8 @@ namespace DuiLib
 		LPVOID GetInterface(LPCTSTR pstrName);
 
 		bool Activate();
+		void DoEvent(TEventUI& event);
+
 		virtual bool IsSelected() const;
 
 		virtual void BindTabIndex(int _BindTabIndex);
@@ -25,11 +27,15 @@ namespace DuiLib
 		virtual int	 GetBindTabLayoutIndex();
 		virtual LPCTSTR GetBindTabLayoutName();
 
+		void SetActiveMouseOn(bool bActive);
+		bool IsActiveMouseOn();
+
 		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 
 	protected:
 		int			m_iBindTabIndex;
 		CDuiString	m_sBindTabLayoutName;
+		BOOL		m_bActiveMouseOn;
 	};
 
 } // namespace DuiLib

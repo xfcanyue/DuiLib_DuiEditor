@@ -78,9 +78,9 @@ void CPictureBoxUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 }
 
 
-bool CPictureBoxUI::LoadHBitmap(HBITMAP hBitmap, int x, int y)
+bool CPictureBoxUI::LoadHBitmap(HBITMAP hBitmap)
 {
-	return __SetHBitmap(hBitmap, x, y);
+	return __SetHBitmap(hBitmap);
 }
 
 bool CPictureBoxUI::LoadImageFromMemory(LPBYTE pData, DWORD dwSize)

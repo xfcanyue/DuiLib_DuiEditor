@@ -55,8 +55,6 @@ enum MenuItemDefaultInfo
 
 };
 
-#define WM_MENUCLICK WM_USER + 121					//用来接收按钮单击的消息
-#define WM_MENU_UPDATE_COMMAND_UI WM_USER + 122		//更新菜单消息
 
 
 ///////////////////////////////////////////////
@@ -262,7 +260,7 @@ public:
 
     virtual int GetItemIndex(CControlUI* pControl) const;
     virtual bool SetItemIndex(CControlUI* pControl, int iIndex);
-    virtual bool Remove(CControlUI* pControl);
+    virtual bool Remove(CControlUI* pControl, bool bDoNotDestroy=false);
 
 	//modify by liqs99, 下面函数改为虚函数
 	virtual SIZE EstimateSize(SIZE szAvailable);

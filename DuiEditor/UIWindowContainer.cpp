@@ -134,10 +134,9 @@ LRESULT CUIWindowContainer::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 
 	ResizeWindow();
 
-#ifndef DUILIB_VERSION_ORIGINAL
 	GetManager()->GetDPIObj()->SetDPIAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
 	GetManager()->SetDPI(CDPI::GetMainMonitorDPI());
-#endif
+
 	return 0;
 }
 

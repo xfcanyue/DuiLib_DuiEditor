@@ -54,9 +54,6 @@
     <ClInclude Include="DuiLib\UIGridListRowUI.h">
       <Filter>头文件\DuiLib</Filter>
     </ClInclude>
-    <ClInclude Include="DuiLib\UIImageBox.h">
-      <Filter>头文件\DuiLib</Filter>
-    </ClInclude>
     <ClInclude Include="DuiLib\UIKeyBoard.h">
       <Filter>头文件\DuiLib</Filter>
     </ClInclude>
@@ -64,9 +61,6 @@
       <Filter>头文件\DuiLib</Filter>
     </ClInclude>
     <ClInclude Include="DuiLib\UIKeyBoardSimple.h">
-      <Filter>头文件\DuiLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DuiLib\UIPictureControl.h">
       <Filter>头文件\DuiLib</Filter>
     </ClInclude>
     <ClInclude Include="DuiLib\IGridListUI.h">
@@ -143,9 +137,6 @@
     <ClCompile Include="DuiLib\UIGridListRowUI.cpp">
       <Filter>源文件\DuiLib</Filter>
     </ClCompile>
-    <ClCompile Include="DuiLib\UIImageBox.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
     <ClCompile Include="DuiLib\UIKeyBoard.cpp">
       <Filter>源文件\DuiLib</Filter>
     </ClCompile>
@@ -153,9 +144,6 @@
       <Filter>源文件\DuiLib</Filter>
     </ClCompile>
     <ClCompile Include="DuiLib\UIKeyBoardSimple.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIPictureControl.cpp">
       <Filter>源文件\DuiLib</Filter>
     </ClCompile>
     <ClCompile Include="DuiLib\UIGridCtrl.cpp">

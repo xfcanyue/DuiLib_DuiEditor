@@ -8,8 +8,8 @@
 
 
 // CDlgScriptTest ¶Ô»°¿ò
-COleDateTime CDlgScriptTest::m_t1(2021, 1, 1, 0, 0, 0);
-COleDateTime CDlgScriptTest::m_t2(2021, 1, 1, 0, 0, 0);
+COleDateTime CDlgScriptTest::m_t1 = COleDateTime::GetCurrentTime();
+COleDateTime CDlgScriptTest::m_t2 = COleDateTime::GetCurrentTime();
 
 IMPLEMENT_DYNAMIC(CDlgScriptTest, CDialogEx)
 

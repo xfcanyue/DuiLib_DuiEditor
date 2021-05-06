@@ -9,8 +9,6 @@ UILIB_EXP_API void __stdcall DuiPluginsRegister()
 	REGIST_DUICONTROL(CKeyBoardUI);
 	REGIST_DUICONTROL(CKeyBoardNumberUI);
 	REGIST_DUICONTROL(CKeyBoardSimpleUI);
-	REGIST_DUICONTROL(CImageBoxUI);
-	REGIST_DUICONTROL(CPictureControlUI);
 	REGIST_DUICONTROL(CSciEditUI);
 	REGIST_DUICONTROL(CGridListUI);
 	REGIST_DUICONTROL(CGridListHeaderUI);
@@ -38,14 +36,6 @@ UILIB_EXP_API CControlUI *CreateControl(LPCTSTR pstrClass)
 	else if( _tcscmp(pstrClass, _T("KeyBoardSimple")) == 0 ) 
 	{
 		return new CKeyBoardSimpleUI;
-	}
-	else if( _tcscmp(pstrClass, _T("ImageBox")) == 0 ) 
-	{
-		return new CImageBoxUI;
-	}
-	else if( _tcscmp(pstrClass, _T("PictureControl")) == 0 ) 
-	{
-		return new CPictureControlUI;
 	}
 	else if( _tcscmp(pstrClass, _T("ComboEx")) == 0 ) 
 	{

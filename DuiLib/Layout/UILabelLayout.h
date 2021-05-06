@@ -5,7 +5,7 @@
 
 namespace DuiLib
 {
-	class UILIB_API CLabelLayoutUI : public CContainerUI
+	class UILIB_API CLabelLayoutUI : public CHorizontalLayoutUI
 	{
 		DECLARE_DUICONTROL(CLabelLayoutUI)
 	public:

@@ -3,9 +3,6 @@
 
 #pragma once
 
-#ifdef USE_XIMAGE_EFFECT
-class CxImage;
-#endif
 namespace DuiLib {
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
@@ -45,9 +42,7 @@ namespace DuiLib {
 		static DWORD CRenderEngine::LoadImage2Memory(const STRINGorID &bitmap, LPCTSTR type, LPBYTE &pData, HINSTANCE instance=NULL);
 
 		static void  CRenderEngine::FreeMemory(LPBYTE &pData);
-#ifdef USE_XIMAGE_EFFECT
-		static CxImage *LoadGifImageX(STRINGorID bitmap, LPCTSTR type = NULL, DWORD mask = 0);
-#endif
+
 		static void FreeImage(TImageInfo* bitmap, bool bDelete = true);
 		static TImageInfo* LoadImage(LPCTSTR pStrImage, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL);
 		static TImageInfo* LoadImage(UINT nID, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL);

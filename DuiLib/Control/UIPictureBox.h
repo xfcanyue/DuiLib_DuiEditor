@@ -16,7 +16,7 @@ public:
 	virtual void DoInit();
 	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 
-	virtual bool LoadHBitmap(HBITMAP hBitmap, int x, int y);
+	virtual bool LoadHBitmap(HBITMAP hBitmap);
 	virtual bool LoadImageFromMemory(LPBYTE pData, DWORD dwSize);
 	virtual bool LoadFile(LPCTSTR pstrImage);
 };

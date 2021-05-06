@@ -56,8 +56,8 @@ namespace DuiLib {
 
 		bool Add(CControlUI* pControl);
 		bool AddAt(CControlUI* pControl, int iIndex);
-		bool Remove(CControlUI* pControl);
-		bool RemoveAt(int iIndex);
+		bool Remove(CControlUI* pControl, bool bDoNotDestroy=false);
+		bool RemoveAt(int iIndex, bool bDoNotDestroy=false);
 		void RemoveAll();
 
 		bool Activate();

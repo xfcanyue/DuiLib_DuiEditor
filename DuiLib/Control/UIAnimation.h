@@ -1,7 +1,6 @@
 #ifndef __UIANIMATION_H__
 #define __UIANIMATION_H__
 
-#include "UIButton.h"
 #pragma once
 
 namespace DuiLib {
@@ -57,6 +56,8 @@ namespace DuiLib {
 	public:
 		CUIAnimation(CControlUI* pOwner);
 		~CUIAnimation();
+
+		void AttachAnimationControl(CControlUI* pOwner);
 
 		virtual BOOL StartAnimation(int nElapse, int nTotalFrame, int nAnimationID = 0, BOOL bLoop = FALSE);
 		virtual void StopAnimation(int nAnimationID = 0);

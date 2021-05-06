@@ -30,7 +30,7 @@ namespace DuiLib
 
 		bool Add(CControlUI* _pTreeNodeUI);
 		bool AddAt(CControlUI* pControl, int iIndex);
-		bool Remove(CControlUI* pControl);
+		bool Remove(CControlUI* pControl, bool bDoNotDestroy=false);
 
 		void SetVisibleTag(bool _IsVisible);
 		bool GetVisibleTag();
@@ -39,7 +39,7 @@ namespace DuiLib
 		void CheckBoxSelected(bool _Selected);
 		bool IsCheckBoxSelected() const;
 		bool IsHasChild() const;
-		long GetTreeLevel() const;
+		long GetTreeLevel();
 		bool AddChildNode(CTreeNodeUI* _pTreeNodeUI);
 		bool RemoveNode(CTreeNodeUI* _pTreeNodeUI);
 		void SetParentNode(CTreeNodeUI* _pParentTreeNode);
@@ -111,8 +111,8 @@ namespace DuiLib
 		virtual bool Add(CTreeNodeUI* pControl );
 		virtual long AddAt(CTreeNodeUI* pControl, int iIndex );
 		virtual bool AddAt(CTreeNodeUI* pControl,CTreeNodeUI* _IndexNode);
-		virtual bool Remove(CTreeNodeUI* pControl);
-		virtual bool RemoveAt(int iIndex);
+		virtual bool Remove(CTreeNodeUI* pControl, bool bDoNotDestroy=false);
+		virtual bool RemoveAt(int iIndex, bool bDoNotDestroy=false);
 		virtual void RemoveAll();
 		virtual bool OnCheckBoxChanged(void* param);
 		virtual bool OnFolderChanged(void* param);

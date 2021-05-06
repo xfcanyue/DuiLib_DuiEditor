@@ -6,7 +6,7 @@
 
 namespace DuiLib {
 
-	class UILIB_API CFadeButtonUI : public CButtonUI, public CUIAnimation
+	class UILIB_API CFadeButtonUI : public CButtonUI
 	{
 		DECLARE_DUICONTROL(CFadeButtonUI)
 	public:

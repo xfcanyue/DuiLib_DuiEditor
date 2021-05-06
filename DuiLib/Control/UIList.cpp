@@ -170,7 +170,7 @@ namespace DuiLib {
 		return true;
 	}
 
-	bool CListUI::Remove(CControlUI* pControl)
+	bool CListUI::Remove(CControlUI* pControl, bool bDoNotDestroy )
 	{
 		if( pControl->GetInterface(_T("ListHeader")) != NULL ) return CVerticalLayoutUI::Remove(pControl);
 		// We also need to recognize header sub-items
@@ -198,7 +198,7 @@ namespace DuiLib {
 		return true;
 	}
 
-	bool CListUI::RemoveAt(int iIndex)
+	bool CListUI::RemoveAt(int iIndex, bool bDoNotDestroy )
 	{
 		if (!m_pList->RemoveAt(iIndex)) return false;
 

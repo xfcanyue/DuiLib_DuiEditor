@@ -3,6 +3,10 @@
 #define USE_LS_CXIMAGE
 #define _CRT_SECURE_NO_WARNINGS
 
+#ifdef UILIB_STATIC
+#define CXIMAGE_STATIC
+#endif
+
 #include "../cximage701_full/CxImage/ximage.h"
 
 #ifndef _LIBPATH_

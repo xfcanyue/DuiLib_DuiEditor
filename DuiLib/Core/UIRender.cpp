@@ -13,19 +13,6 @@
 #define NANOSVGRAST_IMPLEMENTATION
 #include "..\Utils\nanosvgrast.h"
 
-#ifdef USE_XIMAGE_EFFECT
-#	include "../../3rd/CxImage/ximage.h"
-#	include "../../3rd/CxImage/ximage.cpp"
-#	include "../../3rd/CxImage/ximaenc.cpp"
-#	include "../../3rd/CxImage/ximagif.cpp"
-#	include "../../3rd/CxImage/ximainfo.cpp"
-#	include "../../3rd/CxImage/ximalpha.cpp"
-#	include "../../3rd/CxImage/ximapal.cpp"
-#	include "../../3rd/CxImage/ximatran.cpp"
-#	include "../../3rd/CxImage/ximawnd.cpp"
-#	include "../../3rd/CxImage/xmemfile.cpp"
-#endif
-
 ///////////////////////////////////////////////////////////////////////////////////////
 namespace DuiLib {
 	static int g_iFontID = MAX_FONT_ID;
@@ -715,29 +702,6 @@ namespace DuiLib {
 		delete []pData;
 		pData = NULL;
 	}
-#ifdef USE_XIMAGE_EFFECT
-	CxImage* CRenderEngine::LoadGifImageX(STRINGorID bitmap, LPCTSTR type , DWORD mask)
-	{
-		//write by wangji
-		LPBYTE pData = NULL;
-		DWORD dwSize = LoadImage2Memory(bitmap,type,pData);
-		if(dwSize == 0U || !pData)
-			return NULL;
-		CxImage * pImg = NULL;
-		if(pImg = new CxImage())
-		{
-			pImg->SetRetreiveAllFrames(TRUE);
-			if(!pImg->Decode(pData,dwSize,CXIMAGE_FORMAT_GIF))
-			{
-				delete pImg;
-				pImg = nullptr;
-			}
-		}
-		delete[] pData;
-		pData = NULL;
-		return pImg;
-	}
-#endif//USE_XIMAGE_EFFECT
 
 	Gdiplus::Image* CRenderEngine::GdiplusLoadImage(LPCTSTR pstrPath)
 	{

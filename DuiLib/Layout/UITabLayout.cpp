@@ -4,7 +4,8 @@
 namespace DuiLib
 {
 	IMPLEMENT_DUICONTROL(CTabLayoutUI)
-	CTabLayoutUI::CTabLayoutUI() : m_iCurSel(-1)
+	CTabLayoutUI::CTabLayoutUI() : m_iCurSel(-1), m_iOldSel(-1), 
+	m_pCurControl(NULL),m_pLastControl(NULL),m_nMoveDirection(1)
 	{
 	}
 
@@ -57,7 +58,7 @@ namespace DuiLib
 		return ret;
 	}
 
-	bool CTabLayoutUI::Remove(CControlUI* pControl)
+	bool CTabLayoutUI::Remove(CControlUI* pControl, bool bDoNotDestroy )
 	{
 		if( pControl == NULL) return false;
 
@@ -101,7 +102,35 @@ namespace DuiLib
 		if( iIndex < 0 || iIndex >= m_items.GetSize() ) return false;
 		if( iIndex == m_iCurSel ) return true;
 
-		int iOldSel = m_iCurSel;
+		if(m_animation == DuiAnim_horizontal || m_animation == DuiAnim_vertical)
+		{
+			if( iIndex > m_iCurSel ) m_nMoveDirection = -1;
+			if( iIndex < m_iCurSel ) m_nMoveDirection = 1;
+
+			m_pCurControl = NULL;
+			m_pLastControl = NULL;
+
+			m_iOldSel = m_iCurSel;
+			m_iCurSel = iIndex;
+			for( int it = 0; it < m_items.GetSize(); it++ )
+			{
+				if( it == iIndex ) 
+				{
+					m_pCurControl = static_cast<CControlUI*>(m_items[it]);
+				}
+				else if(it == m_iOldSel)
+				{
+					m_pLastControl = static_cast<CControlUI*>(m_items[it]);
+				}
+				else GetItemAt(it)->SetVisible(false);
+			}
+
+			StopAnimation(ANIMATION_ID_TAB);
+			StartAnimation(GetFrameDelay(), GetFrameCount(), ANIMATION_ID_TAB);
+			return true;
+		}
+
+		m_iOldSel = m_iCurSel;
 		m_iCurSel = iIndex;
 		for( int it = 0; it < m_items.GetSize(); it++ )
 		{
@@ -109,6 +138,7 @@ namespace DuiLib
 				GetItemAt(it)->SetVisible(true);
 				GetItemAt(it)->SetFocus();
 				SetPos(m_rcItem);
+				m_pCurControl = static_cast<CControlUI*>(m_items[it]);
 			}
 			else GetItemAt(it)->SetVisible(false);
 		}
@@ -116,7 +146,7 @@ namespace DuiLib
 
 		if( m_pManager != NULL ) {
 			m_pManager->SetNextTabControl();
-			m_pManager->SendNotify(this, DUI_MSGTYPE_TABSELECT, m_iCurSel, iOldSel);
+			m_pManager->SendNotify(this, DUI_MSGTYPE_TABSELECT, m_iCurSel, m_iOldSel);
 		}
 		return true;
 	}
@@ -146,6 +176,144 @@ namespace DuiLib
 		rc.top += m_rcInset.top;
 		rc.right -= m_rcInset.right;
 		rc.bottom -= m_rcInset.bottom;
+
+		if(IsAnimationRunning(ANIMATION_ID_TAB))
+		{
+			//CMsgWndUI::InsertMsgV(_T("总帧数: %d, 当前帧: %d"), GetFrameCount(), GetCurrentFrame(ANIMATION_ID_TAB));
+
+			for( int it = 0; it < m_items.GetSize(); it++ ) 
+			{
+				CControlUI* pControl = static_cast<CControlUI*>(m_items[it]);
+				if( !pControl->IsVisible() ) continue;
+				if( pControl->IsFloat() ) {
+					SetFloatPos(it);
+					continue;
+				}
+
+				if( it == m_iCurSel )
+				{
+// 					RECT rcPadding = pControl->GetPadding();
+// 					rc.left += rcPadding.left;
+// 					rc.top += rcPadding.top;
+// 					rc.right -= rcPadding.right;
+// 					rc.bottom -= rcPadding.bottom;
+
+					SIZE szAvailable = { rc.right - rc.left, rc.bottom - rc.top };
+
+					SIZE sz = pControl->EstimateSize(szAvailable);
+					if( sz.cx == 0 ) {
+						sz.cx = MAX(0, szAvailable.cx);
+					}
+					if( sz.cx < pControl->GetMinWidth() ) sz.cx = pControl->GetMinWidth();
+					if( sz.cx > pControl->GetMaxWidth() ) sz.cx = pControl->GetMaxWidth();
+
+					if(sz.cy == 0) {
+						sz.cy = MAX(0, szAvailable.cy);
+					}
+					if( sz.cy < pControl->GetMinHeight() ) sz.cy = pControl->GetMinHeight();
+					if( sz.cy > pControl->GetMaxHeight() ) sz.cy = pControl->GetMaxHeight();
+
+					RECT rcCtrl = { rc.left, rc.top, rc.left + sz.cx, rc.top + sz.cy};
+
+					int nHoriPer = (rcCtrl.right - rcCtrl.left) / GetFrameCount() * GetCurrentFrame(ANIMATION_ID_TAB);
+					int nVertPer = (rcCtrl.bottom - rcCtrl.top) / GetFrameCount() * GetCurrentFrame(ANIMATION_ID_TAB);
+
+					RECT rcItem = rcCtrl;
+					if(m_animation == DuiAnim_horizontal)
+					{
+						if(m_nMoveDirection == 1) //从右向左边滚动
+						{
+							rcItem.left = rcCtrl.right - nHoriPer;
+							rcItem.right = rcItem.left + (rcCtrl.right - rcCtrl.left);
+						}
+						else //从左向右滚动
+						{
+							rcItem.right = rcCtrl.left + nHoriPer;
+							rcItem.left = rcItem.right - (rcCtrl.right - rcCtrl.left);
+						}
+					}
+					else if(m_animation == DuiAnim_vertical) //从下往上滚动
+					{
+						if(m_nMoveDirection == 1)
+						{
+							rcItem.top = rcCtrl.bottom - nVertPer;
+							rcItem.bottom = rcItem.top + (rcCtrl.bottom - rcCtrl.top);
+						}
+						else //从上往下滚动
+						{
+							rcItem.bottom = rcCtrl.top + nVertPer;
+							rcItem.top = rcItem.top - (rcCtrl.bottom - rcCtrl.top);
+						}
+					}
+					RECT rcPadding = pControl->GetPadding();
+					rcItem.left += rcPadding.left;
+					rcItem.top += rcPadding.top;
+					rcItem.right -= rcPadding.right;
+					rcItem.bottom -= rcPadding.bottom;
+					//CMsgWndUI::InsertMsgV(_T("Curr: %d,%d,%d,%d"), rcItem.left, rcItem.top, rcItem.right, rcItem.bottom);
+					pControl->SetPos(rcItem);
+				}
+				else if(it == m_iOldSel)
+				{
+					RECT rcPadding = pControl->GetPadding();
+					rc.left += rcPadding.left;
+					rc.top += rcPadding.top;
+					rc.right -= rcPadding.right;
+					rc.bottom -= rcPadding.bottom;
+
+					SIZE szAvailable = { rc.right - rc.left, rc.bottom - rc.top };
+
+					SIZE sz = pControl->EstimateSize(szAvailable);
+					if( sz.cx == 0 ) {
+						sz.cx = MAX(0, szAvailable.cx);
+					}
+					if( sz.cx < pControl->GetMinWidth() ) sz.cx = pControl->GetMinWidth();
+					if( sz.cx > pControl->GetMaxWidth() ) sz.cx = pControl->GetMaxWidth();
+
+					if(sz.cy == 0) {
+						sz.cy = MAX(0, szAvailable.cy);
+					}
+					if( sz.cy < pControl->GetMinHeight() ) sz.cy = pControl->GetMinHeight();
+					if( sz.cy > pControl->GetMaxHeight() ) sz.cy = pControl->GetMaxHeight();
+
+					RECT rcCtrl = { rc.left, rc.top, rc.left + sz.cx, rc.top + sz.cy};
+					int nHoriPer = (rcCtrl.right - rcCtrl.left) / GetFrameCount() * GetCurrentFrame(ANIMATION_ID_TAB);
+					int nVertPer = (rcCtrl.bottom - rcCtrl.top) / GetFrameCount() * GetCurrentFrame(ANIMATION_ID_TAB);
+
+					RECT rcItem = rcCtrl;
+					if(m_animation == DuiAnim_horizontal)
+					{
+						if(m_nMoveDirection == 1)
+						{
+							rcItem.left = rcCtrl.left - nHoriPer;
+							rcItem.right = rcCtrl.right - nHoriPer;
+						}
+						else
+						{
+							rcItem.left = rcCtrl.left + nHoriPer;
+							rcItem.right = rcCtrl.right + nHoriPer;
+						}
+					}
+					else if(m_animation == DuiAnim_vertical)
+					{
+						if(m_nMoveDirection == 1)
+						{
+							rcItem.top = rcCtrl.top - nVertPer;
+							rcItem.bottom = rcCtrl.bottom - nVertPer;
+						}
+						else
+						{
+							rcItem.top = rcCtrl.top + nVertPer;
+							rcItem.bottom = rcCtrl.bottom + nVertPer;
+						}
+					}
+
+					//CMsgWndUI::InsertMsgV(_T("Last: %d,%d,%d,%d"), rcItem.left, rcItem.top, rcItem.right, rcItem.bottom);
+					pControl->SetPos(rcItem);
+				}
+			}
+			return;
+		}
 
 		for( int it = 0; it < m_items.GetSize(); it++ ) {
 			CControlUI* pControl = static_cast<CControlUI*>(m_items[it]);
@@ -180,6 +348,28 @@ namespace DuiLib
 
 			RECT rcCtrl = { rc.left, rc.top, rc.left + sz.cx, rc.top + sz.cy};
 			pControl->SetPos(rcCtrl);
+		}
+	}
+
+	void CTabLayoutUI::OnAnimationStart(int nAnimationID, BOOL bFirstLoop)
+	{
+		if(m_pCurControl) m_pCurControl->SetVisible(true);		
+	}
+
+	void CTabLayoutUI::OnAnimationStep(int nTotalFrame, int nCurFrame, int nAnimationID)
+	{
+		NeedParentUpdate();
+	}
+
+	void CTabLayoutUI::OnAnimationStop(int nAnimationID)
+	{
+		if(m_pLastControl) m_pLastControl->SetVisible(false);
+		if(m_pCurControl) m_pCurControl->SetVisible(true);
+		SetPos(m_rcItem);
+		NeedParentUpdate();
+		if( m_pManager != NULL ) {
+			m_pManager->SetNextTabControl();
+			m_pManager->SendNotify(this, DUI_MSGTYPE_TABSELECT, m_iCurSel, m_iOldSel);
 		}
 	}
 }

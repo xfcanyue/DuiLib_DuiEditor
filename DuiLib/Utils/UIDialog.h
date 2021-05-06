@@ -15,16 +15,7 @@ public:
 	int m_nMode;
 
 	virtual void OnFinalMessage( HWND hWnd );
-/*
-	UINT DoModal();
-	void ShowDialog();
 
-	UINT DoModal(CUIFrameWnd *pParentWnd);
-	void ShowDialog(CUIFrameWnd *pParentWnd);
-
-	UINT DoModal(CUIForm *pParentWnd);
-	void ShowDialog(CUIForm *pParentWnd);
-	*/
 	UINT DoModal(CUIFrmBase *pParentWnd = NULL);
 	void ShowDialog(CUIFrmBase *pParentWnd = NULL); //注意非模态窗口必须是new出来的。
 

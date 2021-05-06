@@ -509,11 +509,7 @@ void CUITrackerMuliti::OnChangedRect()
 		LPCTSTR pDefaultAttributes = GetUIManager()->GetManager()->GetDefaultAttributeList(pstrClass);
 		if( pDefaultAttributes ) 
 		{
-#ifndef DUILIB_VERSION_ORIGINAL
 			pNewControl->ApplyAttributeList(pDefaultAttributes);
-#else
-			pNewControl->SetAttributeList(pDefaultAttributes);
-#endif
 		}
 
 		//载入控件当前属性

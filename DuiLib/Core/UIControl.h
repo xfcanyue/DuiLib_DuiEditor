@@ -10,7 +10,7 @@ namespace DuiLib {
 
 	typedef CControlUI* (CALLBACK* FINDCONTROLPROC)(CControlUI*, LPVOID);
 
-	class UILIB_API CControlUI
+	class UILIB_API CControlUI : public CUIAnimation
 	{
 		DECLARE_DUICONTROL(CControlUI)
 	public:
@@ -65,6 +65,10 @@ namespace DuiLib {
 		void SetBkColor2(DWORD dwBackColor);
 		DWORD GetBkColor3() const;
 		void SetBkColor3(DWORD dwBackColor);
+		void SetHotBkColor(DWORD dwColor);
+		DWORD GetHotBkColor() const;
+		void SetFocusBkColor(DWORD dwColor);
+		DWORD GetFocusBkColor() const;
 		DWORD GetForeColor() const;
 		void SetForeColor(DWORD dwForeColor);
 		LPCTSTR GetBkImage();
@@ -104,8 +108,8 @@ namespace DuiLib {
 		virtual RECT GetClientPos() const; // 客户区域（除去scrollbar和inset）
 		virtual const RECT& GetPos() const;
 		virtual void SetPos(RECT rc, bool bNeedInvalidate = true);
-		virtual bool CalcPos(CControlUI *pChildControl, RECT &rcChild); //子控件调用这个，计算子空间的rect
 		virtual void Move(SIZE szOffset, bool bNeedInvalidate = true);
+		virtual bool CalcPos(CControlUI *pChildControl, RECT &rcChild); //子控件调用询问父控件，你将会给我分配多大的rect。
 		virtual int GetWidth() const;
 		virtual int GetHeight() const;
 		virtual int GetX() const;
@@ -218,31 +222,13 @@ namespace DuiLib {
 		void SetVirtualWnd(LPCTSTR pstrValue);
 		CDuiString GetVirtualWnd() const;
 
-		virtual void SetCalcPos(RECT rc);
-		virtual RECT GetCalcPos();
-		virtual void SetCalPosNow(bool bCalcNow);
-		virtual bool IsCalPosNow();
-	public:
-		class CInnerCalcPosLock
-		{
-		public:
-			CInnerCalcPosLock(CControlUI *p) : _p(p) 
-			{
-				_p->SetCalPosNow(true);
-			}
-			~CInnerCalcPosLock()
-			{
-				_p->SetCalPosNow(false);
-			}
-		private:
-			CControlUI *_p;
-		};
 	public:
 		CEventSource OnInit;
 		CEventSource OnDestroy;
 		CEventSource OnSize;
 		CEventSource OnEvent;
 		CEventSource OnNotify;
+		CEventSource OnPaint;
 
 	protected:
 		CPaintManagerUI* m_pManager;
@@ -259,6 +245,7 @@ namespace DuiLib {
 		SIZE m_cxyMax;
 		bool m_bVisible;
 		bool m_bInternVisible;
+		bool m_bPaneVisible;
 		bool m_bEnabled;
 		bool m_bMouseEnabled;
 		bool m_bKeyboardEnabled ;
@@ -289,6 +276,8 @@ namespace DuiLib {
 		DWORD m_dwBackColor;
 		DWORD m_dwBackColor2;
 		DWORD m_dwBackColor3;
+		DWORD m_dwHotBkColor;
+		DWORD m_dwFocusBkColor;
 		DWORD m_dwForeColor;
 		CDuiString m_sBkImage;
 		CDuiString m_sForeImage;
@@ -307,15 +296,27 @@ namespace DuiLib {
 
 		CStdStringPtrMap m_mCustomAttrHash;
 
-		RECT m_rcCalcPos;	//子控件调用CalcPos时，父控件可能以这个rect来计算
-		bool m_bCalcPosNow;	//标记为正在计算子控件pos，在子控件的GetFixedWidth(),GetFixedHeight(),EstimateSize()可能需要判断这个标记
 	public:
-// 		CDuiString m_asOnInit;		//事件发生时，调用脚本的函数名
-// 		CDuiString m_asOnEvent;		//事件发生时，调用脚本的函数名
-// 		CDuiString m_asOnNotify;	//事件发生时，调用脚本的函数名
-// 		CDuiString m_asOnDestroy;	//事件发生时，调用脚本的函数名
-// 		CDuiString m_asOnSize;		//事件发生时，调用脚本的函数名
+		virtual void SetPaneVisible(bool bVisible = true);
+		virtual bool IsPaneVisible() const;
+		virtual void SetAnimation(DuiAnim emAnim);
+		virtual DuiAnim GetAnimation() const;
+		virtual void SetFrameCount(int framecount);
+		virtual int GetFrameCount() const;
+		virtual void SetFrameDelay(int nDelay);
+		virtual int GetFrameDelay() const;
+		virtual void OnAnimationStart(int nAnimationID, BOOL bFirstLoop);
+		virtual void OnAnimationStep(int nTotalFrame, int nCurFrame, int nAnimationID);
+		virtual void OnAnimationStop(int nAnimationID);
 
+	protected:
+		DuiAnim m_animation;	//动画类型
+		int m_nFrameCount;		//动画总帧数
+		int m_nFrameDelay;		//动画帧延时
+		SIZE m_szAnimationTotal;		//总的动画区域
+		SIZE m_szAnimationCurrect;		//当前动画区域
+
+	public:
 		void *m_asOnInit;		//事件发生时，调用脚本的函数指针
 		void *m_asOnEvent;		
 		void *m_asOnNotify;	

@@ -5,14 +5,13 @@ namespace DuiLib {
 	IMPLEMENT_DUICONTROL(CAnimationTabLayoutUI)
 
 	CAnimationTabLayoutUI::CAnimationTabLayoutUI() : 
-		CUIAnimation( this ), 
-		m_bIsVerticalDirection( false ), 
 		m_nPositiveDirection( 1 ),
 		m_pCurrentControl( NULL ),
 		m_bControlVisibleFlag( false )
 	{
-		m_nFrameCount = 15;
-		m_nFrameDelay = 10;
+		SetAnimation(DuiAnim_horizontal);
+		SetFrameCount(24);
+		SetFrameDelay(5);
 	}
 
 	LPCTSTR CAnimationTabLayoutUI::GetClass() const
@@ -61,16 +60,14 @@ namespace DuiLib {
 	void CAnimationTabLayoutUI::AnimationSwitch()
 	{
 		m_rcItemOld = m_rcItem;
-		if( !m_bIsVerticalDirection )
+		if( GetAnimation() == DuiAnim_horizontal )
 		{
 			m_rcCurPos.top = m_rcItem.top;
 			m_rcCurPos.bottom = m_rcItem.bottom;
-			//m_rcCurPos.left = m_rcItem.left - ( m_rcItem.right - m_rcItem.left ) * m_nPositiveDirection + 52 * m_nPositiveDirection;
-			//m_rcCurPos.right = m_rcItem.right - ( m_rcItem.right - m_rcItem.left ) * m_nPositiveDirection+ 52 * m_nPositiveDirection;
 			m_rcCurPos.left = m_rcItem.left - ( m_rcItem.right - m_rcItem.left ) * m_nPositiveDirection + m_nPositiveDirection;
 			m_rcCurPos.right = m_rcItem.right - ( m_rcItem.right - m_rcItem.left ) * m_nPositiveDirection+ m_nPositiveDirection;		
 		}
-		else
+		else if(GetAnimation() == DuiAnim_vertical)
 		{
 			m_rcCurPos.left = m_rcItem.left;
 			m_rcCurPos.right = m_rcItem.right;
@@ -78,8 +75,8 @@ namespace DuiLib {
 			m_rcCurPos.bottom = m_rcItem.bottom - ( m_rcItem.bottom - m_rcItem.top ) * m_nPositiveDirection;		
 		}
 
-		StopAnimation( TAB_ANIMATION_ID );
-		StartAnimation( m_nFrameDelay, m_nFrameCount, TAB_ANIMATION_ID );
+		StopAnimation( ANIMATION_ID_TAB );
+		StartAnimation( GetFrameDelay(), GetFrameCount(), ANIMATION_ID_TAB );
 	}
 
 	void CAnimationTabLayoutUI::DoEvent(TEventUI& event)
@@ -96,7 +93,7 @@ namespace DuiLib {
 		OnAnimationElapse( nTimerID );
 	}
 
-	void CAnimationTabLayoutUI::OnAnimationStep(INT nTotalFrame, INT nCurFrame, INT nAnimationID)
+	void CAnimationTabLayoutUI::OnAnimationStep(int nTotalFrame, int nCurFrame, int nAnimationID)
 	{
 		if( !m_bControlVisibleFlag ) {
 			m_bControlVisibleFlag = true;
@@ -104,7 +101,7 @@ namespace DuiLib {
 		}
 
 		int iStepLen = 0;
-		if( !m_bIsVerticalDirection )
+		if( GetAnimation() == DuiAnim_horizontal )
 		{
 			iStepLen = ( m_rcItemOld.right - m_rcItemOld.left ) * m_nPositiveDirection / nTotalFrame;
 			if( nCurFrame != nTotalFrame )
@@ -117,7 +114,7 @@ namespace DuiLib {
 				m_rcItem = m_rcCurPos = m_rcItemOld;
 			}
 		}
-		else
+		else if( GetAnimation() == DuiAnim_vertical )
 		{
 			iStepLen = ( m_rcItemOld.bottom - m_rcItemOld.top ) * m_nPositiveDirection / nTotalFrame;
 			if( nCurFrame != nTotalFrame )
@@ -133,31 +130,61 @@ namespace DuiLib {
 		SetPos(m_rcCurPos);
 	}
 
-	void CAnimationTabLayoutUI::OnAnimationStop(INT nAnimationID) 
+	void CAnimationTabLayoutUI::OnAnimationStop(int nAnimationID) 
 	{
 		SetPos(m_rcItemOld);
 		NeedParentUpdate();
 	}
 
-	void CAnimationTabLayoutUI::SetFrameCount(int framecount) { m_nFrameCount = framecount; }
-	int CAnimationTabLayoutUI::GetFrameCount() const { return m_nFrameCount; }
-	void CAnimationTabLayoutUI::SetFrameDelay(int nDelay) { m_nFrameDelay = nDelay; }
-	int CAnimationTabLayoutUI::GetFrameDelay() const { return m_nFrameDelay; }
+	void CAnimationTabLayoutUI::SetPos(RECT rc, bool bNeedInvalidate)
+	{
+		CControlUI::SetPos(rc, bNeedInvalidate);
+		rc = m_rcItem;
+
+		// Adjust for inset
+		rc.left += m_rcInset.left;
+		rc.top += m_rcInset.top;
+		rc.right -= m_rcInset.right;
+		rc.bottom -= m_rcInset.bottom;
+
+		for( int it = 0; it < m_items.GetSize(); it++ ) {
+			CControlUI* pControl = static_cast<CControlUI*>(m_items[it]);
+			if( !pControl->IsVisible() ) continue;
+			if( pControl->IsFloat() ) {
+				SetFloatPos(it);
+				continue;
+			}
+
+			if( it != m_iCurSel ) continue;
+
+			RECT rcPadding = pControl->GetPadding();
+			rc.left += rcPadding.left;
+			rc.top += rcPadding.top;
+			rc.right -= rcPadding.right;
+			rc.bottom -= rcPadding.bottom;
+
+			SIZE szAvailable = { rc.right - rc.left, rc.bottom - rc.top };
+
+			SIZE sz = pControl->EstimateSize(szAvailable);
+			if( sz.cx == 0 ) {
+				sz.cx = MAX(0, szAvailable.cx);
+			}
+			if( sz.cx < pControl->GetMinWidth() ) sz.cx = pControl->GetMinWidth();
+			if( sz.cx > pControl->GetMaxWidth() ) sz.cx = pControl->GetMaxWidth();
+
+			if(sz.cy == 0) {
+				sz.cy = MAX(0, szAvailable.cy);
+			}
+			if( sz.cy < pControl->GetMinHeight() ) sz.cy = pControl->GetMinHeight();
+			if( sz.cy > pControl->GetMaxHeight() ) sz.cy = pControl->GetMaxHeight();
+
+			RECT rcCtrl = { rc.left, rc.top, rc.left + sz.cx, rc.top + sz.cy};
+			pControl->SetPos(rcCtrl);
+		}
+	}
 
 	void CAnimationTabLayoutUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
-		if( _tcsicmp(pstrName, _T("animation_direction")) == 0 && 
-			_tcsicmp( pstrValue, _T("vertical")) == 0 ) 
-		{
-			m_bIsVerticalDirection = true; // pstrValue = "vertical" or "horizontal"
-		}
-		else if( _tcsicmp(pstrName, _T("framecount")) == 0 ) {
-			SetFrameCount(_ttoi(pstrValue));
-		}
-		else if( _tcsicmp(pstrName, _T("framedelay")) == 0 ) {
-			SetFrameDelay(_ttoi(pstrValue));
-		}
-		else
-			CTabLayoutUI::SetAttribute(pstrName, pstrValue);
+		__super::SetAttribute(pstrName, pstrValue);
 	}
 } // namespace DuiLib

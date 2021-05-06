@@ -112,7 +112,6 @@ namespace DuiLib
 		else Selected(!m_bSelected);
 
 		SwitchControlVisible();
-		SwitchPaneVisible();
 		return true;
 	}
 

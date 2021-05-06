@@ -13,7 +13,7 @@ namespace DuiLib
 		, m_dwHotTextColor(0)
 		, m_dwPushedTextColor(0)
 		, m_dwFocusedTextColor(0)
-		, m_dwHotBkColor(0)
+		//, m_dwHotBkColor(0)
 		, m_dwPushedBkColor(0)
 		, m_dwPushedBorderColor(0)
 		, m_dwDisableBorderColor(0)
@@ -122,7 +122,6 @@ namespace DuiLib
 			m_pManager->SendNotify(this, DUI_MSGTYPE_CLICK);
 			BindTriggerTabSel();
 
-			SwitchControlVisible();
 			SwitchPaneVisible();
 		}
 		return true;
@@ -323,38 +322,19 @@ namespace DuiLib
 	}
 
 
-	void CButtonUI::SwitchControlVisible()
+	void CButtonUI::SwitchPaneVisible()
 	{
 		if(m_sSwitchControlVisible.IsEmpty()) 
 			return;
 
 		CControlUI* pControl = GetManager()->FindControl(m_sSwitchControlVisible);
 		if(!pControl) return;
-		pControl->SetVisible(!pControl->IsVisible());
-	}
-
-	void CButtonUI::SetSwitchControlVisible(LPCTSTR ControlName)
-	{
-		m_sSwitchControlVisible = ControlName;
-	}
-
-	void CButtonUI::SwitchPaneVisible()
-	{
-		if(m_sSwitchPaneVisible.IsEmpty()) 
-			return;
-
-		CControlUI* pControl = GetManager()->FindControl(m_sSwitchPaneVisible);
-		if(!pControl) return;
-		CAnimationPaneUI *pPane = (CAnimationPaneUI *)pControl->GetInterface(DUI_CTR_ANIMATIONPANE);
-		if(pPane)
-		{
-			pPane->SetPaneVisible(!pPane->IsPaneVisible());
-		}
+		pControl->SetPaneVisible(!pControl->IsPaneVisible());
 	}
 
 	void CButtonUI::SetSwitchPaneVisible(LPCTSTR ControlName)
 	{
-		m_sSwitchPaneVisible = ControlName;
+		m_sSwitchControlVisible = ControlName;
 	}
 
 	void CButtonUI::BindTabIndex(int _BindTabIndex )
@@ -406,7 +386,6 @@ namespace DuiLib
 		else if( _tcsicmp(pstrName, _T("hotforeimage")) == 0 ) SetHotForeImage(pstrValue);
 		else if( _tcsicmp(pstrName, _T("stateimage")) == 0 ) SetStateImage(pstrValue);
 		else if( _tcsicmp(pstrName, _T("statecount")) == 0 ) SetStateCount(_ttoi(pstrValue));
-		else if( _tcsicmp(pstrName, _T("switchcontrolvisible")) == 0 ) SetSwitchControlVisible(pstrValue);
 		else if( _tcsicmp(pstrName, _T("switchpanevisible")) == 0 ) SetSwitchPaneVisible(pstrValue);
 		else if( _tcsicmp(pstrName, _T("bindtabindex")) == 0 ) BindTabIndex(_ttoi(pstrValue));
 		else if( _tcsicmp(pstrName, _T("bindtablayoutname")) == 0 ) BindTabLayoutName(pstrValue);

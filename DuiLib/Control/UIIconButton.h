@@ -3,7 +3,7 @@
 namespace DuiLib
 {
 
-class UILIB_API CIconButtonUI : public CButtonUI
+class UILIB_API CIconButtonUI : public CButtonLayoutUI
 {
 	DECLARE_DUICONTROL(CIconButtonUI)
 public:
@@ -13,9 +13,9 @@ public:
 	LPCTSTR GetClass() const;
 	LPVOID GetInterface(LPCTSTR pstrName);
 
-	virtual void PaintStatusImage(HDC hDC);
+	virtual void DoInit();
+
 	void PaintText(HDC hDC);
-	bool DrawIconImage(HDC hDC, LPCTSTR pStrImage, LPCTSTR pStrModify=NULL);
 
 	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 
@@ -30,13 +30,8 @@ public:
 	LPCTSTR GetIconDisabledImage() const;
 	void SetIconDisabledImage(LPCTSTR pStrImage);
 
+	CButtonUI *m_pIconUI;
 	CDuiSize m_szIcon;
-	UINT m_uIconAlign;
-	CDuiString m_IconNormalImage;
-	CDuiString m_IconHotImage;
-	CDuiString m_IconPushedImage;
-	CDuiString m_IconFocusedImage;
-	CDuiString m_IconDisabledImage;
 };
 
 }

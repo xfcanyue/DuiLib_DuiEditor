@@ -26,6 +26,10 @@ CPictureUI::CPictureUI(void)
 	m_idEventTimer = 0;		//动画定时器
 	m_nDelay = 0;			//循环毫秒数
 	m_nFramePosition = 0;	//当前放到第几帧
+
+	m_bTrackRect = false;
+	m_dwTrackColor = 0xFF000000;
+	m_uButtonState = 0;
 }
 
 
@@ -51,13 +55,83 @@ void CPictureUI::DoInit()
 	
 }
 
+bool CPictureUI::Activate()
+{
+	if( !__super::Activate() ) return false;
+	if( m_pManager != NULL )
+	{
+		m_pManager->SendNotify(this, DUI_MSGTYPE_CLICK);
+	}
+	return true;
+}
+
+void CPictureUI::DoEvent(TEventUI& event)
+{
+	if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
+		if( m_pParent != NULL ) m_pParent->DoEvent(event);
+		else CContainerUI::DoEvent(event);
+		return;
+	}
+	
+	if( event.Type == UIEVENT_KEYDOWN )
+	{
+		if (IsKeyboardEnabled()) {
+			if( event.chKey == VK_SPACE || event.chKey == VK_RETURN ) {
+				Activate();
+				return;
+			}
+		}
+	}
+
+	if( event.Type == UIEVENT_BUTTONDOWN )
+	{
+		if(::PtInRect(&m_rcItem, event.ptMouse))
+		{
+			m_uButtonState |= UISTATE_CAPTURED;
+			if(IsEnableTrackRect())
+			{
+				m_rcTracker.left = event.ptMouse.x;
+				m_rcTracker.top = event.ptMouse.y;
+				m_rcTracker.right = event.ptMouse.x;
+				m_rcTracker.bottom = event.ptMouse.y;
+				Invalidate();
+			}
+		}
+		return;
+	}
+
+	if( event.Type == UIEVENT_MOUSEMOVE )
+	{
+		if( (m_uButtonState & UISTATE_CAPTURED) != 0 ) 
+		{
+			if(::PtInRect(&m_rcItem, event.ptMouse) && !m_rcTracker.IsNull())
+			{
+				m_rcTracker.right = event.ptMouse.x;
+				m_rcTracker.bottom = event.ptMouse.y;
+				Invalidate();
+			}
+		}
+		return;
+	}
+
+	if( event.Type == UIEVENT_BUTTONUP )
+	{
+		if( (m_uButtonState & UISTATE_CAPTURED) != 0 ) 
+		{
+			m_uButtonState &= ~UISTATE_CAPTURED;
+			if( ::PtInRect(&m_rcItem, event.ptMouse) ) Activate();		
+		}
+	}
+	
+	__super::DoEvent(event);
+}
+
 void CPictureUI::PaintBkImage(HDC hDC)
 {
 	__super::PaintBkImage(hDC);
 
 	if(m_nFramePosition >= m_frames.GetSize())
 		m_nFramePosition = 0;
-
 
 	TImageInfo *pImageInfo = (TImageInfo *)m_frames.GetAt(m_nFramePosition);
 	if(!pImageInfo) return;
@@ -96,6 +170,26 @@ void CPictureUI::PaintBkImage(HDC hDC)
 	{
 		StartAnim();
 	}
+
+	if(m_rcTracker.IsNull()) return;
+	if(m_rcTracker.GetWidth()==0 || m_rcTracker.GetHeight() == 0) return;
+
+	CDuiRect rcRect = m_rcTracker;
+	rcRect.Normalize();
+	CRenderEngine::DrawRect(hDC, rcRect, 1, GetAdjustColor(GetTrackColor()), PS_SOLID);
+
+	//绘制蒙版
+	CDuiRect rcTop(m_rcPaint.left, m_rcPaint.top, m_rcPaint.right, rcRect.top);
+	CRenderEngine::DrawColor(hDC, rcTop, GetAdjustColor(0x77FFFFFF));
+
+	CDuiRect rcLeft(m_rcPaint.left, rcRect.top, rcRect.left, rcRect.bottom);
+	CRenderEngine::DrawColor(hDC, rcLeft, GetAdjustColor(0x77FFFFFF));
+
+	CDuiRect rcRight(rcRect.right, rcRect.top, m_rcPaint.right, rcRect.bottom);
+	CRenderEngine::DrawColor(hDC, rcRight, GetAdjustColor(0x77FFFFFF));
+
+	CDuiRect rcBottom(m_rcPaint.left, rcRect.bottom, m_rcPaint.right, m_rcPaint.bottom);
+	CRenderEngine::DrawColor(hDC, rcBottom, GetAdjustColor(0x77FFFFFF));
 }
 
 void CPictureUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
@@ -114,14 +208,26 @@ void CPictureUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	else if( _tcsicmp(pstrName, _T("autosize")) == 0 ) {
 		SetAutoSize(_tcsicmp(pstrValue, _T("true")) == 0);
 	}
+	else if( _tcsicmp(pstrName, _T("trackrect")) == 0 ) {
+		EnableTrackRect(_tcsicmp(pstrValue, _T("true")) == 0);
+	}
 	else
 		__super::SetAttribute(pstrName, pstrValue);
 }
 
-bool CPictureUI::LoadHBitmap(HBITMAP hBitmap, int x, int y)
+HBITMAP CPictureUI::GetHBitmap()
+{
+	if(m_nFramePosition >= m_frames.GetSize())
+		m_nFramePosition = 0;
+	TImageInfo *pImageInfo = (TImageInfo *)m_frames.GetAt(m_nFramePosition);
+	if(!pImageInfo) return NULL;
+	return pImageInfo->hBitmap;
+}
+
+bool CPictureUI::LoadHBitmap(HBITMAP hBitmap)
 {
 	RemoveAllImages();
-	return __SetHBitmap(hBitmap, x, y);
+	return __SetHBitmap(hBitmap);
 }
 
 bool CPictureUI::LoadImageFromMemory(LPBYTE pData, DWORD dwSize)
@@ -194,6 +300,17 @@ void CPictureUI::SetAutoSize(bool bIsAuto)
 }
 bool CPictureUI::IsAutoSize() const			{ return m_bIsAutoSize; }
 
+CDuiRect CPictureUI::GetTrackRect()
+{
+	RECT rcPos = GetPos();
+	RECT rc;
+	rc.left = m_rcTracker.left - rcPos.left;
+	rc.top = m_rcTracker.top - rcPos.top;
+	rc.right = rc.left + m_rcTracker.GetWidth();
+	rc.bottom = rc.top + m_rcTracker.GetHeight();
+	return rc;
+}
+
 void CPictureUI::StartAnim()
 {
 	if(m_idEventTimer == 0 && m_frames.GetSize() > 1)
@@ -239,14 +356,17 @@ void CPictureUI::OnTimer(UINT_PTR idEvent)
 
 //////////////////////////////////////////////////////////////////////////
 
-bool CPictureUI::__SetHBitmap(HBITMAP hBitmap, int x, int y)
+bool CPictureUI::__SetHBitmap(HBITMAP hBitmap)
 {
+	BITMAP bm;
+	::GetObject(hBitmap, sizeof(bm), &bm);
+
 	TImageInfo* data = new TImageInfo;
 	data->pBits = NULL;
 	data->pSrcBits = NULL;
 	data->hBitmap = hBitmap;
-	data->nX = x;
-	data->nY = y;
+	data->nX = bm.bmWidth; 
+	data->nY = bm.bmHeight;
 	data->bAlpha = false;
 	data->delay = 0;
 	if(!m_frames.Add(data))

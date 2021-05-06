@@ -33,15 +33,10 @@
 
 // TODO: 在此处引用程序需要的其他头文件
 //////////////////////////////////////////////////////////////////////////
-//是否使用静态编译
-//#define UILIB_STATIC
-
 #include "E:/MyLibrary/DuiLib/DuiLib/Duilib.h"
 #include "E:/MyLibrary/DuiLib/DuiPlugins/Include/DuiPlugins.h"
 #include "E:/MyLibrary/DuiLib/DuiScript/Include/DuiScriptInterface.h"
+#include "E:/MyLibrary/DuiLib/3rd/CxImage/Include/image.h"
 using namespace DuiLib;
 
 #include "App.h"
-#include "MainFrame.h"
-extern CApp uiApp;
-inline CMainFrame *GetMainWnd(){ return (CMainFrame *)uiApp.GetMainWnd(); }

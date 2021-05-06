@@ -11,11 +11,8 @@ public:
 	virtual CDuiString GetSkinFile() { return _T(""); }
 	virtual LPCTSTR GetWindowClassName(void) const { return _T("UIWindowContainer"); }
 
-#ifdef DUILIB_VERSION_ORIGINAL
-	virtual CPaintManagerUI *GetManager() { return &m_PaintManager; }
-#else
 	virtual CPaintManagerUI *GetManager() { return &m_pm; }
-#endif
+
 	virtual HWND GetSafeHwnd() { return GetHWND(); }
 	virtual HWND CreateUiWindow(HWND hwndParent, LPCTSTR pstrWindowName,DWORD dwStyle, DWORD dwExStyle) 
 	{ return CreateDuiWindow(hwndParent, pstrWindowName, dwStyle, dwExStyle); }

@@ -6,7 +6,7 @@ namespace DuiLib
 	IMPLEMENT_DUICONTROL(CTabCtrlUI)
 
 	CTabCtrlUI::CTabCtrlUI()
-		: m_iBindTabIndex(-1)
+		: m_iBindTabIndex(-1), m_bActiveMouseOn(false)
 	{
 	}
 
@@ -33,6 +33,27 @@ namespace DuiLib
 		
 		BindTriggerTabSel();
 		return true;
+	}
+
+	void CTabCtrlUI::DoEvent(TEventUI& event)
+	{
+		if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
+			if( m_pParent != NULL ) m_pParent->DoEvent(event);
+			else CLabelUI::DoEvent(event);
+			return;
+		}
+
+		if(event.Type == UIEVENT_MOUSEENTER)
+		{
+			if( IsActiveMouseOn() && ::PtInRect(&m_rcItem, event.ptMouse) && IsEnabled() ) {
+				m_uButtonState |= UISTATE_PUSHED | UISTATE_CAPTURED;
+				Invalidate();
+				Activate();
+			}
+			return;
+		}
+
+		__super::DoEvent(event);
 	}
 
 	bool CTabCtrlUI::IsSelected() const
@@ -97,12 +118,17 @@ namespace DuiLib
 		return m_sBindTabLayoutName;
 	}
 
+	void CTabCtrlUI::SetActiveMouseOn(bool bActive) { m_bActiveMouseOn = bActive; }
+	bool CTabCtrlUI::IsActiveMouseOn() { return m_bActiveMouseOn; }
+
 	void CTabCtrlUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
 		if( _tcsicmp(pstrName, _T("bindtabindex")) == 0 ) 
 			BindTabIndex(_ttoi(pstrValue));
 		else if( _tcsicmp(pstrName, _T("bindtablayoutname")) == 0 ) 
 			BindTabLayoutName(pstrValue);
+		else if( _tcsicmp(pstrName, _T("activemouseon")) == 0 ) 
+			SetActiveMouseOn(_tcsicmp(pstrValue, _T("true")) == 0);
 		else 
 			__super::SetAttribute(pstrName, pstrValue);
 	}

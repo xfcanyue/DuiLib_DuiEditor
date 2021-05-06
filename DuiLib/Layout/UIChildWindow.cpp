@@ -37,19 +37,22 @@ public:
 
 		if( uMsg == WM_CREATE )
 		{
-			m_hDcPaint = ::GetDC(m_hWnd);
+			m_pm.Init(GetHWND());
 		}
 		else if( uMsg == WM_PAINT)
 		{
 			RECT rc = m_pOwner->GetPos();
 			PAINTSTRUCT ps = { 0 };
 			::BeginPaint(m_hWnd, &ps);
-			CRenderEngine::DrawColor(m_hDcPaint, ps.rcPaint, 0xFF000000);
+			if(m_pOwner->GetBkColor() == 0)
+				CRenderEngine::DrawColor(m_pm.GetPaintDC(), ps.rcPaint, 0xFF000000);
+			else
+				CRenderEngine::DrawColor(m_pm.GetPaintDC(), ps.rcPaint, m_pOwner->GetBkColor());
 			::EndPaint(m_hWnd, &ps);
 		}
-		else if( uMsg == WM_DESTROY)
+		else if( uMsg == WM_SIZE)
 		{
-			if(m_hDcPaint)	::ReleaseDC(m_hWnd, m_hDcPaint);
+			m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_WINDOWSIZE, 0, 0);
 		}
 
 		if( !bHandled ) 
@@ -59,9 +62,9 @@ public:
 		return lRes;
 	}
 
+	CPaintManagerUI m_pm;
 private:
 	CChildWindowUI *m_pOwner;
-	HDC m_hDcPaint;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -178,6 +181,12 @@ void CChildWindowUI::RefreshWindow()
 {
 	if(m_pWindow)
 		::InvalidateRect(m_pWindow->GetHWND(), NULL, TRUE);
+}
+
+HDC CChildWindowUI::GetWndDC() const
+{
+	if(!m_pWindow) return NULL;
+	return ((CChildWnd *)m_pWindow)->m_pm.GetPaintDC();
 }
 
 }

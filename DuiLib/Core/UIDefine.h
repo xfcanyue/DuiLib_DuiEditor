@@ -331,20 +331,21 @@ protected:                                                                \
 
 #define DUI_CTR_COLORPALETTE					  (_T("ColorPalette"))
 
-#define DUI_CTR_TABCTRL							(_T("TabCtrl"))	
-#define DUI_CTR_ANIMATIONPANE					(_T("AnimationPane"))
+#define DUI_CTR_TABCTRL							(_T("TabCtrl"))
 
 #define DUI_CTR_CHILDWINDOW					(_T("ChildWindow"))
 
 #define DUI_CTR_COMBOEX						(_T("ComboEx"))
 #define DUI_CTR_ICONBUTTON					(_T("IconButton"))
 #define DUI_CTR_MSGWND						(_T("RichEdit"))
-#define DUI_CTR_ACCORDIONPANE				(_T("AccordionPane"))
 #define DUI_CTR_IMAGEBOXEX					(_T("ImageBoxEx"))
 #define DUI_CTR_DATETIMEEX					(_T("DateTimeEx"))
 #define DUI_CTR_ROLLTEXTEX					(_T("RollTextEx"))
 #define DUI_CTR_PICTURE						(_T("Picture"))
 #define DUI_CTR_PICTUREBOX					(_T("PictureBox"))
+
+#define  DUI_CTR_TREECTRL                        (_T("TreeCtrl"))
+#define  DUI_CTR_TREEITEM                        (_T("TreeItem"))
 
 // #define DUI_CTR_GRIDLIST					(_T("GridList"))
 // #define DUI_CTR_GRIDLISTHEADER				(_T("GridListHeader"))
@@ -354,6 +355,23 @@ protected:                                                                \
 
 ///
 //////////////END控件名称宏定义//////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////
+//定义动画类型
+enum DuiAnim
+{
+	DuiAnim_null = 0,			//无动画
+	DuiAnim_vertical,			//上下移动
+	DuiAnim_horizontal,			//左右移动
+	DuiAnim_ScaleVertical,		//纵向缩放
+	DuiAnim_ScaleHorizontal,	//横向缩放
+	DuiAnim_ScaleSize,			//大小缩放
+	DuiAnim_Alpha,				//淡入淡出
+};
+
+#define ANIMATION_ID_SHOW		9990
+#define ANIMATION_ID_HIDE		9991
+#define ANIMATION_ID_TAB		9992
 
 }// namespace DuiLib
 

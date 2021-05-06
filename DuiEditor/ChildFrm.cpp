@@ -98,7 +98,7 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	// TODO: 在此添加专用代码和/或调用基类
 	m_split.CreateStatic(this, 2, 1);
 	m_split.SetScrollStyle(m_split.GetScrollStyle() & (~(WS_HSCROLL|WS_VSCROLL)) );
-	m_split.CreateView(0,0, RUNTIME_CLASS(CDuiEditorViewDesign), CSize(0,300), pContext);
+	m_split.CreateView(0,0, RUNTIME_CLASS(CDuiEditorViewDesign), CSize(0,500), pContext);
 	m_split.CreateView(1,0, RUNTIME_CLASS(CDuiEditorViewCode), CSize(0,0), pContext);
 
 	CDuiEditorDoc *pDoc = (CDuiEditorDoc *)pContext->m_pCurrentDoc;

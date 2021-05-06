@@ -63,27 +63,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
+#define DUILIB_VERSION_ORIGINAL
 
-
-/*
-	使用官方版或者根据官方版改造的同学，请打开这个宏（UILIB_VERSION_ORIGINAL）进行编译
-	保留这个，只是为了使用官方版的同学能够编译成功，具体细化，需要您自己努力了。
-	一定要维护您自己的控件定义文件： DuiLib.xml
-	请不要直接使用我项目中提供的duilib原版库，应该使用您自己的库进行编译。
-*/
-//#define DUILIB_VERSION_ORIGINAL
-
-#ifdef DUILIB_VERSION_ORIGINAL
-	#include "DuiLibOriginal/DuiLib/UIlib.h"
-	#ifdef _DEBUG
-		#pragma comment (lib, "DuiLibOriginal/Lib/DuiLib_ud.lib")
-	#else
-		#pragma comment (lib, "DuiLibOriginal/Lib/DuiLib_u.lib")
-	#endif
-#else
-	#include "../DuiLib/DuiLib.h"
-	#include "../DuiPlugins/Include/DuiPlugins.h"
-#endif
+#include "../DuiLib/DuiLib.h"
+#include "../DuiPlugins/Include/DuiPlugins.h"
 using namespace DuiLib;
 
 //////////////////////////////////////////////////////////////////////////
@@ -104,8 +87,6 @@ using namespace pugi;
 
 #define RULEBAR_SIZE_X	20
 #define RULEBAR_SIZE_Y	20
-
-#define WM_CREATE_UIWINDOW		WM_USER + 1
 
 class CLockWindowUpdate
 {

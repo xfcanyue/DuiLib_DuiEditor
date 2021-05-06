@@ -29,15 +29,15 @@ public:
 	CStdPtrArray m_imageFrames;
 	CRect m_rcImage;	//图片的大小
 
-	CRect m_rcControl;		//背景的大小，也就是所属控件的大小
-	CxImage m_imgControlX;	//背景图
+	CRect m_rcControl;			//背景的大小，也就是所属控件的大小
+	HBITMAP m_imgControlX;		//背景图
 public:
 	CUIManager *GetUIManager() const { return m_pUIManager; }
 	void SetUIManager(CUIManager *pManager) { m_pUIManager = pManager; }
 
 	void SetAttributeValue(LPCTSTR szAttribute);
 	CString GetAttributeValue();
-	void SetControlImage(CxImage &img);
+	void SetControlImage(HBITMAP img, RECT rcSource);
 	void SetImageFile(LPCTSTR lpstrPathName);
 
 	void LoadImageFile(LPCTSTR lpstrPathName);

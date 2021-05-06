@@ -16,8 +16,8 @@ namespace DuiLib {
 		virtual int GetCount() const = 0;
 		virtual bool Add(CControlUI* pControl) = 0;
 		virtual bool AddAt(CControlUI* pControl, int iIndex)  = 0;
-		virtual bool Remove(CControlUI* pControl) = 0;
-		virtual bool RemoveAt(int iIndex)  = 0;
+		virtual bool Remove(CControlUI* pControl, bool bDoNotDestroy=false) = 0;
+		virtual bool RemoveAt(int iIndex, bool bDoNotDestroy=false)  = 0;
 		virtual void RemoveAll() = 0;
 	};
 
@@ -44,8 +44,8 @@ namespace DuiLib {
 		int GetCount() const;
 		bool Add(CControlUI* pControl);
 		bool AddAt(CControlUI* pControl, int iIndex);
-		bool Remove(CControlUI* pControl);
-		bool RemoveAt(int iIndex);
+		bool Remove(CControlUI* pControl, bool bDoNotDestroy=false);
+		bool RemoveAt(int iIndex, bool bDoNotDestroy=false);
 		void RemoveAll();
 
 		void DoEvent(TEventUI& event);
@@ -74,6 +74,7 @@ namespace DuiLib {
 		RECT GetClientPos() const;
 		virtual SIZE EstimateSize(SIZE szAvailable);
 		void SetPos(RECT rc, bool bNeedInvalidate = true);
+		virtual bool CalcPos(CControlUI *pChildControl, RECT &rcChild); //子控件调用询问父控件，你将会给我分配多大的rect。
 		void Move(SIZE szOffset, bool bNeedInvalidate = true);
 		bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
 
@@ -117,7 +118,6 @@ namespace DuiLib {
 	protected:
 		virtual void SetFloatPos(int iIndex);
 		virtual void ProcessScrollBar(RECT rc, int cxRequired, int cyRequired);
-
 	protected:
 		CStdPtrArray m_items;
 		RECT m_rcInset;

@@ -2,7 +2,6 @@
 #define __UIMANAGER_H__
 
 #pragma once
-#define WM_USER_SET_DPI WM_USER + 200
 namespace DuiLib {
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
@@ -58,6 +57,11 @@ namespace DuiLib {
 	{
 		// 内部保留消息
 		UIMSG_TRAYICON = WM_USER + 1,
+		UIMSG_INSERT_MSG,					//CMsgWnd插入文本
+		UIMSG_SET_DPI,
+		UIMSG_MENUCLICK,					//用来接收按钮单击的消息
+		UIMSG_MENU_UPDATE_COMMAND_UI,		//更新菜单消息
+
 		// 程序自定义消息
 		UIMSG_USER = WM_USER + 100,
 	};
@@ -239,6 +243,8 @@ namespace DuiLib {
 		void Init(HWND hWnd, LPCTSTR pstrName = NULL);
 		bool IsUpdateNeeded() const;
 		void NeedUpdate();
+		void LockUpdate(bool bLock);
+		bool IsLockUpdate();
 		void Invalidate();
 		void Invalidate(RECT& rcItem);
 
@@ -512,6 +518,7 @@ namespace DuiLib {
 		UINT m_uTimerID;
 		bool m_bFirstLayout;
 		bool m_bUpdateNeeded;
+		bool m_bLockUpdate;
 		bool m_bFocusNeeded;
 		bool m_bOffscreenPaint;
 		
@@ -598,7 +605,7 @@ namespace DuiLib {
 		//static bool LoadScriptPlugin(LPCTSTR pstrModuleName);
 		static bool LoadScriptPlugin(CREATE_SCRIPT_ENGINE_INSTANCE pFunCreate, DELETE_SCRIPT_ENGINE_INSTANCE pFunDelete);
 
-		IScriptManager *GetScriptEngine();
+		IScriptManager *GetScriptEngine(bool bCreateScriptEngine=false);
 		void AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pLanguageType=NULL);
 		bool CompileScript();
 		void *GetScriptFunAddress(LPCTSTR lpszFunName);

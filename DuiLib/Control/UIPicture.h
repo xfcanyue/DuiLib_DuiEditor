@@ -14,6 +14,10 @@ public:
 	LPVOID	GetInterface(LPCTSTR pstrName);
 
 	virtual void DoInit();
+
+	virtual bool Activate();
+	virtual void DoEvent(TEventUI& event);
+
 	virtual void PaintBkImage(HDC hDC);
 	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 
@@ -25,7 +29,14 @@ public:
 	void	SetAutoSize(bool bIsAuto = true );
 	bool	IsAutoSize() const;
 
-	virtual bool LoadHBitmap(HBITMAP hBitmap, int x, int y);
+	void EnableTrackRect(bool bSelectRect) { m_bTrackRect = bSelectRect; }
+	bool IsEnableTrackRect() const { return m_bTrackRect; }
+	void SetTrackColor(DWORD dwColor) { m_dwTrackColor = dwColor; }
+	DWORD GetTrackColor() const { return m_dwTrackColor; }
+	CDuiRect GetTrackRect();
+
+	virtual HBITMAP GetHBitmap();
+	virtual bool LoadHBitmap(HBITMAP hBitmap);
 	virtual bool LoadImageFromMemory(LPBYTE pData, DWORD dwSize);
 	virtual bool LoadFile(LPCTSTR pstrImage);
 	virtual void RemoveAllImages();
@@ -35,10 +46,15 @@ public:
 	void OnTimer(UINT_PTR idEvent);
 
 protected:
-	bool __SetHBitmap(HBITMAP hBitmap, int x, int y);
+	bool __SetHBitmap(HBITMAP hBitmap);
 	bool __LoadImageFromMemory(LPBYTE pData, DWORD dwSize);
 	bool __LoadFile(LPCTSTR pstrImage);
 
+private:
+	bool m_bTrackRect;
+	CDuiRect m_rcTracker;
+	DWORD m_dwTrackColor;
+	UINT m_uButtonState;
 private:
 	bool			m_bIsAutoPlay;			// 是否自动播放
 	bool			m_bIsAutoSize;			// 是否自动根据图片设置大小

@@ -103,14 +103,14 @@ namespace DuiLib
 		return m_items.InsertAt(iIndex, pControl);
 	}
 
-	bool CContainerUI::Remove(CControlUI* pControl)
+	bool CContainerUI::Remove(CControlUI* pControl, bool bDoNotDestroy )
 	{
 		if( pControl == NULL) return false;
 
 		for( int it = 0; it < m_items.GetSize(); it++ ) {
 			if( static_cast<CControlUI*>(m_items[it]) == pControl ) {
 				NeedUpdate();
-				if( m_bAutoDestroy ) {
+				if( !bDoNotDestroy && m_bAutoDestroy ) {
 					if( m_bDelayedDestroy && m_pManager ) m_pManager->AddDelayedCleanup(pControl);             
 					else delete pControl;
 				}
@@ -120,7 +120,7 @@ namespace DuiLib
 		return false;
 	}
 
-	bool CContainerUI::RemoveAt(int iIndex)
+	bool CContainerUI::RemoveAt(int iIndex, bool bDoNotDestroy )
 	{
 		CControlUI* pControl = GetItemAt(iIndex);
 		if (pControl != NULL) {
@@ -650,18 +650,43 @@ namespace DuiLib
 	}
 
 	SIZE CContainerUI::EstimateSize(SIZE szAvailable)
-	{
+	{	
+		if(IsAnimationRunning(ANIMATION_ID_SHOW) || IsAnimationRunning(ANIMATION_ID_HIDE)) {
+			return m_szAnimationCurrect;
+		}
+
+		if(!IsPaneVisible())
+		{
+			return m_szAnimationCurrect;
+		}
+
 		if(IsAutoCalcWidth() || IsAutoCalcHeight())
 		{
 			SIZE sz = {0};
 			for (int it=0; it<GetCount(); it++)
 			{
-				SIZE szControl = {0};
+				SIZE szControl = {m_rcInset.left + m_rcInset.right, m_rcInset.top + m_rcInset.bottom};
 				CControlUI *pControl = GetItemAt(it);
+				if(!pControl->IsVisible()) continue;
 				szControl = pControl->EstimateSize(szAvailable);
-				sz.cx += szControl.cx;
-				sz.cy += szControl.cy;
+				if(IsAutoCalcWidth())
+					sz.cx += szControl.cx;
+
+				if(IsAutoCalcHeight())
+					sz.cy += szControl.cy;
 			}
+
+			if(IsAutoCalcWidth())
+			{
+				sz.cx += m_rcInset.left + m_rcInset.right;
+				if(GetCount() > 1) sz.cx += (GetCount() - 1) * m_iChildPadding;
+			}
+			if(IsAutoCalcHeight())
+			{
+				sz.cy += m_rcInset.top + m_rcInset.bottom;
+				if(GetCount() > 1) sz.cy += (GetCount() - 1) * m_iChildPadding;
+			}
+
 			return sz;
 		}
 		return __super::EstimateSize(szAvailable);
@@ -707,6 +732,50 @@ namespace DuiLib
 				pControl->SetPos(rcCtrl, false);
 			}
 		}
+	}
+
+	bool CContainerUI::CalcPos(CControlUI *pChildControl, RECT &rc)
+	{
+		rc = m_rcItem;
+		rc.left += m_rcInset.left;
+		rc.top += m_rcInset.top;
+		rc.right -= m_rcInset.right;
+		rc.bottom -= m_rcInset.bottom;
+
+		if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) {
+			rc.top -= m_pVerticalScrollBar->GetScrollPos();
+			rc.bottom -= m_pVerticalScrollBar->GetScrollPos();
+			rc.bottom += m_pVerticalScrollBar->GetScrollRange();
+			rc.right -= m_pVerticalScrollBar->GetFixedWidth();
+		}
+		if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) {
+			rc.left -= m_pHorizontalScrollBar->GetScrollPos();
+			rc.right -= m_pHorizontalScrollBar->GetScrollPos();
+			rc.right += m_pHorizontalScrollBar->GetScrollRange();
+			rc.bottom -= m_pHorizontalScrollBar->GetFixedHeight();
+		}
+
+		for( int it = 0; it < m_items.GetSize(); it++ ) {
+			CControlUI* pControl = static_cast<CControlUI*>(m_items[it]);
+			if(pControl == pChildControl)
+			{
+				if( pControl->IsFloat() ) 
+				{
+					break;
+				}
+				else { 
+					SIZE sz = { rc.right - rc.left, rc.bottom - rc.top };
+					if( sz.cx < pControl->GetMinWidth() ) sz.cx = pControl->GetMinWidth();
+					if( sz.cx > pControl->GetMaxWidth() ) sz.cx = pControl->GetMaxWidth();
+					if( sz.cy < pControl->GetMinHeight() ) sz.cy = pControl->GetMinHeight();
+					if( sz.cy > pControl->GetMaxHeight() ) sz.cy = pControl->GetMaxHeight();
+					RECT rcCtrl = { rc.left, rc.top, rc.left + sz.cx, rc.top + sz.cy };
+					rc = rcCtrl;
+				}
+				return true;
+			}
+		}
+		return false;
 	}
 
 	void CContainerUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
@@ -1128,7 +1197,7 @@ namespace DuiLib
 		else
 			return pSubControl->GetFixedWidth();
 	}
-
+	 
 	const CDuiString CContainerUI::GetSubControlUserData( LPCTSTR pstrSubControlName )
 	{
 		CControlUI* pSubControl=NULL;
@@ -1145,5 +1214,4 @@ namespace DuiLib
 		if(m_pManager != NULL) pSubControl = static_cast<CControlUI*>(m_pManager->FindSubControlByName(this,pstrSubControlName));
 		return pSubControl;
 	}
-
 } // namespace DuiLib

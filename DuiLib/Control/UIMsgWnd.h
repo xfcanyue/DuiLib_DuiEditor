@@ -3,7 +3,6 @@
 namespace DuiLib
 {
 
-#define UIMSG_INSERT_MSG WM_USER + 123
 
 class UILIB_API CMsgWndUI : public CRichEditUI
 {
@@ -22,6 +21,7 @@ public:
 public:
 	static CMsgWndUI *m_pStaticWindow;
 	static void InsertMsg(LPCTSTR pstring, COLORREF cr=RGB(0,0,0));
+	static void InsertMsgV(LPCTSTR lpszFormat, ...);
 };
 
 }

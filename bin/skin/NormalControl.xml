@@ -76,32 +76,26 @@
 		<HorizontalLayout height="120" childpadding="10" childvalign="vcenter">
 			<Label text="图像控件" autocalcwidth="true" resourceid="28" />
 			<VerticalLayout width="100" inset="1,1,1,1" bordercolor="0xFF969696" bordersize="1">
-				<PictureControl fileimage="images\loading.gif" framedelay="100" width="100" />
+				<Picture fileimage="images\loading.gif" framedelay="100" width="100" />
 				<Text height="20" text="GIF" align="center" bkcolor="0xFFE1E1E1" resourceid="29" />
 			</VerticalLayout>
 			<VerticalLayout width="100" inset="1,1,1,1" bordercolor="0xFF969696" bordersize="1">
 				<VerticalLayout childalign="center" childvalign="vcenter">
-					<PictureControl fileimage="images\ico.jpg" autosize="true" />
+					<Picture fileimage="images\ico.jpg" autosize="true" />
 				</VerticalLayout>
 				<Text height="20" text="JPG" align="center" bkcolor="0xFFE1E1E1" resourceid="30" />
 			</VerticalLayout>
 			<VerticalLayout width="100" inset="1,1,1,1" bordercolor="0xFF969696" bordersize="1">
 				<VerticalLayout childalign="center" childvalign="vcenter">
-					<PictureControl fileimage="images\common\webbrowser\load_error.png" autosize="true" />
+					<Picture fileimage="images\common\webbrowser\load_error.png" autosize="true" />
 				</VerticalLayout>
 				<Text height="20" text="PNG" align="center" bkcolor="0xFFE1E1E1" resourceid="31" />
 			</VerticalLayout>
 			<VerticalLayout width="100" inset="1,1,1,1" bordercolor="0xFF969696" bordersize="1">
 				<VerticalLayout childalign="center" childvalign="vcenter">
-					<PictureControl fileimage="images\bmp.bmp" autosize="true" />
+					<Picture fileimage="images\bmp.bmp" autosize="true" />
 				</VerticalLayout>
 				<Text height="20" text="BMP" align="center" bkcolor="0xFFE1E1E1" resourceid="32" />
-			</VerticalLayout>
-			<VerticalLayout width="100" inset="1,1,1,1" bordercolor="0xFF969696" bordersize="1">
-				<VerticalLayout childalign="center" childvalign="vcenter">
-					<PictureControl fileimage="images\ico.ico" autosize="true" />
-				</VerticalLayout>
-				<Text height="20" text="ICO" align="center" bkcolor="0xFFE1E1E1" resourceid="33" />
 			</VerticalLayout>
 		</HorizontalLayout>
 		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">

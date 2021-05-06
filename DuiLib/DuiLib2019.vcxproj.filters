@@ -57,9 +57,6 @@
     <ClCompile Include="Control\UICombo.cpp">
       <Filter>Source Files\Control</Filter>
     </ClCompile>
-    <ClCompile Include="Control\UIComboBox.cpp">
-      <Filter>Source Files\Control</Filter>
-    </ClCompile>
     <ClCompile Include="Control\UIDateTime.cpp">
       <Filter>Source Files\Control</Filter>
     </ClCompile>
@@ -73,9 +70,6 @@
       <Filter>Source Files\Control</Filter>
     </ClCompile>
     <ClCompile Include="Control\UIGifAnim.cpp">
-      <Filter>Source Files\Control</Filter>
-    </ClCompile>
-    <ClCompile Include="Control\UIGifAnimEx.cpp">
       <Filter>Source Files\Control</Filter>
     </ClCompile>
     <ClCompile Include="Control\UIGroupBox.cpp">
@@ -231,9 +225,6 @@
     <ClCompile Include="Layout\UIButtonLayout.cpp">
       <Filter>Source Files\Layout</Filter>
     </ClCompile>
-    <ClCompile Include="Control\UIAnimationPane.cpp">
-      <Filter>Source Files\Control</Filter>
-    </ClCompile>
     <ClCompile Include="Layout\UIChildWindow.cpp">
       <Filter>Source Files\Layout</Filter>
     </ClCompile>
@@ -241,9 +232,6 @@
       <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="Control\TxtWinHost.cpp">
-      <Filter>Source Files\Control</Filter>
-    </ClCompile>
-    <ClCompile Include="Control\UIAccordionPane.cpp">
       <Filter>Source Files\Control</Filter>
     </ClCompile>
     <ClCompile Include="Control\UIComboEditWnd.cpp">
@@ -276,6 +264,12 @@
     <ClCompile Include="Control\UIPictureBox.cpp">
       <Filter>Source Files\Control</Filter>
     </ClCompile>
+    <ClCompile Include="Control\UITreeCtrl.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Control\UITreeItem.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Control\UIWebBrowser.h">
@@ -296,9 +290,6 @@
     <ClInclude Include="Control\UICombo.h">
       <Filter>Header Files\Control</Filter>
     </ClInclude>
-    <ClInclude Include="Control\UIComboBox.h">
-      <Filter>Header Files\Control</Filter>
-    </ClInclude>
     <ClInclude Include="Control\UIDateTime.h">
       <Filter>Header Files\Control</Filter>
     </ClInclude>
@@ -312,9 +303,6 @@
       <Filter>Header Files\Control</Filter>
     </ClInclude>
     <ClInclude Include="Control\UIGifAnim.h">
-      <Filter>Header Files\Control</Filter>
-    </ClInclude>
-    <ClInclude Include="Control\UIGifAnimEx.h">
       <Filter>Header Files\Control</Filter>
     </ClInclude>
     <ClInclude Include="Control\UIGroupBox.h">
@@ -491,9 +479,6 @@
     <ClInclude Include="Layout\UIButtonLayout.h">
       <Filter>Header Files\Layout</Filter>
     </ClInclude>
-    <ClInclude Include="Control\UIAnimationPane.h">
-      <Filter>Header Files\Control</Filter>
-    </ClInclude>
     <ClInclude Include="Layout\UIChildWindow.h">
       <Filter>Header Files\Layout</Filter>
     </ClInclude>
@@ -501,9 +486,6 @@
       <Filter>Header Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="Control\TxtWinHost.h">
-      <Filter>Header Files\Control</Filter>
-    </ClInclude>
-    <ClInclude Include="Control\UIAccordionPane.h">
       <Filter>Header Files\Control</Filter>
     </ClInclude>
     <ClInclude Include="Control\UIRollTextEx.h">
@@ -534,6 +516,12 @@
       <Filter>Header Files\Control</Filter>
     </ClInclude>
     <ClInclude Include="Control\UIPictureBox.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="Control\UITreeCtrl.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="Control\UITreeItem.h">
       <Filter>Header Files\Control</Filter>
     </ClInclude>
   </ItemGroup>

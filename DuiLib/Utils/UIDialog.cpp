@@ -29,55 +29,6 @@ void CUIDialog::OnFinalMessage( HWND hWnd )
 	}
 }
 
-/*
-UINT CUIDialog::DoModal()
-{
-	Create(NULL, GetWindowClassName(), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE);
-	CenterWindow();
-	_bModal = true;
-	return ShowModal();
-}
-
-void CUIDialog::ShowDialog()
-{
-	Create(NULL, GetWindowClassName(), WS_POPUP|UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE);
-	CenterWindow();
-	_bModal = false;
-	return ShowWindow();
-}
-
-UINT CUIDialog::DoModal(CUIFrameWnd *pParentWnd)
-{
-	if(pParentWnd)
-		Create(pParentWnd->GetHWND(), GetWindowClassName(), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE);
-	else
-		Create(NULL, GetWindowClassName(), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE);
-	CenterWindow();
-	_bModal = true;
-	return ShowModal();
-}
-
-void CUIDialog::ShowDialog(CUIFrameWnd *pParentWnd)
-{
-	if(pParentWnd)
-		Create(pParentWnd->GetHWND(), GetWindowClassName(), WS_POPUP|UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE);
-	else
-		Create(NULL, GetWindowClassName(), WS_POPUP|UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE);
-	CenterWindow();
-	_bModal = false;
-	return ShowWindow();
-}
-
-UINT CUIDialog::DoModal(CUIForm *pParentWnd)
-{
-	return DoModal(pParentWnd->GetFrameWnd());
-}
-
-void CUIDialog::ShowDialog(CUIForm *pParentWnd)
-{
-	return ShowDialog(pParentWnd->GetFrameWnd());
-}
-*/
 UINT CUIDialog::DoModal(CUIFrmBase *pParentWnd)
 {
 	if(pParentWnd)
@@ -99,29 +50,7 @@ void CUIDialog::ShowDialog(CUIFrmBase *pParentWnd)
 	_bModal = false;
 	return ShowWindow();
 }
-/*
-UINT CUIDialog::DoModal(CPaintManagerUI* pMainPaintManager)
-{
-	if(pMainPaintManager)
-		Create(pMainPaintManager->GetPaintWindow(), GetWindowClassName(), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE);
-	else
-		Create(NULL, GetWindowClassName(), UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE);
-	CenterWindow();
-	_bModal = true;
-	return ShowModal();
-}
 
-void CUIDialog::ShowDialog(CPaintManagerUI* pMainPaintManager)
-{
-	if(pMainPaintManager)
-		Create(pMainPaintManager->GetPaintWindow(), GetWindowClassName(), WS_POPUP|UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE);
-	else
-		Create(NULL, GetWindowClassName(), WS_POPUP|UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE);
-	CenterWindow();
-	_bModal = false;
-	return ShowWindow();
-}
-*/
 void CUIDialog::InitWindow()
 {
 	switch (m_nMode)

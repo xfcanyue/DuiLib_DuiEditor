@@ -609,10 +609,11 @@ SIZE CGridListCellUI::EstimateSize(SIZE szAvailable)
 			if( m_bShowHtml ) CRenderEngine::DrawHtmlText(m_pManager->GetPaintDC(), m_pManager, rcText, sText, m_dwTextColor, NULL, NULL, nLinks, m_iFont, DT_CALCRECT | m_uTextStyle);
 			else CRenderEngine::DrawText(m_pManager->GetPaintDC(), m_pManager, rcText, sText, m_dwTextColor, m_iFont, DT_CALCRECT | m_uTextStyle);
 			
-			if(rcText.right - rcText.left > sz.cx)
+			if(rcText.right - rcText.left + 10 > sz.cx)
 			{
-				sz.cx = rcText.right - rcText.left;
+				sz.cx = rcText.right - rcText.left + 10;
 				GetOwner()->SetColumnWidth(GetColIndex(), sz.cx);
+				((CGridListUI *)GetOwner())->NeedUpdate();
 			}
 		}
 	}

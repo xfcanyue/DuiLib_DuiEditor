@@ -15,8 +15,7 @@ namespace DuiLib {
 	};
 
 	class CEditUI;
-	class CComboBoxUI;
-
+	class CComboUI;
 	class UILIB_API CListExUI : public CListUI, public INotifyUI
 	{
 		DECLARE_DUICONTROL(CListExUI)
@@ -36,14 +35,14 @@ namespace DuiLib {
 
 	protected:
 		CEditUI*		m_pEditUI;
-		CComboBoxUI*	m_pComboBoxUI;
+		CComboUI*	m_pComboBoxUI;
 
 	public:
 		virtual BOOL CheckColumEditable(int nColum);
 		virtual CEditUI* GetEditUI();
 
 		virtual BOOL CheckColumComboBoxable(int nColum);
-		virtual CComboBoxUI* GetComboBoxUI();
+		virtual CComboUI* GetComboBoxUI();
 
 		virtual BOOL CheckColumCheckBoxable(int nColum);
 

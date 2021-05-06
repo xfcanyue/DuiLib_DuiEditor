@@ -18,10 +18,16 @@ CImageEditor::CImageEditor(CWnd* pParent /*=NULL*/)
 {
 	m_pFrame = NULL;
 	m_pParentGrid = NULL;
+	m_imgControlX = NULL;
 }
 
 CImageEditor::~CImageEditor()
 {
+	if(m_imgControlX != NULL)
+	{
+		::DeleteObject(m_imgControlX);
+		m_imgControlX = NULL;
+	}
 }
 
 void CImageEditor::DoDataExchange(CDataExchange* pDX)
@@ -130,12 +136,16 @@ void CImageEditor::SetAttributeValue(LPCTSTR szAttribute)
 	return;
 }
 
-void CImageEditor::SetControlImage(CxImage &img)
+void CImageEditor::SetControlImage(HBITMAP img, RECT rcSource)
 {
-	m_imgControlX.Transfer(img);
+	m_imgControlX = img;
+	m_rcControl = rcSource;
 
-	CRect rc(0, 0, m_imgControlX.GetWidth(), m_imgControlX.GetHeight());
-	m_rcControl = rc;
+// 	BITMAP bm;
+// 	::GetObject(img, sizeof(bm), &bm);
+// 
+// 	CRect rc(0, 0, bm.bmWidth, bm.bmHeight);
+// 	m_rcControl = rc;
 }
 
 void CImageEditor::SetImageFile(LPCTSTR lpstrPathName)

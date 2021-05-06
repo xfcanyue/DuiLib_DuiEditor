@@ -56,17 +56,23 @@ namespace DuiLib
 			if (m_pManager) m_pManager->RemoveOptionGroup(m_sGroupName, this);
 		}
 
-		Selected(m_bSelected);
+		Selected(IsSelected());
 	}
 
 	bool COptionUI::IsSelected() const
 	{
-		return m_bSelected;
+		//return m_bSelected;
+		if(m_sSwitchControlVisible.IsEmpty())
+			return m_bSelected;
+
+		CControlUI* pControl = static_cast<CControlUI*>(GetManager()->FindControl(m_sSwitchControlVisible.GetData()));
+		if(!pControl) return m_bSelected;
+		return pControl->IsVisible();
 	}
 
 	void COptionUI::Selected(bool bSelected, bool bTriggerEvent)
 	{
-		if(m_bSelected == bSelected) return;
+		if(IsSelected() == bSelected) return;
 
 		m_bSelected = bSelected;
 		if( m_bSelected ) m_uButtonState |= UISTATE_SELECTED;
@@ -84,7 +90,7 @@ namespace DuiLib
 							COptionUI* pControl = static_cast<COptionUI*>(aOptionGroup->GetAt(i));
 							if( pControl != this ) {
 								pControl->Selected(false);
-								pControl->SwitchControlVisible();
+								pControl->SwitchPaneVisible();
 							}
 						}
 					}
@@ -103,16 +109,15 @@ namespace DuiLib
 	{
 		if( !CControlUI::Activate() ) return false;
 		if( !m_sGroupName.IsEmpty() ) Selected(true);
-		else Selected(!m_bSelected);
+		else Selected(!IsSelected());
 
 		if( m_pManager != NULL )
 		{
 			m_pManager->SendNotify(this, DUI_MSGTYPE_CLICK);
 			BindTriggerTabSel();
+			SwitchPaneVisible();
 		}
 
-		SwitchControlVisible();
-		SwitchPaneVisible();
 		return true;
 	}
 
@@ -120,26 +125,26 @@ namespace DuiLib
 	{
 		CControlUI::SetEnabled(bEnable);
 		if( !IsEnabled() ) {
-			if( m_bSelected ) m_uButtonState = UISTATE_SELECTED;
+			if( IsSelected() ) m_uButtonState = UISTATE_SELECTED;
 			else m_uButtonState = 0;
 		}
 	}
 
-	void COptionUI::SwitchControlVisible()
+	void COptionUI::SwitchPaneVisible()
 	{
 		if(m_sSwitchControlVisible.IsEmpty()) 
 			return;
 
 		CControlUI* pControl = GetManager()->FindControl(m_sSwitchControlVisible);
 		if(!pControl) return;
-		bool bVisible = pControl->IsVisible();
-		if(IsSelected() && !bVisible)
+		bool bVisible = pControl->IsPaneVisible();
+		if(m_bSelected && !bVisible)
 		{
-			pControl->SetVisible(true);
+			pControl->SetPaneVisible(true);
 		}
-		else if(!IsSelected() && bVisible)
+		else if(!m_bSelected && bVisible)
 		{
-			pControl->SetVisible(false);
+			pControl->SetPaneVisible(false);
 		}
 	}
 
@@ -273,10 +278,8 @@ namespace DuiLib
 
 	void COptionUI::PaintBkColor(HDC hDC)
 	{
-		if(IsSelected()) {
-			if(m_dwSelectedBkColor != 0) {
-				CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwSelectedBkColor));
-			}
+		if(IsSelected() && m_dwSelectedBkColor != 0) {
+			CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwSelectedBkColor));
 		}
 		else {
 			return CButtonUI::PaintBkColor(hDC);
@@ -534,11 +537,11 @@ namespace DuiLib
 							pControl->Selected(FALSE);
 						}
 					}
-					if (bTriggerEvent) m_pManager->SendNotify(this, DUI_MSGTYPE_SELECTCHANGED, m_bSelected, 0);
+					if (bTriggerEvent) m_pManager->SendNotify(this, DUI_MSGTYPE_SELECTCHANGED, IsSelected(), 0);
 				}
 			}
 			else {
-				if (bTriggerEvent) m_pManager->SendNotify(this, DUI_MSGTYPE_SELECTCHANGED, m_bSelected, 0);
+				if (bTriggerEvent) m_pManager->SendNotify(this, DUI_MSGTYPE_SELECTCHANGED, IsSelected(), 0);
 			}
 		}
 

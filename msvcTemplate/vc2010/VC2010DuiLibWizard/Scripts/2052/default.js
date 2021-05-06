@@ -18,7 +18,6 @@ function OnFinish(selProj, selObj)
 		PchSettings(selProj);
 		InfFile.Delete();
 
-
 		selProj.Object.Save();
 	}
 	catch(e)
@@ -108,14 +107,15 @@ function AddConfig(proj, strProjectName)
 {
 	try {
 	    //////////////////////////////////////////////////////////////////////////
-        //Debug
-	    var config = proj.Object.Configurations('Debug');
-	    config.OutputDirectory = "..\\bin\\";                    //输出目录
-	    config.UseOfMFC = useMfcDynamic;                    //在共享 DLL 中使用MFC
-	    config.CharacterSet = charSetUNICODE;               //使用Unicode字符集
-	    
-        //////////////////////////////////////////////////////////////////////////
-	    // TODO: 添加编译器设置
+	    //////////////////////////////////////////////////////////////////////////
+	    //Debug
+	    var config = proj.Object.Configurations("Debug");
+
+	    config.OutputDirectory = "..\\bin\\";            //输出目录
+	    config.UseOfMFC = useMfcDynamic;                 //在共享 DLL 中使用MFC
+	    config.CharacterSet = charSetMBCS;               //使用Unicode字符集
+
+	    //////////////////////////////////////////////////////////////////////////
 	    var CLTool = config.Tools('VCCLCompilerTool');
 	    CLTool.WarningLevel = WarningLevel_3;               //警告等级 >> Level3(/W3)
 	    CLTool.Optimization = optimizeDisabled;             //优化 禁用
@@ -123,49 +123,259 @@ function AddConfig(proj, strProjectName)
 	    var strDefines = "WIN32;_DEBUG;_WINDOWS";
 	    CLTool.PreprocessorDefinitions = strDefines;        //预处理器
 
-		CLTool.RuntimeLibrary = rtMultiThreadedDebugDLL;    //代码生成MDD
+	    CLTool.RuntimeLibrary = rtMultiThreadedDebugDLL;    //代码生成MDD
 
-		CLTool.UsePrecompiledHeader = pchUseUsingSpecific;  //预编译头文件 >> 使用(Yu)
+	    CLTool.UsePrecompiledHeader = pchUseUsingSpecific;  //预编译头文件 >> 使用(Yu)
 
-        //////////////////////////////////////////////////////////////////////////
-		// TODO: 添加链接器设置
-		var LinkTool = config.Tools('VCLinkerTool');
-		LinkTool.LinkIncremental = linkIncrementalYes;      //启动增量链接
-		LinkTool.GenerateDebugInformation = true;           //生成调试信息
-		LinkTool.SubSystem = subSystemWindows;              //子系统 >> 窗口(/SUBSYSTEM:WINDOWS)
+	    //////////////////////////////////////////////////////////////////////////
+	    var LinkTool = config.Tools('VCLinkerTool');
+	    LinkTool.LinkIncremental = linkIncrementalYes;      //启动增量链接
+	    LinkTool.GenerateDebugInformation = true;           //生成调试信息
+	    LinkTool.SubSystem = subSystemWindows;              //子系统 >> 窗口(/SUBSYSTEM:WINDOWS)
 
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //Release
-		config = proj.Object.Configurations('Release');
-        config.OutputDirectory = "..\\bin\\";                      //输出目录
-		config.UseOfMFC = useMfcDynamic;                    //在共享 DLL 中使用MFC
-		config.CharacterSet = charSetUNICODE;               //使用Unicode字符集
+        //怎么把默认的Debug名字改掉呢？
+	   // var cfgName = wizard.FindSymbol("Debug_Name");
+	   // dte.Solution.SolutionBuild.SolutionConfigurations.Item("Debug").Name = cfgName;
+	    // config.ConfigurationName = cfgName;
 
-		config.WholeProgramOptimization = WholeProgramOptimizationLinkTimeCodeGen; //全程序优化 >>  使用链接时间代码生成
+	    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	    //Release
+	    config = proj.Object.Configurations('Release');
+	    config.OutputDirectory = "..\\bin\\";               //输出目录
+	    config.UseOfMFC = useMfcDynamic;                    //在共享 DLL 中使用MFC
+	    config.CharacterSet = charSetMBCS;                  //使用Unicode字符集
 
-        //////////////////////////////////////////////////////////////////////////
-		// TODO: 添加编译器设置
-		var CLTool = config.Tools('VCCLCompilerTool');
-		CLTool.WarningLevel = WarningLevel_3;               //警告等级       >>   Level3(/W3)
-		CLTool.Optimization = optimizeMaxSpeed;             //优化           >>  使速度最大化 (/O2)
+	    config.WholeProgramOptimization = WholeProgramOptimizationLinkTimeCodeGen; //全程序优化 >>  使用链接时间代码生成
 
-		strDefines = "WIN32;NDEBUG;_WINDOWS";
-		CLTool.PreprocessorDefinitions = strDefines;        //预处理器
+	    //////////////////////////////////////////////////////////////////////////
+	    var CLTool = config.Tools('VCCLCompilerTool');
+	    CLTool.WarningLevel = WarningLevel_3;               //警告等级       >>   Level3(/W3)
+	    CLTool.Optimization = optimizeMaxSpeed;             //优化           >>  使速度最大化 (/O2)
 
-		CLTool.RuntimeLibrary = rtMultiThreadedDLL;         //代码生成        >>  MD
+	    strDefines = "WIN32;NDEBUG;_WINDOWS";
+	    CLTool.PreprocessorDefinitions = strDefines;        //预处理器
 
-		CLTool.UsePrecompiledHeader = pchUseUsingSpecific;  //预编译头文件    >> 使用(Yu)
+	    CLTool.RuntimeLibrary = rtMultiThreadedDLL;         //代码生成        >>  MD
 
-		//////////////////////////////////////////////////////////////////////////
-		// TODO: 添加链接器设置
-		var LinkTool = config.Tools('VCLinkerTool');
-		LinkTool.LinkIncremental = linkIncrementalNo;       //启动增量链接
-		LinkTool.GenerateDebugInformation = true;           //生成调试信息
-		LinkTool.SubSystem = subSystemWindows;              //子系统               >>     窗口(/SUBSYSTEM:WINDOWS)
-		LinkTool.EnableCOMDATFolding = optFolding;          //启用 COMDAT 折叠     >>     是 (/OPT:ICF)  
-		LinkTool.OptimizeReferences = optReferences;        //引用                 >>     是 (/OPT:REF)
+	    CLTool.UsePrecompiledHeader = pchUseUsingSpecific;  //预编译头文件    >> 使用(Yu)
+
+	    //////////////////////////////////////////////////////////////////////////
+	    var LinkTool = config.Tools('VCLinkerTool');
+	    LinkTool.LinkIncremental = linkIncrementalNo;       //启动增量链接
+	    LinkTool.GenerateDebugInformation = true;           //生成调试信息
+	    LinkTool.SubSystem = subSystemWindows;              //子系统               >>     窗口(/SUBSYSTEM:WINDOWS)
+	    LinkTool.EnableCOMDATFolding = optFolding;          //启用 COMDAT 折叠     >>     是 (/OPT:ICF)  
+	    LinkTool.OptimizeReferences = optReferences;        //引用                 >>     是 (/OPT:REF)
+
+	    //////////////////////////////////////////////////////////////////////////
+	    //////////////////////////////////////////////////////////////////////////
+	    //Unicode Debug
+	    if (wizard.FindSymbol("is_UnicodeDebug")) {
+	        var cfgName = wizard.FindSymbol("UnicodeDebug_Name");
+	        proj.Object.AddConfiguration(cfgName);              //UnicodeDebug
+	        var config = proj.Object.Configurations(cfgName);   //UnicodeDebug
+	        config.OutputDirectory = "..\\bin\\";                //输出目录
+	        config.UseOfMFC = useMfcDynamic;                    //在共享 DLL 中使用MFC
+	        config.CharacterSet = charSetUNICODE;               //使用Unicode字符集
+
+	        //////////////////////////////////////////////////////////////////////////
+	        var CLTool = config.Tools('VCCLCompilerTool');
+	        CLTool.WarningLevel = WarningLevel_3;               //警告等级 >> Level3(/W3)
+	        CLTool.Optimization = optimizeDisabled;             //优化 禁用
+
+	        var strDefines = "WIN32;_DEBUG;_WINDOWS";
+	        CLTool.PreprocessorDefinitions = strDefines;        //预处理器
+
+	        CLTool.RuntimeLibrary = rtMultiThreadedDebugDLL;    //代码生成MDD
+
+	        CLTool.UsePrecompiledHeader = pchUseUsingSpecific;  //预编译头文件 >> 使用(Yu)
+
+	        //////////////////////////////////////////////////////////////////////////
+	        var LinkTool = config.Tools('VCLinkerTool');
+	        LinkTool.LinkIncremental = linkIncrementalYes;      //启动增量链接
+	        LinkTool.GenerateDebugInformation = true;           //生成调试信息
+	        LinkTool.SubSystem = subSystemWindows;              //子系统 >> 窗口(/SUBSYSTEM:WINDOWS)
+
+	        //添加到sln中
+	        dte.Solution.SolutionBuild.SolutionConfigurations.Add(cfgName, cfgName, true);
+            //默认的解决方案设置为UnicodeDebug
+	        dte.Solution.SolutionBuild.SolutionConfigurations.Item(cfgName).Activate();
+	    }
+	    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	    //Unicode Release
+	    if (wizard.FindSymbol("is_UnicodeRelease")) {
+	        var cfgName = wizard.FindSymbol("UnicodeRelease_Name");
+	        proj.Object.AddConfiguration(cfgName);              // ('UnicodeRelease');
+	        config = proj.Object.Configurations(cfgName);       // ('UnicodeRelease');
+	        config.OutputDirectory = "..\\bin\\";               //输出目录
+	        config.UseOfMFC = useMfcDynamic;                    //在共享 DLL 中使用MFC
+	        config.CharacterSet = charSetUNICODE;               //使用Unicode字符集
+
+	        config.WholeProgramOptimization = WholeProgramOptimizationLinkTimeCodeGen; //全程序优化 >>  使用链接时间代码生成
+
+	        //////////////////////////////////////////////////////////////////////////
+	        var CLTool = config.Tools('VCCLCompilerTool');
+	        CLTool.WarningLevel = WarningLevel_3;               //警告等级       >>   Level3(/W3)
+	        CLTool.Optimization = optimizeMaxSpeed;             //优化           >>  使速度最大化 (/O2)
+
+	        strDefines = "WIN32;NDEBUG;_WINDOWS";
+	        CLTool.PreprocessorDefinitions = strDefines;        //预处理器
+
+	        CLTool.RuntimeLibrary = rtMultiThreadedDLL;         //代码生成        >>  MD
+
+	        CLTool.UsePrecompiledHeader = pchUseUsingSpecific;  //预编译头文件    >> 使用(Yu)
+
+	        //////////////////////////////////////////////////////////////////////////
+	        var LinkTool = config.Tools('VCLinkerTool');
+	        LinkTool.LinkIncremental = linkIncrementalNo;       //启动增量链接
+	        LinkTool.GenerateDebugInformation = true;           //生成调试信息
+	        LinkTool.SubSystem = subSystemWindows;              //子系统               >>     窗口(/SUBSYSTEM:WINDOWS)
+	        LinkTool.EnableCOMDATFolding = optFolding;          //启用 COMDAT 折叠     >>     是 (/OPT:ICF)  
+	        LinkTool.OptimizeReferences = optReferences;        //引用                 >>     是 (/OPT:REF)
+
+	        //添加到sln中
+	        dte.Solution.SolutionBuild.SolutionConfigurations.Add(cfgName, cfgName, true);
+	    }
+	    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	    //////////////////////////////////////////////////////////////////////////
+	    //////////////////////////////////////////////////////////////////////////
+	    //Debug Static
+	    if (wizard.FindSymbol("is_xsDebug")) {
+	        var cfgName = wizard.FindSymbol("xsDebug_Name");
+	        proj.Object.AddConfiguration(cfgName);              // ('xsDebug');
+	        var config = proj.Object.Configurations(cfgName);   // ('xsDebug');
+	        config.OutputDirectory = "..\\bin\\";               //输出目录
+	        config.UseOfMFC = useMfcStatic;                     //在共享 DLL 中使用MFC
+	        config.CharacterSet = charSetMBCS;                  //使用Unicode字符集
+
+	        //////////////////////////////////////////////////////////////////////////
+	        var CLTool = config.Tools('VCCLCompilerTool');
+	        CLTool.WarningLevel = WarningLevel_3;               //警告等级 >> Level3(/W3)
+	        CLTool.Optimization = optimizeDisabled;             //优化 禁用
+
+	        var strDefines = "WIN32;_DEBUG;_WINDOWS; UILIB_STATIC;";
+	        CLTool.PreprocessorDefinitions = strDefines;        //预处理器
+
+	        CLTool.RuntimeLibrary = rtMultiThreadedDebug;    //代码生成MDD
+
+	        CLTool.UsePrecompiledHeader = pchUseUsingSpecific;  //预编译头文件 >> 使用(Yu)
+
+	        //////////////////////////////////////////////////////////////////////////
+	        var LinkTool = config.Tools('VCLinkerTool');
+	        LinkTool.LinkIncremental = linkIncrementalYes;      //启动增量链接
+	        LinkTool.GenerateDebugInformation = true;           //生成调试信息
+	        LinkTool.SubSystem = subSystemWindows;              //子系统 >> 窗口(/SUBSYSTEM:WINDOWS)
+
+	        //添加到sln中
+	        dte.Solution.SolutionBuild.SolutionConfigurations.Add(cfgName, cfgName, true);
+	    }
+	    
+	    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	    //Release Static
+	    if (wizard.FindSymbol("is_xsRelease")) {
+	        var cfgName = wizard.FindSymbol("xsRelease_Name");
+	        proj.Object.AddConfiguration(cfgName);              // ('xsRelease');
+	        config = proj.Object.Configurations(cfgName);       // ('xsRelease');
+	        config.OutputDirectory = "..\\bin\\";                //输出目录
+	        config.UseOfMFC = useMfcStatic;                    //在共享 DLL 中使用MFC
+	        config.CharacterSet = charSetMBCS;               //使用Unicode字符集
+
+	        config.WholeProgramOptimization = WholeProgramOptimizationLinkTimeCodeGen; //全程序优化 >>  使用链接时间代码生成
+
+	        //////////////////////////////////////////////////////////////////////////
+	        var CLTool = config.Tools('VCCLCompilerTool');
+	        CLTool.WarningLevel = WarningLevel_3;               //警告等级       >>   Level3(/W3)
+	        CLTool.Optimization = optimizeMaxSpeed;             //优化           >>  使速度最大化 (/O2)
+
+	        strDefines = "WIN32;NDEBUG;_WINDOWS; UILIB_STATIC;";
+	        CLTool.PreprocessorDefinitions = strDefines;        //预处理器
+
+	        CLTool.RuntimeLibrary = rtMultiThreaded;         //代码生成        >>  MD
+
+	        CLTool.UsePrecompiledHeader = pchUseUsingSpecific;  //预编译头文件    >> 使用(Yu)
+
+	        //////////////////////////////////////////////////////////////////////////
+	        var LinkTool = config.Tools('VCLinkerTool');
+	        LinkTool.LinkIncremental = linkIncrementalNo;       //启动增量链接
+	        LinkTool.GenerateDebugInformation = true;           //生成调试信息
+	        LinkTool.SubSystem = subSystemWindows;              //子系统               >>     窗口(/SUBSYSTEM:WINDOWS)
+	        LinkTool.EnableCOMDATFolding = optFolding;          //启用 COMDAT 折叠     >>     是 (/OPT:ICF)  
+	        LinkTool.OptimizeReferences = optReferences;        //引用                 >>     是 (/OPT:REF)
+
+	        //添加到sln中
+	        dte.Solution.SolutionBuild.SolutionConfigurations.Add(cfgName, cfgName, true);
+	    }
+	    //////////////////////////////////////////////////////////////////////////
+	    //////////////////////////////////////////////////////////////////////////
+	    //Unicode Debug Static
+	    if (wizard.FindSymbol("is_xsUnicodeDebug")) {
+	        var cfgName = wizard.FindSymbol("xsUnicodeDebug_Name");
+	        proj.Object.AddConfiguration(cfgName);              // ('xsUnicodeDebug');
+	        var config = proj.Object.Configurations(cfgName);              // ('xsUnicodeDebug');
+	        config.OutputDirectory = "..\\bin\\";                    //输出目录
+	        config.UseOfMFC = useMfcStatic;                    //在共享 DLL 中使用MFC
+	        config.CharacterSet = charSetUNICODE;               //使用Unicode字符集
+
+	        //////////////////////////////////////////////////////////////////////////
+	        var CLTool = config.Tools('VCCLCompilerTool');
+	        CLTool.WarningLevel = WarningLevel_3;               //警告等级 >> Level3(/W3)
+	        CLTool.Optimization = optimizeDisabled;             //优化 禁用
+
+	        var strDefines = "WIN32;_DEBUG;_WINDOWS; UILIB_STATIC;";
+	        CLTool.PreprocessorDefinitions = strDefines;        //预处理器
+
+	        CLTool.RuntimeLibrary = rtMultiThreadedDebug;    //代码生成MDD
+
+	        CLTool.UsePrecompiledHeader = pchUseUsingSpecific;  //预编译头文件 >> 使用(Yu)
+
+	        //////////////////////////////////////////////////////////////////////////
+	        var LinkTool = config.Tools('VCLinkerTool');
+	        LinkTool.LinkIncremental = linkIncrementalYes;      //启动增量链接
+	        LinkTool.GenerateDebugInformation = true;           //生成调试信息
+	        LinkTool.SubSystem = subSystemWindows;              //子系统 >> 窗口(/SUBSYSTEM:WINDOWS)
+
+	        //添加到sln中
+	        dte.Solution.SolutionBuild.SolutionConfigurations.Add(cfgName, cfgName, true);
+	    }
+	    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	    //Unicode Release Static
+	    if (wizard.FindSymbol("is_xsUnicodeRelease")) {
+	        var cfgName = wizard.FindSymbol("xsUnicodeRelease_Name");
+	        proj.Object.AddConfiguration(cfgName);              // ('xsUnicodeRelease');
+	        config = proj.Object.Configurations(cfgName);       // ('xsUnicodeRelease');
+	        config.OutputDirectory = "..\\bin\\";               //输出目录
+	        config.UseOfMFC = useMfcStatic;                     //在共享 DLL 中使用MFC
+	        config.CharacterSet = charSetUNICODE;               //使用Unicode字符集
+
+	        config.WholeProgramOptimization = WholeProgramOptimizationLinkTimeCodeGen; //全程序优化 >>  使用链接时间代码生成
+
+	        //////////////////////////////////////////////////////////////////////////
+	        var CLTool = config.Tools('VCCLCompilerTool');
+	        CLTool.WarningLevel = WarningLevel_3;               //警告等级       >>   Level3(/W3)
+	        CLTool.Optimization = optimizeMaxSpeed;             //优化           >>  使速度最大化 (/O2)
+
+	        strDefines = "WIN32;NDEBUG;_WINDOWS; UILIB_STATIC;";
+	        CLTool.PreprocessorDefinitions = strDefines;        //预处理器
+
+	        CLTool.RuntimeLibrary = rtMultiThreaded;         //代码生成        >>  MD
+
+	        CLTool.UsePrecompiledHeader = pchUseUsingSpecific;  //预编译头文件    >> 使用(Yu)
+
+	        //////////////////////////////////////////////////////////////////////////
+	        var LinkTool = config.Tools('VCLinkerTool');
+	        LinkTool.LinkIncremental = linkIncrementalNo;       //启动增量链接
+	        LinkTool.GenerateDebugInformation = true;           //生成调试信息
+	        LinkTool.SubSystem = subSystemWindows;              //子系统               >>     窗口(/SUBSYSTEM:WINDOWS)
+	        LinkTool.EnableCOMDATFolding = optFolding;          //启用 COMDAT 折叠     >>     是 (/OPT:ICF)  
+	        LinkTool.OptimizeReferences = optReferences;        //引用                 >>     是 (/OPT:REF)
+
+	        //添加到sln中
+	        dte.Solution.SolutionBuild.SolutionConfigurations.Add(cfgName, cfgName, true);
+	    }
 	}
 	catch(e)
 	{

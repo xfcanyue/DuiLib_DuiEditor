@@ -24,6 +24,17 @@ void CMsgWndUI::InsertMsg(LPCTSTR pstring, COLORREF cr)
 	m_pStaticWindow->GetManager()->SendNotify(m_pStaticWindow, _T("CMsgWndUI::InsertMsg"), 0, (LPARAM)pNewString, true);
 }
 
+void CMsgWndUI::InsertMsgV(LPCTSTR lpszFormat, ...)
+{
+	CDuiString strText;
+
+	va_list argList;
+	va_start(argList, lpszFormat);
+	strText.InnerFormat(lpszFormat, argList);
+	va_end(argList);
+	InsertMsg(strText);
+}
+
 IMPLEMENT_DUICONTROL(CMsgWndUI)
 
 CMsgWndUI::CMsgWndUI(void)

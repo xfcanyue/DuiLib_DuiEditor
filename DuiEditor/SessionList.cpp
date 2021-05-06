@@ -166,6 +166,7 @@ void CSessionList::OpenSession(LPCTSTR lpszPathName)
 	if(fileSession)
 	{
 		fileSession.attribute_auto(XTEXT("safeclose")).set_value(false);
+		fileSession.attribute_auto(XTEXT("ismodify")).set_value(false);
 		Save();
 	}
 }

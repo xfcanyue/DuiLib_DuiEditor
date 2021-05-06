@@ -317,8 +317,8 @@ public:
 		REG_CONTROL_FUNPR(int,			GetCount,		() const							);
 		REG_CONTROL_FUNPR(bool,			Add,			(CControlUI* pControl)				);
 		REG_CONTROL_FUNPR(bool,			AddAt,			(CControlUI* pControl, int iIndex)	);
-		REG_CONTROL_FUNPR(bool,			Remove,			(CControlUI* pControl)				);
-		REG_CONTROL_FUNPR(bool,			RemoveAt,		(int iIndex)						);
+		REG_CONTROL_FUNPR(bool,			Remove,			(CControlUI* pControl, bool bDoNotDestroy));
+		REG_CONTROL_FUNPR(bool,			RemoveAt,		(int iIndex, bool bDoNotDestroy		));
 		REG_CONTROL_FUNPR(void,			RemoveAll,		()									);
 
 		REG_CONTROL_FUNPR(RECT,	 GetInset,				() const				);
@@ -870,32 +870,6 @@ public:
 		REG_CONTROL_FUNPR(void, SetItemHotTextColor, (DWORD _dwItemHotTextColor));
 		REG_CONTROL_FUNPR(void, SetSelItemTextColor, (DWORD _dwSelItemTextColor));
 		REG_CONTROL_FUNPR(void, SetSelItemHotTextColor, (DWORD _dwSelHotItemTextColor));
-	}
-};
-
-//////////////////////////////////////////////////////////////////////////
-//CAnimationPaneUI
-template <typename T>
-class regCAnimationPaneUI : public regCContainerUI<T>
-{
-	DECL_CONTROL_FACTORY(CAnimationPaneUI);
-	DECL_CONTROL_REGFACT(CAnimationPaneUI);
-public:
-	virtual void reg(asIScriptEngine *engine)
-	{
-		__super::reg(engine);
-		int r = 0;
-
-		REG_CONTROL_FUNPR(void,		SetPaneVisible,			(bool bVisible, bool bAnimation)	);
-		REG_CONTROL_FUNPR(bool,		IsPaneVisible,			() const			);
-
-		REG_CONTROL_FUNPR(void,		SetFrameCount,			(int framecount)	);
-		REG_CONTROL_FUNPR(int,		GetFrameCount,			() const			);
-		REG_CONTROL_FUNPR(void,		SetFrameDelay,			(int nDelay)		);
-		REG_CONTROL_FUNPR(int,		GetFrameDelay,			() const			);
-
-		REG_CONTROL_FUNPR(void,		SetAnimationDirection,	(int nAnim)			);
-		REG_CONTROL_FUNPR(int,		GetAnimationDirection,	()					);
 	}
 };
 

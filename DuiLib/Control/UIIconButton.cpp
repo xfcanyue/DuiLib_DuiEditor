@@ -7,8 +7,11 @@ namespace DuiLib
 
 IMPLEMENT_DUICONTROL(CIconButtonUI)
 
-CIconButtonUI::CIconButtonUI(void) : m_szIcon(16,16), m_uIconAlign(DT_LEFT)
+CIconButtonUI::CIconButtonUI(void) : m_szIcon(16,16)
 {
+	SetChildVAlign(DT_VCENTER);
+	Add(m_pIconUI = new CButtonUI);
+	m_pIconUI->SetMouseEnabled(false);
 }
 
 
@@ -27,6 +30,12 @@ LPVOID CIconButtonUI::GetInterface(LPCTSTR pstrName)
 	return __super::GetInterface(pstrName);
 }
 
+void CIconButtonUI::DoInit()
+{
+	m_pIconUI->SetFixedWidth(m_szIcon.cx);
+	m_pIconUI->SetFixedHeight(m_szIcon.cy);
+}
+
 void CIconButtonUI::PaintText(HDC hDC)
 {
 	if( IsFocused() ) m_uButtonState |= UISTATE_FOCUSED;
@@ -41,17 +50,20 @@ void CIconButtonUI::PaintText(HDC hDC)
 	if( sText.IsEmpty() ) return;
 
 	RECT rcText = m_rcItem;
-	//rcText.left += m_szIcon.cx;
-	rcText.left += m_rcItem.bottom - m_rcItem.top;
+	rcText.left += m_rcInset.left;
+	rcText.right -= m_rcInset.right;
+	rcText.top += m_rcInset.top;
+	rcText.bottom -= m_rcInset.bottom;
 
-	RECT m_rcTextPadding = CButtonUI::m_rcTextPadding;
+	rcText.left += m_szIcon.cx;
+
+	RECT m_rcTextPadding = CButtonLayoutUI::m_rcTextPadding;
 	GetManager()->GetDPIObj()->Scale(&m_rcTextPadding);
-	int nLinks = 0;
-	RECT rc = rcText;
-	rc.left += m_rcTextPadding.left;
-	rc.right -= m_rcTextPadding.right;
-	rc.top += m_rcTextPadding.top;
-	rc.bottom -= m_rcTextPadding.bottom;
+	
+	rcText.left += m_rcTextPadding.left;
+	rcText.right -= m_rcTextPadding.right;
+	rcText.top += m_rcTextPadding.top;
+	rcText.bottom -= m_rcTextPadding.bottom;
 
 	DWORD clrColor = IsEnabled()?m_dwTextColor:m_dwDisabledTextColor;
 
@@ -70,70 +82,13 @@ void CIconButtonUI::PaintText(HDC hDC)
 	else if( ((m_uButtonState & UISTATE_FOCUSED) != 0) && (GetFocusedFont() != -1) )
 		iFont = GetFocusedFont();
 
+	int nLinks = 0;
 	if( m_bShowHtml )
-		CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, sText, clrColor, \
+		CRenderEngine::DrawHtmlText(hDC, m_pManager, rcText, sText, clrColor, \
 		NULL, NULL, nLinks, iFont, m_uTextStyle);
 	else
-		CRenderEngine::DrawText(hDC, m_pManager, rc, sText, clrColor, \
+		CRenderEngine::DrawText(hDC, m_pManager, rcText, sText, clrColor, \
 		iFont, m_uTextStyle);
-}
-
-void CIconButtonUI::PaintStatusImage(HDC hDC)
-{
-	__super::PaintStatusImage(hDC);
-
-	if( (m_uButtonState & UISTATE_DISABLED) != 0 ) {
-		if( !m_IconDisabledImage.IsEmpty() ) {
-			if( DrawIconImage(hDC, (LPCTSTR)m_IconDisabledImage) )
-				return;
-		}
-	}
-	else if( (m_uButtonState & UISTATE_PUSHED) != 0 ) {
-		if( !m_IconPushedImage.IsEmpty() ) {
-			if( DrawIconImage(hDC, (LPCTSTR)m_IconPushedImage) )
-				return;
-		}
-	}
-	else if( (m_uButtonState & UISTATE_HOT) != 0 ) {
-		if( !m_IconHotImage.IsEmpty() ) {
-			if( DrawIconImage(hDC, (LPCTSTR)m_IconHotImage) ) 
-				return;
-		}
-	}
-	else if( (m_uButtonState & UISTATE_FOCUSED) != 0 ) {
-		if( !m_IconFocusedImage.IsEmpty() ) {
-			if( DrawIconImage(hDC, (LPCTSTR)m_IconFocusedImage) )
-				return;
-		}
-	}
-
-	if( !m_IconNormalImage.IsEmpty() ) {
-		if( DrawIconImage(hDC, (LPCTSTR)m_IconNormalImage) )
-			return;
-	}
-}
-
-bool CIconButtonUI::DrawIconImage(HDC hDC, LPCTSTR pStrImage, LPCTSTR pStrModify/*=NULL*/)
-{
-	RECT rcItem = m_rcItem;
-	RECT rcImage;
-
-	rcItem.top++;
-	rcItem.bottom--;
-	rcItem.left++;
-	rcItem.right = rcItem.left + rcItem.bottom - rcItem.top;
-
-// 	rcImage.left = rcItem.left + (rcItem.right - rcItem.left)/2 - m_szIcon.cx/2;
-// 	rcImage.right = rcImage.left + m_szIcon.cx;
-// 	rcImage.top = rcItem.top + (rcItem.bottom - rcItem.top)/2 - m_szIcon.cy/2;
-// 	rcImage.bottom = rcImage.top + m_szIcon.cy;
-
-	rcImage.left = rcItem.right - m_szIcon.cx;
-	rcImage.right = rcItem.right;
-	rcImage.top = rcItem.top + (rcItem.bottom - rcItem.top)/2 - m_szIcon.cy/2;
-	rcImage.bottom = rcImage.top + m_szIcon.cy;
-		
-	return CRenderEngine::DrawImageString(hDC, m_pManager, rcImage, rcImage, pStrImage, pStrModify, m_instance);
 }
 
 void CIconButtonUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
@@ -145,6 +100,8 @@ void CIconButtonUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 		cx.cx = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
 		cx.cy = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);
 		m_szIcon = cx;
+		m_pIconUI->SetFixedWidth(m_szIcon.cx);
+		m_pIconUI->SetFixedHeight(m_szIcon.cy);
 	}
 	else if( _tcsicmp(pstrName, _T("iconnormalimage")) == 0 ) SetIconNormalImage(pstrValue);
 	else if( _tcsicmp(pstrName, _T("iconhotimage")) == 0 ) SetIconHotImage(pstrValue);
@@ -156,52 +113,52 @@ void CIconButtonUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 
 LPCTSTR CIconButtonUI::GetIconNormalImage() const
 {
-	return m_IconNormalImage;
+	return m_pIconUI->GetNormalImage();
 }
 
 void CIconButtonUI::SetIconNormalImage(LPCTSTR pStrImage)
 {
-	m_IconNormalImage = pStrImage;
+	m_pIconUI->SetNormalImage(pStrImage);
 }
 
 LPCTSTR CIconButtonUI::GetIconHotImage() const
 {
-	return m_IconHotImage;
+	return m_pIconUI->GetHotImage();
 }
 
 void CIconButtonUI::SetIconHotImage(LPCTSTR pStrImage)
 {
-	m_IconHotImage = pStrImage;
+	m_pIconUI->SetHotImage(pStrImage);
 }
 
 LPCTSTR CIconButtonUI::GetIconPushedImage() const
 {
-	return m_IconPushedImage;
+	return m_pIconUI->GetPushedImage();
 }
 
 void CIconButtonUI::SetIconPushedImage(LPCTSTR pStrImage)
 {
-	m_IconPushedImage = pStrImage;
+	m_pIconUI->SetPushedImage(pStrImage);
 }
 
 LPCTSTR CIconButtonUI::GetIconFocusedImage() const
 {
-	return m_IconFocusedImage;
+	return m_pIconUI->GetFocusedImage();
 }
 
 void CIconButtonUI::SetIconFocusedImage(LPCTSTR pStrImage)
 {
-	m_IconFocusedImage = pStrImage;
+	m_pIconUI->SetFocusedImage(pStrImage);
 }
 
 LPCTSTR CIconButtonUI::GetIconDisabledImage() const
 {
-	return m_IconDisabledImage;
+	return m_pIconUI->GetDisabledImage();
 }
 
 void CIconButtonUI::SetIconDisabledImage(LPCTSTR pStrImage)
 {
-	m_IconDisabledImage = pStrImage;
+	m_pIconUI->SetDisabledImage(pStrImage);
 }
 
 }

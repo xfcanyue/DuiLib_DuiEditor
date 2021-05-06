@@ -181,7 +181,7 @@ void CImageEditorListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 		if ( ( rItem.state & LVIS_SELECTED ) && bListHasFocus )
 			uFormat |= ILD_FOCUS;
 
-		//画图标，如果CxImage不能加载的，就用系统默认图标显示
+		//画图标，如果不能加载的，就用系统默认图标显示
 		CRect rcIcon = rcItem;
 		rcIcon.left += 5;
 		rcIcon.right -= 5;

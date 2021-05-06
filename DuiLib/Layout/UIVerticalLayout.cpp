@@ -27,6 +27,11 @@ namespace DuiLib
 		else return 0;
 	}
 
+	SIZE CVerticalLayoutUI::EstimateSize(SIZE szAvailable)
+	{
+		return __super::EstimateSize(szAvailable);
+	}
+
 	void CVerticalLayoutUI::SetPos(RECT rc, bool bNeedInvalidate)
 	{
 		CControlUI::SetPos(rc, bNeedInvalidate);
@@ -346,12 +351,9 @@ namespace DuiLib
 		}
 	}
 
-	bool CVerticalLayoutUI::CalcPos(CControlUI *pChildControl, RECT &rcChild)
+	bool CVerticalLayoutUI::CalcPos(CControlUI *pChildControl, RECT &rcChild) //子控件调用这个，计算子空间的rect
 	{
-		CInnerCalcPosLock lock(this);
-
-		CDuiRect rc = GetCalcPos();//m_rcItem;
-		if(rc.IsNull()) rc = m_rcItem;
+		CDuiRect rc = m_rcItem;
 
 		// Adjust for inset
 		RECT m_rcInset = CVerticalLayoutUI::m_rcInset;
@@ -381,7 +383,7 @@ namespace DuiLib
 		int iControlMaxHeight = 0;
 		for( int it1 = 0; it1 < m_items.GetSize(); it1++ ) {
 			CControlUI* pControl = static_cast<CControlUI*>(m_items[it1]);
-			if( !pControl->IsVisible() ) continue;
+			if( !pControl->IsVisible() && !pControl->IsPaneVisible() ) continue; //隐藏的控件也要计算的
 			if( pControl->IsFloat() ) continue;
 			szControlAvailable = szAvailable;
 			RECT rcPadding = pControl->GetPadding();
@@ -437,7 +439,7 @@ namespace DuiLib
 		int cyFixedRemaining = cyFixed;
 		for( int it2 = 0; it2 < m_items.GetSize(); it2++ ) {
 			CControlUI* pControl = static_cast<CControlUI*>(m_items[it2]);
-			if( !pControl->IsVisible() ) continue;
+			if( !pControl->IsVisible() && !pControl->IsPaneVisible() ) continue; //隐藏的控件也要计算的
 			if( pControl->IsFloat() ) {
 				if(pControl == pChildControl)
 				{

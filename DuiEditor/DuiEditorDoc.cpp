@@ -366,6 +366,9 @@ void CDuiEditorDoc::OnCloseDocument()
 	}
 	//如果没有打开任何文档，左侧切换到文件列表
 	pMain->m_wndFileView.ShowPane(TRUE, FALSE,TRUE);
+
+	//趁这个机会，清理UIManager的静态成员的资源
+	//CPaintManagerUI::Term();
 }
 
 void CDuiEditorDoc::SetModifiedFlag(BOOL bModified)

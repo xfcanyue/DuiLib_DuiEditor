@@ -138,11 +138,8 @@ void CDuiProject::LoadConfig(CPaintManagerUI* pManager)
 			}
 			if( id >= 0 ) {
 				pManager->AddFont(id, pFontName, size, bold, underline, italic, shared);
-#ifdef DUILIB_VERSION_ORIGINAL
-				if( defaultfont ) pManager->SetDefaultFont(pFontName, size, bold, underline, italic, shared);
-#else	
 				if( defaultfont ) pManager->SetDefaultFont(pFontName, pManager->GetDPIObj()->Scale(size), bold, underline, italic, shared);
-#endif
+
 			}
 		}
 		else if( _tcsicmp(pstrClass, _T("Default")) == 0 ) {
@@ -184,9 +181,8 @@ void CDuiProject::LoadConfig(CPaintManagerUI* pManager)
 				}
 			}
 			if( pName ) {
-#ifndef DUILIB_VERSION_ORIGINAL
 				pManager->AddStyle(pName, pStyle, shared);
-#endif
+
 			}
 		}
 		else if (_tcsicmp(pstrClass, _T("Import")) == 0) {
@@ -199,9 +195,8 @@ void CDuiProject::LoadConfig(CPaintManagerUI* pManager)
 				}
 			}
 			if (pstrPath) {
-#ifndef DUILIB_VERSION_ORIGINAL
 				pManager->AddFontArray(pstrPath);
-#endif
+
 			}
 		}
 	}

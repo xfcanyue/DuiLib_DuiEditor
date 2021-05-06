@@ -50,11 +50,7 @@
 #include "pugixml/pugixml.hpp"
 using namespace pugi;
 
-#ifdef UILIB_STATIC
-#define CXIMAGE_STATIC
-#endif
-#include "../3rd/CxImage/Include/image.h"
-#include "DuiLib/LsStringConverter.h"
+#include "DuiLib/LsStringConverter.h" 
 
 extern CDuiString g_strDuiPluginsPath;
 

@@ -300,7 +300,8 @@ namespace DuiLib {
 		m_bDragMode(false),
 		m_hDragBitmap(NULL),
 		m_pDPI(NULL),
-		m_iHoverTime(400UL)
+		m_iHoverTime(400UL),
+		m_bLockUpdate(false)
 	{
 		if (m_SharedResInfo.m_DefaultFontInfo.sFontName.IsEmpty())
 		{
@@ -1108,7 +1109,7 @@ namespace DuiLib {
 				DWORD dwHeight = rcClient.bottom - rcClient.top;
 
 				SetPainting(true);
-				if( m_bUpdateNeeded ) {
+				if( m_bUpdateNeeded && !m_bLockUpdate) {
 					m_bUpdateNeeded = false;
 					if( !::IsRectEmpty(&rcClient) && !::IsIconic(m_hWndPaint) ) {
 						if( m_pRoot->IsUpdateNeeded() ) {
@@ -1185,6 +1186,7 @@ namespace DuiLib {
 				// Prepare offscreen bitmap
 				if( m_bOffscreenPaint && m_hbmpOffscreen == NULL ) {
 					m_hDcOffscreen = ::CreateCompatibleDC(m_hDcPaint);
+
 					m_hbmpOffscreen = CRenderEngine::CreateARGB32Bitmap(m_hDcPaint, dwWidth, dwHeight, (LPBYTE*)&m_pOffscreenBits); 
 					ASSERT(m_hDcOffscreen);
 					ASSERT(m_hbmpOffscreen);
@@ -1650,6 +1652,11 @@ namespace DuiLib {
 			{
 				if (!m_bNoActivate) ::SetFocus(m_hWndPaint);
 
+				//由于duilib把单击和双击混淆一起，
+				//在双击事件之后弹出窗口，如果在窗口中改变了父窗口控件，可能导致m_pEvenClick失效
+				//双击时事件的处理顺序是 1左键按下 -- 2左键弹起  -- 3双击 
+				//左键弹起时，写了m_pEventClick = NULL; 双击之后没机会进行m_pEventClick = NULL了
+
 				POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
 				m_ptLastMousePos = pt;
 				CControlUI* pControl = FindControl(pt);
@@ -1712,11 +1719,12 @@ namespace DuiLib {
 			break;
 		case WM_RBUTTONUP:
 			{
+				if(m_bMouseCapture) ReleaseCapture();
 				POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
 				m_ptLastMousePos = pt;
 				m_pEventClick = FindControl(pt);
 				if(m_pEventClick == NULL) break;
-				ReleaseCapture();
+				
 				TEventUI event = { 0 };
 				event.Type = UIEVENT_RBUTTONUP;
 				event.pSender = m_pEventClick;
@@ -1752,11 +1760,11 @@ namespace DuiLib {
 			break;
 		case WM_MBUTTONUP:
 			{
+				if(m_bMouseCapture) ReleaseCapture();
 				POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
 				m_ptLastMousePos = pt;
 				m_pEventClick = FindControl(pt);
 				if(m_pEventClick == NULL) break;
-				ReleaseCapture();
 
 				TEventUI event = { 0 };
 				event.Type = UIEVENT_MBUTTONUP;
@@ -1803,7 +1811,7 @@ namespace DuiLib {
 				TEventUI event = { 0 };
 				event.Type = UIEVENT_SCROLLWHEEL;
 				event.pSender = pControl;
-				event.wParam = MAKELPARAM(zDelta < 0 ? SB_LINEDOWN : SB_LINEUP, 0);
+				event.wParam = MAKELPARAM(zDelta < 0 ? SB_LINEDOWN : SB_LINEUP, zDelta);
 				event.lParam = lParam;
 				event.ptMouse = pt;
 				event.wKeyState = MapKeyState();
@@ -1900,6 +1908,11 @@ namespace DuiLib {
 				}
 				break;
 			}
+		case WM_KILLFOCUS:
+			{
+				if(IsCaptured()) ReleaseCapture();
+				break;
+			}
 		case WM_NOTIFY:
 			{
 				if( lParam == 0 ) break;
@@ -1943,6 +1956,15 @@ namespace DuiLib {
 		m_bUpdateNeeded = true;
 	}
 
+	void CPaintManagerUI::LockUpdate(bool bLock)
+	{
+		m_bLockUpdate = bLock;
+	}
+
+	bool CPaintManagerUI::IsLockUpdate()
+	{
+		return m_bLockUpdate;
+	}
 	void CPaintManagerUI::Invalidate()
 	{
 		RECT rcClient = { 0 };
@@ -2193,7 +2215,7 @@ namespace DuiLib {
 		}
 		SetWindowPos(GetPaintWindow(), NULL, prcNewWindow->left, prcNewWindow->top, prcNewWindow->right - prcNewWindow->left, prcNewWindow->bottom - prcNewWindow->top, SWP_NOZORDER | SWP_NOACTIVATE);
 		if (GetRoot() != NULL) GetRoot()->NeedUpdate();
-		::PostMessage(GetPaintWindow(), WM_USER_SET_DPI, 0, 0);
+		::PostMessage(GetPaintWindow(), UIMSG_SET_DPI, 0, 0);
 	}
 
 	void DuiLib::CPaintManagerUI::SetAllDPI(int iDPI)
@@ -3487,8 +3509,8 @@ namespace DuiLib {
 	}
 	void CPaintManagerUI::ReloadSharedImages()
 	{
-		TImageInfo* data;
-		TImageInfo* pNewData;
+		TImageInfo* data = NULL;
+		TImageInfo* pNewData = NULL;
 		for( int i = 0; i< m_SharedResInfo.m_ImageHash.GetSize(); i++ ) {
 			if(LPCTSTR bitmap = m_SharedResInfo.m_ImageHash.GetAt(i)) {
 				data = static_cast<TImageInfo*>(m_SharedResInfo.m_ImageHash.Find(bitmap));
@@ -3529,8 +3551,8 @@ namespace DuiLib {
 	{
 		RemoveAllDrawInfos();
 
-		TImageInfo* data;
-		TImageInfo* pNewData;
+		TImageInfo* data = NULL;
+		TImageInfo* pNewData = NULL;
 		for( int i = 0; i< m_ResInfo.m_ImageHash.GetSize(); i++ ) {
 			if(LPCTSTR bitmap = m_ResInfo.m_ImageHash.GetAt(i)) {
 				data = static_cast<TImageInfo*>(m_ResInfo.m_ImageHash.Find(bitmap));
@@ -4307,19 +4329,19 @@ namespace DuiLib {
 		return true;
 	}
 	
-	IScriptManager *CPaintManagerUI::GetScriptEngine()
+	IScriptManager *CPaintManagerUI::GetScriptEngine(bool bCreateScriptEngine)
 	{
 		if(m_funCreateScriptEngine == NULL)	
 			return NULL;
 
-		if(m_pSharedScriptEngine == NULL)
+		if(m_pSharedScriptEngine == NULL && bCreateScriptEngine)
 			m_pSharedScriptEngine = (*m_funCreateScriptEngine)();
 		return m_pSharedScriptEngine;
 	}
 
 	void CPaintManagerUI::AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pLanguageType)
 	{
-		IScriptManager *pScriptEngine = GetScriptEngine();
+		IScriptManager *pScriptEngine = GetScriptEngine(true);
 		if(pScriptEngine == NULL) return;
 		pScriptEngine->AddScriptFile(pstrFileName);
 	}

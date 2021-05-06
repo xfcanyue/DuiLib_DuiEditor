@@ -22,11 +22,6 @@
 #endif
 
 //////////////////////////////////////////////////////////////////////////
-#ifdef UILIB_STATIC
-#define CXIMAGE_STATIC
-#endif
-#include "../../3rd/CxImage/Include/image.h"
-//////////////////////////////////////////////////////////////////////////
 
 #define DUI_CTR_GRIDCTRL					(_T("GridCtrl"))
 #include "../MFCGridCtrl/GridCtrl.h"
@@ -35,12 +30,6 @@
 #include "../DuiLib/UIKeyBoard.h"
 #include "../DuiLib/UIKeyBoardNumber.h"
 #include "../DuiLib/UIKeyBoardSimple.h"
-
-#define DUI_CTR_PICTURECONTROL				(_T("PictureControl"))
-#include "../DuiLib/UIPictureControl.h"
-
-#define DUI_CTR_IMAGEBOX					(_T("ImageBox"))
-#include "../DuiLib/UIImageBox.h"
 
 #define DUI_CTR_SCIEDIT						(_T("SciEdit"))
 #include "../DuiLib/UISciEdit.h"

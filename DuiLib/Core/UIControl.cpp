@@ -10,6 +10,7 @@ namespace DuiLib {
 		m_bMenuUsed(false),
 		m_bVisible(true), 
 		m_bInternVisible(true),
+		m_bPaneVisible(true),
 		m_bFocused(false),
 		m_bEnabled(true),
 		m_bMouseEnabled(true),
@@ -27,6 +28,8 @@ namespace DuiLib {
 		m_dwBackColor(0),
 		m_dwBackColor2(0),
 		m_dwBackColor3(0),
+		m_dwHotBkColor(0),
+		m_dwFocusBkColor(0),
 		m_dwForeColor(0),
 		m_dwBorderColor(0),
 		m_dwFocusBorderColor(0),
@@ -40,7 +43,8 @@ namespace DuiLib {
 		m_bAutoCalcWidth(false), m_bAutoCalcHeight(false),
 		m_asOnInit(NULL),m_asOnEvent(NULL), m_asOnNotify(NULL), m_asOnDestroy(NULL), m_asOnSize(NULL), 
 		m_asOnPaintBkColor(NULL), m_asOnPaintBkImage(NULL), m_asOnPaintStatusImage(NULL), 
-		m_asOnPaint(NULL), m_asOnPaintForeColor(NULL), m_asOnPaintForeImage(NULL), m_asOnPaintText(NULL), m_asOnPaintBorder(NULL)
+		m_asOnPaint(NULL), m_asOnPaintForeColor(NULL), m_asOnPaintForeImage(NULL), m_asOnPaintText(NULL), m_asOnPaintBorder(NULL),
+		CUIAnimation( this ), m_animation(DuiAnim_null), m_nFrameCount(24), m_nFrameDelay(5), m_szAnimationTotal(CDuiSize(0,0)), m_szAnimationCurrect(CDuiSize(0,0))
 	{
 		m_cXY.cx = m_cXY.cy = 0;
 		m_cxyFixed.cx = m_cxyFixed.cy = 0;
@@ -53,9 +57,6 @@ namespace DuiLib {
 		::ZeroMemory(&m_rcPaint, sizeof(RECT));
 		::ZeroMemory(&m_rcBorderSize,sizeof(RECT));
 		m_piFloatPercent.left = m_piFloatPercent.top = m_piFloatPercent.right = m_piFloatPercent.bottom = 0.0f;
-
-		::ZeroMemory(&m_rcCalcPos, sizeof(m_rcCalcPos));
-		m_bCalcPosNow = false;
 
 		__refCount = 1;
 	}
@@ -139,10 +140,6 @@ namespace DuiLib {
 			return CResourceManager::GetInstance()->GetText(m_sText);
 
  		CControlUI* pThis = const_cast<CControlUI* >(this);
-// 		if(pThis->GetInterface(DUI_CTR_EDIT))
-// 		{
-// 			int x = 0; x++;
-// 		}
 		CLangPackageUI *pkg = pThis->GetLangPackage();
 		if(pkg && GetResourceID() > 0)
 		{
@@ -282,6 +279,11 @@ namespace DuiLib {
 		m_dwBackColor3 = dwBackColor;
 		Invalidate();
 	}
+	void CControlUI::SetHotBkColor(DWORD dwColor) { m_dwHotBkColor = dwColor; Invalidate(); }
+	DWORD CControlUI::GetHotBkColor() const { return m_dwHotBkColor; }
+
+	void CControlUI::SetFocusBkColor(DWORD dwColor) {m_dwFocusBkColor = dwColor; Invalidate(); }
+	DWORD CControlUI::GetFocusBkColor() const { return m_dwFocusBkColor; }
 
 	DWORD CControlUI::GetForeColor() const
 	{
@@ -472,7 +474,7 @@ namespace DuiLib {
 		}
 	}
 
-	bool CControlUI::CalcPos(CControlUI *pChildControl, RECT &rcChild) //子控件调用这个，计算子空间的rect
+	bool CControlUI::CalcPos(CControlUI *pChildControl, RECT &rcChild)
 	{
 		return false;
 	}
@@ -745,14 +747,13 @@ namespace DuiLib {
 
 	bool CControlUI::IsVisible() const
 	{
-
 		return m_bVisible && m_bInternVisible;
 	}
 
 	void CControlUI::SetVisible(bool bVisible)
 	{
 		if( m_bVisible == bVisible ) return;
-
+			
 		bool v = IsVisible();
 		m_bVisible = bVisible;
 		if( m_bFocused ) m_bFocused = false;
@@ -949,6 +950,8 @@ namespace DuiLib {
 		}
 		if( event.Type == UIEVENT_TIMER )
 		{
+			if(GetAnimation() != DuiAnim_null)
+				OnAnimationElapse( event.wParam );
 			m_pManager->SendNotify(this, DUI_MSGTYPE_TIMER, event.wParam, event.lParam);
 			return;
 		}
@@ -981,7 +984,6 @@ namespace DuiLib {
 
 		if( m_pParent != NULL ) m_pParent->DoEvent(event);
 	}
-
 
 	void CControlUI::SetVirtualWnd(LPCTSTR pstrValue)
 	{
@@ -1162,6 +1164,20 @@ namespace DuiLib {
 			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
 			SetBkColor3(clrColor);
 		}
+		else if( _tcsicmp(pstrName, _T("hotbkcolor")) == 0 )
+		{
+			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetHotBkColor(clrColor);
+		}
+		else if( _tcsicmp(pstrName, _T("focusbkcolor")) == 0 )
+		{
+			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetFocusBkColor(clrColor);
+		}
 		else if( _tcsicmp(pstrName, _T("forecolor")) == 0 ) {
 			while( *pstrValue > _T('\0') && *pstrValue <= _T(' ') ) pstrValue = ::CharNext(pstrValue);
 			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
@@ -1295,6 +1311,29 @@ namespace DuiLib {
 		else if( _tcsicmp(pstrName, _T("autocalcheight")) == 0 ) {
 			SetAutoCalcHeight(_tcsicmp(pstrValue, _T("true")) == 0);
 		}
+		else if( _tcsicmp(pstrName, _T("animation")) == 0 ) 
+		{
+			if(_tcsicmp(pstrValue, _T("null")) == 0)
+				SetAnimation(DuiAnim_null);
+			else if(_tcsicmp(pstrValue, _T("vertical")) == 0)
+				SetAnimation(DuiAnim_vertical);
+			else if(_tcsicmp(pstrValue, _T("horizontal")) == 0)
+				SetAnimation(DuiAnim_horizontal);
+			else if(_tcsicmp(pstrValue, _T("scalevertical")) == 0)
+				SetAnimation(DuiAnim_ScaleVertical);
+			else if(_tcsicmp(pstrValue, _T("scalehorizontal")) == 0)
+				SetAnimation(DuiAnim_ScaleHorizontal);
+			else if(_tcsicmp(pstrValue, _T("scalesize")) == 0)
+				SetAnimation(DuiAnim_ScaleSize);
+			else if(_tcsicmp(pstrValue, _T("alpha")) == 0)
+				SetAnimation(DuiAnim_Alpha);
+		}
+		else if( _tcsicmp(pstrName, _T("framecount")) == 0 ) {
+			SetFrameCount(_ttoi(pstrValue));
+		}
+		else if( _tcsicmp(pstrName, _T("framedelay")) == 0 ) {
+			SetFrameDelay(_ttoi(pstrValue));
+		}
 		else if( _tcscmp(pstrName, _T("OnInit"))			== 0 )		m_asOnInit	= GetManager()->GetScriptFunAddress(pstrValue);
 		else if( _tcscmp(pstrName, _T("OnEvent"))			== 0 )		m_asOnEvent = GetManager()->GetScriptFunAddress(pstrValue);
 		else if( _tcscmp(pstrName, _T("OnNotify"))			== 0 )		m_asOnNotify = GetManager()->GetScriptFunAddress(pstrValue);
@@ -1337,9 +1376,14 @@ namespace DuiLib {
 					sItem += *pstrList++;
 				}
 			}
-			ASSERT( *pstrList == _T('=') );
+			//ASSERT( *pstrList == _T('=') ); //可能让设计器崩溃
+			if( *pstrList != _T('=') ) return this;	
+
 			if( *pstrList++ != _T('=') ) return this;
-			ASSERT( *pstrList == _T('\"') );
+
+			//ASSERT( *pstrList == _T('\"') ); //可能让设计器崩溃
+			if( *pstrList != _T('\"') )	return this;
+
 			if( *pstrList++ != _T('\"') ) return this;
 			while( *pstrList != _T('\0') && *pstrList != _T('\"') ) {
 				LPTSTR pstrTemp = ::CharNext(pstrList);
@@ -1347,7 +1391,10 @@ namespace DuiLib {
 					sValue += *pstrList++;
 				}
 			}
-			ASSERT( *pstrList == _T('\"') );
+
+			//ASSERT( *pstrList == _T('\"') ); //可能让设计器崩溃
+			if( *pstrList != _T('\"') )	return this;
+
 			if( *pstrList++ != _T('\"') ) return this;
 			SetAttribute(sItem, sValue);
 			if( *pstrList++ != _T(' ') && *pstrList++ != _T(',') ) return this;
@@ -1357,6 +1404,15 @@ namespace DuiLib {
 
 	SIZE CControlUI::EstimateSize(SIZE szAvailable)
 	{
+		if(IsAnimationRunning(ANIMATION_ID_SHOW) || IsAnimationRunning(ANIMATION_ID_HIDE)) {
+			return m_szAnimationCurrect;
+		}
+
+		if(!IsPaneVisible())
+		{
+			return m_szAnimationCurrect;
+		}
+
 		if(m_pManager != NULL)
 			return m_pManager->GetDPIObj()->Scale(m_cxyFixed);
 		return m_cxyFixed;
@@ -1371,9 +1427,9 @@ namespace DuiLib {
 			if(GetManager()->ExecuteScript(m_asOnPaint, this, hDC, rcPaint, pStopControl)) 
 				return true;
 		}
-		//if( OnPaint ) {
-		//	if( !OnPaint(this) ) return true;
-		//}
+		if( OnPaint ) {
+			if( !OnPaint(hDC) ) return true;
+		}
 		if (!DoPaint(hDC, m_rcPaint, pStopControl)) return false;
 		return true;
 	}
@@ -1600,24 +1656,144 @@ namespace DuiLib {
 		Invalidate();
 	}
 
-	void CControlUI::SetCalcPos(RECT rc)
+
+	void CControlUI::SetPaneVisible(bool bVisible)
 	{
-		m_rcCalcPos = rc;
+		if( m_bPaneVisible == bVisible ) return;
+
+		if(m_animation == DuiAnim_ScaleVertical || m_animation == DuiAnim_ScaleHorizontal || m_animation == DuiAnim_ScaleSize)
+		{
+			m_bPaneVisible = bVisible;
+
+			if(bVisible)
+			{
+				StopAnimation(ANIMATION_ID_SHOW);
+
+				if(m_animation == DuiAnim_ScaleVertical) {
+					m_szAnimationCurrect.cx = m_szAnimationTotal.cx;
+					m_szAnimationCurrect.cy = 1;
+				}
+				if(m_animation == DuiAnim_ScaleHorizontal) {
+					m_szAnimationCurrect.cx = 1;
+					m_szAnimationCurrect.cy = m_szAnimationTotal.cy;
+				}
+				if(m_animation == DuiAnim_ScaleSize) {
+					m_szAnimationCurrect.cx = 1;
+					m_szAnimationCurrect.cy = 1;
+				}
+
+				SetVisible(true);
+
+				m_szAnimationTotal = m_cxyFixed;
+				RECT rcChild;
+				if(GetParent() && GetParent()->CalcPos(this, rcChild))
+				{
+					m_szAnimationTotal.cx = rcChild.right - rcChild.left;
+					m_szAnimationTotal.cy = rcChild.bottom - rcChild.top;
+				}
+
+				if(m_animation == DuiAnim_ScaleVertical) {
+					m_szAnimationCurrect.cx = m_szAnimationTotal.cx;
+					m_szAnimationCurrect.cy = 1;
+				}
+				if(m_animation == DuiAnim_ScaleHorizontal) {
+					m_szAnimationCurrect.cx = 1;
+					m_szAnimationCurrect.cy = m_szAnimationTotal.cy;
+				}
+				if(m_animation == DuiAnim_ScaleSize) {
+					m_szAnimationCurrect.cx = 1;
+					m_szAnimationCurrect.cy = 1;
+				}
+				StartAnimation(GetFrameDelay(), GetFrameCount(), ANIMATION_ID_SHOW);
+			}
+			else
+			{
+				StopAnimation(ANIMATION_ID_HIDE);
+
+				m_szAnimationTotal = m_cxyFixed;
+				RECT rcChild;
+				if(GetParent() && GetParent()->CalcPos(this, rcChild))
+				{
+					m_szAnimationTotal.cx = rcChild.right - rcChild.left;
+					m_szAnimationTotal.cy = rcChild.bottom - rcChild.top;
+				}
+
+				m_szAnimationCurrect = m_szAnimationTotal;
+				StartAnimation(GetFrameDelay(), GetFrameCount(), ANIMATION_ID_HIDE);
+			}
+			return;
+		}
 	}
 
-	RECT CControlUI::GetCalcPos()
+	bool CControlUI::IsPaneVisible() const
 	{
-		return m_rcCalcPos;
+		return m_bPaneVisible;
 	}
 
-	void CControlUI::SetCalPosNow(bool bCalcNow)
+	void CControlUI::SetAnimation(DuiAnim emAnim) { m_animation = emAnim; }
+	DuiAnim CControlUI::GetAnimation() const { return m_animation; }
+	void CControlUI::SetFrameCount(int framecount) { m_nFrameCount = framecount; }
+	int CControlUI::GetFrameCount() const { return m_nFrameCount; }
+	void CControlUI::SetFrameDelay(int nDelay) { m_nFrameDelay = nDelay; }
+	int CControlUI::GetFrameDelay() const { return m_nFrameDelay; }
+
+	void CControlUI::OnAnimationStart(int nAnimationID, BOOL bFirstLoop)
 	{
-		m_bCalcPosNow = bCalcNow;
+// 		if(nAnimationID == ANIMATION_ID_SHOW)
+// 		{
+// 			SetVisible(true);
+// 		}
 	}
 
-	bool CControlUI::IsCalPosNow()
+	void CControlUI::OnAnimationStep(int nTotalFrame, int nCurFrame, int nAnimationID)
 	{
-		return m_bCalcPosNow;
+		if(nAnimationID == ANIMATION_ID_SHOW)
+		{
+			if(m_animation == DuiAnim_ScaleVertical){
+				m_szAnimationCurrect.cy = m_szAnimationTotal.cy / nTotalFrame * nCurFrame;
+			}
+			else if(m_animation == DuiAnim_ScaleHorizontal) {
+				m_szAnimationCurrect.cx = m_szAnimationTotal.cx / nTotalFrame * nCurFrame;
+			}
+			else if(m_animation == DuiAnim_ScaleSize){
+				m_szAnimationCurrect.cx = m_szAnimationTotal.cx / nTotalFrame * nCurFrame;
+				m_szAnimationCurrect.cy = m_szAnimationTotal.cy / nTotalFrame * nCurFrame;
+			}	
+		}
+		else if(nAnimationID == ANIMATION_ID_HIDE)
+		{
+			if(m_animation == DuiAnim_ScaleVertical){
+				m_szAnimationCurrect.cy = m_szAnimationTotal.cy - m_szAnimationTotal.cy / nTotalFrame * nCurFrame;
+			}
+			else if(m_animation == DuiAnim_ScaleHorizontal) {
+				m_szAnimationCurrect.cx = m_szAnimationTotal.cx - m_szAnimationTotal.cx / nTotalFrame * nCurFrame;
+			}
+			else if(m_animation == DuiAnim_ScaleSize){
+				m_szAnimationCurrect.cx = m_szAnimationTotal.cx - m_szAnimationTotal.cx / nTotalFrame * nCurFrame;
+				m_szAnimationCurrect.cy = m_szAnimationTotal.cy - m_szAnimationTotal.cy / nTotalFrame * nCurFrame;
+			}
+		}
+		NeedUpdate();
+		NeedParentUpdate();
+	}
+
+	void CControlUI::OnAnimationStop(int nAnimationID)
+	{
+		if(nAnimationID == ANIMATION_ID_HIDE)
+		{
+			if(m_animation == DuiAnim_ScaleVertical){
+				m_szAnimationCurrect.cy = 1;
+			}
+			else if(m_animation == DuiAnim_ScaleHorizontal) {
+				m_szAnimationCurrect.cx = 1;
+			}
+			else if(m_animation == DuiAnim_ScaleSize){
+				m_szAnimationCurrect.cx = 1;
+				m_szAnimationCurrect.cy = 1;
+			}
+			SetVisible(false);
+		}
+		NeedParentUpdate();
 	}
 
 	void CControlUI::__AddRef()

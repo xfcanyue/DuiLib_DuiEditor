@@ -20,16 +20,16 @@
 			</HorizontalLayout>
 		</HorizontalLayout>
 		<HorizontalLayout height="60" inset="10,10,10,10" childvalign="vcenter">
-			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" selected="true" bindtablayoutname="tab_main" bindtabindex="0" text="基本控件" bottombordersize="2" resourceid="1" tooltip="基本控件" style="style_option_header" />
-			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="1" text="高级控件" bottombordersize="2" resourceid="2" style="style_option_header" />
-			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="2" text="动画控件" bottombordersize="2" resourceid="3" style="style_option_header" />
-			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="3" text="键盘" bottombordersize="2" resourceid="4" style="style_option_header" />
-			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="4" text="表格" bottombordersize="2" resourceid="5" style="style_option_header" />
-			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="5" text="表格2" bottombordersize="2" style="style_option_header" />
-			<Option width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="6" text="代码编辑器6" bottombordersize="2" resourceid="6" style="style_option_header" />
+			<TabCtrl width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" selected="true" bindtablayoutname="tab_main" bindtabindex="0" text="基本控件" bottombordersize="2" resourceid="1" tooltip="基本控件" style="style_option_header" />
+			<TabCtrl width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="1" text="高级控件" bottombordersize="2" resourceid="2" style="style_option_header" />
+			<TabCtrl width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="2" text="动画控件" bottombordersize="2" resourceid="3" style="style_option_header" />
+			<TabCtrl width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="3" text="键盘" bottombordersize="2" resourceid="4" style="style_option_header" />
+			<TabCtrl width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="4" text="表格" bottombordersize="2" resourceid="5" style="style_option_header" />
+			<TabCtrl width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="5" text="表格2" bottombordersize="2" style="style_option_header" />
+			<TabCtrl width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="6" text="代码编辑器6" bottombordersize="2" resourceid="6" style="style_option_header" />
 		</HorizontalLayout>
-		<TabLayout name="tab_main">
-			<VerticalLayout childpadding="10" padding="10,10,10,10">
+		<TabLayout name="tab_main" animation="horizontal">
+			<VerticalLayout childpadding="10" padding="10,10,10,10" bordercolor="0xFFC0C0C0" bordersize="1">
 				<Include source="NormalControl.xml" />
 			</VerticalLayout>
 			<VerticalLayout childpadding="5" padding="10,10,10,10">
@@ -171,27 +171,74 @@
 					<Option width="120" selectedimage="images\tabbar_pushed.png" group="group_tab_unimation" normalimage="images\tabbar_normal.png" hotimage="images\tabbar_hover.png" bindtablayoutname="tab_animation" bindtabindex="3" text="图片轮播2" resourceid="71" />
 					<Option width="120" selectedimage="images\tabbar_pushed.png" group="group_tab_unimation" normalimage="images\tabbar_normal.png" hotimage="images\tabbar_hover.png" bindtablayoutname="tab_animation" bindtabindex="4" text="滚动字幕" resourceid="72" />
 				</HorizontalLayout>
-				<AnimationTabLayout name="tab_animation">
+				<AnimationTabLayout name="tab_animation" framecount="125" framedelay="5">
 					<HorizontalLayout childpadding="5" bkcolor="0xFFFFFFFF">
-						<VerticalLayout width="200">
-							<AccordionPane name="accordion_1" headerstyle="bkcolor=&quot;0xFFA6CAF0&quot; " iconstyle="foreimage=&quot;images\icon0.png&quot; " textstyle="text=&quot;Pane&quot; " checkboxstyle="selectedimage=&quot;images\leftjt02.png&quot; group=&quot;accordion_group&quot; normalimage=&quot;images\leftjt01.png&quot; " bodystyle="bkcolor=&quot;0xFFC0DCC0&quot; " />
-							<AccordionPane name="accordion_2" headerstyle="bkcolor=&quot;0xFFA6CAF0&quot; " iconstyle="foreimage=&quot;images\icon0.png&quot; " textstyle="text=&quot;Pane&quot; " checkboxstyle="selectedimage=&quot;images\leftjt02.png&quot; group=&quot;accordion_group&quot; normalimage=&quot;images\leftjt01.png&quot; " bodystyle="bkcolor=&quot;0xFFC0DCC0&quot; " panevisible="false" />
+						<VerticalLayout>
+							<Option height="30" selectedimage="file='images\leftjt02.png' dest='0,0,12,12' padding='0,0,10,0' align='right' valign='vcenter' " selectedbkcolor="0xFFA6CAF0" group="group_accordion_pane1" normalimage="file='images\leftjt01.png' dest='0,0,12,12' padding='0,0,10,0' align='right' valign='vcenter' " switchpanevisible="accordion_pane1" text="Pane1" bkcolor="0xFFA6CAF0" bordercolor="0xFFC0C0C0" bordersize="1" foreimage="file='images\icon0.png' dest='0,0,12,11' padding='10,0,0,0' valign='vcenter' " />
+							<VerticalLayout name="accordion_pane1" autocalcheight="true" bkcolor="0xFFC0DCC0" animation="scalevertical">
+								<Text text="pane1" align="center" />
+							</VerticalLayout>
+							<Option height="30" selectedimage="file='images\leftjt02.png' dest='0,0,12,12' padding='0,0,10,0' align='right' valign='vcenter' " selectedbkcolor="0xFFA6CAF0" group="group_accordion_pane1" normalimage="file='images\leftjt01.png' dest='0,0,12,12' padding='0,0,10,0' align='right' valign='vcenter' " switchpanevisible="accordion_pane2" text="Pane2" bkcolor="0xFFA6CAF0" bordercolor="0xFFC0C0C0" bordersize="1" foreimage="file='images\icon0.png' dest='0,0,12,11' padding='10,0,0,0' valign='vcenter' " />
+							<VerticalLayout name="accordion_pane2" childalign="center" childvalign="vcenter" autocalcheight="true" bkcolor="0xFFC0DCC0" animation="scalevertical">
+								<Button text="pane2" style="style_button" />
+							</VerticalLayout>
+							<Option height="30" selectedimage="file='images\leftjt02.png' dest='0,0,12,12' padding='0,0,10,0' align='right' valign='vcenter' " selectedbkcolor="0xFFA6CAF0" group="group_accordion_pane1" normalimage="file='images\leftjt01.png' dest='0,0,12,12' padding='0,0,10,0' align='right' valign='vcenter' " switchpanevisible="accordion_pane3" text="Pane5" bkcolor="0xFFA6CAF0" bordercolor="0xFFC0C0C0" bordersize="1" foreimage="file='images\icon0.png' dest='0,0,12,11' padding='10,0,0,0' valign='vcenter' " />
+							<VerticalLayout name="accordion_pane3" childalign="center" childvalign="vcenter" autocalcheight="true" bkcolor="0xFFC0DCC0" animation="scalevertical">
+								<Button text="pane5" bkcolor="0xFF008080" />
+							</VerticalLayout>
 						</VerticalLayout>
-						<VerticalLayout width="200">
-							<AccordionPane name="accordion_3" height="150" headerstyle="bkcolor=&quot;0xFFA6CAF0&quot; " iconstyle="foreimage=&quot;images\icon0.png&quot; " textstyle="text=&quot;Pane&quot; " checkboxstyle="selectedimage=&quot;images\leftjt02.png&quot; group=&quot;accordion_group2&quot; normalimage=&quot;images\leftjt01.png&quot; " bodystyle="bkcolor=&quot;0xFFC0DCC0&quot; " />
-							<AccordionPane name="accordion_4" height="150" headerstyle="bkcolor=&quot;0xFFA6CAF0&quot; " iconstyle="foreimage=&quot;images\icon0.png&quot; " textstyle="text=&quot;Pane&quot; " checkboxstyle="selectedimage=&quot;images\leftjt02.png&quot; group=&quot;accordion_group2&quot; normalimage=&quot;images\leftjt01.png&quot; " bodystyle="bkcolor=&quot;0xFFC0DCC0&quot; " panevisible="false" />
+						<VerticalLayout>
+							<Option height="30" selectedimage="file='images\leftjt02.png' dest='0,0,12,12' padding='0,0,10,0' align='right' valign='vcenter' " selectedbkcolor="0xFFA6CAF0" group="group_accordion_pane2" normalimage="file='images\leftjt01.png' dest='0,0,12,12' padding='0,0,10,0' align='right' valign='vcenter' " switchpanevisible="accordion_pane4" text="Pane1" bkcolor="0xFFA6CAF0" bordercolor="0xFFC0C0C0" bordersize="1" foreimage="file='images\icon0.png' dest='0,0,12,11' padding='10,0,0,0' valign='vcenter' " />
+							<VerticalLayout name="accordion_pane4" autocalcheight="true" bkcolor="0xFFC0DCC0" animation="scalevertical">
+								<Text text="pane1" align="center" />
+							</VerticalLayout>
+							<Option height="30" selectedimage="file='images\leftjt02.png' dest='0,0,12,12' padding='0,0,10,0' align='right' valign='vcenter' " selectedbkcolor="0xFFA6CAF0" group="group_accordion_pane2" normalimage="file='images\leftjt01.png' dest='0,0,12,12' padding='0,0,10,0' align='right' valign='vcenter' " switchpanevisible="accordion_pane5" text="Pane2" bkcolor="0xFFA6CAF0" bordercolor="0xFFC0C0C0" bordersize="1" foreimage="file='images\icon0.png' dest='0,0,12,11' padding='10,0,0,0' valign='vcenter' " />
+							<VerticalLayout name="accordion_pane5" childalign="center" childvalign="vcenter" autocalcheight="true" bkcolor="0xFFC0DCC0" animation="scalevertical">
+								<Button text="pane2" style="style_button" />
+							</VerticalLayout>
+							<Option height="30" selectedimage="file='images\leftjt02.png' dest='0,0,12,12' padding='0,0,10,0' align='right' valign='vcenter' " selectedbkcolor="0xFFA6CAF0" group="group_accordion_pane2" normalimage="file='images\leftjt01.png' dest='0,0,12,12' padding='0,0,10,0' align='right' valign='vcenter' " switchpanevisible="accordion_pane6" text="Pane5" bkcolor="0xFFA6CAF0" bordercolor="0xFFC0C0C0" bordersize="1" foreimage="file='images\icon0.png' dest='0,0,12,11' padding='10,0,0,0' valign='vcenter' " />
+							<VerticalLayout name="accordion_pane6" childalign="center" childvalign="vcenter" autocalcheight="true" bkcolor="0xFFC0DCC0" animation="scalevertical">
+								<Button text="pane5" bkcolor="0xFF008080" />
+							</VerticalLayout>
 						</VerticalLayout>
-						<VerticalLayout width="200" />
+						<HorizontalLayout bkcolor="0xFFC0DCC0">
+							<Option width="30" selectedimage="file='images\leftjt01.png' dest='0,0,12,12' padding='0,10,0,20' align='center' valign='bottom' " selectedbkcolor="0xFFA6CAF0" group="group_accordion_pane3" normalimage="file='images\leftjt02.png' dest='0,0,12,12' padding='0,10,0,20' align='center' valign='bottom' " switchpanevisible="accordion_pane7" text="3" bkcolor="0xFFA6CAF0" bordercolor="0xFFC0C0C0" bordersize="1" foreimage="file='images\icon0.png' dest='0,0,12,11' padding='0,10,0,0' align='center' " />
+							<HorizontalLayout name="accordion_pane7" bkcolor="0xFFC0DCC0" animation="scalehorizontal">
+								<Label text="pane3" align="center" />
+							</HorizontalLayout>
+							<Option width="30" selectedimage="file='images\leftjt01.png' dest='0,0,12,12' padding='0,10,0,20' align='center' valign='bottom' " selectedbkcolor="0xFFA6CAF0" group="group_accordion_pane3" normalimage="file='images\leftjt02.png' dest='0,0,12,12' padding='0,10,0,20' align='center' valign='bottom' " switchpanevisible="accordion_pane8" text="4" bkcolor="0xFFA6CAF0" bordercolor="0xFFC0C0C0" bordersize="1" foreimage="file='images\icon0.png' dest='0,0,12,11' padding='0,10,0,0' align='center' " />
+							<HorizontalLayout name="accordion_pane8" bkcolor="0xFFC0DCC0" animation="scalehorizontal">
+								<Label text="pane4" align="center" />
+							</HorizontalLayout>
+							<Option width="30" selectedimage="file='images\leftjt01.png' dest='0,0,12,12' padding='0,10,0,20' align='center' valign='bottom' " selectedbkcolor="0xFFA6CAF0" group="group_accordion_pane3" normalimage="file='images\leftjt02.png' dest='0,0,12,12' padding='0,10,0,20' align='center' valign='bottom' " switchpanevisible="accordion_pane9" text="6" bkcolor="0xFFA6CAF0" bordercolor="0xFFC0C0C0" bordersize="1" foreimage="file='images\icon0.png' dest='0,0,12,11' padding='0,10,0,0' align='center' " />
+							<HorizontalLayout name="accordion_pane9" bkcolor="0xFFC0DCC0" animation="scalehorizontal">
+								<Label text="pane6" align="center" />
+							</HorizontalLayout>
+						</HorizontalLayout>
+						<HorizontalLayout bkcolor="0xFFC0DCC0">
+							<Option width="30" selectedimage="file='images\leftjt01.png' dest='0,0,12,12' padding='0,10,0,20' align='center' valign='bottom' " selectedbkcolor="0xFFA6CAF0" group="group_accordion_pane4" normalimage="file='images\leftjt02.png' dest='0,0,12,12' padding='0,10,0,20' align='center' valign='bottom' " switchpanevisible="accordion_pane10" text="3" bkcolor="0xFFA6CAF0" bordercolor="0xFFC0C0C0" bordersize="1" foreimage="file='images\icon0.png' dest='0,0,12,11' padding='0,10,0,0' align='center' " />
+							<HorizontalLayout name="accordion_pane10" bkcolor="0xFFC0DCC0" animation="scalehorizontal">
+								<Label text="pane3" align="center" />
+							</HorizontalLayout>
+							<Option width="30" selectedimage="file='images\leftjt01.png' dest='0,0,12,12' padding='0,10,0,20' align='center' valign='bottom' " selectedbkcolor="0xFFA6CAF0" group="group_accordion_pane4" normalimage="file='images\leftjt02.png' dest='0,0,12,12' padding='0,10,0,20' align='center' valign='bottom' " switchpanevisible="accordion_pane11" text="4" bkcolor="0xFFA6CAF0" bordercolor="0xFFC0C0C0" bordersize="1" foreimage="file='images\icon0.png' dest='0,0,12,11' padding='0,10,0,0' align='center' " />
+							<HorizontalLayout name="accordion_pane11" bkcolor="0xFFC0DCC0" animation="scalehorizontal">
+								<Label text="pane4" align="center" />
+							</HorizontalLayout>
+							<Option width="30" selectedimage="file='images\leftjt01.png' dest='0,0,12,12' padding='0,10,0,20' align='center' valign='bottom' " selectedbkcolor="0xFFA6CAF0" group="group_accordion_pane4" normalimage="file='images\leftjt02.png' dest='0,0,12,12' padding='0,10,0,20' align='center' valign='bottom' " switchpanevisible="accordion_pane12" text="6" bkcolor="0xFFA6CAF0" bordercolor="0xFFC0C0C0" bordersize="1" foreimage="file='images\icon0.png' dest='0,0,12,11' padding='0,10,0,0' align='center' " />
+							<HorizontalLayout name="accordion_pane12" bkcolor="0xFFC0DCC0" animation="scalehorizontal">
+								<Label text="pane6" align="center" />
+							</HorizontalLayout>
+						</HorizontalLayout>
 					</HorizontalLayout>
 					<HorizontalLayout bkcolor="0xFFFFFFFF">
-						<AnimationPane name="pane_3" animation="horizontal" framecount="10" framedelay="10" bkcolor="0xFF800080" resourceid="73" text="左边">
+						<Container name="pane_3" animation="scalehorizontal" framecount="10" framedelay="10" bkcolor="0xFF800080" resourceid="73" text="左边">
 							<Text text="左边栏" align="center" font="2" resourceid="74" />
-						</AnimationPane>
-						<VerticalLayout minwidth="353">
-							<AnimationPane name="pane_1" animation="vertical" bkcolor="0xFFC0DCC0">
+						</Container>
+						<VerticalLayout>
+							<Container name="pane_1" animation="scalevertical" bkcolor="0xFFC0DCC0">
 								<Text text="上边栏" align="center" font="2" resourceid="75" />
-							</AnimationPane>
-							<VerticalLayout inset="10,10,10,10" childpadding="10" childalign="center" childvalign="vcenter" minheight="225">
+							</Container>
+							<VerticalLayout inset="10,10,10,10" childpadding="10" childalign="center" childvalign="vcenter">
 								<Control />
 								<Button name="btn_showhide_top_pane" width="150" height="40" normalimage="file='images\common\button\button.png' source='0,0,15,27' corner='5,5,5,5' " hotimage="file='images\common\button\button.png' source='15,0,30,27' corner='5,5,5,5' " switchpanevisible="pane_1" text="隐藏/显示上边栏" resourceid="76" />
 								<HorizontalLayout height="40" childpadding="10" childvalign="vcenter">
@@ -203,19 +250,19 @@
 								<Button name="btn_showhide_bottom_pane" width="150" height="40" normalimage="file='images\common\button\button.png' source='0,0,15,27' corner='5,5,5,5' " hotimage="file='images\common\button\button.png' source='15,0,30,27' corner='5,5,5,5' " switchpanevisible="pane_2" text="隐藏/显示底边栏" resourceid="79" />
 								<Control />
 							</VerticalLayout>
-							<AnimationPane name="pane_2" animation="vertical" childvalign="bottom" bkcolor="0xFF0000FF">
+							<Container name="pane_2" animation="scalevertical" childvalign="bottom" bkcolor="0xFF0000FF">
 								<Text text="底边栏" align="center" font="2" resourceid="80" />
-							</AnimationPane>
+							</Container>
 						</VerticalLayout>
-						<AnimationPane name="pane_4" animation="horizontal" bkcolor="0xFF008080">
+						<Container name="pane_4" animation="scalehorizontal" bkcolor="0xFF008080">
 							<Text text="右边栏" align="center" font="2" resourceid="81" />
-						</AnimationPane>
+						</Container>
 					</HorizontalLayout>
 					<VerticalLayout bkcolor="0xFFFFFFFF">
 						<ImageBoxEx name="imagebox_1" imagepath="ad" duration="3000" />
 					</VerticalLayout>
 					<VerticalLayout bkcolor="0xFFFFFFFF">
-						<ImageBox name="imagebox_2" imagepath="ad" retention="5000" duration="3000" />
+						<PictureBox name="imagebox_2" imagepath="ad" framedelay="5000" />
 					</VerticalLayout>
 					<HorizontalLayout bkcolor="0xFFFFFFFF">
 						<RollTextEx name="rolltext_1" rolldirection="up" rollspeed="10" rollstep="1" text="我是字幕，我向上滚动。" bkcolor="0xFFC0C0C0" resourceid="82" />

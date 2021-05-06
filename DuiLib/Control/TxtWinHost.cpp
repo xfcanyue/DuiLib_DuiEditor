@@ -905,6 +905,12 @@ err:
 		return fTimer;
 	}
 
+	void CTxtWinHost::SetParagraphIndent(LONG lIdentSize)
+	{
+		pf.dxStartIndent = lIdentSize;
+		pf.dxOffset = -lIdentSize;
+	}
+
 	void CTxtWinHost::SetCharFormat(CHARFORMAT2W &c)
 	{
 		cf = c;

@@ -95,7 +95,7 @@ namespace DuiLib {
 		return __super::SetItemIndex(pControl, iIndex);
 	}
 
-	bool CMenuUI::Remove(CControlUI* pControl)
+	bool CMenuUI::Remove(CControlUI* pControl, bool bDoNotDestroy )
 	{
 		CMenuElementUI* pMenuItem = static_cast<CMenuElementUI*>(pControl->GetInterface(_T("MenuElement")));
 		if (pMenuItem == NULL)
@@ -505,18 +505,18 @@ namespace DuiLib {
 
 		//////////////////////////////////////////////////////////////////////////add by liqs99
 		//调整在屏幕中的位置，主要是触碰边界
-		int screenX = GetSystemMetrics(SM_CXSCREEN);//获取整个屏幕右下角X坐标   
-		int screenY = GetSystemMetrics(SM_CYSCREEN);//屏幕Y坐标 
-// 		if(rc.right > screenX)
-// 		{
-// 			rc.left -= rc.right - screenX;
-// 			rc.right -= rc.right - screenX;
-// 		}
-// 		if(rc.bottom > screenY)
-// 		{
-// 			rc.top = point.y - rc.GetHeight();
-// 			rc.bottom = point.y;
-// 		}
+		//int screenX = GetSystemMetrics(SM_CXSCREEN);//获取整个屏幕右下角X坐标   
+		//int screenY = GetSystemMetrics(SM_CYSCREEN);//屏幕Y坐标 
+		if(rc.right > rcWork.GetWidth())
+		{
+			rc.left -= rc.right - rcWork.GetWidth();
+			rc.right -= rc.right - rcWork.GetWidth();
+		}
+		if(rc.bottom > rcWork.GetHeight())
+		{
+			rc.top = point.y - rc.GetHeight();
+			rc.bottom = point.y;
+		}
 		//////////////////////////////////////////////////////////////////////////
 
 		SetForegroundWindow(m_hWnd);
@@ -1211,7 +1211,7 @@ namespace DuiLib {
 							_tcscpy(pMenuCmd->szUserData, GetUserData().GetData());
 							_tcscpy(pMenuCmd->szText, GetText().GetData());
 							pMenuCmd->bChecked = GetChecked();
-							if (!PostMessage(CMenuWnd::GetGlobalContextMenuObserver().GetManager()->GetPaintWindow(), WM_MENUCLICK, (WPARAM)pMenuCmd, (LPARAM)this))
+							if (!PostMessage(CMenuWnd::GetGlobalContextMenuObserver().GetManager()->GetPaintWindow(), UIMSG_MENUCLICK, (WPARAM)pMenuCmd, (LPARAM)this))
 							{
 								delete pMenuCmd;
 								pMenuCmd = NULL;
@@ -1494,7 +1494,7 @@ namespace DuiLib {
 		//	return;
 
 		CMenuCmdUI cmdUI(this);
-		LRESULT lRet = ::SendMessage(CMenuWnd::GetGlobalContextMenuObserver().GetManager()->GetPaintWindow(), WM_MENU_UPDATE_COMMAND_UI, (WPARAM)&cmdUI, (LPARAM)this);		
+		LRESULT lRet = ::SendMessage(CMenuWnd::GetGlobalContextMenuObserver().GetManager()->GetPaintWindow(), UIMSG_MENU_UPDATE_COMMAND_UI, (WPARAM)&cmdUI, (LPARAM)this);		
 	}
 
 	void CMenuElementUI::DrawDisableItemIcon(HDC hDC, LPCTSTR pStrImage, LPCTSTR pStrModify)

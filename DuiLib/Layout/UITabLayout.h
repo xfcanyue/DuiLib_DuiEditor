@@ -16,7 +16,7 @@ namespace DuiLib
 
 		bool Add(CControlUI* pControl);
 		bool AddAt(CControlUI* pControl, int iIndex);
-		bool Remove(CControlUI* pControl);
+		bool Remove(CControlUI* pControl, bool bDoNotDestroy=false);
 		void RemoveAll();
 		int GetCurSel() const;
 		virtual bool SelectItem(int iIndex);
@@ -26,8 +26,18 @@ namespace DuiLib
 
 		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 
+		virtual void OnAnimationStart(int nAnimationID, BOOL bFirstLoop);
+		virtual void OnAnimationStep(int nTotalFrame, int nCurFrame, int nAnimationID);
+		virtual void OnAnimationStop(int nAnimationID);
 	protected:
 		int m_iCurSel;
+		int m_iOldSel;
+	private:
+		int m_nMoveDirection;
+		CControlUI *m_pCurControl;
+		CControlUI *m_pLastControl;
+		RECT m_rcCur;
+		RECT m_rcLast;
 	};
 }
 #endif // __UITABLAYOUT_H__

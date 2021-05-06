@@ -37,9 +37,6 @@ namespace DuiLib
 		virtual LPCTSTR GetStateImage();
 		virtual void SetStateImage(LPCTSTR pStrImage);
 
-		virtual void SwitchControlVisible();
-		virtual void SetSwitchControlVisible(LPCTSTR ControlName);
-
 		virtual void SwitchPaneVisible();
 		virtual void SetSwitchPaneVisible(LPCTSTR ControlName);
 
@@ -92,7 +89,7 @@ namespace DuiLib
 		int		m_iPushedFont;
 		int		m_iFocusedFont;
 
-		DWORD m_dwHotBkColor;
+		//DWORD m_dwHotBkColor;
 		DWORD m_dwPushedBkColor;
 		DWORD m_dwDisabledBkColor;
 		DWORD m_dwHotTextColor;
@@ -113,7 +110,6 @@ namespace DuiLib
 		DWORD m_dwDisableBorderColor; //add by liqs99
 
 		CDuiString m_sSwitchControlVisible;
-		CDuiString m_sSwitchPaneVisible;
 
 		int			m_iBindTabIndex;
 		CDuiString	m_sBindTabLayoutName;

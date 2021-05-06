@@ -11,7 +11,7 @@
 #include "../DuiScript/angelscript/add_on/scriptstdtime/AsTime.cpp"
 #include <sstream>
 
-#define WM_REFRESH_STACK	WM_USER + 2001
+#define WM_REFRESH_STACK	UIMSG_USER + 2001
 static BOOL CALLBACK ScriptMessageCallback(TScriptMessage *pMsg, UINT_PTR userdata)
 {
 	CScriptEditorView *pView = (CScriptEditorView *)userdata;
@@ -35,7 +35,7 @@ static BOOL CALLBACK ScriptMessageCallback(TScriptMessage *pMsg, UINT_PTR userda
 	}
 	else if(pMsg->nType == 5)
 	{	
-		InsertMsgV(_T("返回值：%d"), pMsg->ctx->GetReturnWord());
+		InsertMsgV(_T("返回值：%d"), pMsg->ctx->GetReturnDWord());
 		int pos = pView->sci.sci_GetCurrentPos();
 		pView->sci.sci_SetSel(-1, pos);
 		pView->SendMessage(WM_REFRESH_STACK, 0, 0);
@@ -524,7 +524,7 @@ void CScriptEditorView::OnInitialUpdate()
 	// TODO: 在此添加专用代码和/或调用基类
 	m_bFirstLoad = TRUE;
 
-	CString filename = g_session.GetSessionFile(GetDocument()->GetPathName());
+	CString filename = GetDocument()->m_strSessionFile;
 
 	sci.LoadFile(filename);
 	sci.sci_GetTextAll(m_strTextCode);
@@ -1033,7 +1033,7 @@ void CScriptEditorView::OnScriptExcute()
 	if(m_pHelper->Excute())
 	{
 		//获取返回值
-		InsertMsgV(_T("返回值：%d"), m_pHelper->GetReturnWord());
+		InsertMsgV(_T("返回值：%d"), m_pHelper->GetReturnDWord());
 	}
 }
 

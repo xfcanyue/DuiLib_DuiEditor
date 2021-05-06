@@ -123,7 +123,6 @@ void CUIFormView::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 		pManager->SetDefaultSelectedBkColor(clrColor);
 	} 
 
-#ifndef DUILIB_VERSION_ORIGINAL
 	else if( _tcsicmp(pstrName, _T("shadowsize")) == 0 ) {
 		pManager->GetShadow()->SetSize(_ttoi(pstrValue));
 	}
@@ -166,7 +165,6 @@ void CUIFormView::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	else if( _tcsicmp(pstrName, _T("textrenderinghint")) == 0 ) {
 		pManager->SetGdiplusTextRenderingHint(_ttoi(pstrValue));
 	} 
-#endif
 	else if( _tcsicmp(pstrName, _T("tooltiphovertime")) == 0 ) {
 		pManager->SetHoverTime(_ttoi(pstrValue));
 	} 
@@ -179,11 +177,7 @@ SIZE CUIFormView::GetInitSize()
 
 void CUIFormView::SetInitSize(int cx, int cy)
 {
-#ifndef DUILIB_VERSION_ORIGINAL
 	GetManager()->SetInitSize(GetManager()->GetDPIObj()->Scale(cx), GetManager()->GetDPIObj()->Scale(cy));
-#else
-	GetManager()->SetInitSize(cx, cy);
-#endif
 
 	if(GetManager()->GetPaintWindow())
 	{

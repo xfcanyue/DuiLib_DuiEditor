@@ -36,37 +36,60 @@ namespace DuiLib {
 
 		void SetFont(HFONT hFont);
 		void SetColor(DWORD dwColor);
+
 		SIZEL* GetExtent();
 		void SetExtent(SIZEL *psizelExtent);
+
 		void LimitText(LONG nChars);
+
 		BOOL IsCaptured();
+
 		BOOL IsShowCaret();
+
 		void NeedFreshCaret();
+
 		INT GetCaretWidth();
 		INT GetCaretHeight();
 
 		BOOL GetAllowBeep();
 		void SetAllowBeep(BOOL fAllowBeep);
+
 		WORD GetDefaultAlign();
 		void SetDefaultAlign(WORD wNewAlign);
+
 		BOOL GetRichTextFlag();
 		void SetRichTextFlag(BOOL fNew);
+
 		LONG GetDefaultLeftIndent();
 		void SetDefaultLeftIndent(LONG lNewIndent);
+
 		BOOL SetSaveSelection(BOOL fSaveSelection);
+
 		HRESULT OnTxInPlaceDeactivate();
 		HRESULT OnTxInPlaceActivate(LPCRECT prcClient);
+
 		BOOL GetActiveState(void) { return fInplaceActive; }
+
 		BOOL DoSetCursor(RECT *prc, POINT *pt);
+
 		void SetTransparent(BOOL fTransparent);
+
 		void GetControlRect(LPRECT prc);
+
 		LONG SetAccelPos(LONG laccelpos);
+
 		WCHAR SetPasswordChar(WCHAR chPasswordChar);
+
 		void SetDisabled(BOOL fOn);
+
 		LONG SetSelBarWidth(LONG lSelBarWidth);
+
 		BOOL GetTimerState();
 
+		void SetParagraphIndent(LONG lIdentSize);
+
 		void SetCharFormat(CHARFORMAT2W &c);
+
 		void SetParaFormat(PARAFORMAT2 &p);
 
 		// -----------------------------

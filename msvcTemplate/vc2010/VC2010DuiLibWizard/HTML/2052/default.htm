@@ -9,8 +9,25 @@
 	<!--  -->
 	<!-- SYMBOL 标记用于设置用户定义符号的默认值。-->
 	<!--  -->
-
 	<SYMBOL NAME='WIZARD_DIALOG_TITLE' TYPE=text VALUE='DuiLib 创建向导'></SYMBOL>
+	
+	<SYMBOL NAME="is_Debug" TYPE="checkbox" VALUE="true"></SYMBOL>
+	<SYMBOL NAME="is_Release" TYPE="checkbox" VALUE="true"></SYMBOL>
+	<SYMBOL NAME="is_UnicodeDebug" TYPE="checkbox" VALUE="true"></SYMBOL>
+	<SYMBOL NAME="is_UnicodeRelease" TYPE="checkbox" VALUE="true"></SYMBOL>
+	<SYMBOL NAME="is_xsDebug" TYPE="checkbox" VALUE="true"></SYMBOL>
+	<SYMBOL NAME="is_xsRelease" TYPE="checkbox" VALUE="true"></SYMBOL>
+	<SYMBOL NAME="is_xsUnicodeDebug" TYPE="checkbox" VALUE="true"></SYMBOL>
+	<SYMBOL NAME="is_xsUnicodeRelease" TYPE="checkbox" VALUE="true"></SYMBOL>
+	
+	<SYMBOL NAME="Debug_Name" TYPE="text" VALUE="Debug"></SYMBOL>
+	<SYMBOL NAME="Release_Name" TYPE="text" VALUE="Release"></SYMBOL>
+	<SYMBOL NAME="UnicodeDebug_Name" TYPE="text" VALUE="UnicodeDebug"></SYMBOL>
+	<SYMBOL NAME="UnicodeRelease_Name" TYPE="text" VALUE="UnicodeRelease"></SYMBOL>
+	<SYMBOL NAME="xsDebug_Name" TYPE="text" VALUE="xsDebug"></SYMBOL>
+	<SYMBOL NAME="xsRelease_Name" TYPE="text" VALUE="xsRelease"></SYMBOL>
+	<SYMBOL NAME="xsUnicodeDebug_Name" TYPE="text" VALUE="xsUnicodeDebug"></SYMBOL>
+	<SYMBOL NAME="xsUnicodeRelease_Name" TYPE="text" VALUE="xsUnicodeRelease"></SYMBOL>
 </HEAD>
 
 <BODY BGCOLOR="BUTTONFACE" TOPMARGIN="0" LEFTMARGIN="0" RIGHTMARGIN="0" BOTTOMMARGIN="0" ONLOAD="InitDocument(document);" ONKEYDOWN="OnKey();" ONKEYPRESS="OnPress();">
@@ -25,16 +42,16 @@
 	 <TABLE CLASS="TWO" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 	 <COL WIDTH="12"><COL><COL WIDTH="12">
 	  <TR>
-	   <TD VALIGN="TOP" HEIGHT="12" WIDTH="12">
-	  	&nbsp;
+	   <TD VALIGN="TOP" HEIGHT="12" WIDTH="12">&nbsp;
+	  	
 	   </TD>
   
-	   <TD VALIGN="TOP" HEIGHT="12">
-	  	&nbsp;
+	   <TD VALIGN="TOP" HEIGHT="12">&nbsp;
+	  	
 	   </TD>
   
-	   <TD VALIGN="TOP" HEIGHT="12" WIDTH="12">
-	  	&nbsp;
+	   <TD VALIGN="TOP" HEIGHT="12" WIDTH="12">&nbsp;
+	  	
 	   </TD>
   
 	   <TD CLASS="IMAGE" VALIGN="BOTTOM" WIDTH="110" ROWSPAN="2">
@@ -43,14 +60,14 @@
 		</DIV>
 	   </TD>
 
-	   <TD VALIGN="TOP" HEIGHT="12" WIDTH="6" ROWSPAN="2">
-	  	&nbsp;
+	   <TD VALIGN="TOP" HEIGHT="12" WIDTH="6" ROWSPAN="2">&nbsp;
+	  	
 	   </TD>
 	  </TR>
 	 
 	  <TR>
-	   <TD VALIGN="TOP" HEIGHT="65" WIDTH="12">
-	  	&nbsp;
+	   <TD VALIGN="TOP" HEIGHT="65" WIDTH="12">&nbsp;
+	  	
 	   </TD>
 	  
 	   <TD VALIGN="TOP" HEIGHT="65">
@@ -58,8 +75,8 @@
 		<P CLASS="SUBHEAD" ID="SUBHEAD">'快速创建DuiLib框架程序'</P>
 	   </TD>
 	  
-	   <TD VALIGN="TOP" HEIGHT="65" WIDTH="12">
-	  	&nbsp;
+	   <TD VALIGN="TOP" HEIGHT="65" WIDTH="12">&nbsp;
+	  	
 	   </TD>
 	  </TR>
 	 
@@ -84,37 +101,70 @@
 	   <TD VALIGN="TOP" HEIGHT="100%">
 	   <!--内容表和按钮表的打开//-->
 	   
-	   	<TABLE CLASS="ONE" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+	   	<TABLE CLASS="ONE" BORDER="0" CELLPADDING="0" CELLSPACING="0" >
 		<COL WIDTH="100%">
-		 <TR VALIGN="TOP">
+		 <TR VALIGN="middle">
 		  <TD HEIGHT="100%">
-	   	  <!--内容打开//-->
-		  
-		  	<TABLE CLASS="CONTENT" BORDER="0" CELLPADDING="0" CELLSPACING="0">
-			<COL WIDTH="12"><COL WIDTH="185"><COL WIDTH="12"><COL WIDTH="185"><COL WIDTH="12"><COL WIDTH="185"><COL WIDTH="12">
- 			 <TR>
-  			  <TD VALIGN="TOP" HEIGHT="12" COLSPAN="5">
-  				&nbsp;
+		  <div style="padding-left:50px">
+		  	<TABLE CLASS="CONTENT" width="1000" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+		 	 <TR>
+ 			 <TD VALIGN="middle" >
+  				<input class="CheckBox" type="checkbox" checked="checked" id="is_Debug" />&nbsp;<label >创建win32 Debug 配置</label>
+				<input class="sideBtn" type="text" name="Debug" id="Debug_Name" title="Win32 Debug 配置名" value="Debug">
   			  </TD>
- 			 </TR>
-		 	 <TR VALIGN="TOP">
- 			 <TD VALIGN="TOP" WIDTH="12">
-  				&nbsp;
-  			  </TD>
-  			  <TD VALIGN="TOP" COLSPAN="3">
- 			
-  		  	  </TD>
-  		  	  <TD VALIGN="TOP" WIDTH="12">
-  				&nbsp;
-  		  	  </TD>
  		  	 </TR>
+             
  			 <TR>
-  			  <TD VALIGN="TOP" HEIGHT="100%" COLSPAN="7">
-  				&nbsp;
+ 			 <TD VALIGN="middle" >
+  				<input class="CheckBox" type="checkbox" checked="checked" id="is_Release" />&nbsp;<label >创建win32 Relase 配置</label>
+				<input class="sideBtn" type="text" name="Release" id="Release_Name" title="Win32 Release 配置名" value="Release">
   			  </TD>
- 			 </TR>
-		 	</TABLE>
-			
+ 		  	 </TR>
+             
+		 	 <TR>
+ 			 <TD VALIGN="middle" >
+  				<input class="CheckBox" type="checkbox" checked="checked" id="is_UnicodeDebug" />&nbsp;<label >创建win32 Unicode Debug 配置</label>
+				<input class="sideBtn" type="text" name="UnicodeDebug" id="UnicodeDebug_Name" title="Win32 Unicode Debug 配置名" value="UnicodeDebug" >
+  			  </TD>
+ 		  	 </TR>
+             
+              <TR>
+ 			 <TD VALIGN="middle" >
+  				<input class="CheckBox" type="checkbox" checked="checked" id="is_UnicodeRelease" />&nbsp;<label >创建win32 Unicode Release 配置</label>
+				<input class="sideBtn" type="text" name="UnicodeRelease" id="UnicodeRelease_Name" title="Win32 Unicode Release 配置名" value="UnicodeRelease">
+  			  </TD>
+ 		  	 </TR>
+             
+ 			 <TR>
+ 			 <TD VALIGN="middle" >
+  				<input class="CheckBox" type="checkbox" checked="checked" id="is_xsDebug" />&nbsp;<label >创建win32 Debug Static 配置</label>
+				<input class="sideBtn" type="text" name="DebugStatic" id="xsDebug_Name" title="Win32 Debug Static 配置名" value="xsDebug" >
+  			  </TD>
+ 		  	 </TR>
+             
+		 	 <TR>
+ 			 <TD VALIGN="middle" >
+  				<input class="CheckBox" type="checkbox" checked="checked" id="is_xsRelease" />&nbsp;<label >创建win32 Release Static 配置</label>
+				<input class="sideBtn" type="text" name="ReleaseStatic" id="xsRelease_Name" title="Win32 Release Static 配置名" value="xsRelease">
+  			  </TD>
+ 		  	 </TR>
+             
+ 			 <TR>
+ 			 <TD VALIGN="middle" >
+  				<input class="CheckBox" type="checkbox" checked="checked" id="is_xsUnicodeDebug" />&nbsp;<label >创建win32 Unicode Debug Static 配置</label>
+				<input class="sideBtn" type="text" name="UnicodeDebugStatic" id="xsUnicodeDebug_Name" title="Win32 Unicode Debug Static 配置名" value="xsUnicodeDebug">
+  			  </TD>
+ 		  	 </TR>
+             
+             <TR>
+ 			 <TD VALIGN="middle" >
+  				<input class="CheckBox" type="checkbox" checked="checked" id="is_xsUnicodeRelease" />&nbsp;<label >创建win32 Unicode Relase Static 配置</label>
+				<input class="sideBtn" type="text" name="UnicodeReleaseStatic" id="xsUnicodeRelease_Name" title="Win32 Unicode Relase Static 配置名" value="xsUnicodeRelease">
+  			  </TD>
+ 		  	 </TR>
+             
+		 	</TABLE>		
+</div>			
 	   	  <!--内容的关闭//-->
 		  </TD>
 		 </TR>
@@ -136,41 +186,41 @@
  			  </TR>
  
  			  <TR>
-  			  <TD VALIGN="TOP" HEIGHT="11" COLSPAN="8">
-  				&nbsp;
+  			  <TD VALIGN="TOP" HEIGHT="11" COLSPAN="8">&nbsp;
+  				
   			  </TD>
  			 </TR>
  
  			<TR>
-  			  <TD VALIGN="MIDDLE" HEIGHT="23" WIDTH="12">
-  				&nbsp;
+  			  <TD VALIGN="MIDDLE" HEIGHT="23" WIDTH="12">&nbsp;
+  				
   			  </TD>
-  			  <TD VALIGN="TOP" HEIGHT="23">
-  				&nbsp;
+  			  <TD VALIGN="TOP" HEIGHT="23">&nbsp;
+  				
   			  </TD>
   			  <TD VALIGN="MIDDLE" HEIGHT="23" WIDTH="75">
   				<BUTTON CLASS="BUTTONS" ID="FinishBtn" ACCESSKEY="F" onClick="OnFinish(document);">完成(<U>F</U>)</BUTTON>
   			  </TD>
-  			  <TD VALIGN="MIDDLE" HEIGHT="23" WIDTH="4">
-  				&nbsp;
+  			  <TD VALIGN="MIDDLE" HEIGHT="23" WIDTH="4">&nbsp;
+  				
   			  </TD>
   			  <TD VALIGN="MIDDLE" HEIGHT="23" WIDTH="75">
   				<BUTTON CLASS="BUTTONS" ID="CancelBtn" ACCESSKEY="C" onClick="window.external.Finish(document, '取消');">取消(<U>C</U>)</BUTTON>
   			  </TD>
-  			  <TD VALIGN="MIDDLE" HEIGHT="23" WIDTH="4">
-  				&nbsp;
+  			  <TD VALIGN="MIDDLE" HEIGHT="23" WIDTH="4">&nbsp;
+  				
   			  </TD>
   			  <TD VALIGN="MIDDLE" HEIGHT="23" WIDTH="75">
   				<BUTTON CLASS="BUTTONS" ID="HelpBtn" ACCESSKEY="H" onClick="window.external.OnHelp('vc.appwiz.custom.overview');">帮助(<U>H</U>)</BUTTON>
   			  </TD>
-  			  <TD VALIGN="MIDDLE" HEIGHT="23" WIDTH="12">
-  				&nbsp;
+  			  <TD VALIGN="MIDDLE" HEIGHT="23" WIDTH="12">&nbsp;
+  				
   			  </TD>
  			 </TR>
  
  			 <TR>
-  			  <TD VALIGN="TOP" HEIGHT="12" COLSPAN="8">
-  				&nbsp;
+  			  <TD VALIGN="TOP" HEIGHT="12" COLSPAN="8">&nbsp;
+  				
   			  </TD>
  			 </TR>
 			</TABLE>
@@ -210,6 +260,7 @@ function InitDocument(document)
 	// 符号值初始化控件
 	//
 	window.external.Load(document);
+	
 }
 
 // 如果向导多于 1 页，则此 

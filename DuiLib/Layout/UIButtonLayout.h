@@ -40,9 +40,6 @@ namespace DuiLib
 		virtual void SwitchControlVisible();
 		virtual void SetSwitchControlVisible(LPCTSTR ControlName);
 
-		virtual void SwitchPaneVisible();
-		virtual void SetSwitchPaneVisible(LPCTSTR ControlName);
-
 		virtual void BindTabIndex(int _BindTabIndex);
 		virtual void BindTabLayoutName(LPCTSTR _TabLayoutName);
 		virtual void BindTriggerTabSel(int _SetSelectIndex = -1);

@@ -68,11 +68,11 @@ namespace DuiLib {
 		return pHItem != NULL? pHItem->GetColumeComboable() : FALSE;
 	}
 
-	CComboBoxUI* CListExUI::GetComboBoxUI()
+	CComboUI* CListExUI::GetComboBoxUI()
 	{
 		if (m_pComboBoxUI == NULL)
 		{
-			m_pComboBoxUI = new CComboBoxUI;
+			m_pComboBoxUI = new CComboUI;
 			m_pComboBoxUI->SetName(_T("ListEx_Combo"));
 			LPCTSTR pDefaultAttributes = GetManager()->GetDefaultAttributeList(_T("Combo"));
 			if( pDefaultAttributes ) {

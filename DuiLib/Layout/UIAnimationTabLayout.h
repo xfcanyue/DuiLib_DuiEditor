@@ -3,8 +3,7 @@
 
 namespace DuiLib
 {
-	#define TAB_ANIMATION_ID	1
-	class UILIB_API CAnimationTabLayoutUI : public CTabLayoutUI, public CUIAnimation
+	class UILIB_API CAnimationTabLayoutUI : public CTabLayoutUI
 	{
 		DECLARE_DUICONTROL(CAnimationTabLayoutUI)
 	public:
@@ -18,27 +17,20 @@ namespace DuiLib
 		void DoEvent(TEventUI& event);
 		void OnTimer( int nTimerID );
 
-		virtual void OnAnimationStart(INT nAnimationID, BOOL bFirstLoop) {}
-		virtual void OnAnimationStep(INT nTotalFrame, INT nCurFrame, INT nAnimationID);
-		virtual void OnAnimationStop(INT nAnimationID);
+		virtual void OnAnimationStart(int nAnimationID, BOOL bFirstLoop) {}
+		virtual void OnAnimationStep(int nTotalFrame, int nCurFrame, int nAnimationID);
+		virtual void OnAnimationStop(int nAnimationID);
 
-		void SetFrameCount(int framecount);
-		int GetFrameCount() const;
-		void SetFrameDelay(int nDelay);
-		int GetFrameDelay() const;
+		void SetPos(RECT rc, bool bNeedInvalidate = true);
 
 		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 
 	protected:
-		bool m_bIsVerticalDirection;
 		int m_nPositiveDirection;
 		RECT m_rcCurPos;
 		RECT m_rcItemOld;
 		CControlUI* m_pCurrentControl;
 		bool m_bControlVisibleFlag;
-
-		int m_nFrameCount;
-		int m_nFrameDelay;
 	};
 }
 #endif // __UIANIMATIONTABLAYOUT_H__

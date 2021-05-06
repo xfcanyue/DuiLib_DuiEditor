@@ -12,6 +12,7 @@ public:
 
 	CMFCPropertyGridCtrl *m_pPropList;
 	CString m_strDefaultTitle;
+	CString m_strSessionFile;
 protected:
 	virtual BOOL OnNewDocument();
 
@@ -23,4 +24,5 @@ public:
 	void InitFileView(CDocument *pDocCurrentClose);
 	virtual void OnCloseDocument();
 	virtual void SetModifiedFlag(BOOL bModified = TRUE);
+	virtual BOOL SaveModified();
 };

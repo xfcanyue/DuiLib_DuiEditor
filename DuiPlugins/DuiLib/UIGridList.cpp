@@ -104,6 +104,7 @@ void CGridListUI::DoEvent(TEventUI& event)
 
 	if( event.Type == UIEVENT_BUTTONDOWN )
 	{
+		//InsertMsgUI(_T("grid clickdown"));
 		if(!GetCellFromPt(event.ptMouse))
 		{
 			ClearSelectedCells();
@@ -123,6 +124,7 @@ void CGridListUI::DoEvent(TEventUI& event)
 
 	if( event.Type == UIEVENT_BUTTONUP )
 	{
+		//InsertMsgUI(_T("grid buttonup"));
 		if( (m_uButtonState & UISTATE_CAPTURED) != 0 ) 
 			m_uButtonState &= ~UISTATE_CAPTURED;
 		if(!m_rcTracker.IsNull())
@@ -180,7 +182,8 @@ void CGridListUI::DoEvent(TEventUI& event)
 	{
 		if( ::PtInRect(&m_rcItem, event.ptMouse) ) 
 		{
-			if(GetManager()) GetManager()->SendNotify(this, DUI_MSGTYPE_DBCLICK);
+			//InsertMsgUI(_T("grid dbclick"));
+			if(GetManager()) GetManager()->SendNotify(this, DUI_MSGTYPE_DBCLICK, 0, 0, true);
 		}
 		return;
 	}
@@ -216,7 +219,7 @@ void CGridListUI::SetPos(RECT rc, bool bNeedInvalidate)
 
 	SIZE szAvailable = { rc.right - rc.left, rc.bottom - rc.top };
 	int iPosX = rc.left;
-	if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible()) 
+	if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() && !IsFitColumns()) 
 	{
 		szAvailable.cx += m_pHorizontalScrollBar->GetScrollRange();
 		iPosX -= m_pHorizontalScrollBar->GetScrollPos();
@@ -319,6 +322,12 @@ void CGridListUI::SetScrollPos(SIZE szPos, bool bMsg)
 {
 	int cx = 0;
 	int cy = 0;
+
+	if(IsVirtualGrid())
+	{
+		ClearSelectedRows();
+		ClearSelectedCells();
+	}
 
 	//just scroll body's VerticalScrollBar
 	if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) 
@@ -461,8 +470,16 @@ void CGridListUI::ProcessScrollBar(RECT rc, int cxRequired, int cyRequired)
 void CGridListUI::BuildVirtualRow()
 {
 	RECT rcBody = m_pBody->GetPos();
-	int nNeedRows = (rcBody.bottom - rcBody.top) / GetDefRowHeight();
-	if((rcBody.bottom - rcBody.top) % GetDefRowHeight() > 0)
+
+	int BodyHeight = rcBody.bottom - rcBody.top;
+	//如果有滚动条，要减去这个高度
+	if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) {
+		BodyHeight -= m_pHorizontalScrollBar->GetFixedHeight();
+		if(BodyHeight < 0) BodyHeight = 0;
+	}
+
+	int nNeedRows = BodyHeight / GetDefRowHeight();
+	if( BodyHeight % GetDefRowHeight() > 0)
 		nNeedRows++;
 	
 	nNeedRows = min(m_nRowCount - GetFixedRowCount(), nNeedRows);
@@ -500,6 +517,7 @@ void CGridListUI::ResetVirtualOrder(bool bForceReset)
 
 	//InsertMsgUiV(_T("szPos.cy=%d, maxPosY=%d"), szPos.cy, maxPosY);
 
+
 	if(szPos.cy >= 0 && szPos.cy <= maxPosY)
 	{
 		BOOL bNofity = FALSE;
@@ -518,7 +536,7 @@ void CGridListUI::ResetVirtualOrder(bool bForceReset)
 		//Notification window for grid filling  通知窗口进行表格填充
 		if(bNofity || bForceReset)
 		{
-			GetManager()->SendNotify(this, DUI_MSGTYPE_DRAWITEM, startrow, startrow+m_pBody->GetCount()-1);
+			GetManager()->SendNotify(this, DUI_MSGTYPE_DRAWITEM, startrow, startrow+m_pBody->GetCount()-GetFixedRowCount());
 			Refresh();
 		}
 	}
@@ -1329,6 +1347,39 @@ CGridListCellUI *CGridListUI::GetNextSelectCell()
 	return pCell;
 }
 
+void CGridListUI::SetRowTag(int row, UINT_PTR tag)
+{
+	CGridListRowUI *pRow = GetRow(row);
+	if(pRow)
+	{
+		pRow->SetTag(tag);
+	}
+}
+
+UINT_PTR CGridListUI::GetRowTag(int row)
+{
+	CGridListRowUI *pRow = GetRow(row);
+	if(pRow)
+	{
+		return pRow->GetTag();
+	}
+	return NULL;
+}
+
+CGridListRowUI *CGridListUI::FindRowFromRowTag(UINT_PTR tag)
+{
+	int count = GetRowCount();
+	for (int i=0; i<count; i++)
+	{
+		CGridListRowUI *pRow = GetRow(i);
+		if(pRow && pRow->GetTag() == tag)
+		{
+			return pRow;
+		}
+	}
+	return NULL;
+}
+
 void CGridListUI::MergeCells(int nStartRow, int nStartCol, int nEndRow, int nEndCol)
 {
 	BOOL bFirst = TRUE;
@@ -1950,12 +2001,12 @@ void CGridListUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
 		SetCellFont(_ttoi(pstrValue));
 	}
-	else if( _tcsicmp(pstrName, _T("cellbordercolor")) == 0 )
+	else if( _tcsicmp(pstrName, _T("cellselectedbordercolor")) == 0 )
 	{
 		if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
 		LPTSTR pstr = NULL;
 		DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
-		SetCellBorderColor(clrColor);
+		SetCellSelectedBorderColor(clrColor);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	else if( _tcsicmp(pstrName, _T("cellselectedbkcolor")) == 0 )

@@ -77,8 +77,6 @@
 #endif
 #define MOUSEEVENTF_FROMTOUCH 0xFF515700
 
-//#define USE_XIMAGE_EFFECT //使用ximage的gif控件CGifAnimExUI开关，提升性能,默认不使用
-
 #include "UIlib.h"
 
 #include <olectl.h>

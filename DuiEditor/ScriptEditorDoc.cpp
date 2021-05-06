@@ -45,6 +45,12 @@ BOOL CScriptEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
 	if (!CDocument::OnOpenDocument(lpszPathName))
 		return FALSE;
 
+	m_strSessionFile = g_session.GetSessionFile(lpszPathName);	
+	if(m_strSessionFile != lpszPathName)
+	{
+		SetModifiedFlag(TRUE);
+	}
+	g_session.OpenSession(lpszPathName);
 	// TODO:  在此添加您专用的创建代码
 	return TRUE;
 }
@@ -191,4 +197,13 @@ void CScriptEditorDoc::SetModifiedFlag(BOOL bModified)
 	}
 
 	__super::SetModifiedFlag(bModified);
+}
+
+BOOL CScriptEditorDoc::SaveModified()
+{
+	BOOL bRet = CDocument::SaveModified();
+
+	g_session.CloseSession(GetPathName());
+
+	return bRet;
 }

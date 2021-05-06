@@ -533,14 +533,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Control\TxtWinHost.cpp" />
-    <ClCompile Include="Control\UIAccordionPane.cpp" />
     <ClCompile Include="Control\UIActiveX.cpp" />
     <ClCompile Include="Control\UIAnimation.cpp" />
-    <ClCompile Include="Control\UIAnimationPane.cpp" />
     <ClCompile Include="Control\UIButton.cpp" />
     <ClCompile Include="Control\UIColorPalette.cpp" />
     <ClCompile Include="Control\UICombo.cpp" />
-    <ClCompile Include="Control\UIComboBox.cpp" />
     <ClCompile Include="Control\UIComboEditWnd.cpp" />
     <ClCompile Include="Control\UIComboEx.cpp" />
     <ClCompile Include="Control\UIDateTime.cpp" />
@@ -550,7 +547,6 @@
     <ClCompile Include="Control\UIFadeButton.cpp" />
     <ClCompile Include="Control\UIFlash.cpp" />
     <ClCompile Include="Control\UIGifAnim.cpp" />
-    <ClCompile Include="Control\UIGifAnimEx.cpp" />
     <ClCompile Include="Control\UIGroupBox.cpp" />
     <ClCompile Include="Control\UIHotKey.cpp" />
     <ClCompile Include="Control\UIIconButton.cpp" />
@@ -574,6 +570,8 @@
     <ClCompile Include="Control\UISlider.cpp" />
     <ClCompile Include="Control\UITabCtrl.cpp" />
     <ClCompile Include="Control\UIText.cpp" />
+    <ClCompile Include="Control\UITreeCtrl.cpp" />
+    <ClCompile Include="Control\UITreeItem.cpp" />
     <ClCompile Include="Control\UITreeView.cpp" />
     <ClCompile Include="Control\UIWebBrowser.cpp" />
     <ClCompile Include="Core\ControlFactory.cpp" />
@@ -636,14 +634,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Control\TxtWinHost.h" />
-    <ClInclude Include="Control\UIAccordionPane.h" />
     <ClInclude Include="Control\UIActiveX.h" />
     <ClInclude Include="Control\UIAnimation.h" />
-    <ClInclude Include="Control\UIAnimationPane.h" />
     <ClInclude Include="Control\UIButton.h" />
     <ClInclude Include="Control\UIColorPalette.h" />
     <ClInclude Include="Control\UICombo.h" />
-    <ClInclude Include="Control\UIComboBox.h" />
     <ClInclude Include="Control\UIComboEditWnd.h" />
     <ClInclude Include="Control\UIComboEx.h" />
     <ClInclude Include="Control\UIDateTime.h" />
@@ -653,7 +648,6 @@
     <ClInclude Include="Control\UIFadeButton.h" />
     <ClInclude Include="Control\UIFlash.h" />
     <ClInclude Include="Control\UIGifAnim.h" />
-    <ClInclude Include="Control\UIGifAnimEx.h" />
     <ClInclude Include="Control\UIGroupBox.h" />
     <ClInclude Include="Control\UIHotKey.h" />
     <ClInclude Include="Control\UIIconButton.h" />
@@ -677,6 +671,8 @@
     <ClInclude Include="Control\UISlider.h" />
     <ClInclude Include="Control\UITabCtrl.h" />
     <ClInclude Include="Control\UIText.h" />
+    <ClInclude Include="Control\UITreeCtrl.h" />
+    <ClInclude Include="Control\UITreeItem.h" />
     <ClInclude Include="Control\UITreeView.h" />
     <ClInclude Include="Control\UIWebBrowser.h" />
     <ClInclude Include="Core\ControlFactory.h" />

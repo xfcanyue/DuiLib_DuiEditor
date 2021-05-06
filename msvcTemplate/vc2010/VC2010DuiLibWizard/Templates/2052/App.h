@@ -1,5 +1,6 @@
 #pragma once
 #include "[!output PROJECT_NAME].h"
+#include "MainFrame.h"
 
 class CApp : public CUIApplication
 {
@@ -11,3 +12,6 @@ public:
 	virtual int ExitInstance();
 };
 
+
+extern CApp uiApp;
+inline CMainFrame *GetMainWnd(){ return (CMainFrame *)uiApp.GetMainWnd(); }

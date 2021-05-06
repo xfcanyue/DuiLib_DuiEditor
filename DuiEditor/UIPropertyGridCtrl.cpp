@@ -171,18 +171,25 @@ void CUIPropertyGridImageProperty::OnClickButton(CPoint point)
 
 		CControlUI *pRoot = pControl->GetManager()->GetRoot();
 		CSize szForm = pControl->GetManager()->GetInitSize();
+		CRect rcControl = pControl->GetPos();
+
+		//给整个设计视图拍照
 		CImage img;
 		img.Create(szForm.cx, szForm.cy, 32);
 		CRect rcPaint(0,0,szForm.cx,szForm.cy);
 		pRoot->DoPaint(img.GetDC(), rcPaint, NULL);
 		img.ReleaseDC();
 
-		HBITMAP hBitmap = img.Detach();
-		CxImage imgx;
-		imgx.CreateFromHBITMAP(hBitmap);
-		imgx.Crop(pControl->GetPos());
-		::DeleteObject(hBitmap);
-		dlg.SetControlImage(imgx);
+		//裁剪出pControl那部分的区域
+		CImage img2;
+		img2.Create(rcControl.Width(), rcControl.Height(), img.GetBPP());
+		img.BitBlt(img2.GetDC(), 0, 0, rcControl.Width(), rcControl.Height(), rcControl.left , rcControl.top, SRCCOPY);
+		img2.ReleaseDC();
+
+		//裁剪结果给图像编辑器使用
+		dlg.SetControlImage(img2.Detach(), rcControl);
+
+		//获取图片之后，先给控件的图片设置回去
 		pControl->SetAttribute(GetName(), (LPCTSTR)GetValue().bstrVal);
 	}
 
@@ -608,7 +615,6 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 	}
 
 	//style字段,列出CPaintManager里面有的 
-#ifndef DUILIB_VERSION_ORIGINAL
 	if(CompareString(attrName.value(), _T("style")))
 	{
 		pProperty = new CMFCPropertyGridProperty(XML2T(attrName.value()), (_variant_t)XML2T(attrDefValue.value()),  XML2T(attrComment.value()));
@@ -639,7 +645,6 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 		pProperty->SetOriginalValue(pProperty->GetValue());	
 		return;
 	}
-#endif
 
 	if(CompareString(attrType.value(), _T("INT")))
 	{
@@ -879,7 +884,6 @@ void CUIPropertyGridCtrl::OnPropertyChanged(CMFCPropertyGridProperty* pProp) con
 	if(pProp->GetValue().vt == VT_EMPTY || pProp->GetValue().vt == VT_NULL)
 		return;
 
-#ifndef DUILIB_VERSION_ORIGINAL
 	//特别处理Style的修改
 	if( CompareString(m_TreeNode.name(), _T("Style")) )
 	{
@@ -897,7 +901,6 @@ void CUIPropertyGridCtrl::OnPropertyChanged(CMFCPropertyGridProperty* pProp) con
 			}
 		}
 	}
-#endif
 
 	if(CompareString(attrType.value(), _T("INT")))
 	{

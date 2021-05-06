@@ -12,6 +12,7 @@ public:
 	virtual ~CUIFrmBase(void);
 
 	BOOL IsControl(TNotifyUI& msg, LPCTSTR name) { return _tcsicmp(msg.pSender->GetName(), name) == 0; }
+	BOOL IsControl(TNotifyUI& msg, CControlUI *pControl) { return msg.pSender == pControl; }
 	BOOL IsClass(TNotifyUI& msg, LPCTSTR classname) { return _tcsicmp(msg.pSender->GetClass(), classname) == 0; }
 	BOOL IsInterface(TNotifyUI &msg, LPCTSTR pstrName) { return msg.pSender->GetInterface(pstrName) != NULL; }
 	CControlUI *FindControl(LPCTSTR pstrName){ return GetManager()->FindControl(pstrName); }
@@ -43,6 +44,7 @@ public:
 	virtual void OnNotifyItemSelect(TNotifyUI& msg) {}
 	virtual void OnNotifyItemExpand(TNotifyUI& msg) {}
 	virtual void OnNotifyWindowPrepare(TNotifyUI& msg) {}
+	virtual void OnNotifyWindowSize(TNotifyUI& msg) {}
 	virtual void OnNotifyButtonDown(TNotifyUI& msg) {}
 	virtual void OnNotifyMouseEnter(TNotifyUI& msg) {}
 	virtual void OnNotifyMouseLeave(TNotifyUI& msg) {}

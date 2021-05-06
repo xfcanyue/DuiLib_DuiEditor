@@ -40,15 +40,15 @@ BOOL CThreadTest::InitInstance()
 #ifdef UILIB_STATIC
 #	ifdef _UNICODE
 #		ifdef _DEBUG
-			strAppName = _T("DuiPreviewer_Sd.exe");	
+			strAppName = _T("DuiPreviewer_usd.exe");	
 #		else
-			strAppName = _T("DuiPreviewer.exe");	
+			strAppName = _T("DuiPreviewer_uas.exe");	
 #		endif
 #	else
 #		ifdef _DEBUG
-			strAppName = _T("DuiPreviewer_ASd.exe");	
+			strAppName = _T("DuiPreviewer_asd.exe");	
 #		else
-			strAppName = _T("DuiPreviewer_AS.exe");	
+			strAppName = _T("DuiPreviewer_as.exe");	
 #		endif
 #	endif
 #else
@@ -60,9 +60,9 @@ BOOL CThreadTest::InitInstance()
 #		endif
 #	else
 #		ifdef _DEBUG
-			strAppName = _T("DuiPreviewer_Ad.exe");	
+			strAppName = _T("DuiPreviewer_ad.exe");	
 #		else
-			strAppName = _T("DuiPreviewer_A.exe");	
+			strAppName = _T("DuiPreviewer_a.exe");	
 #		endif
 #	endif
 #endif

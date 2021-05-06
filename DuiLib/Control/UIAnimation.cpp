@@ -22,6 +22,12 @@ namespace DuiLib {
 			m_pImp = NULL;
 		}
 	}
+
+	void CUIAnimation::AttachAnimationControl(CControlUI* pOwner)
+	{
+		m_pControl = pOwner;
+	}
+
 	BOOL CUIAnimation::StartAnimation(int nElapse, int nTotalFrame, int nAnimationID /*= 0*/, BOOL bLoop/* = FALSE*/)
 	{
 		CAnimationData* pData = GetAnimationDataByID(nAnimationID);

@@ -43,7 +43,7 @@ namespace DuiLib {
 
 		//modify by liqs99 
 		CRichEditUI::CRichEditUI() : m_pTwh(NULL), m_bVScrollBarFixing(false), m_bWantTab(true), m_bWantReturn(false), 
-		m_bWantCtrlReturn(false), m_bTransparent(true), m_bRich(false), m_bReadOnly(false), m_bWordWrap(false), m_dwTextColor(0), m_iFont(-1), 
+		m_bWantCtrlReturn(false), m_bTransparent(true), m_bRich(false), m_bReadOnly(false), m_bWordWrap(false), m_bParagraphIndent(false), m_dwTextColor(0), m_iFont(-1), 
 		m_iLimitText(cInitTextMax), m_lTwhStyle(ES_LEFT|ES_VERTICAL|ECO_VERTICAL), m_bDrawCaret(true), m_bInited(false), m_chLeadByte(0),m_uButtonState(0),
 		m_dwTipValueColor(0xFFBAC0C5), m_uTipValueAlign(DT_SINGLELINE | DT_LEFT), m_uTextStyle(DT_TOP), 
 		m_bReturnFixedWidth(true), m_bReturnFixedHeight(true)
@@ -165,6 +165,23 @@ namespace DuiLib {
 	{
 		m_bWordWrap = bWordWrap;
 		if( m_pTwh ) m_pTwh->SetWordWrap(bWordWrap);
+	}
+
+	bool CRichEditUI::IsParagraphIndent()
+	{
+		return m_bParagraphIndent;
+	}
+
+	void CRichEditUI::SetParagraphIndent(bool bIndent)
+	{
+		m_bParagraphIndent = bIndent;
+		if(m_pTwh)
+		{
+			const CHARFORMATW *cf;
+			m_pTwh->TxGetCharFormat(&cf);
+			m_pTwh->SetParagraphIndent(cf->yHeight * 2);
+			m_pTwh->GetTextServices()->OnTxPropertyBitsChange(TXTBIT_PARAFORMATCHANGE, 0);
+		}
 	}
 
 	int CRichEditUI::GetFont()
@@ -1021,6 +1038,7 @@ namespace DuiLib {
 	{
 		if (m_pTwh && (IsAutoCalcWidth() || IsAutoCalcHeight()))
 		{
+			SIZE szNeed = {0,0};
 			RECT rc = {0, 0, szAvailable.cx, szAvailable.cy};
 			rc.left += m_rcInset.left;
 			rc.top += m_rcInset.top;
@@ -1033,7 +1051,7 @@ namespace DuiLib {
 			rcText.top += m_rcTextPadding.top;
 			rcText.bottom -= m_rcTextPadding.bottom;
 
-			RECT rcScrollView = rc;
+			RECT rcScrollView = rcText;
 
 			bool bVScrollBarVisiable = false;
 			if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) {
@@ -1061,6 +1079,7 @@ namespace DuiLib {
 			m_pTwh->SetClientRect(&rcScrollTextView);
 
 			LONG lWidth = rcText.right - rcText.left;
+			
 			if(m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible()) 
 				lWidth += m_pVerticalScrollBar->GetFixedWidth();
 			LONG lHeight = 0;
@@ -1076,22 +1095,32 @@ namespace DuiLib {
 				&lHeight);
 
 			if(IsAutoCalcWidth())
-				m_cxyFixed.cx = lWidth + m_rcTextPadding.left + m_rcTextPadding.right + m_rcInset.left + m_rcInset.right;;
-			if(IsAutoCalcHeight())
-				m_cxyFixed.cy = lHeight + m_rcTextPadding.top + m_rcTextPadding.bottom + m_rcInset.top + m_rcInset.bottom;
+			{
+				szNeed.cx = lWidth + m_rcTextPadding.left + m_rcTextPadding.right + m_rcInset.left + m_rcInset.right;
+				if(szNeed.cx < GetMinWidth()) szNeed.cx = GetMinWidth();
+				if(szNeed.cx > GetMaxWidth()) szNeed.cx = GetMaxWidth();
+			}
 
-			if(IsAutoCalcWidth() && m_cxyFixed.cx < szAvailable.cx) //如果宽度还有多，下次要重新计算宽度
+			if(IsAutoCalcHeight())
+			{
+				szNeed.cy = lHeight + m_rcTextPadding.top + m_rcTextPadding.bottom + m_rcInset.top + m_rcInset.bottom;
+				if(szNeed.cy < GetMinHeight()) szNeed.cy = GetMinHeight();
+				if(szNeed.cy > GetMaxHeight()) szNeed.cy = GetMaxHeight();
+			}
+			
+			if(IsAutoCalcWidth() && szNeed.cx < szAvailable.cx) //如果宽度还有多，下次要重新计算宽度
 			{
 				m_bReturnFixedWidth = false;
 				m_bReturnFixedHeight = true;
 			}
-			else if(IsAutoCalcHeight() && m_cxyFixed.cy < szAvailable.cy) //宽度不够的前提下，高度有剩下的，下次重新计算高度
+			else if(IsAutoCalcHeight() && szNeed.cy < szAvailable.cy) //宽度不够的前提下，高度有剩下的，下次重新计算高度
 			{
 				m_bReturnFixedWidth = true;
 				m_bReturnFixedHeight = false;
 			}
 
-			return CDuiSize(GetManager()->GetDPIObj()->Scale(m_cxyFixed.cx), GetManager()->GetDPIObj()->Scale(m_cxyFixed.cy));
+			szNeed.cy += 5;
+			return CDuiSize(GetManager()->GetDPIObj()->Scale(szNeed.cx), GetManager()->GetDPIObj()->Scale(szNeed.cy));
 		}
 		//return CDuiSize(m_rcItem); // 这种方式在第一次设置大小之后就大小不变了
 		return CContainerUI::EstimateSize(szAvailable);
@@ -1465,6 +1494,28 @@ namespace DuiLib {
 		return m_uTipValueAlign;
 	}
 
+	void CRichEditUI::PaintBkColor(HDC hDC)
+	{
+		if( IsFocused() ) m_uButtonState |= UISTATE_FOCUSED;
+		else m_uButtonState &= ~ UISTATE_FOCUSED;
+		if( !IsEnabled() ) m_uButtonState |= UISTATE_DISABLED;
+		else m_uButtonState &= ~ UISTATE_DISABLED;
+
+		if( (m_uButtonState & UISTATE_FOCUSED) != 0 ) {
+			if(m_dwFocusBkColor != 0) {
+				CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwFocusBkColor));
+				return;
+			}
+		}
+		else if( (m_uButtonState & UISTATE_HOT ) != 0 ) {
+			if(m_dwHotBkColor != 0) {
+				CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwHotBkColor));
+				return;
+			}
+		}
+		return __super::PaintBkColor(hDC);
+	}
+
 	void CRichEditUI::PaintStatusImage(HDC hDC)
 	{
 		if( IsFocused() ) m_uButtonState |= UISTATE_FOCUSED;
@@ -1528,6 +1579,9 @@ namespace DuiLib {
 		}
 		else if( _tcscmp(pstrName, _T("rich")) == 0 ) {
 			SetRich(_tcscmp(pstrValue, _T("true")) == 0);
+		}
+		else if( _tcscmp(pstrName, _T("paragraphindent")) == 0 ) {
+			SetParagraphIndent(_tcscmp(pstrValue, _T("true")) == 0);
 		}
 		else if( _tcscmp(pstrName, _T("multiline")) == 0 ) {
 			if( _tcscmp(pstrValue, _T("false")) == 0 ) m_lTwhStyle &= ~ES_MULTILINE;

@@ -328,7 +328,6 @@ void CScriptEngine::Init()
 	// 	REGISTER_CONTROL( CTreeNodeUI );
 	// 	REGISTER_CONTROL( CTreeViewUI );
 
-	REGISTER_CONTROL( CAnimationPaneUI );
 	REGISTER_CONTROL( CChildLayoutUI );
 	REGISTER_CONTROL( CChildWindowUI );
 	REGISTER_CONTROL( CComboUI );
@@ -526,7 +525,6 @@ void CScriptEngine::reg_ControlHierarchies()
 
 	REG_CLASS_HIERARCHIES(CActiveXUI, CWebBrowserUI);
 
-	REG_CLASS_HIERARCHIES(CContainerUI, CAnimationPaneUI);
 	REG_CLASS_HIERARCHIES(CContainerUI, CChildLayoutUI);
 	REG_CLASS_HIERARCHIES(CContainerUI, CChildWindowUI);
 	REG_CLASS_HIERARCHIES(CContainerUI, CComboUI);

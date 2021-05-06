@@ -156,35 +156,11 @@ BOOL CDuiEditorApp::InitInstance()
 	g_cfg.LoadConfig(g_strAppPath + _T("DuiEditor.xml"));
 	g_session.Init();
 
-#ifndef DUILIB_VERSION_ORIGINAL
-/*
-	//插件方式载入扩展控件
-#ifdef _DEBUG
-	CPaintManagerUI::LoadPlugin(g_strAppPath + _T("DuiPlugins_ud.dll"));
-#else
-	CPaintManagerUI::LoadPlugin(g_strAppPath + _T("DuiPlugins_u.dll"));
-#endif
-
-	//把脚本插件加进来
-
-#ifdef _DEBUG
-	m_hModuleScript = ::LoadLibrary(g_strAppPath +_T("DuiScript_ud.dll"));
-#else
-	m_hModuleScript = ::LoadLibrary(g_strAppPath +_T("DuiScript_u.dll"));
-#endif
-	if(m_hModuleScript)
-	{
-		m_funCreateScriptHelper = CreateScriptHelper; //(CREATE_SCRIPT_HELPER)::GetProcAddress(m_hModuleScript, "CreateScriptHelper");
-		m_funDeleteScriptHelper = DeleteScriptHelper;//(DELETE_SCRIPT_HELPER)::GetProcAddress(m_hModuleScript, "DeleteScriptHelper");
-	}
-*/
 	m_funCreateScriptHelper = CreateScriptHelper;
 	m_funDeleteScriptHelper = DeleteScriptHelper;
 
 	//工厂模式注册扩展控件
 	DuiPluginsRegister();
-
-#endif //#ifndef DUILIB_VERSION_ORIGINAL
 
 	
 	// 注册应用程序的文档模板。文档模板

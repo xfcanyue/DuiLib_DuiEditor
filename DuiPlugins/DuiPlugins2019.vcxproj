@@ -304,11 +304,9 @@
     <ClInclude Include="DuiLib\UIGridListCell.h" />
     <ClInclude Include="DuiLib\UIGridListHeader.h" />
     <ClInclude Include="DuiLib\UIGridListRowUI.h" />
-    <ClInclude Include="DuiLib\UIImageBox.h" />
     <ClInclude Include="DuiLib\UIKeyBoard.h" />
     <ClInclude Include="DuiLib\UIKeyBoardNumber.h" />
     <ClInclude Include="DuiLib\UIKeyBoardSimple.h" />
-    <ClInclude Include="DuiLib\UIPictureControl.h" />
     <ClInclude Include="DuiLib\UISciEdit.h" />
     <ClInclude Include="Include\DuiPlugins.h" />
     <ClInclude Include="MFCGridCtrl\CellRange.h" />
@@ -360,11 +358,9 @@
     <ClCompile Include="DuiLib\UIGridListCell.cpp" />
     <ClCompile Include="DuiLib\UIGridListHeader.cpp" />
     <ClCompile Include="DuiLib\UIGridListRowUI.cpp" />
-    <ClCompile Include="DuiLib\UIImageBox.cpp" />
     <ClCompile Include="DuiLib\UIKeyBoard.cpp" />
     <ClCompile Include="DuiLib\UIKeyBoardNumber.cpp" />
     <ClCompile Include="DuiLib\UIKeyBoardSimple.cpp" />
-    <ClCompile Include="DuiLib\UIPictureControl.cpp" />
     <ClCompile Include="DuiLib\UISciEdit.cpp" />
     <ClCompile Include="DuiPlugins.cpp" />
     <ClCompile Include="MFCGridCtrl\CellType\GridCellCheck.cpp" />

@@ -78,6 +78,10 @@ public:
 	CGridListCellUI *GetSelectCell();
 	CGridListCellUI *GetNextSelectCell();
 
+	void SetRowTag(int row, UINT_PTR tag);
+	UINT_PTR GetRowTag(int row);
+	CGridListRowUI *FindRowFromRowTag(UINT_PTR tag);
+
 	void MergeCells(int nStartRow, int nStartCol, int nEndRow, int nEndCol); //merge the selected cells
 
 	void SetSortCallbackFun(PFNLVCOMPARE pfnCompare);	//special callback function to compare cells, default is _tcscmp()

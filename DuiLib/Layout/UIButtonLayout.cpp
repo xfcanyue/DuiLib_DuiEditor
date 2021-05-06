@@ -123,7 +123,6 @@ namespace DuiLib
 			BindTriggerTabSel();
 
 			SwitchControlVisible();
-			SwitchPaneVisible();
 		}
 		return true;
 	}
@@ -338,25 +337,6 @@ namespace DuiLib
 		m_sSwitchControlVisible = ControlName;
 	}
 
-	void CButtonLayoutUI::SwitchPaneVisible()
-	{
-		if(m_sSwitchPaneVisible.IsEmpty()) 
-			return;
-
-		CControlUI* pControl = GetManager()->FindControl(m_sSwitchPaneVisible);
-		if(!pControl) return;
-		CAnimationPaneUI *pPane = (CAnimationPaneUI *)pControl->GetInterface(DUI_CTR_ANIMATIONPANE);
-		if(pPane)
-		{
-			pPane->SetPaneVisible(!pPane->IsPaneVisible());
-		}
-	}
-
-	void CButtonLayoutUI::SetSwitchPaneVisible(LPCTSTR ControlName)
-	{
-		m_sSwitchPaneVisible = ControlName;
-	}
-
 	void CButtonLayoutUI::BindTabIndex(int _BindTabIndex )
 	{
 		if( _BindTabIndex >= 0)
@@ -407,7 +387,6 @@ namespace DuiLib
 		else if( _tcsicmp(pstrName, _T("stateimage")) == 0 ) SetStateImage(pstrValue);
 		else if( _tcsicmp(pstrName, _T("statecount")) == 0 ) SetStateCount(_ttoi(pstrValue));
 		else if( _tcsicmp(pstrName, _T("switchcontrolvisible")) == 0 ) SetSwitchControlVisible(pstrValue);
-		else if( _tcsicmp(pstrName, _T("switchpanevisible")) == 0 ) SetSwitchPaneVisible(pstrValue);
 		else if( _tcsicmp(pstrName, _T("bindtabindex")) == 0 ) BindTabIndex(_ttoi(pstrValue));
 		else if( _tcsicmp(pstrName, _T("bindtablayoutname")) == 0 ) BindTabLayoutName(pstrValue);
 		else if( _tcsicmp(pstrName, _T("hotbkcolor")) == 0 )

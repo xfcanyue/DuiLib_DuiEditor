@@ -66,6 +66,8 @@
 #include "Core/UIManager.h"
 #include "Core/UIBase.h"
 #include "Core/ControlFactory.h"
+
+#include "Control/UIAnimation.h"
 #include "Core/UIControl.h"
 #include "Core/UIContainer.h"
 
@@ -89,11 +91,8 @@
 #include "Control/UIText.h"
 #include "Control/UIEdit.h"
 #include "Control/UIGifAnim.h"
-#include "Control/UIGifAnimEx.h"
 
-#include "Control/UIAnimation.h"
 #include "Layout/UIAnimationTabLayout.h"
-#include "Control/UIAnimationPane.h"
 #include "Control/UIButton.h"
 #include "Layout/UIButtonLayout.h"
 #include "Control/UIOption.h"
@@ -103,7 +102,6 @@
 #include "Control/UIProgress.h"
 #include "Control/UISlider.h"
 
-#include "Control/UIComboBox.h"
 #include "Control/UIRichEdit.h"
 #include "Control/UIDateTime.h"
 #include "Control/UIIPAddress.h"
@@ -133,13 +131,15 @@
 
 #include "Control/UIIconButton.h"
 #include "Control/UIDateTimeEx.h"
-#include "Control/UIAccordionPane.h"
 #include "Control/UIComboEx.h"
 #include "Control/UIImageBoxEx.h"
 #include "Control/UIRollTextEx.h"
 #include "Control/UIMsgWnd.h"
 #include "Control/UIPicture.h"
 #include "Control/UIPictureBox.h"
+
+#include "Control/UITreeCtrl.h"
+#include "Control/UITreeItem.h"
 
 #include "Layout/UIChildWindow.h"
 

@@ -105,7 +105,7 @@ namespace DuiLib {
 	class CListBodyUI;
 	class CListHeaderUI;
 	class CEditUI;
-	class CComboBoxUI;
+	class CComboUI;
 	class UILIB_API CListUI : public CVerticalLayoutUI, public IListUI
 	{
 		DECLARE_DUICONTROL(CListUI)
@@ -147,8 +147,8 @@ namespace DuiLib {
 		int GetCount() const;
 		bool Add(CControlUI* pControl);
 		bool AddAt(CControlUI* pControl, int iIndex);
-		bool Remove(CControlUI* pControl);
-		bool RemoveAt(int iIndex);
+		bool Remove(CControlUI* pControl, bool bDoNotDestroy=false);
+		bool RemoveAt(int iIndex, bool bDoNotDestroy=false);
 		void RemoveAll();
 
 		void EnsureVisible(int iIndex);
@@ -233,7 +233,7 @@ namespace DuiLib {
 		virtual BOOL CheckColumEditable(int nColum) { return FALSE; };
 		virtual CEditUI* GetEditUI() { return NULL; };
 		virtual BOOL CheckColumComboBoxable(int nColum) { return FALSE; };
-		virtual CComboBoxUI* GetComboBoxUI() { return NULL; };
+		virtual CComboUI* GetComboBoxUI() { return NULL; };
 
 	protected:
 		int GetMinSelItemIndex();

@@ -25,6 +25,8 @@ public:
 	void DestroyWnd();
 	CWindowWnd *GetWnd();
 	void RefreshWindow(); //强制刷新窗口，如视频断连之后
+
+	HDC GetWndDC() const;
 public:
 	CWindowWnd *m_pWindow;
 };

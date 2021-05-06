@@ -123,7 +123,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\..\..\Bin\</OutDir>
-    <TargetName>tutorial_Ad</TargetName>
+    <TargetName>tutorial_ad</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -133,17 +133,17 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsUnicodeDebug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\..\..\Bin\</OutDir>
-    <TargetName>tutorial_Sd</TargetName>
+    <TargetName>tutorial_usd</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsDebug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\..\..\Bin\</OutDir>
-    <TargetName>tutorial_ASd</TargetName>
+    <TargetName>tutorial_asd</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\..\..\Bin\</OutDir>
-    <TargetName>tutorial_A</TargetName>
+    <TargetName>tutorial_a</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -153,12 +153,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsRelease|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\..\..\Bin\</OutDir>
-    <TargetName>tutorial_AS</TargetName>
+    <TargetName>tutorial_as</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsUnicodeRelease|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\..\..\Bin\</OutDir>
-    <TargetName>tutorial</TargetName>
+    <TargetName>tutorial_us</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

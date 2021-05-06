@@ -150,7 +150,7 @@ LRESULT CUIFrameWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam
 
 LRESULT CUIFrameWnd::HandleMenuCommandMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
-	if(uMsg == WM_MENUCLICK)
+	if(uMsg == UIMSG_MENUCLICK)
 	{
 		bHandled = TRUE;
 
@@ -182,7 +182,7 @@ LRESULT CUIFrameWnd::HandleMenuCommandMessage(UINT uMsg, WPARAM wParam, LPARAM l
 			return 0;
 		}
 	}
-	else if(uMsg == WM_MENU_UPDATE_COMMAND_UI)
+	else if(uMsg == UIMSG_MENU_UPDATE_COMMAND_UI)
 	{
 		bHandled = TRUE;
 
@@ -249,6 +249,27 @@ void CUIFrameWnd::Notify(TNotifyUI& msg)
 			SendMessage(WM_SYSCOMMAND, SC_RESTORE, 0); 
 		}
 	}
+
+	if(msg.sType == DUI_MSGTYPE_WINDOWINIT)
+	{
+#if defined(WIN32) && !defined(UNDER_CE)
+		if( ::IsZoomed(*this) ) 
+		{
+			CControlUI* pControl = static_cast<CControlUI*>(m_pm.FindControl(_T("windowmaxbtn")));
+			if( pControl ) pControl->SetVisible(false);
+			pControl = static_cast<CControlUI*>(m_pm.FindControl(_T("windowrestorebtn")));
+			if( pControl ) pControl->SetVisible(true);
+		}
+		else 
+		{
+			CControlUI* pControl = static_cast<CControlUI*>(m_pm.FindControl(_T("windowmaxbtn")));
+			if( pControl ) pControl->SetVisible(true);
+			pControl = static_cast<CControlUI*>(m_pm.FindControl(_T("windowrestorebtn")));
+			if( pControl ) pControl->SetVisible(false);
+		}	
+#endif
+	}
+	
 
 	if(m_listForm.size() > 0)
 	{

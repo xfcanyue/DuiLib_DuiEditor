@@ -259,11 +259,7 @@ void CUIWindowDesignView::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint 
 	LPCTSTR pDefaultAttributes = GetManager()->GetDefaultAttributeList(strNewControlClass);
 	if( pDefaultAttributes ) 
 	{
-#ifndef DUILIB_VERSION_ORIGINAL
 		pNewControl->ApplyAttributeList(pDefaultAttributes);
-#else
-		pNewControl->SetAttributeList(pDefaultAttributes);
-#endif
 	}
 
 	//载入控件当前属性
@@ -464,10 +460,9 @@ LRESULT CUIWindowDesignView::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 
 	ResizeWindow();
 
-#ifndef DUILIB_VERSION_ORIGINAL
 	GetManager()->GetDPIObj()->SetDPIAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
 	GetManager()->SetDPI(CDPI::GetMainMonitorDPI());
-#endif
+
 	return 0;
 }
 

@@ -175,3 +175,11 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
    5, 增加vc2010模板向导
    6, 优化图像编辑窗口, 新增SVG图片设定填充颜色。
    7, 右键菜单增加字体设定
+
+2021-05-01
+   1, 由于很多朋友编译CxImage失败，决定去除CxImage支持，Plugins删除PictureControlUI和ImageBoxUI。新版本对应的图像控件使用PictureUI和PictureBoxUI，功能基本差不多，唯一区别是Picture控件不支持ico。CxImage会保留在3rd中，如果项目中需要用到图片的简单操作，建议使用。
+   2，增加CTreeCtrlUI，这是我重写的tree控件，目前展开收缩支持动画显示。后续可能会支持虚树（虚表）机制。
+   3, 删除原来旗舰版中的UIComboBox，这个控件只是内部对combo的资源图片做解析，没什么大作用，但是搞得我经常写错，所以删了。
+   4, 删除UIAnimationPane和UIAccordionPane，整合到Container中。
+   5，其他一些零碎改动。
+

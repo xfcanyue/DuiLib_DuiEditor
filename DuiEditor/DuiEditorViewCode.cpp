@@ -603,7 +603,8 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 	case SCN_MODIFIED:
 		{
 			//InsertMsg(_T("SCN_MODIFIED"));
-			GetUIManager()->GetDocument()->SaveBackupFile();
+			if( (pMsg->modificationType & SC_MOD_INSERTTEXT) || (pMsg->modificationType & SC_MOD_DELETETEXT) )
+				GetUIManager()->GetDocument()->SaveBackupFile();
 			if(m_bAutoUpdateDesign && 
 				((pMsg->modificationType & SC_MOD_INSERTTEXT) || (pMsg->modificationType & SC_MOD_DELETETEXT)) )
 			{

@@ -435,7 +435,7 @@ namespace DuiLib {
 		return true;
 	}
 
-	bool CComboUI::Remove(CControlUI* pControl)
+	bool CComboUI::Remove(CControlUI* pControl, bool bDoNotDestroy )
 	{
 		int iIndex = GetItemIndex(pControl);
 		if (iIndex == -1) return false;
@@ -459,7 +459,7 @@ namespace DuiLib {
 		return true;
 	}
 
-	bool CComboUI::RemoveAt(int iIndex)
+	bool CComboUI::RemoveAt(int iIndex, bool bDoNotDestroy )
 	{
 		if (!CContainerUI::RemoveAt(iIndex)) return false;
 
