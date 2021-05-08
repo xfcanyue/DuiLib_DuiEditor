@@ -183,3 +183,5 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
    4, 删除UIAnimationPane和UIAccordionPane，整合到Container中。
    5，其他一些零碎改动。
 
+2021-05-07
+   1, 修复svg填充颜色的bug，优化图片编辑器中文件的图标显示。

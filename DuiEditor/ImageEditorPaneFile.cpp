@@ -174,6 +174,16 @@ void CImageEditorListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 
 		// Get the rect that holds the item's icon.
 		GetItemRect ( nItem, &rcItem, LVIR_ICON );
+		if(rcItem.IsRectNull() || rcItem.IsRectEmpty()) return;
+
+		CRect rcClient, rcTemp;
+		GetClientRect(rcClient);
+		if(!rcTemp.IntersectRect(rcClient, rcItem)) return;
+
+// 		CString strPath;
+// 		GetItemPath(strPath, nItem);
+// 		InsertMsg(strPath);
+// 		InsertMsgV(_T("rcItem = %d, %d, %d, %d"), rcItem.left, rcItem.top, rcItem.right, rcItem.bottom);
 
 		// Draw the icon.
 		uFormat = ILD_TRANSPARENT;

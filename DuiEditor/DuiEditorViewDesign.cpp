@@ -201,7 +201,7 @@ void CDuiEditorViewDesign::InitView()
 	CControlUI* pRoot = builder.Create(pDoc->m_doc, NULL, GetUIManager()->GetManager());
 	if (pRoot==NULL)
 	{
-		//MessageBox(m_hWnd, _T("Loading resource files error."), _T("Duilib"), MB_OK|MB_ICONERROR);
+		//::MessageBox(m_hWnd, _T("Loading resource files error."), _T("Duilib"), MB_OK|MB_ICONERROR);
 		//return 0;
 	}
 

@@ -1682,7 +1682,7 @@ namespace DuiLib {
 					m_szAnimationCurrect.cy = 1;
 				}
 
-				SetVisible(true);
+				//SetVisible(true);
 
 				m_szAnimationTotal = m_cxyFixed;
 				RECT rcChild;
@@ -1739,10 +1739,10 @@ namespace DuiLib {
 
 	void CControlUI::OnAnimationStart(int nAnimationID, BOOL bFirstLoop)
 	{
-// 		if(nAnimationID == ANIMATION_ID_SHOW)
-// 		{
-// 			SetVisible(true);
-// 		}
+		if(nAnimationID == ANIMATION_ID_SHOW)
+		{
+			SetVisible(true);
+		}
 	}
 
 	void CControlUI::OnAnimationStep(int nTotalFrame, int nCurFrame, int nAnimationID)
