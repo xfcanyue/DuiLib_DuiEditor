@@ -14,7 +14,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 		return 1;
 	}
 
-	//_CrtSetBreakAlloc();
+	//_CrtSetBreakAlloc(1940);
 
 	//设置主窗口的名字
 	uiApp.SetAppName(_T("TreeViewDemo"));

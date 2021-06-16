@@ -35,7 +35,7 @@ namespace DuiLib
 	protected:
 		int			m_iBindTabIndex;
 		CDuiString	m_sBindTabLayoutName;
-		BOOL		m_bActiveMouseOn;
+		bool		m_bActiveMouseOn;
 	};
 
 } // namespace DuiLib

@@ -57,10 +57,12 @@ public:
 	virtual void OnNotifyValueChanged(TNotifyUI& msg) {}
 	virtual void OnNotifySelectChanged(TNotifyUI& msg) {}   
 
+	virtual void OnNotifyInitCell(TNotifyUI& msg) {}
 	virtual void OnNotifyDrawItem(TNotifyUI& msg) {}
 	virtual void OnNotifySortItem(TNotifyUI& msg) {}
 	virtual void OnNotifyStartEdit(TNotifyUI& msg) {}
 	virtual void OnNotifyEndEdit(TNotifyUI& msg) {}
+	virtual void OnNotifyDeleteItem(TNotifyUI& msg) {}
 
 	virtual void OnNotityGridStartEdit(TNotifyUI &msg) {}
 	virtual void OnNotityGridEndEdit(TNotifyUI &msg) {}

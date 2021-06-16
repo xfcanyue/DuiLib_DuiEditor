@@ -1,18 +1,18 @@
 #pragma once
-#include "IGridListUI.h"
+#include "IGridUI.h"
 
 namespace DuiLib
 {
 
-class UILIB_API CGridListHeaderUI : public CVerticalLayoutUI
+class UILIB_API CGridHeaderUI : public CVerticalLayoutUI
 {
-	DECLARE_DUICONTROL(CGridListHeaderUI)
+	DECLARE_DUICONTROL(CGridHeaderUI)
 public:
-	CGridListHeaderUI(void);
-	virtual ~CGridListHeaderUI(void);
+	CGridHeaderUI(void);
+	virtual ~CGridHeaderUI(void);
 
-	void SetOwner(IGridListUI *pGrid) { m_pOwner = pGrid; }
-	IGridListUI *GetOwner() const { return m_pOwner; }
+	void SetOwner(IGridUI *pGrid) { m_pOwner = pGrid; }
+	IGridUI *GetOwner() const { return m_pOwner; }
 
 	LPCTSTR GetClass() const;
 	UINT GetControlFlags() const;
@@ -25,7 +25,7 @@ public:
 	virtual void SetPos(RECT rc, bool bNeedInvalidate = true);
 	virtual SIZE EstimateSize(SIZE szAvailable);
 protected:
-	IGridListUI *m_pOwner;
+	IGridUI *m_pOwner;
 };
 
 }

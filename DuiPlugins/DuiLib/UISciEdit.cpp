@@ -4,6 +4,65 @@
 
 namespace DuiLib
 {
+
+	static const char *minus_xpm[] = { 
+		"     9     9       16            1", 
+		"` c #8c96ac", 
+		". c #c4d0da", 
+		"# c #daecf4", 
+		"a c #ccdeec", 
+		"b c #eceef4", 
+		"c c #e0e5eb", 
+		"d c #a7b7c7", 
+		"e c #e4ecf0", 
+		"f c #d0d8e2", 
+		"g c #b7c5d4", 
+		"h c #fafdfc", 
+		"i c #b4becc", 
+		"j c #d1e6f1", 
+		"k c #e4f2fb", 
+		"l c #ecf6fc", 
+		"m c #d4dfe7", 
+		"hbc.i.cbh", 
+		"bffeheffb", 
+		"mfllkllfm", 
+		"gjkkkkkji", 
+		"da`````jd", 
+		"ga#j##jai", 
+		"f.k##k#.a", 
+		"#..jkj..#", 
+		"hemgdgc#h"
+	};
+
+	static const char *plus_xpm[] = { 
+		"     9     9       16            1", 
+		"` c #242e44", 
+		". c #8ea0b5", 
+		"# c #b7d5e4", 
+		"a c #dcf2fc", 
+		"b c #a2b8c8", 
+		"c c #ccd2dc", 
+		"d c #b8c6d4", 
+		"e c #f4f4f4", 
+		"f c #accadc", 
+		"g c #798fa4", 
+		"h c #a4b0c0", 
+		"i c #cde5f0", 
+		"j c #bcdeec", 
+		"k c #ecf1f6", 
+		"l c #acbccc", 
+		"m c #fcfefc", 
+		"mech.hcem", 
+		"eldikille", 
+		"dlaa`akld", 
+		".#ii`ii#.", 
+		"g#`````fg", 
+		".fjj`jjf.", 
+		"lbji`ijbd", 
+		"khb#idlhk", 
+		"mkd.ghdkm"
+	}; 
+
 	class CSciWndUI : public CWindowWnd
 	{
 	public:
@@ -92,7 +151,9 @@ namespace DuiLib
 
 //////////////////////////////////////////////////////////////////////////
 IMPLEMENT_DUICONTROL(CSciEditUI)
-CSciEditUI::CSciEditUI(void) : m_pWindow(0)
+CSciEditUI::CSciEditUI(void) : m_pWindow(0), m_nCodePage(SC_CP_UTF8),
+	m_bLineNumber(true), m_dwLineNumberColor(0xff000000), m_dwLineNumberBkColor(0xffffffff),
+	m_bBreakPoint(true),m_bFolder(true)
 {
 }
 
@@ -117,10 +178,47 @@ void CSciEditUI::DoInit()
 {
 	m_pWindow = new CSciWndUI;
 	((CSciWndUI *)m_pWindow)->Init(this);
-	if(IsValidSciApi())
+
+	SendEditor(SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)"Courier New");//(LPARAM)"Courier New");//"微软雅黑");
+	sci_StyleSetSize(STYLE_DEFAULT, 12);//14);
+	sci_StyleSetFore(STYLE_DEFAULT,RGB(0,0,0));
+
+	sci_StyleSetBack(STYLE_DEFAULT, RGB(255,255,255));
+	sci_StyleSetBack(STYLE_INDENTGUIDE, RGB(255,255,255));
+
+	for (int i = SCE_H_DEFAULT; i <= SCE_HPHP_OPERATOR; i++)
 	{
-		sci_SetCodePage(SC_CP_UTF8);	//默认使用UTF8编码
+		sci_StyleSetBack(i,	RGB(255,255,255));
 	}
+
+	//设置选中文本背景色
+	sci_SetSelBack(STYLE_DEFAULT, RGB(0xA0,0xCA,0xF0));//RGB(0xA0,0xCA,0xF0));
+
+	sci_SetExtraDescent(1);
+	sci_SetExtraAscent(1);
+
+	//当前行高亮显示
+	sci_SetCaretLineVisible(TRUE);
+	sci_SetCaretLineBack(RGB(215,215,247));
+
+	//自动调整滚动条宽度
+	sci_SetScrollWidthTracking(TRUE);
+
+	//快捷键不再显示乱码
+	execute(SCI_CLEARCMDKEY, (WPARAM)('F'+(SCMOD_CTRL<<16)), SCI_NULL);
+	execute(SCI_CLEARCMDKEY, (WPARAM)('H'+(SCMOD_CTRL<<16)), SCI_NULL);
+	execute(SCI_CLEARCMDKEY, (WPARAM)('Z'+((SCMOD_CTRL|SCMOD_SHIFT)<<16)), SCI_NULL);
+	execute(SCI_CLEARCMDKEY, (WPARAM)('Y'+(SCMOD_CTRL<<16)), SCI_NULL);
+	execute(SCI_CLEARCMDKEY, (WPARAM)SCK_ESCAPE, SCI_NULL);
+
+	//////////////////////////////////////////////////////////////////////////
+	sci_SetMargins(3);
+	SetViewLineNumber();
+	SetViewBreakPoint();
+	SetViewFolder();
+	sci_SetMarginWidthN(3,0);
+	sci_SetMarginWidthN(4,0);
+
 }
 
 void CSciEditUI::SetPos(RECT rc, bool bNeedInvalidate /* = true */)
@@ -168,6 +266,15 @@ void CSciEditUI::OnSciNotify(SCNotification *pMsg)
 	case SCN_UPDATEUI:
 		break;
 	case SCN_MODIFIED:
+		if( (pMsg->modificationType & SC_MOD_INSERTTEXT) || (pMsg->modificationType & SC_MOD_DELETETEXT) )
+		if(pMsg->linesAdded!=0 && sci_GetMarginWidthN(0)!=0) //自动调整行号的宽度
+		{
+			int lineNumber = sci_GetLineCount();
+			int charWidth = sci_TextWidth(STYLE_LINENUMBER, "9");
+			CDuiString tempLine;
+			tempLine.Format(_T("%d"), lineNumber);
+			sci_SetMarginWidthN(0,tempLine.GetLength()*charWidth+4);
+		}
 		break;
 	case SCN_MACRORECORD:
 		break;
@@ -223,6 +330,9 @@ void CSciEditUI::OnSciNotify(SCNotification *pMsg)
 		break;
 	case SCEN_KILLFOCUS:
 		break;
+	case SCN_FOCUSIN:
+		GetManager()->SetFocus(this);
+		break;
 	}
 }
 
@@ -255,6 +365,135 @@ void CSciEditUI::SetText(LPCTSTR pstrText)
 		sci_SetText(LST2UTF8(pstrText));
 	else
 		sci_SetText(LST2A(pstrText));
+}
+
+void CSciEditUI::SetViewLineNumber()
+{
+	if(!IsValidSciApi()) return;
+	if(!m_bLineNumber)
+	{
+		sci_SetMarginWidthN(0,0);
+		return;
+	}
+
+	//行号
+	sci_SetMarginTypeN(0, SC_MARGIN_NUMBER);
+	int lineNumber = sci_GetLineCount();
+	int charWidth = SendEditor(SCI_TEXTWIDTH, STYLE_LINENUMBER, LPARAM("9"));
+	CDuiString tempLine;
+	tempLine.Format(_T("%d"), lineNumber);
+	sci_SetMarginWidthN(0,tempLine.GetLength()*charWidth+4);
+
+	sci_StyleSetBack(STYLE_LINENUMBER, UIARGB_2_RGB(m_dwLineNumberBkColor));
+	sci_StyleSetFore(STYLE_LINENUMBER, UIARGB_2_RGB(m_dwLineNumberColor));
+}
+
+void CSciEditUI::SetViewBreakPoint()
+{
+	if(!IsValidSciApi()) return;
+	if(!m_bBreakPoint)
+	{
+		sci_SetMarginWidthN(1,0);
+		return;
+	}
+
+	//断点
+	sci_SetMarginTypeN(1, SC_MARGIN_SYMBOL);
+	sci_SetMarginWidthN(1, 10);
+	sci_SetMarginMaskN(1, 1);
+}
+
+void CSciEditUI::SetViewFolder()
+{
+	if(!IsValidSciApi()) return;
+	if(!m_bFolder)
+	{
+		sci_SetMarginWidthN(2,0);
+		return;
+	}
+
+	//代码折叠
+	sci_SetMarginTypeN(2, SC_MARGIN_SYMBOL);	//页边类型
+	sci_SetMarginMaskN(2, SC_MASK_FOLDERS);	//页边掩码
+	sci_SetMarginWidthN(2,20);				//页边宽度
+	sci_SetMarginSensitiveN(1, TRUE);		//页边响应鼠标点击
+
+	// 折叠标签样式      
+	SendEditor(SCI_MARKERDEFINE, SC_MARKNUM_FOLDER, SC_MARK_PIXMAP);  
+	SendEditor(SCI_MARKERDEFINE, SC_MARKNUM_FOLDEROPEN, SC_MARK_PIXMAP);  
+	SendEditor(SCI_MARKERDEFINE, SC_MARKNUM_FOLDEREND,  SC_MARK_PIXMAP);  
+	SendEditor(SCI_MARKERDEFINE, SC_MARKNUM_FOLDEROPENMID, SC_MARK_PIXMAP);  
+	SendEditor(SCI_MARKERDEFINE, SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNERCURVE);  
+	SendEditor(SCI_MARKERDEFINE, SC_MARKNUM_FOLDERSUB, SC_MARK_VLINE);  
+	SendEditor(SCI_MARKERDEFINE, SC_MARKNUM_FOLDERTAIL, SC_MARK_LCORNERCURVE); 
+
+	SendEditor(SCI_MARKERDEFINEPIXMAP, SC_MARKNUM_FOLDER, (sptr_t)plus_xpm);  
+	SendEditor(SCI_MARKERDEFINEPIXMAP, SC_MARKNUM_FOLDEROPEN, (sptr_t)minus_xpm);  
+	SendEditor(SCI_MARKERDEFINEPIXMAP, SC_MARKNUM_FOLDEREND, (sptr_t)plus_xpm);  
+	SendEditor(SCI_MARKERDEFINEPIXMAP, SC_MARKNUM_FOLDEROPENMID, (sptr_t)minus_xpm); 
+
+	// 折叠标签颜色       
+	sci_MarkerSetFore(SC_MARKNUM_FOLDEROPEN,	RGB(0,0,255));
+	sci_MarkerSetFore(SC_MARKNUM_FOLDER,		RGB(0,0,255));
+	SendEditor(SCI_MARKERSETBACK, SC_MARKNUM_FOLDERSUB, 0xa0a0a0);  
+	SendEditor(SCI_MARKERSETBACK, SC_MARKNUM_FOLDERMIDTAIL, 0xa0a0a0);  
+	SendEditor(SCI_MARKERSETBACK, SC_MARKNUM_FOLDERTAIL, 0xa0a0a0);  
+
+	//如果折叠就在折叠行的下面画一条横线  }  
+	sci_SetFoldFlags(SC_FOLDFLAG_LINEAFTER_CONTRACTED); 
+}
+
+void CSciEditUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
+{
+	if( _tcsicmp(pstrName, _T("codepage")) == 0 )
+	{
+		if( _tcsicmp(pstrName, _T("UTF8")) == 0 )
+			m_nCodePage = SC_CP_UTF8;
+		else if( _tcsicmp(pstrValue, _T("GBK")) == 0 )
+			m_nCodePage = 936;
+		else if( _tcsicmp(pstrValue, _T("BIG5")) == 0 )
+			m_nCodePage = 950;
+		else if( _tcsicmp(pstrValue, _T("JapaneseShiftJIS")) == 0 )
+			m_nCodePage = 932;
+		else if( _tcsicmp(pstrValue, _T("KoreanUnifiedHangul")) == 0 )
+			m_nCodePage = 949;
+		else if( _tcsicmp(pstrName, _T("KoreanJohab")) == 0 )
+			m_nCodePage = 1361;
+		if(IsValidSciApi())
+			sci_SetCodePage(m_nCodePage);	//默认使用UTF8编码
+	}
+	else if( _tcsicmp(pstrName, _T("linenumber")) == 0 )
+	{
+		m_bLineNumber = _tcsicmp(pstrValue, _T("true")) == 0;
+		SetViewLineNumber();
+	}
+	else if( _tcsicmp(pstrName, _T("linenumbercolor")) == 0 )
+	{
+		while( *pstrValue > _T('\0') && *pstrValue <= _T(' ') ) pstrValue = ::CharNext(pstrValue);
+		if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+		LPTSTR pstr = NULL;
+		m_dwLineNumberColor = _tcstoul(pstrValue, &pstr, 16);
+		SetViewLineNumber();
+	}
+	else if( _tcsicmp(pstrName, _T("linenumberbkcolor")) == 0 )
+	{
+		while( *pstrValue > _T('\0') && *pstrValue <= _T(' ') ) pstrValue = ::CharNext(pstrValue);
+		if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+		LPTSTR pstr = NULL;
+		m_dwLineNumberBkColor = _tcstoul(pstrValue, &pstr, 16);
+		SetViewLineNumber();
+	}
+	else if( _tcsicmp(pstrName, _T("breakpoint")) == 0 )
+	{
+		m_bBreakPoint = _tcsicmp(pstrValue, _T("true")) == 0;
+		SetViewBreakPoint();
+	}
+	else if( _tcsicmp(pstrName, _T("folder")) == 0 )
+	{
+		m_bFolder = _tcsicmp(pstrValue, _T("true")) == 0;
+		SetViewFolder();
+	}
+	__super::SetAttribute(pstrName, pstrValue);
 }
 
 }

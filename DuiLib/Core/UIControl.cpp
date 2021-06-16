@@ -159,16 +159,26 @@ namespace DuiLib {
 		Invalidate();
 	}
 
-	int  CControlUI::GetText_to_int()			//add by liqs99
+	int  CControlUI::GetTextN()			//add by liqs99
 	{
 		return _ttoi(GetText());//(m_sText);
 	}
 
-	void CControlUI::SetText(int n)		//add by liqs99
+	void CControlUI::SetTextN(int n)		//add by liqs99
 	{
 		CDuiString str;
 		str.Format(_T("%d"), n);
 		SetText(str);
+	}
+
+	void CControlUI::SetTextV(LPCTSTR lpszFormat, ...)
+	{
+		va_list argList;
+		va_start(argList, lpszFormat);
+		CDuiString s;
+		s.InnerFormat(lpszFormat, argList);
+		SetText(s);
+		va_end(argList);
 	}
 
 	bool CControlUI::IsResourceText() const
@@ -198,6 +208,7 @@ namespace DuiLib {
 	CLangPackageUI *CControlUI::GetLangPackage()
 	{
 		if(!GetManager()) return NULL;
+		if(m_sSkinFile.IsEmpty()) return NULL;
 		CLangPackageUI *pkg = GetManager()->GetLangManager()->GetPackage(m_sSkinFile);
 		return pkg;
 	}
@@ -1385,11 +1396,40 @@ namespace DuiLib {
 			if( *pstrList != _T('\"') )	return this;
 
 			if( *pstrList++ != _T('\"') ) return this;
-			while( *pstrList != _T('\0') && *pstrList != _T('\"') ) {
-				LPTSTR pstrTemp = ::CharNext(pstrList);
-				while( pstrList < pstrTemp) {
-					sValue += *pstrList++;
+
+			//这段无法满足嵌套的style定义
+// 			while( *pstrList != _T('\0') && *pstrList != _T('\"') ) {
+// 				LPTSTR pstrTemp = ::CharNext(pstrList);
+// 				while( pstrList < pstrTemp) {
+// 					sValue += *pstrList++;
+// 				}
+// 			}
+			//改为
+			bool bNewAttr = false;
+			int deep = 0;
+			while( *pstrList != _T('\0') ) {
+				if(*pstrList == _T('='))
+				{
+					bNewAttr = true;
 				}
+				else if(*pstrList == _T('\"') || *pstrList == _T('\'') )
+				{
+					if(bNewAttr)
+					{
+						if(deep == 0)
+						{
+							deep = 1;
+						}
+						else
+						{
+							deep = 0;
+							bNewAttr = false;
+						}
+					}
+					else
+						break;
+				}
+				sValue += *pstrList++;
 			}
 
 			//ASSERT( *pstrList == _T('\"') ); //可能让设计器崩溃

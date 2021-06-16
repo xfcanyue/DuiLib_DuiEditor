@@ -36,22 +36,7 @@
     <ClInclude Include="Include\DuiPlugins.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="DuiLib\UIGridList.h">
-      <Filter>头文件\DuiLib</Filter>
-    </ClInclude>
     <ClInclude Include="DuiLib\UISciEdit.h">
-      <Filter>头文件\DuiLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DuiLib\UIGridListBody.h">
-      <Filter>头文件\DuiLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DuiLib\UIGridListCell.h">
-      <Filter>头文件\DuiLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DuiLib\UIGridListHeader.h">
-      <Filter>头文件\DuiLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DuiLib\UIGridListRowUI.h">
       <Filter>头文件\DuiLib</Filter>
     </ClInclude>
     <ClInclude Include="DuiLib\UIKeyBoard.h">
@@ -61,9 +46,6 @@
       <Filter>头文件\DuiLib</Filter>
     </ClInclude>
     <ClInclude Include="DuiLib\UIKeyBoardSimple.h">
-      <Filter>头文件\DuiLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DuiLib\IGridListUI.h">
       <Filter>头文件\DuiLib</Filter>
     </ClInclude>
     <ClInclude Include="DuiLib\UIGridCtrl.h">
@@ -119,22 +101,7 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="DuiLib\UIGridList.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
     <ClCompile Include="DuiLib\UISciEdit.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIGridListBody.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIGridListCell.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIGridListHeader.cpp">
-      <Filter>源文件\DuiLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiLib\UIGridListRowUI.cpp">
       <Filter>源文件\DuiLib</Filter>
     </ClCompile>
     <ClCompile Include="DuiLib\UIKeyBoard.cpp">

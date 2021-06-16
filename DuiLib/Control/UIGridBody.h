@@ -1,18 +1,18 @@
 #pragma once
-#include "IGridListUI.h"
+#include "IGridUI.h"
 
 namespace DuiLib
 {
 
-class UILIB_API CGridListBodyUI : public CVerticalLayoutUI
+class UILIB_API CGridBodyUI : public CVerticalLayoutUI
 {
-	DECLARE_DUICONTROL(CGridListBodyUI)
+	DECLARE_DUICONTROL(CGridBodyUI)
 public:
-	CGridListBodyUI(void);
-	virtual ~CGridListBodyUI(void);
+	CGridBodyUI(void);
+	virtual ~CGridBodyUI(void);
 
-	void SetOwner(IGridListUI *pGrid) { m_pOwner = pGrid; }
-	IGridListUI *GetOwner() const { return m_pOwner; }
+	void SetOwner(IGridUI *pGrid) { m_pOwner = pGrid; }
+	IGridUI *GetOwner() const { return m_pOwner; }
 
 	LPCTSTR GetClass() const;
 	UINT GetControlFlags() const;
@@ -24,6 +24,7 @@ public:
 	virtual void DoInit();
 	virtual void SetPos(RECT rc, bool bNeedInvalidate = true);
 	virtual SIZE EstimateSize(SIZE szAvailable);
+	virtual bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
 
 	virtual void LineUp();
 	virtual void LineDown();
@@ -31,9 +32,12 @@ public:
 	virtual void PageDown();
 	virtual void HomeUp();
 	virtual void EndDown();
-protected:
-	IGridListUI *m_pOwner;
 
+	void SetCyNeeded(int cyNeeded) { m_nCyNeeded = cyNeeded; }
+	int GetCyNeeded() const { return m_nCyNeeded; }
+protected:
+	IGridUI *m_pOwner;
+	int m_nCyNeeded;
 private:
 };
 

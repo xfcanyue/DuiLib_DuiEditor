@@ -15,5 +15,7 @@ public:
 	virtual bool OnMenuCommand(const MenuCmd *cmd);
 	virtual bool OnMenuUpdateCommandUI(CMenuCmdUI *cmdUI);
 	virtual void OnNotifyClick(TNotifyUI& msg);
+
+	CTreeUI *m_tree;
 };
 

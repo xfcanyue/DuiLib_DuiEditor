@@ -19,7 +19,7 @@ namespace DuiLib
 
 	LPCTSTR CTextUI::GetClass() const
 	{
-		return _T("TextUI");
+		return DUI_CTR_TEXT;
 	}
 
 	LPVOID CTextUI::GetInterface(LPCTSTR pstrName)

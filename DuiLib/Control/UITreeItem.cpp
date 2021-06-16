@@ -3,25 +3,172 @@
 
 namespace DuiLib
 {
-	IMPLEMENT_DUICONTROL(CTreeItemUI)
 
-	CTreeItemUI::CTreeItemUI() : m_pOwner(NULL), m_pParentNode(NULL), m_nLevel(0), 
-		m_pHoriz(NULL), m_pFolderButton(NULL), m_pCheckBox(NULL), m_pIcon(NULL), m_pText(NULL), m_pChildContainer(NULL),
-		m_bSelected(false)
+	//////////////////////////////////////////////////////////////////////////
+	CTreeInnerCheckBoxUI::CTreeInnerCheckBoxUI()
 	{
-		SetAutoCalcHeight(true);
+		m_pOwner = NULL;
+	}
 
-		Add(m_pHoriz = new CHorizontalLayoutUI);
-		Add(m_pChildContainer = new CVerticalLayoutUI);
+	bool CTreeInnerCheckBoxUI::Activate()
+	{
+		if( !CControlUI::Activate() ) return false;
+		Selected(!IsSelected());
+		return true;
+	}
 
-		//m_pHoriz->SetBkColor(UIRGB(255,0,0));
-		m_pHoriz->SetFixedHeight(25);
-		m_pHoriz->SetChildVAlign(DT_VCENTER);
-		m_pHoriz->SetChildPadding(2);
+	bool CTreeInnerCheckBoxUI::IsSelected() const
+	{
+		if(!m_pOwner) return false;
+		CTreeItemUI *pItemUI = (CTreeItemUI *)GetOwner();
+		CTreeUI *pTree = (CTreeUI *)pItemUI->GetOwner();
+		if(!pItemUI || !pTree || !pItemUI->GetNodeData())
+			return false;
 
-		//m_pChildContainer->SetBkColor(UIRGB(0,255,0));
-		m_pChildContainer->SetAutoCalcHeight(true);
-		//m_pChildContainer->SetAnimation(DuiAnim_ScaleVertical);
+		switch (m_type)
+		{
+		case BTN_FOLDER:
+			if(!pItemUI->GetNodeData()->NodeHasChildren()) return true;
+			return pItemUI->GetNodeData()->IsExpand();
+			break;
+		case BTN_CHECKBOX:
+			return pItemUI->GetNodeData()->IsCheckBoxCheck();
+			break;
+		case BTN_ICON:
+			return pItemUI->GetNodeData()->IsSelected();
+			break;
+		case BTN_TEXT:
+			return pItemUI->GetNodeData()->IsSelected();
+			break;
+		}
+
+		return false;
+	}
+
+	void CTreeInnerCheckBoxUI::Selected(bool bSelected, bool bTriggerEvent)
+	{
+		if(IsSelected() == bSelected) return;
+
+		if( bSelected ) m_uButtonState |= UISTATE_SELECTED;
+		else m_uButtonState &= ~UISTATE_SELECTED;
+
+		if(!m_pOwner) return;
+		CTreeItemUI *pItemUI = (CTreeItemUI *)GetOwner();
+		CTreeUI *pTree = (CTreeUI *)pItemUI->GetOwner();
+		if(!pItemUI || !pTree || !pItemUI->GetNodeData())
+			return;
+
+		switch (m_type)
+		{
+		case BTN_FOLDER:
+			if(pItemUI->GetNodeData()->NodeHasChildren())
+			{
+				pItemUI->GetNodeData()->Expand(bSelected);
+				pTree->NeedUpdate();
+			}
+			else pItemUI->GetNodeData()->Expand(true);
+			break;
+		case BTN_CHECKBOX:
+			pItemUI->GetNodeData()->SetCheckBoxCheck(bSelected);
+			pTree->Invalidate();
+			break;
+		case BTN_ICON:
+			if(bSelected)
+			{
+				if(!pTree->IsMultiSelect() || ::GetKeyState(VK_CONTROL)>=0) pTree->ClearSeletedNodes();
+
+				pTree->SelectNode(pItemUI->GetNodeData(), bSelected);
+				pTree->SetFocusNode(pItemUI->GetNodeData());
+				pTree->SendNotify(DUI_MSGTYPE_SELECTCHANGED, 0, 0);
+			}
+			else
+			{
+				pTree->SelectNode(pItemUI->GetNodeData(), bSelected);
+				pTree->SetFocusNode(NULL);
+				pTree->SendNotify(DUI_MSGTYPE_SELECTCHANGED, 0, 0);
+			}
+			pTree->Invalidate();
+			break;
+		case BTN_TEXT:
+			if(bSelected)
+			{
+				if(!pTree->IsMultiSelect() || ::GetKeyState(VK_CONTROL)>=0) pTree->ClearSeletedNodes();
+
+				pTree->SelectNode(pItemUI->GetNodeData(), bSelected);
+				pTree->SetFocusNode(pItemUI->GetNodeData());
+				pTree->SendNotify(DUI_MSGTYPE_SELECTCHANGED, 0, 0);
+			}
+			else
+			{
+				pTree->SelectNode(pItemUI->GetNodeData(), bSelected);
+				pTree->SetFocusNode(NULL);
+				pTree->SendNotify(DUI_MSGTYPE_SELECTCHANGED, 0, 0);
+			}
+			pTree->Invalidate();
+			break;
+		}
+
+	}
+
+	CDuiString CTreeInnerCheckBoxUI::GetText() const
+	{
+		if(!m_pOwner) return _T("");
+		CTreeItemUI *pItemUI = (CTreeItemUI *)GetOwner();
+		CTreeUI *pTree = (CTreeUI *)pItemUI->GetOwner();
+		if(!pItemUI || !pTree || !pItemUI->GetNodeData())
+			return _T("");
+
+		switch (m_type)
+		{
+		case BTN_FOLDER:
+			break;
+		case BTN_CHECKBOX:
+			break;
+		case BTN_ICON:
+			break;
+		case BTN_TEXT:
+			return pItemUI->GetNodeData()->GetText();
+			break;
+		}
+
+		return _T("");
+	}
+
+	void CTreeInnerCheckBoxUI::DoEvent(TEventUI& event)
+	{
+		if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
+			if( m_pParent != NULL ) m_pParent->DoEvent(event);
+			else COptionUI::DoEvent(event);
+			return;
+		}
+
+		if(!m_pOwner) return COptionUI::DoEvent(event);
+		CTreeItemUI *pItemUI = (CTreeItemUI *)GetOwner();
+		CTreeUI *pTree = (CTreeUI *)pItemUI->GetOwner();
+		if(!pItemUI || !pTree || !pItemUI->GetNodeData())
+			return COptionUI::DoEvent(event);
+
+		if( event.Type == UIEVENT_DBLCLICK )
+		{
+			if( ::PtInRect(&m_rcItem, event.ptMouse) && IsEnabled() )
+			{
+				pItemUI->GetNodeData()->Expand(!pItemUI->GetNodeData()->IsExpand());
+				pTree->NeedUpdate();
+			}
+			return;
+		}
+
+		COptionUI::DoEvent(event);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	IMPLEMENT_DUICONTROL(CTreeItemUI)
+	CTreeItemUI::CTreeItemUI()
+	{
+		//SetBkColor((UIRGB(0xa4,0xa4,0xa4)));
+		m_pOwner = NULL;
+		m_pNodeData = NULL;
+		SetChildVAlign(DT_VCENTER);
+		SetChildPadding(5);
 	}
 
 	CTreeItemUI::~CTreeItemUI( void )
@@ -46,207 +193,98 @@ namespace DuiLib
 		return UIFLAG_TABSTOP;
 	}
 
-	int CTreeItemUI::GetChildNodeCount()
-	{
-		return m_pChildContainer->GetCount();
-	}
-
-	CTreeItemUI *CTreeItemUI::GetChildNodeAt(int iIndex)
-	{
-		return (CTreeItemUI *)m_pChildContainer->GetItemAt(iIndex);
-	}
-
-	int CTreeItemUI::GetChildNodeIndex(CTreeItemUI *pNode)
-	{
-		return m_pChildContainer->GetItemIndex(pNode);
-	}
-
-	BOOL CTreeItemUI::DeleteChildNode(CTreeItemUI *pNode)
-	{
-		if(GetOwner() && GetOwner()->GetFocusNode() == pNode) GetOwner()->SetFocusNode(NULL);
-		return m_pChildContainer->Remove(pNode);
-	}
-
-	bool CTreeItemUI::Add(CControlUI* pControl)
-	{
-		if(pControl->GetInterface(DUI_CTR_TREEITEM))
+	void CTreeItemUI::SetNodeData(TNodeData *pNodeData) 
+	{ 
+		m_pNodeData = pNodeData; 
+		if(m_pNodeData)
 		{
-			CTreeItemUI *pNode = static_cast<CTreeItemUI *>(pControl);
-			pNode->SetParentNode(this);
-			if(m_pFolderButton && !m_pFolderButton->IsVisible()) m_pFolderButton->SetVisible(true);
-			return m_pChildContainer->Add(pNode);
-		}
-		return __super::Add(pControl);
-	}
-
-	bool CTreeItemUI::AddAt(CControlUI* pControl, int iIndex)
-	{
-		if(pControl->GetInterface(DUI_CTR_TREEITEM))
-		{
-			CTreeItemUI *pNode = static_cast<CTreeItemUI *>(pControl);
-			pNode->SetParentNode(this);
-			if(m_pFolderButton && !m_pFolderButton->IsVisible()) m_pFolderButton->SetVisible(true);
-			return m_pChildContainer->AddAt(pNode, iIndex);
-		}
-		return __super::AddAt(pControl, iIndex);
-	}
-
-	bool CTreeItemUI::Remove(CControlUI* pControl, bool bDoNotDestroy )
-	{
-		if(GetOwner() && GetOwner()->GetFocusNode() == pControl)
-			GetOwner()->SetFocusNode(NULL);
-		if(pControl->GetInterface(DUI_CTR_TREEITEM))
-		{
-			return m_pChildContainer->Remove(pControl);
-		}
-		return __super::Remove(pControl);
-	}
-
-	bool CTreeItemUI::RemoveAt(int iIndex, bool bDoNotDestroy )
-	{
-		return m_pChildContainer->RemoveAt(iIndex);
-	}
-
-	void CTreeItemUI::RemoveAll()
-	{
-		m_pChildContainer->RemoveAll();
-	}
-
-	CDuiString CTreeItemUI::GetText() const
-	{
-		return __super::GetText();
-	}
-
-	void CTreeItemUI::SetText(LPCTSTR pstrText)
-	{
-		__super::SetText(pstrText);
-		if(m_pText)
-		{
-			m_pText->SetText(pstrText);
-		}
-	}
-
-	void CTreeItemUI::ExpandItem(bool bExpand)
-	{
-		if(IsExpandItem() == bExpand) return;
-
-		//如果是展开，那么要先visible
-		if(bExpand)
-		{
-			if(m_pChildContainer) m_pChildContainer->SetVisible(true);
-			if(m_pFolderButton) m_pFolderButton->Selected(false, false);
-		}
-		else
-		{
-			if(m_pChildContainer) m_pChildContainer->SetVisible(false);
-			if(m_pFolderButton) m_pFolderButton->Selected(true, false);
-		}
-
-		if(GetOwner()) GetOwner()->NeedUpdate();
-	}
-
-	bool CTreeItemUI::IsExpandItem()
-	{
-		if(m_pChildContainer && m_pChildContainer->GetCount() > 0 && m_pChildContainer->IsVisible())
-			return true;
-		return false;
-	}
-
-	bool CTreeItemUI::Select(bool bSelect)
-	{
-		if(m_bSelected == bSelect)	return false;
-		m_bSelected = bSelect;
-		if(m_pCheckBox) m_pCheckBox->Selected(m_bSelected, false);
-		if(m_pText)	m_pText->Selected(m_bSelected, false);
-		Invalidate();
-		return true;
-	}
-
-	bool CTreeItemUI::IsSelected() const
-	{
-		return m_bSelected;
+			RECT inSet = {m_pNodeData->GetLevel() * GetOwner()->GetIndentWidth(),0,0,0};
+			SetInset(inSet);
+// 			if(m_pNodeData->GetChild(0))
+// 			{
+// 				m_pFolderButton->SetVisible(true);
+// 			}
+// 			else
+// 			{
+// 				m_pFolderButton->SetVisible(false);
+// 			}
+		}	
 	}
 
 	void CTreeItemUI::DoInit()
 	{
-		if(!GetOwner())
-		{
-			m_nLevel = 0;
-			CControlUI *pParent = GetParent();
-			while (pParent)
-			{
-				if(pParent->GetInterface(DUI_CTR_TREECTRL))
-				{
-					SetOwner((CTreeCtrlUI *)pParent);
-					break;
-				}
-				if(pParent->GetInterface(DUI_CTR_TREEITEM))
-				{
-					m_nLevel++;
-					pParent = pParent->GetParent();
-					continue;
-				}
-				pParent = pParent->GetParent();
-			}
-		}
+		Add(m_pFolderButton = new CTreeInnerCheckBoxUI);
+		Add(m_pCheckBox = new CTreeInnerCheckBoxUI);
+		Add(m_pIcon = new CTreeInnerCheckBoxUI);
+		Add(m_pText = new CTreeInnerCheckBoxUI);
 
-		m_pHoriz->Add(m_pFolderButton = new CCheckBoxUI);
-		m_pHoriz->Add(m_pCheckBox = new CCheckBoxUI);
-		m_pHoriz->Add(m_pIcon = new COptionUI);
-		m_pHoriz->Add(m_pText = new COptionUI);
+		m_pFolderButton->SetOwner(this);
+		m_pFolderButton->m_type = CTreeInnerCheckBoxUI::BTN_FOLDER;
+
+		m_pCheckBox->SetOwner(this);
+		m_pCheckBox->m_type = CTreeInnerCheckBoxUI::BTN_CHECKBOX;
+
+		m_pIcon->SetOwner(this);
+		m_pIcon->m_type = CTreeInnerCheckBoxUI::BTN_ICON;
+
+		m_pText->SetOwner(this);
+		m_pText->m_type = CTreeInnerCheckBoxUI::BTN_TEXT;
+
 		if(GetOwner())
 		{
-			m_pHoriz->ApplyAttributeList(GetOwner()->GetStyleHoriz());			
-			m_pHoriz->OnPaint += MakeDelegate(this,&CTreeItemUI::OnPaintHoriz);
+			m_pFolderButton->ApplyAttributeList(GetOwner()->GetStyleFolderBtn());
+			//m_pFolderButton->OnEvent += MakeDelegate(this,&CTreeItemUI::OnEventInnerControl);
 
-			m_pFolderButton->ApplyAttributeList(GetOwner()->GetStyleFolder());
-			m_pFolderButton->OnEvent += MakeDelegate(this,&CTreeItemUI::OnEventInnerControl);
+			m_pCheckBox->ApplyAttributeList(GetOwner()->GetStyleCheckBoxBtn());
+			//m_pCheckBox->OnEvent += MakeDelegate(this,&CTreeItemUI::OnEventInnerControl);
 
-			m_pCheckBox->ApplyAttributeList(GetOwner()->GetStyleCheckBox());
-			m_pCheckBox->OnEvent += MakeDelegate(this,&CTreeItemUI::OnEventInnerControl);
+			m_pIcon->ApplyAttributeList(GetOwner()->GetStyleIconBtn());
+			//m_pIcon->OnEvent += MakeDelegate(this,&CTreeItemUI::OnEventInnerControl);
 
-			m_pIcon->ApplyAttributeList(GetOwner()->GetStyleIcon());
-			m_pIcon->OnEvent += MakeDelegate(this,&CTreeItemUI::OnEventInnerControl);
-
-			m_pText->ApplyAttributeList(GetOwner()->GetStyleText());
-			m_pText->OnEvent += MakeDelegate(this,&CTreeItemUI::OnEventInnerControl);
-			m_pText->SetText(GetText());
-			m_pText->SetAutoCalcWidth(true);
+			m_pText->ApplyAttributeList(GetOwner()->GetStyleTextBtn());
+			//m_pText->OnEvent += MakeDelegate(this,&CTreeItemUI::OnEventInnerControl);
+			//m_pText->SetAutoCalcWidth(true);
+			m_pText->SetTextStyle(DT_LEFT | DT_VCENTER | DT_SINGLELINE);
 		}
 	}
 
-	SIZE CTreeItemUI::EstimateSize(SIZE szAvailable)
+	int CTreeItemUI::GetCxNeeded(SIZE szAvailable)
 	{
-		if(!GetOwner()) return __super::EstimateSize(szAvailable);
+		if(!GetOwner() | !m_pNodeData) return 30;
 
-		if(m_pChildContainer->GetCount() == 0){
-			if(m_pFolderButton) m_pFolderButton->SetVisible(false);
-			else m_pFolderButton->SetVisible(true);
-		}
+		int nWidth = 0;
+		nWidth += m_pFolderButton->GetFixedWidth() + m_pCheckBox->GetFixedWidth() + m_pIcon->GetFixedWidth();
 
-		int indent = m_nLevel * GetOwner()->GetIndent();
-		if(!m_pFolderButton->IsVisible()) 
-			indent += m_pFolderButton->GetFixedWidth() + GetChildPadding()*4;
-		m_pHoriz->SetPadding(CDuiRect(indent, 0, 0, 0));
-
-		return __super::EstimateSize(szAvailable);
+		RECT rcText = {0, 0, szAvailable.cx, szAvailable.cy};
+		CRenderEngine::DrawText(m_pManager->GetPaintDC(), m_pManager, rcText, m_pNodeData->GetText(), 0, m_pText->GetFont(), DT_CALCRECT | m_pText->GetTextStyle());
+		nWidth += MulDiv(rcText.right - rcText.left + GetManager()->GetDPIObj()->Scale(m_pText->GetTextPadding().left) + GetManager()->GetDPIObj()->Scale(m_pText->GetTextPadding().right), 100, GetManager()->GetDPIObj()->GetScale());
+		
+		nWidth += m_rcInset.left;
+		nWidth += m_rcInset.right;
+		
+		return nWidth;
 	}
 
 	void CTreeItemUI::DoEvent(TEventUI& event)
 	{
 		if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
-			if( m_pOwner != NULL ) m_pOwner->DoEvent(event);
-			else CContainerUI::DoEvent(event);
+			if( m_pParent != NULL ) m_pParent->DoEvent(event);
+			else __super::DoEvent(event);
 			return;
 		}
+
+		CTreeUI *pTree = (CTreeUI *)GetOwner();
+		if(!pTree || !m_pNodeData) return __super::DoEvent(event);
 
 		if( event.Type == UIEVENT_BUTTONDOWN ) 
 		{
 			if( IsEnabled() ) 
 			{
-				GetOwner()->SetFocusNode(this);
-				Select(!IsSelected());
-				m_pManager->SendNotify(this, DUI_MSGTYPE_ITEMSELECT);
+				if(!pTree->IsMultiSelect() || ::GetKeyState(VK_CONTROL)>=0) pTree->ClearSeletedNodes();
+				GetOwner()->SelectNode(m_pNodeData);
+				GetOwner()->SetFocusNode(m_pNodeData);
+				GetOwner()->Refresh(false);
+				pTree->SendNotify(DUI_MSGTYPE_SELECTCHANGED, 0, 0);
 			}
 			return;
 		}
@@ -255,8 +293,9 @@ namespace DuiLib
 		{
 			if( IsEnabled() ) 
 			{
-				ExpandItem(!IsExpandItem());
-				m_pManager->SendNotify(GetOwner(), DUI_MSGTYPE_DBCLICK, (WPARAM)this);
+				m_pNodeData->Expand(!m_pNodeData->IsExpand());
+				GetOwner()->Refresh(true);
+				m_pManager->SendNotify(pTree, DUI_MSGTYPE_DBCLICK, (WPARAM)this);			
 			}
 			return;
 		}
@@ -280,112 +319,5 @@ namespace DuiLib
 		}
 
 		__super::DoEvent(event);
-	}
-
-	bool CTreeItemUI::OnEventInnerControl(void* param)
-	{
-		TEventUI &event = *(TEventUI *)param;
-
-		if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
-			if( m_pOwner != NULL ) m_pOwner->DoEvent(event);
-			else CContainerUI::DoEvent(event);
-			return true;
-		}
-
-		if( event.Type == UIEVENT_BUTTONDOWN ) 
-		{
-			if( IsEnabled() ) 
-			{
-				GetOwner()->SetFocusNode(this);
-				if(event.pSender == m_pFolderButton)
-				{
-					ExpandItem(!IsExpandItem());
-					m_pManager->SendNotify(GetOwner(), DUI_MSGTYPE_DBCLICK);
-					return false;
-				}
-
-				Select(!IsSelected());
-				m_pManager->SendNotify(this, DUI_MSGTYPE_ITEMSELECT);
-			}
-
-			//folder按钮和checkbox事件，不让它自己处理
-			if(event.pSender == m_pFolderButton || event.pSender == m_pCheckBox)
-				return false;
-			return true;
-		}
-
-		if( event.Type == UIEVENT_DBLCLICK ) 
-		{
-			if( IsEnabled() ) 
-			{
-				ExpandItem(!IsExpandItem());
-				m_pManager->SendNotify(GetOwner(), DUI_MSGTYPE_DBCLICK);
-			}
-
-			//folder按钮和checkbox事件，不让它自己处理
-			if(event.pSender == m_pFolderButton || event.pSender == m_pCheckBox)
-				return false;
-			return true;
-		}
-
-		if( event.Type == UIEVENT_MOUSEENTER ) 
-		{
-			if( IsEnabled() ) {
-				SetHot(true);
-				Invalidate();
-			}
-			return true;
-		}
-
-		if( event.Type == UIEVENT_MOUSELEAVE ) 
-		{
-			if( IsHot() ) {
-				SetHot(false);
-				Invalidate();
-			}
-			return true;
-		}
-
-
-		return true;
-	}
-
-	bool CTreeItemUI::OnPaintHoriz(void * param)
-	{	
-		HDC hDC = (HDC)param;
-		DWORD dwBkColor = 0;
-		if(GetOwner()->GetFocusNode() == this) {
-			dwBkColor = GetOwner()->GetItemFocusBkColor();
-		}
-		else if(dwBkColor == 0 && IsHot()){
-			dwBkColor = GetOwner()->GetItemHotBkColor();
-		}
-		else if(dwBkColor == 0 && IsSelected()) {
-			dwBkColor = GetOwner()->GetItemSelectedBkColor();
-		}
-		else if(dwBkColor == 0) {
-			dwBkColor = GetOwner()->GetItemBkColor();
-		}
-
-		if(dwBkColor != 0)
-			CRenderEngine::DrawColor(hDC, m_pHoriz->GetPos(), GetOwner()->GetItemFocusBkColor());
-		return true;
-	}
-
-	void CTreeItemUI::OnAnimationStep(int nTotalFrame, int nCurFrame, int nAnimationID)
-	{
-		CControlUI::OnAnimationStep(nTotalFrame, nCurFrame, nAnimationID);
-		if(GetOwner()) GetOwner()->NeedParentUpdate();
-	}
-
-	void CTreeItemUI::OnAnimationStop(int nAnimationID)
-	{
-		CControlUI::OnAnimationStop(nAnimationID);
-		if(GetOwner()) GetOwner()->NeedParentUpdate();
-	}
-
-	void CTreeItemUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
-	{
-		__super::SetAttribute(pstrName, pstrValue);
 	}
 }

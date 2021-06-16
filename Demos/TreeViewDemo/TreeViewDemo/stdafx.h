@@ -36,9 +36,7 @@
 // «∑Ò π”√æ≤Ã¨±‡“Î
 //#define UILIB_STATIC
 
-#include "E:/MyLibrary/DuiLib/DuiLib/Duilib.h"
-#include "E:/MyLibrary/DuiLib/DuiPlugins/Include/DuiPlugins.h"
-#include "E:/MyLibrary/DuiLib/DuiScript/Include/DuiScriptInterface.h"
+#include "../../../DuiLib/Duilib.h"
 using namespace DuiLib;
 
 #include "App.h"

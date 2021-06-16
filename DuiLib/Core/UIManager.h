@@ -597,7 +597,6 @@ namespace DuiLib {
 		bool m_bInitWindowParameter; //是否已经初始化了Window属性, window属性只能初始化一次,用来过滤Include文件中的window属性 Modify by liqs99
 		CLangManagerUI *m_pLangManager;		//多语言管理器, add by liqs99
 
-
 	//////////////////////////////////////////////////////////////////////////
 	// 脚本
 	//////////////////////////////////////////////////////////////////////////
@@ -617,6 +616,11 @@ namespace DuiLib {
 		static IScriptManager *m_pSharedScriptEngine;
 		static CREATE_SCRIPT_ENGINE_INSTANCE m_funCreateScriptEngine;
 		static DELETE_SCRIPT_ENGINE_INSTANCE m_funDeleteScriptEngine;
+
+	//////////////////////////////////////////////////////////////////////////
+	//设计器模式
+	public:
+		static BOOL UIDESIGNMODE;
 	};
 
 	//先锁定窗口更新，然后强制刷新整个窗口

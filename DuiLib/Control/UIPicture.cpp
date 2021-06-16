@@ -97,7 +97,6 @@ void CPictureUI::DoEvent(TEventUI& event)
 				Invalidate();
 			}
 		}
-		return;
 	}
 
 	if( event.Type == UIEVENT_MOUSEMOVE )

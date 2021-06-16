@@ -20,15 +20,15 @@
 		</HorizontalLayout>
 		<HorizontalLayout bkcolor="0xFFFFFFFF">
 			<VerticalLayout name="verti_lang_list" width="200" inset="2,2,2,2" childpadding="2" pos="0,0,200,0" />
-			<GridList name="grid_lang_text" edit="font=&quot;1&quot; textpadding=&quot;2,2,2,2&quot; " font="1">
-				<GridListHeader>
-					<GridListRow>
-						<GridListCell />
-						<GridListCell text="Attribute" />
-						<GridListCell text="Value" />
-					</GridListRow>
-				</GridListHeader>
-			</GridList>
+			<Grid name="grid_lang_text" edit="font=&quot;1&quot; textpadding=&quot;2,2,2,2&quot; " font="1">
+				<GridHeader>
+					<GridRow>
+						<GridCell />
+						<GridCell text="Attribute" />
+						<GridCell text="Value" />
+					</GridRow>
+				</GridHeader>
+			</Grid>
 		</HorizontalLayout>
 	</VerticalLayout>
 </Window>

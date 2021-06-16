@@ -1248,9 +1248,9 @@ namespace DuiLib
 	void CTreeViewUI::SetAttribute( LPCTSTR pstrName, LPCTSTR pstrValue )
 	{
 		if(_tcsicmp(pstrName,_T("visiblefolderbtn")) == 0)
-			SetVisibleFolderBtn(_tcsicmp(pstrValue,_T("TRUE")) == 0);
+			SetVisibleFolderBtn(_tcsicmp(pstrValue,_T("true")) == 0);
 		else if(_tcsicmp(pstrName,_T("visiblecheckbtn")) == 0)
-			SetVisibleCheckBtn(_tcsicmp(pstrValue,_T("TRUE")) == 0);
+			SetVisibleCheckBtn(_tcsicmp(pstrValue,_T("true")) == 0);
 		else if(_tcsicmp(pstrName,_T("itemminwidth")) == 0)
 			SetItemMinWidth(_ttoi(pstrValue));
 		else if(_tcsicmp(pstrName, _T("itemtextcolor")) == 0 ){

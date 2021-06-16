@@ -43,7 +43,6 @@ namespace DuiLib{
 		UINT GetControlFlags() const;
 		void SetEnabled(bool bEnable = true);
 		void SetText(LPCTSTR pstrText);
-		void SetText(int n) { __super::SetText(n); }
 		LPCTSTR GetNormalImage();
 		void SetNormalImage(LPCTSTR pStrImage);
 		LPCTSTR GetHotImage();

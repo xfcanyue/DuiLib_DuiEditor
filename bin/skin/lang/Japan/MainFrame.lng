@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <Language>
-	<Text id="7" text="DuiLib控件展示" />
+	<Text id="7" text="DuiLib コントロールの表示     QQ群：819272442" />
 	<Text id="2" text="高级控件" />
 	<Text id="3" text="动画控件" />
 	<Text id="4" text="键盘" />
-	<Text id="5" text="表格" />
+	<Text id="5" text="表格(MFC)" />
 	<Text id="6" text="代码编辑器" />
 	<Text id="8" text="列表" />
 	<Text id="9" text="姓名" />
@@ -87,4 +87,5 @@
 	<Text id="86" text="RichEdit   " />
 	<Text id="87" text="这是一个简易的键盘控件" />
 	<Text id="88" text="日志输出窗口:" />
+	<Text id="1" text="ベースコントロール" tooltip="ベースコントロール" />
 </Language>

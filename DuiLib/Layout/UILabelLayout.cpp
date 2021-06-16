@@ -254,11 +254,4 @@ namespace DuiLib
 			NeedParentUpdate();
 		}
 	}
-
-	void CLabelLayoutUI::SetText(int n)		//add by liqs99
-	{
-		CDuiString str;
-		str.Format(_T("%d"), n);
-		SetText(str);
-	}
 }

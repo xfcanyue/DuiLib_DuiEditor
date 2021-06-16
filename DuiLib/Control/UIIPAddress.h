@@ -26,8 +26,8 @@ namespace DuiLib
 		virtual void SetText(LPCTSTR pstrText);
 		virtual CDuiString GetText() const;
 
-		virtual int  GetText_to_int();
-		virtual void SetText(int n);
+		virtual int  GetTextN();
+		virtual void SetTextN(int n);
 
 		void SetReadOnly(bool bReadOnly);
 		bool IsReadOnly() const;

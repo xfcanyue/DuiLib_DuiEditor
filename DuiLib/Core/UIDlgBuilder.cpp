@@ -452,11 +452,10 @@ namespace DuiLib {
 			}
 
 			if( pControl == NULL ) {
-#ifdef _DEBUG
-				DUITRACE(_T("Î´Öª¿Ø¼þ:%s"), pstrClass);
-#else
+				CDuiString sMsg;
+				sMsg.Format(_T("CDialogBuilder::_Parse Error\r\nFile: %s\r\nControl: %s"), pkg->GetSkinFile(), pstrClass);
+				MessageBox(NULL, sMsg, _T("Create Control Failed"), MB_OK);
 				continue;
-#endif
 			}
 
 			if(pkg)

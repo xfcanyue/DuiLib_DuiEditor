@@ -119,10 +119,13 @@ namespace DuiLib
 #define DUI_MSGTYPE_LISTHEADITEMCHECKED		(_T("listheaditemchecked"))
 #define DUI_MSGTYPE_LISTPAGECHANGED			(_T("listpagechanged"))
 
+#define DUI_MSGTYPE_INITCELL				(_T("initcell"))			//CGirdUI初始化单元格控件
+#define DUI_MSGTYPE_INITROWDATA				(_T("initrowdata"))			//实表模式下，CGirdUI初始化数据行内容，一般是容器里的控件状态啥的。
 #define DUI_MSGTYPE_DRAWITEM				(_T("drawitem"))
 #define DUI_MSGTYPE_SORTITEM				(_T("sortitem"))
 #define DUI_MSGTYPE_STARTEDIT				(_T("startedit"))
 #define DUI_MSGTYPE_ENDEDIT					(_T("endedit"))
+#define DUI_MSGTYPE_DELETEITEM				(_T("deleteitem"))			//删除控件消息
 
 #define DUI_MSGTYPE_GRID_STARTEDIT          (_T("gridstartedit"))		//add by liqs99
 #define DUI_MSGTYPE_GRID_ENDEDIT			(_T("gridendedit"))			//add by liqs99
@@ -297,7 +300,6 @@ protected:                                                                \
 #define  DUI_CTR_RICHEDIT                        (_T("RichEdit"))
 #define  DUI_CTR_CHECKBOX                        (_T("CheckBox"))
 #define  DUI_CTR_CHECKBOX_LAYOUT                 (_T("CheckBoxLayout"))
-#define  DUI_CTR_COMBOBOX                        (_T("ComboBox"))
 #define  DUI_CTR_DATETIME                        (_T("DateTime"))
 #define  DUI_CTR_TREEVIEW                        (_T("TreeView"))
 #define  DUI_CTR_TREENODE                        (_T("TreeNode"))
@@ -323,6 +325,9 @@ protected:                                                                \
 #define  DUI_CTR_HORIZONTALLAYOUT                (_T("HorizontalLayout"))
 #define  DUI_CTR_LISTLABELELEMENT                (_T("ListLabelElement"))
 
+
+#define  DUI_CTR_DYNAMICLAYOUT					(_T("DynamicLayout"))
+
 #define  DUI_CTR_ANIMATIONTABLAYOUT				 (_T("AnimationTabLayout"))
 
 #define  DUI_CTR_LISTCONTAINERELEMENT            (_T("ListContainerElement"))
@@ -344,8 +349,16 @@ protected:                                                                \
 #define DUI_CTR_PICTURE						(_T("Picture"))
 #define DUI_CTR_PICTUREBOX					(_T("PictureBox"))
 
-#define  DUI_CTR_TREECTRL                        (_T("TreeCtrl"))
-#define  DUI_CTR_TREEITEM                        (_T("TreeItem"))
+
+#define  DUI_CTR_GRIDHEADER				(_T("GridHeader"))
+#define  DUI_CTR_GRIDBODY				(_T("GridBody"))
+#define  DUI_CTR_GRIDROW				(_T("GridRow"))
+#define  DUI_CTR_GRIDCELL				(_T("GridCell"))
+#define  DUI_CTR_GRID                   (_T("Grid"))
+
+#define  DUI_CTR_TREE                   (_T("Tree"))
+#define  DUI_CTR_TREEBODY               (_T("TreeBody"))
+#define  DUI_CTR_TREEITEM               (_T("TreeItem"))
 
 // #define DUI_CTR_GRIDLIST					(_T("GridList"))
 // #define DUI_CTR_GRIDLISTHEADER				(_T("GridListHeader"))

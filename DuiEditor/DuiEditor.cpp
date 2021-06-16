@@ -159,6 +159,9 @@ BOOL CDuiEditorApp::InitInstance()
 	m_funCreateScriptHelper = CreateScriptHelper;
 	m_funDeleteScriptHelper = DeleteScriptHelper;
 
+
+	CPaintManagerUI::UIDESIGNMODE = TRUE;
+
 	//工厂模式注册扩展控件
 	DuiPluginsRegister();
 

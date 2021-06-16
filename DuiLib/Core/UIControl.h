@@ -38,8 +38,10 @@ namespace DuiLib {
 		virtual CDuiString GetText() const;
 		virtual void SetText(LPCTSTR pstrText);
 
-		virtual int  GetText_to_int();			//add by liqs99
-		virtual void SetText(int n);		//add by liqs99
+		virtual int  GetTextN();			//add by liqs99
+		virtual void SetTextN(int n);		//add by liqs99
+
+		virtual void SetTextV(LPCTSTR lpszFormat, ...);
 
 		virtual bool IsResourceText() const;
 		virtual void SetResourceText(bool bResource);

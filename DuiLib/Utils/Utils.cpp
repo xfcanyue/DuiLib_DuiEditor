@@ -262,13 +262,13 @@ namespace DuiLib
 	//
 	//
 
-	CStdPtrArray::CStdPtrArray(int iPreallocSize) : m_ppVoid(NULL), m_nCount(0), m_nAllocated(iPreallocSize)
+	CStdPtrArray::CStdPtrArray(int iPreallocSize) : m_ppVoid(NULL), m_nCount(0), m_nAllocated(iPreallocSize), m_bSaveIndexMap(false)
 	{
 		ASSERT(iPreallocSize>=0);
 		if( iPreallocSize > 0 ) m_ppVoid = static_cast<LPVOID*>(malloc(iPreallocSize * sizeof(LPVOID)));
 	}
 
-	CStdPtrArray::CStdPtrArray(const CStdPtrArray& src) : m_ppVoid(NULL), m_nCount(0), m_nAllocated(0)
+	CStdPtrArray::CStdPtrArray(const CStdPtrArray& src) : m_ppVoid(NULL), m_nCount(0), m_nAllocated(0), m_bSaveIndexMap(false)
 	{
 		for(int i=0; i<src.GetSize(); i++)
 			Add(src.GetAt(i));
@@ -284,6 +284,7 @@ namespace DuiLib
 		if( m_ppVoid != NULL ) free(m_ppVoid);
 		m_ppVoid = NULL;
 		m_nCount = m_nAllocated = 0;
+		m_mapIndex.clear();
 	}
 
 	void CStdPtrArray::Resize(int iSize)
@@ -316,6 +317,9 @@ namespace DuiLib
 			}
 		}
 		m_ppVoid[m_nCount - 1] = pData;
+		if(m_bSaveIndexMap){
+			m_mapIndex[pData] = m_nCount - 1;
+		}
 		return true;
 	}
 
@@ -338,12 +342,28 @@ namespace DuiLib
 		}
 		memmove(&m_ppVoid[iIndex + 1], &m_ppVoid[iIndex], (m_nCount - iIndex - 1) * sizeof(LPVOID));
 		m_ppVoid[iIndex] = pData;
+
+		if(m_bSaveIndexMap)
+		{
+			for( int i = iIndex; i < m_nCount; i++ ) m_mapIndex[m_ppVoid[i]] = i;
+		}
 		return true;
 	}
 
 	bool CStdPtrArray::SetAt(int iIndex, LPVOID pData)
 	{
 		if( iIndex < 0 || iIndex >= m_nCount ) return false;
+
+		if(m_bSaveIndexMap)
+		{
+			if(m_ppVoid[iIndex] != NULL) 
+			{
+				std::map<LPVOID, int>::iterator it = m_mapIndex.find(m_ppVoid[iIndex]);
+				if(it != m_mapIndex.end()) m_mapIndex.erase(it);
+			}
+			m_mapIndex[pData] = iIndex;
+		}
+
 		m_ppVoid[iIndex] = pData;
 		return true;
 	}
@@ -351,14 +371,49 @@ namespace DuiLib
 	bool CStdPtrArray::Remove(int iIndex)
 	{
 		if( iIndex < 0 || iIndex >= m_nCount ) return false;
+
+		if(m_bSaveIndexMap)
+		{
+			if(m_ppVoid[iIndex] != NULL) 
+			{
+				std::map<LPVOID, int>::iterator it = m_mapIndex.find(m_ppVoid[iIndex]);
+				if(it != m_mapIndex.end()) m_mapIndex.erase(it);
+			}
+		}
+
 		if( iIndex < --m_nCount ) ::CopyMemory(m_ppVoid + iIndex, m_ppVoid + iIndex + 1, (m_nCount - iIndex) * sizeof(LPVOID));
+
+		if(m_bSaveIndexMap)
+		{
+			for( int i = iIndex; i < m_nCount; i++ ) m_mapIndex[m_ppVoid[i]] = i;
+		}
 		return true;
+	}
+
+	bool CStdPtrArray::Remove(LPVOID pData)
+	{
+		int nIndex = Find(pData);
+		if(nIndex >= 0)
+			return Remove(nIndex);
+		return false;
 	}
 
 	int CStdPtrArray::Find(LPVOID pData) const
 	{
+		if(m_bSaveIndexMap)
+		{
+			CStdPtrArray *pArray = const_cast<CStdPtrArray *>(this);
+			return pArray->FindInMap(pData);
+		}
 		for( int i = 0; i < m_nCount; i++ ) if( m_ppVoid[i] == pData ) return i;
 		return -1;
+	}
+
+	int CStdPtrArray::FindInMap(LPVOID pData)
+	{
+		std::map<LPVOID, int>::iterator it = m_mapIndex.find(pData);
+		if(it == m_mapIndex.end()) return -1;
+		return it->second;
 	}
 
 	int CStdPtrArray::GetSize() const
@@ -383,6 +438,10 @@ namespace DuiLib
 		return m_ppVoid[iIndex];
 	}
 
+	void CStdPtrArray::SetSaveIndexMap(bool bIndexMap)
+	{
+		m_bSaveIndexMap = bIndexMap;
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
@@ -1094,7 +1153,6 @@ namespace DuiLib
 	{
 		::SetCursor(m_hOrigCursor);
 	}
-
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	//

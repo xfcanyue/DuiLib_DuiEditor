@@ -36,7 +36,6 @@ namespace DuiLib
 		void PaintText(HDC hDC);
 
 		virtual void SetText(LPCTSTR pstrText);
-		virtual void SetText(int n);		//add by liqs99
 		
 	protected:
 		DWORD	m_dwTextColor;

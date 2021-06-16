@@ -297,13 +297,7 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DuiLib\IGridListUI.h" />
     <ClInclude Include="DuiLib\UIGridCtrl.h" />
-    <ClInclude Include="DuiLib\UIGridList.h" />
-    <ClInclude Include="DuiLib\UIGridListBody.h" />
-    <ClInclude Include="DuiLib\UIGridListCell.h" />
-    <ClInclude Include="DuiLib\UIGridListHeader.h" />
-    <ClInclude Include="DuiLib\UIGridListRowUI.h" />
     <ClInclude Include="DuiLib\UIKeyBoard.h" />
     <ClInclude Include="DuiLib\UIKeyBoardNumber.h" />
     <ClInclude Include="DuiLib\UIKeyBoardSimple.h" />
@@ -353,11 +347,6 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="DuiLib\UIGridCtrl.cpp" />
-    <ClCompile Include="DuiLib\UIGridList.cpp" />
-    <ClCompile Include="DuiLib\UIGridListBody.cpp" />
-    <ClCompile Include="DuiLib\UIGridListCell.cpp" />
-    <ClCompile Include="DuiLib\UIGridListHeader.cpp" />
-    <ClCompile Include="DuiLib\UIGridListRowUI.cpp" />
     <ClCompile Include="DuiLib\UIKeyBoard.cpp" />
     <ClCompile Include="DuiLib\UIKeyBoardNumber.cpp" />
     <ClCompile Include="DuiLib\UIKeyBoardSimple.cpp" />

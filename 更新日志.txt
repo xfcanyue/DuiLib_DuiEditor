@@ -185,3 +185,8 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
 
 2021-05-07
    1, 修复svg填充颜色的bug，优化图片编辑器中文件的图标显示。
+
+2021-06-16
+   1, CGridListUI改名CGridUI，实表为“虚表实数据”，支持纯虚表。
+   2，CTreeCtrlUI改名CTreeUI，实表为“虚表实数据”，不支持纯虚表。
+   3, ApplyAttributeList嵌套style时，内部属性使用双引号解析失败的问题。

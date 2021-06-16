@@ -24,6 +24,7 @@
 			<MenuElement name="menu_lang_chs" text="简体中文" icon="file='images\common\checkbox\btn_wnd_radio.png' source='75,0,90,15' " uncheckicon="file='images\common\checkbox\btn_wnd_radio.png' source='15,0,30,15' " iconsize="16,16" checkitem="true" width="150" pos="0,0,150,30" />
 			<MenuElement name="menu_lang_ChineseTraditional" text="繁体中文" icon="file='images\common\checkbox\btn_wnd_radio.png' source='75,0,90,15' " uncheckicon="file='images\common\checkbox\btn_wnd_radio.png' source='15,0,30,15' " iconsize="16,16" checkitem="true" width="150" pos="0,0,150,30" />
 			<MenuElement name="menu_lang_english" text="英文" icon="file='images\common\checkbox\btn_wnd_radio.png' source='75,0,90,15' " uncheckicon="file='images\common\checkbox\btn_wnd_radio.png' source='15,0,30,15' " iconsize="16,16" checkitem="true" width="150" pos="0,0,150,30" />
+			<MenuElement name="menu_lang_japan" text="日语" icon="file='images\common\checkbox\btn_wnd_radio.png' source='75,0,90,15' " uncheckicon="file='images\common\checkbox\btn_wnd_radio.png' source='15,0,30,15' " iconsize="16,16" checkitem="true" width="150" pos="0,0,150,30" />
 		</MenuElement>
 	</Menu>
 </Window>

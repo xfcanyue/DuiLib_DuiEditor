@@ -261,7 +261,8 @@ namespace DuiLib {
 		textLenEx.codepage = CP_ACP;
 #endif
 		LRESULT lResult;
-		TxSendMessage(EM_GETTEXTLENGTHEX, (WPARAM)&textLenEx, 0, &lResult);
+		HRESULT lSendMessage = TxSendMessage(EM_GETTEXTLENGTHEX, (WPARAM)&textLenEx, 0, &lResult);
+		if(!SUCCEEDED(lSendMessage)) return 0;
 		return (long)lResult;
 	}
 
@@ -296,11 +297,6 @@ namespace DuiLib {
 		if( !m_pTwh ) return;
 		SetSel(0, -1);
 		ReplaceSel(pstrText, FALSE);
-	}
-
-	void CRichEditUI::SetText(int n)
-	{
-		__super::SetText(n);
 	}
 
 	bool CRichEditUI::IsModify() const

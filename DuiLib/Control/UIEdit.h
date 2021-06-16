@@ -20,7 +20,6 @@ namespace DuiLib
 
 		void SetEnabled(bool bEnable = true);
 		void SetText(LPCTSTR pstrText);
-		void SetText(int n);
 		void SetMaxChar(UINT uMax);
 		UINT GetMaxChar();
 		void SetReadOnly(bool bReadOnly);

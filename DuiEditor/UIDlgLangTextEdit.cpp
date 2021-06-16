@@ -64,7 +64,7 @@ LRESULT CDlgLangTextEditUI::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 
 void CDlgLangTextEditUI::InitWindow()
 {
-	UI_BINDCONTROL(CGridListUI, m_pGrid, _T("grid_lang_text"));
+	UI_BINDCONTROL(CGridUI, m_pGrid, _T("grid_lang_text"));
 	m_pGrid->SetColumnWidth(1,100);
 
 	CStdStringPtrMap *map = &GetUIManager()->GetDocument()->m_mLangPackage;
@@ -238,7 +238,8 @@ int CDlgLangTextEditUI::InsertGridRow(LPCTSTR attrName, LPCTSTR attrValue)
 	m_pGrid->Cell(row,2).SetText(attrValue);
 	if(!CompareString(attrName, _T("id")))
 	{
-		m_pGrid->Cell(row,2).SetCellType(celltypeEdit);
+		m_pGrid->SetCellType(row,2, celltypeEdit);
 	}
+	m_pGrid->Refresh();
 	return row;
 }

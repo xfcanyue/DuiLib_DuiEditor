@@ -25,8 +25,20 @@ public:
 	virtual CDuiString GetText() const;
 	virtual void SetText(LPCTSTR pstrText);
 
-private:
+	void SetViewLineNumber();
+	void SetViewBreakPoint();
+	void SetViewFolder();
+
+	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+
+protected:
 	CWindowWnd *m_pWindow;
+	int m_nCodePage;
+	bool m_bLineNumber;
+	DWORD m_dwLineNumberColor;
+	DWORD m_dwLineNumberBkColor;
+	bool m_bBreakPoint;
+	bool m_bFolder;
 };
 
 

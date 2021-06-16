@@ -48,7 +48,6 @@ namespace DuiLib {
 		long GetTextLength(DWORD dwFlags = GTL_DEFAULT) const;
 		CDuiString GetText() const;
 		void SetText(LPCTSTR pstrText);
-		void SetText(int n);
 		bool IsModify() const;
 		void SetModify(bool bModified = true) const;
 		void GetSel(CHARRANGE &cr) const;

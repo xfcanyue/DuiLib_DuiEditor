@@ -138,7 +138,10 @@
 #include "Control/UIPicture.h"
 #include "Control/UIPictureBox.h"
 
-#include "Control/UITreeCtrl.h"
+#include "Control/UIGrid.h"
+
+#include "Control/ITreeUI.h"
+#include "Control/UITree.h"
 #include "Control/UITreeItem.h"
 
 #include "Layout/UIChildWindow.h"

@@ -40,9 +40,9 @@ https://blog.csdn.net/mmcanyu/article/details/112685524
 ```
 ### 3. 项目编译说明：
 
-   1 .`3rd\CxImage\cximage701_full\CxImgLibVC2019.sln` 首先编译这个目录 
+   1 .`3rd\CxImage\cximage701_full\CxImgLibVC2019.sln` 首先编译这个目录。注：新版本已经去除CxImage支持，不使用的话，可以不编译。 
 
-2. 然后在编译当前目录  基于UnicodeDebug 编译项目
+2. 然后在编译当前目录  优先选择UnicodeDebug 编译项目
 
     
    

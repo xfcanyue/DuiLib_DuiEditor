@@ -29,8 +29,6 @@ namespace DuiLib
 		virtual void SetText(LPCTSTR pstrText);
 		virtual CDuiString GetText() const;
 
-		virtual void SetText(int n);
-
 		void DoEvent(TEventUI& event);
 
 		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);

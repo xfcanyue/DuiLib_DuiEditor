@@ -93,8 +93,8 @@ namespace DuiLib
 		virtual LPCTSTR GetClass() const;
 		virtual LPVOID GetInterface(LPCTSTR pstrName);
 
-		void SetCheck(bool bCheck);
-		bool GetCheck() const;
+		virtual void SetCheck(bool bCheck);
+		virtual bool GetCheck() const;
 	protected:
 		bool m_bAutoCheck; 
 

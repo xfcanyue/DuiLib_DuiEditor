@@ -703,7 +703,7 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 		}
 		break;
 	case SCN_FOCUSOUT:
-		//InsertMsg(_T("SCN_FOCUSOUT"));
+//		InsertMsg(_T("SCN_FOCUSOUT"));
 		if(GetTickCount() - m_dwLastClickCode < 500)
 		{
 			sci.sci_SetFocus(TRUE);

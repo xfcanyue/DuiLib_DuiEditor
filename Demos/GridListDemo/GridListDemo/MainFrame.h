@@ -24,8 +24,9 @@ public:
 	virtual void OnNotifyStartEdit(TNotifyUI& msg);
 	virtual void OnNotifyEndEdit(TNotifyUI& msg);
 	virtual void OnNotifyTextChanged(TNotifyUI& msg);
-
-	CGridListUI *m_pGrid;
+	virtual void OnNotifyInitCell(TNotifyUI& msg);
+	
+	CGridUI *m_pGrid;
 
 	BOOL m_bVirtualGrid;
 	int m_nRows;
@@ -37,6 +38,5 @@ public:
 	BOOL m_bViewListNumber;
 	BOOL m_bViewRowLine;
 	BOOL m_bViewColLine;
-	BOOL m_bSelectRect;
 };
 

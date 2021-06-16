@@ -43,7 +43,7 @@
 				<ListLabelElement resourceid="16" text="Text2" />
 			</ComboEx>
 			<Label text="可编辑的下拉框" autocalcwidth="true" resourceid="17" />
-			<ComboEx dropbuttonsize="21,21" dropbuttonnormalimage="file='images\common\combobox\dropbtn.png' source='0,0,21,21' " dropbuttonhotimage="file='images\common\combobox\dropbtn.png' source='21,0,42,21' " dropbuttonpushedimage="file='images\common\combobox\dropbtn.png' source='21,0,42,21' " type="dropdown" width="150" textpadding="5,0,5,0" bkcolor="0xFFFFFFFF" bordercolor="0xFFA0A0A4" hotbordercolor="0xFF06A8FF" bordersize="1">
+			<ComboEx name="cb_combo_edit" dropbuttonsize="21,21" dropbuttonnormalimage="file='images\common\combobox\dropbtn.png' source='0,0,21,21' " dropbuttonhotimage="file='images\common\combobox\dropbtn.png' source='21,0,42,21' " dropbuttonpushedimage="file='images\common\combobox\dropbtn.png' source='21,0,42,21' " type="dropdown" width="150" textpadding="5,0,5,0" bkcolor="0xFFFFFFFF" bordercolor="0xFFA0A0A4" hotbordercolor="0xFF06A8FF" bordersize="1">
 				<ListLabelElement resourceid="18" text="Text1" />
 				<ListLabelElement resourceid="19" text="Text2" />
 			</ComboEx>
@@ -69,8 +69,8 @@
 				</GroupBox>
 			</HorizontalLayout>
 			<HorizontalLayout height="100" childpadding="10" childvalign="vcenter">
-				<Label text="脚本控件测试" autocalcwidth="true" />
-				<Label width="200" height="100" OnInit="OnControlInit" OnNotify="OnControlNotify" />
+				<Label text="脚本时钟控件" autocalcwidth="true" />
+				<Label width="200" height="100" OnInit="OnClockControlInit" OnEvent="OnClockControlEvent" />
 			</HorizontalLayout>
 		</HorizontalLayout>
 		<HorizontalLayout height="120" childpadding="10" childvalign="vcenter">

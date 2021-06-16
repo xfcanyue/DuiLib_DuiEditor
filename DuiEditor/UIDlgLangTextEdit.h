@@ -24,7 +24,7 @@ public:
 	void LoadText(LPCTSTR langtype);
 	int InsertGridRow(LPCTSTR attrName, LPCTSTR attrValue);
 
-	CGridListUI *m_pGrid;
+	CGridUI *m_pGrid;
 	CDialog *m_pParentDlg;
 
 	int m_currentid;

@@ -35,8 +35,8 @@ public:
 		REG_CONTROL_FUNPR(void,		  KillTimer,			(UINT nTimerID)					);
 		REG_CONTROL_FUNPR(CDuiString, GetText,				() const						);
 		REG_CONTROL_FUNPR(void,		  SetText,				(LPCTSTR pstrText)				);
-		REG_CONTROL_FUNPR(int,		  GetText_to_int,		()								);
-		REG_CONTROL_FUNPR(void,		  SetText,				(int n)							);
+		REG_CONTROL_FUNPR(int,		  GetTextN,				()								);
+		REG_CONTROL_FUNPR(void,		  SetTextN,				(int n)							);
 		REG_CONTROL_FUNPR(bool,		  IsResourceText,		() const						);
 		REG_CONTROL_FUNPR(void,		  SetResourceText,		(bool bResource)				);
 		REG_CONTROL_FUNPR(int,		  GetResourceID,		() const						);

@@ -247,12 +247,12 @@ namespace DuiLib
 		return s;
 	}
 
-	int  CIPAddressUI::GetText_to_int()
+	int  CIPAddressUI::GetTextN()
 	{
 		return m_dwIP;
 	}
 
-	void CIPAddressUI::SetText(int n)
+	void CIPAddressUI::SetTextN(int n)
 	{
 		SetIP(n);
 	}

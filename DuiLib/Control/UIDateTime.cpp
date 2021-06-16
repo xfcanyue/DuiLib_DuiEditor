@@ -253,11 +253,6 @@ namespace DuiLib
 		::VariantTimeToSystemTime(dt, &m_sysTime);
 	}
 
-	void CDateTimeUI::SetText(int n)
-	{
-
-	}
-
 	CDuiString CDateTimeUI::GetText() const
 	{
 		CDuiString sText;

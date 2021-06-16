@@ -264,6 +264,7 @@ namespace DuiLib {
 	CStdPtrArray CPaintManagerUI::m_aPreMessages;
 	CStdPtrArray CPaintManagerUI::m_aPlugins;
 
+	BOOL CPaintManagerUI::UIDESIGNMODE = FALSE;
 
 
 	CPaintManagerUI::CPaintManagerUI() :
@@ -2288,9 +2289,15 @@ namespace DuiLib {
 
 	void CPaintManagerUI::SetFocus(CControlUI* pControl)
 	{
-		// Paint manager window has focus?
-		HWND hFocusWnd = ::GetFocus();
-		if( hFocusWnd != m_hWndPaint && pControl != m_pFocus ) ::SetFocus(m_hWndPaint);
+		//设计器模式，设置控件的焦点，不要设置窗口焦点
+		if(!UIDESIGNMODE)
+		{
+			// Paint manager window has focus?
+			HWND hFocusWnd = ::GetFocus();
+			if( hFocusWnd != m_hWndPaint && pControl != m_pFocus ) 
+				::SetFocus(m_hWndPaint);
+		}
+
 		// Already has focus?
 		if( pControl == m_pFocus ) return;
 		// Remove focus from old control

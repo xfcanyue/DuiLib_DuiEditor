@@ -163,6 +163,15 @@ INT类型(最小值，最大值)：
 		<Attribute name="sepwidth" default="0" type="INT" comment="分隔符宽,负数分隔符在左边,如(-4)，整数分隔符在右边,如(4)" />
 		<Attribute name="sepimm" default="false" type="BOOL" comment="拖动分隔符是否立即改变大小,如(false)" />
 	</HorizontalLayout>
+	<DynamicLayout parent="Container" notifies="setfocus killfocus timer menu windowinit(root)">
+		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
+		<Attribute name="layoutmode" default="HorizontalLayout" type="STRING" value="HorizontalLayout,VerticalLayout" comment="布局方式" />
+		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="sepwidth" default="0" type="INT" comment="分隔符宽,负数分隔符在左边,如(-4)，整数分隔符在右边,如(4)" />
+		<Attribute name="sepheight" default="0" type="INT" comment="分隔符高度,负数分隔符在顶部,如(-4)，整数分隔符在底部,如(4)" />
+		<Attribute name="sepimm" default="false" type="BOOL" comment="拖动分隔符是否立即改变大小,如(false)" />
+	</DynamicLayout>
 	<TileLayout parent="Container" notifies="setfocus killfocus timer menu windowinit(root)">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
@@ -772,46 +781,27 @@ INT类型(最小值，最大值)：
 		<Attribute name="focuscellbordercolor" default="0xFF4e00ff" type="DWORD" comment="选中单元格时边框颜色,如(0xFFFF0000)" />
 	</GridCtrl>
 	
-	<GridListHeader parent="VerticalLayout">
+	<GridHeader parent="VerticalLayout" />
+	<GridRow parent="OptionLayout" />
+	<GridCell parent="OptionLayout">
 		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
-	</GridListHeader>
-	<GridListBody parent="VerticalLayout">
-		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
-	</GridListBody>
-	<GridListRow parent="HorizontalLayout">
-		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
-	</GridListRow>
-	<GridListCell parent="HorizontalLayout">
-		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
-		<Attribute name="celltype" default="text" type="STRING" value="text,edit,check,combo,datetime,date,time,container" comment="单元格类型" />	
+		<Attribute name="celltype" default="text" type="STRING" value="text,edit,check,combo,datetime,date,time,picture,container" comment="单元格类型" />	
 		<Attribute name="merge" default="0,0,0,0" type="RECT" comment="需要被合并的目标单元格, left与top为当前格子行列, right与bottom被合并的格子行列. " />
 		<Attribute name="mergedwithothers" default="false" type="BOOL" comment="单元格是否被合并" />
-		<Attribute name="inset" default="1,1,1,1" type="RECT" comment="单元格内边距" />		
-		<Attribute name="text" default="" type="STRING" comment="单元格文本" />
-		<Attribute name="align" default="center" type="STRING" value="left,right,center" comment="对齐方式,取值left、right、center" />		
-		<Attribute name="valign" default="vcenter" type="STRING" value="top,bottom,vcenter" comment="对齐方式,取值top,bottom,center" />	
-		<Attribute name="textpadding" default="0,0,0,0" type="RECT" comment="文字显示的边距" />
-		<Attribute name="font" default="-1" type="INT" comment="字体id" />
-	</GridListCell>
-	<GridList parent="VerticalLayout">
+	</GridCell>
+	<Grid parent="VerticalLayout">
 		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
-		<Attribute name="virtualgrid" default="false" type="BOOL" comment="虚表模式" />
 		<Attribute name="rowheight" default="30" type="INT" comment="默认行高" />
 		<Attribute name="columnwith" default="80" type="INT" comment="默认列宽" />
 		<Attribute name="fixedcolumncount" default="1" type="INT" comment="固定列数量" />
-		<Attribute name="leftfixedcolumnwith" default="30" type="INT" comment="最左边固定列宽度" />
 		<Attribute name="viewlistnumber" default="true" type="BOOL" comment="最左边固定列显示行号" />	
 		
 		<Attribute name="rowline" default="true" type="BOOL" comment="画表格横线" />	
 		<Attribute name="columnline" default="true" type="BOOL" comment="画表格纵线" />	
 		<Attribute name="linecolor" default="0xff808080" type="DWORD" comment="表格线颜色" />
-		<Attribute name="selectrect" default="true" type="BOOL" comment="允许拖拽选取框选取表格行或者单元格" />	
-		<Attribute name="dragrectcolor" default="0xff808080" type="DWORD" comment="拖拽选取框的颜色" />
 		
 		<Attribute name="sizecolumn" default="true" type="BOOL" comment="是否允许在固定行调整列宽" />
 		<Attribute name="sizerow" default="true" type="BOOL" comment="是否允许在固定列调整行高" />	
-		<Attribute name="sizecolumninbody" default="false" type="BOOL" comment="是否允许表格body中调整列宽" />
-		<Attribute name="sizerowinbody" default="false" type="BOOL" comment="是否允许表格body中调整行高" />
 		
 		<Attribute name="fitcolumnbytext" default="false" type="BOOL" comment="根据单元格文本内容调整列宽" />
 		<Attribute name="fitlastcolumn" default="false" type="BOOL" comment="拉伸最后一列占满整个表格，优先于fitcolumns" />	
@@ -826,30 +816,10 @@ INT类型(最小值，最大值)：
 		<Attribute name="descendingimage" default="" type="IMAGE" comment="降序的图标" />
 		<Attribute name="sorticonsize" default="16,16" type="SIZE" comment="表格头排序图片的大小" />
 		
-		<Attribute name="rowselectedbkcolor" default="0xffa4c3eb" type="DWORD" comment="单元格选中时,背景颜色" />
-		<Attribute name="rowselectedtextcolor" default="0x00000000" type="DWORD" comment="单元格选中时,字体颜色" />
-		<Attribute name="rowselectedbordercolor" default="0x00000000" type="DWORD" comment="单元格选中时,边框颜色" />
-		<Attribute name="rowselectedfont" default="-1" type="INT" comment="单元格选中时,字体id" />
-		
-		<Attribute name="cellbkcolor" default="0x00000000" type="DWORD" comment="单元格选中时,背景颜色" />
-		<Attribute name="celltextcolor" default="0x00000000" type="DWORD" comment="单元格选中时,字体颜色" />
-		<Attribute name="cellbordercolor" default="0x00000000" type="DWORD" comment="单元格选中时,边框颜色" />
-		<Attribute name="cellfont" default="-1" type="INT" comment="单元格选中时,字体id" />
-		
-		<Attribute name="cellselectedbkcolor" default="0xffc0dcc0" type="DWORD" comment="单元格选中时,背景颜色" />
-		<Attribute name="cellselectedtextcolor" default="0x00000000" type="DWORD" comment="单元格选中时,字体颜色" />
-		<Attribute name="cellselectedbordercolor" default="0xff0000ff" type="DWORD" comment="单元格选中时,边框颜色" />
-		<Attribute name="cellselectedfont" default="-1" type="INT" comment="单元格选中时,字体id" />
-		
-		<Attribute name="fixedcellbkcolor" default="0xfff2f2f2" type="DWORD" comment="固定单元格,背景颜色" />
-		<Attribute name="fixedcelltextcolor" default="0x00000000" type="DWORD" comment="固定单元格,字体颜色" />
-		<Attribute name="fixedcellbordercolor" default="0x00000000" type="DWORD" comment="固定单元格,边框颜色" />
-		<Attribute name="fixedcellfont" default="-1" type="INT" comment="固定单元格,字体id" />
-		
-		<Attribute name="fixedcellselectedbkcolor" default="0xffd2d2d2" type="DWORD" comment="固定单元格选中时,背景颜色" />
-		<Attribute name="fixedcellselectedtextcolor" default="0x00000000" type="DWORD" comment="固定单元格选中时,字体颜色" />
-		<Attribute name="fixedcellselectedbordercolor" default="0x00000000" type="DWORD" comment="固定单元格选中时,边框颜色" />
-		<Attribute name="fixedcellselectedfont" default="-1" type="INT" comment="固定单元格选中时,字体id" />
+		<Attribute name="fixedrow" default="" type="ATTRIBUTELIST" value="OptionLayout" comment="固定行的属性定义" />
+		<Attribute name="fixedcell" default="" type="ATTRIBUTELIST" value="OptionLayout" comment="固定单元格的属性定义" />
+		<Attribute name="row" default="" type="ATTRIBUTELIST" value="OptionLayout" comment="数据行的属性定义" />
+		<Attribute name="cell" default="" type="ATTRIBUTELIST" value="OptionLayout" comment="单元格的属性定义" />
 		
 		<Attribute name="edit" default="" type="ATTRIBUTELIST" value="RichEdit" comment="编辑框单元格默认参数" />
 		<Attribute name="checkbox" default="" type="ATTRIBUTELIST" value="CheckBox" comment="复选框单元格默认参数" />
@@ -857,31 +827,21 @@ INT类型(最小值，最大值)：
 		<Attribute name="datetime" default="" type="ATTRIBUTELIST" value="DateTimeEx" comment="日期时间单元格默认参数" />
 		<Attribute name="date" default="" type="ATTRIBUTELIST" value="DateTimeEx" comment="日期单元格默认参数" />
 		<Attribute name="time" default="" type="ATTRIBUTELIST" value="DateTimeEx" comment="时间单元格默认参数" />
-		
-		<Attribute name="inset" default="1,1,1,1" type="RECT" comment="表格内边距" />
-		<Attribute name="vscrollbar" default="true" type="BOOL" comment="是否使用竖向滚动条" />
-		<Attribute name="hscrollbar" default="true" type="BOOL" comment="是否使用横向滚动条" />
-		<Attribute name="bkcolor" default="0xffffffff" type="DWORD" comment="背景颜色" />
-		<Attribute name="font" default="-1" type="INT" comment="字体id" />
-	</GridList>
-	<TreeCtrl parent="VerticalLayout">
-		<Attribute name="name" default="" type="STRING" comment="控件名字" />
-		
-		<Attribute name="horizattr" default="" type="ATTRIBUTELIST" value="HorizontalLayout" comment="节点容器，每个Node共用的。" />
+		<Attribute name="picture" default="" type="ATTRIBUTELIST" value="Picture" comment="图像单元格默认参数" />
+	</Grid>
+	<Tree parent="VerticalLayout">
+		<Attribute name="name" default="" type="STRING" comment="控件名字" />	
+		<Attribute name="indentwidth" default="32" type="INT" comment="缩进宽度" />
+		<Attribute name="viewline" default="true" type="BOOL" comment="是否显示缩进线" />
+		<Attribute name="nodeheight" default="32" type="INT" comment="每一项的高度" />
+		<Attribute name="multiselect" default="false" type="BOOL" comment="是否支持多项选择)" />
+		<Attribute name="horizattr" default="" type="ATTRIBUTELIST" value="HorizontalLayout" comment="item虚线、复选框、展开与收缩、文本按钮等对象容器属性设置" />
 		<Attribute name="folderattr" default="" type="ATTRIBUTELIST" value="CheckBox" comment="展开与收缩按钮，每个Node共用的。" />
 		<Attribute name="checkboxattr" default="" type="ATTRIBUTELIST" value="CheckBox" comment="复选框，每个Node共用的。" />
 		<Attribute name="iconattr" default="" type="ATTRIBUTELIST" value="CheckBox" comment="图标对象，每个Node共用的。" />
-		<Attribute name="textattr" default="" type="ATTRIBUTELIST" value="CheckBox" comment="text对象，每个Node共用的。" />
-		
-		<Attribute name="indent" default="16" type="INT" comment="子项自动缩进宽度" />
-		<Attribute name="itembkcolor" default="0x00000000" type="DWORD" comment="item背景颜色" />
-		<Attribute name="itemselectedbkcolor" default="0x00000000" type="DWORD" comment="item被选中时的背景颜色" />
-		<Attribute name="itemhotbkcolor" default="0xFFE9F5FF" type="DWORD" comment="item鼠标悬浮时的背景颜色" />	
-		<Attribute name="itemFocusbkcolor" default="0xFFC1E3FF" type="DWORD" comment="item获得焦点时的背景颜色" />	
-		<Attribute name="itemlinecolor" default="0x00000000" type="DWORD" comment="使用虚线显示项的层次结构" />
-		<Attribute name="vscrollbar" default="true" type="BOOL" comment="是否使用竖向滚动条" />
-		<Attribute name="hscrollbar" default="true" type="BOOL" comment="是否使用横向滚动条" />
-	</TreeCtrl>
+		<Attribute name="textattr" default="" type="ATTRIBUTELIST" value="CheckBox" comment="图标对象，每个Node共用的。" />	
+		<Attribute name="childpadding" default="0" type="INT" comment="Tree每个项的间隔" />		
+	</Tree>
 	<TreeItem parent="VerticalLayout">
 		<Attribute name="name" default="" type="STRING" comment="控件名字" />		
 		<Attribute name="text" default="" type="STRING" comment="节点显示文本" />		
@@ -977,6 +937,12 @@ INT类型(最小值，最大值)：
 	</RollTextEx>
 	<SciEdit parent="Container" notifies="">
 		<Attribute name="name" default="" type="STRING" comment="控件名字" />	
+		<Attribute name="codepage" default="UTF8" type="STRING" value="UTF8,GBK,BIG5,JapaneseShiftJIS,KoreanUnifiedHangul,KoreanJohab" comment="字符编码" />	
+		<Attribute name="linenumber" default="true" type="BOOL" comment="左页边是否显示行号" />
+		<Attribute name="linenumbercolor" default="0xFF000000" type="DWORD" comment="行号文本颜色" />
+		<Attribute name="linenumberbkcolor" default="0xFFFFFFFF" type="DWORD" comment="行号背景色" />
+		<Attribute name="breakpoint" default="true" type="BOOL" comment="左页边是否显示断点" />
+		<Attribute name="folder" default="true" type="BOOL" comment="左页边是否显示代码折叠" />
 	</SciEdit>
 	<ChildWindow parent="Container">
 		<Attribute name="name" default="" type="STRING" comment="控件名字" />

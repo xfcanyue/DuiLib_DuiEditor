@@ -532,6 +532,8 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Control\IGridUI.cpp" />
+    <ClCompile Include="Control\ITreeUI.cpp" />
     <ClCompile Include="Control\TxtWinHost.cpp" />
     <ClCompile Include="Control\UIActiveX.cpp" />
     <ClCompile Include="Control\UIAnimation.cpp" />
@@ -547,6 +549,11 @@
     <ClCompile Include="Control\UIFadeButton.cpp" />
     <ClCompile Include="Control\UIFlash.cpp" />
     <ClCompile Include="Control\UIGifAnim.cpp" />
+    <ClCompile Include="Control\UIGrid.cpp" />
+    <ClCompile Include="Control\UIGridBody.cpp" />
+    <ClCompile Include="Control\UIGridCell.cpp" />
+    <ClCompile Include="Control\UIGridHeader.cpp" />
+    <ClCompile Include="Control\UIGridRowUI.cpp" />
     <ClCompile Include="Control\UIGroupBox.cpp" />
     <ClCompile Include="Control\UIHotKey.cpp" />
     <ClCompile Include="Control\UIIconButton.cpp" />
@@ -570,7 +577,7 @@
     <ClCompile Include="Control\UISlider.cpp" />
     <ClCompile Include="Control\UITabCtrl.cpp" />
     <ClCompile Include="Control\UIText.cpp" />
-    <ClCompile Include="Control\UITreeCtrl.cpp" />
+    <ClCompile Include="Control\UITree.cpp" />
     <ClCompile Include="Control\UITreeItem.cpp" />
     <ClCompile Include="Control\UITreeView.cpp" />
     <ClCompile Include="Control\UIWebBrowser.cpp" />
@@ -633,6 +640,8 @@
     <ClCompile Include="Utils\WinImplBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Control\IGridUI.h" />
+    <ClInclude Include="Control\ITreeUI.h" />
     <ClInclude Include="Control\TxtWinHost.h" />
     <ClInclude Include="Control\UIActiveX.h" />
     <ClInclude Include="Control\UIAnimation.h" />
@@ -648,6 +657,11 @@
     <ClInclude Include="Control\UIFadeButton.h" />
     <ClInclude Include="Control\UIFlash.h" />
     <ClInclude Include="Control\UIGifAnim.h" />
+    <ClInclude Include="Control\UIGrid.h" />
+    <ClInclude Include="Control\UIGridBody.h" />
+    <ClInclude Include="Control\UIGridCell.h" />
+    <ClInclude Include="Control\UIGridHeader.h" />
+    <ClInclude Include="Control\UIGridRowUI.h" />
     <ClInclude Include="Control\UIGroupBox.h" />
     <ClInclude Include="Control\UIHotKey.h" />
     <ClInclude Include="Control\UIIconButton.h" />
@@ -671,7 +685,7 @@
     <ClInclude Include="Control\UISlider.h" />
     <ClInclude Include="Control\UITabCtrl.h" />
     <ClInclude Include="Control\UIText.h" />
-    <ClInclude Include="Control\UITreeCtrl.h" />
+    <ClInclude Include="Control\UITree.h" />
     <ClInclude Include="Control\UITreeItem.h" />
     <ClInclude Include="Control\UITreeView.h" />
     <ClInclude Include="Control\UIWebBrowser.h" />

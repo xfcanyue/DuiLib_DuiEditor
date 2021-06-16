@@ -251,8 +251,9 @@ namespace DuiLib {
 			NSVGshape *shapes = svg->shapes;
 			while (shapes)
 			{
-				if(shapes->fill.type == NSVG_PAINT_COLOR && shapes->fill.color != 0)
-					shapes->fill.color = UIRGB(GetRValue(fillcolor), GetGValue(fillcolor), GetBValue(fillcolor));
+				if(shapes->fill.type == NSVG_PAINT_COLOR)
+					if(shapes->fill.color != 0)
+						shapes->fill.color = UIRGB(GetRValue(fillcolor), GetGValue(fillcolor), GetBValue(fillcolor));
 				shapes = shapes->next;
 			}
 		}

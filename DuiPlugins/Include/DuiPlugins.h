@@ -34,17 +34,32 @@
 #define DUI_CTR_SCIEDIT						(_T("SciEdit"))
 #include "../DuiLib/UISciEdit.h"
 
-#define DUI_CTR_GRIDLIST					(_T("GridList"))
-#define DUI_CTR_GRIDLISTHEADER				(_T("GridListHeader"))
-#define DUI_CTR_GRIDLISTBODY				(_T("GridListBody"))
-#define DUI_CTR_GRIDLISTROW					(_T("GridListRow"))
-#define DUI_CTR_GRIDLISTCELL				(_T("GridListCell"))
-#include "../DuiLib/UIGridList.h"
-
 UILIB_EXP_API void __stdcall DuiPluginsRegister();
 
 UILIB_EXP_API void __stdcall InsertMsgUI(LPCTSTR pstring, COLORREF cr=RGB(0,0,0));
 UILIB_EXP_API void __stdcall InsertMsgUiV(LPCTSTR lpszFormat, ...);
+
+//load grid from xml string content, virtual grid will be failed
+UILIB_EXP_API bool __stdcall UIGrid_LoadXmlString(CGridUI *pGrid, LPCTSTR lpstring);
+
+//save grid to xml string content, virtual grid will be failed
+UILIB_EXP_API bool __stdcall UIGrid_SaveXmlString(CGridUI *pGrid, CDuiString &strXml);					
+
+//load grid from xml file, virtual grid will be failed
+//if bOpenFileDialog=true will open file dialog to select. otherwise, filename has to include full path
+UILIB_EXP_API bool __stdcall UIGrid_LoadXmlFile(CGridUI *pGrid, LPCTSTR filename=NULL, bool bOpenFileDialog=true);	
+
+//save grid to xml file, virtual grid will be failed
+//if bOpenFileDialog=true will open file dialog to select. otherwise, filename has to include full path
+UILIB_EXP_API bool __stdcall UIGrid_SaveXmlFile(CGridUI *pGrid, LPCTSTR filename=NULL, bool bOpenFileDialog=true);	
+
+//load grid from excel file, virtual grid will be failed
+//if bOpenFileDialog=true will open file dialog to select. otherwise, filename has to include full path
+UILIB_EXP_API bool __stdcall UIGrid_LoadExcelFile(CGridUI *pGrid, LPCTSTR filename=NULL, bool bOpenFileDialog=true);		
+
+//save grid to excel file, virtual grid will be failed
+//if bOpenFileDialog=true will open file dialog to select. otherwise, filename has to include full path
+UILIB_EXP_API bool __stdcall UIGrid_SaveExcelFile(CGridUI *pGrid, LPCTSTR filename=NULL, bool bOpenFileDialog=true);	
 
 #ifndef UILIB_STATIC
 UILIB_EXP_API CControlUI *CreateControl(LPCTSTR pstrClass);

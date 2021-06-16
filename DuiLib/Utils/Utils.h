@@ -4,6 +4,7 @@
 #pragma once
 #include "OAIdl.h"
 #include <vector>
+#include <map>
 
 namespace DuiLib
 {
@@ -96,20 +97,26 @@ namespace DuiLib
 		void Resize(int iSize);
 		bool IsEmpty() const;
 		int Find(LPVOID iIndex) const;
+		int FindInMap(LPVOID iIndex);
 		bool Add(LPVOID pData);
 		bool SetAt(int iIndex, LPVOID pData);
 		bool InsertAt(int iIndex, LPVOID pData);
 		bool Remove(int iIndex);
+		bool Remove(LPVOID pData);
 		int GetSize() const;
 		LPVOID* GetData();
 
 		LPVOID GetAt(int iIndex) const;
 		LPVOID operator[] (int nIndex) const;
 
+		void SetSaveIndexMap(bool bIndexMap);
 	protected:
 		LPVOID* m_ppVoid;
 		int m_nCount;
 		int m_nAllocated;
+
+		bool m_bSaveIndexMap;
+		std::map<LPVOID, int> m_mapIndex;	//存储数组序号，提高查找指针的效率
 	};
 
 
@@ -350,7 +357,7 @@ namespace DuiLib
 	}
 	//////////////////////////////////////////////////////////////////////////
 	////
-	//lock类 add by liq99
+	//lock类
 	class CDuiLock
 	{
 	public:
@@ -362,15 +369,157 @@ namespace DuiLib
 		CRITICAL_SECTION m_lock;
 	};
 
-	//lock类 add by liq99
+	//lock类
 	class CDuiInnerLock
 	{
 	public:
-		CDuiLock *ptr;
 		CDuiInnerLock(CDuiLock *p) : ptr(p) { ptr->Lock(); }
 		~CDuiInnerLock(){ ptr->Unlock(); }
+	private:
+		CDuiLock *ptr;
 	};	
 
+	//通用控件内存池
+	template <class T>
+	class CStdControlPool
+	{
+		struct tagObject
+		{
+			tagObject *prev;
+			tagObject *next;
+		};
+	public:
+		CStdControlPool()
+		{
+			_blockcountnext = 32;
+			_nMaxMemoryPageSize = 1024 * 5;
+			m_pFirstNode = NULL;
+			m_pLastNode = NULL;
+		}
+
+		~CStdControlPool()
+		{
+			ClearMemory();
+		}
+
+		//设定每次申请内存时，控件个数的上限。 多了浪费内存，少了影响效率，根据使用场景调整。
+		void SetMaxMemoryPageSize(int nSize)
+		{
+			_nMaxMemoryPageSize = nSize;
+		}
+
+		T* Alloc()
+		{
+			if(m_pFirstNode == NULL) MakePool();
+			if(m_pFirstNode == NULL) return NULL;
+
+			tagObject *p = m_pFirstNode;
+			pop(p); //从池中取出来
+			T *tt = (T*)(p+1);
+			new (tt)T; //使用tt这个内存地址new T()
+			return tt;
+		}
+
+		void Free(T *t)
+		{
+			t->~T();
+			memset(t, 0, sizeof(T));
+			tagObject *p = (tagObject *)t-1;
+			pushback(p); //放回池里
+			t = NULL;
+		}
+
+		//清理内存，如果调用这个函数之前，有内存没有归还，也会清理，对象变成野指针。
+		//要小心使用，可能导致无法判断运行时内存泄漏。
+		void ClearMemory() 
+		{
+			//DWORD tk = GetTickCount();
+
+			for (int i=0; i<m_pListMemBlock.GetSize(); i++)
+			{
+				free( (void*)m_pListMemBlock[i] );
+			}
+
+// 			CDuiString s;
+// 			s.Format(_T("%d"), GetTickCount() - tk);
+// 			MessageBox(NULL, s, _T("释放时间"), MB_OK);
+		}
+
+	protected:
+		void MakePool()
+		{
+			//分配一个连续空间，因为如果每个object都new一次，new和delete都会耗费大量时间。
+			int tagSize = sizeof(tagObject) + sizeof(T);
+			BYTE *pBlock = (BYTE *)malloc(tagSize * _blockcountnext);
+			for (int i=0; i<_blockcountnext; i++)
+			{
+				tagObject *p = new (pBlock + i*tagSize)tagObject;
+				p->prev = NULL;
+				p->next = NULL;
+
+				T *tt = (T*)(p+1);
+				memset(tt, 0, sizeof(T));
+				pushback(p);
+			}
+			m_pListMemBlock.Add(pBlock);
+
+			//当下次分配内存时，不要简单粗暴的乘以2，设定一个上限
+			if(_blockcountnext < _nMaxMemoryPageSize)
+				_blockcountnext *= 2;
+			if(_blockcountnext > _nMaxMemoryPageSize)
+				_blockcountnext = _nMaxMemoryPageSize;
+		}
+
+		void pushback(tagObject *pBlock)
+		{
+			if(m_pFirstNode == NULL)	//无队列头
+			{
+				pBlock->prev = NULL;
+				pBlock->next = NULL;
+				m_pFirstNode = pBlock;
+				m_pLastNode = pBlock;
+			}
+			else	//在队列尾部插入
+			{
+				m_pLastNode->next = pBlock;
+				pBlock->prev = m_pLastNode;
+				pBlock->next = NULL;
+				m_pLastNode = pBlock;
+			}
+		}
+
+		void pop(tagObject *pBlock)
+		{
+			if(m_pFirstNode == m_pLastNode)
+			{
+				m_pFirstNode = NULL;
+				m_pLastNode = NULL;
+			}
+			else if(pBlock == m_pFirstNode)
+			{
+				m_pFirstNode = pBlock->next;
+				m_pFirstNode->prev = NULL;
+
+			}
+			else if(pBlock == m_pLastNode)
+			{
+				m_pLastNode = pBlock->prev;
+				m_pLastNode->next = NULL;
+			}
+			else
+			{
+				pBlock->prev->next = pBlock->next;
+				pBlock->next->prev = pBlock->prev;
+			}
+		}
+
+	private:
+		tagObject *m_pFirstNode;
+		tagObject *m_pLastNode;
+		int _blockcountnext;
+		int _nMaxMemoryPageSize;
+		CStdPtrArray m_pListMemBlock;
+	};
 	///////////////////////////////////////////////////////////////////////////////////////
 	////
 	//struct TImageInfo;

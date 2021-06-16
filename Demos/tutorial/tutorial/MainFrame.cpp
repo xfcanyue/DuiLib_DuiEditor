@@ -137,6 +137,12 @@ bool CMainFrame::OnMenuCommand(const MenuCmd *cmd)
 		GetMainWnd()->GetManager()->GetLangManager()->ReloadLanguage();
 		return true;
 	}
+	if(IsMenuCommand(cmd, _T("menu_lang_japan")))
+	{
+		CLangManagerUI::SetLanguage(_T("Lang\\Japan"), _T("ja"));
+		GetMainWnd()->GetManager()->GetLangManager()->ReloadLanguage();
+		return true;
+	}
 	return false;
 }
 
