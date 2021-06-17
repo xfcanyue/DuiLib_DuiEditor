@@ -788,6 +788,8 @@ INT类型(最小值，最大值)：
 		<Attribute name="celltype" default="text" type="STRING" value="text,edit,check,combo,datetime,date,time,picture,container" comment="单元格类型" />	
 		<Attribute name="merge" default="0,0,0,0" type="RECT" comment="需要被合并的目标单元格, left与top为当前格子行列, right与bottom被合并的格子行列. " />
 		<Attribute name="mergedwithothers" default="false" type="BOOL" comment="单元格是否被合并" />
+		<Attribute name="childalign" default="center" type="STRING" value="left、right、center" comment=""/>
+		<Attribute name="childvalign" default="vcenter" type="STRING" value="top、bottom、vcenter" comment=""/>
 	</GridCell>
 	<Grid parent="VerticalLayout">
 		<Attribute name="name" default="" type="STRING" comment="控件名字"/>

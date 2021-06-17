@@ -75,6 +75,8 @@ IMPLEMENT_DUICONTROL(CGridCellUI)
 CGridCellUI::CGridCellUI() : m_pOwner(NULL)
 {
 	SetInset(CDuiRect(1,1,1,1));
+	m_iChildAlign = DT_CENTER;
+	m_iChildVAlign = DT_VCENTER;
 
 	m_row = -1;
 	m_col = -1;

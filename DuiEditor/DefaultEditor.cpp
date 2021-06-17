@@ -113,20 +113,79 @@ BOOL CDefaultEditor::OnEraseBkgnd(CDC* pDC)
 void CDefaultEditor::SetAttributeValue(LPCTSTR szControlName, LPCTSTR szAttribute)
 {
 	m_strClassName = szControlName;
+	xml_node node = m_nodeControl.child_auto(T2XML(szControlName));
 
-	CString strXML = _T("<");
-	strXML += m_strClassName;
-	strXML += " ";
-	strXML += szAttribute;
-	strXML += _T(" />");
-	xml_parse_result ret = m_nodeControl.load(T2XML(strXML));
-	if(ret.status != pugi::status_ok)//如果匹配不成功, 就认为只有文件名, 无其他参数
-	{
-		strXML = _T("<");
-		strXML += m_strClassName;
-		strXML += _T(" />");
-		ret = m_nodeControl.load(T2XML(strXML));
+	CDuiString sXmlData = szAttribute;
+	sXmlData.Replace(_T("&quot;"), _T("\""));
+	LPCTSTR pstrList = sXmlData.GetData();
+	// 解析样式属性
+	CDuiString sItem;
+	CDuiString sValue;
+	while( *pstrList != _T('\0') ) {
+		sItem.Empty();
+		sValue.Empty();
+		while( *pstrList != _T('\0') && *pstrList != _T('=') ) {
+			LPTSTR pstrTemp = ::CharNext(pstrList);
+			while( pstrList < pstrTemp) {
+				sItem += *pstrList++;
+			}
+		}
+		if( *pstrList != _T('=') ) return;	
+
+		if( *pstrList++ != _T('=') ) return;
+
+		if( *pstrList != _T('\"') )	return;
+
+		if( *pstrList++ != _T('\"') ) return;
+
+		bool bNewAttr = false;
+		int deep = 0;
+		while( *pstrList != _T('\0') ) {
+			if(*pstrList == _T('='))
+			{
+				bNewAttr = true;
+			}
+			else if(*pstrList == _T('\"') || *pstrList == _T('\'') )
+			{
+				if(bNewAttr)
+				{
+					if(deep == 0)
+					{
+						deep = 1;
+					}
+					else
+					{
+						deep = 0;
+						bNewAttr = false;
+					}
+				}
+				else
+					break;
+			}
+			sValue += *pstrList++;
+		}
+
+		if( *pstrList != _T('\"') )	return;
+
+		if( *pstrList++ != _T('\"') ) return;
+
+		node.attribute_auto(T2XML(sItem)).set_value(T2XML(sValue));
+		if( *pstrList++ != _T(' ') && *pstrList++ != _T(',') ) return;
 	}
+
+// 	CString strXML = _T("<");
+// 	strXML += m_strClassName;
+// 	strXML += " ";
+// 	strXML += szAttribute;
+// 	strXML += _T(" />");
+// 	xml_parse_result ret = m_nodeControl.load(T2XML(strXML));
+// 	if(ret.status != pugi::status_ok)//如果匹配不成功, 就认为只有文件名, 无其他参数
+// 	{
+// 		strXML = _T("<");
+// 		strXML += m_strClassName;
+// 		strXML += _T(" />");
+// 		ret = m_nodeControl.load(T2XML(strXML));
+// 	}
 }
 
 CString CDefaultEditor::GetAttributeValue()
