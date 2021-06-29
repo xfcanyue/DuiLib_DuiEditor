@@ -6,7 +6,7 @@
 
 namespace DuiLib
 {
-	static std::map<UINT, CControlUI *> g_MapTimerID_TO_CImageBoxExUI;
+	static std::map<UINT_PTR, CControlUI *> g_MapTimerID_TO_CImageBoxExUI;
 	//static CMapPtrToPtr g_MapTimerID_TO_CImageBoxExUI;
 
 	IMPLEMENT_DUICONTROL(CImageBoxExUI)
@@ -35,7 +35,7 @@ CImageBoxExUI::~CImageBoxExUI(void)
 	if(m_idEventTimer != 0)
 	{
 		::KillTimer(NULL, m_idEventTimer);
-		std::map<UINT, CControlUI *>::iterator it = g_MapTimerID_TO_CImageBoxExUI.find(m_idEventTimer);
+		std::map<UINT_PTR, CControlUI *>::iterator it = g_MapTimerID_TO_CImageBoxExUI.find(m_idEventTimer);
 		if(it != g_MapTimerID_TO_CImageBoxExUI.end())
 			g_MapTimerID_TO_CImageBoxExUI.erase(it);
 		m_idEventTimer = 0;
@@ -228,9 +228,9 @@ void CImageBoxExUI::SetAnimationType(AnimationType iType)
 	m_iCurAnimType = iType;
 }
 
-static void CALLBACK TimerProc(HWND hWnd,UINT nMsg,UINT idEvent,DWORD dwTime)  
+static void CALLBACK TimerProc(HWND hWnd, UINT nMsg, UINT_PTR idEvent, DWORD dwTime)  
 {
-	std::map<UINT, CControlUI *>::iterator it = g_MapTimerID_TO_CImageBoxExUI.find(idEvent);
+	std::map<UINT_PTR, CControlUI *>::iterator it = g_MapTimerID_TO_CImageBoxExUI.find(idEvent);
 	if(it != g_MapTimerID_TO_CImageBoxExUI.end())
 	{
 		CImageBoxExUI *pObject = (CImageBoxExUI *)it->second;
@@ -251,7 +251,7 @@ void CImageBoxExUI::Stop()
 	m_bPlay = FALSE;
 	//m_pManager->KillTimer(this, DEFAULT_TIMERID);
 	::KillTimer(NULL, m_idEventTimer);
-	std::map<UINT, CControlUI *>::iterator it = g_MapTimerID_TO_CImageBoxExUI.find(m_idEventTimer);
+	std::map<UINT_PTR, CControlUI *>::iterator it = g_MapTimerID_TO_CImageBoxExUI.find(m_idEventTimer);
 	if(it != g_MapTimerID_TO_CImageBoxExUI.end())
 		g_MapTimerID_TO_CImageBoxExUI.erase(it);
 	m_idEventTimer = 0;

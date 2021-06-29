@@ -92,6 +92,11 @@ BOOL CDefaultEditorFrame::OnEraseBkgnd(CDC* pDC)
 
 LRESULT CDefaultEditorFrame::OnPropertyChanged (WPARAM,LPARAM lParam)
 {
+	if(m_pPropList->IsSetModifyPropertyFlag())
+	{
+		m_pPropList->SetModifyPropertyFlag(NULL);
+		return 0;
+	}
 	CMFCPropertyGridProperty* pProp = (CMFCPropertyGridProperty*)lParam;
 	m_wndView.SetControlAttribute();
 	return 0;

@@ -21,6 +21,7 @@ public:
 	virtual void OnDrawValue(CDC* pDC, CRect rect);
 	virtual BOOL OnUpdateValue();
 	void SetUIColor(LPCTSTR szColor);
+	void SetUIColorOriginal(LPCTSTR szColor);
 	CString GetUIColor();
 };
 
@@ -104,6 +105,8 @@ public:
 	xml_node GetXmlNode() const { return m_TreeNode; }
 	xml_node m_TreeNode;
 
+	void SetModifyPropertyFlag(CMFCPropertyGridProperty *pProp);
+	BOOL IsSetModifyPropertyFlag() { return m_bSetModifyPropertyFlag; }
 protected:
 	CDockPropertyWnd *m_pPropertyWnd;
 public:
@@ -112,7 +115,7 @@ public:
 	void SetUIManager(CUIManager *pManager) { m_pUIManager = pManager; }
 private:
 	CUIManager *m_pUIManager;
-
+	BOOL m_bSetModifyPropertyFlag;
 protected:
 	void _initProp(xml_node nodeProperty);
 	BOOL _isRepeatProperty(LPCTSTR propName);

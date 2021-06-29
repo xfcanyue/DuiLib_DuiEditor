@@ -23,6 +23,15 @@ public:
 		SetCurSel(TREENODETYPE_POINTER);
 	}
 
+	bool IsDefaultPoint()
+	{
+		CDockToolBoxElement *pSel = GetCurSel();
+		if(!pSel) return true;
+		if(pSel->GetClass() == TREENODETYPE_POINTER)
+			return true;
+		return false;
+	}
+
 	UINT_PTR GetCurSelTag() const 
 	{ 
 		CDockToolBoxElement *pElem = GetCurSel();

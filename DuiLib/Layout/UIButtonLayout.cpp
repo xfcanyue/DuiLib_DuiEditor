@@ -343,6 +343,11 @@ namespace DuiLib
 			m_iBindTabIndex	= _BindTabIndex;
 	}
 
+	void CButtonLayoutUI::BindTabIndexName(LPCTSTR _BindTabIndexName)
+	{
+		m_sBindTabIndexName = _BindTabIndexName;
+	}
+
 	void CButtonLayoutUI::BindTabLayoutName( LPCTSTR _TabLayoutName )
 	{
 		if(_TabLayoutName)
@@ -352,12 +357,27 @@ namespace DuiLib
 	void CButtonLayoutUI::BindTriggerTabSel( int _SetSelectIndex /*= -1*/ )
 	{
 		LPCTSTR pstrName = GetBindTabLayoutName();
-		if(pstrName == NULL || (GetBindTabLayoutIndex() < 0 && _SetSelectIndex < 0))
-			return;
+// 		if(pstrName == NULL || (GetBindTabLayoutIndex() < 0 && _SetSelectIndex < 0))
+// 			return;
 
-		CTabLayoutUI* pTabLayout = static_cast<CTabLayoutUI*>(GetManager()->FindControl(pstrName));
-		if(!pTabLayout) return;
-		pTabLayout->SelectItem(_SetSelectIndex >=0?_SetSelectIndex:GetBindTabLayoutIndex());
+// 		CTabLayoutUI* pTabLayout = static_cast<CTabLayoutUI*>(GetManager()->FindControl(pstrName));
+// 		if(!pTabLayout) return;
+// 		pTabLayout->SelectItem(_SetSelectIndex >=0?_SetSelectIndex:GetBindTabLayoutIndex());
+
+		if(GetBindTabLayoutIndex() >= 0 || _SetSelectIndex >= 0 )
+		{
+			CTabLayoutUI* pTabLayout = static_cast<CTabLayoutUI*>(GetManager()->FindControl(pstrName));
+			if(!pTabLayout) return;
+			pTabLayout->SelectItem(_SetSelectIndex >=0?_SetSelectIndex:GetBindTabLayoutIndex());
+		}
+		else if(!m_sBindTabIndexName.IsEmpty())
+		{
+			CTabLayoutUI* pTabLayout = static_cast<CTabLayoutUI*>(GetManager()->FindControl(pstrName));
+			if(!pTabLayout) return;
+			CControlUI *pControl = static_cast<CControlUI*>(GetManager()->FindControl(m_sBindTabIndexName));
+			if(pControl)
+				pTabLayout->SelectItem(pControl);
+		}
 	}
 
 	void CButtonLayoutUI::RemoveBindTabIndex()

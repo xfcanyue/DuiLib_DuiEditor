@@ -133,6 +133,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="OnPaintForeImage" default="" type="STRING" comment="事件发生时，调用脚本的函数名" />
 		<Attribute name="OnPaintText" default="" type="STRING" comment="事件发生时，调用脚本的函数名" />
 		<Attribute name="OnPaintBorder" default="" type="STRING" comment="事件发生时，调用脚本的函数名" />
+		<Attribute name="custombasedfrom" default="" type="STRING" comment="自定义控件的父类, 如果没定义, 就不是自定义控件. 设计器仅创建对应的父控件。" />
 	</Control>
 	<Container parent="Control" notifies="setfocus killfocus timer menu windowinit(root)">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />	
@@ -323,7 +324,8 @@ INT类型(最小值，最大值)：
 		<Attribute name="statecount" default="0" type="INT" comment="" />
 		<Attribute name="switchpanevisible" default="" type="STRING" comment="切换绑定控件的Pane显示"/>
 		<Attribute name="bindtablayoutname" default="" type="STRING" comment="绑定TabLayout控件"/>
-		<Attribute name="bindtabindex" default="-1" type="INT" comment="点击后将触发绑定TabLayout控件的对应索引号"/>		
+		<Attribute name="bindtabindex" default="-1" type="INT" comment="点击后将触发绑定TabLayout控件的对应索引号"/>	
+		<Attribute name="bindtabindexname" default="" type="STRING" comment="如果bindtabindex=-1，尝试根据form名字切换对应页面"/>		
 		<Attribute name="hotbkcolor" default="0x00000000" type="DWORD" comment="鼠标悬浮背景颜色,如(0xFFFF00FF)" />
 		<Attribute name="pushedbkcolor" default="0x00000000" type="DWORD" comment="鼠标按下背景颜色,如(0xFFFF00FF)" />
 		<Attribute name="disabledbkcolor" default="0x00000000" type="DWORD" comment="禁用时背景颜色,如(0xFFFF00FF)" />		
@@ -355,7 +357,8 @@ INT类型(最小值，最大值)：
 		<Attribute name="statecount" default="0" type="INT" comment="" />
 		<Attribute name="switchcontrolvisible" default="" type="STRING" comment="切换绑定控件的隐藏显示"/>
 		<Attribute name="bindtablayoutname" default="" type="STRING" comment="绑定TabLayout控件"/>
-		<Attribute name="bindtabindex" default="-1" type="INT" comment="点击后将触发绑定TabLayout控件的对应索引号"/>		
+		<Attribute name="bindtabindex" default="-1" type="INT" comment="点击后将触发绑定TabLayout控件的对应索引号"/>	
+		<Attribute name="bindtabindexname" default="" type="STRING" comment="如果bindtabindex=-1，尝试根据form名字切换对应页面"/>		
 		<Attribute name="hotbkcolor" default="0x00000000" type="DWORD" comment="鼠标悬浮背景颜色,如(0xFFFF00FF)" />
 		<Attribute name="pushedbkcolor" default="0x00000000" type="DWORD" comment="鼠标按下背景颜色,如(0xFFFF00FF)" />
 		<Attribute name="disabledbkcolor" default="0x00000000" type="DWORD" comment="禁用时背景颜色,如(0xFFFF00FF)" />		
@@ -422,6 +425,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
 		<Attribute name="bindtablayoutname" default="" type="STRING" comment="绑定TabLayout控件"/>
 		<Attribute name="bindtabindex" default="-1" type="INT" comment="点击后将触发绑定TabLayout控件的对应索引号"/>
+		<Attribute name="bindtabindexname" default="" type="STRING" comment="如果bindtabindex=-1，尝试根据form名字切换对应页面"/>	
 		<Attribute name="activemouseon" default="false" type="BOOL" comment="鼠标悬浮时选中"/>
 	</TabCtrl>
 	<Text parent="Label" notifies="setfocus killfocus timer menu link windowinit(root)">
@@ -741,7 +745,9 @@ INT类型(最小值，最大值)：
 		<Attribute name="dropbuttonpushedimage" default="" type="IMAGE" comment="下拉按钮,鼠标按下的状态图片" />
 		<Attribute name="dropbuttonfocusedimage" default="" type="IMAGE" comment="下拉按钮,获得焦点时的状态图片" />
 		<Attribute name="dropbuttondisabledimage" default="" type="IMAGE" comment="下拉按钮,禁用的状态图片" />
-		<Attribute name="type" default="droplist" type="STRING" value="dropdown,droplist" comment="Combo是否允许编辑" />		
+		<Attribute name="type" default="droplist" type="STRING" value="dropdown,droplist" comment="Combo是否允许编辑" />
+		<Attribute name="tipvalue" default="" type="STRING" comment="文本框内提示文字，当文本框text为空时显示并失去焦点时显示" />
+		<Attribute name="tipvaluecolor" default="0xFFBAC0C5" type="DWORD" comment="文本框内提示文字的颜色" />		
 	</ComboEx>
 	<IconButton parent="ButtonLayout" notifies="setfocus killfocus timer menu dropdown itemselect windowinit(root)">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
@@ -909,28 +915,6 @@ INT类型(最小值，最大值)：
 		<Attribute name="timelabelstyle" default="" type="ATTRIBUTELIST" value="Label" comment="设置时间label的样式" />
 		<Attribute name="animation" default="1" type="STRING" value="none,vertical,horizontal" comment="动画方式" />
 	</DateTimeEx>
-	<AnimationPane parent="Container">
-		<Attribute name="name" default="" type="STRING" comment="控件名字" />
-		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
-		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
-		<Attribute name="animation" default="0" type="STRING" value="none,vertical,horizontal" comment="动画方式" />
-		<Attribute name="panevisible" default="true" type="BOOL" comment="是否显示pane" />
-		<Attribute name="framecount" default="24" type="INT" comment="动画总帧数, 值越大越慢越"/>	
-		<Attribute name="framedelay" default="5" type="INT" comment="过帧速度, 值越大越慢"/>
-	</AnimationPane>
-	<AccordionPane parent="VerticalLayout">
-		<Attribute name="name" default="" type="STRING" comment="控件名字" />
-		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
-		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
-		<Attribute name="headerstyle" default="" type="ATTRIBUTELIST" value="HorizontalLayout" comment="Pane的标题的样式表" />
-		<Attribute name="iconstyle" default="" type="ATTRIBUTELIST" value="Label" comment="左侧的图标" />
-		<Attribute name="textstyle" default="" type="ATTRIBUTELIST" value="Label" comment="中间的文本" />
-		<Attribute name="checkboxstyle" default="" type="ATTRIBUTELIST" value="Option" comment="右侧按钮" />
-		<Attribute name="bodystyle" default="" type="ATTRIBUTELIST" value="Container" comment="Pane主体部分" />
-		<Attribute name="panevisible" default="true" type="BOOL" comment="是否显示pane" />
-		<Attribute name="framecount" default="24" type="INT" comment="动画总帧数, 值越大越慢越"/>	
-		<Attribute name="framedelay" default="5" type="INT" comment="过帧速度, 值越大越慢"/>
-	</AccordionPane>
 	<RollTextEx parent="Label" notifies="">
 		<Attribute name="name" default="" type="STRING" comment="控件名字" />
 		<Attribute name="rolldirection" default="left" type="STRING" value="left,right,up,down" comment="滚动方向"/>

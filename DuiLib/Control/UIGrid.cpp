@@ -511,6 +511,11 @@ void CGridUI::SetVirtualGrid(BOOL bVirtual)
 	NeedUpdate();
 }
 
+void CGridUI::SetVirtualRowCount(int nRows)
+{
+	SetRowCount(nRows + GetFixedRowCount());
+}
+
 void CGridUI::SetRowTag(int row, UINT_PTR tag)
 {
 	TRowData *pRowData = GetRowData(row);
@@ -848,10 +853,14 @@ void CGridUI::SortItems(int col)
 	}
 	m_nSortCol = col;
 	m_bSortAscending = bAscending;
-
-	if(GetManager()) GetManager()->SendNotify(this, DUI_MSGTYPE_SORTITEM);
-
+	
+	OnSortItem(col, bAscending);
 	Refresh(true);
+}
+
+void CGridUI::OnSortItem(int col, BOOL bAscending)
+{
+	if(GetManager()) GetManager()->SendNotify(this, DUI_MSGTYPE_SORTITEM, (WPARAM)col, (LPARAM)bAscending);
 }
 
 BOOL CGridUI::SortItems(PFNLVCOMPARE pfnCompare, int col, BOOL bAscending, LPARAM data, int low, int high)
@@ -1168,7 +1177,8 @@ void CGridUI::DoEvent(TEventUI& event)
 				if(pInnerControl && pInnerControl->GetInterface(DUI_CTR_CHECKBOX))
 				{
 					CGridCellInnerCheckBoxUI *pCheckBox = (CGridCellInnerCheckBoxUI *)pInnerControl;
-					pCheckBox->SetCheck(!pCheckBox->GetCheck());
+					if(pCheckBox->IsMouseEnabled() && pCheckBox->IsEnabled())
+						pCheckBox->SetCheck(!pCheckBox->GetCheck());
 				}
 			}
 		}
@@ -1191,6 +1201,11 @@ void CGridUI::DoEvent(TEventUI& event)
 		{
 			m_pHotRow = GetRowUI(m_pHotCell->GetRow());
 		}
+		else
+		{
+			m_pHotRow = NULL;
+		}
+
 		if( (m_uButtonState & UISTATE_CAPTURED) != 0)
 		{
 			if(m_nSeparatorType == 1 && m_pCellLButtonDown)
@@ -1567,8 +1582,13 @@ void CGridUI::BuildRows(RECT rc, bool bNeedInvalidate)
 	//虚表模式时，发送消息出去，让调用方填充CGridCellUI的数据
 	if(IsVirtualGrid())
 	{
-		GetManager()->SendNotify(this, DUI_MSGTYPE_DRAWITEM, nBeginRow, nBeginRow+m_pBody->GetCount()-1);
+		OnDrawItem(nBeginRow, nBeginRow+m_pBody->GetCount()-1);
 	}
+}
+
+void CGridUI::OnDrawItem(int nBeginRow, int nEndRow)
+{
+	GetManager()->SendNotify(this, DUI_MSGTYPE_DRAWITEM, nBeginRow, nEndRow);
 }
 
 void CGridUI::SetScrollPos(SIZE szPos, bool bMsg)

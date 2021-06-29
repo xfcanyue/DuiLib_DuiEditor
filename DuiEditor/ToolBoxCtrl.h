@@ -24,6 +24,7 @@ public:
 	void SetClass(int nClass) { m_nClass=nClass; }
 	CDockToolBoxElement* GetTool(int nClass) const;
 	int GetClass() const { return m_nClass; }
+	CRect GetRect() const { return m_Rect; }
 	virtual BOOL IsSelected() const;
 	virtual BOOL IsHovered() const;
 	BOOL IsParentExpanded() const;
@@ -144,6 +145,9 @@ protected:
 	COLORREF m_clrToolTab;
 	
 	CImageList *m_pImageList;
+	CImageList *m_pDragImage;
+	BOOL m_bDraging;
+	BOOL m_bValidDrop;
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
@@ -151,6 +155,7 @@ public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	BOOL OnDraging(CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);

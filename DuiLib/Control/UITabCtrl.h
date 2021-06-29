@@ -18,23 +18,15 @@ namespace DuiLib
 		bool Activate();
 		void DoEvent(TEventUI& event);
 
-		virtual bool IsSelected() const;
+		virtual bool IsSelected() const;	
+		virtual void BindTriggerTabSel(int _SetSelectIndex = -1);	
 
-		virtual void BindTabIndex(int _BindTabIndex);
-		virtual void BindTabLayoutName(LPCTSTR _TabLayoutName);
-		virtual void BindTriggerTabSel(int _SetSelectIndex = -1);
-		virtual void RemoveBindTabIndex();
-		virtual int	 GetBindTabLayoutIndex();
-		virtual LPCTSTR GetBindTabLayoutName();
-
-		void SetActiveMouseOn(bool bActive);
+		void SetActiveMouseOn(bool bActive); // Û±Í–¸Õ£ ±«–ªª“≥√Ê
 		bool IsActiveMouseOn();
 
 		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 
 	protected:
-		int			m_iBindTabIndex;
-		CDuiString	m_sBindTabLayoutName;
 		bool		m_bActiveMouseOn;
 	};
 

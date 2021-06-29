@@ -52,7 +52,12 @@ namespace DuiLib {
 
 		if( m_pManager != NULL ) {
 			m_pManager->SetNextTabControl();
-			m_pManager->SendNotify(this, _T("tabselect"), m_iCurSel, iOldSel);
+			m_pManager->SendNotify(this, DUI_MSGTYPE_TABSELECT, m_iCurSel, iOldSel);
+
+			CControlUI *pActive = GetItemAt(m_iCurSel);
+			if(pActive && !pActive->GetName().IsEmpty()) m_pManager->SendNotify(pActive, DUI_MSGTYPE_TABACTIVEFORM,  m_iCurSel, m_iOldSel);
+			CControlUI *pNoActive = GetItemAt(m_iOldSel);
+			if(pNoActive && !pNoActive->GetName().IsEmpty()) m_pManager->SendNotify(pNoActive, DUI_MSGTYPE_TABNOACTIVEFORM,  m_iCurSel, m_iOldSel);
 		}
 		return true;
 	}

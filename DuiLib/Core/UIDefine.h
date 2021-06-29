@@ -85,6 +85,8 @@ namespace DuiLib
 #define DUI_MSGTYPE_ITEMCLICK 		   	   (_T("itemclick"))
 #define DUI_MSGTYPE_ITEMRCLICK 			   (_T("itemrclick"))
 #define DUI_MSGTYPE_TABSELECT              (_T("tabselect"))
+#define DUI_MSGTYPE_TABACTIVEFORM          (_T("tabactiveform"))
+#define DUI_MSGTYPE_TABNOACTIVEFORM          (_T("tabnoactiveform"))
 
 #define DUI_MSGTYPE_ITEMSELECT 		   	   (_T("itemselect"))
 #define DUI_MSGTYPE_ITEMEXPAND             (_T("itemexpand"))

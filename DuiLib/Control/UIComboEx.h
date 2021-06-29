@@ -46,6 +46,10 @@ public:
 	int GetDropType() const;
 	void SetDropType(int type);
 
+	void SetTipValue(LPCTSTR pStrTipValue);
+	LPCTSTR GetTipValue();
+	void SetTipValueColor(LPCTSTR pStrColor);
+	DWORD GetTipValueColor();
 protected:
 	virtual void DoEvent(TEventUI& event);
 	RECT GetDropButtonRect();
@@ -62,6 +66,8 @@ private:
 	CDuiString m_dbFocusedImage;
 	CDuiString m_dbDisabledImage;
 
+	CDuiString m_sTipValue;
+	DWORD m_dwTipValueColor;
 private:
 	CComboEditWnd *m_pEditWindow;
 	int m_type; //CBS_DROPDOWN CBS_DROPDOWNLIST

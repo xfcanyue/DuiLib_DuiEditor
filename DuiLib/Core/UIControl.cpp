@@ -975,22 +975,22 @@ namespace DuiLib {
 		}
 		if( event.Type == UIEVENT_MOUSEENTER )
 		{
-			if( ::PtInRect(&m_rcItem, event.ptMouse ) ) 
-			{
-				if(!IsHot())
-				{
-					SetHot(true);
-					Invalidate();
-				}
-			}
+// 			if( ::PtInRect(&m_rcItem, event.ptMouse ) ) 
+// 			{
+// 				if(!IsHot())
+// 				{
+// 					SetHot(true);
+// 					Invalidate();
+// 				}
+// 			}
 		}
 		if( event.Type == UIEVENT_MOUSELEAVE )
 		{
-			if( IsHot() ) 
-			{
-				SetHot(false);
-				Invalidate();
-			}
+// 			if( IsHot() ) 
+// 			{
+// 				SetHot(false);
+// 				Invalidate();
+// 			}
 		}
 
 		if( m_pParent != NULL ) m_pParent->DoEvent(event);

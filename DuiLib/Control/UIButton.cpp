@@ -343,6 +343,11 @@ namespace DuiLib
 			m_iBindTabIndex	= _BindTabIndex;
 	}
 
+	void CButtonUI::BindTabIndexName(LPCTSTR _BindTabIndexName)
+	{
+		m_sBindTabIndexName = _BindTabIndexName;
+	}
+
 	void CButtonUI::BindTabLayoutName( LPCTSTR _TabLayoutName )
 	{
 		if(_TabLayoutName)
@@ -352,12 +357,23 @@ namespace DuiLib
 	void CButtonUI::BindTriggerTabSel( int _SetSelectIndex /*= -1*/ )
 	{
 		LPCTSTR pstrName = GetBindTabLayoutName();
-		if(pstrName == NULL || (GetBindTabLayoutIndex() < 0 && _SetSelectIndex < 0))
-			return;
+// 		if(pstrName == NULL || (GetBindTabLayoutIndex() < 0 && _SetSelectIndex < 0))
+// 			return;
 
-		CTabLayoutUI* pTabLayout = static_cast<CTabLayoutUI*>(GetManager()->FindControl(pstrName));
-		if(!pTabLayout) return;
-		pTabLayout->SelectItem(_SetSelectIndex >=0?_SetSelectIndex:GetBindTabLayoutIndex());
+		if(GetBindTabLayoutIndex() >= 0 || _SetSelectIndex >= 0 )
+		{
+			CTabLayoutUI* pTabLayout = static_cast<CTabLayoutUI*>(GetManager()->FindControl(pstrName));
+			if(!pTabLayout) return;
+			pTabLayout->SelectItem(_SetSelectIndex >=0?_SetSelectIndex:GetBindTabLayoutIndex());
+		}
+		else if(!m_sBindTabIndexName.IsEmpty())
+		{
+			CTabLayoutUI* pTabLayout = static_cast<CTabLayoutUI*>(GetManager()->FindControl(pstrName));
+			if(!pTabLayout) return;
+			CControlUI *pControl = static_cast<CControlUI*>(GetManager()->FindControl(m_sBindTabIndexName));
+			if(pControl)
+				pTabLayout->SelectItem(pControl);
+		}
 	}
 
 	void CButtonUI::RemoveBindTabIndex()
@@ -369,6 +385,11 @@ namespace DuiLib
 	int CButtonUI::GetBindTabLayoutIndex()
 	{
 		return m_iBindTabIndex;
+	}
+
+	CDuiString CButtonUI::GetBindTabLayoutIndexName()
+	{
+		return m_sBindTabIndexName;
 	}
 
 	LPCTSTR CButtonUI::GetBindTabLayoutName()
@@ -388,6 +409,7 @@ namespace DuiLib
 		else if( _tcsicmp(pstrName, _T("statecount")) == 0 ) SetStateCount(_ttoi(pstrValue));
 		else if( _tcsicmp(pstrName, _T("switchpanevisible")) == 0 ) SetSwitchPaneVisible(pstrValue);
 		else if( _tcsicmp(pstrName, _T("bindtabindex")) == 0 ) BindTabIndex(_ttoi(pstrValue));
+		else if( _tcsicmp(pstrName, _T("bindtabindexname")) == 0 ) BindTabIndexName(pstrValue);
 		else if( _tcsicmp(pstrName, _T("bindtablayoutname")) == 0 ) BindTabLayoutName(pstrValue);
 		else if( _tcsicmp(pstrName, _T("hotbkcolor")) == 0 )
 		{

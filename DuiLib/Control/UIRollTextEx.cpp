@@ -3,10 +3,10 @@
 
 namespace DuiLib
 {
-	static std::map<UINT, CControlUI *> g_MapTimerID_TO_CRollTextExUI;
-	static void CALLBACK TimerProc(HWND hWnd,UINT nMsg,UINT idEvent,DWORD dwTime)  
+	static std::map<UINT_PTR, CControlUI *> g_MapTimerID_TO_CRollTextExUI;
+	static void CALLBACK TimerProc(HWND hWnd, UINT nMsg, UINT_PTR idEvent, DWORD dwTime)  
 	{
-		std::map<UINT, CControlUI *>::iterator it = g_MapTimerID_TO_CRollTextExUI.find(idEvent);
+		std::map<UINT_PTR, CControlUI *>::iterator it = g_MapTimerID_TO_CRollTextExUI.find(idEvent);
 		if(it != g_MapTimerID_TO_CRollTextExUI.end())
 		{
 			CRollTextExUI *pObject = (CRollTextExUI *)it->second;
@@ -70,7 +70,7 @@ namespace DuiLib
 		if(m_idEventTimer != 0)
 		{
 			::KillTimer(NULL, m_idEventTimer);
-			std::map<UINT, CControlUI *>::iterator it = g_MapTimerID_TO_CRollTextExUI.find(m_idEventTimer);
+			std::map<UINT_PTR, CControlUI *>::iterator it = g_MapTimerID_TO_CRollTextExUI.find(m_idEventTimer);
 			if(it != g_MapTimerID_TO_CRollTextExUI.end())
 				g_MapTimerID_TO_CRollTextExUI.erase(it);
 			m_idEventTimer = 0;

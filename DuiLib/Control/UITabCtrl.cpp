@@ -6,7 +6,7 @@ namespace DuiLib
 	IMPLEMENT_DUICONTROL(CTabCtrlUI)
 
 	CTabCtrlUI::CTabCtrlUI()
-		: m_iBindTabIndex(-1), m_bActiveMouseOn(false)
+		: m_bActiveMouseOn(false)
 	{
 	}
 
@@ -59,7 +59,7 @@ namespace DuiLib
 	bool CTabCtrlUI::IsSelected() const
 	{
 		LPCTSTR pstrName = m_sBindTabLayoutName;
-		if(pstrName == NULL || m_iBindTabIndex < 0) 
+		if(pstrName == NULL || (m_iBindTabIndex < 0 && m_sBindTabIndexName.IsEmpty()))
 		{
 			return __super::IsSelected();
 		}
@@ -67,55 +67,40 @@ namespace DuiLib
 		CTabLayoutUI* pTabLayout = static_cast<CTabLayoutUI*>(GetManager()->FindControl(pstrName));
 		if(!pTabLayout) return __super::IsSelected();
 
-		if(pTabLayout->GetCurSel() == m_iBindTabIndex)
+		if(m_iBindTabIndex >= 0 && pTabLayout->GetCurSel() == m_iBindTabIndex)
+			return true;
+
+		if(!m_sBindTabIndexName.IsEmpty() && m_sBindTabIndexName == pTabLayout->GetCurForm())
 			return true;
 
 		return false;
 	}
 
-	void CTabCtrlUI::BindTabIndex(int _BindTabIndex )
-	{
-		if( _BindTabIndex >= 0)
-			m_iBindTabIndex	= _BindTabIndex;
-	}
-
-	void CTabCtrlUI::BindTabLayoutName( LPCTSTR _TabLayoutName )
-	{
-		if(_TabLayoutName)
-			m_sBindTabLayoutName = _TabLayoutName;
-	}
-
 	void CTabCtrlUI::BindTriggerTabSel( int _SetSelectIndex /*= -1*/ )
 	{
 		LPCTSTR pstrName = GetBindTabLayoutName();
-		if(pstrName == NULL || (GetBindTabLayoutIndex() < 0 && _SetSelectIndex < 0))
-			return;
 
-		CTabLayoutUI* pTabLayout = static_cast<CTabLayoutUI*>(GetManager()->FindControl(pstrName));
-		if(!pTabLayout) return;
-
-		int sel = _SetSelectIndex >=0?_SetSelectIndex : GetBindTabLayoutIndex();
-		if(pTabLayout->GetCurSel() == sel)
-			return;
-
-		pTabLayout->SelectItem(sel);
-		Selected(true);
-	}
-
-	void CTabCtrlUI::RemoveBindTabIndex()
-	{
-		m_iBindTabIndex	= -1;
-		m_sBindTabLayoutName.Empty();
-	}
-
-	int CTabCtrlUI::GetBindTabLayoutIndex()
-	{
-		return m_iBindTabIndex;
-	}
-
-	LPCTSTR CTabCtrlUI::GetBindTabLayoutName()
-	{
-		return m_sBindTabLayoutName;
+		if(GetBindTabLayoutIndex() >= 0 || _SetSelectIndex >= 0 )
+		{
+			CTabLayoutUI* pTabLayout = static_cast<CTabLayoutUI*>(GetManager()->FindControl(pstrName));
+			if(!pTabLayout) return;
+			int sel = _SetSelectIndex >=0?_SetSelectIndex : GetBindTabLayoutIndex();
+			if(pTabLayout->GetCurSel() == sel)
+				return;
+			pTabLayout->SelectItem(sel);
+			Selected(true);
+		}
+		else if(!m_sBindTabIndexName.IsEmpty())
+		{
+			CTabLayoutUI* pTabLayout = static_cast<CTabLayoutUI*>(GetManager()->FindControl(pstrName));
+			if(!pTabLayout) return;
+			CControlUI *pControl = static_cast<CControlUI*>(GetManager()->FindControl(m_sBindTabIndexName));
+			if(pControl)
+			{
+				pTabLayout->SelectItem(pControl);
+				Selected(true);
+			}
+		}
 	}
 
 	void CTabCtrlUI::SetActiveMouseOn(bool bActive) { m_bActiveMouseOn = bActive; }
@@ -123,11 +108,7 @@ namespace DuiLib
 
 	void CTabCtrlUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
-		if( _tcsicmp(pstrName, _T("bindtabindex")) == 0 ) 
-			BindTabIndex(_ttoi(pstrValue));
-		else if( _tcsicmp(pstrName, _T("bindtablayoutname")) == 0 ) 
-			BindTabLayoutName(pstrValue);
-		else if( _tcsicmp(pstrName, _T("activemouseon")) == 0 ) 
+		if( _tcsicmp(pstrName, _T("activemouseon")) == 0 ) 
 			SetActiveMouseOn(_tcsicmp(pstrValue, _T("true")) == 0);
 		else 
 			__super::SetAttribute(pstrName, pstrValue);

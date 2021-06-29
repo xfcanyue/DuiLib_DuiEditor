@@ -6,7 +6,7 @@ namespace DuiLib
 {
 
 IMPLEMENT_DUICONTROL(CComboExUI)
-CComboExUI::CComboExUI(void) : m_pEditWindow(NULL), m_type(CBS_DROPDOWNLIST)
+CComboExUI::CComboExUI(void) : m_pEditWindow(NULL), m_type(CBS_DROPDOWNLIST), m_dwTipValueColor(0xFFBAC0C5)
 {
 	m_szDropButtonSize.cx = 16;
 	m_szDropButtonSize.cy = 16;
@@ -193,6 +193,8 @@ void CComboExUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 		else
 			SetDropType(CBS_DROPDOWNLIST);
 	}
+	else if( _tcsicmp(pstrName, _T("tipvalue")) == 0 ) SetTipValue(pstrValue);
+	else if( _tcsicmp(pstrName, _T("tipvaluecolor")) == 0 ) SetTipValueColor(pstrValue);
 	else CComboUI::SetAttribute(pstrName, pstrValue);
 }
 
@@ -259,6 +261,39 @@ int CComboExUI::GetDropType() const
 void CComboExUI::SetDropType(int type)
 {
 	m_type = type;
+}
+
+void CComboExUI::SetTipValue( LPCTSTR pStrTipValue )
+{
+	m_sTipValue	= pStrTipValue;
+}
+
+LPCTSTR CComboExUI::GetTipValue()
+{
+	if (IsResourceText()) 
+		return CResourceManager::GetInstance()->GetText(m_sTipValue);
+
+	CLangPackageUI *pkg = GetLangPackage();
+	if(pkg && GetResourceID() > 0)
+	{
+		LPCTSTR s = pkg->GetTipValue(GetResourceID());
+		if(s && *s!='\0') return s; 
+	}
+	return m_sTipValue;
+}
+
+void CComboExUI::SetTipValueColor( LPCTSTR pStrColor )
+{
+	if( *pStrColor == _T('#')) pStrColor = ::CharNext(pStrColor);
+	LPTSTR pstr = NULL;
+	DWORD clrColor = _tcstoul(pStrColor, &pstr, 16);
+
+	m_dwTipValueColor = clrColor;
+}
+
+DWORD CComboExUI::GetTipValueColor()
+{
+	return m_dwTipValueColor;
 }
 
 void CComboExUI::DoEvent(TEventUI& event)
@@ -381,13 +416,21 @@ void CComboExUI::PaintText(HDC hDC)
 	rc.right -= m_szDropButtonSize.cx + 2;
 
 	CDuiString sText = GetText();
+	DWORD dwTextColor = m_dwTextColor;
+
+	if( sText.IsEmpty() ) 
+	{
+		sText = GetTipValue();
+		dwTextColor = GetTipValueColor();
+	}
+	
 	if( sText.IsEmpty() ) return;
 	int nLinks = 0;
 	if( IsEnabled() ) {
 		if( m_bShowHtml )
-			CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, sText, m_dwTextColor, NULL, NULL, nLinks, m_iFont, m_uTextStyle);
+			CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, sText, dwTextColor, NULL, NULL, nLinks, m_iFont, m_uTextStyle);
 		else
-			CRenderEngine::DrawText(hDC, m_pManager, rc, sText, m_dwTextColor, m_iFont, m_uTextStyle);
+			CRenderEngine::DrawText(hDC, m_pManager, rc, sText, dwTextColor, m_iFont, m_uTextStyle);
 	}
 	else {
 		if( m_bShowHtml )

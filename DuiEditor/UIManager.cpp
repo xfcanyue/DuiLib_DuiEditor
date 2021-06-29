@@ -78,15 +78,19 @@ BOOL CUIManager::SelectItem(CControlUI *pControl)
 	{
 		CButtonUI *pButton = static_cast<CButtonUI*>(pControl->GetInterface(DUI_CTR_BUTTON));
 		CString strTabLayoutName = pButton->GetBindTabLayoutName();
-		int nBindIndex = pButton->GetBindTabLayoutIndex();
-		if(!strTabLayoutName.IsEmpty() && nBindIndex >= 0)
+		if(!strTabLayoutName.IsEmpty())
 		{
-			CTabLayoutUI *pTabLayout = dynamic_cast<CTabLayoutUI *>(GetManager()->FindControl(strTabLayoutName));
-			if(pTabLayout)
-			{
-				pTabLayout->SelectItem(nBindIndex);
-			}
+			pButton->BindTriggerTabSel();
 		}
+// 		int nBindIndex = pButton->GetBindTabLayoutIndex();
+// 		if(!strTabLayoutName.IsEmpty() && nBindIndex >= 0)
+// 		{
+// 			CTabLayoutUI *pTabLayout = dynamic_cast<CTabLayoutUI *>(GetManager()->FindControl(strTabLayoutName));
+// 			if(pTabLayout)
+// 			{
+// 				pTabLayout->SelectItem(nBindIndex);
+// 			}
+// 		}
 	}
 
 	if(::GetKeyState(VK_CONTROL)>=0) //没有按下Ctrl键
@@ -524,6 +528,8 @@ void CUIManager::SetScrollSize()
 		szForm.cx += RULEBAR_SIZE_X;
 		szForm.cy += RULEBAR_SIZE_Y;
 	}
+	if(szForm.cx < 0) szForm.cx = 0;
+	if(szForm.cy < 0) szForm.cy = 0;
 	m_pDesignView->SetScrollSizes(MM_TEXT, szForm);
 	m_pDesignView->GetParent()->SendMessage(WM_SIZE);
 }

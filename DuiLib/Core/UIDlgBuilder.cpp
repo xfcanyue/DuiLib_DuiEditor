@@ -451,6 +451,22 @@ namespace DuiLib {
 				}
 			}
 
+			//设计器模式创建自定义控件
+			if(pControl == NULL && (CPaintManagerUI::UIDESIGNMODE || CPaintManagerUI::UIDESIGNPREVIEW))
+			{
+				if(node.HasAttribute(_T("custombasedfrom")))
+				{
+					TCHAR szValue[500] = { 0 };
+					SIZE_T cchLen = lengthof(szValue) - 1;
+					if ( node.GetAttributeValue(_T("custombasedfrom"), szValue, cchLen) )
+					{
+						CDuiString strClass;
+						strClass.Format(_T("C%sUI"), szValue);
+						pControl = dynamic_cast<CControlUI*>(CControlFactory::GetInstance()->CreateControl(strClass));
+					}
+				}
+			}
+
 			if( pControl == NULL ) {
 				CDuiString sMsg;
 				sMsg.Format(_T("CDialogBuilder::_Parse Error\r\nFile: %s\r\nControl: %s"), pkg->GetSkinFile(), pstrClass);

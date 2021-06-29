@@ -17,7 +17,7 @@
 
 CUIWindowDesignView::CUIWindowDesignView()
 {
-	
+	m_pDragToControl = NULL;
 }
 
 CUIWindowDesignView::~CUIWindowDesignView()
@@ -25,36 +25,74 @@ CUIWindowDesignView::~CUIWindowDesignView()
 }
 
 // CUIWindowEx 消息处理程序
-void CUIWindowDesignView::AddNewControlFromToolBox(xml_node nodeToolBox, CPoint point)
+BOOL CUIWindowDesignView::OnDragingFromToolBox(CPoint point)
 {
+	/*
 	CUIManager *pManager = GetUIManager();
-	//当前节点，从控件树获取
-	xml_node nodeCurrent = pManager->GetTreeView()->GetSelectXmlNode();					//树选中的控件
-	CControlUI   *pCurControl = (CControlUI *)nodeCurrent.get_tag();
-	if(!pCurControl)
+	ScreenToClient(GetHWND(), &point);
+	CControlUI *pCurControl = GetManager()->FindSubControlByPoint(pManager->GetUiFrom(), point);
+	if(!pCurControl) 
 	{
 		pCurControl = pManager->GetUiFrom();
 	}
-
-	CRect rcClient;
-	::GetClientRect(m_hWnd, &rcClient);
-	if(!rcClient.PtInRect(point))
+	if(!pCurControl) 
 	{
-		return;
+		m_pDragToContainer = NULL;
+		return FALSE;
 	}
 
-	//拖动鼠标 设置控件的大小
-	CUITracker tracker;
-	CRect rc;
-	CWnd *pWnd = CWnd::FromHandle(m_hWnd);
-	if(tracker.TrackRubberBand(pWnd, point, TRUE))
+	if(!pCurControl->GetInterface(DUI_CTR_CONTAINER)) 
 	{
-		rc.left = point.x;
-		rc.top = point.y;
-		rc.right = rc.left + tracker.m_rect.Width();
-		rc.bottom = rc.top + tracker.m_rect.Height();
+		pCurControl = pCurControl->GetParent();
+	}
+	if(!pCurControl->GetInterface(DUI_CTR_CONTAINER)) 
+	{
+		m_pDragToContainer = NULL;
+		return FALSE;
 	}
 
+	if(m_pDragToContainer != pCurControl)
+	{
+		m_pDragToContainer = (CContainerUI *)pCurControl;
+		Invalidate();
+	}
+	*/
+
+	CUIManager *pManager = GetUIManager();
+	ScreenToClient(GetHWND(), &point);
+	CControlUI *pCurControl = GetManager()->FindSubControlByPoint(pManager->GetUiFrom(), point);
+	if(!pCurControl) 
+	{
+		pCurControl = pManager->GetUiFrom();
+	}
+	if(!pCurControl) 
+	{
+		m_pDragToControl = NULL;
+		return FALSE;
+	}
+
+	if(m_pDragToControl != pCurControl)
+	{
+		m_pDragToControl = (CContainerUI *)pCurControl;
+		Invalidate();
+	}
+
+	return TRUE;
+}
+
+void CUIWindowDesignView::OnDragEndFromToolBox()
+{
+	if(m_pDragToControl == NULL) return;
+	xml_node nodeToolBox((xml_node_struct *)g_pToolBox->GetCurSelTag());
+	if(!nodeToolBox) return;
+	
+	AddNewControlFromToolBox(m_pDragToControl, nodeToolBox, CRect(0,0,0,0));
+}
+
+void CUIWindowDesignView::AddNewControlFromToolBox(CControlUI *pCurControl, xml_node nodeToolBox, CRect rc)
+{
+	CUIManager *pManager = GetUIManager();
+	xml_node nodeCurrent = xml_node((xml_node_struct *)pCurControl->GetTag());
 	CString strNewControlClass = XML2T(nodeToolBox.name()); //准备插入控件的类名
 
 	//插入位置, 知道了插入位置，才能确定container
@@ -547,9 +585,19 @@ LRESULT CUIWindowDesignView::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 
 	m_tracker.Draw(pDC, NULL);
 
+	//当拖动控件时，显示当前位置的控件
+	if(m_pDragToControl != NULL)
+	{
+		CRenderEngine::DrawRect(hDC, m_pDragToControl->GetPos(), 2, UIRGB(255,0,0));
+	}
+
+	if(!m_rcHot.IsRectEmpty())
+	{
+		CRenderEngine::DrawRect(hDC, m_rcHot, 2, UIRGB(255,0,0));
+	}
+
 	CRect rectClient;
 	::GetClientRect(m_hWnd, rectClient);
-
 	if(pManager->GetDesignView()->m_bViewGrid)
 	{
 		for(int i=rectClient.left; i<rectClient.right; i+=10)
@@ -558,8 +606,6 @@ LRESULT CUIWindowDesignView::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 				pDC->SetPixel(i, j, RGB(0,0,0));
 		}
 	}
-
-
 	if(pManager->GetDesignView()->m_bViewMouse)
 	{
 		CPoint point;
@@ -626,8 +672,34 @@ LRESULT CUIWindowDesignView::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lPar
 	if(nodeToolBox) //添加控件
 	{ 
 		m_tracker.RemoveAll();
-		AddNewControlFromToolBox(nodeToolBox, pt);	
-		g_pToolBox->SetCurSel(TREENODETYPE_POINTER);
+
+		//当前节点，从控件树获取
+		xml_node nodeCurrent = pManager->GetTreeView()->GetSelectXmlNode();					//树选中的控件
+		CControlUI   *pCurControl = (CControlUI *)nodeCurrent.get_tag();
+		if(!pCurControl)
+		{
+			pCurControl = pManager->GetUiFrom();
+		}
+
+		//拖动鼠标 设置控件的大小
+		CUITracker tracker;
+		CRect rc;
+		CWnd *pWnd = CWnd::FromHandle(m_hWnd);
+		if(tracker.TrackRubberBand(pWnd, pt, TRUE))
+		{
+			rc.left = pt.x;
+			rc.top = pt.y;
+			rc.right = rc.left + tracker.m_rect.Width();
+			rc.bottom = rc.top + tracker.m_rect.Height();
+		}
+
+		AddNewControlFromToolBox(pCurControl, nodeToolBox, rc);	
+		if(!m_rcHot.IsRectEmpty())
+		{
+			m_rcHot.SetRectEmpty();
+			Invalidate();
+		}
+		g_pToolBox->SetDefaultPoint();
 		return 0;
 	}	
 
@@ -737,8 +809,13 @@ LRESULT CUIWindowDesignView::OnRButtonDown(UINT uMsg, WPARAM wParam, LPARAM lPar
 	}
 //	InsertMsg(_T("CUIWindowEx::OnRButtonDown"));
 	bHandled = TRUE;
-	g_pToolBox->SetDefaultPoint();
-	::SetCursor(::LoadCursor(NULL, IDC_ARROW));
+
+	if(!g_pToolBox->IsDefaultPoint())
+	{
+		return 0;
+	}
+// 	g_pToolBox->SetDefaultPoint();
+// 	::SetCursor(::LoadCursor(NULL, IDC_ARROW));
 
 	CPoint pt;
 	::GetCursorPos(&pt);
@@ -800,6 +877,23 @@ LRESULT CUIWindowDesignView::OnMouseMove(UINT uMsg, WPARAM wParam, LPARAM lParam
 	if(pDesignView && pDesignView->m_bShowUiPreview)
 	{
 		bHandled = FALSE;
+		return 0;
+	}
+
+	xml_node nodeToolBox((xml_node_struct *)g_pToolBox->GetCurSelTag());
+	if(nodeToolBox) //添加控件
+	{ 
+		xml_node nodeCurrent = GetUIManager()->GetTreeView()->GetSelectXmlNode();					//树选中的控件
+		CControlUI   *pCurControl = (CControlUI *)nodeCurrent.get_tag();
+		if(!pCurControl)
+		{
+			pCurControl = GetUIManager()->GetUiFrom();
+		}
+		if(m_rcHot != pCurControl->GetPos())
+		{
+			m_rcHot = pCurControl->GetPos();
+			Invalidate();
+		}
 		return 0;
 	}
 

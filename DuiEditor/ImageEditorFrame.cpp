@@ -172,7 +172,7 @@ void CImageEditorFrame::SetPaneHeight(int nHeight)
 	CRect rectContainer;
 	pRootContainer->GetWindowRect (rectContainer, FALSE);
 
-	if ((UINT)rectContainer.Height () - 4 < nHeight)
+	if (rectContainer.Height() - 4 < nHeight)
 	{
 		CString strFormat = _T ("Required height exceeds allowed height in the current container.\nAllowed height is %u pixels.");
 		CString strMessage; 
@@ -321,6 +321,12 @@ void CImageEditorFrame::OnSelectedFile(LPCTSTR lpstrPathName)
 
 LRESULT CImageEditorFrame::OnPropertyChanged (WPARAM,LPARAM lParam)
 {
+	if(m_pPropList->IsSetModifyPropertyFlag())
+	{
+		m_pPropList->SetModifyPropertyFlag(NULL);
+		return 0;
+	}
+
 	CMFCPropertyGridProperty* pProp = (CMFCPropertyGridProperty*)lParam;
 	
 	m_wndPaneAdjust.m_pForm->InitData();
@@ -338,7 +344,7 @@ void CImageEditorFrame::ParentPreview()
 		//Ë¢ÐÂ¸¸´°¿ÚÔ¤ÀÀ
 		if(g_pEditorImage->m_pParentGrid && g_pEditorImage->m_pParentProp)
 		{
-			g_pEditorImage->m_pParentProp->SetOriginalValue(g_pEditorImage->m_pParentProp->GetValue());
+			//g_pEditorImage->m_pParentProp->SetOriginalValue(g_pEditorImage->m_pParentProp->GetValue());
 			g_pEditorImage->m_pParentProp->SetValue(_variant_t(g_pEditorImage->GetAttributeValue()));
 			g_pEditorImage->m_pParentGrid->OnPropertyChanged(g_pEditorImage->m_pParentProp);
 		}

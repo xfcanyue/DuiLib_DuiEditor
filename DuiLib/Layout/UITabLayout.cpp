@@ -147,6 +147,11 @@ namespace DuiLib
 		if( m_pManager != NULL ) {
 			m_pManager->SetNextTabControl();
 			m_pManager->SendNotify(this, DUI_MSGTYPE_TABSELECT, m_iCurSel, m_iOldSel);
+
+			CControlUI *pActive = GetItemAt(m_iCurSel);
+			if(pActive && !pActive->GetName().IsEmpty()) m_pManager->SendNotify(pActive, DUI_MSGTYPE_TABACTIVEFORM,  m_iCurSel, m_iOldSel);
+			CControlUI *pNoActive = GetItemAt(m_iOldSel);
+			if(pNoActive && !pNoActive->GetName().IsEmpty()) m_pManager->SendNotify(pNoActive, DUI_MSGTYPE_TABNOACTIVEFORM,  m_iCurSel, m_iOldSel);
 		}
 		return true;
 	}
@@ -160,10 +165,42 @@ namespace DuiLib
 			return SelectItem(iIndex);
 	}
 
+	bool CTabLayoutUI::SelectForm(LPCTSTR lpstrFormName)
+	{
+		CControlUI *pControl = FindSubControl(lpstrFormName);
+		if(!pControl || pControl->GetName().IsEmpty()) return false;
+
+		CControlUI *pActive = GetItemAt(m_iCurSel);
+		if(pControl == pActive)
+		{
+			if(pActive && !pActive->GetName().IsEmpty()) m_pManager->SendNotify(pActive, DUI_MSGTYPE_TABACTIVEFORM,  m_iCurSel, m_iOldSel);
+			CControlUI *pNoActive = GetItemAt(m_iOldSel);
+			if(pNoActive && !pNoActive->GetName().IsEmpty()) m_pManager->SendNotify(pNoActive, DUI_MSGTYPE_TABNOACTIVEFORM,  m_iCurSel, m_iOldSel);
+			return true;
+		}
+
+		return SelectItem(pControl);
+	}
+
+	CDuiString CTabLayoutUI::GetCurForm()
+	{
+		CControlUI *pActive = GetItemAt(m_iCurSel);
+		if(!pActive) return _T("");
+		return pActive->GetName();
+	}
+
 	void CTabLayoutUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
 		if( _tcsicmp(pstrName, _T("selectedid")) == 0 ) SelectItem(_ttoi(pstrValue));
 		return CContainerUI::SetAttribute(pstrName, pstrValue);
+	}
+
+	void CTabLayoutUI::DoInit()
+	{
+// 		if( m_pManager != NULL ) {
+// 			CControlUI *pActive = GetItemAt(m_iCurSel);
+// 			if(pActive && !pActive->GetName().IsEmpty()) m_pManager->SendNotify(pActive, DUI_MSGTYPE_TABACTIVEFORM,  m_iCurSel, -1);
+// 		}
 	}
 
 	void CTabLayoutUI::SetPos(RECT rc, bool bNeedInvalidate)
@@ -370,6 +407,11 @@ namespace DuiLib
 		if( m_pManager != NULL ) {
 			m_pManager->SetNextTabControl();
 			m_pManager->SendNotify(this, DUI_MSGTYPE_TABSELECT, m_iCurSel, m_iOldSel);
+
+			CControlUI *pActive = GetItemAt(m_iCurSel);
+			if(pActive && !pActive->GetName().IsEmpty()) m_pManager->SendNotify(pActive, DUI_MSGTYPE_TABACTIVEFORM,  m_iCurSel, m_iOldSel);
+			CControlUI *pNoActive = GetItemAt(m_iOldSel);
+			if(pNoActive && !pNoActive->GetName().IsEmpty()) m_pManager->SendNotify(pNoActive, DUI_MSGTYPE_TABNOACTIVEFORM,  m_iCurSel, m_iOldSel);
 		}
 	}
 }

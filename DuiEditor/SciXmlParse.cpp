@@ -217,7 +217,7 @@ void CSciXmlParse::AddControl(xml_node node, xml_node nodeSample)
 	CControlUI *pParentControl = (CControlUI *)nodeParent.get_tag();
 	if(!pParentControl)
 	{
-		AfxMessageBox(_T("提交更新发生错误"));
+		InsertMsg(_T("提交更新发生错误"));
 		return;
 	}
 

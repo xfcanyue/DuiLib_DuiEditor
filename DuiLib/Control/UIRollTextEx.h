@@ -39,7 +39,7 @@ namespace DuiLib
 		void EndRoll();
 
 	private:
-		UINT m_idEventTimer;
+		UINT_PTR m_idEventTimer;
 		int m_nStep;
 		int m_nScrollPos;
 		BOOL m_bUseRoll;

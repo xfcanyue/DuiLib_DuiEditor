@@ -21,9 +21,12 @@ public:
 	{ return CreateDuiWindow(hwndParent, pstrWindowName, dwStyle, dwExStyle); }
 public:
 	CUITrackerMuliti m_tracker;
-
+	CContainerUI *m_pDragToControl;
+	CRect m_rcHot;
 public:
-	void AddNewControlFromToolBox(xml_node nodeToolBox, CPoint pt);
+	BOOL OnDragingFromToolBox(CPoint point);
+	void OnDragEndFromToolBox();
+	void AddNewControlFromToolBox(CControlUI *pCurControl, xml_node nodeToolBox, CRect rc);
 	std::list<CControlUI *>	m_listTrackerSeleted;
 	void OnSelectingControl(CControlUI *pControl, const CRect &rcTracker);
 	void ResizeWindow();

@@ -59,6 +59,7 @@ public:
 	GridCellType GetCellType(int row, int col);
 
 	virtual void SetVirtualGrid(BOOL bVirtual) override;
+	virtual void SetVirtualRowCount(int nRows);
 
 	void SetRowTag(int row, UINT_PTR tag);
 	UINT_PTR GetRowTag(int row);
@@ -98,6 +99,7 @@ public:
 
 	//执行按col列进行排序
 	void SortItems(int col);
+	virtual void OnSortItem(int col, BOOL bAscending);
 
 	//获取当前排序的列
 	int GetSortColumn() const		{ return m_nSortCol; }
@@ -114,6 +116,7 @@ public:
 	bool OnSizeColumnOrRow(TEventUI& event);
 	virtual void SetPos(RECT rc, bool bNeedInvalidate = true);
 	virtual void BuildRows(RECT rc, bool bNeedInvalidate = true);
+	virtual void OnDrawItem(int nBeginRow, int nEndRow);
 	virtual void SetScrollPos(SIZE szPos, bool bMsg);
 	virtual void ProcessScrollBar(RECT rc, int cxRequired, int cyRequired);
 	virtual bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);

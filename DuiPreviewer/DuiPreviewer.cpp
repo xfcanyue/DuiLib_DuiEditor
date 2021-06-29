@@ -62,6 +62,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	DuiWriteConsole(_T("loading duilib ......"));
 
+	CPaintManagerUI::UIDESIGNPREVIEW = TRUE;
+
 	//设置主窗口的名字
 	uiApp.SetAppName(_T("DuiPreviewer"));
 

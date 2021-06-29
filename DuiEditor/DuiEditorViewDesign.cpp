@@ -236,6 +236,18 @@ void CDuiEditorViewDesign::OnDestroy()
 void CDuiEditorViewDesign::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 {
 //	InsertMsg(_T("CDuiEditorViewDesign::OnContextMenu"));
+	if(!g_pToolBox->IsDefaultPoint())
+	{
+		CUIWindowDesignView *pUIWindow = (CUIWindowDesignView *)GetUIManager()->GetUiWindow();
+		if(!pUIWindow->m_rcHot.IsRectEmpty())
+		{
+			pUIWindow->m_rcHot.SetRectEmpty();
+			pUIWindow->Invalidate();
+		}
+		g_pToolBox->SetDefaultPoint();
+		::SetCursor(::LoadCursor(NULL, IDC_ARROW));
+		return;
+	}
 
 	CPaintManagerUI *ppm = GetUIManager()->GetManager();
 	xml_node root = GetUIManager()->GetDocument()->m_doc.child(XTEXT("Window"));
@@ -1010,13 +1022,9 @@ void CDuiEditorViewDesign::OnSize(UINT nType, int cx, int cy)
 	// TODO: 在此处添加消息处理程序代码
 	if(!GetUIManager()) return;
 	if(!GetUIManager()->GetUiFrom()) return;
+	if(cx == 0 || cy == 0) 
+		return;
 
-	//如果window size没有定义 或者 cx==0 或者 cy==0
-// 	SIZE szForm = GetUIManager()->GetManager()->GetInitSize();
-// 	if(szForm.cx <= 0 || szForm.cy <= 0)
-// 	{
-// 		GetUIManager()->SetUIFormWindowSize(szForm.cx, szForm.cy);
-// 	}
 	CString strSize = XML2T(GetUIManager()->GetDocument()->m_doc.child(XTEXT("Window")).attribute(XTEXT("size")).value());
 	CDuiSize szForm(strSize);
 	if(szForm.cx <= 0 || szForm.cy <= 0)

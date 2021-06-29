@@ -250,7 +250,7 @@ void CUIFrameWnd::Notify(TNotifyUI& msg)
 		}
 	}
 
-	if(msg.sType == DUI_MSGTYPE_WINDOWINIT)
+	else if(msg.sType == DUI_MSGTYPE_WINDOWINIT)
 	{
 #if defined(WIN32) && !defined(UNDER_CE)
 		if( ::IsZoomed(*this) ) 
@@ -270,6 +270,39 @@ void CUIFrameWnd::Notify(TNotifyUI& msg)
 #endif
 	}
 	
+	else if(msg.sType == DUI_MSGTYPE_TABACTIVEFORM)
+	{
+		if(m_listForm.size() > 0)
+		{
+			std::list<CUIForm *>::iterator it;
+			for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
+			{
+				CUIForm *pForm = (CUIForm *)(*it);
+				if(pForm->IsForm(msg.pSender->GetName()))
+				{
+					pForm->OnActiveForm();
+					return;
+				}
+			}
+		}
+	}
+
+	else if(msg.sType == DUI_MSGTYPE_TABNOACTIVEFORM)
+	{
+		if(m_listForm.size() > 0)
+		{
+			std::list<CUIForm *>::iterator it;
+			for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
+			{
+				CUIForm *pForm = (CUIForm *)(*it);
+				if(pForm->IsForm(msg.pSender->GetName()))
+				{
+					pForm->OnHideForm();
+					return;
+				}
+			}
+		}
+	}
 
 	if(m_listForm.size() > 0)
 	{

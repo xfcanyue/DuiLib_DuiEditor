@@ -41,10 +41,12 @@ namespace DuiLib
 		virtual void SetSwitchPaneVisible(LPCTSTR ControlName);
 
 		virtual void BindTabIndex(int _BindTabIndex);
+		virtual void BindTabIndexName(LPCTSTR _BindTabIndexName);
 		virtual void BindTabLayoutName(LPCTSTR _TabLayoutName);
 		virtual void BindTriggerTabSel(int _SetSelectIndex = -1);
 		virtual void RemoveBindTabIndex();
 		virtual int	 GetBindTabLayoutIndex();
+		virtual CDuiString GetBindTabLayoutIndexName();
 		virtual LPCTSTR GetBindTabLayoutName();
 
 		void SetHotFont(int index);
@@ -112,6 +114,7 @@ namespace DuiLib
 		CDuiString m_sSwitchControlVisible;
 
 		int			m_iBindTabIndex;
+		CDuiString	m_sBindTabIndexName;
 		CDuiString	m_sBindTabLayoutName;
 	};
 

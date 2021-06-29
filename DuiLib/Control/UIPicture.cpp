@@ -5,10 +5,10 @@ namespace DuiLib
 {
 
 
-static std::map<UINT, CControlUI *> g_MapTimerID_TO_CPictureUI;
-static void CALLBACK TimerProc(HWND hWnd,UINT nMsg,UINT idEvent,DWORD dwTime)  
+static std::map<UINT_PTR, CControlUI *> g_MapTimerID_TO_CPictureUI;
+static void CALLBACK TimerProc(HWND hWnd, UINT nMsg, UINT_PTR idEvent, DWORD dwTime)  
 {
-	std::map<UINT, CControlUI *>::iterator it = g_MapTimerID_TO_CPictureUI.find(idEvent);
+	std::map<UINT_PTR, CControlUI *>::iterator it = g_MapTimerID_TO_CPictureUI.find(idEvent);
 	if(it != g_MapTimerID_TO_CPictureUI.end())
 	{
 		CPictureUI *pObject = (CPictureUI *)it->second;
@@ -334,7 +334,7 @@ void CPictureUI::StopAnim()
 	if(m_idEventTimer != 0)
 	{
 		::KillTimer(NULL, m_idEventTimer);
-		std::map<UINT, CControlUI *>::iterator it = g_MapTimerID_TO_CPictureUI.find(m_idEventTimer);
+		std::map<UINT_PTR, CControlUI *>::iterator it = g_MapTimerID_TO_CPictureUI.find(m_idEventTimer);
 		if(it != g_MapTimerID_TO_CPictureUI.end())
 			g_MapTimerID_TO_CPictureUI.erase(it);
 		m_idEventTimer = 0;

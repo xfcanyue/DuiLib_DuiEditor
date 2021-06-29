@@ -5,6 +5,9 @@
 #include "DuiEditor.h"
 #include "ToolBoxCtrl.h"
 
+#include "MainFrm.h"
+#include "UIManager.h"
+
 #define AFX_ID_SCROLL_VERT 2
 
 #define visualManager CMFCVisualManager::GetInstance()
@@ -402,6 +405,9 @@ CDockToolBoxCtrl::CDockToolBoxCtrl()
 	m_clrToolTab=RGB(217,215,198);
 
 	m_pImageList = NULL;
+	m_pDragImage = NULL;
+	m_bDraging = FALSE;
+	m_bValidDrop = FALSE;
 }
 
 CDockToolBoxCtrl::~CDockToolBoxCtrl()
@@ -1018,8 +1024,60 @@ void CDockToolBoxCtrl::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar
 // 	CWnd::OnVScroll(nSBCode, nPos, pScrollBar);
 }
 
+BOOL CDockToolBoxCtrl::OnDraging(CPoint point)
+{
+	CWnd *pHotWnd = WindowFromPoint(point);
+
+	CMainFrame *pFrame = (CMainFrame *)AfxGetMainWnd();
+	CDuiEditorViewDesign *pDesignView = pFrame->GetActiveUIView();
+	if(!pDesignView) return FALSE;
+	CUIWindowDesignView *pUIWindow = (CUIWindowDesignView *)pDesignView->GetUIManager()->GetUiWindow();
+
+	if(pUIWindow->GetHWND() != pHotWnd->GetSafeHwnd())
+	{
+		if(pUIWindow->m_pDragToControl != NULL)
+		{
+			pUIWindow->m_pDragToControl = NULL;
+			pUIWindow->Invalidate();
+		}
+		return FALSE;
+	}
+
+	return pUIWindow->OnDragingFromToolBox(point);
+}
+
 void CDockToolBoxCtrl::OnMouseMove(UINT nFlags, CPoint point)
 {
+	CRect rcClient;
+	GetClientRect(rcClient);
+	if(m_pSel)  rcClient = m_pSel->GetRect();
+	if(m_bDraging)
+	{
+		if(!rcClient.PtInRect(point))
+		{
+			POINT   ptDrag  = point; 
+			ClientToScreen(&ptDrag);
+			CImageList::DragMove(ptDrag);
+
+			if(!OnDraging(ptDrag))
+			{
+				::SetCursor(LoadCursor(NULL, IDC_NO));
+				m_bValidDrop = FALSE;
+			}
+			else
+			{
+				::SetCursor(LoadCursor(NULL, IDC_ARROW));
+				m_bValidDrop = TRUE;
+			}
+		}
+		else
+		{
+			::SetCursor(LoadCursor(NULL, IDC_ARROW));
+			m_bValidDrop = FALSE;
+		}
+
+		return;
+	}
 	// TODO: Add your message handler code here and/or call default
 	CDockToolBoxElement* pOldHover=m_pHover;
 	m_pHover=HitTest(point);
@@ -1061,7 +1119,24 @@ void CDockToolBoxCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 
 	if(m_pSel->IsToolTab())
+	{
 		m_pSel->Expand(!m_pSel->IsExpanded());
+		CWnd::OnLButtonDown(nFlags, point);
+		return;
+	}
+
+	if(m_pSel && m_pSel->GetClass() != TREENODETYPE_POINTER)
+	{
+		m_pDragImage = m_pImageList;
+		m_pDragImage->BeginDrag(m_pSel->GetClass(), CPoint(16, 16));
+
+		POINT   ptDragEnter   = point; 
+		ClientToScreen(&ptDragEnter);
+		CImageList::DragEnter(NULL, ptDragEnter);
+
+		SetCapture();
+		m_bDraging = TRUE;
+	}
 
 	CWnd::OnLButtonDown(nFlags, point);
 }
@@ -1069,6 +1144,37 @@ void CDockToolBoxCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 void CDockToolBoxCtrl::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
+	CRect rcClient;
+	GetClientRect(rcClient);
+	if(m_bDraging && !m_bValidDrop && !rcClient.PtInRect(point))
+	{
+		SetCurSel(TREENODETYPE_POINTER, TRUE);
+	}
+
+	m_bDraging = FALSE;
+	CImageList::DragLeave(this);
+	CImageList::EndDrag();
+	ReleaseCapture();
+
+	if(m_bValidDrop)
+	{
+		POINT   ptDrag  = point; 
+		ClientToScreen(&ptDrag);
+		CWnd *pHotWnd = WindowFromPoint(ptDrag);
+		CMainFrame *pFrame = (CMainFrame *)AfxGetMainWnd();
+		CDuiEditorViewDesign *pDesignView = pFrame->GetActiveUIView();
+		if(pDesignView)
+		{
+			if(pDesignView->GetUIManager()->GetManager()->GetPaintWindow() == pHotWnd->GetSafeHwnd())
+			{
+				CUIWindowDesignView *pUIWindow = (CUIWindowDesignView *)pDesignView->GetUIManager()->GetUiWindow();
+				pUIWindow->OnDragEndFromToolBox();
+				SetCurSel(TREENODETYPE_POINTER, TRUE);
+				pUIWindow->m_pDragToControl = NULL;
+				pUIWindow->Invalidate();
+			}	
+		}
+	}
 
 	CWnd::OnLButtonUp(nFlags, point);
 }

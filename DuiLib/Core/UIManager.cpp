@@ -265,6 +265,7 @@ namespace DuiLib {
 	CStdPtrArray CPaintManagerUI::m_aPlugins;
 
 	BOOL CPaintManagerUI::UIDESIGNMODE = FALSE;
+	BOOL CPaintManagerUI::UIDESIGNPREVIEW = FALSE;
 
 
 	CPaintManagerUI::CPaintManagerUI() :

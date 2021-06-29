@@ -621,6 +621,7 @@ namespace DuiLib {
 	//设计器模式
 	public:
 		static BOOL UIDESIGNMODE;
+		static BOOL UIDESIGNPREVIEW;
 	};
 
 	//先锁定窗口更新，然后强制刷新整个窗口
