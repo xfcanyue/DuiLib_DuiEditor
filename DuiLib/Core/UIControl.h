@@ -337,6 +337,12 @@ namespace DuiLib {
 		void __ReleaseRef();
 	private:
 		int __refCount;
+
+	public:
+		void SetExtraParent(CControlUI *pControl);
+		CControlUI *GetExtraParent() const;
+	protected:
+		CControlUI *m_pExtraParent;
 	};
 
 } // namespace DuiLib

@@ -44,7 +44,8 @@ namespace DuiLib {
 		m_asOnInit(NULL),m_asOnEvent(NULL), m_asOnNotify(NULL), m_asOnDestroy(NULL), m_asOnSize(NULL), 
 		m_asOnPaintBkColor(NULL), m_asOnPaintBkImage(NULL), m_asOnPaintStatusImage(NULL), 
 		m_asOnPaint(NULL), m_asOnPaintForeColor(NULL), m_asOnPaintForeImage(NULL), m_asOnPaintText(NULL), m_asOnPaintBorder(NULL),
-		CUIAnimation( this ), m_animation(DuiAnim_null), m_nFrameCount(24), m_nFrameDelay(5), m_szAnimationTotal(CDuiSize(0,0)), m_szAnimationCurrect(CDuiSize(0,0))
+		CUIAnimation( this ), m_animation(DuiAnim_null), m_nFrameCount(24), m_nFrameDelay(5), m_szAnimationTotal(CDuiSize(0,0)), m_szAnimationCurrect(CDuiSize(0,0)),
+		m_pExtraParent(NULL)
 	{
 		m_cXY.cx = m_cXY.cy = 0;
 		m_cxyFixed.cx = m_cxyFixed.cy = 0;
@@ -1845,5 +1846,15 @@ namespace DuiLib {
 	{
 		if( --__refCount == 0 )
 			delete this;
+	}
+
+	void CControlUI::SetExtraParent(CControlUI *pControl)
+	{
+		m_pExtraParent = pControl;
+	}
+
+	CControlUI *CControlUI::GetExtraParent() const
+	{
+		return m_pExtraParent;
 	}
 } // namespace DuiLib

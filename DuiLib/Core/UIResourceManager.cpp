@@ -44,68 +44,44 @@ namespace DuiLib {
 			::FreeResource(hResource);
 		}
 
-		return LoadResource(m_xml.GetRoot());
+		return LoadResource(m_xml.root());
 	}
 
-	BOOL CResourceManager::LoadResource(CMarkupNode Root)
+	BOOL CResourceManager::LoadResource(CXmlNodeUI root)
 	{
-		if( !Root.IsValid() ) return FALSE;
+		if( !root ) return FALSE;
 
-		LPCTSTR pstrClass = NULL;
-		int nAttributes = 0;
-		LPCTSTR pstrName = NULL;
-		LPCTSTR pstrValue = NULL;
-		LPTSTR pstr = NULL;
+		CXmlNodeUI nodeRes = root.child(_T("Res"));
+		if(!nodeRes) return FALSE;
 
 		//加载图片资源
-		LPCTSTR pstrId = NULL;
-		LPCTSTR pstrPath = NULL;
-		for( CMarkupNode node = Root.GetChild() ; node.IsValid(); node = node.GetSibling() ) 
+		for( CXmlNodeUI node = nodeRes.first_child() ; node; node = node.next_sibling() ) 
 		{
-			pstrClass = node.GetName();
-			CMarkupNode ChildNode = node.GetChild();
-			if(ChildNode.IsValid()) LoadResource(node);
-			else if ((_tcsicmp(pstrClass,_T("Image")) == 0) && node.HasAttributes())
+			LPCTSTR pstrClass = node.name();
+			if ((_tcsicmp(pstrClass,_T("Image")) == 0))
 			{
 				//加载图片资源
-				nAttributes = node.GetAttributeCount();
-				for( int i = 0; i < nAttributes; i++ ) 
-				{
-					pstrName = node.GetAttributeName(i);
-					pstrValue = node.GetAttributeValue(i);
+				CXmlAttributeUI attrId = node.attribute(_T("id"));
+				CXmlAttributeUI attrPath = node.attribute(_T("path"));
 
-					if( _tcsicmp(pstrName, _T("id")) == 0 ) 
-					{
-						pstrId = pstrValue;
-					}
-					else if( _tcsicmp(pstrName, _T("path")) == 0 ) 
-					{
-						pstrPath = pstrValue;
-					}
-				}
+				LPCTSTR pstrId = attrId.value();
+				LPCTSTR pstrPath = attrPath.value();
 				if( pstrId == NULL ||  pstrPath == NULL) continue;
+
 				CDuiString * pstrFind = static_cast<CDuiString *>(m_mImageHashMap.Find(pstrId));
 				if(pstrFind != NULL) continue;
 				m_mImageHashMap.Insert(pstrId, (LPVOID)new CDuiString(pstrPath));
 			}
-			else if( _tcsicmp(pstrClass,_T("Xml")) == 0 && node.HasAttributes()) {
+			else if( _tcsicmp(pstrClass,_T("Xml")) == 0) 
+			{
 				//加载XML配置文件
-				nAttributes = node.GetAttributeCount();
-				for( int i = 0; i < nAttributes; i++ ) 
-				{
-					pstrName = node.GetAttributeName(i);
-					pstrValue = node.GetAttributeValue(i);
+				CXmlAttributeUI attrId = node.attribute(_T("id"));
+				CXmlAttributeUI attrPath = node.attribute(_T("path"));
 
-					if( _tcsicmp(pstrName, _T("id")) == 0 ) 
-					{
-						pstrId = pstrValue;
-					}
-					else if( _tcsicmp(pstrName, _T("path")) == 0 ) 
-					{
-						pstrPath = pstrValue;
-					}
-				}
+				LPCTSTR pstrId = attrId.value();
+				LPCTSTR pstrPath = attrPath.value();
 				if( pstrId == NULL ||  pstrPath == NULL) continue;
+
 				CDuiString * pstrFind = static_cast<CDuiString *>(m_mXmlHashMap.Find(pstrId));
 				if(pstrFind != NULL) continue;
 				m_mXmlHashMap.Insert(pstrId, (LPVOID)new CDuiString(pstrPath));
@@ -161,15 +137,16 @@ namespace DuiLib {
 
 	BOOL CResourceManager::LoadLanguage(LPCTSTR pstrXml)
 	{
-		CMarkup xml;
+		CXmlDocumentUI xml;
 		if( *(pstrXml) == _T('<') ) {
 			if( !xml.Load(pstrXml) ) return FALSE;
 		}
 		else {
 			if( !xml.LoadFromFile(pstrXml) ) return FALSE;
 		}
-		CMarkupNode Root = xml.GetRoot();
-		if( !Root.IsValid() ) return FALSE;
+
+		CXmlNodeUI nodeRes = xml.child(_T("Res"));
+		if( !nodeRes ) return FALSE;
 
 		LPCTSTR pstrClass = NULL;
 		int nAttributes = 0;
@@ -180,27 +157,16 @@ namespace DuiLib {
 		//加载图片资源
 		LPCTSTR pstrId = NULL;
 		LPCTSTR pstrText = NULL;
-		for( CMarkupNode node = Root.GetChild() ; node.IsValid(); node = node.GetSibling() ) 
+		for( CXmlNodeUI node = nodeRes.first_child(); node; node = node.next_sibling() ) 
 		{
-			pstrClass = node.GetName();
-			if ((_tcsicmp(pstrClass,_T("Text")) == 0) && node.HasAttributes())
+			pstrClass = node.name();
+			if ((_tcsicmp(pstrClass,_T("Text")) == 0))
 			{
-				//加载图片资源
-				nAttributes = node.GetAttributeCount();
-				for( int i = 0; i < nAttributes; i++ ) 
-				{
-					pstrName = node.GetAttributeName(i);
-					pstrValue = node.GetAttributeValue(i);
+				CXmlAttributeUI attrId = node.attribute(_T("id"));
+				CXmlAttributeUI attrValue = node.attribute(_T("value"));
 
-					if( _tcsicmp(pstrName, _T("id")) == 0 ) 
-					{
-						pstrId = pstrValue;
-					}
-					else if( _tcsicmp(pstrName, _T("value")) == 0 ) 
-					{
-						pstrText = pstrValue;
-					}
-				}
+				LPCTSTR pstrId = attrId.value();
+				LPCTSTR pstrText = attrValue.value();
 				if( pstrId == NULL ||  pstrText == NULL) continue;
 
 				CDuiString *lpstrFind = static_cast<CDuiString *>(m_mTextResourceHashMap.Find(pstrId));

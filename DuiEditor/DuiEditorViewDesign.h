@@ -76,10 +76,31 @@ public:
 	afx_msg void OnUpdateEditPaste(CCmdUI *pCmdUI);
 	afx_msg void OnEditClear();
 	afx_msg void OnUpdateEditClear(CCmdUI *pCmdUI);
+
+	void CopyToClipboard(LPCTSTR strText);
 	afx_msg void OnEditCopyName();
 	afx_msg void OnUpdateEditCopyName(CCmdUI *pCmdUI);
 	afx_msg void OnEditCopyNameEx();
 	afx_msg void OnUpdateEditCopyNameEx(CCmdUI *pCmdUI);
+
+	afx_msg void OnEditGenerateCode_FindControl();
+	afx_msg void OnUpdateEditGenerateCode_FindControl(CCmdUI *pCmdUI);
+	afx_msg void OnEditGenerateCode_BindControl();
+	afx_msg void OnUpdateEditGenerateCode_BindControl(CCmdUI *pCmdUI);
+
+	afx_msg void OnEditGenerateCode_ddxText();
+	afx_msg void OnUpdateEditGenerateCode_ddxText(CCmdUI *pCmdUI);
+	afx_msg void OnEditGenerateCode_ddxCheckBox();
+	afx_msg void OnUpdateEditGenerateCode_ddxCheckBox(CCmdUI *pCmdUI);
+	afx_msg void OnEditGenerateCode_ddxCombo();
+	afx_msg void OnUpdateEditGenerateCode_ddxCombo(CCmdUI *pCmdUI);
+	afx_msg void OnEditGenerateCode_ddxComboItemData();
+	afx_msg void OnUpdateEditGenerateCode_ddxComboItemData(CCmdUI *pCmdUI);
+
+	afx_msg void OnEditGenerateCode_IsControl();
+	afx_msg void OnUpdateEditGenerateCode_IsControl(CCmdUI *pCmdUI);
+	afx_msg void OnEditGenerateCode_IsMenuCommand();
+	afx_msg void OnUpdateEditGenerateCode_IsMenuCommand(CCmdUI *pCmdUI);
 
 	afx_msg void OnCommandTabLayoutSetSel(UINT nID);
 

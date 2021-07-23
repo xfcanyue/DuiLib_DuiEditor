@@ -181,6 +181,29 @@ BOOL CGridCellUI::IsFixedCol() const
 	return pGrid->IsFixedCol(m_col);
 }
 
+void CGridCellUI::SetFixedWidth(int cx)
+{
+	//使用GetExtraParent()一直找到CGridUI，如果是固定列，设置列宽。 
+	//cell ==> row ==> header ==> grid
+	if(GetExtraParent() && GetExtraParent()->GetInterface(DUI_CTR_GRIDROW)) 
+	{
+		CGridRowUI *pRow = (CGridRowUI *)GetExtraParent();
+		if(pRow->GetExtraParent() && pRow->GetExtraParent()->GetInterface(DUI_CTR_GRIDHEADER))
+		{
+			CGridHeaderUI *pHeader = (CGridHeaderUI *)pRow->GetExtraParent();
+			if(pHeader->GetExtraParent() && pHeader->GetExtraParent()->GetInterface(DUI_CTR_GRID)) 
+			{
+				//终于找到你啦
+				CGridUI *pGrid = (CGridUI *)pHeader->GetExtraParent();
+				int col = pRow->GetItemIndex(this);
+				pGrid->SetColumnWidth(col, cx);
+				return;	
+			}
+		}	
+	}
+	__super::SetFixedWidth(cx);
+}
+
 bool CGridCellUI::IsSelected() const
 {
 	if(!GetOwner())

@@ -811,7 +811,8 @@
     <ClInclude Include="DlgCreateDuiDocument.h" />
     <ClInclude Include="DlgCustomControl.h" />
     <ClInclude Include="DlgInsertControl.h" />
-    <ClInclude Include="DlgLangTextEdit.h" />
+    <ClInclude Include="MyDocument.h" />
+    <ClInclude Include="MyFilePath.h" />
     <ClInclude Include="UIWindowContainer.h" />
     <ClInclude Include="UIDlgLangTextEdit.h" />
     <ClInclude Include="DlgOptions.h" />
@@ -887,7 +888,8 @@
     <ClCompile Include="DlgCreateDuiDocument.cpp" />
     <ClCompile Include="DlgCustomControl.cpp" />
     <ClCompile Include="DlgInsertControl.cpp" />
-    <ClCompile Include="DlgLangTextEdit.cpp" />
+    <ClCompile Include="MyDocument.cpp" />
+    <ClCompile Include="MyFilePath.cpp" />
     <ClCompile Include="UIWindowContainer.cpp" />
     <ClCompile Include="UIDlgLangTextEdit.cpp" />
     <ClCompile Include="DlgOptions.cpp" />

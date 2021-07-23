@@ -70,14 +70,12 @@ int CDockFileViewCtrl::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 0;
 }
 
-BOOL CDockFileViewCtrl::InitFolder(LPCTSTR szFolderPath)
+BOOL CDockFileViewCtrl::InitFolder()
 {
 	CLockWindowUpdate lock(this);
 
-	m_strCurrentPath = szFolderPath;
-
 	//载入项目配置
-	g_proj.InitProject(szFolderPath);
+	m_strCurrentPath = g_proj.GetProjectPath();
 
 	DeleteAllItems();
 
@@ -91,7 +89,7 @@ BOOL CDockFileViewCtrl::InitFolder(LPCTSTR szFolderPath)
 	LSSTRING_CONVERSION;
 	LPSHELLFOLDER psfRootFolder = NULL;
 	LPITEMIDLIST pidlRootFolder = NULL;
-	if (FAILED(pDesktop->ParseDisplayName(NULL, NULL, (LPWSTR)(const wchar_t *)LST2W(szFolderPath), NULL, &pidlRootFolder, NULL)))
+	if (FAILED(pDesktop->ParseDisplayName(NULL, NULL, (LPWSTR)(const wchar_t *)LST2W(m_strCurrentPath), NULL, &pidlRootFolder, NULL)))
 	{
 		return FALSE;
 	}
@@ -277,11 +275,16 @@ HRESULT CDockFileViewCtrl::EnumObjects(HTREEITEM hParentItem, LPSHELLFOLDER pPar
 		HTREEITEM htNew = InsertItem(&tvInsert);
 		
 		CString strStartupFile = g_proj.GetStartupFile();
-		if(strStartupFile.CompareNoCase(tvItem.pszText) == 0)
+		TCHAR path[MAX_PATH];
+		if(SHGetPathFromIDList(pItem->pidlFQ, path))
 		{
-			m_hStartupItem = htNew;
-			SetItemState(htNew, TVIS_BOLD, TVIS_BOLD);
+			if(strStartupFile.CompareNoCase(path) == 0)
+			{
+				m_hStartupItem = htNew;
+				SetItemState(htNew, TVIS_BOLD, TVIS_BOLD);
+			}
 		}
+	
 		dwFetched = 0;
 	}
 
@@ -526,7 +529,8 @@ void CDockFileViewCtrl::OnEditDebugFile()
 	SHFILEINFO sfi;
 	HRESULT hr = SHGetFileInfo((LPCTSTR)pItem->pidlFQ, 0, &sfi, sizeof(sfi), SHGFI_PIDL | SHGFI_DISPLAYNAME);
 
-	g_proj.SetStartupFile(sfi.szDisplayName);
+	//g_proj.SetStartupFile(sfi.szDisplayName);
+	g_proj.SetStartupFile(path);
 
 	SetItemState(m_hStartupItem, 0, TVIS_BOLD);
 	m_hStartupItem = ht;
@@ -545,7 +549,7 @@ void CDockFileViewCtrl::OnUpdateEditDebugFile(CCmdUI *pCmdUI)
 void CDockFileViewCtrl::OnEditRefresh()
 {
 	// TODO: 在此添加命令处理程序代码
-	InitFolder(m_strCurrentPath);
+	InitFolder();
 }
 
 

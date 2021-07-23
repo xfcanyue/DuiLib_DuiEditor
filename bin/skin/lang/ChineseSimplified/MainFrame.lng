@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Language>
-	<Text id="1" text="基本控件1" tooltip="基本控件2" />
+	<Text id="1" text="基本控件1" tooltip="基本控件2" tipvalue="基本控件3" />
 	<Text id="2" text="高级控件" />
 	<Text id="3" text="动画控件" />
 	<Text id="4" text="键盘" />

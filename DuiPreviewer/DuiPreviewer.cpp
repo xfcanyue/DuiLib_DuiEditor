@@ -6,6 +6,57 @@
 
 #include "App.h"
 
+//xml布局文件放置多个文件夹时，需要判断CPaintManagerUI::SetResourcePath()的路径
+//这时需要寻找project.dui的配置信息
+void InitResourcePath()
+{
+	LSSTRING_CONVERSION;
+	
+
+	CString strPath = g_strSkinPath;
+
+	//往上级文件夹寻找项目配置，最多回溯5层的文件夹
+	int maxLevel = 5;
+	int times = 1;
+	while(!PathFileExists(strPath + _T("project.dui")) && times < maxLevel)
+	{
+		strPath += _T("..\\");
+		times++;
+	}
+
+
+	if(times < maxLevel) //如果找到了配置文件
+	{
+		xml_document projFile;
+		xml_parse_result ret = projFile.load_file(strPath + _T("project.dui"));
+		CString projPath = projFile.child(_T("Project")).child(_T("ProjectPath")).text().get();
+		if(projPath.IsEmpty())
+		{
+			CPaintManagerUI::SetResourcePath(g_strSkinPath);
+			CResourceManager::GetInstance()->LoadResource(_T("res.xml"), NULL);
+		}
+		else
+		{
+			TCHAR newPath[MAX_PATH + 1];
+			_tcscpy_s(newPath, MAX_PATH, strPath);
+			//BOOL bRet = PathResolve(newPath, NULL, PRF_VERIFYEXISTS);
+			BOOL bRet = PathCanonicalize(newPath, strPath);
+			if(bRet)
+			{
+				PathAddBackslash(newPath);
+				strPath = LSW2T(newPath);
+			}
+
+			CString skinFile;
+			skinFile = g_strFullPath.Right(g_strFullPath.GetLength() - strPath.GetLength());
+
+			g_strSkinFile = skinFile;
+			g_strSkinPath = strPath;
+		}
+	}
+
+}
+
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
                      LPTSTR    lpCmdLine,
@@ -33,6 +84,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 			cmdline.Delete(0,2);
 			cmdline.TrimLeft();
 			int sel = cmdline.ReverseFind('\\');
+			g_strFullPath = cmdline;
 			g_strSkinPath = cmdline.Left(sel + 1);
 			g_strSkinFile = cmdline.Right(cmdline.GetLength() - sel - 1);
 		}
@@ -62,6 +114,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	DuiWriteConsole(_T("loading duilib ......"));
 
+	InitResourcePath();
+	//////////////////////////////////////////////////////////////////////////
 	CPaintManagerUI::UIDESIGNPREVIEW = TRUE;
 
 	//设置主窗口的名字

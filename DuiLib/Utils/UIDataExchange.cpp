@@ -1,4 +1,3 @@
-#include "StdAfx.h"
 #include "UIDataExchange.hpp"
 
 
@@ -43,6 +42,9 @@ implfun bool CUIDataExchange::UpdateDataUI(bool bSaveAndValidate)
 			break;
 		case _control_combo:
 			_UpdateCombo(pData, bSaveAndValidate);
+			break;
+		case _control_combo_ex:
+			_UpdateComboEx(pData, bSaveAndValidate);
 			break;
 		case _control_tablayout:
 			_UpdateTabLayout(pData, bSaveAndValidate);
@@ -199,6 +201,28 @@ implfun bool CUIDataExchange::_UpdateCombo(_ddx_data *pData, bool bSaveAndValida
 		if(pData->valueType == _value_int)
 		{
 			pCombo->SelectItem(*((int *)(pData->pValue)));
+		}
+	}
+	return true;
+}
+
+implfun bool CUIDataExchange::_UpdateComboEx(_ddx_data *pData, bool bSaveAndValidate)
+{
+	CComboExUI *pCombo = static_cast<CComboExUI *>(pData->pControl->GetInterface(DUI_CTR_COMBOEX));
+	if(!pCombo)	return false;
+
+	if(bSaveAndValidate)
+	{
+		if(pData->valueType == _value_int)
+		{
+			*((int *)(pData->pValue)) = pCombo->GetCurSelItemData();
+		}
+	}
+	else
+	{
+		if(pData->valueType == _value_int)
+		{
+			pCombo->SetCurSelFromItemData(*((int *)(pData->pValue)));
 		}
 	}
 	return true;
@@ -369,6 +393,29 @@ implfun bool CUIDataExchange::ddxCombo(LPCTSTR pControlName, int &va)
 {
 	CControlUI *pControl = m_pManager->FindControl(pControlName);
 	return ddxCombo(pControl, va);
+}
+
+implfun bool CUIDataExchange::ddxComboItemData(CControlUI *pControl, int &va) //°ó¶¨ComboItemData
+{
+	ASSERT(pControl);
+	ASSERT(pControl->GetInterface(DUI_CTR_COMBOEX));
+
+	if(pControl->GetInterface(DUI_CTR_COMBOEX) == NULL)
+		return false;
+
+	_ddx_data *dd = new _ddx_data;
+	dd->pControl = pControl;
+	dd->controlType = _control_combo_ex;
+	dd->valueType = _value_int;
+	dd->pValue = &va;
+	m_arrData.Add(dd);
+	return true;
+}
+
+implfun bool CUIDataExchange::ddxComboItemData(LPCTSTR pControlName, int &va) //°ó¶¨ComboItemData
+{
+	CControlUI *pControl = m_pManager->FindControl(pControlName);
+	return ddxComboItemData(pControl, va);
 }
 
 implfun bool CUIDataExchange::ddxTabLayout(CControlUI *pControl, int &va) //cursel

@@ -12,9 +12,10 @@ public:
 	CScriptManager(void);
 	virtual ~CScriptManager(void);
 
-	virtual bool CreateModule(LPCTSTR moduleName);
+	virtual bool CreateModule(LPCTSTR moduleName = NULL);
 	virtual void DeleteModule();
 	virtual bool AddScriptFile(LPCTSTR pstrFileName);
+	virtual bool AddScriptCode(LPCTSTR pstrCode);
 	virtual bool CompileScript();
 	virtual void *GetFunAddress(LPCTSTR lpszFunName);
 	virtual bool SetMainFun(LPCTSTR lpszMainFun);
@@ -26,6 +27,7 @@ public:
 
 	asIScriptEngine *GetEngine() const { return engine; }
 protected:
+	virtual void MessageCallback(const asSMessageInfo &msg);
 	virtual void ContextLineCallback(asIScriptContext *ctx);
 
 protected:

@@ -15,9 +15,10 @@ CScriptManager::CScriptManager(void)
 {
 	ctx = NULL;
 
-	engine = g_ScriptEngine.GetEngine();
-
 	int r = 0;
+
+	engine = g_ScriptEngine.GetEngine();
+	r = engine->SetMessageCallback(asMETHOD(CScriptManager, MessageCallback), this, asCALL_THISCALL); assert( r >= 0 );
 
 	m_bHasBuild = false;
 	//CreateModule(_T("duilib"));
@@ -39,6 +40,18 @@ CScriptManager::~CScriptManager(void)
 	DeleteModule();
 }
 
+void CScriptManager::MessageCallback(const asSMessageInfo &msg)
+{
+	if( msg.type == asMSGTYPE_ERROR )
+	{
+		LSSTRING_CONVERSION;
+		ATL::CStringA temp;
+		temp.Format("row = %d\r\ncol = %d\r\nsection=%s \r\nmessage = %s\r\n", 
+			msg.row, msg.col, msg.section, msg.message);
+		MessageBoxA(NULL, LSUTF82A(temp), "Duilib script error", MB_OK);
+	}
+}
+
 void CScriptManager::ContextLineCallback(asIScriptContext *ctx)
 {
 	if( m_dwTime < timeGetTime() )
@@ -47,18 +60,19 @@ void CScriptManager::ContextLineCallback(asIScriptContext *ctx)
 
 bool CScriptManager::CreateModule(LPCTSTR moduleName)
 {
-	if(moduleName != NULL && *moduleName=='\0')
+	if(moduleName != NULL && *moduleName != '\0')
 	{
 		LSSTRING_CONVERSION;
 		return m_builder.StartNewModule(engine, LST2UTF8(moduleName)) >= 0;
 	}
 
+	GUID guid;
+	::CoCreateGuid(&guid);
 	CStringA mName;
-	SYSTEMTIME st;
-	GetLocalTime(&st);
-	srand(timeGetTime());
-	mName.Format("%04d%02d%02d %02d.%02d.%02d.%d.%03d", //年月日时分秒+3位随机值
-		st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds, rand()%1000);
+	mName.Format("%08X%04X%04X%02X%02X%02X%02X%02X%02X%02X%02X", 
+		guid.Data1, guid.Data2, guid.Data3, 
+		guid.Data4[0], guid.Data4[1], guid.Data4[2], guid.Data4[3], guid.Data4[4], 
+		guid.Data4[5], guid.Data4[6], guid.Data4[7]);
 	return m_builder.StartNewModule(engine, mName) >= 0;
 }
 
@@ -80,6 +94,24 @@ bool CScriptManager::AddScriptFile(LPCTSTR pstrFileName)
 	r = m_builder.AddSectionFromMemory(LST2UTF8(pstrFileName), (const char *)pData, dwSize); assert(r>=0);
 
 	CRenderEngine::FreeMemory(pData); 
+	return r >= 0;
+}
+
+bool CScriptManager::AddScriptCode(LPCTSTR pstrCode)
+{
+	int r = 0;
+
+	GUID guid;
+	::CoCreateGuid(&guid);
+	CStringA sName;
+	sName.Format("%08X%04X%04X%02X%02X%02X%02X%02X%02X%02X%02X", 
+		guid.Data1, guid.Data2, guid.Data3, 
+		guid.Data4[0], guid.Data4[1], guid.Data4[2], guid.Data4[3], guid.Data4[4], 
+		guid.Data4[5], guid.Data4[6], guid.Data4[7]);
+
+	LSSTRING_CONVERSION;
+	const char *pData = LST2UTF8(pstrCode);
+	r = m_builder.AddSectionFromMemory(sName, pData, strlen(pData)); assert(r>=0);
 	return r >= 0;
 }
 

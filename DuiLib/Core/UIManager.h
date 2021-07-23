@@ -604,14 +604,14 @@ namespace DuiLib {
 		//static bool LoadScriptPlugin(LPCTSTR pstrModuleName);
 		static bool LoadScriptPlugin(CREATE_SCRIPT_ENGINE_INSTANCE pFunCreate, DELETE_SCRIPT_ENGINE_INSTANCE pFunDelete);
 
-		IScriptManager *GetScriptEngine(bool bCreateScriptEngine=false);
-		void AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pLanguageType=NULL);
-		bool CompileScript();
-		void *GetScriptFunAddress(LPCTSTR lpszFunName);
-		bool ExecuteScript(void *pFun, CControlUI *pControl);
-		bool ExecuteScript(void *pFun, CControlUI *pControl, TEventUI *ev);
-		bool ExecuteScript(void *pFun, CControlUI *pControl, TNotifyUI *pMsg);
-		bool ExecuteScript(void *pFun, CControlUI *pControl, HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
+		static IScriptManager *GetScriptEngine(bool bCreateScriptEngine=false);
+		static void AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pLanguageType=NULL);
+		static bool CompileScript();
+		static void *GetScriptFunAddress(LPCTSTR lpszFunName);
+		static bool ExecuteScript(void *pFun, CControlUI *pControl);
+		static bool ExecuteScript(void *pFun, CControlUI *pControl, TEventUI *ev);
+		static bool ExecuteScript(void *pFun, CControlUI *pControl, TNotifyUI *pMsg);
+		static bool ExecuteScript(void *pFun, CControlUI *pControl, HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
 	private:
 		static IScriptManager *m_pSharedScriptEngine;
 		static CREATE_SCRIPT_ENGINE_INSTANCE m_funCreateScriptEngine;

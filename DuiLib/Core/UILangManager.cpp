@@ -25,7 +25,7 @@ namespace DuiLib {
 
 	BOOL CLangPackageUI::LoadResource(STRINGorID xml, LPCTSTR type)
 	{
-		CMarkup xmlMarkup;
+		CXmlDocumentUI xmlMarkup;
 		if( HIWORD(xml.m_lpstr) != NULL ) 
 		{
 			if( *(xml.m_lpstr) == _T('<') ) 
@@ -54,59 +54,36 @@ namespace DuiLib {
 			::FreeResource(hResource);
 		}
 
-		return LoadResource(xmlMarkup.GetRoot());
+		return LoadResource(xmlMarkup.root());
 	}
 
-	BOOL CLangPackageUI::LoadResource(CMarkupNode Root)
+	BOOL CLangPackageUI::LoadResource(CXmlNodeUI root)
 	{	
-		if( !Root.IsValid() ) return FALSE;
+		if( !root ) return FALSE;
+
+		CXmlNodeUI nodeLanguage = root.child(_T("Language"));
+		if(!nodeLanguage) return FALSE;
 
 		//加载资源
-		for( CMarkupNode node = Root.GetChild() ; node.IsValid(); node = node.GetSibling() ) 
+		for( CXmlNodeUI node = nodeLanguage.first_child(); node; node = node.next_sibling() ) 
 		{
-			LPCTSTR pstrClass = node.GetName();
-			CMarkupNode ChildNode = node.GetChild();
-			if(ChildNode.IsValid()) LoadResource(node);
-			else if ((_tcsicmp(pstrClass,_T("Text")) == 0) && node.HasAttributes())
+			LPCTSTR pstrClass = node.name();
+			if ((_tcsicmp(pstrClass,_T("Text")) == 0))
 			{
-				LPCTSTR pstrId = NULL;
-				LPCTSTR pstrText = NULL;
-				LPCTSTR pstrToolTip = NULL;
-				LPCTSTR pstrTipValue = NULL;
+				CXmlAttributeUI attrId = node.attribute(_T("id"));
+				if(!attrId) continue;
+				CXmlAttributeUI attrText = node.attribute(_T("text"));
+				CXmlAttributeUI attrToolTip = node.attribute(_T("tooltip"));
+				CXmlAttributeUI attrTipValue = node.attribute(_T("tipvalue"));
 
-				int nAttributes = node.GetAttributeCount();
-				for( int i = 0; i < nAttributes; i++ ) 
-				{
-					LPCTSTR pstrName = node.GetAttributeName(i);
-					LPCTSTR pstrValue = node.GetAttributeValue(i);
-
-					if( _tcsicmp(pstrName, _T("id")) == 0 ) 
-					{
-						pstrId = pstrValue;
-					}
-					else if( _tcsicmp(pstrName, _T("text")) == 0 ) 
-					{
-						pstrText = pstrValue;
-					}
-					else if( _tcsicmp(pstrName, _T("tooltip")) == 0 ) 
-					{
-						pstrToolTip = pstrValue;
-					}
-					else if( _tcsicmp(pstrName, _T("tipvalue")) == 0 ) 
-					{
-						pstrTipValue = pstrValue;
-					}
-				}
-				if( pstrId == NULL) continue;
-
-				if(pstrText != NULL)
-					AddText(_ttoi(pstrId), pstrText);
-				if(pstrToolTip != NULL)
-					AddToolTip(_ttoi(pstrId), pstrToolTip);
-				if(pstrTipValue != NULL)
-					AddTipValue(_ttoi(pstrId), pstrTipValue);
+				int id = attrId.as_int();
+				if(attrText != NULL)
+					AddText(id, attrText.value());
+				if(attrToolTip != NULL)
+					AddToolTip(id, attrToolTip.value());
+				if(attrTipValue != NULL)
+					AddTipValue(id, attrTipValue.value());
 			}
-			else continue;
 		}
 		return TRUE;
 	}
@@ -323,7 +300,7 @@ namespace DuiLib {
 
 	BOOL CLangManagerUI::LoadStringTableResource(STRINGorID xml, LPCTSTR type)
 	{
-		CMarkup xmlMarkup;
+		CXmlDocumentUI xmlMarkup;
 		if( HIWORD(xml.m_lpstr) != NULL ) 
 		{
 			if( *(xml.m_lpstr) == _T('<') ) 
@@ -352,58 +329,39 @@ namespace DuiLib {
 			::FreeResource(hResource);
 		}
 
-		return LoadStringTableResource(xmlMarkup.GetRoot());
+		return LoadStringTableResource(xmlMarkup.root());
 	}
 
-	BOOL CLangManagerUI::LoadStringTableResource(CMarkupNode Root)
+	BOOL CLangManagerUI::LoadStringTableResource(CXmlNodeUI root)
 	{
-		if( !Root.IsValid() ) return FALSE;
+		if( !root ) return FALSE;
+
+		CXmlNodeUI nodeLanguage = root.child(_T("Language"));
+		if(!nodeLanguage) return FALSE;
 
 		//加载StringTable
-		for( CMarkupNode node = Root.GetChild() ; node.IsValid(); node = node.GetSibling() ) 
+		for( CXmlNodeUI node = nodeLanguage.first_child() ; node; node = node.next_sibling() ) 
 		{
-			LPCTSTR pstrClass = node.GetName();
-			CMarkupNode ChildNode = node.GetChild();
-			if(ChildNode.IsValid()) LoadStringTableResource(node);
-			else if ((_tcsicmp(pstrClass,_T("String")) == 0) && node.HasAttributes())
+			LPCTSTR pstrClass = node.name();
+			if ((_tcsicmp(pstrClass,_T("String")) == 0))
 			{
-				LPCTSTR pstrId = NULL;
-				LPCTSTR pstrText1 = NULL;
-				LPCTSTR pstrText2 = NULL;
+				CXmlAttributeUI attrId = node.attribute(_T("id"));
+				CXmlAttributeUI attrText1 = node.attribute(_T("text1"));
+				CXmlAttributeUI attrText2 = node.attribute(_T("text2"));
 
-				int nAttributes = node.GetAttributeCount();
-				for( int i = 0; i < nAttributes; i++ ) 
-				{
-					LPCTSTR pstrName = node.GetAttributeName(i);
-					LPCTSTR pstrValue = node.GetAttributeValue(i);
+				if( !attrId ) continue;
 
-					if( _tcsicmp(pstrName, _T("id")) == 0 ) 
-					{
-						pstrId = pstrValue;
-					}
-					else if( _tcsicmp(pstrName, _T("text1")) == 0 ) 
-					{
-						pstrText1 = pstrValue;
-					}
-					else if( _tcsicmp(pstrName, _T("text2")) == 0 ) 
-					{
-						pstrText2 = pstrValue;
-					}
-				}
-				if( pstrId == NULL) continue;
-
-				int id = _ttoi(pstrId);
+				int id = attrId.as_int();
 				std::map<int, tagStringTable *>::iterator it = m_mStringTable.find(id);
 				if(it == m_mStringTable.end())
 				{
 					tagStringTable *st = new tagStringTable;
 					st->id = id;
-					st->text1 = pstrText1;
-					st->text2 = pstrText2;
+					st->text1 = attrText1.value();
+					st->text2 = attrText2.value();
 					m_mStringTable[id] = st;
 				}
 			}
-			else continue;
 		}
 		return TRUE;
 	}

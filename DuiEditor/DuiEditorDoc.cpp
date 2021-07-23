@@ -33,9 +33,9 @@
 static CString s_defdocument = _T("<Window size=\"400,300\">\r\n\t<VerticalLayout bkcolor=\"0xFFA6CAF0\" />\r\n</Window>");
 
 
-IMPLEMENT_DYNCREATE(CDuiEditorDoc, CDocument)
+IMPLEMENT_DYNCREATE(CDuiEditorDoc, CMyDocument)
 
-BEGIN_MESSAGE_MAP(CDuiEditorDoc, CDocument)
+BEGIN_MESSAGE_MAP(CDuiEditorDoc, CMyDocument)
 	ON_COMMAND(ID_FILE_REOPEN, &CDuiEditorDoc::OnFileReopen)
 	ON_COMMAND(ID_EDIT_INSERT_FONT_NODE, &CDuiEditorDoc::OnEditInsertFont)
 	ON_COMMAND(ID_EDIT_INSERT_STYLE_NODE, &CDuiEditorDoc::OnEditInsertStyleNode)
@@ -85,8 +85,6 @@ CDuiEditorDoc::~CDuiEditorDoc()
 	pMain->m_wndControl.RemoveTreeView(GetUIManager()->GetTreeView());
 	GetUIManager()->_setControllTree(NULL);
 
-	InitFileView(this);
-
 	CUIManager *pUIManager = GetUIManager();
 	if(pUIManager)
 	{
@@ -104,7 +102,7 @@ CDuiEditorDoc::~CDuiEditorDoc()
 
 BOOL CDuiEditorDoc::OnNewDocument()
 {
-	if (!CDocument::OnNewDocument())
+	if (!CMyDocument::OnNewDocument())
 		return FALSE;
 
 	// TODO: 在此添加重新初始化代码
@@ -137,73 +135,10 @@ void CDuiEditorDoc::OnDrawThumbnail(CDC& dc, LPRECT lprcBounds)
 #endif // SHARED_HANDLERS
 
 // CDuiEditorDoc 命令
-void CDuiEditorDoc::OnDocumentEvent(DocumentEvent deEvent)
-{
-	__super::OnDocumentEvent(deEvent);
-
-	switch (deEvent)
-	{
-	case onAfterNewDocument:
-		{
-			break;
-		}
-
-	case onAfterOpenDocument:
-		{
-			InitFileView(NULL);
-			break;
-		}
-
-	case onAfterSaveDocument:
-		{
-			InitFileView(NULL);
-			break;
-		}
-
-	case onAfterCloseDocument:
-		{
-			//InitFileView();
-			break;
-		}
-	}
-}
-
-void CDuiEditorDoc::InitFileView(CDocument *pDocCurrentClose)
-{
-	CDocument *pDoc = NULL;
-	int nCount = 0;
-	POSITION pos = GetDocTemplate()->GetFirstDocPosition();
-	while (pos != NULL)
-	{
-		CDocument *p = GetDocTemplate()->GetNextDoc(pos);
-		if(p != pDocCurrentClose)
-		{
-			pDoc = p;
-			nCount++;
-		}
-	}
-
-	if(pDoc && nCount == 1)
-	{
-		CString strPath;
-		CString strTemp = pDoc->GetPathName();
-		int nPos = strTemp.ReverseFind(_T('\\'));
-		if(nPos != -1)
-		{
-			strPath = strTemp.Left(nPos + 1);
-		}
-
-		if(!strPath.IsEmpty())
-		{
-			((CMainFrame *)AfxGetMainWnd())->m_wndFileView.m_wndFileView.InitFolder(strPath);
-		}
-	}
-}
-
 BOOL CDuiEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
 {
-	//if (!CDocument::OnOpenDocument(lpszPathName))
-	//	return FALSE;
+	if (!CMyDocument::OnOpenDocument(lpszPathName))
+		return FALSE;
 
 	//AfxMessageBox(_T("BOOL CDuiEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)"));
 
@@ -263,32 +198,35 @@ void CDuiEditorDoc::LoadLangPackage(LPCTSTR lpszPathName)
 	if(!g_cfg.bLangManager)
 		return;
 
-	CString langFile;
-	CString strSkinDir = lpszPathName;
-	int nPos = strSkinDir.ReverseFind(_T('\\'));
-	if(nPos != -1)
+	CString projPath = g_proj.GetProjectPath();
+	CString langPath = projPath + g_cfg.strLangPath;
+	if(langPath.GetAt(langPath.GetLength()-1) != _T('\\'))
+		langPath += _T('\\');
+	CString strPathName = lpszPathName;
+	int nFind = strPathName.Find(projPath);
+	if(nFind < 0)
 	{
-		langFile = strSkinDir.Right(strSkinDir.GetLength() - nPos-1);
-		strSkinDir = strSkinDir.Left(nPos + 1);
+		return;
 	}
-	if(strSkinDir.IsEmpty()) return;
-	if(langFile.IsEmpty()) return;
 
-	strSkinDir += g_cfg.strLangPath;
-	strSkinDir += _T("\\");
-	langFile = langFile.Left(langFile.ReverseFind('.')) + _T(".lng");
-
+	//去掉项目路径，留下相对路径
+	CString t1 = strPathName.Right(strPathName.GetLength() - projPath.GetLength());
+// 	int nPos = t1.ReverseFind(_T('\\'));
+// 	CString langFile = t1.Right(t1.GetLength() - nPos-1); //语言包文件名
+// 	langFile = langFile.Left(langFile.ReverseFind('.')) + _T(".lng"); 
+	CString langFile = t1.Left(t1.ReverseFind('.')) + _T(".lng"); 
+	
 	CFileFind finder;
-	BOOL bFind = finder.FindFile(strSkinDir + _T("*.*"));
+	BOOL bFind = finder.FindFile(langPath + _T("*.*"));
 	while (bFind)
 	{
 		bFind = finder.FindNextFile();
 		if(finder.IsDots()) continue;
-		if(finder.IsDirectory())	//是文件夹，检查名称，把里面文件删除
+		if(finder.IsDirectory())	//是文件夹，当成语言包名字
 		{
 			CString lang = finder.GetFileName();
 
-			CString langPathName = strSkinDir + lang + _T("\\") + langFile;
+			CString langPathName = langPath + lang + _T("\\") + langFile;
 			CFileFind finder;
 			if(!finder.FindFile(langPathName))
 			{
@@ -318,28 +256,37 @@ void CDuiEditorDoc::SaveLangPackage(LPCTSTR lpszPathName)
 	if(!g_cfg.bLangManager)
 		return;
 
-	CString langFile;
-	CString strSkinDir = lpszPathName;
-	int nPos = strSkinDir.ReverseFind(_T('\\'));
-	if(nPos != -1)
-	{
-		langFile = strSkinDir.Right(strSkinDir.GetLength() - nPos-1);
-		strSkinDir = strSkinDir.Left(nPos + 1);
-	}
-	if(strSkinDir.IsEmpty()) return;
-	if(langFile.IsEmpty()) return;
+	//创建语言包文件夹：Lang
+	CString projPath = g_proj.GetProjectPath();
+	CString langPath = projPath + g_cfg.strLangPath;
+	//CreateDirectory(langPath, NULL);
+	if(langPath.GetAt(langPath.GetLength()-1) != _T('\\'))
+		langPath += _T('\\');
 
-	strSkinDir += g_cfg.strLangPath;
-	strSkinDir += _T("\\");
-	langFile = langFile.Left(langFile.ReverseFind('.')) + _T(".lng");
+	CString strPathName = lpszPathName;
+	int nFind = strPathName.Find(projPath);
+	if(nFind < 0)
+	{
+		return;
+	}
+
+	//去掉项目路径，留下相对路径
+	CString t1 = strPathName.Right(strPathName.GetLength() - projPath.GetLength());
+
+	int nPos = t1.ReverseFind(_T('\\'));
+
+	CString t2 = t1.Left(nPos + 1); //相对路径
+
+	CString langFile = t1.Right(t1.GetLength() - nPos-1); //语言包文件名
+	langFile = langFile.Left(langFile.ReverseFind('.')) + _T(".lng"); 
 
 	for (int i=0; i<m_mLangPackage.GetSize(); i++)
 	{
 		LPCTSTR key = m_mLangPackage.GetAt(i);
 		xml_document *xml = (xml_document *)m_mLangPackage.Find(key);
-		CString langPath = strSkinDir + key + _T("\\");
-		CreateDirectory(langPath, NULL);
-		xml->save_file(langPath + langFile);
+		CString langFullPath = langPath + key + _T("\\") + t2;
+		CMyFilePath::CreateMuiltDirectory(langFullPath);
+		xml->save_file(langFullPath + langFile);
 	}
 }
 
@@ -351,61 +298,7 @@ void CDuiEditorDoc::OnCloseDocument()
 		g_session.DeleteSession(GetPathName());
 	}
 
-	CDocument::OnCloseDocument();
-	if(pMain->IsClosingNow()) return;
-
-	POSITION pos = ((CDuiEditorApp *)AfxGetApp())->GetFirstDocTemplatePosition();
-	while (pos != NULL)
-	{
-		CDocTemplate *pDocTemplate = ((CDuiEditorApp *)AfxGetApp())->GetNextDocTemplate(pos);			
-		POSITION pos1 = pDocTemplate->GetFirstDocPosition();
-		if(pos1 != NULL)
-		{
-			return;
-		}
-	}
-	//如果没有打开任何文档，左侧切换到文件列表
-	pMain->m_wndFileView.ShowPane(TRUE, FALSE,TRUE);
-
-	//趁这个机会，清理UIManager的静态成员的资源
-	//CPaintManagerUI::Term();
-}
-
-void CDuiEditorDoc::SetModifiedFlag(BOOL bModified)
-{
-	if(m_bModified != bModified)
-	{
-		if(GetPathName().IsEmpty())
-		{
-			m_strMyTitle = m_strDefaultTitle;
-		}
-		else
-		{
-			LPCTSTR lpszPathName = (LPCTSTR)GetPathName();
-
-			// always capture the complete file name including extension (if present)
-			LPTSTR lpszTemp = (LPTSTR)lpszPathName;
-			for (LPCTSTR lpsz = lpszPathName; *lpsz != '\0'; lpsz = _tcsinc(lpsz))
-			{
-				// remember last directory/drive separator
-				if (*lpsz == '\\' || *lpsz == '/' || *lpsz == ':')
-					lpszTemp = (LPTSTR)_tcsinc(lpsz);
-			}
-
-			m_strMyTitle = lpszTemp;
-		}
-
-		if(bModified)
-			SetTitle(m_strMyTitle + " *");
-		else
-			SetTitle(m_strMyTitle);
-	}
-
-	if(bModified)
-	{
-		SaveBackupFile();
-	}
-	__super::SetModifiedFlag(bModified);
+	CMyDocument::OnCloseDocument();
 }
 
 void CDuiEditorDoc::SaveBackupFile()
@@ -421,15 +314,6 @@ void CDuiEditorDoc::SaveBackupFile()
 BOOL CDuiEditorDoc::IsModified()
 {
 	return GetUIManager()->GetCodeView()->GetSciWnd()->sci_GetModify() || m_bModified;
-}
-
-BOOL CDuiEditorDoc::SaveModified()
-{
-	BOOL bRet = CDocument::SaveModified();
-
-	g_session.CloseSession(GetPathName());
-
-	return bRet;
 }
 
 CString CDuiEditorDoc::GetSkinPath()
@@ -704,8 +588,8 @@ void CDuiEditorDoc::OnBuildLangStringTable()
 	file += _T("StringTable");
 
 	static TCHAR BASED_CODE szFilter[] = _T("语言包文件(*.lng)|*.lng||");
-	CFileDialog fileDlg(FALSE, _T("lng"), GetUIManager()->GetManager()->GetResourcePath() + (LPCTSTR)file,  
-		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,szFilter);
+	//CFileDialog fileDlg(FALSE, _T("lng"), GetUIManager()->GetManager()->GetResourcePath() + (LPCTSTR)file, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,szFilter);
+	CFileDialog fileDlg(FALSE, _T("lng"), (LPCTSTR)file, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,szFilter);
 	fileDlg.m_ofn.lStructSize = 88;
 	if(fileDlg.DoModal() != IDOK)	return;
 

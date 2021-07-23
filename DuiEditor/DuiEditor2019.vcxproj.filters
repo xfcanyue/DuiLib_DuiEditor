@@ -474,6 +474,12 @@
     <ClInclude Include="UIWindowDesignView.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="MyDocument.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFilePath.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -687,6 +693,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="UIWindowDesignView.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MyDocument.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFilePath.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

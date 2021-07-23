@@ -472,7 +472,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="disabledimage" default="" type="IMAGE" comment="禁用状态图片" />
 		<Attribute name="nativebkcolor" default="0x00000000" type="DWORD" comment="windows原生edit控件的背景颜色,如(0xFFFFFFFF)" />
 		<Attribute name="nativetextcolor" default="0x00000000" type="DWORD" comment="windows原生edit控件的文字颜色,如(0xFFFFFFFF)" />	
-		<Attribute name="tipvalue" default="" type="STRING" comment="文本框内提示文字，当文本框text为空时显示并失去焦点时显示" />
+		<Attribute name="tipvalue" default="" type="STRING" comment="文本框内提示文字，当文本框text为空并失去焦点时显示" />
 		<Attribute name="tipvaluecolor" default="0xFFBAC0C5" type="DWORD" comment="文本框内提示文字的颜色" />
 	</Edit>
 	<ScrollBar parent="Control" notifies="timer menu scrolled windowinit(root)">
@@ -662,7 +662,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="focusedimage" default="" type="IMAGE" comment="获得焦点状态图片" />
 		<Attribute name="disabledimage" default="" type="IMAGE" comment="禁用状态图片" />
 		<Attribute name="textpadding" default="0,0,0,0" type="RECT" comment="文字显示的边距,如(2,2,2,2)" />
-		<Attribute name="tipvalue" default="" type="STRING" comment="文本框内提示文字，当文本框text为空时显示并失去焦点时显示" />
+		<Attribute name="tipvalue" default="" type="STRING" comment="文本框内提示文字，当文本框text为空并失去焦点时显示" />
 		<Attribute name="tipvaluecolor" default="0xFFBAC0C5" type="DWORD" comment="文本框内提示文字的颜色" />	
 		<Attribute name="autocalcwidth" default="false" type="BOOL" comment="是否自动调整宽度" />
 		<Attribute name="autocalcheight" default="false" type="BOOL" comment="是否自动调整高度" />
@@ -854,6 +854,19 @@ INT类型(最小值，最大值)：
 		<Attribute name="name" default="" type="STRING" comment="控件名字" />		
 		<Attribute name="text" default="" type="STRING" comment="节点显示文本" />		
 	</TreeItem>
+	
+	<TableLayout parent="VerticalLayout">
+		<Attribute name="name" default="" type="STRING" comment="控件名字" />
+	</TableLayout>
+	<TR parent="OptionLayout">
+		<Attribute name="name" default="" type="STRING" comment="控件名字" />
+	</TR>
+	<TD parent="OptionLayout">
+		<Attribute name="name" default="" type="STRING" comment="控件名字" />
+		<Attribute name="align" default="left" type="STRING" value="left,right,center" comment="对齐方式,取值left、right、center" />		
+		<Attribute name="valign" default="vcenter" type="STRING" value="top,bottom,vcenter" comment="对齐方式,取值top,bottom,center" />	
+	</TD>
+	
 	<MsgWnd parent="RichEdit">
 		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
 	</MsgWnd>

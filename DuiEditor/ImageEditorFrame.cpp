@@ -295,7 +295,7 @@ void CImageEditorFrame::OnSelectedFile(LPCTSTR lpstrPathName)
 {
 	CImageEditor *pDlgMain = (CImageEditor *)GetParent();
 
-	CString strDocPath = pDlgMain->GetUIManager()->GetDocument()->GetSkinPath(); //CPaintManagerUI::GetResourcePath();
+	CString strDocPath = g_proj.GetProjectPath();//pDlgMain->GetUIManager()->GetDocument()->GetSkinPath(); //CPaintManagerUI::GetResourcePath();
 	CString strFileName = lpstrPathName;
 	
 	//只能取子目录的文件

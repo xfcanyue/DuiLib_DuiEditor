@@ -19,7 +19,6 @@
 #include "UIManager.h"
 
 #include "DlgTemplateSave.h"
-#include "DlgLangTextEdit.h"
 #include "UIDlgLangTextEdit.h"
 
 #ifdef _DEBUG
@@ -44,10 +43,31 @@ BEGIN_MESSAGE_MAP(CDuiEditorViewDesign, CScrollView)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &CDuiEditorViewDesign::OnUpdateEditPaste)
 	ON_COMMAND(ID_EDIT_CLEAR, &CDuiEditorViewDesign::OnEditClear)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_CLEAR, &CDuiEditorViewDesign::OnUpdateEditClear)
+
 	ON_COMMAND(ID_EDIT_COPY_NAME, &CDuiEditorViewDesign::OnEditCopyName)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_COPY_NAME, &CDuiEditorViewDesign::OnUpdateEditCopyName)
 	ON_COMMAND(ID_EDIT_COPY_NAME_EX, &CDuiEditorViewDesign::OnEditCopyNameEx)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_COPY_NAME_EX, &CDuiEditorViewDesign::OnUpdateEditCopyNameEx)
+
+	ON_COMMAND(ID_EDIT_GENERATE_FINDCONTROL, &CDuiEditorViewDesign::OnEditGenerateCode_FindControl)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_FINDCONTROL, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_FindControl)
+	ON_COMMAND(ID_EDIT_GENERATE_BINDCONTROL, &CDuiEditorViewDesign::OnEditGenerateCode_BindControl)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_BINDCONTROL, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_BindControl)
+
+	ON_COMMAND(ID_EDIT_GENERATE_DDXTEXT, &CDuiEditorViewDesign::OnEditGenerateCode_ddxText)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_DDXTEXT, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_ddxText)
+	ON_COMMAND(ID_EDIT_GENERATE_DDXTEXT, &CDuiEditorViewDesign::OnEditGenerateCode_ddxCheckBox)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_DDXTEXT, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_ddxCheckBox)
+	ON_COMMAND(ID_EDIT_GENERATE_DDXTEXT, &CDuiEditorViewDesign::OnEditGenerateCode_ddxCombo)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_DDXTEXT, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_ddxCombo)
+	ON_COMMAND(ID_EDIT_GENERATE_DDXTEXT, &CDuiEditorViewDesign::OnEditGenerateCode_ddxComboItemData)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_DDXTEXT, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_ddxComboItemData)
+
+	ON_COMMAND(ID_EDIT_GENERATE_ISCONTROL, &CDuiEditorViewDesign::OnEditGenerateCode_IsControl)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_ISCONTROL, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_IsControl)
+	ON_COMMAND(ID_EDIT_GENERATE_ISMENUCOMMAND, &CDuiEditorViewDesign::OnEditGenerateCode_IsMenuCommand)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_ISMENUCOMMAND, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_IsMenuCommand)
+
 	ON_COMMAND_RANGE(ID_TABLAYOUT_SETSEL_00, ID_TABLAYOUT_SETSEL_19, &CDuiEditorViewDesign::OnCommandTabLayoutSetSel)
 	ON_COMMAND(ID_FORMAT_ALIGN_LEFT, &CDuiEditorViewDesign::OnFormatAlignLeft)
 	ON_UPDATE_COMMAND_UI(ID_FORMAT_ALIGN_LEFT, &CDuiEditorViewDesign::OnUpdateFormatAlignLeft)
@@ -195,7 +215,7 @@ void CDuiEditorViewDesign::InitView()
 	GetUIManager()->GetUiFrom()->RemoveAll();
 
 	CDuiEditorDoc *pDoc = GetUIManager()->GetDocument();
-	GetUIManager()->GetManager()->SetResourcePath(pDoc->GetSkinPath());
+	//GetUIManager()->GetManager()->SetResourcePath(pDoc->GetSkinPath());
 
 	CUIBuilder builder;
 	CControlUI* pRoot = builder.Create(pDoc->m_doc, NULL, GetUIManager()->GetManager());
@@ -454,6 +474,25 @@ void CDuiEditorViewDesign::OnUpdateEditClear(CCmdUI *pCmdUI)
 	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
 }
 
+void CDuiEditorViewDesign::CopyToClipboard(LPCTSTR strText)
+{
+	if(OpenClipboard())
+	{
+		EmptyClipboard();
+
+		HGLOBAL clipbuffer = GlobalAlloc(GMEM_DDESHARE,   (_tcslen(strText)+1) * sizeof(TCHAR));
+		TCHAR *buffer = (TCHAR *)GlobalLock(clipbuffer);
+		_tcscpy(buffer, strText);
+		GlobalUnlock(clipbuffer);
+#ifdef _UNICODE
+		SetClipboardData(CF_UNICODETEXT, clipbuffer);
+#else
+		SetClipboardData(CF_TEXT, clipbuffer);
+#endif
+		CloseClipboard();
+	}
+}
+
 void CDuiEditorViewDesign::OnEditCopyName()
 {
 	for (int i=0; i<GetUIManager()->GetUiTracker()->m_arrTracker.GetSize(); i++)
@@ -461,22 +500,7 @@ void CDuiEditorViewDesign::OnEditCopyName()
 		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
 		CString strText = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
 
-		if(OpenClipboard())
-		{
-			EmptyClipboard();
-
-			HGLOBAL clipbuffer = GlobalAlloc(GMEM_DDESHARE,   (strText.GetLength()+1) * sizeof(TCHAR));
-			TCHAR *buffer = (TCHAR *)GlobalLock(clipbuffer);
-			_tcscpy(buffer, strText);
-			GlobalUnlock(clipbuffer);
-#ifdef _UNICODE
-			SetClipboardData(CF_UNICODETEXT, clipbuffer);
-#else
-			SetClipboardData(CF_TEXT, clipbuffer);
-#endif
-			CloseClipboard();
-		}
-
+		CopyToClipboard(strText);
 		break;	//只复制第一个control
 	}
 }
@@ -491,32 +515,240 @@ void CDuiEditorViewDesign::OnEditCopyNameEx()
 	for (int i=0; i<GetUIManager()->GetUiTracker()->m_arrTracker.GetSize(); i++)
 	{
 		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
-		//CString strText = pTrackElem->m_node.attribute(_T("name")).as_string();
 		CString strText = _T("_T(\"");
 		strText += pTrackElem->m_node.attribute(XTEXT("name")).as_string();
 		strText += _T("\")");
 
-		if(OpenClipboard())
-		{
-			EmptyClipboard();
-
-			HGLOBAL clipbuffer = GlobalAlloc(GMEM_DDESHARE,   (strText.GetLength()+1) * sizeof(TCHAR));
-			TCHAR *buffer = (TCHAR *)GlobalLock(clipbuffer);
-			_tcscpy(buffer, strText);
-			GlobalUnlock(clipbuffer);
-#ifdef _UNICODE
-			SetClipboardData(CF_UNICODETEXT, clipbuffer);
-#else
-			SetClipboardData(CF_TEXT, clipbuffer);
-#endif
-			CloseClipboard();
-		}
-
+		CopyToClipboard(strText);
 		break;	//只复制第一个control
 	}
 }
 
 void CDuiEditorViewDesign::OnUpdateEditCopyNameEx(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
+}
+
+void CDuiEditorViewDesign::OnEditGenerateCode_FindControl()
+{
+	//期望创建的程序代码
+	//statc_cast<CControlUI *>(GetManager()->FindControl(_T("..."))
+
+	int count = GetUIManager()->GetUiTracker()->m_arrTracker.GetSize();
+	for (int i=0; i<count; i++)
+	{
+		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
+
+		CString sClassName = _T("C");
+		sClassName += XML2T(pTrackElem->m_node.name());
+		sClassName += _T("UI");
+
+		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
+
+		CString strText;
+		strText.Format(_T("static_cast<%s *>(GetManager()->FindControl(_T(\"%s\")))"), sClassName, sControlName);
+
+		CopyToClipboard(strText);
+		break;	//只复制第一个control
+	}
+}
+
+void CDuiEditorViewDesign::OnUpdateEditGenerateCode_FindControl(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
+}
+
+void CDuiEditorViewDesign::OnEditGenerateCode_BindControl()
+{
+	//期望创建的程序代码
+	//UI_BINDCONTROL(CComboExUI, m_pControl, _T("control_name"));
+
+	CString strMuiltiText;
+
+	int count = GetUIManager()->GetUiTracker()->m_arrTracker.GetSize();
+	for (int i=0; i<count; i++)
+	{
+		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
+
+		CString sClassName = _T("C");
+		sClassName += XML2T(pTrackElem->m_node.name());
+		sClassName += _T("UI");
+
+		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
+
+		CString strText;
+		strText.Format(_T("UI_BINDCONTROL(%s, m_, _T(\"%s\"));\r\n"), sClassName, sControlName);
+		strMuiltiText += strText;
+	}
+
+	CopyToClipboard(strMuiltiText);
+}
+
+void CDuiEditorViewDesign::OnUpdateEditGenerateCode_BindControl(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
+}
+
+void CDuiEditorViewDesign::OnEditGenerateCode_ddxText()
+{
+	//期望创建的程序代码
+	//ddxText(_T("..."), var);
+
+	CString strMuiltiText;
+
+	int count = GetUIManager()->GetUiTracker()->m_arrTracker.GetSize();
+	for (int i=0; i<count; i++)
+	{
+		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
+
+		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
+
+		CString strText;
+		strText.Format(_T("ddxText(_T(\"%s\"), m_obj.);\r\n"), sControlName);
+		strMuiltiText += strText;
+	}
+
+	CopyToClipboard(strMuiltiText);
+}
+
+void CDuiEditorViewDesign::OnUpdateEditGenerateCode_ddxText(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
+}
+
+void CDuiEditorViewDesign::OnEditGenerateCode_ddxCheckBox()
+{
+	//期望创建的程序代码
+	//ddxCheckBox(_T("..."), var);
+
+	CString strMuiltiText;
+
+	int count = GetUIManager()->GetUiTracker()->m_arrTracker.GetSize();
+	for (int i=0; i<count; i++)
+	{
+		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
+
+		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
+
+		CString strText;
+		strText.Format(_T("ddxCheckBox(_T(\"%s\"), m_obj.);\r\n"), sControlName);
+		strMuiltiText += strText;
+	}
+
+	CopyToClipboard(strMuiltiText);
+}
+
+void CDuiEditorViewDesign::OnUpdateEditGenerateCode_ddxCheckBox(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
+}
+
+void CDuiEditorViewDesign::OnEditGenerateCode_ddxCombo()
+{
+	//期望创建的程序代码
+	//ddxCombo(_T("..."), var);
+
+	CString strMuiltiText;
+
+	int count = GetUIManager()->GetUiTracker()->m_arrTracker.GetSize();
+	for (int i=0; i<count; i++)
+	{
+		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
+
+		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
+
+		CString strText;
+		strText.Format(_T("ddxCombo(_T(\"%s\"), m_obj.);\r\n"), sControlName);
+		strMuiltiText += strText;
+	}
+
+	CopyToClipboard(strMuiltiText);
+}
+
+void CDuiEditorViewDesign::OnUpdateEditGenerateCode_ddxCombo(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
+}
+
+void CDuiEditorViewDesign::OnEditGenerateCode_ddxComboItemData()
+{
+	//期望创建的程序代码
+	//ddxComboItemData(_T("..."), var);
+
+	CString strMuiltiText;
+
+	int count = GetUIManager()->GetUiTracker()->m_arrTracker.GetSize();
+	for (int i=0; i<count; i++)
+	{
+		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
+
+		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
+
+		CString strText;
+		strText.Format(_T("ddxComboItemData(_T(\"%s\"), m_obj.);\r\n"), sControlName);
+		strMuiltiText += strText;
+	}
+
+	CopyToClipboard(strMuiltiText);
+}
+
+void CDuiEditorViewDesign::OnUpdateEditGenerateCode_ddxComboItemData(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
+}
+
+void CDuiEditorViewDesign::OnEditGenerateCode_IsControl()
+{
+	//期望创建的程序代码
+	//IsControl(msg, _T("..."));
+
+	CString strMuiltiText;
+
+	int count = GetUIManager()->GetUiTracker()->m_arrTracker.GetSize();
+	for (int i=0; i<count; i++)
+	{
+		if(i > 0) strMuiltiText += _T("\r\nelse ");
+
+		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
+		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
+
+		CString strText;
+		strText.Format(_T("if(IsControl(msg, _T(\"%s\")))\r\n{\r\n}"), sControlName);
+		strMuiltiText += strText;
+	}
+
+	CopyToClipboard(strMuiltiText);
+}
+
+void CDuiEditorViewDesign::OnUpdateEditGenerateCode_IsControl(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
+}
+
+void CDuiEditorViewDesign::OnEditGenerateCode_IsMenuCommand()
+{
+	//期望创建的程序代码
+	//IsMenuCommand(cmd, _T("..."));
+
+	CString strMuiltiText;
+
+	int count = GetUIManager()->GetUiTracker()->m_arrTracker.GetSize();
+	for (int i=0; i<count; i++)
+	{
+		if(i > 0) strMuiltiText += _T("\r\nelse ");
+
+		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
+		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
+
+		CString strText;
+		strText.Format(_T("if(IsMenuCommand(cmd, _T(\"%s\")))\r\n{\r\n}"), sControlName);
+		strMuiltiText += strText;
+	}	
+
+	CopyToClipboard(strMuiltiText);
+}
+
+void CDuiEditorViewDesign::OnUpdateEditGenerateCode_IsMenuCommand(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
 }

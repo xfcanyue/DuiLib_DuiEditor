@@ -70,16 +70,14 @@ BOOL CThreadTest::InitInstance()
 	CString strCmd;
 	if(m_nTestFrom == 0)
 	{
-		CString strPath, strFileName;
-		strPath = g_proj.GetProjectPath();
+		CString strFileName;
 		strFileName = g_proj.GetStartupFile();
-		if(strPath.IsEmpty() || strFileName.IsEmpty())
+		if(strFileName.IsEmpty())
 		{
-			strPath = m_pDoc->GetSkinPath();
-			strFileName = m_pDoc->GetSkinFileName();
+			strFileName = m_pDoc->GetPathName();
 		}
-		strCmd.Format(_T("%s%s \"-f %s%s\" \"-o %d\""), 
-			g_strAppPath, strAppName, strPath, strFileName, hChildStdoutWr);
+		strCmd.Format(_T("%s%s \"-f %s\" \"-o %d\""), 
+			g_strAppPath, strAppName, strFileName, hChildStdoutWr);
 	}
 	else if(m_nTestFrom == 1)
 	{

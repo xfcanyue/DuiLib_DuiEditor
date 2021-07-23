@@ -75,7 +75,6 @@ using namespace DuiLib;
 #include "../3rd/scintilla/include/Scintilla.h"
 #include "../3rd/scintilla/SciWnd.h"
 
-#include "pugixml/pugiconfig.hpp"
 #include "pugixml/pugixml.hpp"
 using namespace pugi;
 #define XML_PARSER_OPTIONS pugi::parse_full//parse_default|parse_declaration|parse_comments

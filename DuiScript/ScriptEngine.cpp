@@ -1,6 +1,8 @@
 #include "StdAfx.h"
 #include "ScriptEngine.h"
 
+#include <sstream>
+
 #include "angelscript/add_on/scriptstdtime/AsTime.h"
 #include "angelscript/add_on/scriptstdtime/scriptstdtime.h"
 #include "angelscript/add_on/scriptmath/scriptmath.h"
@@ -44,13 +46,21 @@ static CDuiString formatdatetime(const CDuiString &strtime, const datetime &dt)
 
 static void ScriptMsgBox(const CDuiString &str)
 {
-	MessageBox(NULL, str, _T("duilib angel script"), MB_OK);
+	MessageBox(NULL, str, _T("duilib angelscript"), MB_OK);
 }
 
 static void ScriptMsgBox(LPCTSTR str)
 {
-	MessageBox(NULL, str, _T("duilib angel script"), MB_OK);
+	MessageBox(NULL, str, _T("duilib angelscript"), MB_OK);
 }
+
+static void ScriptOutputDebugString(CDuiString &str);
+static void ScriptOutputDebugString(int n);
+static void ScriptOutputDebugString(asUINT n);
+static void ScriptOutputDebugString(bool n);
+static void ScriptOutputDebugString(float n);
+static void ScriptOutputDebugString(double n);
+static void ScriptOutputDebugString(datetime &n);
 
 //////////////////////////////////////////////////////////////////////////
 //注册windows消息
@@ -210,7 +220,7 @@ asIScriptEngine *CScriptEngine::GetEngine()
 		Init();
 	return engine;
 }
-
+/*
 void CScriptEngine::MessageCallback(const asSMessageInfo &msg)
 {
 	if( msg.type == asMSGTYPE_ERROR )
@@ -222,7 +232,7 @@ void CScriptEngine::MessageCallback(const asSMessageInfo &msg)
 		MessageBoxA(NULL, LSUTF82A(temp), "Duilib script error", MB_OK);
 	}
 }
-
+*/
 void CScriptEngine::Init()
 {
 	if(engine) return;
@@ -230,7 +240,7 @@ void CScriptEngine::Init()
 	engine = asCreateScriptEngine();
 
 	int r = 0;
-	r = engine->SetMessageCallback(asMETHOD(CScriptEngine, MessageCallback), this, asCALL_THISCALL); assert( r >= 0 );
+	//r = engine->SetMessageCallback(asMETHOD(CScriptEngine, MessageCallback), this, asCALL_THISCALL); assert( r >= 0 );
 
 	//脚本代码的字符编码  0 - ASCII, 1 - UTF8. Default: 1 (UTF8). 
 	r = engine->SetEngineProperty(asEP_SCRIPT_SCANNER, 1); assert( r >= 0 );
@@ -369,6 +379,15 @@ void CScriptEngine::Init()
 	r = engine->RegisterGlobalFunction("void MsgBox(const string &in)", asFUNCTIONPR(ScriptMsgBox, (const CDuiString&), void), asCALL_CDECL); assert( r >= 0 );
 	r = engine->RegisterGlobalFunction("void MsgBox(LPCTSTR)", asFUNCTIONPR(ScriptMsgBox, (LPCTSTR), void), asCALL_CDECL); assert( r >= 0 );
 	
+	//注册调试信息输出函数
+	r = engine->RegisterGlobalFunction("void OutputDebugString(string &in)", asFUNCTIONPR(ScriptOutputDebugString, (CDuiString&), void), asCALL_CDECL); assert( r >= 0 );
+	r = engine->RegisterGlobalFunction("void OutputDebugString(int)", asFUNCTIONPR(ScriptOutputDebugString, (int), void), asCALL_CDECL); assert( r >= 0 );
+	r = engine->RegisterGlobalFunction("void OutputDebugString(uint)", asFUNCTIONPR(ScriptOutputDebugString, (asUINT), void), asCALL_CDECL); assert( r >= 0 );
+	r = engine->RegisterGlobalFunction("void OutputDebugString(bool)", asFUNCTIONPR(ScriptOutputDebugString, (bool), void), asCALL_CDECL); assert( r >= 0 );
+	r = engine->RegisterGlobalFunction("void OutputDebugString(float)", asFUNCTIONPR(ScriptOutputDebugString, (float), void), asCALL_CDECL); assert( r >= 0 );
+	r = engine->RegisterGlobalFunction("void OutputDebugString(double)", asFUNCTIONPR(ScriptOutputDebugString, (double), void), asCALL_CDECL); assert( r >= 0 );
+	r = engine->RegisterGlobalFunction("void OutputDebugString(datetime &in)", asFUNCTIONPR(ScriptOutputDebugString, (datetime&), void), asCALL_CDECL); assert( r >= 0 );
+
 }
 
 void CScriptEngine::reg_GlobalProperty()
@@ -571,5 +590,59 @@ void CScriptEngine::reg_ControlHierarchies()
 	
 }
 
+void ScriptOutputDebugString(CDuiString &str)
+{
+	LSSTRING_CONVERSION;
+	const char *pstr = LST2UTF8(str.GetData());
+	g_ScriptEngine.GetEngine()->WriteMessage("", 0, 0, asMSGTYPE_INFORMATION, pstr);
+}
+
+void ScriptOutputDebugString(int n)
+{
+	ostringstream stream;
+	stream << n; 
+	string str = stream.str();
+	g_ScriptEngine.GetEngine()->WriteMessage("", 0, 0, asMSGTYPE_INFORMATION, str.c_str());
+}
+
+void ScriptOutputDebugString(asUINT n)
+{
+	ostringstream stream;
+	stream << n; 
+	string str = stream.str();
+	g_ScriptEngine.GetEngine()->WriteMessage("", 0, 0, asMSGTYPE_INFORMATION, str.c_str());
+}
+
+void ScriptOutputDebugString(bool n)
+{
+	ostringstream stream;
+	stream << n; 
+	string str = stream.str();
+	g_ScriptEngine.GetEngine()->WriteMessage("", 0, 0, asMSGTYPE_INFORMATION, str.c_str());
+}
+
+void ScriptOutputDebugString(float n)
+{
+	ostringstream stream;
+	stream << n; 
+	string str = stream.str();
+	g_ScriptEngine.GetEngine()->WriteMessage("", 0, 0, asMSGTYPE_INFORMATION, str.c_str());
+}
+
+void ScriptOutputDebugString(double n)
+{
+	ostringstream stream;
+	stream << n; 
+	string str = stream.str();
+	g_ScriptEngine.GetEngine()->WriteMessage("", 0, 0, asMSGTYPE_INFORMATION, str.c_str());
+}
+
+void ScriptOutputDebugString(datetime &n)
+{
+	ostringstream stream;
+	stream << n.Format("%Y-%m-%d %H:%M:%S"); 
+	string str = stream.str();
+	g_ScriptEngine.GetEngine()->WriteMessage("", 0, 0, asMSGTYPE_INFORMATION, str.c_str());
+}
 
 } //namespace DuiLib

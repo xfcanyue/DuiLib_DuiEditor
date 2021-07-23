@@ -275,6 +275,24 @@ CDocTemplate *CDuiEditorApp::GetScriptDocTemplate()
 	}
 	return NULL;
 }
+
+int CDuiEditorApp::GetOpenDocumentCount()
+{
+	int count = 0;
+	POSITION posTemplate = GetFirstDocTemplatePosition();
+	while (posTemplate != NULL)
+	{
+		CDocTemplate *pDocTemplate = GetNextDocTemplate(posTemplate);			
+		POSITION posDocument = pDocTemplate->GetFirstDocPosition();
+		while(posDocument != NULL)
+		{
+			CDocument* pDoc = pDocTemplate->GetNextDoc(posDocument);
+			count++;
+		}
+	}
+	return count;
+}
+
 // CDuiEditorApp 消息处理程序
 
 

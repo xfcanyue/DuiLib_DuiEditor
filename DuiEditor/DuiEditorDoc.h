@@ -2,9 +2,10 @@
 // DuiEditorDoc.h : CDuiEditorDoc 类的接口
 //
 #pragma once
+#include "MyDocument.h"
 
 class CUIManager;
-class CDuiEditorDoc : public CDocument
+class CDuiEditorDoc : public CMyDocument
 {
 protected: // 仅从序列化创建
 	CDuiEditorDoc();
@@ -32,8 +33,6 @@ public:
 	CString GetSkinPath();
 	CString GetSkinFileName();
 
-	void InitFileView(CDocument *pDocCurrentClose);
-
 	void LoadLangPackage(LPCTSTR lpszPathName);
 	void SaveLangPackage(LPCTSTR lpszPathName);
 
@@ -49,20 +48,15 @@ public:
 public:
 	virtual ~CDuiEditorDoc();
 
-private:
-	CString m_strDefaultTitle;
 // 生成的消息映射函数
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
-	virtual void OnDocumentEvent(DocumentEvent deEvent);
 	virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
 	virtual BOOL OnSaveDocument(LPCTSTR lpszPathName);
 	virtual void OnCloseDocument();
-	virtual void SetModifiedFlag(BOOL bModified = TRUE);
 	virtual BOOL IsModified();
-	virtual BOOL SaveModified();
-	void SaveBackupFile();
+	virtual void SaveBackupFile();
 	afx_msg void OnFileReopen();	
 	afx_msg void OnEditInsertFont();
 	afx_msg void OnEditInsertDefault();

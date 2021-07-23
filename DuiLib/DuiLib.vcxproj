@@ -1063,9 +1063,11 @@
     <ClCompile Include="Core\UIDlgBuilder.cpp" />
     <ClCompile Include="Core\UILangManager.cpp" />
     <ClCompile Include="Core\UIManager.cpp" />
-    <ClCompile Include="Core\UIMarkup.cpp" />
     <ClCompile Include="Core\UIRender.cpp" />
     <ClCompile Include="Core\UIResourceManager.cpp" />
+    <ClCompile Include="Core\UIXmlAttribute.cpp" />
+    <ClCompile Include="Core\UIXmlDocument.cpp" />
+    <ClCompile Include="Core\UIXmlNode.cpp" />
     <ClCompile Include="Layout\UIAnimationTabLayout.cpp" />
     <ClCompile Include="Layout\UIButtonLayout.cpp" />
     <ClCompile Include="Layout\UIChildLayout.cpp" />
@@ -1074,6 +1076,7 @@
     <ClCompile Include="Layout\UILabelLayout.cpp" />
     <ClCompile Include="Layout\UIOptionLayout.cpp" />
     <ClCompile Include="Layout\UITabLayout.cpp" />
+    <ClCompile Include="Layout\UITableLayout.cpp" />
     <ClCompile Include="Layout\UITileLayout.cpp" />
     <ClCompile Include="Layout\UIVerticalLayout.cpp" />
     <ClCompile Include="StdAfx.cpp">
@@ -1192,9 +1195,11 @@
     <ClInclude Include="Core\UIDlgBuilder.h" />
     <ClInclude Include="Core\UILangManager.h" />
     <ClInclude Include="Core\UIManager.h" />
-    <ClInclude Include="Core\UIMarkup.h" />
     <ClInclude Include="Core\UIRender.h" />
     <ClInclude Include="Core\UIResourceManager.h" />
+    <ClInclude Include="Core\UIXmlAttribute.h" />
+    <ClInclude Include="Core\UIXmlDocument.h" />
+    <ClInclude Include="Core\UIXmlNode.h" />
     <ClInclude Include="Layout\UIAnimationTabLayout.h" />
     <ClInclude Include="Layout\UIButtonLayout.h" />
     <ClInclude Include="Layout\UIChildLayout.h" />
@@ -1203,6 +1208,7 @@
     <ClInclude Include="Layout\UILabelLayout.h" />
     <ClInclude Include="Layout\UIOptionLayout.h" />
     <ClInclude Include="Layout\UITabLayout.h" />
+    <ClInclude Include="Layout\UITableLayout.h" />
     <ClInclude Include="Layout\UITileLayout.h" />
     <ClInclude Include="Layout\UIVerticalLayout.h" />
     <ClInclude Include="StdAfx.h" />

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Window size="800,658" sizebox="0,0,4,4" caption="0,0,0,20" showshadow="true" shadowsize="2" shadowposition="2,2" shadowcolor="0xFF4B4B4B">
 	<Include source="config.xml" />
-	<script source="script.as" />
 	<VerticalLayout inset="1,1,1,1" bkcolor="0xFFD1E8F5" bordercolor="0xFF969696" bordersize="1">
 		<HorizontalLayout height="20" childpadding="5" childvalign="vcenter" bkcolor="0xFFC0DCC0">
 			<Control width="16" height="16" foreimage="images\ico.jpg" />
@@ -24,8 +23,8 @@
 			<TabCtrl width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="1" text="高级控件" bottombordersize="2" resourceid="2" style="style_option_header" />
 			<TabCtrl width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="2" text="动画控件" bottombordersize="2" resourceid="3" style="style_option_header" />
 			<TabCtrl width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="3" text="键盘" bottombordersize="2" resourceid="4" style="style_option_header" />
-			<TabCtrl width="100" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="4" text="表格(MFC)" pos="0,0,100,0" bottombordersize="2" resourceid="5" style="style_option_header" />
-			<TabCtrl width="100" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="5" text="表格(CGridUI)" pos="0,0,100,0" bottombordersize="2" style="style_option_header" />
+			<TabCtrl width="100" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="4" text="表格(MFC)" bottombordersize="2" resourceid="5" style="style_option_header" />
+			<TabCtrl width="100" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="5" text="表格(CGridUI)" bottombordersize="2" style="style_option_header" />
 			<TabCtrl width="80" selectedtextcolor="0xFF06A8FF" selectedbordercolor="0xFF06A8FF" group="group_control_type" bindtablayoutname="tab_main" bindtabindex="6" text="代码编辑器" bottombordersize="2" resourceid="6" style="style_option_header" />
 		</HorizontalLayout>
 		<TabLayout name="tab_main" animation="horizontal">
@@ -36,11 +35,11 @@
 				<Label text="列表" height="20" resourceid="8" />
 				<List inset="1,1,1,1" vscrollbar="true" hscrollbar="true" bkcolor="0xFFFFFFFF" bordercolor="0xFFD2D2D2" bordersize="1">
 					<ListHeader bkimage="images\list_header_bg.png">
-						<ListHeaderItem width="100" sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" pos="0,0,100,0" minwidth="80" resourceid="9" text="姓名" />
-						<ListHeaderItem width="100" sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" pos="0,0,100,0" minwidth="80" resourceid="10" text="用户名" />
-						<ListHeaderItem width="100" sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" pos="0,0,100,0" minwidth="80" resourceid="11" text="手机号码" />
-						<ListHeaderItem width="100" sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" pos="0,0,100,0" minwidth="80" resourceid="12" text="固定电话" />
-						<ListHeaderItem width="100" sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" pos="0,0,100,0" minwidth="80" resourceid="13" text="操作" />
+						<ListHeaderItem sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" resourceid="9" text="姓名" />
+						<ListHeaderItem sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" resourceid="10" text="用户名" />
+						<ListHeaderItem sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" resourceid="11" text="手机号码" />
+						<ListHeaderItem sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" resourceid="12" text="固定电话" />
+						<ListHeaderItem sepwidth="1" hotimage="images\list_header_hot.png" pushedimage="images\list_header_pushed.png" sepimage="images\list_header_sep.png" resourceid="13" text="操作" />
 					</ListHeader>
 					<ListContainerElement height="30">
 						<Label text="text1" align="center" resourceid="14" />
@@ -286,12 +285,12 @@
 				<GridCtrl name="gridctrl_1" columncount="6" fixedcolumntext="姓名,用户名,手机号码,固定电话,使用日期" />
 			</VerticalLayout>
 			<VerticalLayout>
-				<Grid name="grid_main" columnwith="150" fitcolumnbytext="true" fitcolumns="false" ascendingimage="file='images\common\list\listhead_arrow.png' source='0,0,18,18' " descendingimage="file='images\common\list\listhead_arrow.png' source='18,0,36,18' " sorticonsize="18,18" fixedcell="childalign=&quot;center&quot; childvalign=&quot;vcenter&quot; bkcolor=&quot;0xFFF0F0F0&quot; " row="selectedbkcolor=&quot;0xFFA6CAF0&quot; hotbkcolor=&quot;0xFFE9E9FF&quot; " cell="selectedbkcolor=&quot;0xFFC0DCC0&quot; hotbkcolor=&quot;0xFFE9E9FF&quot; childalign=&quot;center&quot; childvalign=&quot;vcenter&quot; " edit="align=&quot;center&quot; valign=&quot;center&quot; " checkbox="width=&quot;18&quot; height=&quot;16&quot; selectedimage=&quot;images\check-select.png&quot; normalimage=&quot;images\check-unselect.png&quot; " combo="dropbuttonsize=&quot;21,21&quot; dropbuttonnormalimage=&quot;file='images\common\combobox\dropbtn.png' source='21,0,42,21' &quot; dropbuttonhotimage=&quot;file='images\common\combobox\dropbtn.png' source='21,0,42,21' &quot; dropbuttonpushedimage=&quot;file='images\common\combobox\dropbtn.png' source='42,0,63,21' &quot; " bkcolor="0xFFFFFFFF">
+				<Grid name="grid_main" columnwith="150" fitcolumnbytext="true" fitcolumns="false" ascendingimage="file='images\common\list\listhead_arrow.png' source='0,0,18,18' " descendingimage="file='images\common\list\listhead_arrow.png' source='18,0,36,18' " sorticonsize="18,18" fixedcell="normalimage=&quot;file='images\common\list\listhead_btn.png' source='14,0,27,32' &quot; hotimage=&quot;file='images\common\list\listhead_btn.png' source='28,0,41,32' &quot; childalign=&quot;center&quot; childvalign=&quot;vcenter&quot; bkcolor=&quot;0xFFF0F0F0&quot; " row="selectedbkcolor=&quot;0xFFA6CAF0&quot; hotbkcolor=&quot;0xFFE9E9FF&quot; " cell="selectedbkcolor=&quot;0xFFC0DCC0&quot; hotbkcolor=&quot;0xFFE9E9FF&quot; childalign=&quot;center&quot; childvalign=&quot;vcenter&quot; " edit="align=&quot;center&quot; valign=&quot;center&quot; " checkbox="width=&quot;18&quot; height=&quot;16&quot; selectedimage=&quot;images\check-select.png&quot; normalimage=&quot;images\check-unselect.png&quot; " combo="dropbuttonsize=&quot;21,21&quot; dropbuttonnormalimage=&quot;file='images\common\combobox\dropbtn.png' source='21,0,42,21' &quot; dropbuttonhotimage=&quot;file='images\common\combobox\dropbtn.png' source='21,0,42,21' &quot; dropbuttonpushedimage=&quot;file='images\common\combobox\dropbtn.png' source='42,0,63,21' &quot; " bkcolor="0xFFFFFFFF">
 					<GridHeader>
 						<GridRow>
 							<GridCell />
 							<GridCell celltype="check" text="单选框" />
-							<GridCell text="文本框" />
+							<GridCell width="300" text="文本框" />
 							<GridCell text="编辑框" />
 							<GridCell text="下拉框" />
 							<GridCell text="日期时间" />

@@ -127,6 +127,10 @@ namespace DuiLib
 				::GetClientRect(m_hWnd, &rcClient);
 				::MoveWindow(m_hwndScintilla, rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height(), TRUE);
 			}
+			else if(uMsg == WM_CONTEXTMENU)
+			{
+				m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_MENU, (WPARAM)m_hwndScintilla, lParam);
+			}
 			else if(uMsg == WM_NOTIFY)
 			{
 				bHandled = TRUE;
@@ -211,6 +215,7 @@ void CSciEditUI::DoInit()
 	execute(SCI_CLEARCMDKEY, (WPARAM)('Y'+(SCMOD_CTRL<<16)), SCI_NULL);
 	execute(SCI_CLEARCMDKEY, (WPARAM)SCK_ESCAPE, SCI_NULL);
 
+	sci_UsePopup(FALSE);
 	//////////////////////////////////////////////////////////////////////////
 	sci_SetMargins(3);
 	SetViewLineNumber();

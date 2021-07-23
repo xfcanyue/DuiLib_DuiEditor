@@ -79,7 +79,7 @@ BOOL CDlgBuildLanguagePackageEx::OnInitDialog()
 	sci.sci_SetText(w.strText.c_str());
 	sci.sci_SetReadOnly(TRUE);
 
-	CString strSkinDir = GetUIManager()->GetDocument()->GetSkinPath();
+	CString strSkinDir = g_proj.GetProjectPath(); //GetUIManager()->GetDocument()->GetSkinPath();
 	if(!strSkinDir.IsEmpty())
 	{
 		strSkinDir += g_cfg.strLangPath;
@@ -91,7 +91,7 @@ BOOL CDlgBuildLanguagePackageEx::OnInitDialog()
 	{
 		bFind = finder.FindNextFile();
 		if(finder.IsDots()) continue;
-		if(finder.IsDirectory())	//是文件夹，检查名称，把里面文件删除
+		if(finder.IsDirectory())	//是文件夹，文件夹就是语言包的名字
 		{
 			CString lang = finder.GetFileName();
 			m_cbLang.AddString(lang);

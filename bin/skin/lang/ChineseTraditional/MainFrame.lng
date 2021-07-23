@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Language>
-	<Text id="1" text="基礎控件" tooltip="這是基礎控件" />
+	<Text id="1" text="這是基礎控件" tooltip="這是基礎控件" />
 	<Text id="2" text="高級控件" />
 	<Text id="3" text="動畫控件" />
 	<Text id="4" text="鍵盤" />

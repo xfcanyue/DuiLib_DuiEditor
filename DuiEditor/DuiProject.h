@@ -1,11 +1,12 @@
 #pragma once
+
 class CDuiProject
 {
 public:
 	CDuiProject(void);
 	~CDuiProject(void);
 
-	void InitProject(LPCTSTR szFolderPath);
+	void InitProject(LPCTSTR lpszPathName);
 	void Save();
 
 	CString GetProjectPath();
@@ -17,7 +18,7 @@ public:
 	BOOL IsLoadedConfig();
 
 private:
-	xml_document projFile;
+	xml_document m_projFile;
 	BOOL m_bHasLoadConfig;
 };
 

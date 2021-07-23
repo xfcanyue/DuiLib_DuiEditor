@@ -48,6 +48,7 @@ public:
 	BOOL IsFixedRow() const;
 	BOOL IsFixedCol() const;
 
+	virtual void SetFixedWidth(int cx);
 	virtual bool IsSelected() const;
 	virtual void Selected(bool bSelected, bool bTriggerEvent=true);
 	virtual bool IsFocused() const;

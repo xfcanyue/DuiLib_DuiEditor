@@ -18,11 +18,8 @@ public:
 	virtual LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
 	virtual void InitWindow();
-	virtual void OnNotifySelectChanged(TNotifyUI& msg);
-	virtual void OnNotifyEndEdit(TNotifyUI& msg);
-
-	void LoadText(LPCTSTR langtype);
-	int InsertGridRow(LPCTSTR attrName, LPCTSTR attrValue);
+	virtual void OnNotifyClick(TNotifyUI& msg);
+	void LoadText(int row, LPCTSTR langtype);
 
 	CGridUI *m_pGrid;
 	CDialog *m_pParentDlg;

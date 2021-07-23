@@ -30,15 +30,26 @@
 #define SCRIPT_DEBUG_SETP_CURSOR	5
 #define SCRIPT_DEBUG_ABORT			6
 
+typedef enum enumUIScriptMsgType
+{
+	usMsg_GoToLine			= 0,	//执行到line行
+	usMsg_CheckBreakPoint	= 1,	//判断当前行是否需要断点
+	usMsg_PrintContext		= 2,	//PrintContext, 通过这个消息获取当前的脚本堆栈内容
+	usMsg_Message			= 3,	//输出文本信息
+	usMsg_RunBegin			= 4,	//脚本开始运行
+	usMsg_RunEnd			= 5,	//脚本正常结束
+	usMsg_RunAbort			= 6		//脚本异常结束
+}UIScriptMsgType;
+
 typedef struct tagScriptMessage
 {
-	//0=GotoLine; 1=CheckBreakPoint; 2=PrintContext; 3=输出信息, 4=开始运行，5=正常结束，6=异常结束, 7=脚本内容, 8=设定入口函数，9=设定入口参数
-	int nType; 
+	UIScriptMsgType type; 
 	int line;
-	const char *lpszNotifyText;
+	bool breakpoint; //从回调函数返回是否断点
+	const char *message;
 	asIScriptContext *ctx;
 }TScriptMessage;
-typedef BOOL(CALLBACK *SCRIPTMESSAGECALLBACK)(TScriptMessage *pScriptMsg, UINT_PTR userdata);
+typedef void(CALLBACK *SCRIPTMESSAGECALLBACK)(TScriptMessage *msg, UINT_PTR userdata);
 
 class IScriptHelper
 {
@@ -46,9 +57,10 @@ public:
 	virtual void SetScriptMessageCallBack(SCRIPTMESSAGECALLBACK pFun, UINT_PTR userdata) = 0;
 	virtual asIScriptEngine *GetEngine() const = 0;
 	//////////////////////////////////////////////////////////////////////////
-	virtual bool CreateModule(LPCTSTR moduleName) = 0;
+	virtual bool CreateModule(LPCTSTR moduleName = NULL) = 0;
 	virtual void DeleteModule() = 0;
 	virtual bool AddScriptFile(LPCTSTR pstrFileName) = 0;
+	virtual bool AddScriptCode(LPCTSTR pstrCode) = 0;
 	virtual bool CompileScript() = 0;
 
 	virtual BOOL IsRunning()			= 0;

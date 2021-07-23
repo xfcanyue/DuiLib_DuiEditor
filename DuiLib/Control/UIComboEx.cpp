@@ -89,10 +89,10 @@ bool CComboExUI::DrawDropButtonImage(HDC hDC, LPCTSTR pStrImage, LPCTSTR pStrMod
 	return CRenderEngine::DrawImageString(hDC, m_pManager, rcButton, rcButton, pStrImage, pStrModify, m_instance);
 }
 
-CControlUI *CComboExUI::AddString(LPCTSTR pstrText, UINT_PTR ptrItemData)
+CControlUI *CComboExUI::AddString(LPCTSTR pstrText, UINT_PTR pItemData)
 {
 	CListLabelElementUI *pLabel = new CListLabelElementUI;
-	pLabel->SetTag(ptrItemData);
+	pLabel->SetTag(pItemData);
 	pLabel->SetText(pstrText);
 	if(!Add(pLabel))
 	{

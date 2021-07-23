@@ -19,6 +19,9 @@ CScriptHelper::CScriptHelper(void)
 	m_lastCommandAtStackLevel = 0;
 	m_lastLine = 0;
 
+	m_pFun = NULL;
+	m_pUser = 0;
+
 	m_hEventDebug = CreateEvent(NULL, TRUE, FALSE, NULL);
 	ResetEvent(m_hEventDebug);
 }
@@ -55,23 +58,25 @@ void CScriptHelper::AddCommand(int nCmd, int line)
 BOOL CScriptHelper::CheckBreakPoint(int line)
 {
 	tagScriptMessage msg;
-	msg.nType = 1;
+	msg.type = usMsg_CheckBreakPoint;
 	msg.line = line;
-	return CallMessageCallback(&msg);
+	msg.breakpoint = false;
+	CallMessageCallback(&msg);
+	return msg.breakpoint;
 }
 
-BOOL CScriptHelper::GotoLine(int line)
+void CScriptHelper::GotoLine(int line)
 {
 	tagScriptMessage msg;
-	msg.nType = 0;
+	msg.type = usMsg_GoToLine;
 	msg.line = line;
-	return CallMessageCallback(&msg);
+	CallMessageCallback(&msg);
 }
 
 void CScriptHelper::PrintContext()
 {
 	tagScriptMessage msg;
-	msg.nType = 2;
+	msg.type = usMsg_PrintContext;
 	msg.line = 0;
 	msg.ctx = ctx;
 	CallMessageCallback(&msg);
@@ -79,28 +84,30 @@ void CScriptHelper::PrintContext()
 
 void CScriptHelper::MessageCallback(const asSMessageInfo &msg)
 {
-	const char *type = "ERR ";
-	if( msg.type == asMSGTYPE_WARNING ) 
+	const char *type = "\0";
+	if( msg.type == asMSGTYPE_ERROR )
+		type = "ERR : ";
+	else if( msg.type == asMSGTYPE_WARNING ) 
 	{
-		type = "WARN";
+		type = "WARN : ";
 	}
-	else if( msg.type == asMSGTYPE_INFORMATION ) 
-	{
-		type = "INFO";
-	}
+// 	else if( msg.type == asMSGTYPE_INFORMATION ) 
+// 	{
+// 		type = "INFO : ";
+// 	}
 
 	char MsgStr[2048];
 	if(msg.row == 0 && msg.col == 0)
 	{
-		sprintf_s(MsgStr, "%s : %s", type, msg.message);
+		sprintf_s(MsgStr, "%s%s", type, msg.message);
 	}
 	else
-		sprintf_s(MsgStr, "%s (%d, %d) : %s : %s", msg.section, msg.row, msg.col, type, msg.message);
+		sprintf_s(MsgStr, "%s (%d, %d) : %s%s", msg.section, msg.row, msg.col, type, msg.message);
 
 	tagScriptMessage smsg;
-	smsg.nType = 3;
+	smsg.type = usMsg_Message;
 	smsg.line = 0;
-	smsg.lpszNotifyText = MsgStr;
+	smsg.message = MsgStr;
 	CallMessageCallback(&smsg);
 }
 
@@ -164,7 +171,7 @@ UINT CScriptHelper::ThreadFunDebug()
 
 	tagScriptMessage msg;
 	msg.line = 0;
-	msg.lpszNotifyText = NULL;
+	msg.message = NULL;
 
 	int r = 0;
 	r = ctx->Execute();
@@ -172,20 +179,20 @@ UINT CScriptHelper::ThreadFunDebug()
 	if( r == asEXECUTION_FINISHED )
 	{
 		//脚本执行成功
-		msg.nType = 5;
+		msg.type = usMsg_RunEnd;
 		msg.ctx = ctx;
 		CallMessageCallback(&msg);
 	}
 	else
 	{
 		//脚本执行异常
-		msg.nType = 3;
+		msg.type = usMsg_Message;
 
 		char MsgStr[1024];
 		// The execution didn't finish as we had planned. Determine why.
 		if( r == asEXECUTION_ABORTED )
 		{
-			msg.lpszNotifyText = "The script was aborted.";
+			msg.message = "The script was aborted.";
 		}
 		else if( r == asEXECUTION_EXCEPTION )
 		{
@@ -197,17 +204,17 @@ UINT CScriptHelper::ThreadFunDebug()
 				func->GetScriptSectionName(),
 				ctx->GetExceptionLineNumber(),
 				ctx->GetExceptionString());
-			msg.lpszNotifyText = MsgStr;
+			msg.message = MsgStr;
 		}
 		else
 		{
 			sprintf_s(MsgStr, "The script ended for some unforeseen reason: %d", r);
-			msg.lpszNotifyText = MsgStr;
+			msg.message = MsgStr;
 		}
 
 		CallMessageCallback(&msg);
 
-		msg.nType = 6; 
+		msg.type = usMsg_RunAbort; 
 		CallMessageCallback(&msg);
 	}
 
@@ -229,6 +236,11 @@ void CScriptHelper::DeleteModule()
 bool CScriptHelper::AddScriptFile(LPCTSTR pstrFileName)
 {
 	return CScriptManager::AddScriptFile(pstrFileName);
+}
+
+bool CScriptHelper::AddScriptCode(LPCTSTR pstrCode)
+{
+	return CScriptManager::AddScriptCode(pstrCode);
 }
 
 bool CScriptHelper::CompileScript()

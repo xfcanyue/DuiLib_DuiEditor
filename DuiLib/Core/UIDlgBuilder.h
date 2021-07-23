@@ -21,15 +21,11 @@ namespace DuiLib {
 		CControlUI* Create(IDialogBuilderCallback* pCallback = NULL, CPaintManagerUI* pManager = NULL,
 			CControlUI* pParent = NULL, CLangPackageUI *pkg = NULL);
 
-		CMarkup* GetMarkup();
-
-		void GetLastErrorMessage(LPTSTR pstrMessage, SIZE_T cchMax) const;
-		void GetLastErrorLocation(LPTSTR pstrSource, SIZE_T cchMax) const;
 	    void SetInstance(HINSTANCE instance){ m_instance = instance;};
 	private:
-		CControlUI* _Parse(CMarkupNode* parent, CControlUI* pParent = NULL, CPaintManagerUI* pManager = NULL, CLangPackageUI *pkg = NULL);
+		CControlUI* _Parse(CXmlNodeUI root, CControlUI* pParent = NULL, CPaintManagerUI* pManager = NULL, CLangPackageUI *pkg = NULL);
 
-		CMarkup m_xml;
+		CXmlDocumentUI m_xml;
 		IDialogBuilderCallback* m_pCallback;
 		LPCTSTR m_pstrtype;
     	HINSTANCE m_instance;

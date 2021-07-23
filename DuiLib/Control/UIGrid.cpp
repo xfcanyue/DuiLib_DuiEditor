@@ -9,11 +9,14 @@ IMPLEMENT_DUICONTROL(CGridUI)
 
 CGridUI::CGridUI(void)
 {
-	memset(m_mapColumnWidth, 0, MAX_GRID_COLUMN_COUNT*sizeof(int));
-	memset(m_mapColWidthFixed, 0, MAX_GRID_COLUMN_COUNT*sizeof(int));
 	for (int i=0; i<MAX_GRID_COLUMN_COUNT; i++)
+	{
+		m_mapColumnWidth[i] = 0;
+		m_mapColWidthFixed[i] = 0;
 		m_mapColumnCellType[i] = celltypeText;
-	memset(m_mapColumnSort, TRUE, MAX_GRID_COLUMN_COUNT*sizeof(BOOL));
+		m_mapColumnSort[i] = TRUE;
+	}
+
 	m_nColCount = 0;
 	m_nRowCount = 0;
 	SetInset(CDuiRect(1,1,1,1));
@@ -766,12 +769,12 @@ CGridRowUI *CGridUI::GetRowUI(int row)
 
 	for (int i=0; i<m_pBody->GetCount(); i++)
 	{
-		CGridRowUI *pRowUI = (CGridRowUI *)m_pBody->GetItemAt(i);
+		pRowUI = (CGridRowUI *)m_pBody->GetItemAt(i);
 		if(pRowUI->GetRow() == row)
 			return pRowUI;
 	}
 
-	return pRowUI;
+	return NULL;
 }
 
 BOOL CGridUI::IsFixedRow(int row)

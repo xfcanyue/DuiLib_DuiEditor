@@ -20,7 +20,7 @@ public:
 	virtual bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
 	bool DrawDropButtonImage(HDC hDC, LPCTSTR pStrImage, LPCTSTR pStrModify=NULL);
 
-	CControlUI *AddString(LPCTSTR pstrText, UINT_PTR ptrItemData=0);
+	CControlUI *AddString(LPCTSTR pstrText, UINT_PTR pItemData=0);
 	int DeleteString(LPCTSTR pstrText); //返回删除项的下标
 
 

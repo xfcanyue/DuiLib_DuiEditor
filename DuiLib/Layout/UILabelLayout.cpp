@@ -103,6 +103,12 @@ namespace DuiLib
 
 	SIZE CLabelLayoutUI::EstimateSize(SIZE szAvailable)
 	{
+// 		if(GetCount() > 0)
+// 		{
+// 			//如果有子控件，就按容器的方式调整
+// 			return __super::EstimateSize(szAvailable);
+// 		}
+
 		if (IsAutoCalcWidth()) {
 			CDuiString sText = GetText();
 

@@ -19,6 +19,8 @@ public:
 	PROCESS_INFORMATION m_piProcInfo; 
 	STARTUPINFO m_siStartInfo; 
 
+	// 0 = 工具栏运行
+	// 1 = 文件树运行
 	int m_nTestFrom;
 public:
 	virtual BOOL InitInstance();

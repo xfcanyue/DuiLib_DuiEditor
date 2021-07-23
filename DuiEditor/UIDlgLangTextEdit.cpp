@@ -66,78 +66,76 @@ void CDlgLangTextEditUI::InitWindow()
 {
 	UI_BINDCONTROL(CGridUI, m_pGrid, _T("grid_lang_text"));
 	m_pGrid->SetColumnWidth(1,100);
+	m_pGrid->SetColumnWidth(2,100);
 
 	CStdStringPtrMap *map = &GetUIManager()->GetDocument()->m_mLangPackage;
-	CVerticalLayoutUI *pVerti = (CVerticalLayoutUI *)FindControl(_T("verti_lang_list"));
 	for (int i=0; i<map->GetSize(); i++)
 	{
 		LPCTSTR key = map->GetAt(i);
-		COptionUI *pOpt = new COptionUI;
-		pVerti->Add(pOpt);
-		pOpt->SetText(key);
-		pOpt->SetName(key);
-		pOpt->ApplyAttributeList(_T("opt_lang"));
-	}
 
-	COptionUI *pOpt = (COptionUI *)pVerti->GetItemAt(0);
-	if(pOpt)
-	{
-		pOpt->Selected(true);
+		int row = m_pGrid->InsertRow();
+		m_pGrid->Cell(row,1).SetText(key);
+
+		LoadText(row, key);
 	}
 }
 
-void CDlgLangTextEditUI::OnNotifySelectChanged(TNotifyUI& msg)
+void CDlgLangTextEditUI::OnNotifyClick(TNotifyUI& msg)
 {
-	if(msg.pSender->GetParent() && msg.pSender->GetParent()->GetName() == _T("verti_lang_list"))
+	if(IsControl(msg, _T("btn_ok")))
 	{
-		LoadText(msg.pSender->GetText());
-	}
-}
-
-void CDlgLangTextEditUI::OnNotifyEndEdit(TNotifyUI& msg)
-{
-	if(IsControl(msg, _T("grid_lang_text")))
-	{
-		if(m_currentid == 0) return;
-
-		int row = (int)msg.wParam;
-		int col = (int)msg.lParam;
-		CString attrName = m_pGrid->Cell(row,1).GetText();
-		CString attrValue = m_pGrid->Cell(row,col).GetText();
-
-		xml_document *xml = (xml_document *)GetUIManager()->GetDocument()->m_mLangPackage.Find(m_strCurLangType);
-		if(!xml) return;
-		xml_node root = xml->child("Language");
-		if(!root) return;
-
-		xml_node findNode;
-		for (xml_node node=root.first_child(); node; node=node.next_sibling())
+		CString s1, s2;
+		BOOL bDirty = FALSE;
+		for (int row=1; row<m_pGrid->GetRowCount(); row++)
 		{
+			xml_node node((xml_node_struct *)m_pGrid->GetRowTag(row));
+
 			if(node.attribute("id").as_int() != m_currentid)
-				continue;
+			{
+				node.attribute_auto("id").set_value(m_currentid);
+				bDirty = TRUE;
+			}
 
-			findNode = node;
-			break;
+			s1 = XML2T(node.attribute("text").value());
+			s2 = m_pGrid->Cell(row,3).GetText();
+			if(s1 != s2 )
+			{
+				node.attribute_auto("text").set_value(T2XML(s2));
+				bDirty = TRUE;
+			}
+
+			s1 = XML2T(node.attribute("tooltip").value());
+			s2 = m_pGrid->Cell(row,4).GetText();
+			if(s1 != s2 )
+			{
+				node.attribute_auto("tooltip").set_value(T2XML(s2));
+				bDirty = TRUE;
+			}
+
+			s1 = XML2T(node.attribute("tipvalue").value());
+			s2 = m_pGrid->Cell(row,5).GetText();
+			if(s1 != s2 )
+			{
+				node.attribute_auto("tipvalue").set_value(T2XML(s2));
+				bDirty = TRUE;
+			}
 		}
 
-		//如果语言包中不存在，创建新的Node
-		if(!findNode)
+		if(bDirty)
 		{
-			findNode = root.append_child("Text");
-			findNode.attribute_auto("id").set_value(m_currentid);
+			GetUIManager()->GetDocument()->SetModifiedFlag(TRUE);
 		}
 
-		findNode.attribute_auto(T2XML(attrName)).set_value(T2XML(attrValue));
-		GetUIManager()->GetDocument()->SetModifiedFlag(TRUE);
+		Close(IDOK);
+	}
+	else if(IsControl(msg, _T("btn_cancel")))
+	{
+		Close(IDCANCEL);
 	}
 }
 
-void CDlgLangTextEditUI::LoadText(LPCTSTR langtype)
+void CDlgLangTextEditUI::LoadText(int row, LPCTSTR langtype)
 {
-	m_strCurLangType = langtype;
-	m_pGrid->SetRowCount(1);
-
-	m_currentid = 0;
 	xml_document *xml = (xml_document *)GetUIManager()->GetDocument()->m_mLangPackage.Find(langtype);
 	if(!xml) return;
 	xml_node root = xml->child("Language");
@@ -146,6 +144,7 @@ void CDlgLangTextEditUI::LoadText(LPCTSTR langtype)
 	CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_pFocused;
 	if(!pTrackElem) return;	 
 	CControlUI *pFocus = pTrackElem->m_pControl;
+	xml_node nodeFocus = xml_node((xml_node_struct *)pFocus->GetTag());
 	if(!pFocus) return;
 
 	CString text = XML2T(pTrackElem->m_node.attribute(XTEXT("text")).as_string());
@@ -159,87 +158,36 @@ void CDlgLangTextEditUI::LoadText(LPCTSTR langtype)
 		if(node.attribute("id").as_int() != m_currentid)
 			continue;
 
+		m_pGrid->SetRowTag(row, (UINT_PTR)node.internal_object());
+
 		xml_attribute attrText		= node.attribute("text");
 		xml_attribute attrToolTip	= node.attribute("tooltip");
 		xml_attribute attrTipValue	= node.attribute("tipvalue");
 
-		InsertGridRow(_T("id"), XML2T(node.attribute("id").value()));
+		m_pGrid->Cell(row,2).SetTextN(m_currentid);
+
+		m_pGrid->SetCellType(row, 3, celltypeEdit);
+		m_pGrid->SetCellType(row, 4, celltypeEdit);
+		m_pGrid->SetCellType(row, 5, celltypeEdit);
 
 		if(attrText)
-			InsertGridRow(XML2T(attrText.name()), XML2T(attrText.value()));
-		else if(!text.IsEmpty())
-		{
-			InsertGridRow(_T("text"), text);
-			attrText = node.attribute_auto("text").set_value(T2XML(text));
-			GetUIManager()->GetDocument()->SetModifiedFlag(TRUE);
-		}
+			m_pGrid->Cell(row,3).SetText(XML2T(attrText.value()));
+		else
+			m_pGrid->Cell(row,3).SetText(XML2T(nodeFocus.attribute("text").value()));
 
 		if(attrToolTip)
-			InsertGridRow(XML2T(attrToolTip.name()), XML2T(attrToolTip.value()));
-		else if(!tooltip.IsEmpty())
-		{
-			InsertGridRow(_T("tooltip"), tooltip);
-			attrToolTip = node.attribute_auto("tooltip").set_value(T2XML(tooltip));
-			GetUIManager()->GetDocument()->SetModifiedFlag(TRUE);
-		}
+			m_pGrid->Cell(row,4).SetText(XML2T(attrToolTip.value()));
+		else
+			m_pGrid->Cell(row,4).SetText(XML2T(nodeFocus.attribute("tooltip").value()));
 
 		if(attrTipValue)
-			InsertGridRow(XML2T(attrTipValue.name()), XML2T(attrTipValue.value()));
-		else if(!tipvalue.IsEmpty())
-		{
-			InsertGridRow(_T("tipvalue"), tipvalue);
-			attrTipValue = node.attribute_auto("tipvalue").set_value(T2XML(tipvalue));
-			GetUIManager()->GetDocument()->SetModifiedFlag(TRUE);
-		}
+			m_pGrid->Cell(row,5).SetText(XML2T(attrTipValue.value()));
+		else
+			m_pGrid->Cell(row,5).SetText(XML2T(nodeFocus.attribute("tipvalue").value()));
 
 		bFind = TRUE;
 		break;
 	}
 
-	//语言包中没有找到，载入默认的，并且创建新的节点
-	if(!bFind)
-	{
-		xml_node node = root.append_child("Text");
-		node.attribute_auto("id").set_value(m_currentid);
-
-		CString strID;
-		strID.Format(_T("%d"), m_currentid);
-		InsertGridRow(_T("id"), strID);
-
-		if(!text.IsEmpty())
-		{
-			InsertGridRow(_T("text"), text);
-			node.attribute_auto("text").set_value(T2XML(text));
-		}
-
-		if(!tooltip.IsEmpty())
-		{
-			InsertGridRow(_T("tooltip"), tooltip);
-			node.attribute_auto("tooltip").set_value(T2XML(tooltip));
-		}
-
-		if(!tipvalue.IsEmpty())
-		{
-			InsertGridRow(_T("tipvalue"), tipvalue);
-			node.attribute_auto("tipvalue").set_value(T2XML(tipvalue));
-		}
-
-		GetUIManager()->GetDocument()->SetModifiedFlag(TRUE);
-	}
-
 	m_pGrid->Refresh();
-}
-
-int CDlgLangTextEditUI::InsertGridRow(LPCTSTR attrName, LPCTSTR attrValue)
-{
-	int row = m_pGrid->InsertRow();
-	m_pGrid->SetRowHeight(row, 40);
-	m_pGrid->Cell(row,1).SetText(attrName);
-	m_pGrid->Cell(row,2).SetText(attrValue);
-	if(!CompareString(attrName, _T("id")))
-	{
-		m_pGrid->SetCellType(row,2, celltypeEdit);
-	}
-	m_pGrid->Refresh();
-	return row;
 }

@@ -39,9 +39,9 @@ namespace DuiLib {
 		static bool LoadGifImageFromMemory(const LPBYTE pData, DWORD dwSize, CStdPtrArray &arrImageInfo);
 
 		//载入资源文件到内存中
-		static DWORD CRenderEngine::LoadImage2Memory(const STRINGorID &bitmap, LPCTSTR type, LPBYTE &pData, HINSTANCE instance=NULL);
+		static DWORD LoadImage2Memory(const STRINGorID &bitmap, LPCTSTR type, LPBYTE &pData, HINSTANCE instance=NULL);
 
-		static void  CRenderEngine::FreeMemory(LPBYTE &pData);
+		static void  FreeMemory(LPBYTE &pData);
 
 		static void FreeImage(TImageInfo* bitmap, bool bDelete = true);
 		static TImageInfo* LoadImage(LPCTSTR pStrImage, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL);

@@ -83,53 +83,17 @@ CDuiPropertyFile::~CDuiPropertyFile(void)
 
 BOOL CDuiPropertyFile::LoadPropertyFile()
 {
-	if(!xml.load_file(g_strAppPath + _T("DuiLib.xml"), XML_PARSER_OPTIONS))
+	xml_parse_result ret = xml.load_file(g_strAppPath + _T("DuiLib.xml"), XML_PARSER_OPTIONS);
+	if(ret.status != pugi::status_ok)
 	{
-		AfxMessageBox(_T("载入DuiLib属性文件失败!"));
+		LSSTRING_CONVERSION;
+		CString temp;
+		temp.Format(_T("载入DuiLib属性文件失败!\r\n\r\n解析错误: \r\n位置: %d \r\n错误信息: %s"), 
+			ret.offset, 
+			LSA2T(ret.description()));
+		AfxMessageBox(temp);
 		return FALSE;
 	}
-
-	/* //修改duilib.xml属性文件
-	for (xml_node node=GetRoot().first_child(); node; node=node.next_sibling())
-	{
-		for (xml_node nodeAttr=node.first_child(); nodeAttr; nodeAttr=nodeAttr.next_sibling())
-		{
-			CString attrName = nodeAttr.attribute(_T("name")).as_string();
-			CString attrComment = nodeAttr.attribute(_T("comment")).as_string();
-
-			if(attrName == (_T("bordersize")))
-			{
-				nodeAttr.attribute(_T("default")).set_value(_T("0"));
-			}
-
-// 			if(attrName.Find(_T("image")) >= 0)
-// 			{
-// 				nodeAttr.attribute(_T("type")).set_value(_T("IMAGE"));
-// 			}
-// 
-// 			if(attrName.Find(_T("lign")) >= 0)
-// 			{
-// 				if(attrComment.Find(_T("left")) >= 0)
-// 				{
-// 					if(!nodeAttr.attribute(_T("value")))
-// 					{
-// 						xml_attribute attrValue = nodeAttr.insert_attribute_after(_T("value"), nodeAttr.attribute(_T("type")));
-// 						attrValue.set_value(_T("left,right,center"));
-// 					}
-// 				}
-// 				if(attrComment.Find(_T("top")) >= 0)
-// 				{
-// 					if(!nodeAttr.attribute(_T("value")))
-// 					{
-// 						xml_attribute attrValue = nodeAttr.insert_attribute_after(_T("value"), nodeAttr.attribute(_T("type")));
-// 						attrValue.set_value(_T("top,bottom,center"));
-// 					}
-// 				}
-// 			}
-		}
-	}
-	xml.save_to_default_file();
-	*/
 
 	InitToolBoxIcon();
 	return TRUE;

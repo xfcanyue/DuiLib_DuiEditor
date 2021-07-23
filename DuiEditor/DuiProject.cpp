@@ -1,6 +1,8 @@
 #include "StdAfx.h"
+#include "DuiEditor.h"
 #include "DuiProject.h"
 
+#include "MainFrm.h"
 
 CDuiProject::CDuiProject(void)
 {
@@ -12,37 +14,62 @@ CDuiProject::~CDuiProject(void)
 {
 }
 
-void CDuiProject::InitProject(LPCTSTR szFolderPath)
+void CDuiProject::InitProject(LPCTSTR lpszPathName)
 {
-	CString strPath = szFolderPath;
-	strPath += _T("project.dui");
-	projFile.load_file(strPath);
-	m_bHasLoadConfig = FALSE;
+	CString strPath = lpszPathName;
 
-	xml_attribute attr = projFile.child_auto(XTEXT("Project")).attribute_auto(XTEXT("path"));
-	attr.set_value(T2XML(szFolderPath));
-	Save();
+	//往上级文件夹寻找项目配置，最多回溯5层的文件夹
+	int maxLevel = 5;
+	int times = 1;
+	while(!CMyFilePath::IsFileExist(strPath + _T("project.dui")) && times < maxLevel)
+	{
+		strPath += _T("..\\");
+		times++;
+	}
+
+	if(times >= maxLevel) //如果找不到配置文件，从当前目录创建新的。
+	{
+		strPath = lpszPathName;
+	}
+	else 
+	{
+		strPath = CMyFilePath::Canonicalize(strPath);
+	}
+
+	m_projFile.load_file(strPath + _T("project.dui"));
+	xml_node node = m_projFile.child_auto(XTEXT("Project")).child_auto(XTEXT("ProjectPath"));
+	CString projPath = XML2T(node.text().get());
+	if(projPath.IsEmpty() || strPath.CompareNoCase(projPath) != 0)
+	{
+		node.text().set(T2XML(strPath));
+		Save();
+	}
+		
+	CPaintManagerUI::SetResourcePath(strPath);
+	((CMainFrame *)AfxGetMainWnd())->m_wndFileView.m_wndFileView.InitFolder();
+	SetCurrentDirectory(strPath);
+	m_bHasLoadConfig = FALSE;
 }
 
 void CDuiProject::Save()
 {
-	projFile.save_to_default_file(PUGIXML_TEXT("\t"), format_default, encoding_utf8);
+	m_projFile.save_to_default_file(PUGIXML_TEXT("\t"), format_default, encoding_utf8);
 }
 
 CString CDuiProject::GetProjectPath()
 {
-	return XML2T(projFile.child(XTEXT("Project")).attribute(XTEXT("path")).as_string());
+	return XML2T(m_projFile.child(XTEXT("Project")).child(XTEXT("ProjectPath")).text().get());
 }
 
 CString CDuiProject::GetStartupFile()
 {
-	return XML2T(projFile.child(XTEXT("Project")).child(XTEXT("Startup")).attribute(XTEXT("file")).as_string());
+	return XML2T(m_projFile.child(XTEXT("Project")).child(XTEXT("Startup")).child(XTEXT("File")).text().get());
 }
 
 void CDuiProject::SetStartupFile(LPCTSTR fileName)
 {
-	xml_node node = projFile.child_auto(XTEXT("Project")).child_auto(XTEXT("Startup"));
-	node.attribute_auto(XTEXT("file")).set_value(T2XML(fileName));
+	xml_node node = m_projFile.child_auto(XTEXT("Project")).child_auto(XTEXT("Startup")).child_auto(XTEXT("File"));
+	node.text().set(T2XML(fileName));
 	Save();
 }
 

@@ -12,24 +12,25 @@ class CScriptHelper : public CScriptManager, public IScriptHelper
 {
 public:
 	CScriptHelper(void);
-	~CScriptHelper(void);
+	virtual ~CScriptHelper(void);
 
 	virtual void SetScriptMessageCallBack(SCRIPTMESSAGECALLBACK pFun, UINT_PTR userdata)
 	{
 		m_pFun = pFun;
 		m_pUser = userdata;
 	}
-	BOOL CallMessageCallback(TScriptMessage *msg)
+
+	void CallMessageCallback(TScriptMessage *msg)
 	{
-		if(m_pFun == NULL) return FALSE;
+		if(m_pFun == NULL) return;
 		return (*m_pFun)(msg, m_pUser);
 	}
 
 	void WriteMessage(const char *text)
 	{
 		TScriptMessage msg;
-		msg.nType = 3;
-		msg.lpszNotifyText = text;
+		msg.type = usMsg_Message;
+		msg.message = text;
 		CallMessageCallback(&msg);
 	}
 
@@ -38,6 +39,7 @@ public:
 	virtual bool CreateModule(LPCTSTR moduleName);
 	virtual void DeleteModule();
 	virtual bool AddScriptFile(LPCTSTR pstrFileName);
+	virtual bool AddScriptCode(LPCTSTR pstrCode);
 	virtual bool CompileScript();
 
 	virtual BOOL IsRunning();
@@ -85,7 +87,7 @@ public:
 	void TakeCommands();
 	void AddCommand(int nCmd, int line=0);
 	BOOL CheckBreakPoint(int line);
-	BOOL GotoLine(int line);
+	void GotoLine(int line);
 	void PrintContext();
 
 public:

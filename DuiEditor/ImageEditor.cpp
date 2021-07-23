@@ -129,7 +129,7 @@ void CImageEditor::SetAttributeValue(LPCTSTR szAttribute)
 	}
 
 	//载入图片
-	CString strSkinDir = GetUIManager()->GetDocument()->GetSkinPath();
+	CString strSkinDir = g_proj.GetProjectPath(); //GetUIManager()->GetDocument()->GetSkinPath();
 	CString strPathName = strSkinDir + XML2T(m_nodedata.attribute(XTEXT("file")).value());
 	LoadImageFile(strPathName);
 
@@ -150,7 +150,7 @@ void CImageEditor::SetControlImage(HBITMAP img, RECT rcSource)
 
 void CImageEditor::SetImageFile(LPCTSTR lpstrPathName)
 {
-	CString strDocPath = GetUIManager()->GetDocument()->GetSkinPath(); //CPaintManagerUI::GetResourcePath();
+	CString strDocPath = g_proj.GetProjectPath(); //GetUIManager()->GetDocument()->GetSkinPath(); //CPaintManagerUI::GetResourcePath();
 	CString strFileName = lpstrPathName;
 
 	//只能取子目录的文件

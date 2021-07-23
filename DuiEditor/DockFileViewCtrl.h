@@ -11,7 +11,7 @@ public:
 	CDockFileViewCtrl();
 	virtual ~CDockFileViewCtrl();
 
-	BOOL InitFolder(LPCTSTR szFolderPath);
+	BOOL InitFolder();
 	CString GetItemPath(HTREEITEM htreeItem);
 protected:
 	BOOL GetChildItems(HTREEITEM hParentItem);

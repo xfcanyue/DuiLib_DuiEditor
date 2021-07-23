@@ -450,7 +450,8 @@ CControlUI* CUIBuilder::_Parse(pugi::xml_node root,  CControlUI* pParent, CPaint
 			continue;
 #endif
 		}
-	
+
+		pControl->SetExtraParent(pParent);
 		pControl->SetTag((UINT_PTR)node.internal_object());
 		node.set_tag((UINT_PTR)pControl);
 

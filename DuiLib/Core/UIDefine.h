@@ -362,6 +362,9 @@ protected:                                                                \
 #define  DUI_CTR_TREEBODY               (_T("TreeBody"))
 #define  DUI_CTR_TREEITEM               (_T("TreeItem"))
 
+#define  DUI_CTR_TABLELAYOUT            (_T("TableLayout"))
+#define  DUI_CTR_TABLEROW               (_T("TR"))
+#define  DUI_CTR_TABLECOL               (_T("TD"))
 // #define DUI_CTR_GRIDLIST					(_T("GridList"))
 // #define DUI_CTR_GRIDLISTHEADER				(_T("GridListHeader"))
 // #define DUI_CTR_GRIDLISTBODY				(_T("GridListBody"))

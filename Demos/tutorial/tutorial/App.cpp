@@ -23,17 +23,17 @@ bool CApp::InitInstance(HINSTANCE hInstance)
 	//注册脚本接口
 	DuiScriptRegister();
 
+	//加入脚本文件
+	CPaintManagerUI::AddScriptFile(_T("Script\\Script.as"));
+
+	//编译脚本
+	CPaintManagerUI::CompileScript();
+
 	//语言包路径
 	CLangManagerUI::SetLanguage(_T("Lang\\ChineseSimplified"), _T("chs"));
 
 	//调整DPI时，仅缩放显示图片。
 	//CPaintManagerUI::SetAdjustDPIRecource(false);
-
-// #ifdef _DEBUG
-// 	CPaintManagerUI::LoadScriptPlugin(_T("DuiScript_ud.dll"));
-// #else
-// 	CPaintManagerUI::LoadScriptPlugin(_T("DuiScript_u.dll"));
-// #endif
 
 	//建立主窗口
 	m_pMainWnd = new CMainFrame();

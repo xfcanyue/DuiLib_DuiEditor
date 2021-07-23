@@ -665,7 +665,7 @@ namespace DuiLib
 			SIZE sz = {0};
 			for (int it=0; it<GetCount(); it++)
 			{
-				SIZE szControl = {m_rcInset.left + m_rcInset.right, m_rcInset.top + m_rcInset.bottom};
+				SIZE szControl = {0};
 				CControlUI *pControl = GetItemAt(it);
 				if(!pControl->IsVisible()) continue;
 				szControl = pControl->EstimateSize(szAvailable);

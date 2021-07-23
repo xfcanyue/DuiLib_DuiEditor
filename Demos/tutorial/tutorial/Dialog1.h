@@ -6,7 +6,7 @@ public:
 	virtual ~CDialog1(void);
 
 	virtual LPCTSTR GetWindowClassName() const  { return _T("Dialog1"); }
-	virtual CDuiString GetSkinFile() 			{ return _T("Dialog1.xml"); }
+	virtual CDuiString GetSkinFile() 			{ return _T("XmlFolder\\Dialog1.xml"); }
 
 	virtual void InitWindow();
 	virtual void OnClickOK();

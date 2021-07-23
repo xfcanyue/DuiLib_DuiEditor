@@ -6,6 +6,7 @@
 
 // TODO: 在 STDAFX.H 中
 // 引用任何所需的附加头文件，而不是在此文件中引用
+CString g_strFullPath;
 CString g_strSkinPath;
 CString g_strSkinFile;
 HANDLE g_hOutput = NULL;

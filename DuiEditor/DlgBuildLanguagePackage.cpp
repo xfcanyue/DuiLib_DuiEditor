@@ -96,8 +96,8 @@ void CDlgBuildLanguagePackage::OnBnClickedOk()
 	}
 
 	static TCHAR BASED_CODE szFilter[] = _T("xml(*.xml)|*.xml||");
-	CFileDialog fileDlg(FALSE,_T("xml"), GetUIManager()->GetManager()->GetResourcePath() + _T("lang"),  
-		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,szFilter);
+	//CFileDialog fileDlg(FALSE,_T("xml"), GetUIManager()->GetManager()->GetResourcePath() + _T("lang"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,szFilter);
+	CFileDialog fileDlg(FALSE,_T("xml"), g_proj.GetProjectPath() + _T("lang"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,szFilter);
 	fileDlg.m_ofn.lStructSize = 88;
 	if(fileDlg.DoModal() != IDOK)	return;
 

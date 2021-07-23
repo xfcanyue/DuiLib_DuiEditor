@@ -29,7 +29,7 @@ LRESULT CMainFrame::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CREATE:		
 		DuiWriteConsole(_T("WM_CREATE"));
-		//LoadConfigXml();
+		LoadConfigXml();
 		break;
 	case WM_CLOSE:		
 		DuiWriteConsole(_T("WM_CLOSE"));

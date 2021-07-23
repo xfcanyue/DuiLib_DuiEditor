@@ -4,7 +4,7 @@
 namespace DuiLib
 {
 
-#define MAX_GRID_COLUMN_COUNT	128
+#define MAX_GRID_COLUMN_COUNT	64
 
 
 typedef enum enumGridCellType

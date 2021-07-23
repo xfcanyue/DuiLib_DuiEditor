@@ -433,7 +433,7 @@ int CImageEditorPaneFile::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndList.InitList();
 
 
-	CString strSkinDir = g_pEditorImage->GetUIManager()->GetDocument()->GetSkinPath();
+	CString strSkinDir = g_proj.GetProjectPath();//g_pEditorImage->GetUIManager()->GetDocument()->GetSkinPath();
 	CString strPathName = strSkinDir + XML2T(g_pEditorImage->m_nodedata.attribute(XTEXT("file")).value());
 
 	BOOL bGoToPath = FALSE;

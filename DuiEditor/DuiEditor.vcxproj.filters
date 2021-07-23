@@ -453,9 +453,6 @@
     <ClInclude Include="DockScriptStack.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="DlgLangTextEdit.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="ScriptEditorDocTemplate.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -472,6 +469,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="UIWindowContainer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFilePath.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MyDocument.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -668,9 +671,6 @@
     <ClCompile Include="DockScriptStack.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="DlgLangTextEdit.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="ScriptEditorDocTemplate.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -687,6 +687,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="UIWindowContainer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFilePath.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MyDocument.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

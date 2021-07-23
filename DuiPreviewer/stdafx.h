@@ -49,6 +49,7 @@ using namespace pugi;
 
 #include "LsStringConverter.h"
 
+extern CString g_strFullPath;
 extern CString g_strSkinPath;
 extern CString g_strSkinFile;
 extern HANDLE g_hOutput;

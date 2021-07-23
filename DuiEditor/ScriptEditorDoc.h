@@ -1,8 +1,9 @@
 #pragma once
+#include "MyDocument.h"
 
 // CScriptEditorDoc ÎÄµµ
 
-class CScriptEditorDoc : public CDocument
+class CScriptEditorDoc : public CMyDocument
 {
 	DECLARE_DYNCREATE(CScriptEditorDoc)
 
@@ -11,7 +12,6 @@ public:
 	virtual ~CScriptEditorDoc();
 
 	CMFCPropertyGridCtrl *m_pPropList;
-	CString m_strDefaultTitle;
 	CString m_strSessionFile;
 protected:
 	virtual BOOL OnNewDocument();
@@ -20,9 +20,5 @@ protected:
 public:
 	virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
 	virtual BOOL OnSaveDocument(LPCTSTR lpszPathName);
-	void OnDocumentEvent(DocumentEvent deEvent);
-	void InitFileView(CDocument *pDocCurrentClose);
 	virtual void OnCloseDocument();
-	virtual void SetModifiedFlag(BOOL bModified = TRUE);
-	virtual BOOL SaveModified();
 };

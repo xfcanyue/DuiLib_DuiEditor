@@ -57,8 +57,17 @@ namespace DuiLib {
 	CControlUI* CDialogBuilder::Create(IDialogBuilderCallback* pCallback, CPaintManagerUI* pManager, CControlUI* pParent, CLangPackageUI *pkg)
 	{
 		m_pCallback = pCallback;
-		CMarkupNode root = m_xml.GetRoot();
-		if( !root.IsValid() ) return NULL;
+
+		CXmlNodeUI root;
+		for (CXmlNodeUI node= m_xml.first_child(); node; node=node.next_sibling())
+		{
+			if(node.type() == ui_node_element)
+			{
+				root = node;
+				break;
+			}
+		}
+		if(!root) return NULL;
 
 		if( pManager ) {
 			LPCTSTR pstrClass = NULL;
@@ -66,17 +75,18 @@ namespace DuiLib {
 			LPCTSTR pstrName = NULL;
 			LPCTSTR pstrValue = NULL;
 			LPTSTR pstr = NULL;
-			for( CMarkupNode node = root.GetChild() ; node.IsValid(); node = node.GetSibling() ) {
-				pstrClass = node.GetName();
-				if( _tcsicmp(pstrClass, _T("Image")) == 0 ) {
-					nAttributes = node.GetAttributeCount();
+			for( CXmlNodeUI node = root.first_child() ; node; node = node.next_sibling() ) 
+			{
+				pstrClass = node.name();
+				if( _tcsicmp(pstrClass, _T("Image")) == 0 ) 
+				{
 					LPCTSTR pImageName = NULL;
 					LPCTSTR pImageResType = NULL;
 					bool shared = false;
 					DWORD mask = 0;
-					for( int i = 0; i < nAttributes; i++ ) {
-						pstrName = node.GetAttributeName(i);
-						pstrValue = node.GetAttributeValue(i);
+					for( CXmlAttributeUI attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
+						pstrName = attr.name();
+						pstrValue = attr.value();
 						if( _tcsicmp(pstrName, _T("name")) == 0 ) {
 							pImageName = pstrValue;
 						}
@@ -94,7 +104,6 @@ namespace DuiLib {
 					if( pImageName ) pManager->AddImage(pImageName, pImageResType, mask, false, shared);
 				}
 				else if( _tcsicmp(pstrClass, _T("Font")) == 0 ) {
-					nAttributes = node.GetAttributeCount();
 					int id = -1;
 					LPCTSTR pFontName = NULL;
 					int size = 12;
@@ -103,9 +112,9 @@ namespace DuiLib {
 					bool italic = false;
 					bool defaultfont = false;
 					bool shared = false;
-					for( int i = 0; i < nAttributes; i++ ) {
-						pstrName = node.GetAttributeName(i);
-						pstrValue = node.GetAttributeValue(i);
+					for( CXmlAttributeUI attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
+						pstrName = attr.name();
+						pstrValue = attr.value();
 						if( _tcsicmp(pstrName, _T("id")) == 0 ) {
 							id = _tcstol(pstrValue, &pstr, 10);
 						}
@@ -137,13 +146,12 @@ namespace DuiLib {
 					}
 				}
 				else if( _tcsicmp(pstrClass, _T("Default")) == 0 ) {
-					nAttributes = node.GetAttributeCount();
 					LPCTSTR pControlName = NULL;
 					LPCTSTR pControlValue = NULL;
 					bool shared = false;
-					for( int i = 0; i < nAttributes; i++ ) {
-						pstrName = node.GetAttributeName(i);
-						pstrValue = node.GetAttributeValue(i);
+					for( CXmlAttributeUI attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
+						pstrName = attr.name();
+						pstrValue = attr.value();
 						if( _tcsicmp(pstrName, _T("name")) == 0 ) {
 							pControlName = pstrValue;
 						}
@@ -159,13 +167,12 @@ namespace DuiLib {
 					}
 				}
 				else if( _tcsicmp(pstrClass, _T("Style")) == 0 ) {
-					nAttributes = node.GetAttributeCount();
 					LPCTSTR pName = NULL;
 					LPCTSTR pStyle = NULL;
 					bool shared = false;
-					for( int i = 0; i < nAttributes; i++ ) {
-						pstrName = node.GetAttributeName(i);
-						pstrValue = node.GetAttributeValue(i);
+					for( CXmlAttributeUI attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
+						pstrName = attr.name();
+						pstrValue = attr.value();
 						if( _tcsicmp(pstrName, _T("name")) == 0 ) {
 							pName = pstrValue;
 						}
@@ -181,11 +188,10 @@ namespace DuiLib {
 					}
 				}
 				else if (_tcsicmp(pstrClass, _T("Import")) == 0) {
-					nAttributes = node.GetAttributeCount();
 					LPCTSTR pstrPath = NULL;
-					for (int i = 0; i < nAttributes; i++) {
-						pstrName = node.GetAttributeName(i);
-						pstrValue = node.GetAttributeValue(i);
+					for( CXmlAttributeUI attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
+						pstrName = attr.name();
+						pstrValue = attr.value();
 						if (_tcsicmp(pstrName, _T("fontfile")) == 0) {
 							pstrPath = pstrValue;
 						}
@@ -194,43 +200,42 @@ namespace DuiLib {
 						pManager->AddFontArray(pstrPath);
 					}
 				}
-				else if( _tcsicmp(pstrClass, _T("Script")) == 0 ) 
-				{
-					nAttributes = node.GetAttributeCount();
-					LPCTSTR pstrIncludeFile = NULL;
-					LPCTSTR pstrLanguage = NULL;
-					bool shared = false;
-					for( int i = 0; i < nAttributes; i++ ) 
-					{
-						pstrName = node.GetAttributeName(i);
-						pstrValue = node.GetAttributeValue(i);
-						if( _tcsicmp(pstrName, _T("source")) == 0 ) 
-						{
-							pstrIncludeFile = pstrValue;
-						}
-						else if( _tcsicmp(pstrName, _T("language")) == 0 ) 
-						{
-							pstrLanguage = pstrValue;
-						}
-					}
 
-					if(pstrIncludeFile)
-					{
-						pManager->AddScriptFile(pstrIncludeFile, pstrLanguage);
-					}
-				}
+				//脚本不要在xml中引入，在程序中CPaintManager::AddScriptFile(...);
+// 				else if( _tcsicmp(pstrClass, _T("Script")) == 0 ) 
+// 				{
+// 					LPCTSTR pstrIncludeFile = NULL;
+// 					LPCTSTR pstrLanguage = NULL;
+// 					bool shared = false;
+// 					for( CXmlAttributeUI attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
+// 						pstrName = attr.name();
+// 						pstrValue = attr.value();
+// 						if( _tcsicmp(pstrName, _T("source")) == 0 ) 
+// 						{
+// 							pstrIncludeFile = pstrValue;
+// 						}
+// 						else if( _tcsicmp(pstrName, _T("language")) == 0 ) 
+// 						{
+// 							pstrLanguage = pstrValue;
+// 						}
+// 					}
+// 
+// 					if(pstrIncludeFile)
+// 					{
+// 						pManager->AddScriptFile(pstrIncludeFile, pstrLanguage);
+// 					}
+// 				}
 			}
 
-			pstrClass = root.GetName();
+			pstrClass = root.name();
 			if( _tcsicmp(pstrClass, _T("Window")) == 0 ) 
 			{
 				//if( pManager->GetPaintWindow() ) 
 				if( pManager->GetPaintWindow() && !pManager->IsInitWindowParameter())  //modify by liqs99
 				{
-					int nAttributes = root.GetAttributeCount();
-					for( int i = 0; i < nAttributes; i++ ) {
-						pstrName = root.GetAttributeName(i);
-						pstrValue = root.GetAttributeValue(i);
+					for( CXmlAttributeUI attr = root.first_attribute(); attr; attr=attr.next_attribute() ) {
+						pstrName = attr.name();
+						pstrValue = attr.value();
 						if( _tcsicmp(pstrName, _T("size")) == 0 ) {
 							LPTSTR pstr = NULL;
 							int cx = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
@@ -375,55 +380,42 @@ namespace DuiLib {
 			}
 		}
 
-		pManager->CompileScript();
-		return _Parse(&root, pParent, pManager, pkg);
+		//pManager->CompileScript();
+		return _Parse(root, pParent, pManager, pkg);
 	}
 
-	CMarkup* CDialogBuilder::GetMarkup()
-	{
-		return &m_xml;
-	}
-
-	void CDialogBuilder::GetLastErrorMessage(LPTSTR pstrMessage, SIZE_T cchMax) const
-	{
-		return m_xml.GetLastErrorMessage(pstrMessage, cchMax);
-	}
-
-	void CDialogBuilder::GetLastErrorLocation(LPTSTR pstrSource, SIZE_T cchMax) const
-	{
-		return m_xml.GetLastErrorLocation(pstrSource, cchMax);
-	}
-
-	CControlUI* CDialogBuilder::_Parse(CMarkupNode* pRoot, CControlUI* pParent, CPaintManagerUI* pManager, CLangPackageUI *pkg)
+	CControlUI* CDialogBuilder::_Parse(CXmlNodeUI root, CControlUI* pParent, CPaintManagerUI* pManager, CLangPackageUI *pkg)
 	{
 		IContainerUI* pContainer = NULL;
 		CControlUI* pReturn = NULL;
-		for( CMarkupNode node = pRoot->GetChild() ; node.IsValid(); node = node.GetSibling() ) {
-			LPCTSTR pstrClass = node.GetName();
+		for( CXmlNodeUI node = root.first_child(); node; node = node.next_sibling() ) 
+		{
+			if(node.type() != ui_node_element) continue;
+
+			LPCTSTR pstrClass = node.name();
 			if( _tcsicmp(pstrClass, _T("Image")) == 0 || _tcsicmp(pstrClass, _T("Font")) == 0 \
 				|| _tcsicmp(pstrClass, _T("Default")) == 0 || _tcsicmp(pstrClass, _T("Style")) == 0 \
 				|| _tcsicmp(pstrClass, _T("Script")) == 0) continue;
 
 			CControlUI* pControl = NULL;
 			if (_tcsicmp(pstrClass, _T("Import")) == 0) continue;
-			if( _tcsicmp(pstrClass, _T("Include")) == 0 ) {
-				if( !node.HasAttributes() ) continue;
-				int count = 1;
-				LPTSTR pstr = NULL;
-				TCHAR szValue[500] = { 0 };
-				SIZE_T cchLen = lengthof(szValue) - 1;
-				if ( node.GetAttributeValue(_T("count"), szValue, cchLen) )
-					count = _tcstol(szValue, &pstr, 10);
-				cchLen = lengthof(szValue) - 1;
-				if ( !node.GetAttributeValue(_T("source"), szValue, cchLen) ) continue;
-				for ( int i = 0; i < count; i++ ) {
+			if( _tcsicmp(pstrClass, _T("Include")) == 0 ) 
+			{
+				CXmlAttributeUI attrSource = node.attribute(_T("source"));
+				if(!attrSource) continue;
+
+				CXmlAttributeUI attrCount = node.attribute(_T("count"));
+				int count = attrCount.as_int(1);
+
+				for ( int i = 0; i < count; i++ ) 
+				{
 					CDialogBuilder builder;
 					if( m_pstrtype != NULL ) { // 使用资源dll，从资源中读取
-						WORD id = (WORD)_tcstol(szValue, &pstr, 10); 
+						WORD id = attrSource.as_int(); 
 						pControl = builder.Create((UINT)id, m_pstrtype, m_pCallback, pManager, pParent);
 					}
 					else {
-						pControl = builder.Create((LPCTSTR)szValue, (UINT)0, m_pCallback, pManager, pParent);
+						pControl = builder.Create(attrSource.as_string(), (UINT)0, m_pCallback, pManager, pParent);
 					}
 				}
 				continue;
@@ -454,16 +446,12 @@ namespace DuiLib {
 			//设计器模式创建自定义控件
 			if(pControl == NULL && (CPaintManagerUI::UIDESIGNMODE || CPaintManagerUI::UIDESIGNPREVIEW))
 			{
-				if(node.HasAttribute(_T("custombasedfrom")))
+				CXmlAttributeUI attr = node.attribute(_T("custombasedfrom"));
+				if(attr)
 				{
-					TCHAR szValue[500] = { 0 };
-					SIZE_T cchLen = lengthof(szValue) - 1;
-					if ( node.GetAttributeValue(_T("custombasedfrom"), szValue, cchLen) )
-					{
-						CDuiString strClass;
-						strClass.Format(_T("C%sUI"), szValue);
-						pControl = dynamic_cast<CControlUI*>(CControlFactory::GetInstance()->CreateControl(strClass));
-					}
+					CDuiString strClass;
+					strClass.Format(_T("C%sUI"), attr.value());
+					pControl = dynamic_cast<CControlUI*>(CControlFactory::GetInstance()->CreateControl(strClass));
 				}
 			}
 
@@ -474,14 +462,16 @@ namespace DuiLib {
 				continue;
 			}
 
+			pControl->SetExtraParent(pParent);
+
 			if(pkg)
 			{
 				pControl->SetSkinFile(pkg->GetSkinFile());
 			}
 
 			// Add children
-			if( node.HasChildren() ) {
-				_Parse(&node, pControl, pManager, pkg);
+			if( node.first_child() ) {
+				_Parse(node, pControl, pManager, pkg);
 			}
 			// Attach to parent
 			// 因为某些属性和父窗口相关，比如selected，必须先Add到父窗口
@@ -491,16 +481,19 @@ namespace DuiLib {
 				CTreeNodeUI* pTreeNode = static_cast<CTreeNodeUI*>(pControl->GetInterface(_T("TreeNode")));
 				pTreeView = static_cast<CTreeViewUI*>(pParent->GetInterface(_T("TreeView")));
 				// TreeNode子节点
-				if(pTreeNode != NULL) {
-					if(pParentTreeNode) {
+				if(pTreeNode != NULL) //当前插入TreeNode
+				{
+					if(pParentTreeNode) //父控件是TreeNode，插入子节点
+					{
 						pTreeView = pParentTreeNode->GetTreeView();
-						if(!pParentTreeNode->Add(pTreeNode)) {
+						if(!pParentTreeNode->Add(pTreeNode)) 
+						{
 							delete pTreeNode;
 							pTreeNode = NULL;
 							continue;
 						}
 					}
-					else {
+					else { //父控件是TreeView，在TreeView中插入插入根节点
 						if(pTreeView != NULL) {
 							if(!pTreeView->Add(pTreeNode)) {
 								delete pTreeNode;
@@ -511,7 +504,7 @@ namespace DuiLib {
 					}
 				}
 				// TreeNode子控件
-				else if(pParentTreeNode != NULL) {
+				else if(pParentTreeNode != NULL) { //当前插入的不是TreeNode，但是父控件是TreeNode，需要插入到TreeNode的Hori...容器中
 					pParentTreeNode->GetTreeNodeHoriznotal()->Add(pControl);
 				}
 				// 普通控件
@@ -541,23 +534,19 @@ namespace DuiLib {
 				}
 			}
 			// Process attributes
-			if( node.HasAttributes() ) {
-				TCHAR szValue[500] = { 0 };
-				SIZE_T cchLen = lengthof(szValue) - 1;
-
-				int nAttributes = node.GetAttributeCount();
-
-				//first find style attribute
-				for( int i = 0; i < nAttributes; i++ ) 
+			if( node.first_attribute() ) 
+			{
+				//first find style attribute  先设置style属性
+				CXmlAttributeUI attr = node.attribute(_T("style"));
+				if(attr)
 				{
-					if(_tcsicmp(node.GetAttributeName(i), _T("style")) == 0)
-						pControl->SetAttribute(node.GetAttributeName(i), node.GetAttributeValue(i));
+					pControl->SetAttribute(attr.name(), attr.value());
 				}
 
-				// Set ordinary attributes
-				for( int i = 0; i < nAttributes; i++ ) {
-					if(_tcsicmp(node.GetAttributeName(i), _T("style")) != 0)
-					pControl->SetAttribute(node.GetAttributeName(i), node.GetAttributeValue(i));
+				// Set ordinary attributes， 设置除了style之外的属性
+				for( CXmlAttributeUI attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
+					if(_tcsicmp(attr.name(), _T("style")) != 0)
+						pControl->SetAttribute(attr.name(), attr.value());
 				}
 			}
 			if( pManager ) {

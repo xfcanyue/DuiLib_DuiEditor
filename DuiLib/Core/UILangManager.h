@@ -13,7 +13,7 @@ namespace DuiLib {
 		void SetSkinFile(LPCTSTR lpstrSkinFile);
 		LPCTSTR GetSkinFile();
 		BOOL LoadResource(STRINGorID xml, LPCTSTR type);
-		BOOL LoadResource(CMarkupNode Root);
+		BOOL LoadResource(CXmlNodeUI Root);
 		void ResetResource();
 
 		BOOL AddText(int resid, LPCTSTR lpstrText);
@@ -61,7 +61,7 @@ namespace DuiLib {
 		CLangPackageUI *_addPackage(LPCTSTR lpstrSkinFile);
 		static BOOL LoadStringTable();
 		static BOOL LoadStringTableResource(STRINGorID xml, LPCTSTR type);
-		static BOOL LoadStringTableResource(CMarkupNode Root);
+		static BOOL LoadStringTableResource(CXmlNodeUI root);
 	private:
 		CStdStringPtrMap m_mLangPackage;	//LangPackage
 		CStdStringPtrMap m_mSkinFile;		//所有已加载的xml

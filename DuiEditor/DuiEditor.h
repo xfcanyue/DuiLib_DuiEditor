@@ -18,6 +18,7 @@ extern CString g_strAppPath;							//应用程序路径
 extern CDuiPropertyFile g_duiProp;
 
 #include "SessionList.h"
+#include "MyFilePath.h"
 
 //extern IScriptEngine *g_pScriptEngine;
 //extern IScriptHelper *ScriptHelper;
@@ -84,6 +85,7 @@ inline CString NumberToString(int n)
 	return temp;
 }
 
+
 extern HWND g_hWndMsg;
 #define WM_INSERT_MSG		UIMSG_USER + 345
 inline void InsertMsg(LPCTSTR strLog)
@@ -144,6 +146,7 @@ public:
 
 	CDocTemplate *GetUIDocTemplate();
 	CDocTemplate *GetScriptDocTemplate();
+	int GetOpenDocumentCount();
 // 实现
 	UINT  m_nAppLook;
 	BOOL  m_bHiColorIcons;

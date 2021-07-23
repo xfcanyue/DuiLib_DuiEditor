@@ -12,42 +12,40 @@
 #include <sstream>
 
 #define WM_REFRESH_STACK	UIMSG_USER + 2001
-static BOOL CALLBACK ScriptMessageCallback(TScriptMessage *pMsg, UINT_PTR userdata)
+static void CALLBACK ScriptMessageCallback(TScriptMessage *msg, UINT_PTR userdata)
 {
 	CScriptEditorView *pView = (CScriptEditorView *)userdata;
-	if(pMsg->nType == 0)
+	if(msg->type == usMsg_GoToLine)
 	{
-		int pos1 = pView->sci.sci_PositionFromLine(pMsg->line);
-		int pos2 = pView->sci.sci_GetLineEndPosition(pMsg->line);
+		int pos1 = pView->sci.sci_PositionFromLine(msg->line);
+		int pos2 = pView->sci.sci_GetLineEndPosition(msg->line);
 		pView->sci.sci_SetSel(pos1, pos2);
 	}
-	else if(pMsg->nType == 1)
+	else if(msg->type == usMsg_CheckBreakPoint)
 	{
-		return pView->sci.sci_MarkerGet(pMsg->line) == 1;
+		msg->breakpoint = pView->sci.sci_MarkerGet(msg->line) == 1;
 	}
-	else if(pMsg->nType == 2)
+	else if(msg->type == usMsg_PrintContext)
 	{
-		pView->SendMessage(WM_REFRESH_STACK, (WPARAM)pMsg->ctx, 1);
+		pView->SendMessage(WM_REFRESH_STACK, (WPARAM)msg->ctx, 1);
 	}
-	else if(pMsg->nType == 3)
+	else if(msg->type == usMsg_Message)
 	{
-		InsertMsg(LSA2T(pMsg->lpszNotifyText));
+		InsertMsg(LSA2T(msg->message));
 	}
-	else if(pMsg->nType == 5)
+	else if(msg->type == usMsg_RunEnd)
 	{	
-		InsertMsgV(_T("返回值：%d"), pMsg->ctx->GetReturnDWord());
+		InsertMsgV(_T("返回值：%d"), msg->ctx->GetReturnDWord());
 		int pos = pView->sci.sci_GetCurrentPos();
 		pView->sci.sci_SetSel(-1, pos);
 		pView->SendMessage(WM_REFRESH_STACK, 0, 0);
 	}
-	else if(pMsg->nType == 6)
+	else if(msg->type == usMsg_RunAbort)
 	{	
 		int pos = pView->sci.sci_GetCurrentPos();
 		pView->sci.sci_SetSel(-1, pos);
 		pView->SendMessage(WM_REFRESH_STACK, 0, 0);
 	}
-
-	return TRUE;
 }
 
 static void print(LPCTSTR str)

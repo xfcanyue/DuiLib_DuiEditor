@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window size="607,500">
+	<Font id="1" name="微软雅黑" size="16" default="true" />
+	<VerticalLayout inset="50,1,50,1" bkcolor="0xFFA6CAF0">
+		<TableLayout td="inset=&quot;20,0,20,0&quot; " childpadding="5">
+			<TR bordercolor="0xFF0000FF" bordersize="1">
+				<TD text="text" autocalcwidth="true" />
+				<TD>
+					<Edit bordercolor="0xFFA0A0A4" bordersize="1" />
+				</TD>
+			</TR>
+			<TR>
+				<TD>
+					<Label text="text" bkcolor="0xFFC0DCC0" />
+				</TD>
+			</TR>
+			<TR>
+				<TD>
+					<Label text="text" bkcolor="0xFFC0DCC0" />
+				</TD>
+				<TD>
+					<Edit bordercolor="0xFFA0A0A4" bordersize="1" />
+				</TD>
+			</TR>
+			<TR>
+				<TD>
+					<Label text="text" bkcolor="0xFFC0DCC0" />
+				</TD>
+				<TD>
+					<Edit bordercolor="0xFFA0A0A4" bordersize="1" />
+				</TD>
+			</TR>
+		</TableLayout>
+		<MsgWnd />
+	</VerticalLayout>
+</Window>
