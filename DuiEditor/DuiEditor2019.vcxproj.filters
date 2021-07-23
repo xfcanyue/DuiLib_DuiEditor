@@ -453,9 +453,6 @@
     <ClInclude Include="DockScriptStack.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="DlgLangTextEdit.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="ScriptEditorDocTemplate.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -672,9 +669,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DockScriptStack.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DlgLangTextEdit.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ScriptEditorDocTemplate.cpp">
