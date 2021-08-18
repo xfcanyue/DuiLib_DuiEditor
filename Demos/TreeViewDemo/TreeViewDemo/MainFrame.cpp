@@ -14,6 +14,7 @@ CMainFrame::~CMainFrame(void)
 
 void CMainFrame::InitWindow()
 {
+/*
 	UI_BINDCONTROL(CTreeUI, m_tree, _T("tree_main"));
 	
 	TNodeData* hRoot = m_tree->InsertNode(_T("营销公司"), _T("images/edtico.png"), TNODE_ROOT, TNODE_LAST);
@@ -81,7 +82,7 @@ void CMainFrame::InitWindow()
 // 			}
 // 		}
 	}
-	
+	*/
 	return;
 }
 

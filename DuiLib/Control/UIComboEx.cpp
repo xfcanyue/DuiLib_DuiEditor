@@ -73,19 +73,7 @@ bool CComboExUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
 
 bool CComboExUI::DrawDropButtonImage(HDC hDC, LPCTSTR pStrImage, LPCTSTR pStrModify)
 {
-	RECT rc = m_rcItem;
-	rc.top++;
-	rc.bottom--;
-	rc.right--;
-	rc.left = rc.right - (rc.bottom - rc.top);
-
-	SIZE sz = m_szDropButtonSize;
-	RECT rcButton;
-	rcButton.left = rc.left + (rc.right - rc.left)/2 - sz.cx/2;
-	rcButton.right = rcButton.left + sz.cx;
-	rcButton.top = rc.top + (rc.bottom - rc.top)/2 - sz.cy/2;
-	rcButton.bottom = rcButton.top + sz.cy;
-
+	RECT rcButton = GetDropButtonRect();
 	return CRenderEngine::DrawImageString(hDC, m_pManager, rcButton, rcButton, pStrImage, pStrModify, m_instance);
 }
 
@@ -169,6 +157,24 @@ UINT_PTR CComboExUI::GetCurSelItemData()
 	if(m_iCurSel < 0) return 0;
 	CControlUI* pControl = static_cast<CControlUI*>(m_items[m_iCurSel]);
 	return pControl->GetTag();
+}
+
+void CComboExUI::SetText(LPCTSTR pstrText)
+{
+	if( m_sText == pstrText ) return;
+	m_sText = pstrText;
+
+	for( int it = 0; it < GetCount(); it++ ) {
+		CControlUI* pControl = static_cast<CControlUI*>(GetItemAt(it));
+		if( !pControl->IsVisible() ) continue;
+
+		if(pControl->GetText() == pstrText)
+		{
+			SelectItem(it);
+			return;
+		}
+	}
+	SelectItem(-1);
 }
 
 void CComboExUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
@@ -408,12 +414,14 @@ void CComboExUI::PaintText(HDC hDC)
 	if( m_dwDisabledTextColor == 0 ) m_dwDisabledTextColor = m_pManager->GetDefaultDisabledColor();
 
 	RECT rc = m_rcItem;
+	RECT rcButton = GetDropButtonRect();
+	rc.right = rcButton.left;
+	rc.right -= 1;
+
 	rc.left += m_rcTextPadding.left;
 	rc.right -= m_rcTextPadding.right;
 	rc.top += m_rcTextPadding.top;
 	rc.bottom -= m_rcTextPadding.bottom;
-
-	rc.right -= m_szDropButtonSize.cx + 2;
 
 	CDuiString sText = GetText();
 	DWORD dwTextColor = m_dwTextColor;

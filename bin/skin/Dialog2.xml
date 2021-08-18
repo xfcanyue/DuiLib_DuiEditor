@@ -2,11 +2,8 @@
 <!-- xxxxx -->
 <Window size="740,300" sizebox="4,4,6,6" caption="0,0,0,25" roundcorner="5,5">
 	<Font id="0" name="微软雅黑" size="18" default="true" />
-	<VerticalLayout childalign="center" childvalign="vcenter" bkcolor="0xFFA6CAF0">
-		<HorizontalLayout>
-			<Picture name="pic_1" fileimage="file='images\si-glyph-suitcase-person.svg' dest='0,0,300,300' width='300' height='300' fillcolor='0xFF008000' " framedelay="100" />
-			<Button normalimage="file='images\si-glyph-suitcase-person.svg' dest='50,77,150,177' width='100' height='100' fillcolor='0xFF008000' " />
-			<Button normalimage="file='images\si-glyph-suitcase-person.svg' dest='57,78,185,206' width='128' height='128' fillcolor='0xFF000080' " />
-		</HorizontalLayout>
+	<Style name="style_comboex1" class="ComboEx" shared="true" value="dropbuttonsize=&quot;16,20&quot; dropbuttonnormalimage=&quot;images\common\combobox\下拉控件_默认.png&quot; dropbuttonhotimage=&quot;file='images\common\combobox\下拉控件_滑入.png' &quot; dropbuttonpushedimage=&quot;file='images\common\combobox\下拉控件_点击.png'  &quot; bordercolor=&quot;0xFFD9D9D9&quot; hotbordercolor=&quot;0xFF06A8FF&quot; bordersize=&quot;1&quot; " />
+	<VerticalLayout childalign="center" childvalign="vcenter" bkcolor="0xFFFFFFFF">
+		<ComboEx name="user" type="dropdown" tipvalue="请输入账号" width="300" style="style_comboex1" height="48" font="3" textcolor="0xFF800000" itemfont="3" />
 	</VerticalLayout>
 </Window>

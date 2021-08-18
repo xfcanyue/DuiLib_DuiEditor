@@ -6,6 +6,8 @@ namespace DuiLib
 	IMPLEMENT_DUICONTROL(CTableLayoutUI)
 	CTableLayoutUI::CTableLayoutUI()
 	{
+		m_nDefRowHeight = 30;
+		m_bAutoCalcHeight = true;
 		for (int i=0; i<MAX_TABLE_COLUMN_COUNT; i++)
 		{
 			m_aColWidth[i] = 0;
@@ -259,7 +261,12 @@ namespace DuiLib
 
 	void CTableLayoutUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
-		__super::SetAttribute(pstrName, pstrValue);
+		if( _tcsicmp(pstrName, _T("rowheight")) == 0 )
+		{
+			SetDefRowHeight(_ttoi(pstrValue));
+		}
+		else
+			__super::SetAttribute(pstrName, pstrValue);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -314,6 +321,18 @@ namespace DuiLib
 	void CTRUI::DoInit()
 	{
 
+	}
+
+	SIZE CTRUI::EstimateSize(SIZE szAvailable)
+	{
+		if(GetFixedHeight() == 0 && GetParent() && GetParent()->GetInterface(DUI_CTR_TABLELAYOUT))
+		{
+			SIZE sz = {0};
+			CTableLayoutUI *pTable = (CTableLayoutUI *)GetParent();
+			sz.cy = pTable->GetDefRowHeight();
+			return sz;
+		}
+		return __super::EstimateSize(szAvailable);
 	}
 
 	void CTRUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)

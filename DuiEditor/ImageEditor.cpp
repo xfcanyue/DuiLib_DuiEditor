@@ -277,7 +277,7 @@ CString CImageEditor::GetAttributeValue()
 	}
 	else
 	{
-		strImage = node.attribute(XTEXT("file")).value();
+		strImage = XML2T(node.attribute(XTEXT("file")).value());
 	}
 
 	return strImage;

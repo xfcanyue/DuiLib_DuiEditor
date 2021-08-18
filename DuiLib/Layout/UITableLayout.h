@@ -28,6 +28,9 @@ namespace DuiLib
 		bool IsColAutoCalcWidth(int col) const;
 		void SetColAutoCalcWidth(int col, bool bAutoCalcWidth);
 
+		void SetDefRowHeight(int height)			{ m_nDefRowHeight = height; }
+		int GetDefRowHeight() const					{ return m_nDefRowHeight; }
+
 		virtual void DoInit();
 		void DoEvent(TEventUI& event);
 
@@ -39,6 +42,8 @@ namespace DuiLib
 		int m_aColMinWidth[MAX_TABLE_COLUMN_COUNT];
 		int m_aColMaxWidth[MAX_TABLE_COLUMN_COUNT];
 		bool m_aColAutoCalcWidth[MAX_TABLE_COLUMN_COUNT];
+
+		int   m_nDefRowHeight;				//default row's height
 	};
 
 	//////////////////////////////////////////////////////////////////////////
@@ -58,6 +63,7 @@ namespace DuiLib
 		bool AddAt(CControlUI* pControl, int iIndex);
 
 		virtual void DoInit();
+		virtual SIZE EstimateSize(SIZE szAvailable);
 		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 	};
 
@@ -88,6 +94,7 @@ namespace DuiLib
 		virtual void DoInit();
 		virtual SIZE EstimateSize(SIZE szAvailable);
 		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+
 	};
 }
 #endif // __UIVERTICALLAYOUT_H__

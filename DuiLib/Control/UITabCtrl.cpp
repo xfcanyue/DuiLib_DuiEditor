@@ -49,8 +49,8 @@ namespace DuiLib
 				m_uButtonState |= UISTATE_PUSHED | UISTATE_CAPTURED;
 				Invalidate();
 				Activate();
+				return;
 			}
-			return;
 		}
 
 		__super::DoEvent(event);

@@ -857,6 +857,8 @@ INT类型(最小值，最大值)：
 	
 	<TableLayout parent="VerticalLayout">
 		<Attribute name="name" default="" type="STRING" comment="控件名字" />
+		<Attribute name="rowheight" default="30" type="INT" comment="默认行高" />
+		<Attribute name="autocalcheight" default="true" type="BOOL" comment="根据子控件或者文本等等自动计算高度" />
 	</TableLayout>
 	<TR parent="OptionLayout">
 		<Attribute name="name" default="" type="STRING" comment="控件名字" />

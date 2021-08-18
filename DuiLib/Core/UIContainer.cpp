@@ -103,6 +103,13 @@ namespace DuiLib
 		return m_items.InsertAt(iIndex, pControl);
 	}
 
+	bool CContainerUI::AddAt(CControlUI* pControl,CControlUI* _IndexControl)
+	{
+		int nIndex = GetItemIndex(_IndexControl);
+		if(nIndex < 0) return false;
+		return AddAt(pControl, nIndex);
+	}
+
 	bool CContainerUI::Remove(CControlUI* pControl, bool bDoNotDestroy )
 	{
 		if( pControl == NULL) return false;

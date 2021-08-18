@@ -30,6 +30,8 @@ public:
 	bool SetItemData(CControlUI *pControl, UINT_PTR ptrItemData);
 	UINT_PTR GetCurSelItemData();
 
+	virtual void SetText(LPCTSTR pstrText);
+
 	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 
 	LPCTSTR GetdbNormalImage() const;

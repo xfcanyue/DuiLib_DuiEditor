@@ -206,3 +206,8 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
    4, 修复v2019编译选项/permissive-时，编译失败的问题。微软说，从vs2017 版本15.8 开始 /permissive- 为默认选项。 -_*!!!
    5, 设计器优化语言包文本编辑
    6, 设计器右键菜单增加生成部分常用代码
+
+2021-08-18
+   1, 修复BUG，可编辑的ComboxEx，再选择后，如果把编辑框的文本删了，然后你再去选就选不了。
+   2，TableLayout增加统一设置默认行高。
+   3，简化CDialogBuilder代码，去除builder时TreeNode的特殊代码，修改TreeView的Add/AddAt/Remove。如果有问题，请反馈给我。

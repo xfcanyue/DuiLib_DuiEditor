@@ -16,6 +16,7 @@ namespace DuiLib {
 		virtual int GetCount() const = 0;
 		virtual bool Add(CControlUI* pControl) = 0;
 		virtual bool AddAt(CControlUI* pControl, int iIndex)  = 0;
+		virtual bool AddAt(CControlUI* pControl,CControlUI* _IndexControl) = 0;
 		virtual bool Remove(CControlUI* pControl, bool bDoNotDestroy=false) = 0;
 		virtual bool RemoveAt(int iIndex, bool bDoNotDestroy=false)  = 0;
 		virtual void RemoveAll() = 0;
@@ -44,6 +45,7 @@ namespace DuiLib {
 		int GetCount() const;
 		bool Add(CControlUI* pControl);
 		bool AddAt(CControlUI* pControl, int iIndex);
+		bool AddAt(CControlUI* pControl,CControlUI* _IndexControl);
 		bool Remove(CControlUI* pControl, bool bDoNotDestroy=false);
 		bool RemoveAt(int iIndex, bool bDoNotDestroy=false);
 		void RemoveAll();

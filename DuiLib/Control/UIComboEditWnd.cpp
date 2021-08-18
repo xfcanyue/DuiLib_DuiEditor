@@ -58,6 +58,10 @@ void CComboEditWnd::Init(CComboExUI* pOwner)
 RECT CComboEditWnd::CalPos()
 {
 	CDuiRect rcPos = m_pOwner->GetPos();
+	RECT rcButton = m_pOwner->GetDropButtonRect();
+	rcPos.right = rcButton.left;
+	rcPos.right -= 1;
+
 	RECT rcInset = m_pOwner->GetTextPadding();
 	rcPos.left += rcInset.left;
 	rcPos.top += rcInset.top;
@@ -83,8 +87,6 @@ RECT CComboEditWnd::CalPos()
 		}
 	}
 
-	RECT rcButton = m_pOwner->GetDropButtonRect();
-	rcPos.right -= rcButton.right-rcButton.left;
 
 	return rcPos;
 }
@@ -224,7 +226,7 @@ LRESULT CComboEditWnd::OnEditChanged(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 	ASSERT(pstr);
 	if( pstr == NULL ) return 0;
 	::GetWindowText(m_hWnd, pstr, cchLen);
-	m_pOwner->m_sText = pstr;
+	m_pOwner->SetText(pstr);
 	m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_TEXTCHANGED);
 	if( m_pOwner->GetManager()->IsLayered() ) m_pOwner->Invalidate();
 	return 0;

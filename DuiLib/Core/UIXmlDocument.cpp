@@ -40,17 +40,16 @@ bool CXmlDocumentUI::Load(LPCTSTR pstrXML)
 bool CXmlDocumentUI::LoadFromMem(BYTE* pByte, DWORD dwSize)
 {
 	int x = sizeof(xml_node_struct);
+	LSSTRING_CONVERSION;
 #ifdef _UNICODE
 	xml_parse_result ret = impxmldoc(_xml_document)->load_buffer(pByte, dwSize, pugi::parse_full);
 #else
-	LSSTRING_CONVERSION;
 	const char *pstrAscii = LSUTF82A((const char *)pByte);
 	xml_parse_result ret = impxmldoc(_xml_document)->load_buffer(pstrAscii, strlen(pstrAscii), pugi::parse_full);
 #endif
 
 	if(ret.status != pugi::status_ok)
 	{
-		LSSTRING_CONVERSION;
 		return _Failed(LSA2T(ret.description()));
 	}
 	_root = impxmldoc(_xml_document)->root().internal_object();

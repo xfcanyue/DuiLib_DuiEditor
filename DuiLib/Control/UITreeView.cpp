@@ -53,7 +53,7 @@ namespace DuiLib
 		pHoriz->Add(pFolderButton);
 		pHoriz->Add(pCheckBox);
 		pHoriz->Add(pItemButton);
-		Add(pHoriz);
+		CListContainerElementUI::Add(pHoriz);
 	}
 
 	//************************************
@@ -85,9 +85,14 @@ namespace DuiLib
 	//************************************
 	LPVOID CTreeNodeUI::GetInterface( LPCTSTR pstrName )
 	{
-		if( _tcsicmp(pstrName, _T("TreeNode")) == 0 )
+		if( _tcsicmp(pstrName, DUI_CTR_TREENODE) == 0 )
 			return static_cast<CTreeNodeUI*>(this);
 		return CListContainerElementUI::GetInterface(pstrName);
+	}
+
+	void CTreeNodeUI::SetManager(CPaintManagerUI* pManager, CControlUI* pParent, bool bInit)
+	{
+		__super::SetManager(pManager, pParent, bInit);
 	}
 
 	//************************************
@@ -224,7 +229,8 @@ namespace DuiLib
 		if (NULL != static_cast<CTreeNodeUI*>(_pTreeNodeUI->GetInterface(_T("TreeNode"))))
 			return AddChildNode((CTreeNodeUI*)_pTreeNodeUI);
 
-		return CListContainerElementUI::Add(_pTreeNodeUI);
+		return GetTreeNodeHoriznotal()->Add(_pTreeNodeUI);
+		//return CListContainerElementUI::Add(_pTreeNodeUI);
 	}
 
 	//************************************
@@ -379,8 +385,8 @@ namespace DuiLib
 		if(pTreeView){
 			CTreeNodeUI* pNode = static_cast<CTreeNodeUI*>(mTreeNodes.GetAt(mTreeNodes.GetSize()-1));
 			if(!pNode || !pNode->GetLastNode())
-				nRet = pTreeView->AddAt(_pTreeNodeUI,GetTreeIndex()+1) >= 0;
-			else nRet = pTreeView->AddAt(_pTreeNodeUI,pNode->GetLastNode()->GetTreeIndex()+1) >= 0;
+				nRet = pTreeView->AddAt(_pTreeNodeUI,GetTreeIndex()+1);
+			else nRet = pTreeView->AddAt(_pTreeNodeUI,pNode->GetLastNode()->GetTreeIndex()+1);
 		}
 
 		if(nRet)
@@ -790,7 +796,7 @@ namespace DuiLib
 	//************************************
 	LPVOID CTreeViewUI::GetInterface( LPCTSTR pstrName )
 	{
-		if( _tcsicmp(pstrName, _T("TreeView")) == 0 ) return static_cast<CTreeViewUI*>(this);
+		if( _tcsicmp(pstrName, DUI_CTR_TREEVIEW) == 0 ) return static_cast<CTreeViewUI*>(this);
 		return CListUI::GetInterface(pstrName);
 	}
 
@@ -800,10 +806,11 @@ namespace DuiLib
 	// 参数信息: CTreeNodeUI * pControl
 	// 函数说明: 
 	//************************************
-	bool CTreeViewUI::Add( CTreeNodeUI* pControl )
+	bool CTreeViewUI::Add( CControlUI* pControl1 )
 	{
+		if (!pControl1) return false;
+		CTreeNodeUI *pControl = static_cast<CTreeNodeUI*>(pControl1->GetInterface(DUI_CTR_TREENODE));
 		if (!pControl) return false;
-		if (NULL == static_cast<CTreeNodeUI*>(pControl->GetInterface(_T("TreeNode")))) return false;
 
 		pControl->OnNotify += MakeDelegate(this,&CTreeViewUI::OnDBClickItem);
 		pControl->GetFolderButton()->OnNotify += MakeDelegate(this,&CTreeViewUI::OnFolderChanged);
@@ -841,10 +848,12 @@ namespace DuiLib
 	// 参数信息: int iIndex
 	// 函数说明: 该方法不会将待插入的节点进行缩位处理，若打算插入的节点为非根节点，请使用AddAt(CTreeNodeUI* pControl,CTreeNodeUI* _IndexNode) 方法
 	//************************************
-	long CTreeViewUI::AddAt( CTreeNodeUI* pControl, int iIndex )
+	bool CTreeViewUI::AddAt( CControlUI* pControl1, int iIndex )
 	{
-		if (!pControl) return -1;
-		if (NULL == static_cast<CTreeNodeUI*>(pControl->GetInterface(_T("TreeNode")))) return -1;
+		if (!pControl1) return false;
+		CTreeNodeUI *pControl = static_cast<CTreeNodeUI*>(pControl1->GetInterface(DUI_CTR_TREENODE));
+		if (!pControl) return false;
+
 		pControl->OnNotify += MakeDelegate(this,&CTreeViewUI::OnDBClickItem);
 		pControl->GetFolderButton()->OnNotify += MakeDelegate(this,&CTreeViewUI::OnFolderChanged);
 		pControl->GetCheckBox()->OnNotify += MakeDelegate(this,&CTreeViewUI::OnCheckBoxChanged);
@@ -854,7 +863,9 @@ namespace DuiLib
 		if(m_uItemMinWidth > 0) {
 			pControl->SetMinWidth(m_uItemMinWidth);
 		}
-		CListUI::AddAt(pControl, iIndex);
+
+		if(!CListUI::AddAt(pControl, iIndex))
+			return false;
 
 		int nLevel = pControl->GetTreeLevel();
 		int nFolderWidth = pControl->GetFolderButton()->GetFixedWidth();
@@ -871,10 +882,10 @@ namespace DuiLib
 			}
 		}
 		else {
-			return iIndex + 1;
+			return true;
 		}
 
-		return -1;
+		return false;
 	}
 
 	//************************************
@@ -884,8 +895,12 @@ namespace DuiLib
 	// 参数信息: CTreeNodeUI * _IndexNode
 	// 函数说明:
 	//************************************
-	bool CTreeViewUI::AddAt( CTreeNodeUI* pControl, CTreeNodeUI* _IndexNode )
+	bool CTreeViewUI::AddAt( CControlUI* pControl1, CControlUI* _IndexNode )
 	{
+		if (!pControl1) return false;
+		CTreeNodeUI *pControl = static_cast<CTreeNodeUI*>(pControl1->GetInterface(DUI_CTR_TREENODE));
+		if (!pControl) return false;
+
 		if(!_IndexNode && !pControl)
 			return false;
 
@@ -900,7 +915,7 @@ namespace DuiLib
 		if(nItemIndex == -1)
 			return false;
 
-		bool bRet = AddAt(pControl,nItemIndex) >= 0;
+		bool bRet = AddAt(pControl,nItemIndex);
 		if(bRet) {
 			int nLevel = pControl->GetTreeLevel();
 			int nFolderWidth = pControl->GetFolderButton()->GetFixedWidth();
@@ -911,15 +926,19 @@ namespace DuiLib
 
 		return bRet;
 	}
-
+	
 	//************************************
 	// 函数名称: Remove
 	// 返回类型: bool
 	// 参数信息: CTreeNodeUI * pControl
 	// 函数说明: pControl 对象以及下的所有节点将被一并移除
 	//************************************
-	bool CTreeViewUI::Remove( CTreeNodeUI* pControl, bool bDoNotDestroy  )
+	bool CTreeViewUI::Remove( CControlUI* pControl1, bool bDoNotDestroy  )
 	{
+		if (!pControl1) return false;
+		CTreeNodeUI *pControl = static_cast<CTreeNodeUI*>(pControl1->GetInterface(DUI_CTR_TREENODE));
+		if (!pControl) return false;
+
 		if(pControl->GetCountChild() > 0) {
 			int nCount = pControl->GetCountChild();
 			for(int nIndex = nCount - 1; nIndex >= 0; nIndex--) {

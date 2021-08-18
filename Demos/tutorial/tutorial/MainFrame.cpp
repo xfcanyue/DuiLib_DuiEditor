@@ -231,7 +231,6 @@ void CMainFrame::OnNotifyClick(TNotifyUI& msg)
 	{
 		CDialog1 dlg;
 		dlg.DoModal(this);
-		GetManager()->RebuildFont(GetManager()->GetFontInfo(-1));
 	}
 
 	if(IsControl(msg, _T("btn_show_dialog")))

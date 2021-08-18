@@ -80,124 +80,54 @@ namespace DuiLib {
 				pstrClass = node.name();
 				if( _tcsicmp(pstrClass, _T("Image")) == 0 ) 
 				{
-					LPCTSTR pImageName = NULL;
-					LPCTSTR pImageResType = NULL;
-					bool shared = false;
-					DWORD mask = 0;
-					for( CXmlAttributeUI attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
-						pstrName = attr.name();
-						pstrValue = attr.value();
-						if( _tcsicmp(pstrName, _T("name")) == 0 ) {
-							pImageName = pstrValue;
-						}
-						else if( _tcsicmp(pstrName, _T("restype")) == 0 ) {
-							pImageResType = pstrValue;
-						}
-						else if( _tcsicmp(pstrName, _T("mask")) == 0 ) {
-							if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
-							mask = _tcstoul(pstrValue, &pstr, 16);
-						}
-						else if( _tcsicmp(pstrName, _T("shared")) == 0 ) {
-							shared = (_tcsicmp(pstrValue, _T("true")) == 0);
-						}
-					}
-					if( pImageName ) pManager->AddImage(pImageName, pImageResType, mask, false, shared);
+					CDuiString ImageName	= node.attribute(_T("name")).as_string();
+					LPCTSTR pImageResType	= node.attribute(_T("restype")).as_string();
+					bool shared				= node.attribute(_T("shared")).as_bool();
+					DWORD mask				= node.attribute(_T("mask")).as_uicolor();
+
+					if( !ImageName.IsEmpty() ) 
+						pManager->AddImage(ImageName.GetData(), pImageResType, mask, false, shared);
 				}
-				else if( _tcsicmp(pstrClass, _T("Font")) == 0 ) {
-					int id = -1;
-					LPCTSTR pFontName = NULL;
-					int size = 12;
-					bool bold = false;
-					bool underline = false;
-					bool italic = false;
-					bool defaultfont = false;
-					bool shared = false;
-					for( CXmlAttributeUI attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
-						pstrName = attr.name();
-						pstrValue = attr.value();
-						if( _tcsicmp(pstrName, _T("id")) == 0 ) {
-							id = _tcstol(pstrValue, &pstr, 10);
-						}
-						else if( _tcsicmp(pstrName, _T("name")) == 0 ) {
-							pFontName = pstrValue;
-						}
-						else if( _tcsicmp(pstrName, _T("size")) == 0 ) {
-							size = _tcstol(pstrValue, &pstr, 10);
-						}
-						else if( _tcsicmp(pstrName, _T("bold")) == 0 ) {
-							bold = (_tcsicmp(pstrValue, _T("true")) == 0);
-						}
-						else if( _tcsicmp(pstrName, _T("underline")) == 0 ) {
-							underline = (_tcsicmp(pstrValue, _T("true")) == 0);
-						}
-						else if( _tcsicmp(pstrName, _T("italic")) == 0 ) {
-							italic = (_tcsicmp(pstrValue, _T("true")) == 0);
-						}
-						else if( _tcsicmp(pstrName, _T("default")) == 0 ) {
-							defaultfont = (_tcsicmp(pstrValue, _T("true")) == 0);
-						}
-						else if( _tcsicmp(pstrName, _T("shared")) == 0 ) {
-							shared = (_tcsicmp(pstrValue, _T("true")) == 0);
-						}
-					}
+				else if( _tcsicmp(pstrClass, _T("Font")) == 0 ) 
+				{
+					int id				= node.attribute(_T("id")).as_int(-1);
+					LPCTSTR pFontName	= node.attribute(_T("name")).as_string();
+					int size			= node.attribute(_T("size")).as_int(12);
+					bool bold			= node.attribute(_T("bold")).as_bool();
+					bool underline		= node.attribute(_T("underline")).as_bool();
+					bool italic			= node.attribute(_T("italic")).as_bool();
+					bool defaultfont	= node.attribute(_T("default")).as_bool();
+					bool shared			= node.attribute(_T("shared")).as_bool();
+
 					if( id >= 0 ) {
 						pManager->AddFont(id, pFontName, size, bold, underline, italic, shared);
 						if( defaultfont ) pManager->SetDefaultFont(pFontName, pManager->GetDPIObj()->Scale(size), bold, underline, italic, shared);
 					}
 				}
-				else if( _tcsicmp(pstrClass, _T("Default")) == 0 ) {
-					LPCTSTR pControlName = NULL;
-					LPCTSTR pControlValue = NULL;
-					bool shared = false;
-					for( CXmlAttributeUI attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
-						pstrName = attr.name();
-						pstrValue = attr.value();
-						if( _tcsicmp(pstrName, _T("name")) == 0 ) {
-							pControlName = pstrValue;
-						}
-						else if( _tcsicmp(pstrName, _T("value")) == 0 ) {
-							pControlValue = pstrValue;
-						}
-						else if( _tcsicmp(pstrName, _T("shared")) == 0 ) {
-							shared = (_tcsicmp(pstrValue, _T("true")) == 0);
-						}
-					}
-					if( pControlName ) {
-						pManager->AddDefaultAttributeList(pControlName, pControlValue, shared);
+				else if( _tcsicmp(pstrClass, _T("Default")) == 0 ) 
+				{
+					CDuiString pControlName	= node.attribute(_T("name")).as_string();
+					LPCTSTR pControlValue	= node.attribute(_T("value")).as_string();
+					bool shared				= node.attribute(_T("shared")).as_bool();
+
+					if( !pControlName.IsEmpty() ) {
+						pManager->AddDefaultAttributeList(pControlName.GetData(), pControlValue, shared);
 					}
 				}
-				else if( _tcsicmp(pstrClass, _T("Style")) == 0 ) {
-					LPCTSTR pName = NULL;
-					LPCTSTR pStyle = NULL;
-					bool shared = false;
-					for( CXmlAttributeUI attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
-						pstrName = attr.name();
-						pstrValue = attr.value();
-						if( _tcsicmp(pstrName, _T("name")) == 0 ) {
-							pName = pstrValue;
-						}
-						else if( _tcsicmp(pstrName, _T("value")) == 0 ) {
-							pStyle = pstrValue;
-						}
-						else if( _tcsicmp(pstrName, _T("shared")) == 0 ) {
-							shared = (_tcsicmp(pstrValue, _T("true")) == 0);
-						}
-					}
-					if( pName ) {
-						pManager->AddStyle(pName, pStyle, shared);
+				else if( _tcsicmp(pstrClass, _T("Style")) == 0 ) 
+				{
+					CDuiString pName	= node.attribute(_T("name")).as_string();
+					LPCTSTR pStyle	= node.attribute(_T("value")).as_string();
+					bool shared		= node.attribute(_T("shared")).as_bool();
+
+					if( !pName.IsEmpty() ) {
+						pManager->AddStyle(pName.GetData(), pStyle, shared);
 					}
 				}
 				else if (_tcsicmp(pstrClass, _T("Import")) == 0) {
-					LPCTSTR pstrPath = NULL;
-					for( CXmlAttributeUI attr = node.first_attribute(); attr; attr=attr.next_attribute() ) {
-						pstrName = attr.name();
-						pstrValue = attr.value();
-						if (_tcsicmp(pstrName, _T("fontfile")) == 0) {
-							pstrPath = pstrValue;
-						}
-					}
-					if (pstrPath) {
-						pManager->AddFontArray(pstrPath);
+					CDuiString strPath = node.attribute(_T("fontfile")).as_string();
+					if (!strPath.IsEmpty()) {
+						pManager->AddFontArray(strPath.GetData());
 					}
 				}
 
@@ -233,144 +163,134 @@ namespace DuiLib {
 				//if( pManager->GetPaintWindow() ) 
 				if( pManager->GetPaintWindow() && !pManager->IsInitWindowParameter())  //modify by liqs99
 				{
-					for( CXmlAttributeUI attr = root.first_attribute(); attr; attr=attr.next_attribute() ) {
+					for( CXmlAttributeUI attr = root.first_attribute(); attr; attr=attr.next_attribute() ) 
+					{
 						pstrName = attr.name();
-						pstrValue = attr.value();
-						if( _tcsicmp(pstrName, _T("size")) == 0 ) {
-							LPTSTR pstr = NULL;
-							int cx = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
-							int cy = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr); 
-							pManager->SetInitSize(pManager->GetDPIObj()->Scale(cx), pManager->GetDPIObj()->Scale(cy));
+						if( _tcsicmp(pstrName, _T("size")) == 0 ) 
+						{
+							SIZE sz = attr.as_size();
+							pManager->SetInitSize(pManager->GetDPIObj()->Scale(sz.cx), pManager->GetDPIObj()->Scale(sz.cy));
 						} 
-						else if( _tcsicmp(pstrName, _T("sizebox")) == 0 ) {
-							RECT rcSizeBox = { 0 };
-							LPTSTR pstr = NULL;
-							rcSizeBox.left = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
-							rcSizeBox.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
-							rcSizeBox.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);    
-							rcSizeBox.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);    
+						else if( _tcsicmp(pstrName, _T("sizebox")) == 0 ) 
+						{
+							RECT rcSizeBox = attr.as_rect();   
 							pManager->SetSizeBox(rcSizeBox);
 						}
-						else if( _tcsicmp(pstrName, _T("caption")) == 0 ) {
-							RECT rcCaption = { 0 };
-							LPTSTR pstr = NULL;
-							rcCaption.left = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
-							rcCaption.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
-							rcCaption.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);    
-							rcCaption.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);    
+						else if( _tcsicmp(pstrName, _T("caption")) == 0 ) 
+						{
+							RECT rcCaption = attr.as_rect();  
 							pManager->SetCaptionRect(rcCaption);
 						}
-						else if( _tcsicmp(pstrName, _T("roundcorner")) == 0 ) {
-							LPTSTR pstr = NULL;
-							int cx = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
-							int cy = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr); 
-							pManager->SetRoundCorner(cx, cy);
-						} 
-						else if( _tcsicmp(pstrName, _T("mininfo")) == 0 ) {
-							LPTSTR pstr = NULL;
-							int cx = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
-							int cy = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr); 
-							pManager->SetMinInfo(cx, cy);
+						else if( _tcsicmp(pstrName, _T("roundcorner")) == 0 ) 
+						{
+							SIZE sz = attr.as_size();
+							pManager->SetRoundCorner(sz.cx, sz.cy);
 						}
-						else if( _tcsicmp(pstrName, _T("maxinfo")) == 0 ) {
-							LPTSTR pstr = NULL;
-							int cx = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
-							int cy = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr); 
-							pManager->SetMaxInfo(cx, cy);
+						else if( _tcsicmp(pstrName, _T("mininfo")) == 0 ) 
+						{
+							SIZE sz = attr.as_size();
+							pManager->SetMinInfo(sz.cx, sz.cy);
+						}
+						else if( _tcsicmp(pstrName, _T("maxinfo")) == 0 ) 
+						{
+							SIZE sz = attr.as_size();
+							pManager->SetMaxInfo(sz.cx, sz.cy);
 						}
 						else if( _tcsicmp(pstrName, _T("showdirty")) == 0 ) {
-							pManager->SetShowUpdateRect(_tcsicmp(pstrValue, _T("true")) == 0);
+							pManager->SetShowUpdateRect(attr.as_bool());
 						} 
-						else if( _tcsicmp(pstrName, _T("opacity")) == 0 || _tcsicmp(pstrName, _T("alpha")) == 0 ) {
-							pManager->SetOpacity(_ttoi(pstrValue));
+						else if( _tcsicmp(pstrName, _T("opacity")) == 0 || _tcsicmp(pstrName, _T("alpha")) == 0 ) 
+						{
+							pManager->SetOpacity(attr.as_int());
 						} 
-						else if( _tcscmp(pstrName, _T("layeredopacity")) == 0 ) {
-							pManager->SetLayeredOpacity(_ttoi(pstrValue));
+						else if( _tcscmp(pstrName, _T("layeredopacity")) == 0 ) 
+						{
+							pManager->SetLayeredOpacity(attr.as_int());
 						} 
-						else if( _tcscmp(pstrName, _T("layered")) == 0 || _tcscmp(pstrName, _T("bktrans")) == 0) {
-							pManager->SetLayered(_tcsicmp(pstrValue, _T("true")) == 0);
+						else if( _tcscmp(pstrName, _T("layered")) == 0 || _tcscmp(pstrName, _T("bktrans")) == 0) 
+						{
+							pManager->SetLayered(attr.as_bool());
 						}
-						else if( _tcscmp(pstrName, _T("layeredimage")) == 0 ) {
+						else if( _tcscmp(pstrName, _T("layeredimage")) == 0 ) 
+						{
 							pManager->SetLayered(true);
-							pManager->SetLayeredImage(pstrValue);
+							pManager->SetLayeredImage(attr.as_string());
 						} 
-						else if( _tcscmp(pstrName, _T("noactivate")) == 0 ) {
-							pManager->SetNoActivate(_tcsicmp(pstrValue, _T("true")) == 0);
+						else if( _tcscmp(pstrName, _T("noactivate")) == 0 ) 
+						{
+							pManager->SetNoActivate(attr.as_bool());
 						}
-						else if( _tcsicmp(pstrName, _T("disabledfontcolor")) == 0 ) {
-							if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
-							LPTSTR pstr = NULL;
-							DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+						else if( _tcsicmp(pstrName, _T("disabledfontcolor")) == 0 ) 
+						{
+							DWORD clrColor = attr.as_uicolor();
 							pManager->SetDefaultDisabledColor(clrColor);
 						} 
-						else if( _tcsicmp(pstrName, _T("defaultfontcolor")) == 0 ) {
-							if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
-							LPTSTR pstr = NULL;
-							DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+						else if( _tcsicmp(pstrName, _T("defaultfontcolor")) == 0 ) 
+						{
+							DWORD clrColor = attr.as_uicolor();
 							pManager->SetDefaultFontColor(clrColor);
 						}
-						else if( _tcsicmp(pstrName, _T("linkfontcolor")) == 0 ) {
-							if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
-							LPTSTR pstr = NULL;
-							DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+						else if( _tcsicmp(pstrName, _T("linkfontcolor")) == 0 ) 
+						{
+							DWORD clrColor = attr.as_uicolor();
 							pManager->SetDefaultLinkFontColor(clrColor);
 						} 
-						else if( _tcsicmp(pstrName, _T("linkhoverfontcolor")) == 0 ) {
-							if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
-							LPTSTR pstr = NULL;
-							DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+						else if( _tcsicmp(pstrName, _T("linkhoverfontcolor")) == 0 ) 
+						{
+							DWORD clrColor = attr.as_uicolor();
 							pManager->SetDefaultLinkHoverFontColor(clrColor);
 						} 
-						else if( _tcsicmp(pstrName, _T("selectedcolor")) == 0 ) {
-							if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
-							LPTSTR pstr = NULL;
-							DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+						else if( _tcsicmp(pstrName, _T("selectedcolor")) == 0 ) 
+						{
+							DWORD clrColor = attr.as_uicolor();
 							pManager->SetDefaultSelectedBkColor(clrColor);
 						} 
-						else if( _tcsicmp(pstrName, _T("shadowsize")) == 0 ) {
-							pManager->GetShadow()->SetSize(_ttoi(pstrValue));
+						else if( _tcsicmp(pstrName, _T("shadowsize")) == 0 ) 
+						{
+							pManager->GetShadow()->SetSize(attr.as_int());
 						}
-						else if( _tcsicmp(pstrName, _T("shadowsharpness")) == 0 ) {
-							pManager->GetShadow()->SetSharpness(_ttoi(pstrValue));
+						else if( _tcsicmp(pstrName, _T("shadowsharpness")) == 0 ) 
+						{
+							pManager->GetShadow()->SetSharpness(attr.as_int());
 						}
-						else if( _tcsicmp(pstrName, _T("shadowdarkness")) == 0 ) {
-							pManager->GetShadow()->SetDarkness(_ttoi(pstrValue));
+						else if( _tcsicmp(pstrName, _T("shadowdarkness")) == 0 ) 
+						{
+							pManager->GetShadow()->SetDarkness(attr.as_int());
 						}
-						else if( _tcsicmp(pstrName, _T("shadowposition")) == 0 ) {
-							LPTSTR pstr = NULL;
-							int cx = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
-							int cy = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr); 
-							pManager->GetShadow()->SetPosition(cx, cy);
+						else if( _tcsicmp(pstrName, _T("shadowposition")) == 0 ) 
+						{
+							SIZE sz = attr.as_size();
+							pManager->GetShadow()->SetPosition(sz.cx, sz.cy);
 						}
-						else if( _tcsicmp(pstrName, _T("shadowcolor")) == 0 ) {
-							if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
-							LPTSTR pstr = NULL;
-							DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+						else if( _tcsicmp(pstrName, _T("shadowcolor")) == 0 ) 
+						{
+							DWORD clrColor = attr.as_uicolor();
 							pManager->GetShadow()->SetColor(clrColor);
 						}
-						else if( _tcsicmp(pstrName, _T("shadowcorner")) == 0 ) {
-							RECT rcCorner = { 0 };
-							LPTSTR pstr = NULL;
-							rcCorner.left = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
-							rcCorner.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
-							rcCorner.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);    
-							rcCorner.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);    
+						else if( _tcsicmp(pstrName, _T("shadowcorner")) == 0 ) 
+						{
+							RECT rcCorner = attr.as_rect();   
 							pManager->GetShadow()->SetShadowCorner(rcCorner);
 						}
-						else if( _tcsicmp(pstrName, _T("shadowimage")) == 0 ) {
-							pManager->GetShadow()->SetImage(pstrValue);
+						else if( _tcsicmp(pstrName, _T("shadowimage")) == 0 ) 
+						{
+							pManager->GetShadow()->SetImage(attr.as_string());
 						}
-						else if( _tcsicmp(pstrName, _T("showshadow")) == 0 ) {
-							pManager->GetShadow()->ShowShadow(_tcsicmp(pstrValue, _T("true")) == 0);
+						else if( _tcsicmp(pstrName, _T("showshadow")) == 0 ) 
+						{
+							pManager->GetShadow()->ShowShadow(attr.as_bool());
 						} 
-						else if( _tcsicmp(pstrName, _T("gdiplustext")) == 0 ) {
-							pManager->SetUseGdiplusText(_tcsicmp(pstrValue, _T("true")) == 0);
+						else if( _tcsicmp(pstrName, _T("gdiplustext")) == 0 ) 
+						{
+							pManager->SetUseGdiplusText(attr.as_bool());
 						} 
-						else if( _tcsicmp(pstrName, _T("textrenderinghint")) == 0 ) {
-							pManager->SetGdiplusTextRenderingHint(_ttoi(pstrValue));
+						else if( _tcsicmp(pstrName, _T("textrenderinghint")) == 0 ) 
+						{
+							pManager->SetGdiplusTextRenderingHint(attr.as_int());
 						} 
-						else if( _tcsicmp(pstrName, _T("tooltiphovertime")) == 0 ) {
-							pManager->SetHoverTime(_ttoi(pstrValue));
+						else if( _tcsicmp(pstrName, _T("tooltiphovertime")) == 0 ) 
+						{
+							pManager->SetHoverTime(attr.as_int());
 						} 
 					}
 
@@ -462,10 +382,12 @@ namespace DuiLib {
 				continue;
 			}
 
+			//因为duilib有大量的if(!GetParent())逻辑判断，额外设置一个GetExtraParent接口，方便子控件访问父控件
 			pControl->SetExtraParent(pParent);
 
 			if(pkg)
 			{
+				//记住pControl是从哪个文件创建的
 				pControl->SetSkinFile(pkg->GetSkinFile());
 			}
 
@@ -473,66 +395,32 @@ namespace DuiLib {
 			if( node.first_child() ) {
 				_Parse(node, pControl, pManager, pkg);
 			}
+
 			// Attach to parent
-			// 因为某些属性和父窗口相关，比如selected，必须先Add到父窗口
-			CTreeViewUI* pTreeView = NULL;
-			if( pParent != NULL && pControl != NULL ) {
-				CTreeNodeUI* pParentTreeNode = static_cast<CTreeNodeUI*>(pParent->GetInterface(_T("TreeNode")));
-				CTreeNodeUI* pTreeNode = static_cast<CTreeNodeUI*>(pControl->GetInterface(_T("TreeNode")));
-				pTreeView = static_cast<CTreeViewUI*>(pParent->GetInterface(_T("TreeView")));
-				// TreeNode子节点
-				if(pTreeNode != NULL) //当前插入TreeNode
+			if( pParent != NULL && pControl != NULL ) 
+			{
+				if( pContainer == NULL ) pContainer = static_cast<IContainerUI*>(pParent->GetInterface(_T("IContainer")));
+				ASSERT(pContainer);
+				if( pContainer == NULL ) return NULL;
+				if( !pContainer->Add(pControl) ) 
 				{
-					if(pParentTreeNode) //父控件是TreeNode，插入子节点
-					{
-						pTreeView = pParentTreeNode->GetTreeView();
-						if(!pParentTreeNode->Add(pTreeNode)) 
-						{
-							delete pTreeNode;
-							pTreeNode = NULL;
-							continue;
-						}
-					}
-					else { //父控件是TreeView，在TreeView中插入插入根节点
-						if(pTreeView != NULL) {
-							if(!pTreeView->Add(pTreeNode)) {
-								delete pTreeNode;
-								pTreeNode = NULL;
-								continue;
-							}
-						}
-					}
-				}
-				// TreeNode子控件
-				else if(pParentTreeNode != NULL) { //当前插入的不是TreeNode，但是父控件是TreeNode，需要插入到TreeNode的Hori...容器中
-					pParentTreeNode->GetTreeNodeHoriznotal()->Add(pControl);
-				}
-				// 普通控件
-				else {
-					if( pContainer == NULL ) pContainer = static_cast<IContainerUI*>(pParent->GetInterface(_T("IContainer")));
-					ASSERT(pContainer);
-					if( pContainer == NULL ) return NULL;
-					if( !pContainer->Add(pControl) ) {
-						delete pControl;
-						continue;
-					}
+					delete pControl;
+					continue;
 				}
 			}
 			if( pControl == NULL ) continue;
 
 			// Init default attributes
-			if( pManager ) {
-				if(pTreeView != NULL) {
-					pControl->SetManager(pManager, pTreeView, true);
-				}
-				else {
-					pControl->SetManager(pManager, NULL, false);
-				}
+			if( pManager ) 
+			{
+				pControl->SetManager(pManager, NULL, false);
 				LPCTSTR pDefaultAttributes = pManager->GetDefaultAttributeList(pstrClass);
-				if( pDefaultAttributes ) {
+				if( pDefaultAttributes ) 
+				{
 					pControl->ApplyAttributeList(pDefaultAttributes);
 				}
 			}
+
 			// Process attributes
 			if( node.first_attribute() ) 
 			{
@@ -549,11 +437,12 @@ namespace DuiLib {
 						pControl->SetAttribute(attr.name(), attr.value());
 				}
 			}
-			if( pManager ) {
-				if(pTreeView == NULL) {
+
+			if( pManager ) 
+			{
 					pControl->SetManager(NULL, NULL, false);
-				}
 			}
+
 			// Return first item
 			if( pReturn == NULL ) pReturn = pControl;
 		}

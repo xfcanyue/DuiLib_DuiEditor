@@ -23,6 +23,7 @@ namespace DuiLib
 	public:
 		LPCTSTR GetClass() const;
 		LPVOID GetInterface(LPCTSTR pstrName);
+		void SetManager(CPaintManagerUI* pManager, CControlUI* pParent, bool bInit = true);
 		void DoEvent(TEventUI& event);
 		void Invalidate();
 		bool Select(bool bSelect = true);
@@ -108,10 +109,10 @@ namespace DuiLib
 		virtual LPVOID	GetInterface(LPCTSTR pstrName);
 
 		virtual UINT GetListType();
-		virtual bool Add(CTreeNodeUI* pControl );
-		virtual long AddAt(CTreeNodeUI* pControl, int iIndex );
-		virtual bool AddAt(CTreeNodeUI* pControl,CTreeNodeUI* _IndexNode);
-		virtual bool Remove(CTreeNodeUI* pControl, bool bDoNotDestroy=false);
+		virtual bool Add(CControlUI* pControl );
+		virtual bool AddAt(CControlUI* pControl, int iIndex );
+		virtual bool AddAt(CControlUI* pControl,CControlUI* _IndexNode);
+		virtual bool Remove(CControlUI* pControl, bool bDoNotDestroy=false);
 		virtual bool RemoveAt(int iIndex, bool bDoNotDestroy=false);
 		virtual void RemoveAll();
 		virtual bool OnCheckBoxChanged(void* param);

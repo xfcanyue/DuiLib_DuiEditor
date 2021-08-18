@@ -136,24 +136,15 @@
 						<TreeView visiblecheckbtn="true" itemselectedbkcolor="0x00000000" itemhotbkcolor="0x00000000" vscrollbar="true" hscrollbar="true" bkcolor="0xFFFFFFFF">
 							<TreeNode text="TreeView" horizattr="style_tree_horizattr" folderattr="style_tree_folder" checkboxattr="style_tree_check_box" resourceid="47">
 								<TreeNode text="TreeNode" horizattr="style_tree_horizattr" folderattr="style_tree_folder" checkboxattr="style_tree_check_box" resourceid="48">
-									<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="16,0,0,0" resourceid="49" />
-									<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="16,0,0,0" resourceid="50" />
-									<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="16,0,0,0" resourceid="51" />
-									<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="16,0,0,0" resourceid="52" />
-									<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="16,0,0,0" resourceid="53" />
-									<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="16,0,0,0" resourceid="54" />
-									<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="16,0,0,0" resourceid="55" />
-									<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="16,0,0,0" resourceid="56" />
 									<TreeNode text="TreeNode" horizattr="style_tree_horizattr" folderattr="style_tree_folder" checkboxattr="style_tree_check_box" inset="16,0,0,0" resourceid="57">
 										<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="32,0,0,0" resourceid="58" />
-										<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="32,0,0,0" resourceid="59" />
-										<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="32,0,0,0" resourceid="60" />
-										<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="32,0,0,0" resourceid="61" />
-										<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="32,0,0,0" resourceid="62" />
-										<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="32,0,0,0" resourceid="63" />
-										<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="32,0,0,0" resourceid="64" />
-										<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="32,0,0,0" resourceid="65" />
-										<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="32,0,0,0" resourceid="66" />
+									</TreeNode>
+								</TreeNode>
+							</TreeNode>
+							<TreeNode text="TreeView" horizattr="style_tree_horizattr" folderattr="style_tree_folder" checkboxattr="style_tree_check_box" resourceid="47">
+								<TreeNode text="TreeNode" horizattr="style_tree_horizattr" folderattr="style_tree_folder" checkboxattr="style_tree_check_box" resourceid="48">
+									<TreeNode text="TreeNode" horizattr="style_tree_horizattr" folderattr="style_tree_folder" checkboxattr="style_tree_check_box" inset="16,0,0,0" resourceid="57">
+										<TreeNode text="TreeNode" horizattr="style_tree_horizattr" checkboxattr="style_tree_check_box" inset="32,0,0,0" resourceid="58" />
 									</TreeNode>
 								</TreeNode>
 							</TreeNode>
