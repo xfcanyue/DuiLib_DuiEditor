@@ -770,34 +770,75 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 		pSize->SetData((DWORD)attrNode.internal_object());
 		pGroupParent->AddSubItem(pSize);
 
-		CStringArray strArrDef;
-		SplitCString(strArrDef, XML2T(attrDefValue.value()));
-
-		int nDefWidth = 0;
-		int nDefHeight = 0;
-		if(strArrDef.GetSize() > 0) nDefWidth = _tstoi(strArrDef[0]);
-		if(strArrDef.GetSize() > 1) nDefHeight = _tstoi(strArrDef[1]);
-
-		int nWidth = 0;
-		int nHeight = 0;
-		xml_attribute attr = TreeNode.attribute(attrName.value());
-		if(attr)
+		//默认size
+		CDuiSize szDefault;
+		if(!szDefault.FromString(XML2T(attrDefValue.value())))
 		{
-			CStringArray strArray;
-			SplitCString(strArray, XML2T(attr.value()));
-			if(strArray.GetSize() > 0) nWidth = _tstoi(strArray[0]);
-			if(strArray.GetSize() > 1) nHeight = _tstoi(strArray[1]);
+			szDefault.cx = szDefault.cy = 0;
 		}
 
-		pProperty = new CMFCPropertyGridProperty(_T("width"), _variant_t((long)nWidth, VT_I4), XML2T(attrComment.value()));
-		pProperty->EnableSpinControl(TRUE, 0, 9999);
-		pProperty->SetOriginalValue(_variant_t((long)nDefWidth, VT_I4));	
+		//实际size
+		CDuiSize szReal;
+		if(!szReal.FromString(XML2T(TreeNode.attribute(attrName.value()).value())))
+		{
+			szReal = szDefault;
+		}
+
+		//数值范围
+		CDuiSize szRange;
+		if(!szRange.FromString(XML2T(attrSpanValue.value())))
+		{
+			szRange.cx = szRange.cy = 9999;
+		}
+
+		pProperty = new CMFCPropertyGridProperty(_T("width"), _variant_t((long)szReal.cx, VT_I4), XML2T(attrComment.value()));
+		pProperty->EnableSpinControl(TRUE, 0, szRange.cx);
+		pProperty->SetOriginalValue(_variant_t((long)szDefault.cx, VT_I4));	
 		pSize->AddSubItem(pProperty);
 		SetModifyPropertyFlag(pProperty);
  
-		pProperty = new CMFCPropertyGridProperty( _T("height"), _variant_t((long)nHeight, VT_I4), XML2T(attrComment.value()));
-		pProperty->EnableSpinControl(TRUE, 0, 9999);
-		pProperty->SetOriginalValue(_variant_t((long)nDefHeight, VT_I4));	
+		pProperty = new CMFCPropertyGridProperty( _T("height"), _variant_t((long)szReal.cy, VT_I4), XML2T(attrComment.value()));
+		pProperty->EnableSpinControl(TRUE, 0, szRange.cy);
+		pProperty->SetOriginalValue(_variant_t((long)szDefault.cy, VT_I4));	
+		pSize->AddSubItem(pProperty);
+		SetModifyPropertyFlag(pProperty);
+	}
+	else if(CompareString(attrType.value(), _T("POINT")))
+	{
+		CMFCPropertyGridProperty* pSize = new CMFCPropertyGridProperty(XML2T(attrName.value()), (_variant_t)0, TRUE);
+		pSize->SetData((DWORD)attrNode.internal_object());
+		pGroupParent->AddSubItem(pSize);
+
+		//默认size
+		CDuiPoint ptDefault;
+		if(!ptDefault.FromString(XML2T(attrDefValue.value())))
+		{
+			ptDefault.x = ptDefault.y = 0;
+		}
+
+		//实际size
+		CDuiPoint ptReal;
+		if(!ptReal.FromString(XML2T(TreeNode.attribute(attrName.value()).value())))
+		{
+			ptReal = ptDefault;
+		}
+
+		//数值范围
+		CDuiPoint ptRange;
+		if(!ptRange.FromString(XML2T(attrSpanValue.value())))
+		{
+			ptRange.x = ptRange.y = 9999;
+		}
+
+		pProperty = new CMFCPropertyGridProperty(_T("x"), _variant_t((long)ptReal.x, VT_I4), XML2T(attrComment.value()));
+		pProperty->EnableSpinControl(TRUE, 0, ptRange.x);
+		pProperty->SetOriginalValue(_variant_t((long)ptDefault.x, VT_I4));	
+		pSize->AddSubItem(pProperty);
+		SetModifyPropertyFlag(pProperty);
+
+		pProperty = new CMFCPropertyGridProperty( _T("y"), _variant_t((long)ptReal.y, VT_I4), XML2T(attrComment.value()));
+		pProperty->EnableSpinControl(TRUE, 0, ptRange.y);
+		pProperty->SetOriginalValue(_variant_t((long)ptDefault.y, VT_I4));	
 		pSize->AddSubItem(pProperty);
 		SetModifyPropertyFlag(pProperty);
 	}
@@ -1038,6 +1079,10 @@ void CUIPropertyGridCtrl::OnPropertyChanged(CMFCPropertyGridProperty* pProp) con
 	{
 		attrTree = g_duiProp.AddAttribute(m_TreeNode, XML2T(attrName.value()), (LPCTSTR)pProp->GetValue().bstrVal, GetUIManager());
 	}
+	else if(CompareString(attrType.value(), _T("POINT")))
+	{
+		attrTree = g_duiProp.AddAttribute(m_TreeNode, XML2T(attrName.value()), (LPCTSTR)pProp->GetValue().bstrVal, GetUIManager());
+	}
 	else if(CompareString(attrType.value(), _T("RECT")))
 	{
 		attrTree = g_duiProp.AddAttribute(m_TreeNode, XML2T(attrName.value()), (LPCTSTR)pProp->GetValue().bstrVal, GetUIManager());
@@ -1205,6 +1250,10 @@ void CUIPropertyGridCtrl::OnGridpropertyCopyValue()
 	{
 		strText = pProp->GetValue().bstrVal;
 	}
+	else if(CompareString(attrType.value(), _T("POINT")))
+	{
+		strText = pProp->GetValue().bstrVal;
+	}
 	else if(CompareString(attrType.value(), _T("RECT")))
 	{
 		strText = pProp->GetValue().bstrVal;
@@ -1292,6 +1341,10 @@ void CUIPropertyGridCtrl::OnGridpropertyCopyValueEx()
 	{
 		strText = pProp->GetValue().bstrVal;
 	}
+	else if(CompareString(attrType.value(), _T("POINT")))
+	{
+		strText = pProp->GetValue().bstrVal;
+	}
 	else if(CompareString(attrType.value(), _T("RECT")))
 	{
 		strText = pProp->GetValue().bstrVal;
@@ -1368,6 +1421,20 @@ void CUIPropertyGridCtrl::OnGridpropertySetDefaultValue()
 				pProp->SetValue(_variant_t((long)szDefault.cy, VT_I4));
 			}
 		}
+		else if(CompareString(attrType.value(), _T("POINT")))
+		{
+			CDuiPoint ptDefault(XML2T(attrDefault.as_string(XTEXT("0,0"))));
+
+			CString strName = pProp->GetName();
+			if(CompareString(strName, _T("x")))
+			{
+				pProp->SetValue(_variant_t((long)ptDefault.x, VT_I4));
+			}
+			else if(CompareString(strName, _T("y")))
+			{
+				pProp->SetValue(_variant_t((long)ptDefault.y, VT_I4));
+			}
+		}
 		else if(CompareString(attrType.value(), _T("RECT")))
 		{
 			CDuiRect rcDefault(XML2T(attrDefault.as_string(XTEXT("0,0,0,0"))));
@@ -1412,6 +1479,12 @@ void CUIPropertyGridCtrl::OnGridpropertySetDefaultValue()
 		CDuiSize szDefault(XML2T(attrDefault.as_string(XTEXT("0,0"))));
 		if(pProp->GetSubItem(0)) pProp->GetSubItem(0)->SetValue(_variant_t((long)szDefault.cx, VT_I4));
 		if(pProp->GetSubItem(1)) pProp->GetSubItem(1)->SetValue(_variant_t((long)szDefault.cy, VT_I4));
+	}
+	else if(CompareString(attrType.value(), _T("POINT")))
+	{
+		CDuiPoint ptDefault(XML2T(attrDefault.as_string(XTEXT("0,0"))));
+		if(pProp->GetSubItem(0)) pProp->GetSubItem(0)->SetValue(_variant_t((long)ptDefault.x, VT_I4));
+		if(pProp->GetSubItem(1)) pProp->GetSubItem(1)->SetValue(_variant_t((long)ptDefault.y, VT_I4));
 	}
 	else if(CompareString(attrType.value(), _T("RECT")))
 	{

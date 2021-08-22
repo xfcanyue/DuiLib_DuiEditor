@@ -49,6 +49,7 @@ namespace DuiLib {
 	{
 		m_cXY.cx = m_cXY.cy = 0;
 		m_cxyFixed.cx = m_cxyFixed.cy = 0;
+		m_cxyFixedPercent.cx = m_cxyFixedPercent.cy = 0;
 		m_cxyMin.cx = m_cxyMin.cy = 0;
 		m_cxyMax.cx = m_cxyMax.cy = 9999;
 		m_cxyBorderRound.cx = m_cxyBorderRound.cy = 0;
@@ -58,6 +59,8 @@ namespace DuiLib {
 		::ZeroMemory(&m_rcPaint, sizeof(RECT));
 		::ZeroMemory(&m_rcBorderSize,sizeof(RECT));
 		m_piFloatPercent.left = m_piFloatPercent.top = m_piFloatPercent.right = m_piFloatPercent.bottom = 0.0f;
+
+		::ZeroMemory(&m_ptFloatPosition,sizeof(POINT));
 
 		__refCount = 1;
 	}
@@ -575,6 +578,30 @@ namespace DuiLib {
 		NeedParentUpdate();
 	}
 
+	int CControlUI::GetFixedWidthPercent() const
+	{
+		return m_cxyFixedPercent.cx;
+	}
+
+	void CControlUI::SetFixedWidthPercent(int cx)
+	{
+		if( cx < 0 || cx > 100) return; 
+		m_cxyFixedPercent.cx = cx;
+		NeedParentUpdate();
+	}
+
+	int CControlUI::GetFixedHeightPercent() const
+	{
+		return m_cxyFixedPercent.cy;
+	}
+
+	void CControlUI::SetFixedHeightPercent(int cy)
+	{
+		if( cy < 0 || cy > 100) return; 
+		m_cxyFixedPercent.cy = cy;
+		NeedParentUpdate();
+	}
+
 	int CControlUI::GetMinWidth() const
 	{
 		if (m_pManager != NULL) {
@@ -665,6 +692,17 @@ namespace DuiLib {
 	UINT CControlUI::GetFloatAlign() const
 	{
 		return m_uFloatAlign;
+	}
+
+	void CControlUI::SetFloatPosition(POINT ptPosition)
+	{
+		m_ptFloatPosition = ptPosition;
+		NeedParentUpdate();
+	}
+
+	POINT CControlUI::GetFloatPosition() const
+	{
+		return m_ptFloatPosition;
 	}
 
 	bool CControlUI::IsAutoCalcWidth() const { return m_bAutoCalcWidth; }
@@ -1102,6 +1140,21 @@ namespace DuiLib {
 				SetFloat(true);
 			}
 		}
+		else if( _tcsicmp(pstrName, _T("floatpercent")) == 0 ) {
+			RECT rcPos = { 0 };
+			LPTSTR pstr = NULL;
+			rcPos.left = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
+			rcPos.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
+			rcPos.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);    
+			rcPos.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);   
+
+			TPercentInfo piFloatPercent = { 0 };
+			piFloatPercent.left = (double)rcPos.left / 100.0f;
+			piFloatPercent.top = (double)rcPos.top / 100.0f;
+			piFloatPercent.right = (double)rcPos.right / 100.0f;
+			piFloatPercent.bottom = (double)rcPos.bottom / 100.0f;
+			SetFloatPercent(piFloatPercent);
+		}
 		else if( _tcsicmp(pstrName, _T("floatalign")) == 0) {
 			UINT uAlign = GetFloatAlign();
 			// Ω‚ŒˆŒƒ◊÷ Ù–‘
@@ -1144,6 +1197,29 @@ namespace DuiLib {
 				}
 			}
 			SetFloatAlign(uAlign);
+		}
+		else if( _tcsicmp(pstrName, _T("floatvalign")) == 0) {
+			UINT uAlign = GetFloatAlign();
+			if( _tcsstr(pstrValue, _T("top")) != NULL ) {
+				uAlign &= ~(DT_BOTTOM | DT_VCENTER);
+				uAlign |= DT_TOP;
+			}
+			else if( _tcsstr(pstrValue, _T("vcenter")) != NULL ) {
+				uAlign &= ~(DT_TOP | DT_BOTTOM);
+				uAlign |= DT_VCENTER;
+			}
+			else if( _tcsstr(pstrValue, _T("bottom")) != NULL ) {
+				uAlign &= ~(DT_TOP | DT_VCENTER);
+				uAlign |= DT_BOTTOM;
+			}
+			SetFloatAlign(uAlign);
+		}
+		else if( _tcsicmp(pstrName, _T("floatposition")) == 0 ) {
+			POINT pt = { 0 };
+			LPTSTR pstr = NULL;
+			pt.x = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
+			pt.y = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);
+			SetFloatPosition(pt);
 		}
 		else if( _tcsicmp(pstrName, _T("padding")) == 0 ) {
 			RECT rcPadding = { 0 };
@@ -1249,6 +1325,8 @@ namespace DuiLib {
 		else if( _tcsicmp(pstrName, _T("foreimage")) == 0 ) SetForeImage(pstrValue);
 		else if( _tcsicmp(pstrName, _T("width")) == 0 ) SetFixedWidth(_ttoi(pstrValue));
 		else if( _tcsicmp(pstrName, _T("height")) == 0 ) SetFixedHeight(_ttoi(pstrValue));
+		else if( _tcsicmp(pstrName, _T("widthpercent")) == 0 ) SetFixedWidthPercent(_ttoi(pstrValue));
+		else if( _tcsicmp(pstrName, _T("heightpercent")) == 0 ) SetFixedHeightPercent(_ttoi(pstrValue));
 		else if( _tcsicmp(pstrName, _T("minwidth")) == 0 ) SetMinWidth(_ttoi(pstrValue));
 		else if( _tcsicmp(pstrName, _T("minheight")) == 0 ) SetMinHeight(_ttoi(pstrValue));
 		else if( _tcsicmp(pstrName, _T("maxwidth")) == 0 ) SetMaxWidth(_ttoi(pstrValue));

@@ -60,8 +60,10 @@ namespace DuiLib
 		if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) 
 			szAvailable.cy += m_pVerticalScrollBar->GetScrollRange();
 
+		//第一次循环，计算哪些控件需要自动布局，以及剩余可自动布局的空间。
+
 		int cyNeeded = 0;
-		int nAdjustables = 0;
+		int nAdjustables = 0;	//需要自动布局的控件数量
 		int cxFixed = 0;
 		int nEstimateNum = 0;
 		SIZE szControlAvailable;
@@ -81,8 +83,14 @@ namespace DuiLib
 			if (szControlAvailable.cx > iControlMaxWidth) szControlAvailable.cx = iControlMaxWidth;
 			if (szControlAvailable.cy > iControlMaxHeight) szControlAvailable.cy = iControlMaxHeight;
 			SIZE sz = pControl->EstimateSize(szControlAvailable);
-			if( sz.cx == 0 ) {
-				nAdjustables++;
+			if(sz.cx == 0 && pControl->GetFixedWidthPercent() > 0)
+			{
+				sz.cx = szAvailable.cx * pControl->GetFixedWidthPercent() / 100;
+			}
+
+			if( sz.cx == 0 ) //控件的宽度为0，需要自动布局
+			{ 
+				nAdjustables++;			
 			}
 			else {
 				if( sz.cx < pControl->GetMinWidth() ) sz.cx = pControl->GetMinWidth();
@@ -99,7 +107,7 @@ namespace DuiLib
 		cxFixed += (nEstimateNum - 1) * m_iChildPadding;
 		// Place elements
 		int cxNeeded = 0;
-		int cxExpand = 0;
+		int cxExpand = 0;	//需要自动调整控件的宽度，也就是 width==0 的子控件
 		if( nAdjustables > 0 ) cxExpand = MAX(0, (szAvailable.cx - cxFixed) / nAdjustables);
 		// Position the elements
 		SIZE szRemaining = szAvailable;
@@ -121,6 +129,9 @@ namespace DuiLib
 				}
 			}
 		}
+
+		//第二次循环，剩余可自动布局的空间均分给需要自动布局的子控件。
+
 		int iEstimate = 0;
 		int iAdjustable = 0;
 		int cxFixedRemaining = cxFixed;
@@ -147,6 +158,11 @@ namespace DuiLib
 			cxFixedRemaining = cxFixedRemaining - (rcPadding.left + rcPadding.right);
 			if (iEstimate > 1) cxFixedRemaining = cxFixedRemaining - m_iChildPadding;
 			SIZE sz = pControl->EstimateSize(szControlAvailable);
+			if(sz.cx == 0 && pControl->GetFixedWidthPercent() > 0)
+			{
+				sz.cx = szAvailable.cx * pControl->GetFixedWidthPercent() / 100;
+			}
+
 			if( sz.cx == 0 ) {
 				iAdjustable++;
 				sz.cx = cxExpand;
@@ -163,7 +179,13 @@ namespace DuiLib
 				cxFixedRemaining -= sz.cx;
 			}
 
-			sz.cy = pControl->GetMaxHeight();
+// 			sz.cy = pControl->GetMaxHeight();
+// 			if( sz.cy == 0 ) sz.cy = szAvailable.cy - rcPadding.top - rcPadding.bottom;
+// 			if( sz.cy < 0 ) sz.cy = 0;
+// 			if( sz.cy > szControlAvailable.cy ) sz.cy = szControlAvailable.cy;
+// 			if( sz.cy < pControl->GetMinHeight() ) sz.cy = pControl->GetMinHeight();
+			if(sz.cy == 0 && pControl->GetFixedHeight() == 0 && pControl->GetFixedHeightPercent() > 0) 
+				sz.cy = szAvailable.cy * pControl->GetFixedHeightPercent() / 100;
 			if( sz.cy == 0 ) sz.cy = szAvailable.cy - rcPadding.top - rcPadding.bottom;
 			if( sz.cy < 0 ) sz.cy = 0;
 			if( sz.cy > szControlAvailable.cy ) sz.cy = szControlAvailable.cy;

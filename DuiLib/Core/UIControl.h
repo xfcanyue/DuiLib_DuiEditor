@@ -124,6 +124,10 @@ namespace DuiLib {
 		virtual void SetFixedWidth(int cx);      // 预设的参考值
 		virtual int GetFixedHeight() const;      // 实际大小位置使用GetPos获取，这里得到的是预设的参考值
 		virtual void SetFixedHeight(int cy);     // 预设的参考值
+		virtual int GetFixedWidthPercent() const;
+		virtual void SetFixedWidthPercent(int cx);
+		virtual int GetFixedHeightPercent() const;
+		virtual void SetFixedHeightPercent(int cy);
 		virtual int GetMinWidth() const;
 		virtual void SetMinWidth(int cx);
 		virtual int GetMaxWidth() const;
@@ -136,6 +140,9 @@ namespace DuiLib {
 		virtual void SetFloatPercent(TPercentInfo piFloatPercent);
 		virtual void SetFloatAlign(UINT uAlign);
 		virtual UINT GetFloatAlign() const;
+
+		virtual void SetFloatPosition(POINT ptPosition);
+		virtual POINT GetFloatPosition() const;
 
 		virtual bool IsAutoCalcWidth() const;
 		virtual void SetAutoCalcWidth(bool bAutoCalcWidth);
@@ -243,6 +250,7 @@ namespace DuiLib {
 		RECT m_rcPadding;
 		SIZE m_cXY;
 		SIZE m_cxyFixed;
+		SIZE m_cxyFixedPercent;
 		SIZE m_cxyMin;
 		SIZE m_cxyMax;
 		bool m_bVisible;
@@ -256,6 +264,7 @@ namespace DuiLib {
 		bool m_bHot;
 		TPercentInfo m_piFloatPercent;
 		UINT m_uFloatAlign;
+		POINT m_ptFloatPosition;	//绝对定位时, 父控件左上角的百分比位置
 		bool m_bSetPos; // 防止SetPos循环调用
 
 		bool	m_bAutoCalcWidth;	//根据子控件或者文本等等自动计算宽度

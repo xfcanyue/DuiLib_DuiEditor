@@ -55,7 +55,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="shadowposition" default="0,0" type="SIZE" comment="算法阴影的偏移量" />
 		<Attribute name="shadowcolor" default="0x000000" type="DWORD" comment="算法阴影的颜色，RGB格式，不支持透明度，使用shadowdarkness设置透明度" />
 		<Attribute name="gdiplustext" default="false" type="BOOL" comment="是否用gdi+渲染文字（抗锯齿效果更好，默认开启，但是效率低）" />
-		<Attribute name="textrenderinghint" default="0" type="int" comment="gdi+渲染文字提示（0-5），字体大的时候可以设置为4" />
+		<Attribute name="textrenderinghint" default="0" type="INT" comment="gdi+渲染文字提示（0-5），字体大的时候可以设置为4" />
 	</Window>
 	<Include>
 		<Attribute name="source" default="" type="STRING" comment="XML布局文件" />
@@ -69,8 +69,13 @@ INT类型(最小值，最大值)：
 		<Attribute name="pos" default="0,0,0,0" type="RECT" comment="位置，如果为float控件则指定位置和大小，否则只指定大小,如(0,0,100,100)" />
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
+		<Attribute name="widthpercent" default="0" type="INT" value="0,100" comment="设为父控件的百分比宽度，范围0~100。" />
+		<Attribute name="heightpercent" default="0" type="INT" value="0,100" comment="设为父控件的百分比高度，范围0~100。" />
 		<Attribute name="float" default="false" type="BOOL" comment="是否使用绝对定位,如(true)" />
-		<Attribute name="floatalign" default="" type="STRING" value="left,right,center,top,bottom,vcenter" comment="用于控制float控件先对于父控件的对齐方式（left\center\right、top\vcenter\bottom）" />				
+		<Attribute name="floatpercent" default="0,0,0,0" type="RECT" comment="绝对定位时自适应比例，0~100。用于兼容旧版。优先级高于floatposition、floatsize。旧版是夹带在float属性中用浮点数表示，这里改为设置整数。" />
+		<Attribute name="floatalign" default="left" type="STRING" value="left,right,center" comment="用于控制float控件先对于父控件的对齐方式（left\center\right）" />				
+		<Attribute name="floatvalign" default="top" type="STRING" value="top,bottom,vcenter" comment="用于控制float控件先对于父控件的对齐方式（top\vcenter\bottom）" />				
+		<Attribute name="floatposition" default="0,0" type="POINT" value="0,100" comment="绝对定位时，相对父控件的左上角百分比位置, 范围0~100。" />
 		<Attribute name="autocalcwidth" default="false" type="BOOL" comment="根据子控件或者文本等等自动计算宽度" />
 		<Attribute name="autocalcheight" default="false" type="BOOL" comment="根据子控件或者文本等等自动计算高度" />
 		<Attribute name="padding" default="0,0,0,0" type="RECT" comment="外边距,如(2,2,2,2)" />

@@ -165,11 +165,11 @@ namespace DuiLib
 				m_uTextStyle &= ~(DT_BOTTOM | DT_VCENTER | DT_WORDBREAK);
 				m_uTextStyle |= (DT_TOP | DT_SINGLELINE);
 			}
-			if( _tcsstr(pstrValue, _T("vcenter")) != NULL ) {
+			else if( _tcsstr(pstrValue, _T("vcenter")) != NULL ) {
 				m_uTextStyle &= ~(DT_TOP | DT_BOTTOM | DT_WORDBREAK);            
 				m_uTextStyle |= (DT_VCENTER | DT_SINGLELINE);
 			}
-			if( _tcsstr(pstrValue, _T("bottom")) != NULL ) {
+			else if( _tcsstr(pstrValue, _T("bottom")) != NULL ) {
 				m_uTextStyle &= ~(DT_TOP | DT_VCENTER | DT_WORDBREAK);
 				m_uTextStyle |= (DT_BOTTOM | DT_SINGLELINE);
 			}
