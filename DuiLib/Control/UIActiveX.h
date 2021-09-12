@@ -3,7 +3,7 @@
 
 #pragma once
 
-struct IOleObject;
+//struct IOleObject;
 
 
 namespace DuiLib {

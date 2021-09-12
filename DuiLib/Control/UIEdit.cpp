@@ -33,6 +33,7 @@ namespace DuiLib
 
 	CEditWnd::CEditWnd() : m_pOwner(NULL), m_hBkBrush(NULL), m_bInit(false), m_bDrawCaret(false)
 	{
+		
 	}
 
 	void CEditWnd::Init(CEditUI* pOwner)
@@ -57,6 +58,8 @@ namespace DuiLib
 		else if(uTextStyle & DT_CENTER) uStyle |= ES_CENTER;
 		else if(uTextStyle & DT_RIGHT) uStyle |= ES_RIGHT;
 		if( m_pOwner->IsPasswordMode() ) uStyle |= ES_PASSWORD;
+		if( m_pOwner->IsMultiLine()) uStyle |= ES_MULTILINE | ES_AUTOVSCROLL;
+		if( m_pOwner->IsWantReturn()) uStyle |= ES_WANTRETURN;
 		Create(m_pOwner->GetManager()->GetPaintWindow(), NULL, uStyle, 0, rcPos);
 		HFONT hFont=NULL;
 		int iFontIndex=m_pOwner->GetFont();
@@ -91,7 +94,7 @@ namespace DuiLib
 			Edit_SetSel(m_hWnd, nSize, nSize);
 		}
 
-		m_bInit = true;    
+		m_bInit = true;   
 	}
 
 	RECT CEditWnd::CalPos()
@@ -102,10 +105,13 @@ namespace DuiLib
 		rcPos.top += rcInset.top;
 		rcPos.right -= rcInset.right;
 		rcPos.bottom -= rcInset.bottom;
-		LONG lEditHeight = m_pOwner->GetManager()->GetFontInfo(m_pOwner->GetFont())->tm.tmHeight;
-		if( lEditHeight < rcPos.GetHeight() ) {
-			rcPos.top += (rcPos.GetHeight() - lEditHeight) / 2;
-			rcPos.bottom = rcPos.top + lEditHeight;
+		if(m_pOwner && !m_pOwner->IsMultiLine())
+		{
+			LONG lEditHeight = m_pOwner->GetManager()->GetFontInfo(m_pOwner->GetFont())->tm.tmHeight;
+			if( lEditHeight < rcPos.GetHeight() ) {
+				rcPos.top += (rcPos.GetHeight() - lEditHeight) / 2;
+				rcPos.bottom = rcPos.top + lEditHeight;
+			}
 		}
 
 		CControlUI* pParent = m_pOwner;
@@ -167,8 +173,10 @@ namespace DuiLib
 				::InvalidateRect(m_hWnd, &rcClient, FALSE);
 			}
 		}
-		else if( uMsg == WM_KEYDOWN && TCHAR(wParam) == VK_RETURN ){
-			m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_RETURN);
+		else if( uMsg == WM_KEYDOWN && TCHAR(wParam) == VK_RETURN )
+		{
+			if(!m_pOwner->IsWantReturn())
+				m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_RETURN);
 		}
 		else if( uMsg == WM_KEYDOWN && TCHAR(wParam) == VK_TAB ){
 			if (m_pOwner->GetManager()->IsLayered()) {
@@ -261,7 +269,6 @@ namespace DuiLib
 		return 0;
 	}
 
-
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
 	//
@@ -273,6 +280,8 @@ namespace DuiLib
 	{
 		SetTextPadding(CDuiRect(4, 3, 4, 3));
 		SetBkColor(0xFFFFFFFF);
+		m_bMultiLine = false;
+		m_bWantReturn = false;
 	}
 
 	LPCTSTR CEditUI::GetClass() const
@@ -487,6 +496,12 @@ namespace DuiLib
 	}
 	bool CEditUI::IsUpperCase() const { return (m_iWindowStyls & ES_UPPERCASE) ? true:false; }
 
+	void CEditUI::SetMultiLine(bool bMultiLine) { m_bMultiLine = bMultiLine; }
+	bool CEditUI::IsMultiLine() const { return m_bMultiLine; }
+
+	void CEditUI::SetWantReturn(bool bWantReturn) { m_bWantReturn = bWantReturn; }
+	bool CEditUI::IsWantReturn() { return m_bWantReturn; }
+
 	int CEditUI::GetWindowStyls() const 
 	{
 		return m_iWindowStyls;
@@ -682,7 +697,8 @@ namespace DuiLib
 
 	SIZE CEditUI::EstimateSize(SIZE szAvailable)
 	{
-		if( m_cxyFixed.cy == 0 ) return CDuiSize(m_cxyFixed.cx, m_pManager->GetFontInfo(GetFont())->tm.tmHeight + 6);
+		if(IsAutoCalcHeight() && !IsMultiLine()) 
+			return CDuiSize(m_cxyFixed.cx, m_pManager->GetFontInfo(GetFont())->tm.tmHeight + 6);
 		return CControlUI::EstimateSize(szAvailable);
 	}
 
@@ -696,6 +712,8 @@ namespace DuiLib
 		else if( _tcsicmp(pstrName, _T("maxchar")) == 0 ) SetMaxChar(_ttoi(pstrValue));
 		else if( _tcsicmp(pstrName, _T("lowercase")) == 0 ) SetLowerCase(_tcsicmp(pstrValue, _T("true")) == 0);
 		else if( _tcsicmp(pstrName, _T("uppercase")) == 0 ) SetUpperCase(_tcsicmp(pstrValue, _T("true")) == 0);
+		else if( _tcsicmp(pstrName, _T("multiline")) == 0 ) SetMultiLine(_tcsicmp(pstrValue, _T("true")) == 0);
+		else if( _tcsicmp(pstrName, _T("wantreturn")) == 0 ) SetWantReturn(_tcsicmp(pstrValue, _T("true")) == 0);
 		else if( _tcsicmp(pstrName, _T("normalimage")) == 0 ) SetNormalImage(pstrValue);
 		else if( _tcsicmp(pstrName, _T("hotimage")) == 0 ) SetHotImage(pstrValue);
 		else if( _tcsicmp(pstrName, _T("focusedimage")) == 0 ) SetFocusedImage(pstrValue);
@@ -769,6 +787,17 @@ namespace DuiLib
 			}
 		}
 
+		UINT uTextStyle = GetTextStyle();
+		if(IsMultiLine())
+		{
+			//uTextStyle &= ~(DT_BOTTOM | DT_VCENTER);
+			uTextStyle = DT_LEFT | DT_TOP | DT_WORDBREAK | DT_EDITCONTROL;
+		}
+		else
+		{
+			uTextStyle |= DT_SINGLELINE;
+		}
+
 		RECT rc = m_rcItem;
 		rc.left += m_rcTextPadding.left;
 		rc.right -= m_rcTextPadding.right;
@@ -776,11 +805,20 @@ namespace DuiLib
 		rc.bottom -= m_rcTextPadding.bottom;
 		if( IsEnabled() ) {
 			CRenderEngine::DrawText(hDC, m_pManager, rc, sDrawText, mCurTextColor, \
-				m_iFont, DT_SINGLELINE | m_uTextStyle);
+				m_iFont, uTextStyle);
 		}
 		else {
 			CRenderEngine::DrawText(hDC, m_pManager, rc, sDrawText, m_dwDisabledTextColor, \
-				m_iFont, DT_SINGLELINE | m_uTextStyle);
+				m_iFont, uTextStyle);
 		}
+	}
+
+
+	bool CEditUI::OnEnableResponseDefaultKeyEvent(WPARAM wParam)
+	{
+		//按回车键时，如果焦点在当前控件，不响应默认按键事件。
+		if(wParam == VK_RETURN && IsWantReturn() && IsFocused() && m_pWindow != NULL )
+			return false;
+		return true;
 	}
 }

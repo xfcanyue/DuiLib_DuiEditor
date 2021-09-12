@@ -407,6 +407,11 @@ namespace DuiLib
 			if (szControlAvailable.cx > iControlMaxWidth) szControlAvailable.cx = iControlMaxWidth;
 			if (szControlAvailable.cy > iControlMaxHeight) szControlAvailable.cy = iControlMaxHeight;
 			SIZE sz = pControl->EstimateSize(szControlAvailable);
+			if(sz.cy == 0 && pControl->GetFixedHeightPercent() > 0)
+			{
+				sz.cy = szAvailable.cy * pControl->GetFixedHeightPercent() / 100;
+			}
+
 			if( sz.cy == 0 ) {
 				nAdjustables++;
 			}
@@ -475,6 +480,11 @@ namespace DuiLib
 			cyFixedRemaining = cyFixedRemaining - (rcPadding.top + rcPadding.bottom);
 			if (iEstimate > 1) cyFixedRemaining = cyFixedRemaining - m_iChildPadding;
 			SIZE sz = pControl->EstimateSize(szControlAvailable);
+			if(sz.cy == 0 && pControl->GetFixedHeightPercent() > 0)
+			{
+				sz.cy = szAvailable.cy * pControl->GetFixedHeightPercent() / 100;
+			}
+
 			if( sz.cy == 0 ) {
 				iAdjustable++;
 				sz.cy = cyExpand;
@@ -492,6 +502,8 @@ namespace DuiLib
 			}
 
 			sz.cx = MAX(sz.cx, 0);
+			if(sz.cx == 0 && pControl->GetFixedWidth() == 0 && pControl->GetFixedWidthPercent() > 0) 
+				sz.cx = szAvailable.cx * pControl->GetFixedWidthPercent() / 100;
 			if( sz.cx == 0 ) sz.cx = szAvailable.cx - rcPadding.left - rcPadding.right;
 			if( sz.cx > szControlAvailable.cx ) sz.cx = szControlAvailable.cx;
 			if( sz.cx < pControl->GetMinWidth() ) sz.cx = pControl->GetMinWidth();

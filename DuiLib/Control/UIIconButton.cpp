@@ -11,6 +11,8 @@ CIconButtonUI::CIconButtonUI(void) : m_szIcon(16,16)
 {
 	SetChildVAlign(DT_VCENTER);
 	Add(m_pIconUI = new CButtonUI);
+	m_pIconUI->SetFixedWidth(m_szIcon.cx);
+	m_pIconUI->SetFixedHeight(m_szIcon.cy);
 	m_pIconUI->SetMouseEnabled(false);
 }
 
@@ -34,6 +36,38 @@ void CIconButtonUI::DoInit()
 {
 	m_pIconUI->SetFixedWidth(m_szIcon.cx);
 	m_pIconUI->SetFixedHeight(m_szIcon.cy);
+}
+
+SIZE CIconButtonUI::EstimateSize(SIZE szAvailable)
+{
+	if (IsAutoCalcWidth() || IsAutoCalcHeight()) 
+	{
+		CDuiString sText = GetText();
+
+		RECT rcText = {0, 0, szAvailable.cx, szAvailable.cy};
+		int nLinks = 0;
+
+		if( m_bShowHtml ) CRenderEngine::DrawHtmlText(m_pManager->GetPaintDC(), m_pManager, rcText, sText, m_dwTextColor, NULL, NULL, nLinks, m_iFont, DT_CALCRECT | m_uTextStyle);
+		else CRenderEngine::DrawText(m_pManager->GetPaintDC(), m_pManager, rcText, sText, m_dwTextColor, m_iFont, DT_CALCRECT | m_uTextStyle);
+
+		if(IsAutoCalcWidth())
+		{	
+			int cx = rcText.right - rcText.left + m_rcInset.left + m_rcInset.right + m_rcTextPadding.left + m_rcTextPadding.right + m_szIcon.cx;
+			GetManager()->GetDPIObj()->Scale(cx);
+			m_cxyFixed.cx = cx;
+		}
+
+		if(IsAutoCalcHeight())
+		{
+			int cy = rcText.bottom - rcText.top + m_rcInset.top + m_rcInset.bottom + m_rcTextPadding.top + m_rcTextPadding.bottom + m_szIcon.cy;
+			GetManager()->GetDPIObj()->Scale(cy);
+			m_cxyFixed.cy = cy;
+		}
+
+		return CDuiSize(GetManager()->GetDPIObj()->Scale(m_cxyFixed.cx), GetManager()->GetDPIObj()->Scale(m_cxyFixed.cy));
+	}
+
+	return __super::EstimateSize(szAvailable);
 }
 
 void CIconButtonUI::PaintText(HDC hDC)

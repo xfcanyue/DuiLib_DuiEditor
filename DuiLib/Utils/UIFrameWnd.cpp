@@ -2,7 +2,7 @@
 #include "StdAfx.h"
 #include "UIFrameWnd.h"
 
-//namespace DuiLib{
+namespace DuiLib{
 
 CUIFrameWnd::CUIFrameWnd(void) : m_pApplication(NULL)
 {
@@ -373,3 +373,5 @@ void CUIFrameWnd::__InitWindow()
 
 	InitWindow();
 }
+
+} //namespace DuiLib{

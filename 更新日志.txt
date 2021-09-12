@@ -218,3 +218,13 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
    3, 增加widthpercent和heightpercent，相对父控件的宽度和高度。 优先级比width和height低。也就是说，只有with==0或height==0时，对应百分比才会生效。
    4，原来的floatalign也是夹带设置的，如 floatalign="right,vcenter"。不符合设计器的规则，现增加floatvalign属性。兼容旧版。
 
+
+2021-08-25
+   1, CEditUI支持多行，但是没有滚动条。
+   2，UIDialog增加默认按键响应
+   3, 增加CDynamicLayoutUI，支持参数设置横向布局或纵向布局。以后LabelLayout可能会从这个类继承。
+   4, 设计器，右键控件，弹出菜单增加生成样式表定义，把当前控件定义的属性转为Style定义。
+   5, 调整一些自动计算高度的问题。可能会有些不兼容，原来CEdit和CCombo的height=0时，会根据字体自动计算高度，改动之后以前没设置高度的这两控件会变成自动布局高度。
+   6, 修复加载svg偶尔崩溃的问题。
+   7, DuiLib内部使用的pugixml命名空间改为ui_pugi,避免静态编译时与外部使用pugixml冲突。
+   8, unzip.h，unzip.cpp，downloadmgr.h，FlashEventHandler.h，flash11.tlh 改为仅Include，不再包含在项目中。

@@ -180,9 +180,6 @@
     <ClCompile Include="Utils\UIShadow.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\unzip.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="Utils\Utils.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
@@ -299,6 +296,9 @@
     </ClCompile>
     <ClCompile Include="Core\UIXmlAttribute.cpp">
       <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Layout\UIDynamicLayout.cpp">
+      <Filter>Source Files\Layout</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -428,9 +428,6 @@
     <ClInclude Include="Layout\UITileLayout.h">
       <Filter>Header Files\Layout</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\downloadmgr.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="Utils\WebBrowserEventHandler.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
@@ -438,9 +435,6 @@
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Utils\DragDropImpl.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\FlashEventHandler.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Utils\observer_impl_base.h">
@@ -453,9 +447,6 @@
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Utils\UIShadow.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\unzip.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Utils\Utils.h">
@@ -581,9 +572,11 @@
     <ClInclude Include="Core\UIXmlAttribute.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Layout\UIDynamicLayout.h">
+      <Filter>Header Files\Layout</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Utils\Flash11.tlb" />
-    <None Include="Utils\flash11.tlh" />
   </ItemGroup>
 </Project>

@@ -88,6 +88,19 @@ LRESULT CMainFrame::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return __super::HandleMessage(uMsg, wParam, lParam);
 }
 
+void CMainFrame::Notify(TNotifyUI& msg)
+{
+	CString className = msg.pSender->GetClass();
+	CString ControlName = msg.pSender->GetName();
+	CString EventName = msg.sType;
+
+	CString strText;
+	strText.Format(_T("Notify: class='%s' name='%s' msg='%s'"), className, ControlName, EventName);
+	DuiWriteConsole(strText);
+
+	__super::Notify(msg);
+}
+
 void CMainFrame::LoadConfigXml()
 {
 	//load config.xml

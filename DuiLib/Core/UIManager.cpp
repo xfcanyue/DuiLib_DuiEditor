@@ -1,6 +1,5 @@
 #include "StdAfx.h"
 #include <zmouse.h>
-#include "LsStringConverter.h"
 
 namespace DuiLib {
 
@@ -3765,40 +3764,45 @@ namespace DuiLib {
 
 	CControlUI* CPaintManagerUI::GetRoot() const
 	{
-		ASSERT(m_pRoot);
+		//ASSERT(m_pRoot);
 		return m_pRoot;
 	}
 
 	CControlUI* CPaintManagerUI::FindControl(POINT pt) const
 	{
-		ASSERT(m_pRoot);
+		//ASSERT(m_pRoot);
+		if(!m_pRoot) return NULL;
 		return m_pRoot->FindControl(__FindControlFromPoint, &pt, UIFIND_VISIBLE | UIFIND_HITTEST | UIFIND_TOP_FIRST);
 	}
 
 	CControlUI* CPaintManagerUI::FindControl(LPCTSTR pstrName) const
 	{
-		ASSERT(m_pRoot);
+		//ASSERT(m_pRoot);
+		if(!m_pRoot) return NULL;
 		return static_cast<CControlUI*>(m_mNameHash.Find(pstrName));
 	}
 
 	CControlUI* CPaintManagerUI::FindSubControlByPoint(CControlUI* pParent, POINT pt) const
 	{
 		if( pParent == NULL ) pParent = GetRoot();
-		ASSERT(pParent);
+		//ASSERT(pParent);
+		if(!pParent) return NULL;
 		return pParent->FindControl(__FindControlFromPoint, &pt, UIFIND_VISIBLE | UIFIND_HITTEST | UIFIND_TOP_FIRST);
 	}
 
 	CControlUI* CPaintManagerUI::FindSubControlByName(CControlUI* pParent, LPCTSTR pstrName) const
 	{
 		if( pParent == NULL ) pParent = GetRoot();
-		ASSERT(pParent);
+		//ASSERT(pParent);
+		if(!pParent) return NULL;
 		return pParent->FindControl(__FindControlFromName, (LPVOID)pstrName, UIFIND_ALL);
 	}
 
 	CControlUI* CPaintManagerUI::FindSubControlByClass(CControlUI* pParent, LPCTSTR pstrClass, int iIndex)
 	{
 		if( pParent == NULL ) pParent = GetRoot();
-		ASSERT(pParent);
+		//ASSERT(pParent);
+		if(!pParent) return NULL;
 		m_aFoundControls.Resize(iIndex + 1);
 		return pParent->FindControl(__FindControlFromClass, (LPVOID)pstrClass, UIFIND_ALL);
 	}
@@ -3806,7 +3810,8 @@ namespace DuiLib {
 	CStdPtrArray* CPaintManagerUI::FindSubControlsByClass(CControlUI* pParent, LPCTSTR pstrClass)
 	{
 		if( pParent == NULL ) pParent = GetRoot();
-		ASSERT(pParent);
+		//ASSERT(pParent);
+		if(!pParent) return NULL;
 		m_aFoundControls.Empty();
 		pParent->FindControl(__FindControlsFromClass, (LPVOID)pstrClass, UIFIND_ALL);
 		return &m_aFoundControls;

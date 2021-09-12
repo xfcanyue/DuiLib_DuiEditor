@@ -147,16 +147,16 @@ using std::memset;
 
 // We put implementation details into an anonymous namespace in source mode, but have to keep it in non-anonymous namespace in header-only mode to prevent binary bloat.
 #ifdef PUGIXML_HEADER_ONLY
-#	define PUGI__NS_BEGIN namespace pugi { namespace impl {
+#	define PUGI__NS_BEGIN namespace ui_pugi { namespace impl {
 #	define PUGI__NS_END } }
 #	define PUGI__FN inline
 #	define PUGI__FN_NO_INLINE inline
 #else
 #	if defined(_MSC_VER) && _MSC_VER < 1300 // MSVC6 seems to have an amusing bug with anonymous namespaces inside namespaces
-#		define PUGI__NS_BEGIN namespace pugi { namespace impl {
+#		define PUGI__NS_BEGIN namespace ui_pugi { namespace impl {
 #		define PUGI__NS_END } }
 #	else
-#		define PUGI__NS_BEGIN namespace pugi { namespace impl { namespace {
+#		define PUGI__NS_BEGIN namespace ui_pugi { namespace impl { namespace {
 #		define PUGI__NS_END } } }
 #	endif
 #	define PUGI__FN
@@ -165,7 +165,7 @@ using std::memset;
 
 // uintptr_t
 #if (defined(_MSC_VER) && _MSC_VER < 1600) || (defined(__BORLANDC__) && __BORLANDC__ < 0x561)
-namespace pugi
+namespace ui_pugi
 {
 #	ifndef _UINTPTR_T_DEFINED
 	typedef size_t uintptr_t;
@@ -1045,7 +1045,7 @@ PUGI__NS_END
 #endif
 
 #ifdef PUGIXML_COMPACT
-namespace pugi
+namespace ui_pugi
 {
 	struct xml_attribute_struct
 	{
@@ -1090,7 +1090,7 @@ namespace pugi
 	};
 }
 #else
-namespace pugi
+namespace ui_pugi
 {
 	struct xml_attribute_struct
 	{
@@ -5068,7 +5068,7 @@ PUGI__NS_BEGIN
 	};
 PUGI__NS_END
 
-namespace pugi
+namespace ui_pugi
 {
 	PUGI__FN xml_writer_file::xml_writer_file(void* file_): file(file_)
 	{
@@ -7361,17 +7361,17 @@ namespace pugi
 namespace std
 {
 	// Workarounds for (non-standard) iterator category detection for older versions (MSVC7/IC8 and earlier)
-	PUGI__FN std::bidirectional_iterator_tag _Iter_cat(const pugi::xml_node_iterator&)
+	PUGI__FN std::bidirectional_iterator_tag _Iter_cat(const ui_pugi::xml_node_iterator&)
 	{
 		return std::bidirectional_iterator_tag();
 	}
 
-	PUGI__FN std::bidirectional_iterator_tag _Iter_cat(const pugi::xml_attribute_iterator&)
+	PUGI__FN std::bidirectional_iterator_tag _Iter_cat(const ui_pugi::xml_attribute_iterator&)
 	{
 		return std::bidirectional_iterator_tag();
 	}
 
-	PUGI__FN std::bidirectional_iterator_tag _Iter_cat(const pugi::xml_named_node_iterator&)
+	PUGI__FN std::bidirectional_iterator_tag _Iter_cat(const ui_pugi::xml_named_node_iterator&)
 	{
 		return std::bidirectional_iterator_tag();
 	}
@@ -12169,7 +12169,7 @@ PUGI__NS_BEGIN
 	}
 PUGI__NS_END
 
-namespace pugi
+namespace ui_pugi
 {
 #ifndef PUGIXML_NO_EXCEPTIONS
 	PUGI__FN xpath_exception::xpath_exception(const xpath_parse_result& result_): _result(result_)

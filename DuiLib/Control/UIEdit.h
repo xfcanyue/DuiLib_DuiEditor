@@ -34,6 +34,10 @@ namespace DuiLib
 		bool IsLowerCase() const;
 		void SetUpperCase(bool bUpperCase);
 		bool IsUpperCase() const;
+		void SetMultiLine(bool bMultiLine);
+		bool IsMultiLine() const;
+		void SetWantReturn(bool bWantReturn = true);
+		bool IsWantReturn();
 		int GetWindowStyls() const;
 
 		LPCTSTR GetNormalImage();
@@ -71,6 +75,7 @@ namespace DuiLib
 		void PaintStatusImage(HDC hDC);
 		void PaintText(HDC hDC);
 
+		virtual bool OnEnableResponseDefaultKeyEvent(WPARAM wParam) override;
 	protected:
 		CEditWnd* m_pWindow;
 
@@ -79,6 +84,10 @@ namespace DuiLib
 		bool m_bPasswordMode;
 		bool m_bAutoSelAll;
 		TCHAR m_cPasswordChar;
+
+		bool m_bMultiLine;
+		bool m_bWantReturn;
+
 		UINT m_uButtonState;
 		CDuiString m_sNormalImage;
 		CDuiString m_sHotImage;

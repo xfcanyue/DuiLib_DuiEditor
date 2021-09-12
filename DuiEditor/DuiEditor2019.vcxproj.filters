@@ -477,6 +477,9 @@
     <ClInclude Include="MyFilePath.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="DlgCreateStyleString.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -693,6 +696,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="MyFilePath.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgCreateStyleString.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

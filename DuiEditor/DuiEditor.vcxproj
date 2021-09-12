@@ -809,6 +809,7 @@
     <ClInclude Include="DlgBuildLanguagePackage.h" />
     <ClInclude Include="DlgBuildLanguagePackageEx.h" />
     <ClInclude Include="DlgCreateDuiDocument.h" />
+    <ClInclude Include="DlgCreateStyleString.h" />
     <ClInclude Include="DlgCustomControl.h" />
     <ClInclude Include="DlgInsertControl.h" />
     <ClInclude Include="MyDocument.h" />
@@ -886,6 +887,7 @@
     <ClCompile Include="DlgBuildLanguagePackage.cpp" />
     <ClCompile Include="DlgBuildLanguagePackageEx.cpp" />
     <ClCompile Include="DlgCreateDuiDocument.cpp" />
+    <ClCompile Include="DlgCreateStyleString.cpp" />
     <ClCompile Include="DlgCustomControl.cpp" />
     <ClCompile Include="DlgInsertControl.cpp" />
     <ClCompile Include="MyDocument.cpp" />

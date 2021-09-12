@@ -41,6 +41,7 @@
 
 // TODO: 在此处引用程序需要的其他头文件
 #include "../Duilib/Duilib.h"
+using namespace DuiLib;
 #include "Include/DuiPlugins.h"
 
 #ifdef _UNICODE
@@ -52,5 +53,5 @@ using namespace pugi;
 
 #include "DuiLib/LsStringConverter.h" 
 
-extern CDuiString g_strDuiPluginsPath;
+extern DuiLib::CDuiString g_strDuiPluginsPath;
 

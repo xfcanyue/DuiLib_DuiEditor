@@ -1,7 +1,6 @@
 #pragma once
 
-//namespace DuiLib{
-using namespace DuiLib;
+namespace DuiLib {
 
 class CUIFrameWnd;
 
@@ -33,4 +32,4 @@ protected:
 	CUIFrameWnd *m_pFrame;
 };
 
-//}
+} //namespace DuiLib {

@@ -80,6 +80,7 @@
 #include "Layout/UIVerticalLayout.h"
 #include "Layout/UIHorizontalLayout.h"
 #include "Layout/UITileLayout.h"
+#include "Layout/UIDynamicLayout.h"
 #include "Layout/UITabLayout.h"
 #include "Layout/UIChildLayout.h"
 

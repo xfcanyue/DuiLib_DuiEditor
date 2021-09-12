@@ -1,5 +1,4 @@
 #include "StdAfx.h"
-#include "LsStringConverter.h"
 
 #ifndef strtoll
 #define strtoll _strtoi64
@@ -431,7 +430,8 @@ namespace DuiLib {
 					if( dwSize == 0 ) break;
 
 					DWORD dwRead = 0;
-					pData = new BYTE[ dwSize ];
+					pData = new BYTE[ dwSize + 1 ];
+					pData[dwSize] = '\0';
 					::ReadFile( hFile, pData, dwSize, &dwRead, NULL );
 					::CloseHandle( hFile );
 
@@ -464,7 +464,8 @@ namespace DuiLib {
 					if( FindZipItem(hz, key, true, &i, &ze) != 0 ) break;
 					dwSize = ze.unc_size;
 					if( dwSize == 0 ) break;
-					pData = new BYTE[ dwSize ];
+					pData = new BYTE[ dwSize + 1];
+					pData[dwSize] = '\0';
 					int res = UnzipItem(hz, i, pData, dwSize);
 					if( res != 0x00000000 && res != 0x00000600) {
 						delete[] pData;
@@ -495,7 +496,8 @@ namespace DuiLib {
 
 				dwSize = ::SizeofResource(dllinstance, hResource);
 				if( dwSize == 0 ) break;
-				pData = new BYTE[ dwSize ];
+				pData = new BYTE[ dwSize + 1 ];
+				pData[dwSize] = '\0';
 				::CopyMemory(pData, (LPBYTE)::LockResource(hGlobal), dwSize);
 				::FreeResource(hResource);
 			}
@@ -511,7 +513,8 @@ namespace DuiLib {
 			if( dwSize == 0 ) break;
 
 			DWORD dwRead = 0;
-			pData = new BYTE[ dwSize ];
+			pData = new BYTE[ dwSize + 1];
+			pData[dwSize] = '\0';
 			::ReadFile( hFile, pData, dwSize, &dwRead, NULL );
 			::CloseHandle( hFile );
 
@@ -575,6 +578,7 @@ namespace DuiLib {
 
 	DWORD CRenderEngine::LoadImage2Memory(const STRINGorID &bitmap, LPCTSTR type, LPBYTE &pData, HINSTANCE instance)
 	{
+		//读取顺序  skin文件夹 ==> zip文件 ==> dll资源 ==> 文件绝对路径
 		assert(pData == NULL);
 		pData = NULL;
 		DWORD dwSize(0U);
@@ -594,7 +598,7 @@ namespace DuiLib {
 
 					DWORD dwRead = 0;
 					pData = new BYTE[ dwSize + 1 ];
-					memset(pData,0,dwSize+1);
+					pData[dwSize] = '\0';
 					::ReadFile( hFile, pData, dwSize, &dwRead, NULL );
 					::CloseHandle( hFile );
 
@@ -630,7 +634,8 @@ namespace DuiLib {
 					if( FindZipItem(hz, key, true, &i, &ze) != 0 ) break;
 					dwSize = ze.unc_size;
 					if( dwSize == 0 ) break;
-					pData = new BYTE[ dwSize ];
+					pData = new BYTE[ dwSize + 1];
+					pData[dwSize] = '\0';
 					int res = UnzipItem(hz, i, pData, dwSize);
 					if( res != 0x00000000 && res != 0x00000600)
 					{
@@ -667,7 +672,8 @@ namespace DuiLib {
 
 				dwSize = ::SizeofResource(dllinstance, hResource);
 				if( dwSize == 0 ) break;
-				pData = new BYTE[ dwSize ];
+				pData = new BYTE[ dwSize + 1];
+				pData[dwSize] = '\0';
 				::CopyMemory(pData, (LPBYTE)::LockResource(hGlobal), dwSize);
 				::FreeResource(hResource);
 			}
@@ -683,7 +689,8 @@ namespace DuiLib {
 			if( dwSize == 0 ) break;
 
 			DWORD dwRead = 0;
-			pData = new BYTE[ dwSize ];
+			pData = new BYTE[ dwSize + 1];
+			pData[dwSize] = '\0';
 			::ReadFile( hFile, pData, dwSize, &dwRead, NULL );
 			::CloseHandle( hFile );
 

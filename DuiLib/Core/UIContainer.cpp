@@ -676,11 +676,18 @@ namespace DuiLib
 				CControlUI *pControl = GetItemAt(it);
 				if(!pControl->IsVisible()) continue;
 				szControl = pControl->EstimateSize(szAvailable);
+				RECT padding = pControl->GetPadding();
 				if(IsAutoCalcWidth())
+				{
 					sz.cx += szControl.cx;
+					sz.cx += padding.left + padding.right;
+				}
 
 				if(IsAutoCalcHeight())
+				{	
 					sz.cy += szControl.cy;
+					sz.cy += padding.top + padding.bottom;
+				}
 			}
 
 			if(IsAutoCalcWidth())

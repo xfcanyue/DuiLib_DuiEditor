@@ -11,10 +11,10 @@
 #include "Utils/FlashEventHandler.h"
 #include "Utils/flash11.tlh"
 
-class CActiveXCtrl;
-
 namespace DuiLib
 {
+	class CActiveXCtrl;
+
 	class UILIB_API CFlashUI
 		: public CActiveXUI
 	//	, public IOleInPlaceSiteWindowless // 透明模式绘图，需要实现这个接口

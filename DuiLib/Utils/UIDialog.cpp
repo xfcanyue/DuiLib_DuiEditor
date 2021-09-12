@@ -2,12 +2,14 @@
 #include "StdAfx.h"
 #include "UIFrameWnd.h"
 
-//namespace DuiLib{
+namespace DuiLib{
 
 CUIDialog::CUIDialog(void)
 {
 	m_nMode = 0;
 	_bModal = false;
+	m_bEnterCloseOK=TRUE;
+	m_bEscCloseCancel=TRUE;
 }
 
 CUIDialog::~CUIDialog(void)
@@ -28,6 +30,46 @@ void CUIDialog::OnFinalMessage( HWND hWnd )
 		delete this;
 	}
 }
+
+LRESULT CUIDialog::ResponseDefaultKeyEvent(WPARAM wParam)
+{
+	if (wParam == VK_RETURN)
+	{
+		if(!IsEnterCloseOK())
+			return S_FALSE;
+
+		CControlUI *pFocus = GetManager()->GetFocus();
+		if(pFocus && !pFocus->OnEnableResponseDefaultKeyEvent(wParam))
+			return S_FALSE;
+
+		OnClickOK();
+		return S_OK;
+	}
+	else if (wParam == VK_ESCAPE)
+	{
+		if(!IsEscCloseCancel())
+			return S_FALSE;
+
+		CControlUI *pFocus = GetManager()->GetFocus();
+		if(pFocus && !pFocus->OnEnableResponseDefaultKeyEvent(wParam))
+			return S_FALSE;
+
+		OnClickCancel();
+		return S_OK;
+	}
+
+	return S_FALSE;
+}
+
+void CUIDialog::SetDefaultKeyEvent(BOOL bEnterCloseOK, BOOL bEscCloseCancel)
+{
+	m_bEnterCloseOK = bEnterCloseOK;
+	m_bEscCloseCancel = bEscCloseCancel;
+}
+
+BOOL CUIDialog::IsEnterCloseOK() const { return m_bEnterCloseOK; }
+
+BOOL CUIDialog::IsEscCloseCancel() const { return m_bEscCloseCancel; }
 
 UINT CUIDialog::DoModal(CUIFrmBase *pParentWnd)
 {
@@ -146,3 +188,5 @@ bool CUIDialog::on_tmd_delete()
 {
 	return true;
 }
+
+} // namespace DuiLib{

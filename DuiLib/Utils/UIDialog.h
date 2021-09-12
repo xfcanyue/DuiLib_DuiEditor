@@ -1,7 +1,6 @@
 #pragma once
 
-//namespace DuiLib{
-using namespace DuiLib;
+namespace DuiLib {
 
 #define TMD_ADD		1
 #define TMD_MODIFY	2
@@ -15,9 +14,18 @@ public:
 	int m_nMode;
 
 	virtual void OnFinalMessage( HWND hWnd );
+	virtual LRESULT ResponseDefaultKeyEvent(WPARAM wParam);
 
-	UINT DoModal(CUIFrmBase *pParentWnd = NULL);
-	void ShowDialog(CUIFrmBase *pParentWnd = NULL); //注意非模态窗口必须是new出来的。
+	//设置响应回车键和ESC的默认处理方式
+	virtual void SetDefaultKeyEvent(BOOL bEnterCloseOK=TRUE, BOOL bEscCloseCancel=TRUE);
+	virtual BOOL IsEnterCloseOK() const;
+	virtual BOOL IsEscCloseCancel() const;
+
+	//显示模态对话窗口
+	virtual UINT DoModal(CUIFrmBase *pParentWnd = NULL);
+
+	//显示非模态对话窗口, 注意非模态窗口必须是new出来的。
+	virtual void ShowDialog(CUIFrmBase *pParentWnd = NULL);
 
 	virtual void Notify(TNotifyUI& msg);
 
@@ -37,6 +45,8 @@ public:
 
 private:
 	bool _bModal;
+	BOOL m_bEnterCloseOK;
+	BOOL m_bEscCloseCancel;
 };
 
-//}
+} //namespace DuiLib {

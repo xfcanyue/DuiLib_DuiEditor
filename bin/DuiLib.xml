@@ -171,7 +171,7 @@ INT类型(最小值，最大值)：
 	</HorizontalLayout>
 	<DynamicLayout parent="Container" notifies="setfocus killfocus timer menu windowinit(root)">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
-		<Attribute name="layoutmode" default="HorizontalLayout" type="STRING" value="HorizontalLayout,VerticalLayout" comment="布局方式" />
+		<Attribute name="layout" default="HorizontalLayout" type="STRING" value="HorizontalLayout,VerticalLayout" comment="布局方式" />
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
 		<Attribute name="sepwidth" default="0" type="INT" comment="分隔符宽,负数分隔符在左边,如(-4)，整数分隔符在右边,如(4)" />
@@ -471,6 +471,8 @@ INT类型(最小值，最大值)：
 		<Attribute name="maxchar" default="255" type="INT" comment="输入字符最大长度，如(100)" />
 		<Attribute name="lowercase" default="false" type="BOOL" comment="强制小写" />	
 		<Attribute name="uppercase" default="false" type="BOOL" comment="强制大写" />	
+		<Attribute name="multiline" default="false" type="BOOL" comment="是否使用多行" />
+		<Attribute name="wantreturn" default="false" type="BOOL" comment="是否接受return按键消息,如(true)" />
 		<Attribute name="normalimage" default="" type="IMAGE" comment="普通状态图片" />
 		<Attribute name="hotimage" default="" type="IMAGE" comment="鼠标悬浮状态图片" />
 		<Attribute name="focusedimage" default="" type="IMAGE" comment="获得焦点状态图片" />

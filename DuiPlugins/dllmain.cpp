@@ -14,7 +14,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 			int  iNiValue = GetModuleFileName(hModule, czProgName, MAX_PATH);
 			if(iNiValue > 0)
 			{
-				CDuiString temp = czProgName;
+				DuiLib::CDuiString temp = czProgName;
 				g_strDuiPluginsPath = temp.Left(temp.ReverseFind('\\') + 1);
 			}
 		}

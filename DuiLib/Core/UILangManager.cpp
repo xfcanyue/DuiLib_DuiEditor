@@ -30,11 +30,11 @@ namespace DuiLib {
 		{
 			if( *(xml.m_lpstr) == _T('<') ) 
 			{
-				if( !xmlMarkup.Load(xml.m_lpstr) ) return NULL;
+				if( !xmlMarkup.load_string(xml.m_lpstr) ) return NULL;
 			}
 			else 
 			{
-				if( !xmlMarkup.LoadFromFile(xml.m_lpstr) ) return NULL;
+				if( !xmlMarkup.load_file(xml.m_lpstr) ) return NULL;
 			}
 		}
 		else
@@ -48,7 +48,7 @@ namespace DuiLib {
 				return NULL;
 			}
 
-			if( !xmlMarkup.LoadFromMem((BYTE*)::LockResource(hGlobal), ::SizeofResource(CPaintManagerUI::GetResourceDll(), hResource) )) {
+			if( !xmlMarkup.load_buffer((BYTE*)::LockResource(hGlobal), ::SizeofResource(CPaintManagerUI::GetResourceDll(), hResource) )) {
 				return NULL;
 			}
 			::FreeResource(hResource);
@@ -305,11 +305,11 @@ namespace DuiLib {
 		{
 			if( *(xml.m_lpstr) == _T('<') ) 
 			{
-				if( !xmlMarkup.Load(xml.m_lpstr) ) return NULL;
+				if( !xmlMarkup.load_string(xml.m_lpstr) ) return NULL;
 			}
 			else 
 			{
-				if( !xmlMarkup.LoadFromFile(xml.m_lpstr) ) return NULL;
+				if( !xmlMarkup.load_file(xml.m_lpstr) ) return NULL;
 			}
 		}
 		else
@@ -323,7 +323,7 @@ namespace DuiLib {
 				return NULL;
 			}
 
-			if( !xmlMarkup.LoadFromMem((BYTE*)::LockResource(hGlobal), ::SizeofResource(CPaintManagerUI::GetResourceDll(), hResource) )) {
+			if( !xmlMarkup.load_buffer((BYTE*)::LockResource(hGlobal), ::SizeofResource(CPaintManagerUI::GetResourceDll(), hResource) )) {
 				return NULL;
 			}
 			::FreeResource(hResource);

@@ -7,6 +7,7 @@ namespace DuiLib
 {
 
 #define UI_BINDCONTROL(classname, pControl, controlname)  { pControl = static_cast<classname *>(FindControl(controlname)); ASSERT(pControl); }
+#define UI_BINDSUBCONTROL(classname, pControl, controlname)  { pControl = static_cast<classname *>(FindSubControl(controlname)); ASSERT(pControl); }
 #define UI_COMMAND(controlname, fun) if(IsControl(msg, controlname)) { fun(); return; }
 
 class CUIDataExchange

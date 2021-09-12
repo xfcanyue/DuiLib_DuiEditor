@@ -1,20 +1,11 @@
 #include "StdAfx.h"
 
-#define PUGIXML_HEADER_ONLY
-#ifdef _UNICODE
-#define PUGIXML_WCHAR_MODE
-#endif
-#include "../Utils/pugixml/pugixml.hpp"
-using namespace pugi;
-
 namespace DuiLib {
 ///////////////////////////////////////////////////////////////////////////////////////
 //
 //
 //
-
-
-inline xml_attribute impxmlattr(PVOID attr) { return xml_attribute((xml_attribute_struct *)attr); }
+inline ui_pugi::xml_attribute impxmlattr(PVOID attr) { return ui_pugi::xml_attribute((ui_pugi::xml_attribute_struct *)attr); }
 
 CXmlAttributeUI::CXmlAttributeUI() : _attr(0)
 {

@@ -183,9 +183,6 @@
     <ClCompile Include="Utils\UIShadow.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\unzip.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="Utils\Utils.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
@@ -298,6 +295,9 @@
       <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="Layout\UITableLayout.cpp">
+      <Filter>Source Files\Layout</Filter>
+    </ClCompile>
+    <ClCompile Include="Layout\UIDynamicLayout.cpp">
       <Filter>Source Files\Layout</Filter>
     </ClCompile>
   </ItemGroup>
@@ -434,9 +434,6 @@
     <ClInclude Include="Layout\UITileLayout.h">
       <Filter>Header Files\Layout</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\downloadmgr.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="Utils\WebBrowserEventHandler.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
@@ -446,13 +443,7 @@
     <ClInclude Include="Utils\DragDropImpl.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\FlashEventHandler.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="Utils\observer_impl_base.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\stb_image.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Utils\TrayIcon.h">
@@ -462,9 +453,6 @@
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Utils\UIShadow.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\unzip.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Utils\Utils.h">
@@ -587,9 +575,11 @@
     <ClInclude Include="Layout\UITableLayout.h">
       <Filter>Header Files\Layout</Filter>
     </ClInclude>
+    <ClInclude Include="Layout\UIDynamicLayout.h">
+      <Filter>Header Files\Layout</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Utils\Flash11.tlb" />
-    <None Include="Utils\flash11.tlh" />
   </ItemGroup>
 </Project>

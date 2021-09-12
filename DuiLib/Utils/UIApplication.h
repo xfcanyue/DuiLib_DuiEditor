@@ -1,14 +1,13 @@
 #pragma once
 
-//namespace DuiLib{
-using namespace DuiLib;
+namespace DuiLib {
 
 /* _tWinMain里面调用顺序
 //////////////////////////////////////////////////////////////////////////
 
 //_CrtSetBreakAlloc(3297);
 
-uiApp.SetAppName(_T("ChargeMachine"));
+uiApp.SetAppName(_T("AppTitle"));
 
 #ifdef _DEBUG
 uiApp.SetResType_File(_T("skin"));
@@ -83,4 +82,4 @@ public:
 
 UILIB_API CUIApplication * __stdcall UIGetApp();
 
-//}
+}  //namespace DuiLib {

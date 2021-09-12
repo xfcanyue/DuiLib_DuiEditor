@@ -2,7 +2,7 @@
 #include "StdAfx.h"
 #include "UIFrameWnd.h"
 
-//namespace DuiLib{
+namespace DuiLib{
 
 CUIForm::CUIForm(void)
 {
@@ -13,3 +13,5 @@ CUIForm::~CUIForm(void)
 {
 	
 }
+
+} // namespace DuiLib{

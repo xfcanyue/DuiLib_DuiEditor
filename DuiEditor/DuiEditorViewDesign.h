@@ -102,6 +102,9 @@ public:
 	afx_msg void OnEditGenerateCode_IsMenuCommand();
 	afx_msg void OnUpdateEditGenerateCode_IsMenuCommand(CCmdUI *pCmdUI);
 
+	afx_msg void OnEditCreateStyleString();
+	afx_msg void OnUpdateEditCreateStyleString(CCmdUI *pCmdUI);
+
 	afx_msg void OnCommandTabLayoutSetSel(UINT nID);
 
 	afx_msg void OnFormatAlignLeft();

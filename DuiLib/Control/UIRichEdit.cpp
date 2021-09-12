@@ -1903,4 +1903,13 @@ namespace DuiLib {
 		return lResult;
 	}
 
+	bool CRichEditUI::OnEnableResponseDefaultKeyEvent(WPARAM wParam)
+	{
+		if(wParam == VK_RETURN && IsFocused() && (IsWantReturn() || IsWantCtrlReturn()) )
+			return false;
+		return true;
+	}
+
 } // namespace DuiLib
+
+	

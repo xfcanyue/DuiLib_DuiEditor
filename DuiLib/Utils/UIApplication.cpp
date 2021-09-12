@@ -2,7 +2,7 @@
 #include "StdAfx.h"
 #include "UIFrameWnd.h"
 
-//namespace DuiLib{
+namespace DuiLib{
 
 static CUIApplication *g_pApplication = NULL;
 UILIB_API CUIApplication * __stdcall UIGetApp()
@@ -184,3 +184,5 @@ bool CUIApplication::SetSingleApplication(bool bSingle, LPCTSTR szGuidName) //ֻ
 	m_GuidAppName = szGuidName;
 	return true;
 }
+
+} //namespace DuiLib{

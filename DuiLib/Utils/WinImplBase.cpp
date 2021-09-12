@@ -20,14 +20,14 @@ namespace DuiLib
 	{
 		if (wParam == VK_RETURN)
 		{
-			return FALSE;
+			return S_FALSE;
 		}
 		else if (wParam == VK_ESCAPE)
 		{
-			return TRUE;
+			return S_FALSE;
 		}
 
-		return FALSE;
+		return S_FALSE;
 	}
 
 	UINT WindowImplBase::GetClassStyle() const
@@ -45,7 +45,7 @@ namespace DuiLib
 		return NULL;
 	}
 
-	LRESULT WindowImplBase::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM /*lParam*/, bool& /*bHandled*/)
+	LRESULT WindowImplBase::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM /*lParam*/, bool& bHandled)
 	{
 		if (uMsg == WM_KEYDOWN)
 		{
@@ -53,12 +53,19 @@ namespace DuiLib
 			{
 			case VK_RETURN:
 			case VK_ESCAPE:
-				return ResponseDefaultKeyEvent(wParam);
+			{
+				LRESULT lResult = ResponseDefaultKeyEvent(wParam);
+				if(lResult == S_OK)
+				{
+					bHandled = true;
+					return S_OK;
+				}
+			}
 			default:
 				break;
 			}
 		}
-		return FALSE;
+		return S_FALSE;
 	}
 
 	LRESULT WindowImplBase::OnClose(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)

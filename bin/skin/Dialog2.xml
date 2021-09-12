@@ -3,17 +3,14 @@
 <Window size="700,500" sizebox="4,4,6,6" caption="0,0,0,25" roundcorner="5,5">
 	<Font id="0" name="微软雅黑" size="18" default="true" />
 	<Style name="style_comboex1" class="ComboEx" shared="true" value="dropbuttonsize=&quot;16,20&quot; dropbuttonnormalimage=&quot;images\common\combobox\下拉控件_默认.png&quot; dropbuttonhotimage=&quot;file='images\common\combobox\下拉控件_滑入.png' &quot; dropbuttonpushedimage=&quot;file='images\common\combobox\下拉控件_点击.png'  &quot; bordercolor=&quot;0xFFD9D9D9&quot; hotbordercolor=&quot;0xFF06A8FF&quot; bordersize=&quot;1&quot; " />
-	<VerticalLayout bkcolor="0xFFA6CAF0">
-		<HorizontalLayout width="1000" height="200">
-			<Control widthpercent="10" heightpercent="50" floatalign="center" floatvalign="bottom" bkcolor="0xFF000080" />
-			<Control widthpercent="30" bkcolor="0xFF808000" />
-			<Control widthpercent="10" bkcolor="0xFFC0DCC0" />
-			<Control pos="441,49,569,145" width="128" height="96" float="true" bkcolor="0xFFFFFFFF" />
+	<VerticalLayout inset="5,5,5,5" bkcolor="0xFFA6CAF0">
+		<HorizontalLayout>
+			<Label />
 		</HorizontalLayout>
 		<VerticalLayout>
-			<Control widthpercent="50" heightpercent="10" bkcolor="0xFF800000" />
-			<Control widthpercent="80" heightpercent="20" bkcolor="0xFF008080" />
-			<Control bkcolor="0xFFA0A0A4" />
+			<Edit height="100" multiline="true" wantreturn="true" tipvalue="xxxx" />
+			<RichEdit vscrollbar="true" autovscroll="true" autohscroll="true" wantreturn="true" wantctrlreturn="true" multiline="true" bkcolor="0xFFC0DCC0" />
 		</VerticalLayout>
+		<HorizontalLayout />
 	</VerticalLayout>
 </Window>

@@ -104,8 +104,8 @@ public:
 	virtual void *	GetAddressOfReturnValue() = 0;
 };
 
-UISCRIPT_API IScriptManager* __stdcall CreateScriptEngine();
-UISCRIPT_API void __stdcall DeleteScriptEngine(IScriptManager *pEngine);
+UISCRIPT_API DuiLib::IScriptManager* __stdcall CreateScriptEngine();
+UISCRIPT_API void __stdcall DeleteScriptEngine(DuiLib::IScriptManager *pEngine);
 
 UISCRIPT_API void __stdcall DuiScriptRegister();
 

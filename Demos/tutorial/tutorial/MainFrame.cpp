@@ -46,6 +46,7 @@ void CMainFrame::Notify(TNotifyUI& msg)
 
 void CMainFrame::InitWindow()
 {
+	//OpenZip(_T(""), NULL);
 	//°ó¶¨¿Ø¼þÖ¸Õë
 	//UI_BINDCONTROL(CImageBoxUI, m_pImageBox, _T("imagebox_1"));
 	UI_BINDCONTROL(CProgressUI, m_pProgress, _T("progress_1"));

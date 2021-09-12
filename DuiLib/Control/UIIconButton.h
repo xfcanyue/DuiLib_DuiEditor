@@ -14,6 +14,7 @@ public:
 	LPVOID GetInterface(LPCTSTR pstrName);
 
 	virtual void DoInit();
+	SIZE EstimateSize(SIZE szAvailable);
 
 	void PaintText(HDC hDC);
 

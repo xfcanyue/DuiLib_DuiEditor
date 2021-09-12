@@ -56,6 +56,7 @@ namespace DuiLib
 
 		LPCTSTR GetClass() const;
 		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual UINT GetControlFlags() const;
 
 		CTableLayoutUI *GetTable() const;
 
@@ -77,6 +78,7 @@ namespace DuiLib
 
 		LPCTSTR GetClass() const;
 		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual UINT GetControlFlags() const;
 
 		CTRUI *GetRow() const;
 		CTableLayoutUI *GetTable() const;

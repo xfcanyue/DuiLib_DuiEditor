@@ -225,12 +225,15 @@ namespace DuiLib {
 		virtual void PaintText(HDC hDC);
 		virtual void PaintBorder(HDC hDC);
 
+		//绘制时不受控件本身大小的限制
 		virtual void DoPostPaint(HDC hDC, const RECT& rcPaint);
 
 		//虚拟窗口参数
 		void SetVirtualWnd(LPCTSTR pstrValue);
 		CDuiString GetVirtualWnd() const;
 
+		//焦点控件是否允许窗口响应默认按键事件
+		virtual bool OnEnableResponseDefaultKeyEvent(WPARAM wParam) { return true; }
 	public:
 		CEventSource OnInit;
 		CEventSource OnDestroy;

@@ -159,6 +159,7 @@ namespace DuiLib {
 
 		LRESULT MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, bool& bHandled);
 
+		virtual bool OnEnableResponseDefaultKeyEvent(WPARAM wParam) override;
 	protected:
 		enum { 
 			DEFAULT_TIMERID = 20,

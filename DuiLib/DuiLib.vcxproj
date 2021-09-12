@@ -1072,6 +1072,7 @@
     <ClCompile Include="Layout\UIButtonLayout.cpp" />
     <ClCompile Include="Layout\UIChildLayout.cpp" />
     <ClCompile Include="Layout\UIChildWindow.cpp" />
+    <ClCompile Include="Layout\UIDynamicLayout.cpp" />
     <ClCompile Include="Layout\UIHorizontalLayout.cpp" />
     <ClCompile Include="Layout\UILabelLayout.cpp" />
     <ClCompile Include="Layout\UIOptionLayout.cpp" />
@@ -1116,24 +1117,6 @@
     <ClCompile Include="Utils\UIFrameBase.cpp" />
     <ClCompile Include="Utils\UIFrameWnd.cpp" />
     <ClCompile Include="Utils\UIShadow.cpp" />
-    <ClCompile Include="Utils\unzip.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='xsDebug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='xsDebug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='xsUnicodeDebug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='xsUnicodeDebug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='xsUnicodeRelease|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='xsUnicodeRelease|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='xsRelease|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='xsRelease|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="Utils\Utils.cpp" />
     <ClCompile Include="Utils\WinImplBase.cpp" />
   </ItemGroup>
@@ -1204,6 +1187,7 @@
     <ClInclude Include="Layout\UIButtonLayout.h" />
     <ClInclude Include="Layout\UIChildLayout.h" />
     <ClInclude Include="Layout\UIChildWindow.h" />
+    <ClInclude Include="Layout\UIDynamicLayout.h" />
     <ClInclude Include="Layout\UIHorizontalLayout.h" />
     <ClInclude Include="Layout\UILabelLayout.h" />
     <ClInclude Include="Layout\UIOptionLayout.h" />
@@ -1213,10 +1197,8 @@
     <ClInclude Include="Layout\UIVerticalLayout.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="UIlib.h" />
-    <ClInclude Include="Utils\downloadmgr.h" />
     <ClInclude Include="Utils\DPI.h" />
     <ClInclude Include="Utils\DragDropImpl.h" />
-    <ClInclude Include="Utils\FlashEventHandler.h" />
     <ClInclude Include="Utils\observer_impl_base.h" />
     <ClInclude Include="Utils\TrayIcon.h" />
     <ClInclude Include="Utils\UIApplication.h" />
@@ -1226,7 +1208,6 @@
     <ClInclude Include="Utils\UIFrameBase.h" />
     <ClInclude Include="Utils\UIFrameWnd.h" />
     <ClInclude Include="Utils\UIShadow.h" />
-    <ClInclude Include="Utils\unzip.h" />
     <ClInclude Include="Utils\Utils.h" />
     <ClInclude Include="Utils\VersionHelpers.h" />
     <ClInclude Include="Utils\WebBrowserEventHandler.h" />
@@ -1234,7 +1215,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Utils\Flash11.tlb" />
-    <None Include="Utils\flash11.tlh" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

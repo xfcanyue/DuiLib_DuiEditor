@@ -1,7 +1,7 @@
 #pragma once
 #include <list>
-//namespace DuiLib{
-using namespace DuiLib;
+
+namespace DuiLib {
 
 typedef MenuCmd MENUCOMMAND;
 
@@ -57,4 +57,4 @@ inline CMenuWnd *DuiCreateMenu(LPCTSTR xmlFile, CPaintManagerUI *pManager)
 	return pMenuWnd;
 }
 
-//}
+} //namespace DuiLib {

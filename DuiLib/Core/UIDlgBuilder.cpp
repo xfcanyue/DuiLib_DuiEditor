@@ -21,10 +21,10 @@ namespace DuiLib {
 
 		if( HIWORD(xml.m_lpstr) != NULL ) {
 			if( *(xml.m_lpstr) == _T('<') ) {
-				if( !m_xml.Load(xml.m_lpstr) ) return NULL;
+				if( !m_xml.load_string(xml.m_lpstr) ) return NULL;
 			}
 			else {
-				if( !m_xml.LoadFromFile(xml.m_lpstr) ) return NULL;
+				if( !m_xml.load_file(xml.m_lpstr) ) return NULL;
 			}
 		}
 		else {
@@ -46,7 +46,7 @@ namespace DuiLib {
 			}
 
 			m_pCallback = pCallback;
-			if( !m_xml.LoadFromMem((BYTE*)::LockResource(hGlobal), ::SizeofResource(dll_instence, hResource) )) return NULL;
+			if( !m_xml.load_buffer((BYTE*)::LockResource(hGlobal), ::SizeofResource(dll_instence, hResource) )) return NULL;
 			::FreeResource(hResource);
 			m_pstrtype = type;
 		}

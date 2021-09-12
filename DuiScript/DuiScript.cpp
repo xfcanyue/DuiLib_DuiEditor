@@ -38,12 +38,12 @@ extern "C" __declspec(dllexport) void __stdcall DeleteScriptHelper(IScriptHelper
 }
 */
 
-UISCRIPT_API IScriptManager* __stdcall CreateScriptEngine()
+UISCRIPT_API DuiLib::IScriptManager* __stdcall CreateScriptEngine()
 {
 	return new CScriptManager;
 }
 
-UISCRIPT_API void __stdcall DeleteScriptEngine(IScriptManager *pEngine)
+UISCRIPT_API void __stdcall DeleteScriptEngine(DuiLib::IScriptManager *pEngine)
 {
 	if(pEngine)
 	{

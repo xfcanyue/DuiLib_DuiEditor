@@ -286,6 +286,12 @@ namespace DuiLib
 		return __super::GetInterface(pstrName);
 	}
 
+	UINT CTRUI::GetControlFlags() const
+	{
+		return 0;
+	}
+
+
 	CTableLayoutUI *CTRUI::GetTable() const
 	{
 		CTableLayoutUI *pTable = NULL;
@@ -356,6 +362,11 @@ namespace DuiLib
 	{
 		if( _tcsicmp(pstrName, DUI_CTR_TABLECOL) == 0 ) return static_cast<CTDUI*>(this);
 		return __super::GetInterface(pstrName);
+	}
+
+	UINT CTDUI::GetControlFlags() const
+	{
+		return 0;
 	}
 
 	CTRUI *CTDUI::GetRow() const

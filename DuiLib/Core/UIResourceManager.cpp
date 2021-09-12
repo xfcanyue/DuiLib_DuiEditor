@@ -20,11 +20,11 @@ namespace DuiLib {
 		{
 			if( *(xml.m_lpstr) == _T('<') ) 
 			{
-				if( !m_xml.Load(xml.m_lpstr) ) return NULL;
+				if( !m_xml.load_string(xml.m_lpstr) ) return NULL;
 			}
 			else 
 			{
-				if( !m_xml.LoadFromFile(xml.m_lpstr) ) return NULL;
+				if( !m_xml.load_file(xml.m_lpstr) ) return NULL;
 			}
 		}
 		else
@@ -38,7 +38,7 @@ namespace DuiLib {
 				return NULL;
 			}
 
-			if( !m_xml.LoadFromMem((BYTE*)::LockResource(hGlobal), ::SizeofResource(CPaintManagerUI::GetResourceDll(), hResource) )) {
+			if( !m_xml.load_buffer((BYTE*)::LockResource(hGlobal), ::SizeofResource(CPaintManagerUI::GetResourceDll(), hResource) )) {
 				return NULL;
 			}
 			::FreeResource(hResource);
@@ -139,10 +139,10 @@ namespace DuiLib {
 	{
 		CXmlDocumentUI xml;
 		if( *(pstrXml) == _T('<') ) {
-			if( !xml.Load(pstrXml) ) return FALSE;
+			if( !xml.load_string(pstrXml) ) return FALSE;
 		}
 		else {
-			if( !xml.LoadFromFile(pstrXml) ) return FALSE;
+			if( !xml.load_file(pstrXml) ) return FALSE;
 		}
 
 		CXmlNodeUI nodeRes = xml.child(_T("Res"));

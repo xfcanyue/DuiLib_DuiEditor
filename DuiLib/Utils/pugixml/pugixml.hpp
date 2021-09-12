@@ -129,7 +129,7 @@
 #	define PUGIXML_CHAR char
 #endif
 
-namespace pugi
+namespace ui_pugi
 {
 	// Character type used for all internal storage and operations; depends on PUGIXML_WCHAR_MODE
 	typedef PUGIXML_CHAR char_t;
@@ -141,7 +141,7 @@ namespace pugi
 }
 
 // The PugiXML namespace
-namespace pugi
+namespace ui_pugi
 {
 	// Tree node types
 	enum xml_node_type
@@ -1450,9 +1450,9 @@ namespace pugi
 namespace std
 {
 	// Workarounds for (non-standard) iterator category detection for older versions (MSVC7/IC8 and earlier)
-	std::bidirectional_iterator_tag PUGIXML_FUNCTION _Iter_cat(const pugi::xml_node_iterator&);
-	std::bidirectional_iterator_tag PUGIXML_FUNCTION _Iter_cat(const pugi::xml_attribute_iterator&);
-	std::bidirectional_iterator_tag PUGIXML_FUNCTION _Iter_cat(const pugi::xml_named_node_iterator&);
+	std::bidirectional_iterator_tag PUGIXML_FUNCTION _Iter_cat(const ui_pugi::xml_node_iterator&);
+	std::bidirectional_iterator_tag PUGIXML_FUNCTION _Iter_cat(const ui_pugi::xml_attribute_iterator&);
+	std::bidirectional_iterator_tag PUGIXML_FUNCTION _Iter_cat(const ui_pugi::xml_named_node_iterator&);
 }
 #endif
 

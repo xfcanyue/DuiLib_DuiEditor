@@ -12,6 +12,7 @@ public:
 
 	virtual void InitWindow();
 	virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
+	virtual void Notify(TNotifyUI& msg) override;
 
 	void LoadConfigXml();
 };

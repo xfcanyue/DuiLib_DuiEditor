@@ -48,9 +48,11 @@
 				<ListLabelElement resourceid="19" text="Text2" />
 			</ComboEx>
 		</HorizontalLayout>
-		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
+		<HorizontalLayout height="60" childpadding="10" childvalign="vcenter">
 			<Label text="编辑框" autocalcwidth="true" resourceid="20" />
 			<Edit width="150" tipvalue="编辑框" bordercolor="0xFFC0C0C0" bordersize="1" resourceid="39" tooltip="真的是编辑框" />
+			<Label text="多行编辑框" autocalcwidth="true" />
+			<Edit width="150" height="60" multiline="true" wantreturn="true" tipvalue="编辑框" valign="top" bordercolor="0xFFC0C0C0" bordersize="1" />
 		</HorizontalLayout>
 		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
 			<Label text="日期" autocalcwidth="true" resourceid="21" />

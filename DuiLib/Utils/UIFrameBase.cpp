@@ -2,7 +2,7 @@
 #include "StdAfx.h"
 #include "UIFrameWnd.h"
 
-//namespace DuiLib{
+namespace DuiLib{
 
 CUIFrmBase::CUIFrmBase(void)
 {
@@ -76,3 +76,6 @@ DUI_BEGIN_MESSAGE_MAP(CUIFrmBase,CNotifyPump)
 	DUI_ON_MSGTYPE(DUI_MSGTYPE_GRID_GETDISPINFO,	OnNotityGridGetDispInfo)
 	DUI_ON_MSGTYPE(DUI_MSGTYPE_SCI_NOTIFY,			 OnNotifySciNotify)
 DUI_END_MESSAGE_MAP()
+
+
+} //namespace DuiLib{

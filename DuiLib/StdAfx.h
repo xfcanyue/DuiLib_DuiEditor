@@ -86,6 +86,14 @@
 #define MIN min
 #define CLAMP(x,a,b) (MIN(b,MAX(a,x)))
 
+//////////////////////////////////////////////////////////////////////////
+#include "Utils/LsStringConverter.h"
+
+#define PUGIXML_HEADER_ONLY
+#ifdef _UNICODE
+#define PUGIXML_WCHAR_MODE
+#endif
+#include "Utils/pugixml/pugixml.hpp"
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 

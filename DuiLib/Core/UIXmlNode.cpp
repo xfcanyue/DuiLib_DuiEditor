@@ -1,45 +1,37 @@
 #include "StdAfx.h"
 
-#define PUGIXML_HEADER_ONLY
-#ifdef _UNICODE
-#define PUGIXML_WCHAR_MODE
-#endif
-#include "../Utils/pugixml/pugixml.hpp"
-using namespace pugi;
-
 namespace DuiLib {
 ///////////////////////////////////////////////////////////////////////////////////////
 //
 //
 //
+inline static ui_pugi::xml_node impxmlnode(PVOID node_struct) { return ui_pugi::xml_node((ui_pugi::xml_node_struct *)node_struct); }
 
-inline static xml_node impxmlnode(PVOID node_struct) { return xml_node((xml_node_struct *)node_struct); }
-
-inline static xml_node_type impnodetype(xml_node_type_ui type)
+inline static ui_pugi::xml_node_type impnodetype(xml_node_type_ui type)
 {
-	if(type == ui_node_null)		return node_null;
-	if(type == ui_node_document)	return node_document;
-	if(type == ui_node_element)		return node_element;
-	if(type == ui_node_pcdata)		return node_pcdata;
-	if(type == ui_node_cdata)		return node_cdata;
-	if(type == ui_node_comment)		return node_comment;
-	if(type == ui_node_pi)			return node_pi;
-	if(type == ui_node_declaration)	return node_declaration;
-	if(type == ui_node_doctype)		return node_doctype;
-	return node_null;
+	if(type == ui_node_null)		return ui_pugi::node_null;
+	if(type == ui_node_document)	return ui_pugi::node_document;
+	if(type == ui_node_element)		return ui_pugi::node_element;
+	if(type == ui_node_pcdata)		return ui_pugi::node_pcdata;
+	if(type == ui_node_cdata)		return ui_pugi::node_cdata;
+	if(type == ui_node_comment)		return ui_pugi::node_comment;
+	if(type == ui_node_pi)			return ui_pugi::node_pi;
+	if(type == ui_node_declaration)	return ui_pugi::node_declaration;
+	if(type == ui_node_doctype)		return ui_pugi::node_doctype;
+	return ui_pugi::node_null;
 }
 
-inline static xml_node_type_ui impnodetype(xml_node_type type)
+inline static xml_node_type_ui impnodetype(ui_pugi::xml_node_type type)
 {
-	if(type == node_null)			return ui_node_null;
-	if(type == node_document)		return ui_node_document;
-	if(type == node_element)		return ui_node_element;
-	if(type == node_pcdata)			return ui_node_pcdata;
-	if(type == node_cdata)			return ui_node_cdata;
-	if(type == node_comment)		return ui_node_comment;
-	if(type == node_pi)				return ui_node_pi;
-	if(type == node_declaration)	return ui_node_declaration;
-	if(type == node_doctype)		return ui_node_doctype;
+	if(type == ui_pugi::node_null)			return ui_node_null;
+	if(type == ui_pugi::node_document)		return ui_node_document;
+	if(type == ui_pugi::node_element)		return ui_node_element;
+	if(type == ui_pugi::node_pcdata)		return ui_node_pcdata;
+	if(type == ui_pugi::node_cdata)			return ui_node_cdata;
+	if(type == ui_pugi::node_comment)		return ui_node_comment;
+	if(type == ui_pugi::node_pi)			return ui_node_pi;
+	if(type == ui_pugi::node_declaration)	return ui_node_declaration;
+	if(type == ui_pugi::node_doctype)		return ui_node_doctype;
 	return ui_node_null;
 }
 
@@ -183,32 +175,32 @@ CXmlAttributeUI CXmlNodeUI::prepend_attribute(LPCTSTR name)
 
 CXmlAttributeUI CXmlNodeUI::insert_attribute_after(LPCTSTR name, const CXmlAttributeUI& attr)
 {
-	return CXmlAttributeUI(impxmlnode(_root).insert_attribute_after(name, xml_attribute((xml_attribute_struct *)attr.internal_object())).internal_object());
+	return CXmlAttributeUI(impxmlnode(_root).insert_attribute_after(name, ui_pugi::xml_attribute((ui_pugi::xml_attribute_struct *)attr.internal_object())).internal_object());
 }
 
 CXmlAttributeUI CXmlNodeUI::insert_attribute_before(LPCTSTR name, const CXmlAttributeUI& attr)
 {
-	return CXmlAttributeUI(impxmlnode(_root).insert_attribute_before(name, xml_attribute((xml_attribute_struct *)attr.internal_object())).internal_object());
+	return CXmlAttributeUI(impxmlnode(_root).insert_attribute_before(name, ui_pugi::xml_attribute((ui_pugi::xml_attribute_struct *)attr.internal_object())).internal_object());
 }
 
 CXmlAttributeUI CXmlNodeUI::append_copy(const CXmlAttributeUI& proto)
 {
-	return CXmlAttributeUI(impxmlnode(_root).append_copy(xml_attribute((xml_attribute_struct *)proto.internal_object())).internal_object());
+	return CXmlAttributeUI(impxmlnode(_root).append_copy(ui_pugi::xml_attribute((ui_pugi::xml_attribute_struct *)proto.internal_object())).internal_object());
 }
 
 CXmlAttributeUI CXmlNodeUI::prepend_copy(const CXmlAttributeUI& proto)
 {
-	return CXmlAttributeUI(impxmlnode(_root).prepend_copy(xml_attribute((xml_attribute_struct *)proto.internal_object())).internal_object());
+	return CXmlAttributeUI(impxmlnode(_root).prepend_copy(ui_pugi::xml_attribute((ui_pugi::xml_attribute_struct *)proto.internal_object())).internal_object());
 }
 
 CXmlAttributeUI CXmlNodeUI::insert_copy_after(const CXmlAttributeUI& proto, const CXmlAttributeUI& attr)
 {
-	return CXmlAttributeUI(impxmlnode(_root).insert_copy_after(xml_attribute((xml_attribute_struct *)proto.internal_object()), xml_attribute((xml_attribute_struct *)attr.internal_object())).internal_object());
+	return CXmlAttributeUI(impxmlnode(_root).insert_copy_after(ui_pugi::xml_attribute((ui_pugi::xml_attribute_struct *)proto.internal_object()), ui_pugi::xml_attribute((ui_pugi::xml_attribute_struct *)attr.internal_object())).internal_object());
 }
 
 CXmlAttributeUI CXmlNodeUI::insert_copy_before(const CXmlAttributeUI& proto, const CXmlAttributeUI& attr)
 {
-	return CXmlAttributeUI(impxmlnode(_root).insert_copy_before(xml_attribute((xml_attribute_struct *)proto.internal_object()), xml_attribute((xml_attribute_struct *)attr.internal_object())).internal_object());
+	return CXmlAttributeUI(impxmlnode(_root).insert_copy_before(ui_pugi::xml_attribute((ui_pugi::xml_attribute_struct *)proto.internal_object()), ui_pugi::xml_attribute((ui_pugi::xml_attribute_struct *)attr.internal_object())).internal_object());
 }
 
 CXmlNodeUI CXmlNodeUI::append_child(xml_node_type_ui type)
@@ -223,12 +215,12 @@ CXmlNodeUI CXmlNodeUI::prepend_child(xml_node_type_ui type)
 
 CXmlNodeUI CXmlNodeUI::insert_child_after(xml_node_type_ui type, const CXmlNodeUI& node)
 {
-	return CXmlNodeUI(impxmlnode(_root).insert_child_after(impnodetype(type), xml_node((xml_node_struct *)node.internal_object())).internal_object());
+	return CXmlNodeUI(impxmlnode(_root).insert_child_after(impnodetype(type), ui_pugi::xml_node((ui_pugi::xml_node_struct *)node.internal_object())).internal_object());
 }
 
 CXmlNodeUI CXmlNodeUI::insert_child_before(xml_node_type_ui type, const CXmlNodeUI& node)
 {
-	return CXmlNodeUI(impxmlnode(_root).insert_child_before(impnodetype(type), xml_node((xml_node_struct *)node.internal_object())).internal_object());
+	return CXmlNodeUI(impxmlnode(_root).insert_child_before(impnodetype(type), ui_pugi::xml_node((ui_pugi::xml_node_struct *)node.internal_object())).internal_object());
 }
 
 CXmlNodeUI CXmlNodeUI::append_child(LPCTSTR name)
@@ -243,57 +235,57 @@ CXmlNodeUI CXmlNodeUI::prepend_child(LPCTSTR name)
 
 CXmlNodeUI CXmlNodeUI::insert_child_after(LPCTSTR name, const CXmlNodeUI& node)
 {
-	return CXmlNodeUI(impxmlnode(_root).insert_child_after(name, xml_node((xml_node_struct *)node.internal_object())).internal_object());
+	return CXmlNodeUI(impxmlnode(_root).insert_child_after(name, ui_pugi::xml_node((ui_pugi::xml_node_struct *)node.internal_object())).internal_object());
 }
 
 CXmlNodeUI CXmlNodeUI::insert_child_before(LPCTSTR name, const CXmlNodeUI& node)
 {
-	return CXmlNodeUI(impxmlnode(_root).insert_child_before(name, xml_node((xml_node_struct *)node.internal_object())).internal_object());
+	return CXmlNodeUI(impxmlnode(_root).insert_child_before(name, ui_pugi::xml_node((ui_pugi::xml_node_struct *)node.internal_object())).internal_object());
 }
 
 CXmlNodeUI CXmlNodeUI::append_copy(const CXmlNodeUI& proto)
 {
-	return CXmlNodeUI(impxmlnode(_root).append_copy(xml_node((xml_node_struct *)proto.internal_object())).internal_object());
+	return CXmlNodeUI(impxmlnode(_root).append_copy(ui_pugi::xml_node((ui_pugi::xml_node_struct *)proto.internal_object())).internal_object());
 }
 
 CXmlNodeUI CXmlNodeUI::prepend_copy(const CXmlNodeUI& proto)
 {
-	return CXmlNodeUI(impxmlnode(_root).prepend_copy(xml_node((xml_node_struct *)proto.internal_object())).internal_object());
+	return CXmlNodeUI(impxmlnode(_root).prepend_copy(ui_pugi::xml_node((ui_pugi::xml_node_struct *)proto.internal_object())).internal_object());
 }
 
 CXmlNodeUI CXmlNodeUI::insert_copy_after(const CXmlNodeUI& proto, const CXmlNodeUI& node)
 {
-	return CXmlNodeUI(impxmlnode(_root).insert_copy_after(xml_node((xml_node_struct *)proto.internal_object()), xml_node((xml_node_struct *)node.internal_object())).internal_object());
+	return CXmlNodeUI(impxmlnode(_root).insert_copy_after(ui_pugi::xml_node((ui_pugi::xml_node_struct *)proto.internal_object()), ui_pugi::xml_node((ui_pugi::xml_node_struct *)node.internal_object())).internal_object());
 }
 
 CXmlNodeUI CXmlNodeUI::insert_copy_before(const CXmlNodeUI& proto, const CXmlNodeUI& node)
 {
-	return CXmlNodeUI(impxmlnode(_root).insert_copy_after(xml_node((xml_node_struct *)proto.internal_object()), xml_node((xml_node_struct *)node.internal_object())).internal_object());
+	return CXmlNodeUI(impxmlnode(_root).insert_copy_after(ui_pugi::xml_node((ui_pugi::xml_node_struct *)proto.internal_object()), ui_pugi::xml_node((ui_pugi::xml_node_struct *)node.internal_object())).internal_object());
 }
 
 CXmlNodeUI CXmlNodeUI::append_move(const CXmlNodeUI& moved)
 {
-	return CXmlNodeUI(impxmlnode(_root).append_move(xml_node((xml_node_struct *)moved.internal_object())).internal_object());
+	return CXmlNodeUI(impxmlnode(_root).append_move(ui_pugi::xml_node((ui_pugi::xml_node_struct *)moved.internal_object())).internal_object());
 }
 
 CXmlNodeUI CXmlNodeUI::prepend_move(const CXmlNodeUI& moved)
 {
-	return CXmlNodeUI(impxmlnode(_root).prepend_move(xml_node((xml_node_struct *)moved.internal_object())).internal_object());
+	return CXmlNodeUI(impxmlnode(_root).prepend_move(ui_pugi::xml_node((ui_pugi::xml_node_struct *)moved.internal_object())).internal_object());
 }
 
 CXmlNodeUI CXmlNodeUI::insert_move_after(const CXmlNodeUI& moved, const CXmlNodeUI& node)
 {
-	return CXmlNodeUI(impxmlnode(_root).insert_move_after(xml_node((xml_node_struct *)moved.internal_object()), xml_node((xml_node_struct *)node.internal_object())).internal_object());
+	return CXmlNodeUI(impxmlnode(_root).insert_move_after(ui_pugi::xml_node((ui_pugi::xml_node_struct *)moved.internal_object()), ui_pugi::xml_node((ui_pugi::xml_node_struct *)node.internal_object())).internal_object());
 }
 
 CXmlNodeUI CXmlNodeUI::insert_move_before(const CXmlNodeUI& moved, const CXmlNodeUI& node)
 {
-	return CXmlNodeUI(impxmlnode(_root).insert_move_before(xml_node((xml_node_struct *)moved.internal_object()), xml_node((xml_node_struct *)node.internal_object())).internal_object());
+	return CXmlNodeUI(impxmlnode(_root).insert_move_before(ui_pugi::xml_node((ui_pugi::xml_node_struct *)moved.internal_object()), ui_pugi::xml_node((ui_pugi::xml_node_struct *)node.internal_object())).internal_object());
 }
 
 bool CXmlNodeUI::remove_attribute(const CXmlAttributeUI& a)
 {
-	return impxmlnode(_root).remove_attribute(xml_attribute((xml_attribute_struct *)a.internal_object()));
+	return impxmlnode(_root).remove_attribute(ui_pugi::xml_attribute((ui_pugi::xml_attribute_struct *)a.internal_object()));
 }
 
 bool CXmlNodeUI::remove_attribute(LPCTSTR name)
@@ -308,7 +300,7 @@ bool CXmlNodeUI::remove_attributes()
 
 bool CXmlNodeUI::remove_child(const CXmlNodeUI& n)
 {
-	return impxmlnode(_root).remove_child(xml_node((xml_node_struct *)n.internal_object()));
+	return impxmlnode(_root).remove_child(ui_pugi::xml_node((ui_pugi::xml_node_struct *)n.internal_object()));
 }
 
 bool CXmlNodeUI::remove_child(LPCTSTR name)

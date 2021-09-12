@@ -1,34 +1,26 @@
 #include "StdAfx.h"
-#include "LsStringConverter.h"
-
-#define PUGIXML_HEADER_ONLY
-#ifdef _UNICODE
-#define PUGIXML_WCHAR_MODE
-#endif
-#include "../Utils/pugixml/pugixml.hpp"
-using namespace pugi;
 
 namespace DuiLib {
 ///////////////////////////////////////////////////////////////////////////////////////
 //
 //
 //
-inline xml_document *impxmldoc(PVOID pdoc) { return (xml_document *)pdoc; }
+inline ui_pugi::xml_document *impxmldoc(PVOID pdoc) { return (ui_pugi::xml_document *)pdoc; }
 
 CXmlDocumentUI::CXmlDocumentUI()
 {
-	_xml_document = new xml_document;
+	_xml_document = new ui_pugi::xml_document;
 }
 
 CXmlDocumentUI::~CXmlDocumentUI()
 {
-	delete (xml_document *)_xml_document;
+	delete (ui_pugi::xml_document *)_xml_document;
 }
 
-bool CXmlDocumentUI::Load(LPCTSTR pstrXML)
+bool CXmlDocumentUI::load_string(LPCTSTR pstrXML)
 {
-	xml_parse_result ret = impxmldoc(_xml_document)->load_string(pstrXML, pugi::parse_full);
-	if(ret.status != pugi::status_ok)
+	ui_pugi::xml_parse_result ret = impxmldoc(_xml_document)->load_string(pstrXML, ui_pugi::parse_full);
+	if(ret.status != ui_pugi::status_ok)
 	{
 		LSSTRING_CONVERSION;
 		return _Failed(LSA2T(ret.description()));
@@ -37,27 +29,22 @@ bool CXmlDocumentUI::Load(LPCTSTR pstrXML)
 	return true;
 }
 
-bool CXmlDocumentUI::LoadFromMem(BYTE* pByte, DWORD dwSize)
+bool CXmlDocumentUI::load_buffer(const void* contents, size_t size)
 {
-	int x = sizeof(xml_node_struct);
-	LSSTRING_CONVERSION;
-#ifdef _UNICODE
-	xml_parse_result ret = impxmldoc(_xml_document)->load_buffer(pByte, dwSize, pugi::parse_full);
-#else
-	const char *pstrAscii = LSUTF82A((const char *)pByte);
-	xml_parse_result ret = impxmldoc(_xml_document)->load_buffer(pstrAscii, strlen(pstrAscii), pugi::parse_full);
-#endif
-
-	if(ret.status != pugi::status_ok)
+	ui_pugi::xml_parse_result ret = impxmldoc(_xml_document)->load_buffer(contents, size, ui_pugi::parse_full);
+	if(ret.status != ui_pugi::status_ok)
 	{
-		return _Failed(LSA2T(ret.description()));
+		LSSTRING_CONVERSION;
+		return _Failed(LSUTF82T(ret.description()));
 	}
 	_root = impxmldoc(_xml_document)->root().internal_object();
 	return true;
 }
 
-bool CXmlDocumentUI::LoadFromFile(LPCTSTR pstrFilename)
+bool CXmlDocumentUI::load_file(LPCTSTR pstrFilename)
 {
+	m_sFileName = pstrFilename;
+
 	CDuiString sFile = CPaintManagerUI::GetResourcePath();
 	if( CPaintManagerUI::GetResourceZip().IsEmpty() ) {
 		sFile += pstrFilename;
@@ -68,7 +55,8 @@ bool CXmlDocumentUI::LoadFromFile(LPCTSTR pstrFilename)
 		if ( dwSize > 4096*1024 ) return _Failed(_T("File too large"));
 
 		DWORD dwRead = 0;
-		BYTE* pByte = new BYTE[ dwSize ];
+		BYTE* pByte = new BYTE[ dwSize + 1 ];
+		pByte[dwSize] = '\0';
 		::ReadFile( hFile, pByte, dwSize, &dwRead, NULL );
 		::CloseHandle( hFile );
 		if( dwRead != dwSize ) {
@@ -77,7 +65,7 @@ bool CXmlDocumentUI::LoadFromFile(LPCTSTR pstrFilename)
 			return _Failed(_T("Could not read file"));
 		}
 
-		bool ret = LoadFromMem(pByte, dwSize);
+		bool ret = load_buffer(pByte, dwSize);
 		delete[] pByte;
 		pByte = NULL;
 
@@ -106,7 +94,8 @@ bool CXmlDocumentUI::LoadFromFile(LPCTSTR pstrFilename)
 		DWORD dwSize = ze.unc_size;
 		if( dwSize == 0 ) return _Failed(_T("File is empty"));
 		if ( dwSize > 4096*1024 ) return _Failed(_T("File too large"));
-		BYTE* pByte = new BYTE[ dwSize ];
+		BYTE* pByte = new BYTE[ dwSize + 1];
+		pByte[dwSize] = '\0';
 		int res = UnzipItem(hz, i, pByte, dwSize);
 		if( res != 0x00000000 && res != 0x00000600) {
 			delete[] pByte;
@@ -114,7 +103,7 @@ bool CXmlDocumentUI::LoadFromFile(LPCTSTR pstrFilename)
 			return _Failed(_T("Could not unzip file"));
 		}
 		if( !CPaintManagerUI::IsCachedResourceZip() ) CloseZip(hz);
-		bool ret = LoadFromMem(pByte, dwSize);
+		bool ret = load_buffer(pByte, dwSize);
 		delete[] pByte;
 		pByte = NULL;
 		return ret;
@@ -123,9 +112,25 @@ bool CXmlDocumentUI::LoadFromFile(LPCTSTR pstrFilename)
 	return false;
 }
 
+
+bool CXmlDocumentUI::save_file(LPCTSTR path)
+{
+	return impxmldoc(_xml_document)->save_file(path, _T(""), ui_pugi::format_default,  ui_pugi::encoding_utf8);
+}
+
+bool CXmlDocumentUI::save_to_default_file()
+{
+	return impxmldoc(_xml_document)->save_file(m_sFileName.GetData(), _T(""), ui_pugi::format_default,  ui_pugi::encoding_utf8);
+}
+
+CDuiString CXmlDocumentUI::GetError()
+{
+	return m_sErrorMsg;
+}
+
 bool CXmlDocumentUI::_Failed(LPCTSTR pstrError)
 {
-	m_szErrorMsg = pstrError;
+	m_sErrorMsg = pstrError;
 	return false; // Always return 'false'
 }
 

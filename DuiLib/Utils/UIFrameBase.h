@@ -1,7 +1,6 @@
 #pragma once
 
-//namespace DuiLib{
-using namespace DuiLib;
+namespace DuiLib {
 
 
 class UILIB_API CUIFrmBase : public CNotifyPump
@@ -84,4 +83,4 @@ public:
 	DUI_DECLARE_MESSAGE_MAP()
 };
 
-//}
+} //namespace DuiLib {
