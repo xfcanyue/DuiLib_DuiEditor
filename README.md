@@ -12,7 +12,7 @@
 ### 2.  项目帮助	
 
 ```c++
-本项目基于一下：
+本项目基于以下：
 	https://gitee.com/Liqs99/DuiLib_DuiEditor
 	https://github.com/xfcanyue/DuiLib_DuiEditor
 -------------------------------------------------------------------------
@@ -40,9 +40,20 @@ https://blog.csdn.net/mmcanyu/article/details/112685524
 ```
 ### 3. 项目编译说明：
 
-   1 .`3rd\CxImage\cximage701_full\CxImgLibVC2019.sln` 首先编译这个目录。注：新版本已经去除CxImage支持，不使用的话，可以不编译。 
+DuiEditor2010.sln	VS2010解决方案  
+DuiEditor2019.sln	VS2019解决方案  
 
-2. 然后在编译当前目录  优先选择UnicodeDebug 编译项目
+编译选项说明：  
+Debug				多字节 - 调试  
+Release				多字节 - 发行  
+UnicodeDebug		Unicode - 调试  
+UnicodeRelease		Unicode - 发行  
+xsDebug				静态库 - 多字节 - 调试  
+xsRelease			静态库 - 多字节 - 发行  
+xsUnicodeDebug		静态库 - Unicode - 调试  
+xsUnicodeRelease	静态库 - Unicode - 发行  
+
+除非为了兼容老项目，新项目优先使用Unicode版本。 
 
     
    
