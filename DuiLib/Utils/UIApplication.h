@@ -22,6 +22,58 @@ uiApp.ExitInstance();
 //////////////////////////////////////////////////////////////////////////
 */
 
+class UILIB_API CUIAppRegistryKey
+{
+public:
+	CUIAppRegistryKey();
+	virtual ~CUIAppRegistryKey();
+
+	// Set registry key name
+	// 1, 使用注册表, 如: SetRegistryKey(_T("Microsoft"), GetAppName()); 一般习惯方式，第一参数是公司名，第二参数是软件名。
+	// 2, 使用ini文件, 如: SetRegistryKey(NULL, GetAppPath() + GetAppName() + _T(".ini"));
+	void SetRegistryKey(LPCTSTR lpszRegistryKey, LPCTSTR lpszAppName);
+
+	// Retrieve an integer value from INI file or registry.
+	virtual UINT ReadInt(LPCTSTR lpszSection, LPCTSTR lpszEntry, int nDefault);
+
+	// Sets an integer value to INI file or registry.
+	virtual BOOL WriteInt(LPCTSTR lpszSection, LPCTSTR lpszEntry, int nValue);
+
+	// Retrieve a string value from INI file or registry.
+	virtual CDuiString ReadString(LPCTSTR lpszSection, LPCTSTR lpszEntry, LPCTSTR lpszDefault = NULL);
+
+	// Sets a string value to INI file or registry.
+	virtual BOOL WriteString(LPCTSTR lpszSection, LPCTSTR lpszEntry, LPCTSTR lpszValue);
+
+	// Retrieve an arbitrary binary value from INI file or registry.
+	virtual BOOL ReadBinary(LPCTSTR lpszSection, LPCTSTR lpszEntry, LPBYTE* ppData, UINT* pBytes);
+
+	// Sets an arbitrary binary value to INI file or registry.
+	virtual BOOL WriteBinary(LPCTSTR lpszSection, LPCTSTR lpszEntry, LPBYTE pData, UINT nBytes);
+
+	//...int
+	virtual BOOL GetValue(LPCTSTR lpszSection, LPCTSTR lpszEntry, int &nValue, int nDefault = 0);
+	virtual BOOL SetValue(LPCTSTR lpszSection, LPCTSTR lpszEntry, int nValue);
+
+	//....string
+	virtual BOOL GetValue(LPCTSTR lpszSection, LPCTSTR lpszEntry, CDuiString &strValue, LPCTSTR lpszDefault = NULL);
+	virtual BOOL SetValue(LPCTSTR lpszSection, LPCTSTR lpszEntry, LPCTSTR strValue);
+
+protected:
+	// returns key for HKEY_CURRENT_USER\"Software"\RegistryKey\ProfileName.
+	HKEY GetAppRegistryKey();
+
+	// returns key for HKEY_CURRENT_USER\"Software"\RegistryKey\AppName\lpszSection.
+	HKEY GetSectionKey(LPCTSTR lpszSection);
+
+private:
+	// Name of registry key for this application. See SetRegistryKey() member function.
+	LPCTSTR m_pszRegistryKey;
+
+	// Default based on this application's name.
+	LPCTSTR m_pszProfileName;
+};
+
 class CUIFrameWnd;
 class UILIB_API CUIApplication
 {
@@ -47,11 +99,35 @@ public:
 	LPCTSTR GetAppName() { return m_strAppName.GetData(); }
 
 	bool SetSingleApplication(bool bSingle, LPCTSTR szGuidName); //只允许运行单一实例
+
+	// Set registry key name
+	// 1, 使用注册表, 如: SetRegistryKey(_T("Microsoft"), GetAppName()); 一般习惯方式，第一参数是公司名，第二参数是软件名。
+	// 2, 使用ini文件, 如: SetRegistryKey(NULL, GetAppPath() + GetAppName() + _T(".ini"));
+	void SetRegistryKey(LPCTSTR lpszRegistryKey, LPCTSTR lpszAppName);
+
+	// Retrieve an integer value from INI file or registry.
+	virtual UINT GetProfileInt(LPCTSTR lpszSection, LPCTSTR lpszEntry, int nDefault);
+
+	// Sets an integer value to INI file or registry.
+	virtual BOOL WriteProfileInt(LPCTSTR lpszSection, LPCTSTR lpszEntry, int nValue);
+
+	// Retrieve a string value from INI file or registry.
+	virtual CDuiString GetProfileString(LPCTSTR lpszSection, LPCTSTR lpszEntry, LPCTSTR lpszDefault = NULL);
+
+	// Sets a string value to INI file or registry.
+	virtual BOOL WriteProfileString(LPCTSTR lpszSection, LPCTSTR lpszEntry, LPCTSTR lpszValue);
+
+	// Retrieve an arbitrary binary value from INI file or registry.
+	virtual BOOL GetProfileBinary(LPCTSTR lpszSection, LPCTSTR lpszEntry, LPBYTE* ppData, UINT* pBytes);
+
+	// Sets an arbitrary binary value to INI file or registry.
+	virtual BOOL WriteProfileBinary(LPCTSTR lpszSection, LPCTSTR lpszEntry, LPBYTE pData, UINT nBytes);
 protected:
 	virtual int ExitInstance();
 	virtual void InitResource();
 
 public:
+	CUIAppRegistryKey RegistryKey;
 	CUIFrameWnd *m_pMainWnd;
 
 private:

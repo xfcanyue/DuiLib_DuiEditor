@@ -3,8 +3,8 @@
 #include "include/Scintilla.h"
 
 // CSciApi
-typedef  int SciDll_void;
-typedef int (*SEND_EDITOR)(void*,int,int,int);
+typedef sptr_t SciDll_void;
+typedef sptr_t (*SEND_EDITOR)(void*, UINT uMsg, uptr_t wParam, sptr_t lParam);
 
 class SciApi
 {
@@ -20,7 +20,7 @@ public:
 
 	void InitSciApi(HWND hWnd)
 	{
-		m_sendeditor = (int (__cdecl *)(void *,int,int,int))SendMessage(hWnd, SCI_GETDIRECTFUNCTION,0,0);
+		m_sendeditor = (SEND_EDITOR)SendMessage(hWnd, SCI_GETDIRECTFUNCTION,0,0);
 		m_pSendEditor = (void *)SendMessage(hWnd, SCI_GETDIRECTPOINTER,0,0);
 	}
 
@@ -29,21 +29,23 @@ public:
 		return m_hSciLexer != NULL && m_sendeditor != NULL && m_pSendEditor != NULL;
 	}
 
-	LRESULT SendEditor(UINT msg, WPARAM wParam=0, LPARAM lParam=0)
+	sptr_t SendEditor(UINT msg, uptr_t wParam=0, sptr_t lParam=0)
 	{
 		ASSERT(m_sendeditor);
 		ASSERT(m_pSendEditor);
 		return m_sendeditor(m_pSendEditor, msg, wParam, lParam);
 	}
-	LRESULT execute(UINT msg, WPARAM wParam=0, LPARAM lParam=0)
+
+	sptr_t execute(UINT msg, uptr_t wParam=0, sptr_t lParam=0)
 	{
 		ASSERT(m_sendeditor);
 		ASSERT(m_pSendEditor);
 		return m_sendeditor(m_pSendEditor, msg, wParam, lParam);
 	}
-	LRESULT execute(UINT Msg, WPARAM wParam=0, LPARAM lParam=0) const 
+
+	sptr_t execute(UINT msg, uptr_t wParam=0, sptr_t lParam=0) const 
 	{
-		return m_sendeditor(m_pSendEditor, static_cast<int>(Msg), static_cast<int>(wParam), static_cast<int>(lParam));
+		return m_sendeditor(m_pSendEditor, msg, wParam, lParam);
 	}
 
 	HMODULE m_hSciLexer;
@@ -853,7 +855,7 @@ inline SciDll_void SciApi::sci_GetTextLine(int line, CStringA &Text)
 		if (pReturn != NULL)
 		{
 			*pReturn = '\0';
-			nRet = execute(SCI_GETLINE, line, (LPARAM)pReturn);
+			nRet = execute(SCI_GETLINE, line, (sptr_t)pReturn);
 			Text = pReturn;
 			delete []pReturn;
 		}
@@ -870,7 +872,7 @@ inline SciDll_void SciApi::sci_GetText(int length, CStringA &Text)
 	if (pReturn != NULL)
 	{
 		*pReturn = '\0';
-		nRet = execute(SCI_GETTEXT, length + 1, (LPARAM)pReturn);
+		nRet = execute(SCI_GETTEXT, length + 1, (sptr_t)pReturn);
 		Text = pReturn;
 		delete []pReturn;
 	}
@@ -880,7 +882,7 @@ inline SciDll_void SciApi::sci_GetText(int length, CStringA &Text)
 //设置字符到控件
 inline SciDll_void SciApi::sci_SetText(LPCSTR pText)
 {
-	return execute(SCI_SETTEXT, 0, (LPARAM)pText);
+	return execute(SCI_SETTEXT, 0, (sptr_t)pText);
 }
 
 //设置文档已保存的标志
@@ -892,7 +894,7 @@ inline SciDll_void SciApi::sci_SetSavePoint()
 //替换已选择字符
 inline SciDll_void SciApi::sci_ReplaceSel(LPCSTR pText)
 {
-	return execute(SCI_REPLACESEL,0,(LPARAM)pText);
+	return execute(SCI_REPLACESEL,0,(sptr_t)pText);
 }
 
 //设置只读模式
@@ -915,7 +917,7 @@ inline int SciApi::sci_GetTextRange(int cpMin, int cpMax, CStringA &pTextRange)
 	tr.chrg.cpMax = cpMax;
 	tr.lpstrText = new char[cpMax-cpMin+2];
 
-	int len = execute(SCI_GETTEXTRANGE,0,(LPARAM)&tr);
+	int len = execute(SCI_GETTEXTRANGE,0,(sptr_t)&tr);
 	pTextRange = tr.lpstrText;
 
 	delete []tr.lpstrText;
@@ -929,7 +931,7 @@ inline SciDll_void SciApi::sci_GetStyledText(int cpMin, int cpMax, CStringA &pTe
 	tr.chrg.cpMax = cpMax;
 	tr.lpstrText = new char[2*(cpMax-cpMin)+2];
 
-	execute(SCI_GETTEXTRANGE,0,(LPARAM)&tr);
+	execute(SCI_GETTEXTRANGE,0,(sptr_t)&tr);
 	pText = tr.lpstrText;
 
 	delete []tr.lpstrText;
@@ -945,25 +947,25 @@ inline SciDll_void SciApi::sci_Allocate(int bytes)
 //在光标位置插入字符串
 inline SciDll_void SciApi::sci_AddText(int length, LPCSTR pText)
 {
-	return execute(SCI_ADDTEXT,length,(LPARAM)pText);
+	return execute(SCI_ADDTEXT,length,(sptr_t)pText);
 }
 
 //在光标位置插入包含字符格式的字符串
 inline SciDll_void SciApi::sci_AddStyledText(int length, LPCSTR pText)
 {
-	return execute(SCI_ADDSTYLEDTEXT,length,(LPARAM)pText);
+	return execute(SCI_ADDSTYLEDTEXT,length,(sptr_t)pText);
 }
 
 //在文档末尾插入字符串
 inline SciDll_void SciApi::sci_AppendText(int length, LPCSTR pText)
 {
-	return execute(SCI_APPENDTEXT,length,(LPARAM)pText);
+	return execute(SCI_APPENDTEXT,length,(sptr_t)pText);
 }
 
 //在某个位置插入字符串.如果pos=-1,直接在光标位置插入
 inline SciDll_void SciApi::sci_InsertText(int pos, LPCVOID pText)
 {
-	return execute(SCI_INSERTTEXT,pos,(LPARAM)pText);
+	return execute(SCI_INSERTTEXT,pos,(sptr_t)pText);
 }
 
 //清空文档所有字符
@@ -1010,12 +1012,12 @@ inline int SciApi::sci_GetStyleBits()
 
 inline int SciApi::sci_TargetAsUTF8(LPTSTR pText)
 {
-	return execute(SCI_TARGETASUTF8,0,(LPARAM)pText);	
+	return execute(SCI_TARGETASUTF8,0,(sptr_t)pText);	
 }
 
 inline int SciApi::sci_EncodedFromUTF8(LPCSTR pUTF8, LPTSTR pText)
 {
-	return execute(SCI_ENCODEDFROMUTF8,(LPARAM)pUTF8,(LPARAM)pText);	
+	return execute(SCI_ENCODEDFROMUTF8,(uptr_t)pUTF8,(sptr_t)pText);	
 }
 
 inline SciDll_void SciApi::sci_SetLengthForEncode(int bits)
@@ -1026,7 +1028,7 @@ inline SciDll_void SciApi::sci_SetLengthForEncode(int bits)
 /*--------------查找-----------------*/
 inline int SciApi::sci_FindText(int searchFlags, Sci_TextToFind &ttf)
 {
-	return execute(SCI_FINDTEXT,searchFlags,(LPARAM)&ttf);
+	return execute(SCI_FINDTEXT,searchFlags,(sptr_t)&ttf);
 }
 
 inline SciDll_void SciApi::sci_SearchAnchor()
@@ -1036,12 +1038,12 @@ inline SciDll_void SciApi::sci_SearchAnchor()
 
 inline int SciApi::sci_SearchNext(int searchFlags, LPCSTR pText)
 {
-	return execute(SCI_SEARCHNEXT,searchFlags,(LPARAM)pText);
+	return execute(SCI_SEARCHNEXT,searchFlags,(sptr_t)pText);
 }
 
 inline int SciApi::sci_SearchPrev(int searchFlags, LPCSTR pText)
 {
-	return execute(SCI_SEARCHPREV,searchFlags,(LPARAM)pText);	
+	return execute(SCI_SEARCHPREV,searchFlags,(sptr_t)pText);	
 }
 
 
@@ -1084,22 +1086,22 @@ inline int  SciApi::sci_GetSearchFlags()
 
 inline int SciApi::sci_SearchInTarget(int length, LPCSTR pText)
 {
-	return execute(SCI_SEARCHINTARGET,length,(LPARAM)pText);	
+	return execute(SCI_SEARCHINTARGET,length,(sptr_t)pText);	
 }
 
 inline int SciApi::sci_ReplaceTarget(int length, const char *pText)
 {
-	return execute(SCI_REPLACETARGET,length,(LPARAM)pText);	
+	return execute(SCI_REPLACETARGET,length,(sptr_t)pText);	
 }
 
 inline int SciApi::sci_ReplaceTargetRe(int length, LPCSTR pText)
 {
-	return execute(SCI_REPLACETARGETRE,length,(LPARAM)pText);	
+	return execute(SCI_REPLACETARGETRE,length,(sptr_t)pText);	
 }
 
 inline SciDll_void SciApi::sci_GetTag(int tagNumber, LPTSTR pText)
 {
-	return execute(SCI_GETTAG,tagNumber,(LPARAM)pText);
+	return execute(SCI_GETTAG,tagNumber,(sptr_t)pText);
 }
 
 
@@ -1172,7 +1174,7 @@ inline SciDll_void SciApi::sci_CopyRange(int start, int end)
 
 inline SciDll_void SciApi::sci_CopyText(int length, LPCSTR pText)
 {
-	return execute(SCI_COPYTEXT,length,(LPARAM)pText);
+	return execute(SCI_COPYTEXT,length,(sptr_t)pText);
 }
 
 inline SciDll_void SciApi::sci_SetPasteConvertEndings(BOOL convert)
@@ -1378,7 +1380,7 @@ inline SciDll_void SciApi::sci_GetSelText(CStringA &Text)
 	if(nRet>0)
 	{
 		char *p = new char[nRet];
-		nRet = execute(SCI_GETSELTEXT,0,(LPARAM)p);
+		nRet = execute(SCI_GETSELTEXT,0,(sptr_t)p);
 		Text = p;
 		delete []p;
 	}
@@ -1466,7 +1468,7 @@ inline int  SciApi::sci_CountCharacters(int startPos, int endPos)
 
 inline int  SciApi::sci_TextWidth(int styleNumber, LPCSTR pText)
 {
-	return execute(SCI_TEXTWIDTH,styleNumber,(LPARAM)pText);
+	return execute(SCI_TEXTWIDTH,styleNumber,(sptr_t)pText);
 }
 
 inline int  SciApi::sci_TextHeight(int line)
@@ -1748,7 +1750,7 @@ inline SciDll_void SciApi::sci_SetStyling(int length, int style)
 
 inline SciDll_void SciApi::sci_SetStylingEx(int length, LPCSTR styles)
 {
-	return execute(SCI_SETSTYLINGEX,length,(LPARAM)styles);
+	return execute(SCI_SETSTYLINGEX,length,(sptr_t)styles);
 }
 
 inline SciDll_void SciApi::sci_SetLineState(int line, int value)
@@ -1782,14 +1784,14 @@ inline SciDll_void SciApi::sci_StyleClearAll()
 //设置字体
 inline SciDll_void SciApi::sci_StyleSetFont(int styleNumer, LPCSTR fontName)
 {
-	return execute(SCI_STYLESETFONT,styleNumer,(LPARAM)fontName);	
+	return execute(SCI_STYLESETFONT,styleNumer,(sptr_t)fontName);	
 }
 
 inline SciDll_void SciApi::sci_StyleGetFont(int styleNumer, CStringA &fontName)
 {
 	int nRet = -1;
 	char *p = new char[33];
-	nRet = execute(SCI_STYLEGETFONT,styleNumer,(LPARAM)p);
+	nRet = execute(SCI_STYLEGETFONT,styleNumer,(sptr_t)p);
 	fontName = p;
 	delete []p;
 	return nRet;
@@ -2218,12 +2220,12 @@ inline SciDll_void SciApi::sci_SetFoldMarginHiColour(BOOL useSetting, COLORREF c
 
 inline SciDll_void SciApi::sci_MarginSetText(int line, LPTSTR pText)
 {
-	return execute(SCI_MARGINSETTEXT,line,(LPARAM)pText);
+	return execute(SCI_MARGINSETTEXT,line,(sptr_t)pText);
 }
 
 inline SciDll_void SciApi::sci_MarginGetText(int line, LPTSTR pText)
 {
-	return execute(SCI_MARGINGETTEXT,line,(LPARAM)pText);
+	return execute(SCI_MARGINGETTEXT,line,(sptr_t)pText);
 }
 
 inline SciDll_void SciApi::sci_MarginSetStyle(int line, int style)
@@ -2238,12 +2240,12 @@ inline int SciApi::sci_MarginGetStyle(int line)
 
 inline SciDll_void SciApi::sci_MarginSetStyles(int line, LPTSTR pStyle)
 {
-	return execute(SCI_MARGINSETSTYLE, line, (LPARAM)pStyle);
+	return execute(SCI_MARGINSETSTYLE, line, (sptr_t)pStyle);
 }
 
 inline SciDll_void SciApi::sci_MarginGetStyles(int line, LPTSTR pStyle)
 {
-	return execute(SCI_MARGINGETSTYLES,line,(LPARAM)pStyle);
+	return execute(SCI_MARGINGETSTYLES,line,(sptr_t)pStyle);
 }
 
 inline SciDll_void SciApi::sci_MarginTextClearAll()
@@ -2275,22 +2277,22 @@ inline int SciApi::sci_GetMarginOptions()
 /*----------Annotations 注释--------*/
 inline SciDll_void SciApi::sci_AnnotationSetText(int line, LPTSTR pText)
 {
-	return execute(SCI_ANNOTATIONSETTEXT,line,(LPARAM)pText);
+	return execute(SCI_ANNOTATIONSETTEXT,line,(sptr_t)pText);
 }
 
 inline SciDll_void SciApi::sci_AnnotationGetText(int line , LPTSTR pText)
 {
-	return execute(SCI_ANNOTATIONGETTEXT,line,(LPARAM)pText);
+	return execute(SCI_ANNOTATIONGETTEXT,line,(sptr_t)pText);
 }
 
 inline SciDll_void SciApi::sci_AnnotationSetStyle(int line, LPTSTR pStyle)
 {
-	return execute(SCI_ANNOTATIONSETSTYLE, line,(LPARAM)pStyle);
+	return execute(SCI_ANNOTATIONSETSTYLE, line,(sptr_t)pStyle);
 }
 
 inline SciDll_void SciApi::sci_AnnotationGetStyle(int line, LPTSTR pStyle)
 {
-	return execute(SCI_ANNOTATIONGETSTYLE,line,(LPARAM)pStyle);
+	return execute(SCI_ANNOTATIONGETSTYLE,line,(sptr_t)pStyle);
 }
 
 inline BOOL SciApi::sci_AnnotationGetLines(int line)
@@ -2401,13 +2403,13 @@ inline int SciApi::sci_GetCodePage()
 //设置控件中允许出现的字符
 inline SciDll_void SciApi::sci_SetWordChars(LPCSTR pText)
 {
-	return execute(SCI_SETWORDCHARS,0,(LPARAM)pText);
+	return execute(SCI_SETWORDCHARS,0,(sptr_t)pText);
 }
 
 //设置控件不处理的字符,就是当成空白了.
 inline SciDll_void SciApi::sci_SetWhiteSpaceChars(LPCSTR pText)
 {
-	return execute(SCI_SETWHITESPACECHARS,0,(LPARAM)pText);
+	return execute(SCI_SETWHITESPACECHARS,0,(sptr_t)pText);
 }
 
 //使用默认的字符和空白字符
@@ -2555,7 +2557,7 @@ inline SciDll_void SciApi::sci_MarkerDefine(int markerNumber, int markerSymbols)
 
 inline SciDll_void SciApi::sci_MarkerDefinePixmap(int markerNumber, LPCSTR pXPM)
 {
-	return execute(SCI_MARKERDEFINEPIXMAP, markerNumber, (LPARAM)pXPM);
+	return execute(SCI_MARKERDEFINEPIXMAP, markerNumber, (sptr_t)pXPM);
 }
 
 inline SciDll_void SciApi::sci_RGBAImageSetWidth(int width)
@@ -2570,7 +2572,7 @@ inline SciDll_void SciApi::sci_RGBAImageSetHeight(int height)
 
 inline SciDll_void SciApi::sci_MarkerDefineRGBAImage(int markerNumber, LPCSTR pPixels)
 {
-	return execute(SCI_MARKERDEFINERGBAIMAGE, markerNumber, (LPARAM)pPixels);
+	return execute(SCI_MARKERDEFINERGBAIMAGE, markerNumber, (sptr_t)pPixels);
 }
 
 inline SciDll_void SciApi::sci_MarkerSymbolDefined(int markerNumber)
@@ -2746,7 +2748,7 @@ inline SciDll_void SciApi::sci_IndicatorEnd(int indicator, int postion)
 /*----------Autocompletion-----*/
 inline SciDll_void SciApi::sci_AutocShow(int lenEntered, const char *pList)
 {
-	return execute(SCI_AUTOCSHOW, lenEntered, (LPARAM)pList);
+	return execute(SCI_AUTOCSHOW, lenEntered, (sptr_t)pList);
 }
 
 inline SciDll_void SciApi::sci_AutocCancel()
@@ -2771,7 +2773,7 @@ inline SciDll_void SciApi::sci_AutocComplete()
 
 inline SciDll_void SciApi::sci_AutocStops(LPCSTR pText)
 {
-	return execute(SCI_AUTOCSTOPS, 0, (LPARAM)pText);
+	return execute(SCI_AUTOCSTOPS, 0, (sptr_t)pText);
 }
 
 inline SciDll_void SciApi::sci_AutocSetSeparator(char separator)
@@ -2786,7 +2788,7 @@ inline char SciApi::sci_AutocGetSeparator()
 
 inline SciDll_void SciApi::sci_AutocSelect(LPCSTR pSelect)
 {
-	return execute(SCI_AUTOCSELECT, 0, (LPARAM)pSelect);
+	return execute(SCI_AUTOCSELECT, 0, (sptr_t)pSelect);
 }
 
 inline int SciApi::sci_AutocGetCurrent()
@@ -2797,7 +2799,7 @@ inline int SciApi::sci_AutocGetCurrent()
 inline SciDll_void SciApi::sci_AutocGetCurrentText(CStringA &Text)
 {
 	char *pText = new char[256];
-	int nRet = execute(SCI_AUTOCGETCURRENTTEXT, 0, (LPARAM)pText);
+	int nRet = execute(SCI_AUTOCGETCURRENTTEXT, 0, (sptr_t)pText);
 	pText[nRet] = '\0';
 	Text = pText;
 	delete []pText;
@@ -2816,7 +2818,7 @@ inline BOOL SciApi::sci_AutocGetCancelAtStart()
 
 inline SciDll_void SciApi::sci_AutocSetFillups(LPCSTR pText)
 {
-	return execute(SCI_AUTOCSETFILLUPS, 0, (LPARAM)pText);
+	return execute(SCI_AUTOCSETFILLUPS, 0, (sptr_t)pText);
 }
 
 inline SciDll_void SciApi::sci_AutocSetChooseSingle(BOOL chooseSingle)
@@ -2862,12 +2864,12 @@ inline BOOL SciApi::sci_AutocGetDropRestOfWord()
 
 inline SciDll_void SciApi::sci_RegisterImage(int type, LPCSTR pXmpData)
 {
-	return execute(SCI_REGISTERIMAGE, type, (LPARAM)pXmpData);
+	return execute(SCI_REGISTERIMAGE, type, (sptr_t)pXmpData);
 }
 
 inline SciDll_void SciApi::sci_RegisterRGBAImage(int type, LPCSTR pPixels)
 {
-	return execute(SCI_REGISTERRGBAIMAGE, type, (LPARAM)pPixels);
+	return execute(SCI_REGISTERRGBAIMAGE, type, (sptr_t)pPixels);
 }
 
 inline SciDll_void SciApi::sci_ClearRegisteredImages()
@@ -2909,13 +2911,13 @@ inline int SciApi::sci_AutocGetMaxWidth()
 /*----------User lists------------*/
 inline SciDll_void SciApi::sci_UserListShow(int listType, LPCSTR pList)
 {
-	return execute(SCI_USERLISTSHOW, listType, (LPARAM)pList);
+	return execute(SCI_USERLISTSHOW, listType, (sptr_t)pList);
 }
 
 /*----------Call tips------------*/
 inline SciDll_void SciApi::sci_CallTipShow(int posStart, LPCSTR pDefinition)
 {
-	return execute(SCI_CALLTIPSHOW, posStart, (LPARAM)pDefinition);
+	return execute(SCI_CALLTIPSHOW, posStart, (sptr_t)pDefinition);
 }
 
 inline SciDll_void SciApi::sci_CallTipCancel()
@@ -3006,7 +3008,7 @@ inline SciDll_void SciApi::sci_StopRecord()
 /*----------Printing------------*/
 inline SciDll_void SciApi::sci_FormatRange(BOOL bDraw, Sci_RangeToFormat *pfr)
 {
-	return execute(SCI_FORMATRANGE, bDraw, (LPARAM)pfr);
+	return execute(SCI_FORMATRANGE, bDraw, (sptr_t)pfr);
 }
 
 inline SciDll_void SciApi::sci_SetPrintMagnification(BOOL magnification)
@@ -3054,7 +3056,7 @@ inline void *SciApi::sci_GetDocPointer()
 
 inline SciDll_void SciApi::sci_SetDocPointer(void *pDoc)
 {
-	return execute(SCI_SETDOCPOINTER,0,(LPARAM)pDoc);
+	return execute(SCI_SETDOCPOINTER,0,(sptr_t)pDoc);
 }
 
 inline void *SciApi::sci_CreateDocument()
@@ -3064,12 +3066,12 @@ inline void *SciApi::sci_CreateDocument()
 
 inline SciDll_void SciApi::sci_AddRefDocument(void *pDoc)
 {
-	return execute(SCI_ADDREFDOCUMENT,0,(LPARAM)pDoc);
+	return execute(SCI_ADDREFDOCUMENT,0,(sptr_t)pDoc);
 }
 
 inline SciDll_void SciApi::sci_ReleaseDocument(void *pDoc)
 {
-	return execute(SCI_RELEASEDOCUMENT,0,(LPARAM)pDoc);
+	return execute(SCI_RELEASEDOCUMENT,0,(sptr_t)pDoc);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3318,14 +3320,14 @@ inline int  SciApi::sci_GetLexer()
 
 inline SciDll_void SciApi::sci_SetLexerLanguage(LPCSTR name)
 {
-	return execute(SCI_SETLEXERLANGUAGE, 0, (LPARAM)name);
+	return execute(SCI_SETLEXERLANGUAGE, 0, (sptr_t)name);
 }
 
 inline SciDll_void SciApi::sci_GetLexerLanguage(CStringA &Text)
 {
 	int nRet = -1;
 	char *p = new char[256];
-	nRet = execute(SCI_GETLEXERLANGUAGE, 0, (LPARAM)p);
+	nRet = execute(SCI_GETLEXERLANGUAGE, 0, (sptr_t)p);
 	Text = p;
 	delete []p;
 	return nRet;
@@ -3333,7 +3335,7 @@ inline SciDll_void SciApi::sci_GetLexerLanguage(CStringA &Text)
 
 inline SciDll_void SciApi::sci_LoadLexerLibrary(LPCSTR path)
 {
-	return execute(SCI_LOADLEXERLIBRARY, 0, (LPARAM)path);
+	return execute(SCI_LOADLEXERLIBRARY, 0, (sptr_t)path);
 }
 
 inline SciDll_void SciApi::sci_ColourIse(int start, int end)
@@ -3348,29 +3350,29 @@ inline SciDll_void SciApi::sci_ChangeLexerState(int start, int end)
 
 inline SciDll_void SciApi::sci_PropertyNames(LPTSTR names)
 {
-	return execute(SCI_PROPERTYNAMES, 0, (LPARAM)names);
+	return execute(SCI_PROPERTYNAMES, 0, (sptr_t)names);
 }
 
 inline SciDll_void SciApi::sci_PropertyType(LPTSTR name)
 {
-	return execute(SCI_PROPERTYTYPE, 0, (LPARAM)name);
+	return execute(SCI_PROPERTYTYPE, 0, (sptr_t)name);
 }
 
 inline SciDll_void SciApi::sci_DescribeProperty(LPCSTR name, LPTSTR description)
 {
-	return execute(SCI_DESCRIBEPROPERTY, (LPARAM)name, (LPARAM)description);
+	return execute(SCI_DESCRIBEPROPERTY, (sptr_t)name, (sptr_t)description);
 }
 
 inline SciDll_void SciApi::sci_SetProperty(LPCSTR key, LPCSTR value)
 {
-	return execute(SCI_SETPROPERTY, (LPARAM)key, (LPARAM)value);
+	return execute(SCI_SETPROPERTY, (sptr_t)key, (sptr_t)value);
 }
 
 inline SciDll_void SciApi::sci_GetProperty(LPCSTR key, CStringA &Value)
 {
 	int nRet = -1;
 	char *p = new char[256];
-	nRet = execute(SCI_GETPROPERTY, (LPARAM)key, (LPARAM)p);
+	nRet = execute(SCI_GETPROPERTY, (sptr_t)key, (sptr_t)p);
 	if(nRet>0)
 	{
 		p[nRet-1] = 0;
@@ -3384,7 +3386,7 @@ inline SciDll_void SciApi::sci_GetPropertyExpanded(LPCSTR key, CStringA &Value)
 {
 	int nRet = -1;
 	char *p = new char[256];
-	nRet = execute(SCI_GETPROPERTYEXPANDED, (LPARAM)key, (LPARAM)p);
+	nRet = execute(SCI_GETPROPERTYEXPANDED, (sptr_t)key, (sptr_t)p);
 	if(nRet>0)
 	{
 		p[nRet-1] = 0;
@@ -3396,14 +3398,14 @@ inline SciDll_void SciApi::sci_GetPropertyExpanded(LPCSTR key, CStringA &Value)
 
 inline int  SciApi::sci_GetPropertyInt(LPCSTR key, int ndefault)
 {
-	return execute(SCI_GETPROPERTYINT, (LPARAM)key, ndefault);
+	return execute(SCI_GETPROPERTYINT, (sptr_t)key, ndefault);
 }
 
 inline SciDll_void SciApi::sci_DescribeKeywordSets(CStringA &descriptions)
 {
 	int nRet = -1;
 	char *p = new char[1024];
-	nRet = execute(SCI_DESCRIBEKEYWORDSETS, 0, (LPARAM)p);
+	nRet = execute(SCI_DESCRIBEKEYWORDSETS, 0, (sptr_t)p);
 	if(nRet>0)
 	{
 		p[nRet-1] = 0;
@@ -3415,7 +3417,7 @@ inline SciDll_void SciApi::sci_DescribeKeywordSets(CStringA &descriptions)
 
 inline SciDll_void SciApi::sci_SetKeyWords(int keyWordSet, LPCSTR keyWordList)
 {
-	return execute(SCI_SETKEYWORDS, keyWordSet, (LPARAM)keyWordList);
+	return execute(SCI_SETKEYWORDS, keyWordSet, (sptr_t)keyWordList);
 }
 
 inline int SciApi::sci_GetStyleBitsNeeded()

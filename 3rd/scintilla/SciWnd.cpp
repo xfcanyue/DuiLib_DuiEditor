@@ -75,7 +75,11 @@ IMPLEMENT_DYNAMIC(CSciWnd, CWnd)
 
 CSciWnd::CSciWnd()
 {
+#ifdef _WIN64
+	m_hSciLexer = ::LoadLibrary(_T("SciLexer64.dll"));
+#else
 	m_hSciLexer = ::LoadLibrary(_T("SciLexer.dll"));
+#endif
 }
 
 CSciWnd::~CSciWnd()

@@ -228,3 +228,7 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
    6, 修复加载svg偶尔崩溃的问题。
    7, DuiLib内部使用的pugixml命名空间改为ui_pugi,避免静态编译时与外部使用pugixml冲突。
    8, unzip.h，unzip.cpp，downloadmgr.h，FlashEventHandler.h，flash11.tlh 改为仅Include，不再包含在项目中。
+
+2021-09-16
+   1, 感谢JonYang处理DuiScript编译64位的问题。包括设计器在内，整体项目可以支持64位编译。
+   2，把MFC的CWinApp操作注册表和Ini文件的函数移植到CUIAppliacation。

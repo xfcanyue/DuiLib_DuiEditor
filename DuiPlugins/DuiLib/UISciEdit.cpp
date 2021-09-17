@@ -84,7 +84,11 @@ namespace DuiLib
 			m_pOwner = pOwner;
 			if(m_pOwner->m_hSciLexer == NULL)
 			{
+#ifdef _WIN64
+				m_pOwner->m_hSciLexer = ::LoadLibrary(g_strDuiPluginsPath + _T("SciLexer64.dll"));
+#else
 				m_pOwner->m_hSciLexer = ::LoadLibrary(g_strDuiPluginsPath + _T("SciLexer.dll"));
+#endif
 			}
 
 			Create(m_pOwner->GetManager()->GetPaintWindow(), NULL, WS_CHILD|WS_VISIBLE, 0, m_rcWindow);
@@ -183,7 +187,7 @@ void CSciEditUI::DoInit()
 	m_pWindow = new CSciWndUI;
 	((CSciWndUI *)m_pWindow)->Init(this);
 
-	SendEditor(SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)"Courier New");//(LPARAM)"Courier New");//"Î¢ÈíÑÅºÚ");
+	SendEditor(SCI_STYLESETFONT, STYLE_DEFAULT, (sptr_t)"Courier New");//(LPARAM)"Courier New");//"Î¢ÈíÑÅºÚ");
 	sci_StyleSetSize(STYLE_DEFAULT, 12);//14);
 	sci_StyleSetFore(STYLE_DEFAULT,RGB(0,0,0));
 

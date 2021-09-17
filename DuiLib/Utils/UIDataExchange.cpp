@@ -215,7 +215,7 @@ implfun bool CUIDataExchange::_UpdateComboEx(_ddx_data *pData, bool bSaveAndVali
 	{
 		if(pData->valueType == _value_int)
 		{
-			*((int *)(pData->pValue)) = pCombo->GetCurSelItemData();
+			*((int *)(pData->pValue)) = (int)pCombo->GetCurSelItemData();
 		}
 	}
 	else

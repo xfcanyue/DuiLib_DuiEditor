@@ -10,8 +10,6 @@
 #define WM_SCIWND_MOUSEMOVE		WM_USER+991
 
 // CSciWnd, MFC¿‡
-typedef  int SciDll_void;
-typedef int (*SEND_EDITOR)(void*,int,int,int);
 
 class _SCIWNDCTR_ CSciWnd : public CWnd, public SciApi
 {

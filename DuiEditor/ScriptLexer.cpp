@@ -350,7 +350,7 @@ void CScriptLexer::ParseToken(const char *szCode, int nCodeLen)
 	m_arrUser.clear();
 
 	int pos = 0;
-	size_t len = 0;
+	asUINT len = 0;
 	asETokenClass lastTC = asTC_UNKNOWN;
 	CStringA lastTcName;
 	asETokenClass tc = asTC_UNKNOWN;

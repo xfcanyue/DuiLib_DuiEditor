@@ -37,9 +37,6 @@
     <None Include="angelscript\angelscript\source\as_callfunc_arm_msvc.asm">
       <Filter>源文件\angelscript</Filter>
     </None>
-    <None Include="angelscript\angelscript\source\as_callfunc_x64_msvc_asm.asm">
-      <Filter>源文件\angelscript</Filter>
-    </None>
     <None Include="angelscript\angelscript\source\as_callfunc_arm64_gcc.S" />
     <None Include="angelscript\angelscript\source\as_callfunc_arm64_msvc.asm">
       <Filter>源文件</Filter>
@@ -375,5 +372,10 @@
     <ClCompile Include="angelscript\angelscript\source\as_callfunc_arm64.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="angelscript\angelscript\source\as_callfunc_x64_msvc_asm.asm">
+      <Filter>源文件\angelscript</Filter>
+    </MASM>
   </ItemGroup>
 </Project>

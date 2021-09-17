@@ -262,6 +262,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|x64'">
     <TargetName>tutoriald</TargetName>
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\..\..\Bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsUnicodeDebug|Win32'">
     <LinkIncremental>true</LinkIncremental>
