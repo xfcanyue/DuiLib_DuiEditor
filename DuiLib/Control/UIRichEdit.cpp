@@ -152,6 +152,7 @@ namespace DuiLib {
 
 	void CRichEditUI::SetReadOnly(bool bReadOnly)
 	{
+		m_lTwhStyle |= ES_READONLY; 
 		m_bReadOnly = bReadOnly;
 		if( m_pTwh ) m_pTwh->SetReadOnly(bReadOnly);
 	}

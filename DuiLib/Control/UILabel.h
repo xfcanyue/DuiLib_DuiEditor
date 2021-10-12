@@ -24,8 +24,8 @@ namespace DuiLib
 		DWORD GetDisabledTextColor() const;
 		void SetFont(int index);
 		int GetFont() const;
-		RECT GetTextPadding() const;
-		void SetTextPadding(RECT rc);
+		virtual RECT GetTextPadding() const;
+		virtual void SetTextPadding(RECT rc);
 		bool IsShowHtml();
 		void SetShowHtml(bool bShowHtml = true);
 
