@@ -70,7 +70,6 @@ namespace DuiLib{
 
 	protected:
 		CHotKeyWnd * m_pWindow;
-		UINT m_uButtonState;
 		CDuiString m_sNormalImage;
 		CDuiString m_sHotImage;
 		CDuiString m_sFocusedImage;

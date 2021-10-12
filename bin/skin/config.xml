@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Window>
 	<Font id="0" name="微软雅黑" size="12" shared="true" default="true" sname="默认字体" />
-	<Font id="1" name="宋体" size="12" underline="true" sname="下划线字体" />
+	<Font id="1" name="宋体" size="12" underline="true" shared="true" sname="下划线字体" />
 	<Font id="2" name="宋体" size="36" shared="true" />
 	<Font id="3" name="微软雅黑" size="20" shared="true" sname="键盘字体" />
 	<Font id="4" name="微软雅黑" size="16" shared="true" />

@@ -126,6 +126,14 @@ LRESULT CUIFrameWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 LRESULT CUIFrameWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
+	if(uMsg == UIMSG_INSERT_MSG)
+	{
+		bHandled = TRUE;
+		CMsgWndUI *pMsgWindow = (CMsgWndUI *)wParam;
+		GetManager()->SendNotify(pMsgWindow, _T("CMsgWndUI::InsertMsg"), 0, lParam);
+		return 0;
+	}
+
 	if(OnCustomMessage(uMsg, wParam, lParam))
 	{
 		bHandled = TRUE;

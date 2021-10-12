@@ -243,7 +243,7 @@ namespace DuiLib{
 	//////////////////////////////////////////////////////////////////////////
 	IMPLEMENT_DUICONTROL(CHotKeyUI)
 
-	CHotKeyUI::CHotKeyUI() : m_pWindow(NULL), m_wVirtualKeyCode(0), m_wModifiers(0), m_uButtonState(0), m_dwHotKeybkColor(0xFFFFFFFF)
+	CHotKeyUI::CHotKeyUI() : m_pWindow(NULL), m_wVirtualKeyCode(0), m_wModifiers(0), m_dwHotKeybkColor(0xFFFFFFFF)
 	{
 		SetTextPadding(CDuiRect(4, 3, 4, 3));
 		SetBkColor(0xFFFFFFFF);
@@ -494,10 +494,11 @@ namespace DuiLib{
 		if( m_sText.IsEmpty() ) return;
 		CDuiString sText = m_sText;
 		RECT rc = m_rcItem;
-		rc.left += m_rcTextPadding.left;
-		rc.right -= m_rcTextPadding.right;
-		rc.top += m_rcTextPadding.top;
-		rc.bottom -= m_rcTextPadding.bottom;
+		RECT rcTextPadding = GetTextPadding();
+		rc.left += rcTextPadding.left;
+		rc.right -= rcTextPadding.right;
+		rc.top += rcTextPadding.top;
+		rc.bottom -= rcTextPadding.bottom;
 		if( IsEnabled() ) {
 			CRenderEngine::DrawText(hDC, m_pManager, rc, sText, m_dwTextColor, \
 				m_iFont, DT_SINGLELINE | m_uTextStyle);

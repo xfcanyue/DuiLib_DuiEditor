@@ -114,8 +114,7 @@ namespace DuiLib {
 	IMPLEMENT_DUICONTROL(CColorPaletteUI)
 
 	CColorPaletteUI::CColorPaletteUI()
-		: m_uButtonState(0)
-		, m_bIsInBar(false)
+		: m_bIsInBar(false)
 		, m_bIsInPallet(false)
 		, m_nCurH(180)
 		, m_nCurS(200)

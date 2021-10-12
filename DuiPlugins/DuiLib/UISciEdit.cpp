@@ -237,12 +237,12 @@ void CSciEditUI::SetPos(RECT rc, bool bNeedInvalidate /* = true */)
 	RECT rcItem = rc;
 
 	// Adjust for inset
-	RECT rcInset = m_rcInset;
-	GetManager()->GetDPIObj()->Scale(&m_rcInset);
-	rcItem.left += m_rcInset.left;
-	rcItem.top += m_rcInset.top;
-	rcItem.right -= m_rcInset.right;
-	rcItem.bottom -= m_rcInset.bottom;
+	RECT rcInset = GetInset();
+	GetManager()->GetDPIObj()->Scale(&rcInset);
+	rcItem.left += rcInset.left;
+	rcItem.top += rcInset.top;
+	rcItem.right -= rcInset.right;
+	rcItem.bottom -= rcInset.bottom;
 
 	if(m_pWindow)
 		((CSciWndUI *)m_pWindow)->SetPos(rcItem, bNeedInvalidate);

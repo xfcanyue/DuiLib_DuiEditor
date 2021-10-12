@@ -87,7 +87,7 @@ implfun bool CUIDataExchange::_UpdateText(_ddx_data *pData, bool bSaveAndValidat
 				}
 				else
 				{
-					m_bUpdate = false;
+					m_bUpdate = ((COleDateTime *)(pData->pValue))->ParseDateTime(pData->pControl->GetText()) == TRUE;
 				}
 			}
 			break;
@@ -136,7 +136,7 @@ implfun bool CUIDataExchange::_UpdateText(_ddx_data *pData, bool bSaveAndValidat
 				}
 				else
 				{
-					m_bUpdate = false;
+					pData->pControl->SetText(((COleDateTime *)(pData->pValue))->Format(_T("%Y-%m-%d %H:%M:%S")));
 				}
 			}
 			break;

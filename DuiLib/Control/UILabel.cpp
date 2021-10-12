@@ -113,12 +113,14 @@ namespace DuiLib
 			if( m_bShowHtml ) CRenderEngine::DrawHtmlText(m_pManager->GetPaintDC(), m_pManager, rcText, sText, m_dwTextColor, NULL, NULL, nLinks, m_iFont, DT_CALCRECT | m_uTextStyle);
 			else CRenderEngine::DrawText(m_pManager->GetPaintDC(), m_pManager, rcText, sText, m_dwTextColor, m_iFont, DT_CALCRECT | m_uTextStyle);
 			
+			RECT rcTextPadding = GetTextPadding();
+
 			if(IsAutoCalcWidth())
-				m_cxyFixed.cx = MulDiv(rcText.right - rcText.left + GetManager()->GetDPIObj()->Scale(m_rcTextPadding.left) + GetManager()->GetDPIObj()->Scale(m_rcTextPadding.right), 100, GetManager()->GetDPIObj()->GetScale());
+				m_cxyFixed.cx = MulDiv(rcText.right - rcText.left + GetManager()->GetDPIObj()->Scale(rcTextPadding.left) + GetManager()->GetDPIObj()->Scale(rcTextPadding.right), 100, GetManager()->GetDPIObj()->GetScale());
 		
 			if(IsAutoCalcHeight())
 			{
-				m_cxyFixed.cy = MulDiv(rcText.bottom - rcText.top + GetManager()->GetDPIObj()->Scale(m_rcTextPadding.top) + GetManager()->GetDPIObj()->Scale(m_rcTextPadding.bottom), 100, GetManager()->GetDPIObj()->GetScale());		
+				m_cxyFixed.cy = MulDiv(rcText.bottom - rcText.top + GetManager()->GetDPIObj()->Scale(rcTextPadding.top) + GetManager()->GetDPIObj()->Scale(rcTextPadding.bottom), 100, GetManager()->GetDPIObj()->GetScale());		
 			}
 
 			return CDuiSize(GetManager()->GetDPIObj()->Scale(m_cxyFixed.cx), GetManager()->GetDPIObj()->Scale(m_cxyFixed.cy));
@@ -230,12 +232,12 @@ namespace DuiLib
 		if( m_dwDisabledTextColor == 0 ) m_dwDisabledTextColor = m_pManager->GetDefaultDisabledColor();
 
 		RECT rc = m_rcItem;
-		RECT m_rcTextPadding = CLabelUI::m_rcTextPadding;
-		GetManager()->GetDPIObj()->Scale(&m_rcTextPadding);
-		rc.left += m_rcTextPadding.left;
-		rc.right -= m_rcTextPadding.right;
-		rc.top += m_rcTextPadding.top;
-		rc.bottom -= m_rcTextPadding.bottom;
+		RECT rcTextPadding = GetTextPadding();
+		GetManager()->GetDPIObj()->Scale(&rcTextPadding);
+		rc.left += rcTextPadding.left;
+		rc.right -= rcTextPadding.right;
+		rc.top += rcTextPadding.top;
+		rc.bottom -= rcTextPadding.bottom;
 
 		CDuiString sText = GetText();
 		if( sText.IsEmpty() ) return;

@@ -57,6 +57,7 @@ namespace DuiLib
 	{
 		return m_iFont;
 	}
+
 	void CGroupBoxUI::PaintText(HDC hDC)
 	{
 		CDuiString sText = GetText();
@@ -103,7 +104,7 @@ namespace DuiLib
 		{
 			CDuiRect rcItem = m_rcItem;
 			rcItem.Deflate(5, 5);
-			
+
 			if( cxyBorderRound.cx > 0 || cxyBorderRound.cy > 0 )//»­Ô²½Ç±ß¿ò
 			{
 				if (IsFocused() && m_dwFocusBorderColor != 0)
@@ -134,6 +135,7 @@ namespace DuiLib
 		SIZE cXY = {rcText.right - rcText.left, rcText.bottom - rcText.top};
 		return cXY;
 	}
+
 	void CGroupBoxUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
 		if( _tcsicmp(pstrName, _T("textcolor")) == 0 ) 

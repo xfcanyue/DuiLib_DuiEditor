@@ -44,7 +44,7 @@ namespace DuiLib {
 		//modify by liqs99 
 		CRichEditUI::CRichEditUI() : m_pTwh(NULL), m_bVScrollBarFixing(false), m_bWantTab(true), m_bWantReturn(false), 
 		m_bWantCtrlReturn(false), m_bTransparent(true), m_bRich(false), m_bReadOnly(false), m_bWordWrap(false), m_bParagraphIndent(false), m_dwTextColor(0), m_iFont(-1), 
-		m_iLimitText(cInitTextMax), m_lTwhStyle(ES_LEFT|ES_VERTICAL|ECO_VERTICAL), m_bDrawCaret(true), m_bInited(false), m_chLeadByte(0),m_uButtonState(0),
+		m_iLimitText(cInitTextMax), m_lTwhStyle(ES_LEFT|ES_VERTICAL|ECO_VERTICAL), m_bDrawCaret(true), m_bInited(false), m_chLeadByte(0),
 		m_dwTipValueColor(0xFFBAC0C5), m_uTipValueAlign(DT_SINGLELINE | DT_LEFT), m_uTextStyle(DT_TOP), 
 		m_bReturnFixedWidth(true), m_bReturnFixedHeight(true)
 	{
@@ -1036,10 +1036,11 @@ namespace DuiLib {
 		{
 			SIZE szNeed = {0,0};
 			RECT rc = {0, 0, szAvailable.cx, szAvailable.cy};
-			rc.left += m_rcInset.left;
-			rc.top += m_rcInset.top;
-			rc.right -= m_rcInset.right;
-			rc.bottom -= m_rcInset.bottom;
+			RECT rcInset = GetInset();
+			rc.left += rcInset.left;
+			rc.top += rcInset.top;
+			rc.right -= rcInset.right;
+			rc.bottom -= rcInset.bottom;
 
 			RECT rcText = rc;
 			rcText.left += m_rcTextPadding.left;
@@ -1092,14 +1093,14 @@ namespace DuiLib {
 
 			if(IsAutoCalcWidth())
 			{
-				szNeed.cx = lWidth + m_rcTextPadding.left + m_rcTextPadding.right + m_rcInset.left + m_rcInset.right;
+				szNeed.cx = lWidth + m_rcTextPadding.left + m_rcTextPadding.right + rcInset.left + rcInset.right;
 				if(szNeed.cx < GetMinWidth()) szNeed.cx = GetMinWidth();
 				if(szNeed.cx > GetMaxWidth()) szNeed.cx = GetMaxWidth();
 			}
 
 			if(IsAutoCalcHeight())
 			{
-				szNeed.cy = lHeight + m_rcTextPadding.top + m_rcTextPadding.bottom + m_rcInset.top + m_rcInset.bottom;
+				szNeed.cy = lHeight + m_rcTextPadding.top + m_rcTextPadding.bottom + rcInset.top + rcInset.bottom;
 				if(szNeed.cy < GetMinHeight()) szNeed.cy = GetMinHeight();
 				if(szNeed.cy > GetMaxHeight()) szNeed.cy = GetMaxHeight();
 			}
@@ -1149,10 +1150,11 @@ namespace DuiLib {
 		}
 		//////////////////////////////////////////////////////////////////////////
 
-		rc.left += m_rcInset.left;
-		rc.top += m_rcInset.top;
-		rc.right -= m_rcInset.right;
-		rc.bottom -= m_rcInset.bottom;
+		RECT rcInset = GetInset();
+		rc.left += rcInset.left;
+		rc.top += rcInset.top;
+		rc.right -= rcInset.right;
+		rc.bottom -= rcInset.bottom;
 
 		RECT rcScrollView = rc;
 
@@ -1246,10 +1248,11 @@ namespace DuiLib {
 		CContainerUI::Move(szOffset, bNeedInvalidate);
 		if( m_pTwh != NULL ) {
 			RECT rc = m_rcItem;
-			rc.left += m_rcInset.left;
-			rc.top += m_rcInset.top;
-			rc.right -= m_rcInset.right;
-			rc.bottom -= m_rcInset.bottom;
+			RECT rcInset = GetInset();
+			rc.left += rcInset.left;
+			rc.top += rcInset.top;
+			rc.right -= rcInset.right;
+			rc.bottom -= rcInset.bottom;
 
 			if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) rc.right -= m_pVerticalScrollBar->GetFixedWidth();
 			if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) rc.bottom -= m_pHorizontalScrollBar->GetFixedHeight();
@@ -1305,10 +1308,11 @@ namespace DuiLib {
 
 		if( m_items.GetSize() > 0 ) {
 			RECT rc = m_rcItem;
-			rc.left += m_rcInset.left;
-			rc.top += m_rcInset.top;
-			rc.right -= m_rcInset.right;
-			rc.bottom -= m_rcInset.bottom;
+			RECT rcInset = GetInset();
+			rc.left += rcInset.left;
+			rc.top += rcInset.top;
+			rc.right -= rcInset.right;
+			rc.bottom -= rcInset.bottom;
 			if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) rc.right -= m_pVerticalScrollBar->GetFixedWidth();
 			if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) rc.bottom -= m_pHorizontalScrollBar->GetFixedHeight();
 
@@ -1582,8 +1586,10 @@ namespace DuiLib {
 		else if( _tcscmp(pstrName, _T("multiline")) == 0 ) {
 			if( _tcscmp(pstrValue, _T("false")) == 0 ) m_lTwhStyle &= ~ES_MULTILINE;
 		}
-		else if( _tcscmp(pstrName, _T("readonly")) == 0 ) {
-			if( _tcscmp(pstrValue, _T("true")) == 0 ) { m_lTwhStyle |= ES_READONLY; m_bReadOnly = true; }
+		else if( _tcscmp(pstrName, _T("readonly")) == 0 ) 
+		{
+			//if( _tcscmp(pstrValue, _T("true")) == 0 ) { m_lTwhStyle |= ES_READONLY; m_bReadOnly = true; }
+			SetReadOnly(_tcscmp(pstrValue, _T("true")) == 0);
 		}
 		else if( _tcscmp(pstrName, _T("password")) == 0 ) {
 			if( _tcscmp(pstrValue, _T("true")) == 0 ) m_lTwhStyle |= ES_PASSWORD;

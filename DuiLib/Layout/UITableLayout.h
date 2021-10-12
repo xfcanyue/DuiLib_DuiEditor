@@ -5,7 +5,7 @@
 
 namespace DuiLib
 {
-	#define MAX_TABLE_COLUMN_COUNT	64
+	#define MAX_TABLE_COLUMN_COUNT	16
 
 	//////////////////////////////////////////////////////////////////////////
 	//Table²¼¾Ö
@@ -28,6 +28,12 @@ namespace DuiLib
 		bool IsColAutoCalcWidth(int col) const;
 		void SetColAutoCalcWidth(int col, bool bAutoCalcWidth);
 
+		RECT GetColInset(int col) const;
+		void SetColInset(int col, RECT rcInset);
+
+		RECT GetColTextPadding(int col) const;
+		void SetColTextPadding(int col, RECT rc);
+
 		void SetDefRowHeight(int height)			{ m_nDefRowHeight = height; }
 		int GetDefRowHeight() const					{ return m_nDefRowHeight; }
 
@@ -42,6 +48,9 @@ namespace DuiLib
 		int m_aColMinWidth[MAX_TABLE_COLUMN_COUNT];
 		int m_aColMaxWidth[MAX_TABLE_COLUMN_COUNT];
 		bool m_aColAutoCalcWidth[MAX_TABLE_COLUMN_COUNT];
+
+		RECT m_aColInset[MAX_TABLE_COLUMN_COUNT];
+		RECT m_aColTextPadding[MAX_TABLE_COLUMN_COUNT];
 
 		int   m_nDefRowHeight;				//default row's height
 	};
@@ -93,10 +102,15 @@ namespace DuiLib
 		virtual bool IsAutoCalcWidth() const;
 		virtual void SetAutoCalcWidth(bool bAutoCalcWidth);
 
+		virtual RECT GetInset() const;
+		virtual void SetInset(RECT rcInset);
+
+		virtual RECT GetTextPadding() const;
+		virtual void SetTextPadding(RECT rc);
+
 		virtual void DoInit();
 		virtual SIZE EstimateSize(SIZE szAvailable);
 		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
-
 	};
 }
 #endif // __UIVERTICALLAYOUT_H__

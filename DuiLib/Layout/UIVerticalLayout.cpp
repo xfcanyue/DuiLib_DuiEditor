@@ -4,7 +4,7 @@
 namespace DuiLib
 {
 	IMPLEMENT_DUICONTROL(CVerticalLayoutUI)
-	CVerticalLayoutUI::CVerticalLayoutUI() : m_iSepHeight(0), m_uButtonState(0), m_bImmMode(false)
+	CVerticalLayoutUI::CVerticalLayoutUI() : m_iSepHeight(0), m_bImmMode(false)
 	{
 		m_ptLastMouse.x = m_ptLastMouse.y = 0;
 		::ZeroMemory(&m_rcNewPos, sizeof(m_rcNewPos));
@@ -29,7 +29,53 @@ namespace DuiLib
 
 	SIZE CVerticalLayoutUI::EstimateSize(SIZE szAvailable)
 	{
-		return __super::EstimateSize(szAvailable);
+		if(IsAnimationRunning(ANIMATION_ID_SHOW) || IsAnimationRunning(ANIMATION_ID_HIDE)) {
+			return m_szAnimationCurrect;
+		}
+
+		if(!IsPaneVisible())
+		{
+			return m_szAnimationCurrect;
+		}
+
+		if(IsAutoCalcWidth() || IsAutoCalcHeight())
+		{
+			SIZE sz = {0};
+			for (int it=0; it<GetCount(); it++)
+			{
+				SIZE szControl = {0};
+				CControlUI *pControl = GetItemAt(it);
+				if(!pControl->IsVisible()) continue;
+				szControl = pControl->EstimateSize(szAvailable);
+				RECT padding = pControl->GetPadding();
+				if(IsAutoCalcWidth())
+				{
+					if(sz.cx < szControl.cx + padding.left + padding.right)
+						sz.cx = szControl.cx + padding.left + padding.right;
+				}
+
+				if(IsAutoCalcHeight())
+				{	
+					sz.cy += szControl.cy;
+					sz.cy += padding.top + padding.bottom;
+				}
+			}
+
+			RECT rcInset = GetInset();
+			if(IsAutoCalcWidth())
+			{
+				sz.cx += rcInset.left + rcInset.right;
+				if(GetCount() > 1) sz.cx += (GetCount() - 1) * m_iChildPadding;
+			}
+			if(IsAutoCalcHeight())
+			{
+				sz.cy += rcInset.top + rcInset.bottom;
+				if(GetCount() > 1) sz.cy += (GetCount() - 1) * m_iChildPadding;
+			}
+
+			return sz;
+		}
+		return CControlUI::EstimateSize(szAvailable);
 	}
 
 	void CVerticalLayoutUI::SetPos(RECT rc, bool bNeedInvalidate)
@@ -38,13 +84,11 @@ namespace DuiLib
 		rc = m_rcItem;
 
 		// Adjust for inset
-		RECT m_rcInset = CVerticalLayoutUI::m_rcInset;
-		if(GetManager())
-			GetManager()->GetDPIObj()->Scale(&m_rcInset);
-		rc.left += m_rcInset.left;
-		rc.top += m_rcInset.top;
-		rc.right -= m_rcInset.right;
-		rc.bottom -= m_rcInset.bottom;
+		RECT rcInset = GetInset();
+		rc.left += rcInset.left;
+		rc.top += rcInset.top;
+		rc.right -= rcInset.right;
+		rc.bottom -= rcInset.bottom;
 		if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) rc.right -= m_pVerticalScrollBar->GetFixedWidth();
 		if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) rc.bottom -= m_pHorizontalScrollBar->GetFixedHeight();
 
@@ -368,12 +412,11 @@ namespace DuiLib
 		CDuiRect rc = m_rcItem;
 
 		// Adjust for inset
-		RECT m_rcInset = CVerticalLayoutUI::m_rcInset;
-		GetManager()->GetDPIObj()->Scale(&m_rcInset);
-		rc.left += m_rcInset.left;
-		rc.top += m_rcInset.top;
-		rc.right -= m_rcInset.right;
-		rc.bottom -= m_rcInset.bottom;
+		RECT rcInset = GetInset();
+		rc.left += rcInset.left;
+		rc.top += rcInset.top;
+		rc.right -= rcInset.right;
+		rc.bottom -= rcInset.bottom;
 		if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) rc.right -= m_pVerticalScrollBar->GetFixedWidth();
 		if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) rc.bottom -= m_pHorizontalScrollBar->GetFixedHeight();
 

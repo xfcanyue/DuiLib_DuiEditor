@@ -1010,7 +1010,7 @@ namespace DuiLib {
 					delete static_cast<CControlUI*>(m_aDelayedCleanup[i]);
 				m_aDelayedCleanup.Empty();
 
-				CDuiInnerLock lock(&m_lockAsyncNotify); //add by liq99
+				//CDuiInnerLock lock(&m_lockAsyncNotify); //add by liq99
 				m_bAsyncNotifyPosted = false;
 
 				TNotifyUI* pMsg = NULL;
@@ -2675,7 +2675,7 @@ namespace DuiLib {
 		}
 		else 
 		{
-			CDuiInnerLock lock(&m_lockAsyncNotify);//add by liq99
+			//CDuiInnerLock lock(&m_lockAsyncNotify);//add by liq99
 
 			TNotifyUI *pMsg = new TNotifyUI;
 			pMsg->pSender = Msg.pSender;

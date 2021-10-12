@@ -134,7 +134,6 @@ namespace DuiLib {
 		bool	m_bShowShadow;
 		CDuiString m_sDropBoxAttributes;
 		SIZE m_szDropBox;
-		UINT m_uButtonState;
 
 		CDuiString m_sNormalImage;
 		CDuiString m_sHotImage;

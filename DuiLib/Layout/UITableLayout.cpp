@@ -14,6 +14,8 @@ namespace DuiLib
 			m_aColMinWidth[i] = 0;
 			m_aColMaxWidth[i] = 9999;
 			m_aColAutoCalcWidth[i] = false;
+			m_aColInset[i] = CDuiRect(0,0,0,0);
+			m_aColTextPadding[i] = CDuiRect(0,0,0,0);
 		}
 	}
 
@@ -76,6 +78,30 @@ namespace DuiLib
 		m_aColAutoCalcWidth[col] = bAutoCalcWidth;
 	}
 
+	RECT CTableLayoutUI::GetColInset(int col) const
+	{
+		if(col < 0 || col >= MAX_TABLE_COLUMN_COUNT) return CDuiRect(0,0,0,0);
+		return m_aColInset[col];
+	}
+
+	void CTableLayoutUI::SetColInset(int col, RECT rcInset)
+	{
+		if(col < 0 || col >= MAX_TABLE_COLUMN_COUNT) return;
+		m_aColInset[col] = rcInset;
+	}
+
+	RECT CTableLayoutUI::GetColTextPadding(int col) const
+	{
+		if(col < 0 || col >= MAX_TABLE_COLUMN_COUNT) return CDuiRect(0,0,0,0);
+		return m_aColTextPadding[col];
+	}
+
+	void CTableLayoutUI::SetColTextPadding(int col, RECT rc)
+	{
+		if(col < 0 || col >= MAX_TABLE_COLUMN_COUNT) return;
+		m_aColTextPadding[col] = rc;
+	}
+
 	void CTableLayoutUI::DoInit()
 	{
 
@@ -92,13 +118,11 @@ namespace DuiLib
 		rc = m_rcItem;
 
 		// Adjust for inset
-		RECT m_rcInset = CTableLayoutUI::m_rcInset;
-		if(GetManager())
-			GetManager()->GetDPIObj()->Scale(&m_rcInset);
-		rc.left += m_rcInset.left;
-		rc.top += m_rcInset.top;
-		rc.right -= m_rcInset.right;
-		rc.bottom -= m_rcInset.bottom;
+		RECT rcInset = GetInset();
+		rc.left += rcInset.left;
+		rc.top += rcInset.top;
+		rc.right -= rcInset.right;
+		rc.bottom -= rcInset.bottom;
 		if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) rc.right -= m_pVerticalScrollBar->GetFixedWidth();
 		if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) rc.bottom -= m_pHorizontalScrollBar->GetFixedHeight();
 
@@ -336,6 +360,20 @@ namespace DuiLib
 			SIZE sz = {0};
 			CTableLayoutUI *pTable = (CTableLayoutUI *)GetParent();
 			sz.cy = pTable->GetDefRowHeight();
+	
+			if(IsAutoCalcWidth())
+			{
+				for (int it=0; it<GetCount(); it++)
+				{
+					SIZE szControl = {0};
+					CControlUI *pControl = GetItemAt(it);
+					if(!pControl->IsVisible()) continue;
+					szControl = pControl->EstimateSize(szAvailable);
+					RECT padding = pControl->GetPadding();
+					sz.cx += szControl.cx + padding.left + padding.right;
+				}
+			}
+
 			return sz;
 		}
 		return __super::EstimateSize(szAvailable);
@@ -484,6 +522,48 @@ namespace DuiLib
 			pTable->NeedUpdate();
 	}
 
+	RECT CTDUI::GetInset() const
+	{
+		CTRUI *pRow = GetRow();
+		CTableLayoutUI *pTable = GetTable();
+		if(!pRow || !pTable) return CDuiRect(0,0,0,0);
+
+		return pTable->GetColInset(pRow->GetItemIndex((CTDUI *)this));
+	}
+
+	void CTDUI::SetInset(RECT rcInset)
+	{
+		CTRUI *pRow = GetRow();
+		CTableLayoutUI *pTable = GetTable();
+		if(!pRow || !pTable) return;
+
+		pTable->SetColInset(pRow->GetItemIndex(this), rcInset);
+
+		if(GetParent() && GetParent()->GetParent())
+			pTable->NeedUpdate();
+	}
+
+	RECT CTDUI::GetTextPadding() const
+	{
+		CTRUI *pRow = GetRow();
+		CTableLayoutUI *pTable = GetTable();
+		if(!pRow || !pTable) return CDuiRect(0,0,0,0);
+
+		return pTable->GetColTextPadding(pRow->GetItemIndex((CTDUI *)this));
+	}
+
+	void CTDUI::SetTextPadding(RECT rc)
+	{
+		CTRUI *pRow = GetRow();
+		CTableLayoutUI *pTable = GetTable();
+		if(!pRow || !pTable) return;
+
+		pTable->SetColTextPadding(pRow->GetItemIndex(this), rc);
+
+		if(GetParent() && GetParent()->GetParent())
+			pTable->NeedUpdate();
+	}
+
 	void CTDUI::DoInit()
 	{
 
@@ -510,15 +590,16 @@ namespace DuiLib
 			else
 			{
 				CDuiString sText = GetText();
-
+				RECT rcTextPadding = GetTextPadding();
 				RECT rcText = {0, 0, szAvailable.cx, szAvailable.cy};
 				int nLinks = 0;
 				if( m_bShowHtml ) CRenderEngine::DrawHtmlText(m_pManager->GetPaintDC(), m_pManager, rcText, sText, m_dwTextColor, NULL, NULL, nLinks, m_iFont, DT_CALCRECT | m_uTextStyle);
 				else CRenderEngine::DrawText(m_pManager->GetPaintDC(), m_pManager, rcText, sText, m_dwTextColor, m_iFont, DT_CALCRECT | m_uTextStyle);
-				needWidth = MulDiv(rcText.right - rcText.left + GetManager()->GetDPIObj()->Scale(m_rcTextPadding.left) + GetManager()->GetDPIObj()->Scale(m_rcTextPadding.right), 100, GetManager()->GetDPIObj()->GetScale());
+				needWidth = MulDiv(rcText.right - rcText.left + GetManager()->GetDPIObj()->Scale(rcTextPadding.left) + GetManager()->GetDPIObj()->Scale(rcTextPadding.right), 100, GetManager()->GetDPIObj()->GetScale());
 			}
 
-			needWidth += m_rcInset.left + m_rcInset.right;
+			RECT rcInset = GetInset();
+			needWidth += rcInset.left + rcInset.right;
 			if(needWidth > GetFixedWidth())
 			{
 				SetFixedWidth(needWidth);

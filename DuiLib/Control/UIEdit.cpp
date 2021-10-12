@@ -275,7 +275,7 @@ namespace DuiLib
 	IMPLEMENT_DUICONTROL(CEditUI)
 
 	CEditUI::CEditUI() : m_pWindow(NULL), m_uMaxChar(255), m_bReadOnly(false), 
-		m_bPasswordMode(false), m_cPasswordChar(_T('*')), m_bAutoSelAll(false), m_uButtonState(0), 
+		m_bPasswordMode(false), m_cPasswordChar(_T('*')), m_bAutoSelAll(false), 
 		m_dwEditbkColor(0xFFFFFFFF), m_dwEditTextColor(0x00000000), m_iWindowStyls(0),m_dwTipValueColor(0xFFBAC0C5)
 	{
 		SetTextPadding(CDuiRect(4, 3, 4, 3));
@@ -356,8 +356,9 @@ namespace DuiLib
 				{
 					if (!m_bAutoSelAll) {
 						POINT pt = event.ptMouse;
-						pt.x -= m_rcItem.left + m_rcTextPadding.left;
-						pt.y -= m_rcItem.top + m_rcTextPadding.top;
+						RECT rcTextPadding = GetTextPadding();
+						pt.x -= m_rcItem.left + rcTextPadding.left;
+						pt.y -= m_rcItem.top + rcTextPadding.top;
 						Edit_SetSel(*m_pWindow, 0, 0);
 						::SendMessage(*m_pWindow, WM_LBUTTONDOWN, event.wParam, MAKELPARAM(pt.x, pt.y));
 					}
@@ -799,10 +800,11 @@ namespace DuiLib
 		}
 
 		RECT rc = m_rcItem;
-		rc.left += m_rcTextPadding.left;
-		rc.right -= m_rcTextPadding.right;
-		rc.top += m_rcTextPadding.top;
-		rc.bottom -= m_rcTextPadding.bottom;
+		RECT rcTextPadding = GetTextPadding();
+		rc.left += rcTextPadding.left;
+		rc.right -= rcTextPadding.right;
+		rc.top += rcTextPadding.top;
+		rc.bottom -= rcTextPadding.bottom;
 		if( IsEnabled() ) {
 			CRenderEngine::DrawText(hDC, m_pManager, rc, sDrawText, mCurTextColor, \
 				m_iFont, uTextStyle);

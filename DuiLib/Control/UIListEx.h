@@ -119,7 +119,6 @@ namespace DuiLib {
 	protected:
 		POINT ptLastMouse;
 		BOOL m_bDragable;
-		UINT m_uButtonState;
 		int m_iSepWidth;
 		DWORD m_dwTextColor;
 		int m_iFont;

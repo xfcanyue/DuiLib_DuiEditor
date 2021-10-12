@@ -140,7 +140,7 @@ BOOL CSciWnd::SaveFile(LPCTSTR szPath)
 	TCHAR *pBuffer = new TCHAR[buflen + 1];
 	if (pBuffer != NULL)
 	{
-		execute(SCI_GETTEXT, buflen + 1,(long)pBuffer);
+		execute(SCI_GETTEXT, buflen + 1, (sptr_t)pBuffer);
 		file.Write((void *)pBuffer, buflen);
 		delete [] pBuffer;
 	}

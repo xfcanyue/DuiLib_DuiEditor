@@ -545,7 +545,7 @@ namespace DuiLib {
 		CStdPtrArray m_aNativeWindow;
 		CStdPtrArray m_aNativeWindowControl;
 		CStdPtrArray m_aDelayedCleanup;
-		CStdPtrArray m_aAsyncNotify; CDuiLock m_lockAsyncNotify; //add by liq99
+		CStdPtrArray m_aAsyncNotify; //CDuiLock m_lockAsyncNotify; //add by liq99
 		CStdPtrArray m_aFoundControls;
 		CStdPtrArray m_aFonts;
 		CStdPtrArray m_aNeedMouseLeaveNeeded;

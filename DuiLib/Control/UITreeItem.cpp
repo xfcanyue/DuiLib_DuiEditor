@@ -258,9 +258,10 @@ namespace DuiLib
 		RECT rcText = {0, 0, szAvailable.cx, szAvailable.cy};
 		CRenderEngine::DrawText(m_pManager->GetPaintDC(), m_pManager, rcText, m_pNodeData->GetText(), 0, m_pText->GetFont(), DT_CALCRECT | m_pText->GetTextStyle());
 		nWidth += MulDiv(rcText.right - rcText.left + GetManager()->GetDPIObj()->Scale(m_pText->GetTextPadding().left) + GetManager()->GetDPIObj()->Scale(m_pText->GetTextPadding().right), 100, GetManager()->GetDPIObj()->GetScale());
-		
-		nWidth += m_rcInset.left;
-		nWidth += m_rcInset.right;
+
+		RECT rcInset = GetInset();
+		nWidth += rcInset.left;
+		nWidth += rcInset.right;
 		
 		return nWidth;
 	}

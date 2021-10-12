@@ -50,16 +50,19 @@ SIZE CIconButtonUI::EstimateSize(SIZE szAvailable)
 		if( m_bShowHtml ) CRenderEngine::DrawHtmlText(m_pManager->GetPaintDC(), m_pManager, rcText, sText, m_dwTextColor, NULL, NULL, nLinks, m_iFont, DT_CALCRECT | m_uTextStyle);
 		else CRenderEngine::DrawText(m_pManager->GetPaintDC(), m_pManager, rcText, sText, m_dwTextColor, m_iFont, DT_CALCRECT | m_uTextStyle);
 
+		RECT rcTextPadding = GetTextPadding();
+		RECT rcInset = GetInset();
+
 		if(IsAutoCalcWidth())
 		{	
-			int cx = rcText.right - rcText.left + m_rcInset.left + m_rcInset.right + m_rcTextPadding.left + m_rcTextPadding.right + m_szIcon.cx;
+			int cx = rcText.right - rcText.left + rcInset.left + rcInset.right + rcTextPadding.left + rcTextPadding.right + m_szIcon.cx;
 			GetManager()->GetDPIObj()->Scale(cx);
 			m_cxyFixed.cx = cx;
 		}
 
 		if(IsAutoCalcHeight())
 		{
-			int cy = rcText.bottom - rcText.top + m_rcInset.top + m_rcInset.bottom + m_rcTextPadding.top + m_rcTextPadding.bottom + m_szIcon.cy;
+			int cy = rcText.bottom - rcText.top + rcInset.top + rcInset.bottom + rcTextPadding.top + rcTextPadding.bottom + m_szIcon.cy;
 			GetManager()->GetDPIObj()->Scale(cy);
 			m_cxyFixed.cy = cy;
 		}
@@ -84,20 +87,21 @@ void CIconButtonUI::PaintText(HDC hDC)
 	if( sText.IsEmpty() ) return;
 
 	RECT rcText = m_rcItem;
-	rcText.left += m_rcInset.left;
-	rcText.right -= m_rcInset.right;
-	rcText.top += m_rcInset.top;
-	rcText.bottom -= m_rcInset.bottom;
+	RECT rcInset = GetInset();
+	rcText.left += rcInset.left;
+	rcText.right -= rcInset.right;
+	rcText.top += rcInset.top;
+	rcText.bottom -= rcInset.bottom;
 
 	rcText.left += m_szIcon.cx;
 
-	RECT m_rcTextPadding = CButtonLayoutUI::m_rcTextPadding;
-	GetManager()->GetDPIObj()->Scale(&m_rcTextPadding);
+	RECT rcTextPadding = GetTextPadding();
+	GetManager()->GetDPIObj()->Scale(&rcTextPadding);
 	
-	rcText.left += m_rcTextPadding.left;
-	rcText.right -= m_rcTextPadding.right;
-	rcText.top += m_rcTextPadding.top;
-	rcText.bottom -= m_rcTextPadding.bottom;
+	rcText.left += rcTextPadding.left;
+	rcText.right -= rcTextPadding.right;
+	rcText.top += rcTextPadding.top;
+	rcText.bottom -= rcTextPadding.bottom;
 
 	DWORD clrColor = IsEnabled()?m_dwTextColor:m_dwDisabledTextColor;
 

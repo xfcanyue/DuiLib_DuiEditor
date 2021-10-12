@@ -141,13 +141,13 @@ void CKeyButtonUI::PaintText(HDC hDC)
 	else if( ((m_uButtonState & UISTATE_SELECTED) != 0) && (m_pKeyBoard->GetKeyPushedTextColor() != 0) )
 		clrColor = m_pKeyBoard->GetKeyPushedTextColor();
 
-	RECT m_rcTextPadding = CButtonUI::m_rcTextPadding;
-	GetManager()->GetDPIObj()->Scale(&m_rcTextPadding);
+	RECT rcTextPadding = GetTextPadding();
+	GetManager()->GetDPIObj()->Scale(&rcTextPadding);
 	RECT rc = m_rcItem;
-	rc.left += m_rcTextPadding.left;
-	rc.right -= m_rcTextPadding.right;
-	rc.top += m_rcTextPadding.top;
-	rc.bottom -= m_rcTextPadding.bottom;
+	rc.left += rcTextPadding.left;
+	rc.right -= rcTextPadding.right;
+	rc.top += rcTextPadding.top;
+	rc.bottom -= rcTextPadding.bottom;
 
 	UINT uTextStyle = m_uTextStyle;
 	uTextStyle |= DT_NOPREFIX;

@@ -31,7 +31,6 @@ namespace DuiLib
 
 	protected:
 		int m_iSepHeight;
-		UINT m_uButtonState;
 		POINT m_ptLastMouse;
 		RECT m_rcNewPos;
 		bool m_bImmMode;

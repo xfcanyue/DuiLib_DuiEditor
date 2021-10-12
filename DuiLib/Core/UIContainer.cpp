@@ -625,10 +625,11 @@ namespace DuiLib
 	RECT CContainerUI::GetClientPos() const
 	{
 		RECT rc = m_rcItem;
-		rc.left += m_rcInset.left;
-		rc.top += m_rcInset.top;
-		rc.right -= m_rcInset.right;
-		rc.bottom -= m_rcInset.bottom;
+		RECT rcInset = GetInset();
+		rc.left += rcInset.left;
+		rc.top += rcInset.top;
+		rc.right -= rcInset.right;
+		rc.bottom -= rcInset.bottom;
 
 		if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) {
 			rc.top -= m_pVerticalScrollBar->GetScrollPos();
@@ -690,14 +691,15 @@ namespace DuiLib
 				}
 			}
 
+			RECT rcInset = GetInset();
 			if(IsAutoCalcWidth())
 			{
-				sz.cx += m_rcInset.left + m_rcInset.right;
+				sz.cx += rcInset.left + rcInset.right;
 				if(GetCount() > 1) sz.cx += (GetCount() - 1) * m_iChildPadding;
 			}
 			if(IsAutoCalcHeight())
 			{
-				sz.cy += m_rcInset.top + m_rcInset.bottom;
+				sz.cy += rcInset.top + rcInset.bottom;
 				if(GetCount() > 1) sz.cy += (GetCount() - 1) * m_iChildPadding;
 			}
 
@@ -712,10 +714,11 @@ namespace DuiLib
 		if( m_items.IsEmpty() ) return;
 
 		rc = m_rcItem;
-		rc.left += m_rcInset.left;
-		rc.top += m_rcInset.top;
-		rc.right -= m_rcInset.right;
-		rc.bottom -= m_rcInset.bottom;
+		RECT rcInset = GetInset();
+		rc.left += rcInset.left;
+		rc.top += rcInset.top;
+		rc.right -= rcInset.right;
+		rc.bottom -= rcInset.bottom;
 
 		if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) {
 			rc.top -= m_pVerticalScrollBar->GetScrollPos();
@@ -751,10 +754,11 @@ namespace DuiLib
 	bool CContainerUI::CalcPos(CControlUI *pChildControl, RECT &rc)
 	{
 		rc = m_rcItem;
-		rc.left += m_rcInset.left;
-		rc.top += m_rcInset.top;
-		rc.right -= m_rcInset.right;
-		rc.bottom -= m_rcInset.bottom;
+		RECT rcInset = GetInset();
+		rc.left += rcInset.left;
+		rc.top += rcInset.top;
+		rc.right -= rcInset.right;
+		rc.bottom -= rcInset.bottom;
 
 		if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) {
 			rc.top -= m_pVerticalScrollBar->GetScrollPos();
@@ -883,10 +887,11 @@ namespace DuiLib
 
 		if( (uFlags & UIFIND_HITTEST) == 0 || IsMouseChildEnabled() ) {
 			RECT rc = m_rcItem;
-			rc.left += m_rcInset.left;
-			rc.top += m_rcInset.top;
-			rc.right -= m_rcInset.right;
-			rc.bottom -= m_rcInset.bottom;
+			RECT rcInset = GetInset();
+			rc.left += rcInset.left;
+			rc.top += rcInset.top;
+			rc.right -= rcInset.right;
+			rc.bottom -= rcInset.bottom;
 			if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) rc.right -= m_pVerticalScrollBar->GetFixedWidth();
 			if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) rc.bottom -= m_pHorizontalScrollBar->GetFixedHeight();
 			if( (uFlags & UIFIND_TOP_FIRST) != 0 ) {

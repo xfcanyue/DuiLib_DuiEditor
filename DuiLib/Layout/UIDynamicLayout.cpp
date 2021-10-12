@@ -4,7 +4,7 @@
 namespace DuiLib
 {
 	IMPLEMENT_DUICONTROL(CDynamicLayoutUI)
-	CDynamicLayoutUI::CDynamicLayoutUI() : m_iSepWidth(0), m_iSepHeight(0), m_uButtonState(0), m_bImmMode(false)
+	CDynamicLayoutUI::CDynamicLayoutUI() : m_iSepWidth(0), m_iSepHeight(0), m_bImmMode(false)
 	{
 		m_ptLastMouse.x = m_ptLastMouse.y = 0;
 		::ZeroMemory(&m_rcNewPos, sizeof(m_rcNewPos));
@@ -66,9 +66,7 @@ namespace DuiLib
 		rc = m_rcItem;
 
 		// Adjust for inset
-		RECT rcInset = m_rcInset;
-		if(GetManager())
-			GetManager()->GetDPIObj()->Scale(&rcInset);
+		RECT rcInset = GetInset();
 		rc.left += rcInset.left;
 		rc.top += rcInset.top;
 		rc.right -= rcInset.right;
@@ -273,9 +271,7 @@ namespace DuiLib
 		rc = m_rcItem;
 
 		// Adjust for inset
-		RECT rcInset = m_rcInset;
-		if(GetManager())
-			GetManager()->GetDPIObj()->Scale(&rcInset);
+		RECT rcInset = GetInset();
 		rc.left += rcInset.left;
 		rc.top += rcInset.top;
 		rc.right -= rcInset.right;

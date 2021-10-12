@@ -69,6 +69,8 @@ public:
 		REG_CONTROL_FUNPR(void,		   SetFocusBorderColor,		(DWORD dwBorderColor)		);
 		REG_CONTROL_FUNPR(DWORD,	   GetHotBorderColor,		() const					); 
 		REG_CONTROL_FUNPR(void,		   SetHotBorderColor,		(DWORD dwBorderColor)		); 
+		REG_CONTROL_FUNPR(void,		   SetDisableBorderColor,	(DWORD dwColor)	);
+		REG_CONTROL_FUNPR(DWORD,	   GetDisableBorderColor,	() const		);
 		REG_CONTROL_FUNPR(bool,		   IsColorHSL,				() const					);
 		REG_CONTROL_FUNPR(void,		   SetColorHSL,				(bool bColorHSL)			);
 		REG_CONTROL_FUNPR(SIZE,		   GetBorderRound,			() const					);
@@ -1090,8 +1092,6 @@ public:
 
 		REG_CONTROL_FUNPR(void,		SetPushedBorderColor,	(DWORD dwColor)	);
 		REG_CONTROL_FUNPR(DWORD,	GetPushedBorderColor,	() const		);
-		REG_CONTROL_FUNPR(void,		SetDisableBorderColor,	(DWORD dwColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetDisableBorderColor,	() const		);
 
 	}
 };
@@ -1427,8 +1427,6 @@ public:
 
 		REG_CONTROL_FUNPR(void,		SetPushedBorderColor,	(DWORD dwColor)	);
 		REG_CONTROL_FUNPR(DWORD,	GetPushedBorderColor,	() const		);
-		REG_CONTROL_FUNPR(void,		SetDisableBorderColor,	(DWORD dwColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetDisableBorderColor,	() const		);
 	}
 };
 

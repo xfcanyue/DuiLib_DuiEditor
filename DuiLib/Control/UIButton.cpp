@@ -6,8 +6,7 @@ namespace DuiLib
 	IMPLEMENT_DUICONTROL(CButtonUI)
 
 	CButtonUI::CButtonUI()
-		: m_uButtonState(0)
-		, m_iHotFont(-1)
+		: m_iHotFont(-1)
 		, m_iPushedFont(-1)
 		, m_iFocusedFont(-1)
 		, m_dwHotTextColor(0)
@@ -487,14 +486,14 @@ namespace DuiLib
 		CDuiString sText = GetText();
 		if( sText.IsEmpty() ) return;
 
-		RECT m_rcTextPadding = CButtonUI::m_rcTextPadding;
-		GetManager()->GetDPIObj()->Scale(&m_rcTextPadding);
+		RECT rcTextPadding = GetTextPadding();
+		GetManager()->GetDPIObj()->Scale(&rcTextPadding);
 		int nLinks = 0;
 		RECT rc = m_rcItem;
-		rc.left += m_rcTextPadding.left;
-		rc.right -= m_rcTextPadding.right;
-		rc.top += m_rcTextPadding.top;
-		rc.bottom -= m_rcTextPadding.bottom;
+		rc.left += rcTextPadding.left;
+		rc.right -= rcTextPadding.right;
+		rc.top += rcTextPadding.top;
+		rc.bottom -= rcTextPadding.bottom;
 
 		DWORD clrColor = IsEnabled()?m_dwTextColor:m_dwDisabledTextColor;
 		

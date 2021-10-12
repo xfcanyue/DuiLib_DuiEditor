@@ -4,7 +4,7 @@
 namespace DuiLib
 {
 	IMPLEMENT_DUICONTROL(COptionLayoutUI)
-	COptionLayoutUI::COptionLayoutUI() : m_bSelected(false) ,m_iSelectedFont(-1), m_dwSelectedTextColor(0), m_dwSelectedBkColor(0), m_nSelectedStateCount(0), m_dwSelectedBorderColor(0)
+	COptionLayoutUI::COptionLayoutUI() : m_bSelected(false) ,m_iSelectedFont(-1), m_dwSelectedTextColor(0), m_dwSelectedBkColor(0), m_nSelectedStateCount(0)
 	{
 	}
 
@@ -109,7 +109,7 @@ namespace DuiLib
 			BindTriggerTabSel();
 		}
 		if( !m_sGroupName.IsEmpty() ) Selected(true);
-		else Selected(!m_bSelected);
+		else Selected(!IsSelected());
 
 		SwitchControlVisible();
 		return true;
@@ -119,7 +119,7 @@ namespace DuiLib
 	{
 		CControlUI::SetEnabled(bEnable);
 		if( !IsEnabled() ) {
-			if( m_bSelected ) m_uButtonState = UISTATE_SELECTED;
+			if( IsSelected() ) m_uButtonState = UISTATE_SELECTED;
 			else m_uButtonState = 0;
 		}
 	}
@@ -372,12 +372,12 @@ namespace DuiLib
 			if( sText.IsEmpty() ) return;
 			int nLinks = 0;
 			RECT rc = m_rcItem;
-			RECT m_rcTextPadding = CButtonLayoutUI::m_rcTextPadding;
-			GetManager()->GetDPIObj()->Scale(&m_rcTextPadding);
-			rc.left += m_rcTextPadding.left;
-			rc.right -= m_rcTextPadding.right;
-			rc.top += m_rcTextPadding.top;
-			rc.bottom -= m_rcTextPadding.bottom;
+			RECT rcTextPadding = GetTextPadding();
+			GetManager()->GetDPIObj()->Scale(&rcTextPadding);
+			rc.left += rcTextPadding.left;
+			rc.right -= rcTextPadding.right;
+			rc.top += rcTextPadding.top;
+			rc.bottom -= rcTextPadding.bottom;
 			
 			if( m_bShowHtml )
 				CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, sText, IsEnabled()?m_dwTextColor:m_dwDisabledTextColor, \

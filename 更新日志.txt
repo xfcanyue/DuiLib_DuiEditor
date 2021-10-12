@@ -232,3 +232,11 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
 2021-09-16
    1, 感谢JonYang处理DuiScript编译64位的问题。包括设计器在内，整体项目可以支持64位编译。
    2，把MFC的CWinApp操作注册表和Ini文件的函数移植到CUIAppliacation。
+
+2021-10-12
+   1, 表格布局TableLayout的单元格TD的属性Inset,TextPadding，改为TableLayout列共用。
+   2, 代码中一律改为GetInset()和GetTextPadding()，而不是直接使用属性m_rcInset和m_rcTextPadding。
+   3, CMsgWndUI有个BUG，在duilib异步消息中需要输出日志到CMsgWndUI时, 可能出现死锁。 修改后，不是从CUIFrameWnd继承的主窗口，需要在HandleCustomMessage处理UIMSG_INSERT_MSG消息。
+   4, 多字节界面文字乱码。 修改为，解析xml文档之前从UTF8转码为ASCII。
+   5，IPAddressUI 滚动时位置错误。
+   6，整理代码

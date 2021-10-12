@@ -160,13 +160,11 @@ void CTreeUI::SetPos(RECT rc, bool bNeedInvalidate)
 	rc = m_rcItem;
 
 	// Adjust for inset
-	RECT m_rcInset = CContainerUI::m_rcInset;
-	if(GetManager())
-		GetManager()->GetDPIObj()->Scale(&m_rcInset);
-	rc.left += m_rcInset.left;
-	rc.top += m_rcInset.top;
-	rc.right -= m_rcInset.right;
-	rc.bottom -= m_rcInset.bottom;
+	RECT rcInset = GetInset();
+	rc.left += rcInset.left;
+	rc.top += rcInset.top;
+	rc.right -= rcInset.right;
+	rc.bottom -= rcInset.bottom;
 	if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) rc.right -= m_pVerticalScrollBar->GetFixedWidth();
 	if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) rc.bottom -= m_pHorizontalScrollBar->GetFixedHeight();
 

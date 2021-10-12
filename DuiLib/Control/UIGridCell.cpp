@@ -634,7 +634,7 @@ void CGridCellUI::PaintText(HDC hDC)
 
 	CDuiString sText = GetText();
 
-	RECT rcTextPadding = m_rcTextPadding;
+	RECT rcTextPadding = GetTextPadding();
 	GetManager()->GetDPIObj()->Scale(&rcTextPadding);
 	int nLinks = 0;
 	RECT rc = m_rcPaint2;

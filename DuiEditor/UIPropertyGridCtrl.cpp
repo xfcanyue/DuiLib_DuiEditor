@@ -766,7 +766,7 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 	}
 	else if(CompareString(attrType.value(), _T("SIZE")))
 	{
-		CMFCPropertyGridProperty* pSize = new CMFCPropertyGridProperty(XML2T(attrName.value()), (_variant_t)0, TRUE);
+		CMFCPropertyGridProperty* pSize = new CMFCPropertyGridProperty(XML2T(attrName.value()), (DWORD_PTR)0, TRUE);
 		pSize->SetData((DWORD)attrNode.internal_object());
 		pGroupParent->AddSubItem(pSize);
 
@@ -805,7 +805,7 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 	}
 	else if(CompareString(attrType.value(), _T("POINT")))
 	{
-		CMFCPropertyGridProperty* pSize = new CMFCPropertyGridProperty(XML2T(attrName.value()), (_variant_t)0, TRUE);
+		CMFCPropertyGridProperty* pSize = new CMFCPropertyGridProperty(XML2T(attrName.value()), (DWORD_PTR)0, TRUE);
 		pSize->SetData((DWORD)attrNode.internal_object());
 		pGroupParent->AddSubItem(pSize);
 
@@ -844,7 +844,7 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 	}
 	else if(CompareString(attrType.value(), _T("RECT")))
 	{
-		CMFCPropertyGridProperty* pRect = new CMFCPropertyGridProperty(XML2T(attrName.value()), attrDefValue.as_int(), TRUE);
+		CMFCPropertyGridProperty* pRect = new CMFCPropertyGridProperty(XML2T(attrName.value()), (DWORD_PTR)attrDefValue.as_int(), TRUE);
 		pRect->SetData((DWORD)attrNode.internal_object());
 		pGroupParent->AddSubItem(pRect);
 

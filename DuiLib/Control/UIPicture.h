@@ -54,7 +54,6 @@ private:
 	bool m_bTrackRect;
 	CDuiRect m_rcTracker;
 	DWORD m_dwTrackColor;
-	UINT m_uButtonState;
 private:
 	bool			m_bIsAutoPlay;			// 是否自动播放
 	bool			m_bIsAutoSize;			// 是否自动根据图片设置大小

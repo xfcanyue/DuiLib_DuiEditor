@@ -189,7 +189,6 @@ namespace DuiLib {
 		UINT	m_uTextStyle; //add by liqs99, DT_TOP, DT_CENTER, DT_BOTTOM
 
 		RECT m_rcTextPadding;
-		UINT m_uButtonState;
 		CDuiString m_sNormalImage;
 		CDuiString m_sHotImage;
 		CDuiString m_sFocusedImage;

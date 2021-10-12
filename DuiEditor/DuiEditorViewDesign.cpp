@@ -57,12 +57,12 @@ BEGIN_MESSAGE_MAP(CDuiEditorViewDesign, CScrollView)
 
 	ON_COMMAND(ID_EDIT_GENERATE_DDXTEXT, &CDuiEditorViewDesign::OnEditGenerateCode_ddxText)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_DDXTEXT, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_ddxText)
-	ON_COMMAND(ID_EDIT_GENERATE_DDXTEXT, &CDuiEditorViewDesign::OnEditGenerateCode_ddxCheckBox)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_DDXTEXT, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_ddxCheckBox)
-	ON_COMMAND(ID_EDIT_GENERATE_DDXTEXT, &CDuiEditorViewDesign::OnEditGenerateCode_ddxCombo)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_DDXTEXT, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_ddxCombo)
-	ON_COMMAND(ID_EDIT_GENERATE_DDXTEXT, &CDuiEditorViewDesign::OnEditGenerateCode_ddxComboItemData)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_DDXTEXT, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_ddxComboItemData)
+	ON_COMMAND(ID_EDIT_GENERATE_DDXCHECKBOX, &CDuiEditorViewDesign::OnEditGenerateCode_ddxCheckBox)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_DDXCHECKBOX, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_ddxCheckBox)
+	ON_COMMAND(ID_EDIT_GENERATE_DDXCOMBO, &CDuiEditorViewDesign::OnEditGenerateCode_ddxCombo)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_DDXCOMBO, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_ddxCombo)
+	ON_COMMAND(ID_EDIT_GENERATE_DDXCOMBOITEMDATA, &CDuiEditorViewDesign::OnEditGenerateCode_ddxComboItemData)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_DDXCOMBOITEMDATA, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_ddxComboItemData)
 
 	ON_COMMAND(ID_EDIT_GENERATE_ISCONTROL, &CDuiEditorViewDesign::OnEditGenerateCode_IsControl)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_ISCONTROL, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_IsControl)
@@ -550,10 +550,13 @@ void CDuiEditorViewDesign::OnEditGenerateCode_FindControl()
 		sClassName += XML2T(pTrackElem->m_node.name());
 		sClassName += _T("UI");
 
+		CString sVarName = _T("*p");
+		sVarName += XML2T(pTrackElem->m_node.name());
+
 		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
 
 		CString strText;
-		strText.Format(_T("static_cast<%s *>(GetManager()->FindControl(_T(\"%s\")));\r\n"), sClassName, sControlName);
+		strText.Format(_T("%s %s = static_cast<%s *>(GetManager()->FindControl(_T(\"%s\")));\r\n"), sClassName, sVarName, sClassName, sControlName);
 		strMuiltiText += strText;
 	}
 
@@ -1770,7 +1773,7 @@ void CDuiEditorViewDesign::UpdateFontPropertyMenu(CCmdUI *pCmdUI, UINT uFontType
 	xml_node nodeAttr = g_duiProp.FindAttribute(XML2T(pTrackElem->m_node.name()), attrName);
 	if(!nodeAttr) return;
 
-	int nID = id_font_begin;
+	UINT nID = id_font_begin;
 	tagTFontInfo *pDefaultFont = (TFontInfo *)GetUIManager()->GetManager()->GetDefaultFontInfo();
 	if(pDefaultFont)
 	{

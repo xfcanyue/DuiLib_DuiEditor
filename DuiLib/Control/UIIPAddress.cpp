@@ -78,6 +78,8 @@ namespace DuiLib
 		if (m_pOwner->GetText().IsEmpty())
 			m_pOwner->m_dwIP = GetLocalIpAddress();
 		::SendMessage(m_hWnd, IPM_SETADDRESS, 0, m_pOwner->m_dwIP);
+		CDuiRect rcPos = CalPos();
+		::MoveWindow(m_hWnd, rcPos.left, rcPos.top, rcPos.GetWidth(), rcPos.GetHeight(), TRUE);
 		::ShowWindow(m_hWnd, SW_SHOW);
 		::SetFocus(m_hWnd);
 

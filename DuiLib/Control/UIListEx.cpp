@@ -350,7 +350,7 @@ namespace DuiLib {
 	//
 	IMPLEMENT_DUICONTROL(CListContainerHeaderItemUI)
 
-	CListContainerHeaderItemUI::CListContainerHeaderItemUI() : m_bDragable(TRUE), m_uButtonState(0), m_iSepWidth(4),
+	CListContainerHeaderItemUI::CListContainerHeaderItemUI() : m_bDragable(TRUE), m_iSepWidth(4),
 		m_uTextStyle(DT_VCENTER | DT_CENTER | DT_SINGLELINE), m_dwTextColor(0), m_iFont(-1), m_bShowHtml(FALSE),
 		m_bEditable(FALSE),m_bComboable(FALSE),m_bCheckBoxable(FALSE),m_uCheckBoxState(0),m_bChecked(FALSE),m_pOwner(NULL)
 	{

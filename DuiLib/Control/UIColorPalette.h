@@ -47,7 +47,6 @@ namespace DuiLib {
 		HBITMAP		m_hMemBitmap;
 		BITMAP		m_bmInfo;
 		BYTE		*m_pBits;
-		UINT		m_uButtonState;
 		bool		m_bIsInBar;
 		bool		m_bIsInPallet;
 		int			m_nCurH;

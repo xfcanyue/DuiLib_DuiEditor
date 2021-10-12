@@ -82,6 +82,8 @@ namespace DuiLib {
 		void SetFocusBorderColor(DWORD dwBorderColor);
 		DWORD GetHotBorderColor() const; //add by liqs99
 		void SetHotBorderColor(DWORD dwBorderColor); //add by liqs99
+		DWORD GetDisableBorderColor() const;
+		void SetDisableBorderColor(DWORD dwBorderColor);
 		bool IsColorHSL() const;
 		void SetColorHSL(bool bColorHSL);
 		SIZE GetBorderRound() const;
@@ -188,8 +190,8 @@ namespace DuiLib {
 		virtual bool IsFloat() const;
 		virtual void SetFloat(bool bFloat = true);
 
-		virtual bool IsHot() const; //add by liqs99
-		virtual void SetHot(bool bFloat = true); //add by liqs99
+		virtual bool IsHot() const;
+		virtual void SetHot(bool bHot = true);
 
 		virtual CControlUI* FindControl(FINDCONTROLPROC Proc, LPVOID pData, UINT uFlags);
 
@@ -264,7 +266,7 @@ namespace DuiLib {
 		bool m_bKeyboardEnabled ;
 		bool m_bFocused;
 		bool m_bFloat;
-		bool m_bHot;
+		UINT m_uButtonState;
 		TPercentInfo m_piFloatPercent;
 		UINT m_uFloatAlign;
 		POINT m_ptFloatPosition;	//绝对定位时, 父控件左上角的百分比位置
@@ -297,7 +299,8 @@ namespace DuiLib {
 		CDuiString m_sForeImage;
 		DWORD m_dwBorderColor;
 		DWORD m_dwFocusBorderColor;
-		DWORD m_dwHotBorderColor; //add by liqs99, 鼠标悬浮时边框颜色
+		DWORD m_dwHotBorderColor;		//鼠标悬浮时边框颜色
+		DWORD m_dwDisableBorderColor;	//禁用或只读时边框颜色
 		bool m_bColorHSL;
 		int m_nBorderSize;
 		int m_nBorderStyle;

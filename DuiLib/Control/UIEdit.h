@@ -88,7 +88,6 @@ namespace DuiLib
 		bool m_bMultiLine;
 		bool m_bWantReturn;
 
-		UINT m_uButtonState;
 		CDuiString m_sNormalImage;
 		CDuiString m_sHotImage;
 		CDuiString m_sFocusedImage;

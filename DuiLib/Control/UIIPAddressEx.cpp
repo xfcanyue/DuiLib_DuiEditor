@@ -270,10 +270,11 @@ namespace DuiLib
         if( m_sText.IsEmpty() ) return;
 
         RECT rc = m_rcItem;
-        rc.left += m_rcTextPadding.left;
-        rc.right -= m_rcTextPadding.right;
-        rc.top += m_rcTextPadding.top;
-        rc.bottom -= m_rcTextPadding.bottom;
+		RECT rcTextPadding = GetTextPadding();
+        rc.left += rcTextPadding.left;
+        rc.right -= rcTextPadding.right;
+        rc.top += rcTextPadding.top;
+        rc.bottom -= rcTextPadding.bottom;
 
         DWORD dwTextColor = IsEnabled() ? m_dwTextColor : m_dwDisabledTextColor;
         HFONT hOldFont = (HFONT)::SelectObject(hDC, m_pManager->GetFont(m_iFont));

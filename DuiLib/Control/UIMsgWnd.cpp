@@ -21,7 +21,8 @@ void CMsgWndUI::InsertMsg(LPCTSTR pstring, COLORREF cr)
 
 	CDuiString *pNewString = new CDuiString;
 	*pNewString = strRet;
-	m_pStaticWindow->GetManager()->SendNotify(m_pStaticWindow, _T("CMsgWndUI::InsertMsg"), 0, (LPARAM)pNewString, true);
+	//m_pStaticWindow->GetManager()->SendNotify(m_pStaticWindow, _T("CMsgWndUI::InsertMsg"), 0, (LPARAM)pNewString, true);
+	::PostMessage(m_pStaticWindow->GetManager()->GetPaintWindow(), UIMSG_INSERT_MSG, (WPARAM)m_pStaticWindow, (LPARAM)pNewString);
 }
 
 void CMsgWndUI::InsertMsgV(LPCTSTR lpszFormat, ...)
