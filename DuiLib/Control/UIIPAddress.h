@@ -3,13 +3,11 @@
 
 #pragma once
 
-//给该控件添加一个属性dtstyle
-
 namespace DuiLib
 {
 	class CIPAddressWnd;
 
-	/// 时间选择控件
+	/// IP控件
 	class UILIB_API CIPAddressUI : public CLabelUI
 	{
 		DECLARE_DUICONTROL(CIPAddressUI)
@@ -34,6 +32,10 @@ namespace DuiLib
 
 		void UpdateText();
 
+		void SetPos(RECT rc, bool bNeedInvalidate = true);
+		void Move(SIZE szOffset, bool bNeedInvalidate = true);
+		void SetVisible(bool bVisible = true);
+		void SetInternVisible(bool bVisible = true);
 		void DoEvent(TEventUI& event);
 
 		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);

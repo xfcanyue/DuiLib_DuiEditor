@@ -267,6 +267,37 @@ namespace DuiLib
 		return sText;
 	}
 
+	void CDateTimeUI::SetPos(RECT rc, bool bNeedInvalidate)
+	{
+		__super::SetPos(rc, bNeedInvalidate);
+		if( m_pWindow != NULL ) {
+			RECT rcPos = m_pWindow->CalPos();
+			::SetWindowPos(m_pWindow->GetHWND(), NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
+				rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE);        
+		}
+	}
+
+	void CDateTimeUI::Move(SIZE szOffset, bool bNeedInvalidate)
+	{
+		__super::Move(szOffset, bNeedInvalidate);
+		if( m_pWindow != NULL ) {
+			RECT rcPos = m_pWindow->CalPos();
+			::SetWindowPos(m_pWindow->GetHWND(), NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
+				rcPos.bottom - rcPos.top, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);        
+		}
+	}
+
+	void CDateTimeUI::SetVisible(bool bVisible)
+	{
+		__super::SetVisible(bVisible);
+		if( !IsVisible() && m_pWindow != NULL ) m_pManager->SetFocus(NULL);
+	}
+
+	void CDateTimeUI::SetInternVisible(bool bVisible)
+	{
+		if( !IsVisible() && m_pWindow != NULL ) m_pManager->SetFocus(NULL);
+	}
+
 	void CDateTimeUI::DoEvent(TEventUI& event)
 	{
 		if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {

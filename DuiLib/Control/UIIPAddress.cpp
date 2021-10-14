@@ -78,8 +78,6 @@ namespace DuiLib
 		if (m_pOwner->GetText().IsEmpty())
 			m_pOwner->m_dwIP = GetLocalIpAddress();
 		::SendMessage(m_hWnd, IPM_SETADDRESS, 0, m_pOwner->m_dwIP);
-		CDuiRect rcPos = CalPos();
-		::MoveWindow(m_hWnd, rcPos.left, rcPos.top, rcPos.GetWidth(), rcPos.GetHeight(), TRUE);
 		::ShowWindow(m_hWnd, SW_SHOW);
 		::SetFocus(m_hWnd);
 
@@ -282,6 +280,38 @@ namespace DuiLib
 			_stprintf(szIP, _T("%d.%d.%d.%d"), addr.S_un.S_un_b.s_b4, addr.S_un.S_un_b.s_b3, addr.S_un.S_un_b.s_b2, addr.S_un.S_un_b.s_b1);
 			//SetText(szIP);
 		}
+	}
+
+	void CIPAddressUI::SetPos(RECT rc, bool bNeedInvalidate)
+	{
+		CControlUI::SetPos(rc, bNeedInvalidate);
+		if( m_pWindow != NULL ) {
+			RECT rcPos = m_pWindow->CalPos();
+			::SetWindowPos(m_pWindow->GetHWND(), NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
+				rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE);        
+		}
+	}
+
+	void CIPAddressUI::Move(SIZE szOffset, bool bNeedInvalidate)
+	{
+		CControlUI::Move(szOffset, bNeedInvalidate);
+		if( m_pWindow != NULL ) {
+			RECT rcPos = m_pWindow->CalPos();
+			::SetWindowPos(m_pWindow->GetHWND(), NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
+				rcPos.bottom - rcPos.top, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);        
+		}
+	}
+
+
+	void CIPAddressUI::SetVisible(bool bVisible)
+	{
+		CControlUI::SetVisible(bVisible);
+		if( !IsVisible() && m_pWindow != NULL ) m_pManager->SetFocus(NULL);
+	}
+
+	void CIPAddressUI::SetInternVisible(bool bVisible)
+	{
+		if( !IsVisible() && m_pWindow != NULL ) m_pManager->SetFocus(NULL);
 	}
 
 	void CIPAddressUI::DoEvent(TEventUI& event)

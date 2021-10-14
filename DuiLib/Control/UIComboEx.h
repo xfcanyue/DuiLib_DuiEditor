@@ -52,7 +52,12 @@ public:
 	LPCTSTR GetTipValue();
 	void SetTipValueColor(LPCTSTR pStrColor);
 	DWORD GetTipValueColor();
-protected:
+
+	void SetPos(RECT rc, bool bNeedInvalidate = true);
+	void Move(SIZE szOffset, bool bNeedInvalidate = true);
+	void SetVisible(bool bVisible = true);
+	void SetInternVisible(bool bVisible = true);
+
 	virtual void DoEvent(TEventUI& event);
 	RECT GetDropButtonRect();
 	bool OnLbuttonDown(TEventUI& event);

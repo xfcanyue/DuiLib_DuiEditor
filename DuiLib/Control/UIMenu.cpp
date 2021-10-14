@@ -881,7 +881,7 @@ namespace DuiLib {
 		m_cxyFixed.cx = GetManager()->GetDPIObj()->Scale(m_cxyFixed.cx);
 		m_cxyFixed.cy = GetManager()->GetDPIObj()->Scale(m_cxyFixed.cy);
 
-		//SIZE m_szIconSize = CMenuElementUI::m_szIconSize;
+		SIZE m_szIconSize = CMenuElementUI::m_szIconSize;
 		m_szIconSize.cx = GetManager()->GetDPIObj()->Scale(m_szIconSize.cx);
 		m_szIconSize.cy = GetManager()->GetDPIObj()->Scale(m_szIconSize.cy);
 

@@ -29,6 +29,10 @@ namespace DuiLib
 		virtual void SetText(LPCTSTR pstrText);
 		virtual CDuiString GetText() const;
 
+		void SetPos(RECT rc, bool bNeedInvalidate = true);
+		void Move(SIZE szOffset, bool bNeedInvalidate = true);
+		void SetVisible(bool bVisible = true);
+		void SetInternVisible(bool bVisible = true);
 		void DoEvent(TEventUI& event);
 
 		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);

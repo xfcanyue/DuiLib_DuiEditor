@@ -279,6 +279,54 @@ namespace DuiLib
 		return sText;
 	}
 
+	void CDateTimeExUI::SetPos(RECT rc, bool bNeedInvalidate)
+	{
+		__super::SetPos(rc, bNeedInvalidate);
+		if(m_pWindowDate != NULL)
+		{
+			RECT rcPos = ((CDateTimeExWnd *)m_pWindowDate)->CalPos();
+			::SetWindowPos(m_pWindowDate->GetHWND(), NULL, rcPos.left, rcPos.top, 
+				rcPos.right - rcPos.left, rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE);        
+		}
+		if(m_pWindowTime != NULL)
+		{
+			RECT rcPos = ((CDateTimeExWnd *)m_pWindowTime)->CalPos();
+			::SetWindowPos(m_pWindowTime->GetHWND(), NULL, rcPos.left, rcPos.top, 
+				rcPos.right - rcPos.left, rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE);   
+		}	
+	}
+
+	void CDateTimeExUI::Move(SIZE szOffset, bool bNeedInvalidate)
+	{
+		__super::Move(szOffset, bNeedInvalidate);
+		if(m_pWindowDate != NULL)
+		{
+			RECT rcPos = ((CDateTimeExWnd *)m_pWindowDate)->CalPos();
+			::SetWindowPos(m_pWindowDate->GetHWND(), NULL, rcPos.left, rcPos.top, 
+				rcPos.right - rcPos.left, rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE);        
+		}
+		if(m_pWindowTime != NULL)
+		{
+			RECT rcPos = ((CDateTimeExWnd *)m_pWindowTime)->CalPos();
+			::SetWindowPos(m_pWindowTime->GetHWND(), NULL, rcPos.left, rcPos.top, 
+				rcPos.right - rcPos.left, rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE);   
+		}
+	}
+
+	void CDateTimeExUI::SetVisible(bool bVisible)
+	{
+		__super::SetVisible(bVisible);
+		if(!IsVisible() && (m_pWindowDate != NULL || m_pWindowTime != NULL))
+			m_pManager->SetFocus(NULL);
+	}
+
+	void CDateTimeExUI::SetInternVisible(bool bVisible)
+	{
+		__super::SetInternVisible(bVisible);
+		if(!IsVisible() && (m_pWindowDate != NULL || m_pWindowTime != NULL))
+			m_pManager->SetFocus(NULL);
+	}
+
 	void CDateTimeExUI::DoEvent(TEventUI& event)
 	{
 		if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {

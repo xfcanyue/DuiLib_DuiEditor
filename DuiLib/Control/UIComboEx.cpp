@@ -302,6 +302,38 @@ DWORD CComboExUI::GetTipValueColor()
 	return m_dwTipValueColor;
 }
 
+void CComboExUI::SetPos(RECT rc, bool bNeedInvalidate)
+{
+	__super::SetPos(rc, bNeedInvalidate);
+	if( m_pEditWindow != NULL ) {
+		RECT rcPos = m_pEditWindow->CalPos();
+		::SetWindowPos(m_pEditWindow->GetHWND(), NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
+			rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE);        
+	}
+}
+
+void CComboExUI::Move(SIZE szOffset, bool bNeedInvalidate)
+{
+	__super::Move(szOffset, bNeedInvalidate);
+	if( m_pEditWindow != NULL ) {
+		RECT rcPos = m_pEditWindow->CalPos();
+		::SetWindowPos(m_pEditWindow->GetHWND(), NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
+			rcPos.bottom - rcPos.top, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);        
+	}
+}
+
+
+void CComboExUI::SetVisible(bool bVisible)
+{
+	__super::SetVisible(bVisible);
+	if( !IsVisible() && m_pEditWindow != NULL ) m_pManager->SetFocus(NULL);
+}
+
+void CComboExUI::SetInternVisible(bool bVisible)
+{
+	if( !IsVisible() && m_pEditWindow != NULL ) m_pManager->SetFocus(NULL);
+}
+
 void CComboExUI::DoEvent(TEventUI& event)
 {
 	if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
