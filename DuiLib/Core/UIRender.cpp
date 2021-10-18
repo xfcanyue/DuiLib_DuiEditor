@@ -448,13 +448,8 @@ namespace DuiLib {
 					if( CPaintManagerUI::IsCachedResourceZip() ) hz = (HZIP)CPaintManagerUI::GetResourceZipHandle();
 					else
 					{
-#ifdef UNICODE
-						char* pwd = w2a((wchar_t*)sFilePwd.GetData());
-						hz = OpenZip(sFile.GetData(), pwd);
-						if(pwd) delete[] pwd;
-#else
-						hz = OpenZip(sFile.GetData(), sFilePwd.GetData());
-#endif
+						LSSTRING_CONVERSION;
+						hz = OpenZip(sFile.GetData(), LST2A(sFilePwd.GetData()));
 					}
 					if( hz == NULL ) break;
 					ZIPENTRY ze; 
@@ -618,13 +613,8 @@ namespace DuiLib {
 						hz = (HZIP)CPaintManagerUI::GetResourceZipHandle();
 					else {
 						CDuiString sFilePwd = CPaintManagerUI::GetResourceZipPwd();
-#ifdef UNICODE
-						char* pwd = w2a((wchar_t*)sFilePwd.GetData());
-						hz = OpenZip(sFile.GetData(), pwd);
-						if(pwd) delete[] pwd;
-#else
-						hz = OpenZip(sFile.GetData(), sFilePwd.GetData());
-#endif
+						LSSTRING_CONVERSION;
+						hz = OpenZip(sFile.GetData(), LST2A(sFilePwd.GetData()));
 					}
 					if( hz == NULL ) break;
 					ZIPENTRY ze; 
@@ -744,13 +734,8 @@ namespace DuiLib {
 				if( CPaintManagerUI::IsCachedResourceZip() ) hz = (HZIP)CPaintManagerUI::GetResourceZipHandle();
 				else {
 					CDuiString sFilePwd = CPaintManagerUI::GetResourceZipPwd();
-#ifdef UNICODE
-					char* pwd = w2a((wchar_t*)sFilePwd.GetData());
-					hz = OpenZip(sFile.GetData(), pwd);
-					if(pwd) delete[] pwd;
-#else
-					hz = OpenZip(sFile.GetData(), sFilePwd.GetData());
-#endif
+					LSSTRING_CONVERSION;
+					hz = OpenZip(sFile.GetData(), LST2A(sFilePwd.GetData()));
 				}
 				if( hz == NULL ) break;
 				ZIPENTRY ze; 

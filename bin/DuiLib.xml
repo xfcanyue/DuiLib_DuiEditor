@@ -807,8 +807,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
 		<Attribute name="rowheight" default="30" type="INT" comment="默认行高" />
 		<Attribute name="columnwith" default="80" type="INT" comment="默认列宽" />
-		<Attribute name="fixedcolumncount" default="1" type="INT" comment="固定列数量" />
-		<Attribute name="viewlistnumber" default="true" type="BOOL" comment="最左边固定列显示行号" />	
+		<Attribute name="fixedcolumncount" default="1" type="INT" comment="固定列数量" />	
 		
 		<Attribute name="rowline" default="true" type="BOOL" comment="画表格横线" />	
 		<Attribute name="columnline" default="true" type="BOOL" comment="画表格纵线" />	
@@ -824,6 +823,7 @@ INT类型(最小值，最大值)：
 
 		<Attribute name="listmode" default="true" type="BOOL" comment="列表模式,点击单元格时选中整行，否则开启单元格多选" />
 		<Attribute name="singlerowselection" default="true" type="BOOL" comment="仅允许选中单行" />		
+		<Attribute name="viewlistnumber" default="true" type="BOOL" comment="最左边固定列显示行号" />
 		
 		<Attribute name="sortheader" default="true" type="BOOL" comment="点击表格头排序" />		
 		<Attribute name="ascendingimage" default="" type="IMAGE" comment="升序的图标" />

@@ -533,16 +533,8 @@ namespace DuiLib {
 		m_pStrResourceZipPwd = password;  //Garfield 20160325 ´øÃÜÂëzip°ü½âÃÜ
 		if( m_bCachedResourceZip ) 
 		{
-#ifdef UNICODE
-			char* pwd = w2a((wchar_t*)password);
-			m_hResourceZip = (HANDLE)OpenZip(pVoid, len, pwd);
-			if(pwd) {
-				delete[] pwd;
-				pwd = NULL;
-			}
-#else
-			m_hResourceZip = (HANDLE)OpenZip(pVoid, len, password);
-#endif
+			LSSTRING_CONVERSION;
+			m_hResourceZip = (HANDLE)OpenZip(pVoid, len, LST2A(password));
 		}
 	}
 
@@ -559,16 +551,8 @@ namespace DuiLib {
 		if( m_bCachedResourceZip ) {
 			CDuiString sFile = CPaintManagerUI::GetResourcePath();
 			sFile += CPaintManagerUI::GetResourceZip();
-#ifdef UNICODE
-			char* pwd = w2a((wchar_t*)password);
-			m_hResourceZip = (HANDLE)OpenZip(sFile.GetData(), pwd);
-			if(pwd) {
-				delete[] pwd;
-				pwd = NULL;
-			}
-#else
-			m_hResourceZip = (HANDLE)OpenZip(sFile.GetData(), password);
-#endif
+			LSSTRING_CONVERSION;
+			m_hResourceZip = (HANDLE)OpenZip(sFile.GetData(), LST2A(password));
 		}
 	}
 
@@ -2986,13 +2970,8 @@ namespace DuiLib {
 				if (CPaintManagerUI::IsCachedResourceZip()) hz = (HZIP)CPaintManagerUI::GetResourceZipHandle();
 				else {
 					CDuiString sFilePwd = CPaintManagerUI::GetResourceZipPwd();
-#ifdef UNICODE
-					char* pwd = w2a((wchar_t*)sFilePwd.GetData());
-					hz = OpenZip(sFile.GetData(), pwd);
-					if (pwd) delete[] pwd;
-#else
-					hz = OpenZip(sFile.GetData(), sFilePwd.GetData());
-#endif
+					LSSTRING_CONVERSION;
+					hz = OpenZip(sFile.GetData(), LST2A(sFilePwd.GetData()));
 				}
 				if (hz == NULL) break;
 				ZIPENTRY ze;

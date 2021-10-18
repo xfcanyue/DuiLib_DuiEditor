@@ -75,7 +75,7 @@ void CDockControlTreeCtrl::InitTreeContent()
 	pugi::xml_node root = GetUIManager()->GetDocument()->m_doc.root().child(XTEXT("Window"));
 
 	HTREEITEM hRootItem = InsertItem(XML2T(root.name()), 0, 0, TVI_ROOT, TVI_LAST);
-	SetItemData(hRootItem, (DWORD)root.internal_object());
+	SetItemData(hRootItem, (DWORD_PTR)root.internal_object());
 
 	int type = CDuiPropertyFile::GetControlIconIndex(root);
 	SetItemImage(hRootItem, type, type);
@@ -143,7 +143,7 @@ HTREEITEM CDockControlTreeCtrl::AddNewControl(xml_node node, HTREEITEM hParent, 
 	}
 
 	HTREEITEM hItem = InsertItem(text, 0, 0, hParent, hInertAfter);
-	SetItemData(hItem, (DWORD)node.internal_object());
+	SetItemData(hItem, (DWORD_PTR)node.internal_object());
 
 	int type = CDuiPropertyFile::GetControlIconIndex(node);
 	SetItemImage(hItem, type, type);

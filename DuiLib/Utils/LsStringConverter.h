@@ -1,10 +1,11 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #define _LSSTRINGCONVERT_TEMP_INSTANCE_	__lsstring__convert__temp__instance__
-class LsStringConverter
+class LsStringConverterUI
 {
 public:
-	LsStringConverter() { _block = NULL; }
-	~LsStringConverter() { Release(); }
+	LsStringConverterUI() { m_cp = CP_ACP; _block = NULL; }
+	LsStringConverterUI(UINT codepage) { m_cp = codepage; _block = NULL; }
+	~LsStringConverterUI() { Release(); }
 
 public:
 	LPCTSTR A_to_T(const void *buffer)
@@ -63,32 +64,32 @@ public:
 
 	LPCWSTR A_to_W(const void *buffer)
 	{
-		int len = MultiByteToWideChar(CP_ACP, 0, (const char *)buffer, -1, NULL, 0);
+		int len = MultiByteToWideChar(m_cp, 0, (const char *)buffer, -1, NULL, 0);
 
 		Alloc((len+1) * sizeof(wchar_t));
-		MultiByteToWideChar(CP_ACP, 0, (const char *)buffer, -1, (wchar_t *)_block, len);
+		MultiByteToWideChar(m_cp, 0, (const char *)buffer, -1, (wchar_t *)_block, len);
 		return (LPCWSTR)_block;
 	}
 
 	LPCSTR W_to_A(const void *buffer)
 	{
-		int len = WideCharToMultiByte(CP_ACP, 0, (const wchar_t *)buffer, -1, NULL, 0, NULL, NULL);
+		int len = WideCharToMultiByte(m_cp, 0, (const wchar_t *)buffer, -1, NULL, 0, NULL, NULL);
 
 		Alloc((len + 1) * sizeof(char));
-		WideCharToMultiByte(CP_ACP, 0, (const wchar_t *)buffer, -1, (LPSTR)_block, len, NULL, NULL);
+		WideCharToMultiByte(m_cp, 0, (const wchar_t *)buffer, -1, (LPSTR)_block, len, NULL, NULL);
 		return (LPCSTR)_block;
 	}
 
 	LPCSTR A_to_utf8(const void *buffer)
 	{
-		LsStringConverter conv;
+		LsStringConverterUI conv;
 		LPCWSTR wstr = conv.A_to_W(buffer);
 		return W_to_utf8(wstr);
 	}
 
 	LPCSTR utf8_to_A(const void *buffer)
 	{
-		LsStringConverter conv;
+		LsStringConverterUI conv;
 		LPCWSTR wstr = conv.utf8_to_W(buffer);
 		return W_to_A(wstr);
 	}
@@ -127,9 +128,11 @@ protected:
 	}
 private:
 	BYTE *_block;
+	UINT m_cp;
 };
 
-#define LSSTRING_CONVERSION	LsStringConverter _LSSTRINGCONVERT_TEMP_INSTANCE_;
+#define LSSTRING_CONVERSION					LsStringConverterUI _LSSTRINGCONVERT_TEMP_INSTANCE_;
+#define LSSTRING_CONVERSION_EX(codepage)	LsStringConverterUI _LSSTRINGCONVERT_TEMP_INSTANCE_(codepage);
 
 #define LSA2T(p)	(_LSSTRINGCONVERT_TEMP_INSTANCE_.A_to_T(p))
 #define LSA2W(p)	(_LSSTRINGCONVERT_TEMP_INSTANCE_.A_to_W(p))

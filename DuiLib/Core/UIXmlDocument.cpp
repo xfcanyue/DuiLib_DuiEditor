@@ -83,6 +83,9 @@ bool CXmlDocumentUI::load_file(LPCTSTR pstrFilename)
 		if( CPaintManagerUI::IsCachedResourceZip() ) hz = (HZIP)CPaintManagerUI::GetResourceZipHandle();
 		else {
 			CDuiString sFilePwd = CPaintManagerUI::GetResourceZipPwd();
+			LSSTRING_CONVERSION;
+			hz = OpenZip(sFile.GetData(), LST2A(sFilePwd.GetData()));
+/*
 #ifdef UNICODE
 			char* pwd = w2a((wchar_t*)sFilePwd.GetData());
 			hz = OpenZip(sFile.GetData(), pwd);
@@ -90,6 +93,7 @@ bool CXmlDocumentUI::load_file(LPCTSTR pstrFilename)
 #else
 			hz = OpenZip(sFile.GetData(), sFilePwd.GetData());
 #endif
+			*/
 		}
 		if( hz == NULL ) return _Failed(_T("Error opening zip file"));
 		ZIPENTRY ze; 
