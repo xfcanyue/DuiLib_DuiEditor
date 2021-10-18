@@ -42,7 +42,7 @@ BOOL CThreadTest::InitInstance()
 #		ifdef _DEBUG
 			strAppName = _T("DuiPreviewer_usd.exe");	
 #		else
-			strAppName = _T("DuiPreviewer_uas.exe");	
+			strAppName = _T("DuiPreviewer_us.exe");	
 #		endif
 #	else
 #		ifdef _DEBUG
