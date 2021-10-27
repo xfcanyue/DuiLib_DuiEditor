@@ -49,6 +49,7 @@ namespace DuiLib {
 		UINT GetListType();
 		TListInfoUI* GetListInfo();
 		int GetCurSel() const;  
+		bool SelectItem(LPCTSTR pstrText);
 		bool SelectItem(int iIndex, bool bTakeFocus = false);
 		bool SelectMultiItem(int iIndex, bool bTakeFocus = false);
 		bool UnSelectItem(int iIndex, bool bOthers = false);

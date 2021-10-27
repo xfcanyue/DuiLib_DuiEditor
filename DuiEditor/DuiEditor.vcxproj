@@ -812,6 +812,7 @@
     <ClInclude Include="DlgCreateStyleString.h" />
     <ClInclude Include="DlgCustomControl.h" />
     <ClInclude Include="DlgInsertControl.h" />
+    <ClInclude Include="DlgSelectFile.h" />
     <ClInclude Include="MyDocument.h" />
     <ClInclude Include="MyFilePath.h" />
     <ClInclude Include="UIWindowContainer.h" />
@@ -890,6 +891,7 @@
     <ClCompile Include="DlgCreateStyleString.cpp" />
     <ClCompile Include="DlgCustomControl.cpp" />
     <ClCompile Include="DlgInsertControl.cpp" />
+    <ClCompile Include="DlgSelectFile.cpp" />
     <ClCompile Include="MyDocument.cpp" />
     <ClCompile Include="MyFilePath.cpp" />
     <ClCompile Include="UIWindowContainer.cpp" />

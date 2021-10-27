@@ -1139,6 +1139,132 @@ namespace DuiLib
 		return GetAt(nIndex);
 	}
 
+	//////////////////////////////////////////////////////////////////////////
+	//
+	CDuiStringArray::CDuiStringArray()
+	{
+
+	}
+
+	CDuiStringArray::CDuiStringArray(const CDuiStringArray& src)
+	{
+		RemoveAll();
+		for (int i=0; i<src.GetSize(); i++)
+		{
+			Add(src.GetAt(i), false);
+		}
+	}
+
+	CDuiStringArray::~CDuiStringArray()
+	{
+		RemoveAll();
+	}
+
+	int CDuiStringArray::GetSize() const
+	{
+		return m_map.GetSize();
+	}
+
+	bool CDuiStringArray::IsEmpty() const
+	{
+		return m_map.GetSize() <= 0;
+	}
+
+	void CDuiStringArray::RemoveAll()
+	{
+		CDuiString *pstr;
+		for( int i = 0; i< m_map.GetSize(); i++ )
+		{
+			if(LPCTSTR key = m_map.GetAt(i))
+			{
+				pstr = static_cast<CDuiString *>(m_map.Find(key));
+				delete pstr; 
+			}
+		}
+		m_map.RemoveAll();
+	}
+
+	bool CDuiStringArray::Add(LPCTSTR newElement, bool bNoRepeat)
+	{
+		if(newElement == NULL || *newElement == _T('\0')) return false;
+		if(bNoRepeat && Find(newElement) != NULL) return false;
+
+		CDuiString *pstr = new CDuiString(newElement);
+		if(!m_map.Insert(newElement, pstr))
+		{
+			delete pstr;
+			return false;
+		}
+		return true;
+	}
+
+	bool CDuiStringArray::Remove(LPCTSTR element)
+	{
+		CDuiString *pstr = static_cast<CDuiString *>(m_map.Find(element));
+		if(!pstr) return false;
+		delete pstr;
+		m_map.Remove(element);
+		return true;
+	}
+
+	bool CDuiStringArray::Find(LPCTSTR element)
+	{
+		return m_map.Find(element) != NULL;
+	}
+
+	CDuiString CDuiStringArray::GetAt(int iIndex) const
+	{
+		LPCTSTR key = m_map.GetAt(iIndex);
+		if(key == NULL) return _T("");
+		CDuiString *pstr = static_cast<CDuiString *>(m_map.Find(key));
+		return *pstr;
+	}
+
+	CDuiString& CDuiStringArray::operator[] (int nIndex) const
+	{
+		//数组方式返回引用.
+		LPCTSTR key = m_map.GetAt(nIndex);
+		ASSERT(key);
+		CDuiString *pstr = static_cast<CDuiString *>(m_map.Find(key));
+		return *pstr;
+	}
+
+	void CDuiStringArray::SplitString(LPCTSTR src, LPCTSTR sp)
+	{
+		if(sp == NULL || *sp == _T('\0'))
+		{
+			CDuiString s;
+			while (*src != _T('\0'))
+			{
+				if(!_istalnum(*src))
+				{
+					if(!s.IsEmpty())
+					{
+						Add(s); s.Empty();
+					}
+				}
+				else
+				{
+					s += *src;
+				}
+				src++;
+			}
+			if(!s.IsEmpty()) Add(s);
+		}
+		else
+		{
+			CDuiString text(src);
+			int pos = text.Find(sp, 0);
+			while (pos >= 0)
+			{
+				CDuiString t = text.Left(pos);
+				if(!t.IsEmpty()) Add(t);
+				text = text.Right(text.GetLength() - pos - _tcslen(sp));
+				pos = text.Find(sp);
+			}
+			if(!text.IsEmpty()) Add(text);
+		}
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	//

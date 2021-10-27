@@ -199,6 +199,7 @@ namespace DuiLib {
 				delete pstr; pstr = NULL;
 			}
 		}
+		m_mSkinFile.RemoveAll();
 	}
 
 	void CLangManagerUI::ResetPackage()

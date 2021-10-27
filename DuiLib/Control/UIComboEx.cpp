@@ -113,17 +113,7 @@ int CComboExUI::DeleteString(LPCTSTR pstrText) //返回删除项的下标
 
 bool CComboExUI::SelectString(LPCTSTR pstrText)
 {
-	for( int it = 0; it < GetCount(); it++ ) {
-		CControlUI* pControl = static_cast<CControlUI*>(GetItemAt(it));
-		if( !pControl->IsVisible() ) continue;
-		
-		if(pControl->GetText() == pstrText)
-		{
-			SelectItem(it);
-			return true;
-		}
-	}
-	return false;
+	return SelectItem(pstrText);
 }
 
 bool CComboExUI::SetCurSel(int iIndex, bool bTakeFocus)

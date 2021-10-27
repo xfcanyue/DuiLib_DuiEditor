@@ -480,6 +480,9 @@
     <ClInclude Include="DlgCreateStyleString.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="DlgSelectFile.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -699,6 +702,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DlgCreateStyleString.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgSelectFile.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

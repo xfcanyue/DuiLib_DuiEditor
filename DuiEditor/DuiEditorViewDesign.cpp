@@ -54,6 +54,8 @@ BEGIN_MESSAGE_MAP(CDuiEditorViewDesign, CScrollView)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_FINDCONTROL, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_FindControl)
 	ON_COMMAND(ID_EDIT_GENERATE_BINDCONTROL, &CDuiEditorViewDesign::OnEditGenerateCode_BindControl)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_BINDCONTROL, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_BindControl)
+	ON_COMMAND(ID_EDIT_GENERATE_UICOMMAND, &CDuiEditorViewDesign::OnEditGenerateCode_UiCommand)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_UICOMMAND, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_UiCommand)
 
 	ON_COMMAND(ID_EDIT_GENERATE_DDXTEXT, &CDuiEditorViewDesign::OnEditGenerateCode_ddxText)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_DDXTEXT, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_ddxText)
@@ -599,6 +601,34 @@ void CDuiEditorViewDesign::OnUpdateEditGenerateCode_BindControl(CCmdUI *pCmdUI)
 	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
 }
 
+void CDuiEditorViewDesign::OnEditGenerateCode_UiCommand()
+{
+	//期望创建的程序代码
+	//绑定消息处理函数
+	//UI_COMMAND(_T("control_name"), On...fun);
+
+	CString strMuiltiText;
+
+	int count = GetUIManager()->GetUiTracker()->m_arrTracker.GetSize();
+	for (int i=0; i<count; i++)
+	{
+		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
+
+		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
+
+		CString strText;
+		strText.Format(_T("UI_COMMAND(_T(\"%s\"), On_);\r\n"), sControlName);
+		strMuiltiText += strText;
+	}
+
+	CopyToClipboard(strMuiltiText);
+}
+
+void CDuiEditorViewDesign::OnUpdateEditGenerateCode_UiCommand(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
+}
+
 void CDuiEditorViewDesign::OnEditGenerateCode_ddxText()
 {
 	//期望创建的程序代码
@@ -614,7 +644,7 @@ void CDuiEditorViewDesign::OnEditGenerateCode_ddxText()
 		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
 
 		CString strText;
-		strText.Format(_T("ddxText(_T(\"%s\"), m_obj.);\r\n"), sControlName);
+		strText.Format(_T("ddxText(_T(\"%s\"), m_.);\r\n"), sControlName);
 		strMuiltiText += strText;
 	}
 
@@ -641,7 +671,7 @@ void CDuiEditorViewDesign::OnEditGenerateCode_ddxCheckBox()
 		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
 
 		CString strText;
-		strText.Format(_T("ddxCheckBox(_T(\"%s\"), m_obj.);\r\n"), sControlName);
+		strText.Format(_T("ddxCheckBox(_T(\"%s\"), m_.);\r\n"), sControlName);
 		strMuiltiText += strText;
 	}
 
@@ -668,7 +698,7 @@ void CDuiEditorViewDesign::OnEditGenerateCode_ddxCombo()
 		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
 
 		CString strText;
-		strText.Format(_T("ddxCombo(_T(\"%s\"), m_obj.);\r\n"), sControlName);
+		strText.Format(_T("ddxCombo(_T(\"%s\"), m_.);\r\n"), sControlName);
 		strMuiltiText += strText;
 	}
 
@@ -695,7 +725,7 @@ void CDuiEditorViewDesign::OnEditGenerateCode_ddxComboItemData()
 		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
 
 		CString strText;
-		strText.Format(_T("ddxComboItemData(_T(\"%s\"), m_obj.);\r\n"), sControlName);
+		strText.Format(_T("ddxComboItemData(_T(\"%s\"), m_.);\r\n"), sControlName);
 		strMuiltiText += strText;
 	}
 
@@ -1362,17 +1392,18 @@ void CDuiEditorViewDesign::OnUpdateFormatInsertFloatControl(CCmdUI *pCmdUI)
 void CDuiEditorViewDesign::OnFormatShowRulerbar()
 {
 	m_bViewRuleBar = !m_bViewRuleBar;
-
-	CRect rc;
-	GetUIManager()->GetUiWindow()->GetWindowRect(rc);
-
-	if(m_bViewRuleBar)
-		GetUIManager()->GetUiWindow()->MoveWindow(RULEBAR_SIZE_X, RULEBAR_SIZE_Y, rc.Width(), rc.Height(), TRUE);
-	else
-		GetUIManager()->GetUiWindow()->MoveWindow(0, 0, rc.Width(), rc.Height(), TRUE);
-
-	GetUIManager()->SetScrollSize();
-	Invalidate();
+ 	GetUIManager()->SetZoom(m_zoom);
+// 	CRect rc;
+// 	GetUIManager()->GetUiWindow()->GetWindowRect(rc);
+// 	CPoint point = GetDesignView()->GetScrollPosition();
+// 
+// 	if(m_bViewRuleBar)
+// 		GetUIManager()->GetUiWindow()->MoveWindow(RULEBAR_SIZE_X, RULEBAR_SIZE_Y, rc.Width(), rc.Height(), TRUE);
+// 	else
+// 		GetUIManager()->GetUiWindow()->MoveWindow(0, 0, rc.Width(), rc.Height(), TRUE);
+// 
+// 	GetUIManager()->SetScrollSize();
+// 	Invalidate();
 }
 
 

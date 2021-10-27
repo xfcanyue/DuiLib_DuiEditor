@@ -51,6 +51,7 @@ BEGIN_MESSAGE_MAP(CDuiEditorDoc, CMyDocument)
 	ON_COMMAND(ID_BUILD_LANG_PACKAGE, &CDuiEditorDoc::OnBuildLangPackage)
 	ON_COMMAND(ID_BUILD_LANG_PACKAGE_EX, &CDuiEditorDoc::OnBuildLangPackageEx)
 	ON_COMMAND(ID_BUILD_LANG_STRING_TABLE, &CDuiEditorDoc::OnBuildLangStringTable)
+	ON_UPDATE_COMMAND_UI(ID_BUILD_LANG_PACKAGE, &CDuiEditorDoc::OnUpdateBuildLangPackage)
 END_MESSAGE_MAP()
 
 
@@ -146,6 +147,11 @@ BOOL CDuiEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
 	m_strSessionFile = g_session.GetSessionFile(lpszPathName);
 
 	xml_parse_result ret = m_doc.load_file(m_strSessionFile, XML_PARSER_OPTIONS);
+	if(ret.status == pugi::status_file_not_found)
+	{
+		AfxMessageBox(_T("File no found !"));
+		return FALSE;
+	}
 	if(ret.status != pugi::status_ok)
 	{
 		LSSTRING_CONVERSION;
@@ -569,6 +575,11 @@ void CDuiEditorDoc::OnBuildLangPackage()
 	dlg.DoModal();
 }
 
+void CDuiEditorDoc::OnUpdateBuildLangPackage(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(FALSE);
+}
+
 void CDuiEditorDoc::OnBuildLangPackageEx()
 {
 	CDlgBuildLanguagePackageEx dlg;
@@ -606,3 +617,4 @@ void CDuiEditorDoc::OnBuildLangStringTable()
 	}
 	xml.save_file(fileDlg.GetPathName());
 }
+

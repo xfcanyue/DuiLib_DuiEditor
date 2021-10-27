@@ -94,7 +94,7 @@ protected:
 	bool _UpdateTabLayout(_ddx_data *pData, bool bSaveAndValidate);
 private:
 	CPaintManagerUI *m_pManager;
-	CStdPtrArray m_arrData;
+	CStdPtrArray _ddxDataArray;
 
 //////////////////////////////////////////////////////////////////////////
 //一些常用的转换，提供静态调用

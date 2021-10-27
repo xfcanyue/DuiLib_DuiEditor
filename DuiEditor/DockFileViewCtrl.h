@@ -48,6 +48,12 @@ public:
 	afx_msg void OnEditCopyFileName();
 	afx_msg void OnEditDebugNoFile();
 	afx_msg void OnUpdateEditDebugNoFile(CCmdUI *pCmdUI);
+	afx_msg void OnEditExportLangXml();
+	afx_msg void OnUpdateEditExportLangXml(CCmdUI *pCmdUI);
+	afx_msg void OnEditExportNameCpp();
+	afx_msg void OnUpdateEditExportNameCpp(CCmdUI *pCmdUI);
+	afx_msg void OnEditExportResXml();
+	afx_msg void OnUpdateEditExportResXml(CCmdUI *pCmdUI);
 };
 
 

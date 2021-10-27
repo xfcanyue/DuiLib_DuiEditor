@@ -20,7 +20,7 @@ void CMainFrame::InitWindow()
 {
 	UI_BINDCONTROL(CGridUI, m_pGrid, _T("grid_main"));
 
-	m_pGrid->SetRowCount(10);
+	m_pGrid->SetRowCount(20);
 	for (int i=m_pGrid->GetFixedRowCount(); i<m_pGrid->GetRowCount(); i++)
 	{
 		for (int j=1; j<m_pGrid->GetColumnCount(); j++)
@@ -238,6 +238,13 @@ void CMainFrame::OnNotifyClick(TNotifyUI& msg)
 			GridCellType cellColumn = m_pGrid->GetCellType(cellID.col);
 			pComboCol->SelectItem(cellColumn);
 		}
+	}
+	if(IsControl(msg, _T("btn_end_down")))
+	{
+		int row = m_pGrid->InsertRow();
+		m_pGrid->SetPos(m_pGrid->GetPos()); //±ØÐëÕâÑù£¿
+		m_pGrid->EndDown();
+		return;
 	}
 	m_pGrid->Refresh();
 

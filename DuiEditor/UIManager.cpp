@@ -541,15 +541,16 @@ void CUIManager::SetZoom(int zoom)
 
 	CRect rc;
 	GetUiWindow()->GetWindowRect(rc);
+	CPoint point = GetDesignView()->GetScrollPosition();
 
 	if(GetDesignView()->m_bViewRuleBar)
-		GetUiWindow()->MoveWindow(RULEBAR_SIZE_X, RULEBAR_SIZE_Y, rc.Width(), rc.Height(), TRUE);
+		GetUiWindow()->MoveWindow(RULEBAR_SIZE_X-point.x, RULEBAR_SIZE_Y-point.y, rc.Width(), rc.Height(), TRUE);
 	else
-		GetUiWindow()->MoveWindow(0, 0, rc.Width(), rc.Height(), TRUE);
+		GetUiWindow()->MoveWindow(-point.x, -point.y, rc.Width(), rc.Height(), TRUE);
 
 	SetUIFormWindowSize(rc.Width(), rc.Height());
 
-	GetDesignView()->SendMessage(WM_SIZE);
+	SetScrollSize();
 }
 
 void CUIManager::SetSplitterMode(int nMode)

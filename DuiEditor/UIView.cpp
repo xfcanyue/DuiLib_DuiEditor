@@ -177,8 +177,8 @@ SIZE CUIFormView::GetInitSize()
 
 void CUIFormView::SetInitSize(int cx, int cy)
 {
-	GetManager()->SetInitSize(GetManager()->GetDPIObj()->Scale(cx), GetManager()->GetDPIObj()->Scale(cy));
-
+//	GetManager()->SetInitSize(GetManager()->GetDPIObj()->Scale(cx), GetManager()->GetDPIObj()->Scale(cy));
+	GetManager()->SetInitSize(cx, cy);
 	if(GetManager()->GetPaintWindow())
 	{
 		::SetWindowPos(m_pManager->GetPaintWindow(), NULL, 0, 0, cx, cy, SWP_NOZORDER | SWP_NOMOVE | SWP_NOACTIVATE);

@@ -2,41 +2,41 @@
 <Window size="210,1621">
 	<Include source="config.xml" />
 	<VerticalLayout inset="5,5,5,5" childpadding="5" pos="0,0,182,0" bkcolor="0xFFF0F0F0">
-		<HorizontalLayout height="30" pos="0,0,0,30">
+		<HorizontalLayout height="30">
 			<CheckBox name="chk_virtual_grid" selectedimage="file='images\check-select.png' dest='8,6,26,22' " normalimage="file='images\check-unselect.png' dest='8,6,26,22' " text="虚表模式" bordercolor="0xFFC0C0C0" bordersize="1" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" childpadding="5" pos="0,0,0,30">
+		<HorizontalLayout height="30" childpadding="5">
 			<Edit name="edit_rows" align="center" style="style_edit" />
-			<Button name="btn_set_rows" width="80" text="设置总行数" pos="0,0,80,0" style="style_button" />
+			<Button name="btn_set_rows" width="80" text="设置总行数" style="style_button" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" childpadding="5" pos="0,0,0,30">
+		<HorizontalLayout height="30" childpadding="5">
 			<Edit name="edit_cols" align="center" style="style_edit" />
-			<Button name="btn_set_cols" width="80" text="设置总列数" pos="0,0,80,0" style="style_button" />
+			<Button name="btn_set_cols" width="80" text="设置总列数" style="style_button" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" childpadding="5" pos="0,0,0,30">
+		<HorizontalLayout height="30" childpadding="5">
 			<Edit name="edit_fixed_rows" align="center" style="style_edit" />
-			<Button name="btn_set_fixed_rows" width="80" text="设置固定行数" pos="0,0,80,0" style="style_button" />
+			<Button name="btn_set_fixed_rows" width="80" text="设置固定行数" style="style_button" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" childpadding="5" pos="0,0,0,30">
+		<HorizontalLayout height="30" childpadding="5">
 			<Edit name="edit_fixed_cols" align="center" style="style_edit" />
-			<Button name="btn_set_fixed_cols" width="80" text="设置固定列数" pos="0,0,80,0" style="style_button" />
+			<Button name="btn_set_fixed_cols" width="80" text="设置固定列数" style="style_button" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" pos="0,0,0,30">
+		<HorizontalLayout height="30">
 			<CheckBox name="chk_list_mode" selectedimage="file='images\check-select.png' dest='8,6,26,22' " normalimage="file='images\check-unselect.png' dest='8,6,26,22' " text="列表模式" bordercolor="0xFFC0C0C0" bordersize="1" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" pos="0,0,0,30">
+		<HorizontalLayout height="30">
 			<CheckBox name="chk_single_row_selection" selectedimage="file='images\check-select.png' dest='8,6,26,22' " normalimage="file='images\check-unselect.png' dest='8,6,26,22' " text="单行选中" bordercolor="0xFFC0C0C0" bordersize="1" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" pos="0,0,0,30">
+		<HorizontalLayout height="30">
 			<CheckBox name="chk_view_list_no" selectedimage="file='images\check-select.png' dest='8,6,26,22' " normalimage="file='images\check-unselect.png' dest='8,6,26,22' " text="最左固定列显示行号" bordercolor="0xFFC0C0C0" bordersize="1" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" pos="0,0,0,30">
+		<HorizontalLayout height="30">
 			<CheckBox name="chk_view_grid_row_line" selectedimage="file='images\check-select.png' dest='8,6,26,22' " normalimage="file='images\check-unselect.png' dest='8,6,26,22' " text="显示表格行线" bordercolor="0xFFC0C0C0" bordersize="1" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" pos="0,0,0,30">
+		<HorizontalLayout height="30">
 			<CheckBox name="chk_view_grid_col_line" selectedimage="file='images\check-select.png' dest='8,6,26,22' " normalimage="file='images\check-unselect.png' dest='8,6,26,22' " text="显示表格竖线" bordercolor="0xFFC0C0C0" bordersize="1" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" pos="0,0,0,30">
+		<HorizontalLayout height="30">
 			<ComboEx name="cb_cell_type" bkcolor="0xFFFFFFFF" style="style_comboex">
 				<ListLabelElement text="text" />
 				<ListLabelElement text="edit" />
@@ -49,7 +49,7 @@
 			</ComboEx>
 			<Button name="btn_cell_type" text="设置单元格类型" style="style_button" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" pos="0,0,0,30" text="保存为">
+		<HorizontalLayout height="30" text="保存为">
 			<ComboEx name="cb_column_type" bkcolor="0xFFFFFFFF" style="style_comboex">
 				<ListLabelElement text="text" />
 				<ListLabelElement text="edit" />
@@ -62,29 +62,32 @@
 			</ComboEx>
 			<Button name="btn_column_type" text="设置列类型" style="style_button" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" pos="0,0,0,30" text="保存为">
+		<HorizontalLayout height="30" text="保存为">
 			<Button name="btn_add_row" text="增加行" style="style_button" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" pos="0,0,0,30" text="保存为">
+		<HorizontalLayout height="30" text="保存为">
 			<Button name="btn_delete_row" text="删除行" style="style_button" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" pos="0,0,0,30" text="保存为">
+		<HorizontalLayout height="30" text="保存为">
 			<Button name="btn_add_column" text="增加列" style="style_button" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" pos="0,0,0,30" text="保存为">
+		<HorizontalLayout height="30" text="保存为">
 			<Button name="btn_delete_column" text="删除列" style="style_button" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" pos="0,0,0,30" text="保存为">
+		<HorizontalLayout height="30" text="保存为">
 			<Button name="btn_save_xml" text="保存xml" style="style_button" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" pos="0,0,0,30" text="保存为">
+		<HorizontalLayout height="30" text="保存为">
 			<Button name="btn_load_xml" text="打开xml" style="style_button" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" pos="0,0,0,30" text="保存为">
+		<HorizontalLayout height="30" text="保存为">
 			<Button name="btn_save_excel" text="保存Excel" style="style_button" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" pos="0,0,0,30" text="保存为">
+		<HorizontalLayout height="30" text="保存为">
 			<Button name="btn_load_excel" text="打开Excel" style="style_button" />
+		</HorizontalLayout>
+		<HorizontalLayout height="30" text="滚动到底部">
+			<Button name="btn_end_down" text="插入行滚动到底部" style="style_button" />
 		</HorizontalLayout>
 	</VerticalLayout>
 </Window>

@@ -7,6 +7,7 @@
 
 #include "ThreadTest.h"
 #include "ThreadPipe.h"
+#include "DlgSelectFile.h"
 
 // CDockFileViewCtrl
 
@@ -41,6 +42,12 @@ BEGIN_MESSAGE_MAP(CDockFileViewCtrl, CTreeCtrl)
 	ON_COMMAND(ID_EDIT_COPY_FILE_NAME, &CDockFileViewCtrl::OnEditCopyFileName)
 	ON_COMMAND(ID_EDIT_DEBUG_NO_FILE, &CDockFileViewCtrl::OnEditDebugNoFile)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_DEBUG_NO_FILE, &CDockFileViewCtrl::OnUpdateEditDebugNoFile)
+	ON_COMMAND(ID_EDIT_EXPORT_LANG_XML, &CDockFileViewCtrl::OnEditExportLangXml)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_EXPORT_LANG_XML, &CDockFileViewCtrl::OnUpdateEditExportLangXml)
+	ON_COMMAND(ID_EDIT_EXPORT_NAME_CPP, &CDockFileViewCtrl::OnEditExportNameCpp)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_EXPORT_NAME_CPP, &CDockFileViewCtrl::OnUpdateEditExportNameCpp)
+	ON_COMMAND(ID_EDIT_EXPORT_RES_XML, &CDockFileViewCtrl::OnEditExportResXml)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_EXPORT_RES_XML, &CDockFileViewCtrl::OnUpdateEditExportResXml)
 END_MESSAGE_MAP()
 
 
@@ -615,4 +622,46 @@ void CDockFileViewCtrl::OnEditDebugNoFile()
 void CDockFileViewCtrl::OnUpdateEditDebugNoFile(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(!g_proj.GetStartupFile().IsEmpty());
+}
+
+
+void CDockFileViewCtrl::OnEditExportLangXml()
+{
+	CDlgSelectFile dlg;
+	dlg.m_eWorkType = CDlgSelectFile::eWORK_EXPORT_LANG;
+	dlg.DoModal();
+}
+
+
+void CDockFileViewCtrl::OnUpdateEditExportLangXml(CCmdUI *pCmdUI)
+{
+	// TODO: 在此添加命令更新用户界面处理程序代码
+}
+
+
+void CDockFileViewCtrl::OnEditExportNameCpp()
+{
+	CDlgSelectFile dlg;
+	dlg.m_eWorkType = CDlgSelectFile::eWORK_EXPORT_NAME;
+	dlg.DoModal();
+}
+
+
+void CDockFileViewCtrl::OnUpdateEditExportNameCpp(CCmdUI *pCmdUI)
+{
+	// TODO: 在此添加命令更新用户界面处理程序代码
+}
+
+
+void CDockFileViewCtrl::OnEditExportResXml()
+{
+	CDlgSelectFile dlg;
+	dlg.m_eWorkType = CDlgSelectFile::eWORK_EXPORT_RES;
+	dlg.DoModal();
+}
+
+
+void CDockFileViewCtrl::OnUpdateEditExportResXml(CCmdUI *pCmdUI)
+{
+	// TODO: 在此添加命令更新用户界面处理程序代码
 }

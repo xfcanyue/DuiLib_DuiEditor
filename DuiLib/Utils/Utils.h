@@ -234,7 +234,7 @@ namespace DuiLib
 		}
 		vResults.push_back(text);
 		return vResults;
-}
+	}
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
 
@@ -267,6 +267,35 @@ namespace DuiLib
 		int m_nBuckets;
 		int m_nCount;
 	};
+
+	//////////////////////////////////////////////////////////////////////////
+	//CDuiString数组类
+	class UILIB_API CDuiStringArray
+	{
+	public:
+		CDuiStringArray();
+		CDuiStringArray(const CDuiStringArray& src);
+		~CDuiStringArray();
+
+		int GetSize() const;
+		bool IsEmpty() const;
+		void RemoveAll();
+
+		bool Add(LPCTSTR newElement, bool bNoRepeat=false);
+		bool Remove(LPCTSTR element);
+
+		bool Find(LPCTSTR element);
+
+		CDuiString GetAt(int iIndex) const;
+		CDuiString& operator[] (int nIndex) const;
+
+		//分割字符串来构造数组，src=需要分割的字符串，sp=分割符. 若分隔符为NULL，则非字母数字为分割符号。
+		void SplitString(LPCTSTR src, LPCTSTR sp = NULL);
+
+	private:
+		CStdStringPtrMap m_map;
+	};
+
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	//

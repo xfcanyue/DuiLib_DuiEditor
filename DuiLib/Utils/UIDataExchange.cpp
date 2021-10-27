@@ -15,9 +15,9 @@ implfun CUIDataExchange::CUIDataExchange(void)
 
 implfun CUIDataExchange::~CUIDataExchange(void)
 {
-	for (int i=0; i<m_arrData.GetSize(); i++)
+	for (int i=0; i<_ddxDataArray.GetSize(); i++)
 	{
-		_ddx_data *pData = (_ddx_data *)m_arrData.GetAt(i);
+		_ddx_data *pData = (_ddx_data *)_ddxDataArray.GetAt(i);
 		delete pData;
 	}
 }
@@ -29,9 +29,9 @@ implfun void CUIDataExchange::ddxSetManager(CPaintManagerUI *pManager)
 
 implfun bool CUIDataExchange::UpdateDataUI(bool bSaveAndValidate)
 {
-	for (int i=0; i<m_arrData.GetSize(); i++)
+	for (int i=0; i<_ddxDataArray.GetSize(); i++)
 	{
-		_ddx_data *pData = (_ddx_data *)m_arrData.GetAt(i);
+		_ddx_data *pData = (_ddx_data *)_ddxDataArray.GetAt(i);
 		switch (pData->controlType)
 		{
 		case _control_text:
@@ -112,11 +112,45 @@ implfun bool CUIDataExchange::_UpdateText(_ddx_data *pData, bool bSaveAndValidat
 			}
 			break;
 		case _value_duistring:
-			pData->pControl->SetText(*((CDuiString *)(pData->pValue)));
+			{
+				//针对ComboUI和ComboExUI，UpdateData(false)需要特殊处理
+				CComboUI *pCombo = static_cast<CComboUI *>(pData->pControl->GetInterface(DUI_CTR_COMBO));
+				CComboExUI *pComboEx = static_cast<CComboExUI *>(pData->pControl->GetInterface(DUI_CTR_COMBOEX));
+				if(pComboEx)
+				{
+					if(pComboEx->GetDropType() == CBS_DROPDOWNLIST)
+						pCombo->SelectItem(*((CDuiString *)(pData->pValue)));
+					else
+						pData->pControl->SetText(*((CDuiString *)(pData->pValue)));
+				}
+				else if(pCombo)
+				{
+					pCombo->SelectItem(*((CDuiString *)(pData->pValue)));
+				}
+				else
+					pData->pControl->SetText(*((CDuiString *)(pData->pValue)));
+			}
 			break;
 #ifdef _AFX
 		case _value_cstring:
-			pData->pControl->SetText(*((CString *)(pData->pValue)));
+			{
+				//针对ComboUI和ComboExUI，UpdateData(false)需要特殊处理
+				CComboUI *pCombo = static_cast<CComboUI *>(pData->pControl->GetInterface(DUI_CTR_COMBO));
+				CComboExUI *pComboEx = static_cast<CComboExUI *>(pData->pControl->GetInterface(DUI_CTR_COMBOEX));
+				if(pComboEx)
+				{
+					if(pComboEx->GetDropType() == CBS_DROPDOWNLIST)
+						pCombo->SelectItem(*((CString *)(pData->pValue)));
+					else
+						pData->pControl->SetText(*((CString *)(pData->pValue)));
+				}
+				else if(pCombo)
+				{
+					pCombo->SelectItem(*((CString *)(pData->pValue)));
+				}
+				else
+					pData->pControl->SetText(*((CString *)(pData->pValue)));
+			}
 			break;
 		case _value_coledatetime:
 			{
@@ -257,7 +291,7 @@ implfun bool CUIDataExchange::ddxText(CControlUI *pControl, PVOID pValue, _ddx_v
 	dd->controlType = _control_text;
 	dd->valueType = type;
 	dd->pValue = pValue;
-	m_arrData.Add(dd);
+	_ddxDataArray.Add(dd);
 	return true;
 }
 
@@ -269,6 +303,7 @@ implfun bool CUIDataExchange::ddxText(CControlUI *pControl, CDuiString &va)
 
 implfun bool CUIDataExchange::ddxText(LPCTSTR pControlName, CDuiString &va)
 {
+	ASSERT(m_pManager);
 	CControlUI *pControl = m_pManager->FindControl(pControlName);
 	return ddxText(pControl, va);
 }
@@ -281,6 +316,7 @@ implfun bool CUIDataExchange::ddxText(CControlUI *pControl, int &va)
 
 implfun bool CUIDataExchange::ddxText(LPCTSTR pControlName, int &va)
 {
+	ASSERT(m_pManager);
 	CControlUI *pControl = m_pManager->FindControl(pControlName);
 	return ddxText(pControl, va);
 }
@@ -294,6 +330,7 @@ implfun bool CUIDataExchange::ddxText(CControlUI *pControl, CString &va)
 
 implfun bool CUIDataExchange::ddxText(LPCTSTR pControlName, CString &va)
 {
+	ASSERT(m_pManager);
 	CControlUI *pControl = m_pManager->FindControl(pControlName);
 	return ddxText(pControl, va);
 }
@@ -306,6 +343,7 @@ implfun bool CUIDataExchange::ddxText(CControlUI *pControl, COleDateTime &va)
 
 implfun bool CUIDataExchange::ddxText(LPCTSTR pControlName, COleDateTime &va)
 {
+	ASSERT(m_pManager);
 	CControlUI *pControl = m_pManager->FindControl(pControlName);
 	return ddxText(pControl, va);
 }
@@ -318,6 +356,7 @@ implfun bool CUIDataExchange::ddxText(CControlUI *pControl, COleCurrency &va)
 
 implfun bool CUIDataExchange::ddxText(LPCTSTR pControlName, COleCurrency &va)
 {
+	ASSERT(m_pManager);
 	CControlUI *pControl = m_pManager->FindControl(pControlName);
 	return ddxText(pControl, va);
 }
@@ -338,12 +377,13 @@ implfun bool CUIDataExchange::ddxCheckBox(CControlUI *pControl, bool &va)
 	dd->controlType = _control_checkbox;
 	dd->valueType = _value_bool;
 	dd->pValue = &va;
-	m_arrData.Add(dd);
+	_ddxDataArray.Add(dd);
 	return true;
 }
 
 implfun bool CUIDataExchange::ddxCheckBox(LPCTSTR pControlName, bool &va)
 {
+	ASSERT(m_pManager);
 	CControlUI *pControl = m_pManager->FindControl(pControlName);
 	return ddxCheckBox(pControl, va);
 }
@@ -361,12 +401,13 @@ implfun bool CUIDataExchange::ddxCheckBox(CControlUI *pControl, BOOL &va)
 	dd->controlType = _control_checkbox;
 	dd->valueType = _value_BOOL;
 	dd->pValue = &va;
-	m_arrData.Add(dd);
+	_ddxDataArray.Add(dd);
 	return true;
 }
 
 implfun bool CUIDataExchange::ddxCheckBox(LPCTSTR pControlName, BOOL &va)
 {
+	ASSERT(m_pManager);
 	CControlUI *pControl = m_pManager->FindControl(pControlName);
 	return ddxCheckBox(pControl, va);
 }
@@ -385,12 +426,13 @@ implfun bool CUIDataExchange::ddxCombo(CControlUI *pControl, int &va)
 	dd->controlType = _control_combo;
 	dd->valueType = _value_int;
 	dd->pValue = &va;
-	m_arrData.Add(dd);
+	_ddxDataArray.Add(dd);
 	return true;
 }
 
 implfun bool CUIDataExchange::ddxCombo(LPCTSTR pControlName, int &va)
 {
+	ASSERT(m_pManager);
 	CControlUI *pControl = m_pManager->FindControl(pControlName);
 	return ddxCombo(pControl, va);
 }
@@ -408,12 +450,13 @@ implfun bool CUIDataExchange::ddxComboItemData(CControlUI *pControl, int &va) //
 	dd->controlType = _control_combo_ex;
 	dd->valueType = _value_int;
 	dd->pValue = &va;
-	m_arrData.Add(dd);
+	_ddxDataArray.Add(dd);
 	return true;
 }
 
 implfun bool CUIDataExchange::ddxComboItemData(LPCTSTR pControlName, int &va) //绑定ComboItemData
 {
+	ASSERT(m_pManager);
 	CControlUI *pControl = m_pManager->FindControl(pControlName);
 	return ddxComboItemData(pControl, va);
 }
@@ -431,12 +474,13 @@ implfun bool CUIDataExchange::ddxTabLayout(CControlUI *pControl, int &va) //curs
 	dd->controlType = _control_tablayout;
 	dd->valueType = _value_int;
 	dd->pValue = &va;
-	m_arrData.Add(dd);
+	_ddxDataArray.Add(dd);
 	return true;
 }
 
 implfun bool CUIDataExchange::ddxTabLayout(LPCTSTR pControlName, int &va) //cursel
 {
+	ASSERT(m_pManager);
 	CControlUI *pControl = m_pManager->FindControl(pControlName);
 	return ddxTabLayout(pControl, va);
 }

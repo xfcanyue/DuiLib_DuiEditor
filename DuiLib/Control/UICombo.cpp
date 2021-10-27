@@ -334,6 +334,21 @@ namespace DuiLib {
 		return m_iCurSel;
 	}
 
+	bool CComboUI::SelectItem(LPCTSTR pstrText)
+	{
+		for( int it = 0; it < GetCount(); it++ ) {
+			CControlUI* pControl = static_cast<CControlUI*>(GetItemAt(it));
+			if( !pControl->IsVisible() ) continue;
+
+			if(pControl->GetText() == pstrText)
+			{
+				SelectItem(it);
+				return true;
+			}
+		}
+		return false;
+	}
+
 	bool CComboUI::SelectItem(int iIndex, bool bTakeFocus)
 	{
 		if( iIndex == m_iCurSel ) return true;

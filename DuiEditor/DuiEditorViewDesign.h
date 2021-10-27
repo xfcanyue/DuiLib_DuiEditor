@@ -87,6 +87,8 @@ public:
 	afx_msg void OnUpdateEditGenerateCode_FindControl(CCmdUI *pCmdUI);
 	afx_msg void OnEditGenerateCode_BindControl();
 	afx_msg void OnUpdateEditGenerateCode_BindControl(CCmdUI *pCmdUI);
+	afx_msg void OnEditGenerateCode_UiCommand();
+	afx_msg void OnUpdateEditGenerateCode_UiCommand(CCmdUI *pCmdUI);
 
 	afx_msg void OnEditGenerateCode_ddxText();
 	afx_msg void OnUpdateEditGenerateCode_ddxText(CCmdUI *pCmdUI);
