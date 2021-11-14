@@ -130,7 +130,7 @@ LRESULT CUIFrameWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam
 	{
 		bHandled = TRUE;
 		CMsgWndUI *pMsgWindow = (CMsgWndUI *)wParam;
-		GetManager()->SendNotify(pMsgWindow, _T("CMsgWndUI::InsertMsg"), 0, lParam);
+		GetManager()->SendNotify(pMsgWindow, _T("CMsgWndUI::InsertMsg"), wParam, lParam);
 		return 0;
 	}
 
@@ -371,8 +371,10 @@ void CUIFrameWnd::__InitWindow()
 		{
 #ifdef _DEBUG
 			CUIForm *pForm = (CUIForm *)(*it);
+			pForm->__InitWindow();
 			pForm->InitWindow();
 #else
+			(*it)->__InitWindow();
 			(*it)->InitWindow();
 #endif
 		}

@@ -52,6 +52,8 @@ BEGIN_MESSAGE_MAP(CDuiEditorViewDesign, CScrollView)
 
 	ON_COMMAND(ID_EDIT_GENERATE_FINDCONTROL, &CDuiEditorViewDesign::OnEditGenerateCode_FindControl)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_FINDCONTROL, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_FindControl)
+	ON_COMMAND(ID_EDIT_GENERATE_MEMBERS, &CDuiEditorViewDesign::OnEditGenerateCode_Members)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_MEMBERS, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_Members)
 	ON_COMMAND(ID_EDIT_GENERATE_BINDCONTROL, &CDuiEditorViewDesign::OnEditGenerateCode_BindControl)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_BINDCONTROL, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_BindControl)
 	ON_COMMAND(ID_EDIT_GENERATE_UICOMMAND, &CDuiEditorViewDesign::OnEditGenerateCode_UiCommand)
@@ -70,6 +72,11 @@ BEGIN_MESSAGE_MAP(CDuiEditorViewDesign, CScrollView)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_ISCONTROL, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_IsControl)
 	ON_COMMAND(ID_EDIT_GENERATE_ISMENUCOMMAND, &CDuiEditorViewDesign::OnEditGenerateCode_IsMenuCommand)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_ISMENUCOMMAND, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_IsMenuCommand)
+
+	ON_COMMAND(ID_EDIT_GENERATE_SAVE_CONTROL, &CDuiEditorViewDesign::OnEditGenerateCode_SaveControl)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_SAVE_CONTROL, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_SaveControl)
+	ON_COMMAND(ID_EDIT_GENERATE_LOAD_CONTROL, &CDuiEditorViewDesign::OnEditGenerateCode_LoadControl)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_LOAD_CONTROL, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_LoadControl)
 
 	ON_COMMAND(ID_EDIT_CREATE_STYLE_STRING, &CDuiEditorViewDesign::OnEditCreateStyleString)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_CREATE_STYLE_STRING, &CDuiEditorViewDesign::OnUpdateEditCreateStyleString)
@@ -552,13 +559,14 @@ void CDuiEditorViewDesign::OnEditGenerateCode_FindControl()
 		sClassName += XML2T(pTrackElem->m_node.name());
 		sClassName += _T("UI");
 
-		CString sVarName = _T("*p");
-		sVarName += XML2T(pTrackElem->m_node.name());
+		CString sVarName = _T("*p_");
+		sVarName += XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
 
 		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
 
 		CString strText;
-		strText.Format(_T("%s %s = static_cast<%s *>(GetManager()->FindControl(_T(\"%s\")));\r\n"), sClassName, sVarName, sClassName, sControlName);
+		strText.Format(_T("%s %s = static_cast<%s *>(GetManager()->FindControl(_T(\"%s\")));"), sClassName, sVarName, sClassName, sControlName);
+		strMuiltiText += _T("\r\n");
 		strMuiltiText += strText;
 	}
 
@@ -566,6 +574,41 @@ void CDuiEditorViewDesign::OnEditGenerateCode_FindControl()
 }
 
 void CDuiEditorViewDesign::OnUpdateEditGenerateCode_FindControl(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
+}
+
+void CDuiEditorViewDesign::OnEditGenerateCode_Members()
+{
+	//期望创建的程序代码
+	//ControlUI *m_xxxxxxx;
+
+	CString strMuiltiText;
+
+	int count = GetUIManager()->GetUiTracker()->m_arrTracker.GetSize();
+	for (int i=0; i<count; i++)
+	{
+		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
+
+		CString sClassName = _T("C");
+		sClassName += XML2T(pTrackElem->m_node.name());
+		sClassName += _T("UI");
+
+		CString sVarName = _T("*m_");
+		sVarName += XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
+
+		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
+
+		CString strText;
+		strText.Format(_T("%s %s;"), sClassName, sVarName);
+		strMuiltiText += _T("\r\n");
+		strMuiltiText += strText;
+	}
+
+	CopyToClipboard(strMuiltiText);
+}
+
+void CDuiEditorViewDesign::OnUpdateEditGenerateCode_Members(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
 }
@@ -588,8 +631,12 @@ void CDuiEditorViewDesign::OnEditGenerateCode_BindControl()
 
 		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
 
+		CString sVarName = _T("m_");
+		sVarName += XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
+
 		CString strText;
-		strText.Format(_T("UI_BINDCONTROL(%s, m_, _T(\"%s\"));\r\n"), sClassName, sControlName);
+		strText.Format(_T("UI_BINDCONTROL(%s, %s, _T(\"%s\"));"), sClassName, sVarName, sControlName);
+		strMuiltiText += _T("\r\n");
 		strMuiltiText += strText;
 	}
 
@@ -617,7 +664,8 @@ void CDuiEditorViewDesign::OnEditGenerateCode_UiCommand()
 		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
 
 		CString strText;
-		strText.Format(_T("UI_COMMAND(_T(\"%s\"), On_);\r\n"), sControlName);
+		strText.Format(_T("UI_COMMAND(_T(\"%s\"), On_);"), sControlName);
+		strMuiltiText += _T("\r\n");
 		strMuiltiText += strText;
 	}
 
@@ -644,7 +692,8 @@ void CDuiEditorViewDesign::OnEditGenerateCode_ddxText()
 		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
 
 		CString strText;
-		strText.Format(_T("ddxText(_T(\"%s\"), m_.);\r\n"), sControlName);
+		strText.Format(_T("ddxText(_T(\"%s\"), m_.);"), sControlName);
+		strMuiltiText += _T("\r\n");
 		strMuiltiText += strText;
 	}
 
@@ -671,7 +720,8 @@ void CDuiEditorViewDesign::OnEditGenerateCode_ddxCheckBox()
 		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
 
 		CString strText;
-		strText.Format(_T("ddxCheckBox(_T(\"%s\"), m_.);\r\n"), sControlName);
+		strText.Format(_T("ddxCheckBox(_T(\"%s\"), m_.);"), sControlName);
+		strMuiltiText += _T("\r\n");
 		strMuiltiText += strText;
 	}
 
@@ -698,7 +748,8 @@ void CDuiEditorViewDesign::OnEditGenerateCode_ddxCombo()
 		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
 
 		CString strText;
-		strText.Format(_T("ddxCombo(_T(\"%s\"), m_.);\r\n"), sControlName);
+		strText.Format(_T("ddxCombo(_T(\"%s\"), m_.);"), sControlName);
+		strMuiltiText += _T("\r\n");
 		strMuiltiText += strText;
 	}
 
@@ -725,7 +776,8 @@ void CDuiEditorViewDesign::OnEditGenerateCode_ddxComboItemData()
 		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
 
 		CString strText;
-		strText.Format(_T("ddxComboItemData(_T(\"%s\"), m_.);\r\n"), sControlName);
+		strText.Format(_T("ddxComboItemData(_T(\"%s\"), m_.);"), sControlName);
+		strMuiltiText += _T("\r\n");
 		strMuiltiText += strText;
 	}
 
@@ -754,6 +806,7 @@ void CDuiEditorViewDesign::OnEditGenerateCode_IsControl()
 
 		CString strText;
 		strText.Format(_T("if(IsControl(msg, _T(\"%s\")))\r\n{\r\n\treturn;\r\n}"), sControlName);
+		strMuiltiText += _T("\r\n");
 		strMuiltiText += strText;
 	}
 
@@ -781,7 +834,8 @@ void CDuiEditorViewDesign::OnEditGenerateCode_IsMenuCommand()
 		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
 
 		CString strText;
-		strText.Format(_T("if(IsMenuCommand(cmd, _T(\"%s\")))\r\n{\r\n\treturn;\r\n}"), sControlName);
+		strText.Format(_T("if(IsMenuCommand(cmd, _T(\"%s\")))\r\n{\r\n\treturn;}"), sControlName);
+		strMuiltiText += _T("\r\n");
 		strMuiltiText += strText;
 	}	
 
@@ -789,6 +843,64 @@ void CDuiEditorViewDesign::OnEditGenerateCode_IsMenuCommand()
 }
 
 void CDuiEditorViewDesign::OnUpdateEditGenerateCode_IsMenuCommand(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
+}
+
+void CDuiEditorViewDesign::OnEditGenerateCode_SaveControl()
+{
+	//期望创建的程序代码
+	//UIGetApp()->Config.SaveControl(root, m_p...);
+
+	CString strMuiltiText;
+
+	int count = GetUIManager()->GetUiTracker()->m_arrTracker.GetSize();
+	for (int i=0; i<count; i++)
+	{
+		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
+
+		CString sVarName = _T("m_");
+		sVarName += XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
+
+		CString strText;
+		strText.Format(_T("UIGetApp()->Config.SaveControl(root, %s);"), sVarName);
+		strMuiltiText += _T("\r\n");
+		strMuiltiText += strText;
+	}
+
+	CopyToClipboard(strMuiltiText);
+}
+
+void CDuiEditorViewDesign::OnUpdateEditGenerateCode_SaveControl(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
+}
+
+void CDuiEditorViewDesign::OnEditGenerateCode_LoadControl()
+{
+	//期望创建的程序代码
+	//UIGetApp()->Config.LoadControl(root, m_p...);
+
+	CString strMuiltiText;
+
+	int count = GetUIManager()->GetUiTracker()->m_arrTracker.GetSize();
+	for (int i=0; i<count; i++)
+	{
+		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
+
+		CString sVarName = _T("m_");
+		sVarName += XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
+
+		CString strText;
+		strText.Format(_T("UIGetApp()->Config.LoadControl(root, %s);"), sVarName);
+		strMuiltiText += _T("\r\n");
+		strMuiltiText += strText;
+	}
+
+	CopyToClipboard(strMuiltiText);
+}
+
+void CDuiEditorViewDesign::OnUpdateEditGenerateCode_LoadControl(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
 }

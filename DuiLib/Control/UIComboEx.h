@@ -21,7 +21,8 @@ public:
 	bool DrawDropButtonImage(HDC hDC, LPCTSTR pStrImage, LPCTSTR pStrModify=NULL);
 
 	CControlUI *AddString(LPCTSTR pstrText, UINT_PTR pItemData=0);
-	int DeleteString(LPCTSTR pstrText); //返回删除项的下标
+	bool DeleteString(LPCTSTR pstrText); 
+	bool DeleteString_byItemData(UINT_PTR pItemData);
 
 
 	bool SelectString(LPCTSTR pstrText);

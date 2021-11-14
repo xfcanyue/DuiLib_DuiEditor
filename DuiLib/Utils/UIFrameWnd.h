@@ -16,8 +16,8 @@ public:
 	virtual CDuiString GetSkinFile() = 0;
 	virtual void OnFinalMessage( HWND hWnd );
 
-	CPaintManagerUI *GetManager() { return &m_pm; }
-
+	virtual CPaintManagerUI *GetManager() { return &m_pm; }
+	virtual CControlUI *GetRoot() { return m_pm.GetRoot(); }
 	void AttachVirtualForm(CUIForm *pForm);
 	void DetachVirtualForm(CUIForm *pForm);
 

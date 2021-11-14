@@ -84,7 +84,8 @@ void CMsgWndUI::DoEvent(TEventUI& event)
 bool CMsgWndUI::OnInsertMsg(void* param)
 {
 	TNotifyUI* pMsg = (TNotifyUI*)param;
-	if(_tcsicmp(pMsg->sType, _T("CMsgWndUI::InsertMsg")) == 0) 
+	CMsgWndUI *pControl = (CMsgWndUI *)pMsg->wParam;
+	if(pControl == this && _tcsicmp(pMsg->sType, _T("CMsgWndUI::InsertMsg")) == 0) 
 	{
 		if(GetLineCount() >= 5000)
 		{

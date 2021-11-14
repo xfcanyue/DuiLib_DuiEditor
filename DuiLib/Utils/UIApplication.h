@@ -74,6 +74,41 @@ private:
 	LPCTSTR m_pszProfileName;
 };
 
+//保存和载入控件数据，可以当初配置文件使用。
+class UILIB_API CUIAppConfig
+{
+public:
+	CUIAppConfig();
+	virtual ~CUIAppConfig();
+
+	CXmlNodeUI GetRoot();
+
+	//默认载入程序目录下的AppName.xml
+	void LoadConfig(LPCTSTR szPathName = NULL);
+	void SaveConfig();
+
+	BOOL SaveControl(CXmlNodeUI nodeParent, CEditUI *pControl);
+	BOOL LoadControl(CXmlNodeUI nodeParent, CEditUI *pControl, LPCTSTR szDefault = _T(""));
+
+	BOOL SaveControl(CXmlNodeUI nodeParent, CRichEditUI *pControl);
+	BOOL LoadControl(CXmlNodeUI nodeParent, CRichEditUI *pControl, LPCTSTR szDefault = _T(""));
+
+	BOOL SaveControl(CXmlNodeUI nodeParent, CComboUI *pControl, BOOL bSaveItems = FALSE);
+	BOOL LoadControl(CXmlNodeUI nodeParent, CComboUI *pControl, LPCTSTR szDefault = _T(""), BOOL bLoadItems = FALSE);
+
+	BOOL SaveControl(CXmlNodeUI nodeParent, CComboExUI *pControl, BOOL bSaveItems = FALSE);
+	BOOL LoadControl(CXmlNodeUI nodeParent, CComboExUI *pControl, LPCTSTR szDefault = _T(""), BOOL bLoadItems = FALSE);
+
+	BOOL SaveControl(CXmlNodeUI nodeParent, COptionUI *pControl);
+	BOOL LoadControl(CXmlNodeUI nodeParent, COptionUI *pControl, BOOL bDefault = FALSE);
+
+	BOOL SaveControl(CXmlNodeUI nodeParent, CTabLayoutUI *pControl);
+	BOOL LoadControl(CXmlNodeUI nodeParent, CTabLayoutUI *pControl, int nDefault = 0);
+
+private:
+	CXmlDocumentUI m_xml;
+};
+
 class CUIFrameWnd;
 class UILIB_API CUIApplication
 {
@@ -128,6 +163,7 @@ protected:
 
 public:
 	CUIAppRegistryKey RegistryKey;
+	CUIAppConfig Config;
 	CUIFrameWnd *m_pMainWnd;
 
 private:

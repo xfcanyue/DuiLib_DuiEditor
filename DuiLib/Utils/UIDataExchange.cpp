@@ -11,6 +11,7 @@ namespace DuiLib
 implfun CUIDataExchange::CUIDataExchange(void)
 {
 	m_pManager = NULL;
+	m_pRoot = NULL;
 }
 
 implfun CUIDataExchange::~CUIDataExchange(void)
@@ -22,9 +23,14 @@ implfun CUIDataExchange::~CUIDataExchange(void)
 	}
 }
 
-implfun void CUIDataExchange::ddxSetManager(CPaintManagerUI *pManager)
+implfun void CUIDataExchange::ddxSetManager(CPaintManagerUI *pManager, CControlUI *pContainer)
 {
 	m_pManager = pManager;
+	if(pContainer)
+	{
+		m_pRoot = static_cast<CContainerUI *>(pContainer->GetInterface(DUI_CTR_CONTAINER));
+		ASSERT(m_pRoot);
+	}
 }
 
 implfun bool CUIDataExchange::UpdateDataUI(bool bSaveAndValidate)
@@ -303,8 +309,16 @@ implfun bool CUIDataExchange::ddxText(CControlUI *pControl, CDuiString &va)
 
 implfun bool CUIDataExchange::ddxText(LPCTSTR pControlName, CDuiString &va)
 {
-	ASSERT(m_pManager);
-	CControlUI *pControl = m_pManager->FindControl(pControlName);
+	CControlUI *pControl = NULL;
+	if(m_pRoot)
+	{
+		pControl = m_pRoot->FindSubControl(pControlName);
+	}
+	if(!pControl)
+	{
+		ASSERT(m_pManager);
+		pControl = m_pManager->FindControl(pControlName);
+	}
 	return ddxText(pControl, va);
 }
 
@@ -316,8 +330,16 @@ implfun bool CUIDataExchange::ddxText(CControlUI *pControl, int &va)
 
 implfun bool CUIDataExchange::ddxText(LPCTSTR pControlName, int &va)
 {
-	ASSERT(m_pManager);
-	CControlUI *pControl = m_pManager->FindControl(pControlName);
+	CControlUI *pControl = NULL;
+	if(m_pRoot)
+	{
+		pControl = m_pRoot->FindSubControl(pControlName);
+	}
+	if(!pControl)
+	{
+		ASSERT(m_pManager);
+		pControl = m_pManager->FindControl(pControlName);
+	}
 	return ddxText(pControl, va);
 }
 
@@ -330,8 +352,16 @@ implfun bool CUIDataExchange::ddxText(CControlUI *pControl, CString &va)
 
 implfun bool CUIDataExchange::ddxText(LPCTSTR pControlName, CString &va)
 {
-	ASSERT(m_pManager);
-	CControlUI *pControl = m_pManager->FindControl(pControlName);
+	CControlUI *pControl = NULL;
+	if(m_pRoot)
+	{
+		pControl = m_pRoot->FindSubControl(pControlName);
+	}
+	if(!pControl)
+	{
+		ASSERT(m_pManager);
+		pControl = m_pManager->FindControl(pControlName);
+	}
 	return ddxText(pControl, va);
 }
 
@@ -343,8 +373,16 @@ implfun bool CUIDataExchange::ddxText(CControlUI *pControl, COleDateTime &va)
 
 implfun bool CUIDataExchange::ddxText(LPCTSTR pControlName, COleDateTime &va)
 {
-	ASSERT(m_pManager);
-	CControlUI *pControl = m_pManager->FindControl(pControlName);
+	CControlUI *pControl = NULL;
+	if(m_pRoot)
+	{
+		pControl = m_pRoot->FindSubControl(pControlName);
+	}
+	if(!pControl)
+	{
+		ASSERT(m_pManager);
+		pControl = m_pManager->FindControl(pControlName);
+	}
 	return ddxText(pControl, va);
 }
 
@@ -356,8 +394,16 @@ implfun bool CUIDataExchange::ddxText(CControlUI *pControl, COleCurrency &va)
 
 implfun bool CUIDataExchange::ddxText(LPCTSTR pControlName, COleCurrency &va)
 {
-	ASSERT(m_pManager);
-	CControlUI *pControl = m_pManager->FindControl(pControlName);
+	CControlUI *pControl = NULL;
+	if(m_pRoot)
+	{
+		pControl = m_pRoot->FindSubControl(pControlName);
+	}
+	if(!pControl)
+	{
+		ASSERT(m_pManager);
+		pControl = m_pManager->FindControl(pControlName);
+	}
 	return ddxText(pControl, va);
 }
 
@@ -383,8 +429,16 @@ implfun bool CUIDataExchange::ddxCheckBox(CControlUI *pControl, bool &va)
 
 implfun bool CUIDataExchange::ddxCheckBox(LPCTSTR pControlName, bool &va)
 {
-	ASSERT(m_pManager);
-	CControlUI *pControl = m_pManager->FindControl(pControlName);
+	CControlUI *pControl = NULL;
+	if(m_pRoot)
+	{
+		pControl = m_pRoot->FindSubControl(pControlName);
+	}
+	if(!pControl)
+	{
+		ASSERT(m_pManager);
+		pControl = m_pManager->FindControl(pControlName);
+	}
 	return ddxCheckBox(pControl, va);
 }
 
@@ -407,8 +461,16 @@ implfun bool CUIDataExchange::ddxCheckBox(CControlUI *pControl, BOOL &va)
 
 implfun bool CUIDataExchange::ddxCheckBox(LPCTSTR pControlName, BOOL &va)
 {
-	ASSERT(m_pManager);
-	CControlUI *pControl = m_pManager->FindControl(pControlName);
+	CControlUI *pControl = NULL;
+	if(m_pRoot)
+	{
+		pControl = m_pRoot->FindSubControl(pControlName);
+	}
+	if(!pControl)
+	{
+		ASSERT(m_pManager);
+		pControl = m_pManager->FindControl(pControlName);
+	}
 	return ddxCheckBox(pControl, va);
 }
 
@@ -432,8 +494,16 @@ implfun bool CUIDataExchange::ddxCombo(CControlUI *pControl, int &va)
 
 implfun bool CUIDataExchange::ddxCombo(LPCTSTR pControlName, int &va)
 {
-	ASSERT(m_pManager);
-	CControlUI *pControl = m_pManager->FindControl(pControlName);
+	CControlUI *pControl = NULL;
+	if(m_pRoot)
+	{
+		pControl = m_pRoot->FindSubControl(pControlName);
+	}
+	if(!pControl)
+	{
+		ASSERT(m_pManager);
+		pControl = m_pManager->FindControl(pControlName);
+	}
 	return ddxCombo(pControl, va);
 }
 
@@ -456,8 +526,16 @@ implfun bool CUIDataExchange::ddxComboItemData(CControlUI *pControl, int &va) //
 
 implfun bool CUIDataExchange::ddxComboItemData(LPCTSTR pControlName, int &va) //°ó¶¨ComboItemData
 {
-	ASSERT(m_pManager);
-	CControlUI *pControl = m_pManager->FindControl(pControlName);
+	CControlUI *pControl = NULL;
+	if(m_pRoot)
+	{
+		pControl = m_pRoot->FindSubControl(pControlName);
+	}
+	if(!pControl)
+	{
+		ASSERT(m_pManager);
+		pControl = m_pManager->FindControl(pControlName);
+	}
 	return ddxComboItemData(pControl, va);
 }
 
@@ -480,8 +558,16 @@ implfun bool CUIDataExchange::ddxTabLayout(CControlUI *pControl, int &va) //curs
 
 implfun bool CUIDataExchange::ddxTabLayout(LPCTSTR pControlName, int &va) //cursel
 {
-	ASSERT(m_pManager);
-	CControlUI *pControl = m_pManager->FindControl(pControlName);
+	CControlUI *pControl = NULL;
+	if(m_pRoot)
+	{
+		pControl = m_pRoot->FindSubControl(pControlName);
+	}
+	if(!pControl)
+	{
+		ASSERT(m_pManager);
+		pControl = m_pManager->FindControl(pControlName);
+	}
 	return ddxTabLayout(pControl, va);
 }
 

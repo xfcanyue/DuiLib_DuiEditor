@@ -1117,13 +1117,16 @@ namespace DuiLib {
 							bNeedSizeMsg = true;
 						}
 						else {
+							//单独NeedUpdate某个控件时
 							CControlUI* pControl = NULL;
 							m_aFoundControls.Empty();
 							m_pRoot->FindControl(__FindControlsFromUpdate, NULL, UIFIND_VISIBLE | UIFIND_ME_FIRST | UIFIND_UPDATETEST);
 							for( int it = 0; it < m_aFoundControls.GetSize(); it++ ) {
 								pControl = static_cast<CControlUI*>(m_aFoundControls[it]);
-								if( !pControl->IsFloat() ) pControl->SetPos(pControl->GetPos(), true);
-								else pControl->SetPos(pControl->GetRelativePos(), true);
+								//float控件不需要重新计算RelativePos，因为第一次SetPos时，已经把偏移计算好了，并且保存到m_rcItem。
+								//if( !pControl->IsFloat() ) pControl->SetPos(pControl->GetPos(), true);
+								//else pControl->SetPos(pControl->GetRelativePos(), true);
+								pControl->SetPos(pControl->GetPos(), true);
 							}
 							bNeedSizeMsg = true;
 						}

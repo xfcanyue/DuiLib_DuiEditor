@@ -7,7 +7,11 @@ namespace DuiLib
 {
 
 #define UI_BINDCONTROL(classname, pControl, controlname)  { pControl = static_cast<classname *>(FindControl(controlname)); ASSERT(pControl); }
-#define UI_BINDSUBCONTROL(classname, pControl, controlname)  { pControl = static_cast<classname *>(FindSubControl(controlname)); ASSERT(pControl); }
+#define UI_BINDSUBCONTROL(parent, classname, pControl, controlname)  {											\
+	CContainerUI *pContainerParent = static_cast<CContainerUI *>(parent->GetInterface(DUI_CTR_CONTAINER));		\
+	ASSERT(pContainerParent);																					\
+	pControl = static_cast<classname *>(pContainerParent->FindSubControl(controlname));							\
+	ASSERT(pControl); }
 #define UI_COMMAND(controlname, fun) if(IsControl(msg, controlname)) { fun(); return; }
 
 class CUIDataExchange
@@ -56,9 +60,13 @@ public:
 	CUIDataExchange(void);
 	virtual ~CUIDataExchange(void);
 
-	void ddxSetManager(CPaintManagerUI *pManager);
-	bool UpdateDataUI(bool bSaveAndValidate); //true: 界面>>变量; false: 变量>>界面
+	//如果传入pContainer，绑定数据时，优先查找pContainer容器中的控件。 这可以解决某些子控件不得不重名的问题。
+	void ddxSetManager(CPaintManagerUI *pManager, CControlUI *pContainer=NULL);
 
+	//true: 界面>>变量; false: 变量>>界面
+	bool UpdateDataUI(bool bSaveAndValidate); 
+
+	//
 	bool ddxText(CControlUI *pControl, CDuiString &va);
 	bool ddxText(LPCTSTR pControlName, CDuiString &va);
 	bool ddxText(CControlUI *pControl, int &va);
@@ -94,6 +102,7 @@ protected:
 	bool _UpdateTabLayout(_ddx_data *pData, bool bSaveAndValidate);
 private:
 	CPaintManagerUI *m_pManager;
+	CContainerUI *m_pRoot;
 	CStdPtrArray _ddxDataArray;
 
 //////////////////////////////////////////////////////////////////////////

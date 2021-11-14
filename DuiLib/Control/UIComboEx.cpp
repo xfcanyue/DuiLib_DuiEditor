@@ -91,7 +91,7 @@ CControlUI *CComboExUI::AddString(LPCTSTR pstrText, UINT_PTR pItemData)
 	return pLabel;
 }
 
-int CComboExUI::DeleteString(LPCTSTR pstrText) //返回删除项的下标
+bool CComboExUI::DeleteString(LPCTSTR pstrText)
 {
 	for( int it = 0; it < GetCount(); it++ ) {
 		CControlUI* pControl = static_cast<CControlUI*>(GetItemAt(it));
@@ -108,7 +108,27 @@ int CComboExUI::DeleteString(LPCTSTR pstrText) //返回删除项的下标
 			return true;
 		}
 	}
-	return -1;
+	return false;
+}
+
+bool CComboExUI::DeleteString_byItemData(UINT_PTR pItemData)
+{
+	for( int it = 0; it < GetCount(); it++ ) {
+		CControlUI* pControl = static_cast<CControlUI*>(GetItemAt(it));
+		if( !pControl->IsVisible() ) continue;
+
+		if(pControl->GetTag() == pItemData)
+		{
+			if(m_iCurSel  == it)
+			{
+				SetCurSel(-1);
+				SetText(_T(""));
+			}
+			Remove(pControl);
+			return true;
+		}
+	}
+	return false;
 }
 
 bool CComboExUI::SelectString(LPCTSTR pstrText)

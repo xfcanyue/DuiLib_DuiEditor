@@ -48,7 +48,7 @@ namespace DuiLib
 	LPVOID CChildLayoutUI::GetInterface( LPCTSTR pstrName )
 	{
 		if( _tcsicmp(pstrName, DUI_CTR_CHILDLAYOUT) == 0 ) return static_cast<CChildLayoutUI*>(this);
-		return CControlUI::GetInterface(pstrName);
+		return __super::GetInterface(pstrName);
 	}
 
 	LPCTSTR CChildLayoutUI::GetClass() const

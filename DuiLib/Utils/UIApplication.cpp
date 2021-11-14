@@ -622,5 +622,183 @@ BOOL CUIAppRegistryKey::SetValue(LPCTSTR lpszSection, LPCTSTR lpszEntry, LPCTSTR
 {
 	return WriteString(lpszSection, lpszEntry, strValue);
 }
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+CUIAppConfig::CUIAppConfig()
+{
+
+}
+
+CUIAppConfig::~CUIAppConfig()
+{
+
+}
+
+CXmlNodeUI CUIAppConfig::GetRoot()
+{
+	return m_xml.root().child_auto(UIGetApp()->GetAppName());
+}
+
+void CUIAppConfig::LoadConfig(LPCTSTR szPathName)
+{
+	if(szPathName == NULL || *szPathName == '\0')
+		m_xml.load_file(UIGetApp()->GetAppPath() + UIGetApp()->GetAppName() + _T(".xml"));
+	else
+		m_xml.load_file(szPathName);
+}
+
+void CUIAppConfig::SaveConfig()
+{
+	m_xml.save_to_default_file();
+}
+
+BOOL CUIAppConfig::SaveControl(CXmlNodeUI nodeParent, CEditUI *pControl)
+{
+	if(pControl->GetName().IsEmpty())
+		return FALSE;
+	CXmlNodeUI node = nodeParent.child_auto(pControl->GetName());
+	node.attribute_auto(_T("text")).set_value(pControl->GetText());
+	return TRUE;
+}
+
+BOOL CUIAppConfig::LoadControl(CXmlNodeUI nodeParent, CEditUI *pControl, LPCTSTR szDefault)
+{
+	if(pControl->GetName().IsEmpty())
+		return FALSE;
+	CXmlNodeUI node = nodeParent.child(pControl->GetName());
+	pControl->SetText(node.attribute(_T("text")).as_string(szDefault));
+	return TRUE;
+}
+
+BOOL CUIAppConfig::SaveControl(CXmlNodeUI nodeParent, CRichEditUI *pControl)
+{
+	if(pControl->GetName().IsEmpty())
+		return FALSE;
+	CXmlNodeUI node = nodeParent.child_auto(pControl->GetName());
+	node.attribute_auto(_T("text")).set_value(pControl->GetText());
+	return TRUE;
+}
+
+BOOL CUIAppConfig::LoadControl(CXmlNodeUI nodeParent, CRichEditUI *pControl, LPCTSTR szDefault)
+{
+	if(pControl->GetName().IsEmpty())
+		return FALSE;
+	CXmlNodeUI node = nodeParent.child(pControl->GetName());
+	pControl->SetText(node.attribute(_T("text")).as_string(szDefault));
+	return TRUE;
+}
+
+BOOL CUIAppConfig::SaveControl(CXmlNodeUI nodeParent, CComboUI *pControl, BOOL bSaveItems)
+{
+	if(pControl->GetName().IsEmpty())
+		return FALSE;
+	CXmlNodeUI nodeCombo = nodeParent.child_auto(pControl->GetName());
+	nodeCombo.attribute_auto(_T("text")).set_value(pControl->GetText());
+
+	CXmlNodeUI nodeItem = nodeCombo.child_auto(_T("Item"));
+	while(nodeItem.first_child()) { nodeItem.remove_child(nodeItem.first_child()); }
+
+	for (int i=0; i<pControl->GetCount(); i++)
+	{
+		CControlUI *pItem = pControl->GetItemAt(i);
+		CXmlNodeUI node = nodeItem.append_child(_T("Item"));
+		node.attribute_auto(_T("text")).set_value(pItem->GetText());
+	}
+	return TRUE;
+}
+
+BOOL CUIAppConfig::LoadControl(CXmlNodeUI nodeParent, CComboUI *pControl, LPCTSTR szDefault, BOOL bLoadItems)
+{
+	if(pControl->GetName().IsEmpty())
+		return FALSE;
+	CXmlNodeUI nodeCombo = nodeParent.child_auto(pControl->GetName());
+	pControl->SetText(nodeCombo.attribute_auto(_T("text")).as_string(szDefault));
+
+	CComboExUI *pCombo = (CComboExUI *)pControl;
+	CXmlNodeUI nodeItem = nodeCombo.child(_T("Item"));
+	for (CXmlNodeUI node=nodeItem.child(_T("Item")); node; node=node.next_sibling(_T("Item")))
+	{
+		pCombo->AddString(node.attribute_auto(_T("text")).as_string());
+	}
+	return TRUE;
+}
+
+BOOL CUIAppConfig::SaveControl(CXmlNodeUI nodeParent, CComboExUI *pControl, BOOL bSaveItems)
+{
+	if(pControl->GetName().IsEmpty())
+		return FALSE;
+	CXmlNodeUI nodeCombo = nodeParent.child_auto(pControl->GetName());
+	nodeCombo.attribute_auto(_T("text")).set_value(pControl->GetText());
+
+	if(bSaveItems)
+	{
+		CXmlNodeUI nodeItem = nodeCombo.child_auto(_T("Item"));
+		while(nodeItem.first_child()) { nodeItem.remove_child(nodeItem.first_child()); }
+
+		for (int i=0; i<pControl->GetCount(); i++)
+		{
+			CControlUI *pItem = pControl->GetItemAt(i);
+			CXmlNodeUI node = nodeItem.append_child(_T("Item"));
+			node.attribute_auto(_T("text")).set_value(pItem->GetText());
+		}
+	}
+	return TRUE;
+}
+
+BOOL CUIAppConfig::LoadControl(CXmlNodeUI nodeParent, CComboExUI *pControl, LPCTSTR szDefault, BOOL bLoadItems)
+{
+	if(pControl->GetName().IsEmpty())
+		return FALSE;
+	CXmlNodeUI nodeCombo = nodeParent.child_auto(pControl->GetName());
+	pControl->SetText(nodeCombo.attribute_auto(_T("text")).as_string(szDefault));
+
+	if(bLoadItems)
+	{
+		CComboExUI *pCombo = (CComboExUI *)pControl;
+		CXmlNodeUI nodeItem = nodeCombo.child(_T("Item"));
+		for (CXmlNodeUI node=nodeItem.child(_T("Item")); node; node=node.next_sibling(_T("Item")))
+		{
+			pCombo->AddString(node.attribute_auto(_T("text")).as_string());
+		}
+	}
+	return TRUE;
+}
+
+BOOL CUIAppConfig::SaveControl(CXmlNodeUI nodeParent, COptionUI *pControl)
+{
+	if(pControl->GetName().IsEmpty())
+		return FALSE;
+	CXmlNodeUI node = nodeParent.child_auto(pControl->GetName());
+	node.attribute_auto(_T("select")).set_value(pControl->IsSelected());
+	return TRUE;
+}
+
+BOOL CUIAppConfig::LoadControl(CXmlNodeUI nodeParent, COptionUI *pControl, BOOL bDefault)
+{
+	if(pControl->GetName().IsEmpty())
+		return FALSE;
+	CXmlNodeUI node = nodeParent.child(pControl->GetName());
+	pControl->Selected(node.attribute(_T("select")).as_bool(bDefault == TRUE), false);
+	return TRUE;
+}
+
+
+BOOL CUIAppConfig::SaveControl(CXmlNodeUI nodeParent, CTabLayoutUI *pControl)
+{
+	if(pControl->GetName().IsEmpty())
+		return FALSE;
+	CXmlNodeUI node = nodeParent.child_auto(pControl->GetName());
+	node.attribute_auto(_T("sel")).set_value(pControl->GetCurSel());
+	return TRUE;
+}
+
+BOOL CUIAppConfig::LoadControl(CXmlNodeUI nodeParent, CTabLayoutUI *pControl, int nDefault)
+{
+	if(pControl->GetName().IsEmpty())
+		return FALSE;
+	CXmlNodeUI node = nodeParent.child(pControl->GetName());
+	pControl->SelectItem(node.attribute(_T("sel")).as_int(nDefault));
+	return TRUE;
+}
 
 } //namespace DuiLib{

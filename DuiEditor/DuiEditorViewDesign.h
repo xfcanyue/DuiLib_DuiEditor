@@ -85,6 +85,8 @@ public:
 
 	afx_msg void OnEditGenerateCode_FindControl();
 	afx_msg void OnUpdateEditGenerateCode_FindControl(CCmdUI *pCmdUI);
+	afx_msg void OnEditGenerateCode_Members();
+	afx_msg void OnUpdateEditGenerateCode_Members(CCmdUI *pCmdUI);
 	afx_msg void OnEditGenerateCode_BindControl();
 	afx_msg void OnUpdateEditGenerateCode_BindControl(CCmdUI *pCmdUI);
 	afx_msg void OnEditGenerateCode_UiCommand();
@@ -103,6 +105,10 @@ public:
 	afx_msg void OnUpdateEditGenerateCode_IsControl(CCmdUI *pCmdUI);
 	afx_msg void OnEditGenerateCode_IsMenuCommand();
 	afx_msg void OnUpdateEditGenerateCode_IsMenuCommand(CCmdUI *pCmdUI);
+	afx_msg void OnEditGenerateCode_SaveControl();
+	afx_msg void OnUpdateEditGenerateCode_SaveControl(CCmdUI *pCmdUI);
+	afx_msg void OnEditGenerateCode_LoadControl();
+	afx_msg void OnUpdateEditGenerateCode_LoadControl(CCmdUI *pCmdUI);
 
 	afx_msg void OnEditCreateStyleString();
 	afx_msg void OnUpdateEditCreateStyleString(CCmdUI *pCmdUI);

@@ -253,4 +253,23 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
    2, UIDataExchange，增加ComboUI下拉列表绑定字符串的处理。
    3, 修复设计器视图刷新的问题
    4, 项目视图右键增加菜单，一键导出Res.xml，一键导出原版语言包，一键导出控件名和文件名的宏定义。
+
+2021-11-14
+   1, 设计器代码生成产生的变量名，取值于ControlName。如：
+      CComboExUI *p_cb_receive_char_type = static_cast<CComboExUI *>(GetManager()->FindControl(_T("cb_receive_char_type")));
+      UI_BINDCONTROL(CComboExUI, m_cb_receive_char_type, _T("cb_receive_char_type"));
+
+      设计器生成代码增加定义成员变量，如: CComboExUI *m_cb_receive_char_type;
+
+      设计器代码生成增加SaveControl,LoadControl. 配合使用CUIAppConfig
+
+   2, UIDataExchange传入父容器，用于绑定容器中的子控件。当传入容器时，优先绑定容器内的控件。用于解决子控件重名的问题。
+
+   3, CUIForm增加GetRoot(), InitWindow时，自动绑定到FormName,如果存在的话。
+
+   4, CXmlDocumentUI允许载入文件夹文件，如果不想用其他第三方类，可以用它读写xml。
+
+   5, 增加类CUIAppConfig，用于配置文件，保存控件状态。通过uiApp.Config.调用。
+
+   5, 单独NeedUpdate某个控件时，float控件定位有问题。
    

@@ -18,8 +18,8 @@ public:
 	BOOL IsMenuCommand(const MenuCmd *cmd, LPCTSTR name) { return _tcsicmp(cmd->szName, name) == 0; }
 	BOOL IsMenuCommand(CMenuCmdUI *cmdUI, LPCTSTR name) { return _tcsicmp(cmdUI->GetName(), name) == 0; }
 
-	virtual CPaintManagerUI *GetManager() = 0;
-
+	virtual CPaintManagerUI *GetManager()	= 0;
+	virtual CControlUI *GetRoot()			= 0;
 	CMenuWnd *CreateMenu(STRINGorID xml);
 
 	virtual void Notify(TNotifyUI& msg);
