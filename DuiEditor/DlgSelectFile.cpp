@@ -204,7 +204,7 @@ void CDlgSelectFile::OnExportRes()
 
 			xml_node nodeXml = rootRes.append_child("Xml");
 			nodeXml.attribute_auto("id").set_value(T2XML(idName));
-			nodeXml.attribute_auto("value").set_value(T2XML(pathName));
+			nodeXml.attribute_auto("path").set_value(T2XML(pathName));
 		}	
 	}
 

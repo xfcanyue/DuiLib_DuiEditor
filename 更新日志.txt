@@ -271,5 +271,9 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
 
    5, 增加类CUIAppConfig，用于配置文件，保存控件状态。通过uiApp.Config.调用。
 
-   5, 单独NeedUpdate某个控件时，float控件定位有问题。
+   6, 单独NeedUpdate某个控件时，float控件定位有问题。
    
+2021-11-22
+   1, List表头拖动问题
+   2，设计器控件箱增加tip提示
+   3，导出Res.xml写错了，path写成了value

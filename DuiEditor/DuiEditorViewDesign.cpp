@@ -56,6 +56,8 @@ BEGIN_MESSAGE_MAP(CDuiEditorViewDesign, CScrollView)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_MEMBERS, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_Members)
 	ON_COMMAND(ID_EDIT_GENERATE_BINDCONTROL, &CDuiEditorViewDesign::OnEditGenerateCode_BindControl)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_BINDCONTROL, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_BindControl)
+	ON_COMMAND(ID_EDIT_GENERATE_BINDSUBCONTROL, &CDuiEditorViewDesign::OnEditGenerateCode_BindSubControl)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_BINDSUBCONTROL, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_BindSubControl)
 	ON_COMMAND(ID_EDIT_GENERATE_UICOMMAND, &CDuiEditorViewDesign::OnEditGenerateCode_UiCommand)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_UICOMMAND, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_UiCommand)
 
@@ -644,6 +646,41 @@ void CDuiEditorViewDesign::OnEditGenerateCode_BindControl()
 }
 
 void CDuiEditorViewDesign::OnUpdateEditGenerateCode_BindControl(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
+}
+
+void CDuiEditorViewDesign::OnEditGenerateCode_BindSubControl()
+{
+	//期望创建的程序代码
+	//UI_BINDSUBCONTROL(GetRoot(), CComboExUI, m_pControl, _T("control_name"));
+
+	CString strMuiltiText;
+
+	int count = GetUIManager()->GetUiTracker()->m_arrTracker.GetSize();
+	for (int i=0; i<count; i++)
+	{
+		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
+
+		CString sClassName = _T("C");
+		sClassName += XML2T(pTrackElem->m_node.name());
+		sClassName += _T("UI");
+
+		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
+
+		CString sVarName = _T("m_");
+		sVarName += XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
+
+		CString strText;
+		strText.Format(_T("UI_BINDSUBCONTROL(GetRoot(), %s, %s, _T(\"%s\"));"), sClassName, sVarName, sControlName);
+		strMuiltiText += _T("\r\n");
+		strMuiltiText += strText;
+	}
+
+	CopyToClipboard(strMuiltiText);
+}
+
+void CDuiEditorViewDesign::OnUpdateEditGenerateCode_BindSubControl(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
 }

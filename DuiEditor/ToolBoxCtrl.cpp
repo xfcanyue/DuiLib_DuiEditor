@@ -433,6 +433,7 @@ END_MESSAGE_MAP()
 // CToolBoxCtrl message handlers
 BOOL CDockToolBoxCtrl::Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID)
 {
+	EnableToolTips(TRUE);
 	return CWnd::Create(afxGlobalData.RegisterWindowClass(_T("Afx:ToolBox")), _T(""), dwStyle, rect, pParentWnd, nID, NULL);
 }
 
@@ -1274,4 +1275,47 @@ void CDockToolBoxCtrl::SortByItemName()
 		}
 	}
 	*/
+}
+
+INT_PTR CDockToolBoxCtrl::OnToolHitTest(CPoint point, TOOLINFO* pTI) const
+{
+	INT_PTR nHit = (INT_PTR) CWnd::OnToolHitTest(point, pTI);
+	if (nHit != -1)
+		return nHit;
+
+	CDockToolBoxElement* pHover = HitTest(point);
+	if(pHover == NULL)
+		return -1;
+
+	CString strTipText;
+
+	xml_node nodeToolBox((xml_node_struct *)pHover->GetTag());
+	if(nodeToolBox)
+	{
+		strTipText = XML2T(nodeToolBox.attribute(XTEXT("comment")).as_string());
+	}
+	
+
+
+	if(strTipText.IsEmpty())
+		return -1;
+
+	if (pTI != NULL)
+	{
+		pTI->lpszText = (LPTSTR) ::calloc((strTipText.GetLength() + 1), sizeof(TCHAR));
+		lstrcpy(pTI->lpszText, strTipText);
+
+		pTI->rect = pHover->GetRect();
+		pTI->uId = 0;
+		pTI->hwnd = m_hWnd;
+	}	
+
+	CToolTipCtrl* pToolTip = AfxGetModuleState()->m_thread.GetDataNA()->m_pToolTip;
+	if (pToolTip != NULL && pToolTip->GetSafeHwnd() != NULL)
+	{
+		pToolTip->SetFont(&afxGlobalData.fontTooltip, FALSE);
+	}
+
+	//InsertMsg(_T("CDockToolBoxCtrl::OnToolHitTest"));
+	return (UINT_PTR)pHover;
 }

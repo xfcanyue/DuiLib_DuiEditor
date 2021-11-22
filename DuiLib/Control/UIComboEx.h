@@ -46,7 +46,9 @@ public:
 	LPCTSTR GetdbDisabledImage() const;
 	void SetdbDisabledImage(LPCTSTR pStrImage);
 
+	//CBS_DROPDOWN, CBS_DROPDOWNLIST
 	int GetDropType() const;
+	//CBS_DROPDOWN, CBS_DROPDOWNLIST
 	void SetDropType(int type);
 
 	void SetTipValue(LPCTSTR pStrTipValue);

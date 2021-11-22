@@ -118,6 +118,7 @@ protected:
 	void SetScrollSizes();
 	int GetTotalItems(BOOL bIncludeHidden = TRUE) const;
 
+	virtual INT_PTR OnToolHitTest(CPoint point, TOOLINFO* pTI) const;
 protected:
 	CToolTipCtrl        m_ToolTip;       // Tooltip control
 	CScrollBar          m_wndScrollVert; // Vertical scroll bar
@@ -148,6 +149,7 @@ protected:
 	CImageList *m_pDragImage;
 	BOOL m_bDraging;
 	BOOL m_bValidDrop;
+
 protected:
 	DECLARE_MESSAGE_MAP()
 public:

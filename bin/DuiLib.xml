@@ -61,10 +61,10 @@ INT类型(最小值，最大值)：
 		<Attribute name="source" default="" type="STRING" comment="XML布局文件" />
 		<Attribute name="count" default="" type="INT" comment="嵌入的次数" />
 	</Include>
-	<ChildLayout parent="Container">
+	<ChildLayout parent="Container" comment="子窗体xml布局" >
 		<Attribute name="xmlfile" default="" type="STRING" comment="子窗体XML布局文件" />
 	</ChildLayout>
-	<Control parent="" notifies="setfocus killfocus timer menu windowinit(root)">
+	<Control parent="" notifies="setfocus killfocus timer menu windowinit(root)" comment="基础控件" >
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
 		<Attribute name="pos" default="0,0,0,0" type="RECT" comment="位置，如果为float控件则指定位置和大小，否则只指定大小,如(0,0,100,100)" />
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
@@ -141,7 +141,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="OnPaintBorder" default="" type="STRING" comment="事件发生时，调用脚本的函数名" />
 		<Attribute name="custombasedfrom" default="" type="STRING" comment="自定义控件的父类, 如果没定义, 就不是自定义控件. 设计器仅创建对应的父控件。" />
 	</Control>
-	<Container parent="Control" notifies="setfocus killfocus timer menu windowinit(root)">
+	<Container parent="Control" notifies="setfocus killfocus timer menu windowinit(root)" comment="基础容器">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />	
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
@@ -156,21 +156,21 @@ INT类型(最小值，最大值)：
 		<Attribute name="childalign" default="left" type="STRING" value="left、right、center" comment=""/>
 		<Attribute name="childvalign" default="top" type="STRING" value="top、bottom、vcenter" comment=""/>
 	</Container>
-	<VerticalLayout parent="Container" notifies="setfocus killfocus timer menu windowinit(root)">
+	<VerticalLayout parent="Container" notifies="setfocus killfocus timer menu windowinit(root)" comment="纵向布局">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
 		<Attribute name="sepheight" default="0" type="INT" comment="分隔符高度,负数分隔符在顶部,如(-4)，整数分隔符在底部,如(4)" />
 		<Attribute name="sepimm" default="false" type="BOOL" comment="拖动分隔符是否立即改变大小,如(false)" />
 	</VerticalLayout>
-	<HorizontalLayout parent="Container" notifies="setfocus killfocus timer menu windowinit(root)">
+	<HorizontalLayout parent="Container" notifies="setfocus killfocus timer menu windowinit(root)" comment="横向布局">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
 		<Attribute name="sepwidth" default="0" type="INT" comment="分隔符宽,负数分隔符在左边,如(-4)，整数分隔符在右边,如(4)" />
 		<Attribute name="sepimm" default="false" type="BOOL" comment="拖动分隔符是否立即改变大小,如(false)" />
 	</HorizontalLayout>
-	<DynamicLayout parent="Container" notifies="setfocus killfocus timer menu windowinit(root)">
+	<DynamicLayout parent="Container" notifies="setfocus killfocus timer menu windowinit(root)" comment="参数设置纵向或横向布局，支持左右和上下拖动大小">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
 		<Attribute name="layout" default="HorizontalLayout" type="STRING" value="HorizontalLayout,VerticalLayout" comment="布局方式" />
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
@@ -179,7 +179,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="sepheight" default="0" type="INT" comment="分隔符高度,负数分隔符在顶部,如(-4)，整数分隔符在底部,如(4)" />
 		<Attribute name="sepimm" default="false" type="BOOL" comment="拖动分隔符是否立即改变大小,如(false)" />
 	</DynamicLayout>
-	<TileLayout parent="Container" notifies="setfocus killfocus timer menu windowinit(root)">
+	<TileLayout parent="Container" notifies="setfocus killfocus timer menu windowinit(root)" comment="平铺布局，如工具箱">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
@@ -187,7 +187,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="itemsize" default="0,0" type="SIZE" comment="子项固定大小，如(128,128)" />	
 		<Attribute name="childvpadding" default="0" type="INT" comment="子控件之间的额外距离,如(4)" />	
 	</TileLayout>
-	<TabLayout parent="Container" notifies="setfocus killfocus timer menu tabselect windowinit(root)">
+	<TabLayout parent="Container" notifies="setfocus killfocus timer menu tabselect windowinit(root)" comment="标签页容器">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
@@ -196,7 +196,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="framecount" default="24" type="INT" comment="动画总帧数, 值越大越慢越"/>	
 		<Attribute name="framedelay" default="5" type="INT" comment="过帧速度, 值越大越慢"/>
 	</TabLayout>
-	<AnimationTabLayout parent="TabLayout" notifies="setfocus killfocus timer menu tabselect windowinit(root)">
+	<AnimationTabLayout parent="TabLayout" notifies="setfocus killfocus timer menu tabselect windowinit(root)" comment="支持切换动画的TabLayout">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
@@ -204,7 +204,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="framecount" default="15" type="INT" comment="动画总帧数, 值越大越慢越"/>	
 		<Attribute name="framedelay" default="10" type="INT" comment="过帧速度, 值越大越慢"/>
 	</AnimationTabLayout>
-	<ActiveX parent="Control" notifies="setfocus killfocus timer menu showactivex windowinit(root)">
+	<ActiveX parent="Control" notifies="setfocus killfocus timer menu showactivex windowinit(root)" comment="支持ActiveX">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
@@ -212,11 +212,11 @@ INT类型(最小值，最大值)：
 		<Attribute name="modulename" default="" type="STRING" comment="activex从指定位置加载,如(flash/flash.ocx)" />
 		<Attribute name="delaycreate" default="true" type="BOOL" comment="是否需要延迟创建activex,如(false)" />
 	</ActiveX>
-	<WebBrowser parent="ActiveX">
+	<WebBrowser parent="ActiveX" comment="IE控件">
 		<Attribute name="homepage" default="" type="STRING" comment="默认首页" />
 		<Attribute name="autonavi" default="false" type="BOOL" comment="是否打开默认首页" />
 	</WebBrowser>
-	<Combo parent="Container" notifies="setfocus killfocus timer menu dropdown itemselect windowinit(root)">
+	<Combo parent="Container" notifies="setfocus killfocus timer menu dropdown itemselect windowinit(root)" comment="下拉框">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
@@ -259,12 +259,12 @@ INT类型(最小值，最大值)：
 		<Attribute name="itemlinecolor" default="0x00000000" type="DWORD" comment="item行分割线颜色" />
 		<Attribute name="itemshowhtml" default="false" type="BOOL" comment="item是否使用类html富文本绘制,如(false)" />
 	</Combo>
-	<GifAnim parent="Control" notifies="setfocus killfocus timer menu windowinit(root)">
+	<GifAnim parent="Control" notifies="setfocus killfocus timer menu windowinit(root)" comment="支持gif动画">
 		<Attribute name="bkimage" default="" type="IMAGE" comment="Gif动画图片路径(不支持source等属性设置)" />
 		<Attribute name="autoplay" default="true" type="BOOL" comment="是否自动播放GIF动画" />
 		<Attribute name="autosize" default="false" type="BOOL" comment="是否根据图片自动设置控件大小(开启后width和height属性失效)" />
 	</GifAnim>
-	<Label parent="Control" notifies="setfocus killfocus timer menu windowinit(root)">
+	<Label parent="Control" notifies="setfocus killfocus timer menu windowinit(root)" comment="Label">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
 		<Attribute name="text" default="" type="STRING" comment="显示文本,如(测试文本)" />
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
@@ -281,7 +281,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="showhtml" default="false" type="BOOL" comment="是否使用类html富文本绘制,如(false)" />
 		<Attribute name="autocalcwidth" default="false" type="BOOL" comment="是否自动调整宽度" />
 	</Label>
-	<LabelLayout parent="HorizontalLayout" notifies="setfocus killfocus timer menu windowinit(root)">
+	<LabelLayout parent="HorizontalLayout" notifies="setfocus killfocus timer menu windowinit(root)" comment="Label容器类型">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
 		<Attribute name="text" default="" type="STRING" comment="显示文本,如(测试文本)" />
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
@@ -299,24 +299,24 @@ INT类型(最小值，最大值)：
 		<Attribute name="autocalcwidth" default="false" type="BOOL" comment="是否自动调整宽度" />
 		<Attribute name="autocalcheight" default="false" type="BOOL" comment="是否自动调整高度" />
 	</LabelLayout>
-	<Ring parent="Label" notifies="setfocus killfocus timer menu windowinit(root)">
+	<Ring parent="Label" notifies="setfocus killfocus timer menu windowinit(root)" comment="旋转控件">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
 		<Attribute name="bkimage" default="" type="IMAGE" comment="Ring旋转图片" />
 	</Ring>
-	<DateTime parent="Label" notifies="setfocus killfocus timer menu windowinit(root)">
+	<DateTime parent="Label" notifies="setfocus killfocus timer menu windowinit(root)" comment="时间选取控件">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
 		<Attribute name="formatstyle" default="date" type="STRING" value="date,time" comment="显示格式" />	
 	</DateTime>
-	<IPAddress parent="Label" notifies="setfocus killfocus timer menu windowinit(root)">
+	<IPAddress parent="Label" notifies="setfocus killfocus timer menu windowinit(root)" comment="IP地址控件">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />		
 	</IPAddress> 
-	<Button parent="Label" notifies="setfocus killfocus timer menu click windowinit(root)">
+	<Button parent="Label" notifies="setfocus killfocus timer menu click windowinit(root)" comment="按钮">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
@@ -348,7 +348,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="valign" default="vcenter" type="STRING" value="top,bottom,vcenter" comment="对齐方式,取值top,bottom,center" />	
 		<Attribute name="pushedbordercolor" default="0x00000000" type="DWORD" comment="鼠标按下边框颜色,如(0xFF000000)" />
 	</Button>
-	<ButtonLayout parent="LabelLayout" notifies="setfocus killfocus timer menu click windowinit(root)">
+	<ButtonLayout parent="LabelLayout" notifies="setfocus killfocus timer menu click windowinit(root)" comment="按钮容器类型">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
@@ -380,10 +380,10 @@ INT类型(最小值，最大值)：
 		<Attribute name="valign" default="vcenter" type="STRING" value="top,bottom,vcenter" comment="对齐方式,取值top,bottom,center" />	
 		<Attribute name="pushedbordercolor" default="0x00000000" type="DWORD" comment="鼠标按下边框颜色,如(0xFF000000)" />
 	</ButtonLayout>
-	<FadeButton parent="Button" notifies="setfocus killfocus timer menu click windowinit(root)">
+	<FadeButton parent="Button" notifies="setfocus killfocus timer menu click windowinit(root)" comment="支持过渡动画的按钮控件">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />	
 	</FadeButton>
-	<Option parent="Button" notifies="setfocus killfocus timer menu click selectchanged windowinit(root)">
+	<Option parent="Button" notifies="setfocus killfocus timer menu click selectchanged windowinit(root)" comment="选取框">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />	
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
@@ -400,7 +400,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="group" default="" type="STRING" comment="所属组的名称，可不设"/>
 		<Attribute name="selected" default="false" type="BOOL" comment="是否选中"/>
 	</Option>
-	<OptionLayout parent="ButtonLayout" notifies="setfocus killfocus timer menu click selectchanged windowinit(root)">
+	<OptionLayout parent="ButtonLayout" notifies="setfocus killfocus timer menu click selectchanged windowinit(root)" comment="选取框容器类型">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />	
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
@@ -417,13 +417,13 @@ INT类型(最小值，最大值)：
 		<Attribute name="group" default="" type="STRING" comment="所属组的名称，可不设"/>
 		<Attribute name="selected" default="false" type="BOOL" comment="是否选中"/>
 	</OptionLayout>
-	<CheckBox parent="Option">
+	<CheckBox parent="Option" comment="CheckBox控件">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />	
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
 		<Attribute name="EnableAutoCheck" default="false" type="BOOL" comment="" />
 	</CheckBox>
-	<TabCtrl parent="Option" notifies="setfocus killfocus timer menu click selectchanged windowinit(root)">
+	<TabCtrl parent="Option" notifies="setfocus killfocus timer menu click selectchanged windowinit(root)" comment="切换TabLayout的控件">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)"/>
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
@@ -432,12 +432,12 @@ INT类型(最小值，最大值)：
 		<Attribute name="bindtabindexname" default="" type="STRING" comment="如果bindtabindex=-1，尝试根据form名字切换对应页面"/>	
 		<Attribute name="activemouseon" default="false" type="BOOL" comment="鼠标悬浮时选中"/>
 	</TabCtrl>
-	<Text parent="Label" notifies="setfocus killfocus timer menu link windowinit(root)">
+	<Text parent="Label" notifies="setfocus killfocus timer menu link windowinit(root)" comment="Text控件">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />	
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />				
 	</Text>
-	<Progress parent="Label" notifies="setfocus killfocus timer menu windowinit(root)">
+	<Progress parent="Label" notifies="setfocus killfocus timer menu windowinit(root)" comment="进度条控件">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
@@ -448,7 +448,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="value" default="0" type="INT" comment="进度值，如(50)" />
 		<Attribute name="isstretchfore" default="TRUE" type="BOOL" comment="指定前景图片是否缩放显示" />
 	</Progress>
-	<Slider parent="Progress" notifies="setfocus killfocus timer menu valuechanged movevaluechanged windowinit(root)">
+	<Slider parent="Progress" notifies="setfocus killfocus timer menu valuechanged movevaluechanged windowinit(root)" comment="滑块控件">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
@@ -459,7 +459,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="step" default="1" type="INT" comment="进度步长，如(1)" />
 		<Attribute name="sendmove" default="false" type="BOOL" comment="是否发送movevaluechanged消息" />
 	</Slider>
-	<Edit parent="Label" notifies="setfocus killfocus timer menu return textchanged windowinit(root)">
+	<Edit parent="Label" notifies="setfocus killfocus timer menu return textchanged windowinit(root)" comment="编辑框">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
@@ -481,7 +481,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="tipvalue" default="" type="STRING" comment="文本框内提示文字，当文本框text为空并失去焦点时显示" />
 		<Attribute name="tipvaluecolor" default="0xFFBAC0C5" type="DWORD" comment="文本框内提示文字的颜色" />
 	</Edit>
-	<ScrollBar parent="Control" notifies="timer menu scrolled windowinit(root)">
+	<ScrollBar parent="Control" notifies="timer menu scrolled windowinit(root)" comment="滚动条">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
 		<Attribute name="button1normalimage" default="" type="IMAGE" comment="左或上按钮普通状态图片" />
 		<Attribute name="button1hotimage" default="" type="IMAGE" comment="左或上按钮鼠标悬浮状态图片" />
@@ -510,7 +510,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="showbutton1" default="true" type="BOOL" comment="是否显示左或上按钮,如(true)" />
 		<Attribute name="showbutton2" default="true" type="BOOL" comment="是否显示右或下按钮,如(true)" />
 	</ScrollBar>
-	<VScrollBar parent="Control" notifies="timer menu scrolled windowinit(root)">
+	<VScrollBar parent="Control" notifies="timer menu scrolled windowinit(root)" comment="纵向滚动条">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
 		<Attribute name="button1normalimage" default="" type="IMAGE" comment="左或上按钮普通状态图片" />
 		<Attribute name="button1hotimage" default="" type="IMAGE" comment="左或上按钮鼠标悬浮状态图片" />
@@ -539,7 +539,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="showbutton1" default="true" type="BOOL" comment="是否显示左或上按钮,如(true)" />
 		<Attribute name="showbutton2" default="true" type="BOOL" comment="是否显示右或下按钮,如(true)" />
 	</VScrollBar>
-	<HScrollBar parent="Control" notifies="timer menu scrolled windowinit(root)">
+	<HScrollBar parent="Control" notifies="timer menu scrolled windowinit(root)" comment="横向滚动条">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
 		<Attribute name="button1normalimage" default="" type="IMAGE" comment="左或上按钮普通状态图片" />
 		<Attribute name="button1hotimage" default="" type="IMAGE" comment="左或上按钮鼠标悬浮状态图片" />
@@ -568,7 +568,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="showbutton1" default="true" type="BOOL" comment="是否显示左或上按钮,如(true)" />
 		<Attribute name="showbutton2" default="true" type="BOOL" comment="是否显示右或下按钮,如(true)" />
 	</HScrollBar>
-	<List parent="VerticalLayout" notifies="setfocus killfocus timer menu itemselect windowinit(root)">
+	<List parent="VerticalLayout" notifies="setfocus killfocus timer menu itemselect windowinit(root)" comment="列表">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
@@ -602,13 +602,13 @@ INT类型(最小值，最大值)：
 		<Attribute name="multiselect" default="false" type="BOOL" comment="是否支持多行选择)" />
 		<Attribute name="itemrselected" default="false" type="BOOL" comment="是否支持右键选择)" />
 	</List>
-	<ListHeader parent="HorizontalLayout" notifies="setfocus killfocus timer windowinit(root)">
+	<ListHeader parent="HorizontalLayout" notifies="setfocus killfocus timer windowinit(root)" comment="列表头">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
 		<Attribute name="scaleheader" default="false" type="BOOL" comment="每个表头的宽度是否按照百分比来设置" />
 	</ListHeader>
-	<ListHeaderItem parent="Control" notifies="setfocus killfocus timer headerclick windowinit(root)">
+	<ListHeaderItem parent="Control" notifies="setfocus killfocus timer headerclick windowinit(root)" comment="列表头的项">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
@@ -627,21 +627,21 @@ INT类型(最小值，最大值)：
 		<Attribute name="sepimage" default="" type="IMAGE" comment="拖动条图片" />
 		<Attribute name="scale" default="0" type="INT" comment="设置子表头所占总表头的百分比宽度，如40（代表占40%的宽度）" />
 	</ListHeaderItem>
-	<ListLabelElement parent="Control" notifies="setfocus killfocus timer itemactivate itemclick windowinit(root)">
+	<ListLabelElement parent="Control" notifies="setfocus killfocus timer itemactivate itemclick windowinit(root)" comment="列表项，文本标签">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
 		<Attribute name="selected" default="false" type="BOOL" comment="是否选中,如(true)" />
 	</ListLabelElement>
-	<ListTextElement parent="ListLabelElement" notifies="setfocus killfocus timer itemactivate itemclick link windowinit(root)">
+	<ListTextElement parent="ListLabelElement" notifies="setfocus killfocus timer itemactivate itemclick link windowinit(root)" comment="列表项，文本类型，允许包含多列文字">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
 	</ListTextElement>
-	<ListContainerHeaderItem parent="HorizontalLayout" notifies="setfocus killfocus timer itemactivate itemclick itemexpanded itemcollapsed windowinit(root)">
+	<ListContainerHeaderItem parent="HorizontalLayout" notifies="setfocus killfocus timer itemactivate itemclick itemexpanded itemcollapsed windowinit(root)" comment="列表头的项，容器类型">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />	
 	</ListContainerHeaderItem>
-	<ListContainerElement parent="HorizontalLayout" notifies="setfocus killfocus timer itemactivate itemclick itemexpanded itemcollapsed windowinit(root)">
+	<ListContainerElement parent="HorizontalLayout" notifies="setfocus killfocus timer itemactivate itemclick itemexpanded itemcollapsed windowinit(root)" comment="列表项，容器类型">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
 		<Attribute name="selected" default="false" type="BOOL" comment="是否选中,如(true)" />
 	</ListContainerElement>
-	<RichEdit parent="Container" notifies="textchanged setfocus killfocus timer menu return windowinit(root)">
+	<RichEdit parent="Container" notifies="textchanged setfocus killfocus timer menu return windowinit(root)" comment="RichEdit 富文本控件">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
@@ -673,7 +673,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="autocalcwidth" default="false" type="BOOL" comment="是否自动调整宽度" />
 		<Attribute name="autocalcheight" default="false" type="BOOL" comment="是否自动调整高度" />
 	</RichEdit>
-	<TreeView parent="List" notifies="selectchanged setfocus killfocus timer menu itemselect windowinit(root)">
+	<TreeView parent="List" notifies="selectchanged setfocus killfocus timer menu itemselect windowinit(root)" comment="树">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
@@ -685,7 +685,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="selitemtextcolor" default="0x00000000" type="DWORD" comment="item被选中时文本颜色" />
 		<Attribute name="selitemhottextcolor" default="0x00000000" type="DWORD" comment="item被选中时且鼠标进入时的文本颜色" />
 	</TreeView>
-	<TreeNode parent="ListContainerElement" notifies="setfocus killfocus timer itemactivate itemclick itemexpanded itemcollapsed windowinit(root)">
+	<TreeNode parent="ListContainerElement" notifies="setfocus killfocus timer itemactivate itemclick itemexpanded itemcollapsed windowinit(root)" comment="树节点">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
 		<Attribute name="text" default="" type="STRING" comment="显示文本,如(测试文本)" />
 		<!--TreeNode 私有属性-->
@@ -699,7 +699,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="selitemtextcolor" default="0x00000000" type="DWORD" comment="item被选中时文本颜色" />
 		<Attribute name="selhotitemtextcolor" default="0x00000000" type="DWORD" comment="item被选中时且鼠标进入时的文本颜色" />
 	</TreeNode>
-	<Menu parent="List" notifies="setfocus killfocus timer menu itemselect windowinit(root)">
+	<Menu parent="List" notifies="setfocus killfocus timer menu itemselect windowinit(root)" comment="菜单">
 		<Attribute name="inset" default="0,0,0,0" type="RECT" comment="菜单的高度等于所有菜单项的高度之和，加上inset属性的top和bottom" />
 		<!-- Menu标签的属性要通过Default来定义，为了让下级菜单也能拥有同样的外观，其他属性设置见List -->
 		<Attribute name="expandicon" default="" type="IMAGE" comment="二级菜单的小三角图标" />
@@ -708,7 +708,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="iconbkcolor" default="0xFFE8EDEE" type="DWORD" comment="图标区域的背景颜色" />
 		<Attribute name="itemdisabledbkcolor" default="0x00000000" type="DWORD" comment="菜单禁用时的背景颜色" />
 	</Menu>
-	<MenuElement parent="ListContainerElement" notifies="click valuechanged WM_MENUCLICK">
+	<MenuElement parent="ListContainerElement" notifies="click valuechanged WM_MENUCLICK" comment="菜单项">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />	
 		<Attribute name="text" default="" type="STRING" comment="显示文本,如(测试文本)" />
 		<Attribute name="icon" default="" type="IMAGE" comment="菜单项的图标图片" />
@@ -721,7 +721,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="expland" default="false" type="BOOL" comment="是否显示下级菜单的小三角图片（需要通过Default标签设置ExplandIcon属性图片的路径）" />
 		<Attribute name="height" default="30" type="INT" comment="菜单项高度（分割线默认高度是6）" />
 	</MenuElement>
-	<GroupBox parent="VerticalLayout">
+	<GroupBox parent="VerticalLayout" comment="组合框">
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />		
 		<Attribute name="text" default="" type="STRING" comment="显示文本,如(测试文本)" />
@@ -733,17 +733,17 @@ INT类型(最小值，最大值)：
 		<Attribute name="bordersize" default="0" type="INT" comment="可以设置INT或RECT类型的值。当值为ING时则左、上、右、下都用该值作为宽。值为RECT类型时则分别设置左、上、右、下的边框" />					
 		<Attribute name="inset" default="20,25,20,20" type="RECT" comment="容器的内边距,如(2,2,2,2)" />
 	</GroupBox>
-	<ColorPalette parent="Control">
+	<ColorPalette parent="Control" comment="颜色选取">
 		<Attribute name="palletheight" default="200" type="INT" comment="" />
 		<Attribute name="barheight" default="10" type="INT" comment="" />
 		<Attribute name="thumbimage" default="" type="IMAGE" comment="" />
 	</ColorPalette>
-	<RollText parent="Label" notifies="">
+	<RollText parent="Label" notifies="" comment="滚动字幕">
 		<Attribute name="name" default="" type="STRING" comment="控件名字" />	
 	</RollText>
 	
 	<!------------------------------------------------------------------------------------------------------------------->
-	<ComboEx parent="Combo" notifies="setfocus killfocus timer menu dropdown itemselect windowinit(root)">
+	<ComboEx parent="Combo" notifies="setfocus killfocus timer menu dropdown itemselect windowinit(root)" comment="可编辑的扩展下拉框">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
 		<Attribute name="dropbuttonsize" default="16,16" type="SIZE" comment="边框圆角半径,如(2,2)" />
 		<Attribute name="dropbuttonnormalimage" default="" type="IMAGE" comment="下拉按钮,普通状态图片" />
@@ -755,7 +755,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="tipvalue" default="" type="STRING" comment="文本框内提示文字，当文本框text为空时显示并失去焦点时显示" />
 		<Attribute name="tipvaluecolor" default="0xFFBAC0C5" type="DWORD" comment="文本框内提示文字的颜色" />		
 	</ComboEx>
-	<IconButton parent="ButtonLayout" notifies="setfocus killfocus timer menu dropdown itemselect windowinit(root)">
+	<IconButton parent="ButtonLayout" notifies="setfocus killfocus timer menu dropdown itemselect windowinit(root)" comment="支持图标的按钮">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />
 		<Attribute name="iconsize" default="16,16" type="SIZE" comment="按钮图片的大小" />
 		<Attribute name="iconnormalimage" default="" type="IMAGE" comment="按钮图标,普通状态图片" />
@@ -764,7 +764,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="iconfocusedimage" default="" type="IMAGE" comment="按钮图标,获得焦点时的状态图片" />
 		<Attribute name="icondisabledimage" default="" type="IMAGE" comment="按钮图标,禁用的状态图片" />
 	</IconButton>
-	<GridCtrl parent="Container">
+	<GridCtrl parent="Container" comment="MFCGridCtrl 一个MFC的开源表格类">
 		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
 		<Attribute name="virtualgrid" default="false" type="BOOL" comment="虚表模式" />
 		<Attribute name="rowheight" default="25" type="INT" comment="默认行高" />
@@ -793,9 +793,9 @@ INT类型(最小值，最大值)：
 		<Attribute name="focuscellbordercolor" default="0xFF4e00ff" type="DWORD" comment="选中单元格时边框颜色,如(0xFFFF0000)" />
 	</GridCtrl>
 	
-	<GridHeader parent="VerticalLayout" />
-	<GridRow parent="OptionLayout" />
-	<GridCell parent="OptionLayout">
+	<GridHeader parent="VerticalLayout"  comment="表格头" />
+	<GridRow parent="OptionLayout"  comment="表格行" />
+	<GridCell parent="OptionLayout" comment="表格的单元格" >
 		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
 		<Attribute name="celltype" default="text" type="STRING" value="text,edit,check,combo,datetime,date,time,picture,container" comment="单元格类型" />	
 		<Attribute name="merge" default="0,0,0,0" type="RECT" comment="需要被合并的目标单元格, left与top为当前格子行列, right与bottom被合并的格子行列. " />
@@ -803,7 +803,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="childalign" default="center" type="STRING" value="left、right、center" comment=""/>
 		<Attribute name="childvalign" default="vcenter" type="STRING" value="top、bottom、vcenter" comment=""/>
 	</GridCell>
-	<Grid parent="VerticalLayout">
+	<Grid parent="VerticalLayout" comment="表格类，支持虚表">
 		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
 		<Attribute name="rowheight" default="30" type="INT" comment="默认行高" />
 		<Attribute name="columnwith" default="80" type="INT" comment="默认列宽" />
@@ -843,7 +843,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="time" default="" type="ATTRIBUTELIST" value="DateTimeEx" comment="时间单元格默认参数" />
 		<Attribute name="picture" default="" type="ATTRIBUTELIST" value="Picture" comment="图像单元格默认参数" />
 	</Grid>
-	<Tree parent="VerticalLayout">
+	<Tree parent="VerticalLayout" comment="扩展树控件,伪虚表机制">
 		<Attribute name="name" default="" type="STRING" comment="控件名字" />	
 		<Attribute name="indentwidth" default="32" type="INT" comment="缩进宽度" />
 		<Attribute name="viewline" default="true" type="BOOL" comment="是否显示缩进线" />
@@ -856,29 +856,29 @@ INT类型(最小值，最大值)：
 		<Attribute name="textattr" default="" type="ATTRIBUTELIST" value="CheckBox" comment="图标对象，每个Node共用的。" />	
 		<Attribute name="childpadding" default="0" type="INT" comment="Tree每个项的间隔" />		
 	</Tree>
-	<TreeItem parent="VerticalLayout">
+	<TreeItem parent="VerticalLayout" comment="扩展树控件的节点">
 		<Attribute name="name" default="" type="STRING" comment="控件名字" />		
 		<Attribute name="text" default="" type="STRING" comment="节点显示文本" />		
 	</TreeItem>
 	
-	<TableLayout parent="VerticalLayout">
+	<TableLayout parent="VerticalLayout" comment="表格布局，类似于html的Table">
 		<Attribute name="name" default="" type="STRING" comment="控件名字" />
 		<Attribute name="rowheight" default="30" type="INT" comment="默认行高" />
 		<Attribute name="autocalcheight" default="true" type="BOOL" comment="根据子控件或者文本等等自动计算高度" />
 	</TableLayout>
-	<TR parent="OptionLayout">
+	<TR parent="OptionLayout" comment="表格布局的行" >
 		<Attribute name="name" default="" type="STRING" comment="控件名字" />
 	</TR>
-	<TD parent="OptionLayout">
+	<TD parent="OptionLayout" comment="表格布局的列" >
 		<Attribute name="name" default="" type="STRING" comment="控件名字" />
 		<Attribute name="align" default="left" type="STRING" value="left,right,center" comment="对齐方式,取值left、right、center" />		
 		<Attribute name="valign" default="vcenter" type="STRING" value="top,bottom,vcenter" comment="对齐方式,取值top,bottom,center" />	
 	</TD>
 	
-	<MsgWnd parent="RichEdit">
+	<MsgWnd parent="RichEdit" comment="日志输出控件">
 		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
 	</MsgWnd>
-	<KeyBoard parent="VerticalLayout">
+	<KeyBoard parent="VerticalLayout" comment="全键盘控件">
 		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
 		<Attribute name="keywidth" default="80" type="INT" comment="按钮宽度"/>
 		<Attribute name="keyheight" default="80" type="INT" comment="按钮高度"/>
@@ -908,7 +908,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="name" default="" type="STRING" comment="控件名字"/>	
 		<Attribute name="entercontroltext" default="En" type="STRING" comment="回车键的显示的文字"/>
 	</KeyBoardNumber>
-	<Picture parent="Container" >
+	<Picture parent="Container"  comment="图像控件，支持bmp,jpg,png,svg,gif" >
 		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
 		<Attribute name="fileimage" default="" type="IMAGE" comment="图片文件路径, 只能是文件，不支持dest,source等属性"/>
 		<Attribute name="framedelay" default="0" type="INT" comment="每帧延迟时间(毫秒)"/>
@@ -920,14 +920,14 @@ INT类型(最小值，最大值)：
 		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
 		<Attribute name="imagepath" default="" type="STRING" comment="图片文件夹(从资源目录载入图片)"/>
 	</PictureBox>
-	<ImageBoxEx parent="Control" >
+	<ImageBoxEx parent="Control"  comment="幻灯片轮播">
 		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
 		<Attribute name="imagepath" default="" type="STRING" comment="图片文件夹(从资源目录载入图片)"/>
 		<Attribute name="refresh" default="200" type="INT" comment="定时器刷新时间(毫秒)"/>
 		<Attribute name="duration" default="2000" type="INT" comment="动画过渡时间(毫秒)"/>
 		<Attribute name="retention" default="5000" type="INT" comment="每张图片停留时间(毫秒)"/>
 	</ImageBoxEx>
-	<DateTimeEx parent="HorizontalLayout" notifies="setfocus killfocus timer menu windowinit(root)">
+	<DateTimeEx parent="HorizontalLayout" notifies="setfocus killfocus timer menu windowinit(root)" comment="扩展时间选取控件，支持日期和时间显示">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />
@@ -936,13 +936,13 @@ INT类型(最小值，最大值)：
 		<Attribute name="timelabelstyle" default="" type="ATTRIBUTELIST" value="Label" comment="设置时间label的样式" />
 		<Attribute name="animation" default="1" type="STRING" value="none,vertical,horizontal" comment="动画方式" />
 	</DateTimeEx>
-	<RollTextEx parent="Label" notifies="">
+	<RollTextEx parent="Label" notifies="" comment="扩展字幕控件">
 		<Attribute name="name" default="" type="STRING" comment="控件名字" />
 		<Attribute name="rolldirection" default="left" type="STRING" value="left,right,up,down" comment="滚动方向"/>
 		<Attribute name="rollspeed" default="100" type="INT" comment="滚动速度, 越大滚动的越慢"/>	
 		<Attribute name="rollstep" default="5" type="INT" comment="每次滚动的位置"/>	
 	</RollTextEx>
-	<SciEdit parent="Container" notifies="">
+	<SciEdit parent="Container" notifies="" comment="编辑控件，大名鼎鼎的Scintilla">
 		<Attribute name="name" default="" type="STRING" comment="控件名字" />	
 		<Attribute name="codepage" default="UTF8" type="STRING" value="UTF8,GBK,BIG5,JapaneseShiftJIS,KoreanUnifiedHangul,KoreanJohab" comment="字符编码" />	
 		<Attribute name="linenumber" default="true" type="BOOL" comment="左页边是否显示行号" />
@@ -951,7 +951,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="breakpoint" default="true" type="BOOL" comment="左页边是否显示断点" />
 		<Attribute name="folder" default="true" type="BOOL" comment="左页边是否显示代码折叠" />
 	</SciEdit>
-	<ChildWindow parent="Container">
+	<ChildWindow parent="Container" comment="嵌入win32子窗口" >
 		<Attribute name="name" default="" type="STRING" comment="控件名字" />
 	</ChildWindow>
 	
