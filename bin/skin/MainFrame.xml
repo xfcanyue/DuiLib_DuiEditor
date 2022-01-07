@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Window size="800,658" sizebox="0,0,4,4" caption="0,0,0,20" showshadow="true" shadowsize="2" shadowposition="2,2" shadowcolor="0xFF4B4B4B" gdiplustext="true" forcehsl="true">
+<Window size="800,658" sizebox="0,0,4,4" caption="0,0,0,20" showshadow="true" shadowsize="2" shadowposition="2,2" shadowcolor="0xFF4B4B4B" renderengine="gdiplus" forcehsl="true">
 	<Include source="config.xml" />
 	<VerticalLayout inset="1,1,1,1" bkcolor="0xFFD1E8F5" bordercolor="0xFF969696" bordersize="1">
 		<HorizontalLayout height="20" childpadding="5" childvalign="vcenter" bkcolor="0xFFC0DCC0">
