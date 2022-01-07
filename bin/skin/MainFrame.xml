@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Window size="800,658" sizebox="0,0,4,4" caption="0,0,0,20" showshadow="true" shadowsize="2" shadowposition="2,2" shadowcolor="0xFF4B4B4B">
+<Window size="800,658" sizebox="0,0,4,4" caption="0,0,0,20" showshadow="true" shadowsize="2" shadowposition="2,2" shadowcolor="0xFF4B4B4B" gdiplustext="true" forcehsl="true">
 	<Include source="config.xml" />
 	<VerticalLayout inset="1,1,1,1" bkcolor="0xFFD1E8F5" bordercolor="0xFF969696" bordersize="1">
 		<HorizontalLayout height="20" childpadding="5" childvalign="vcenter" bkcolor="0xFFC0DCC0">
@@ -166,7 +166,7 @@
 						<VerticalLayout>
 							<Option height="30" selectedimage="file='images\leftjt02.png' dest='0,0,12,12' padding='0,0,10,0' align='right' valign='vcenter' " selectedbkcolor="0xFFA6CAF0" group="group_accordion_pane1" normalimage="file='images\leftjt01.png' dest='0,0,12,12' padding='0,0,10,0' align='right' valign='vcenter' " switchpanevisible="accordion_pane1" text="Pane1" bkcolor="0xFFA6CAF0" bordercolor="0xFFC0C0C0" bordersize="1" foreimage="file='images\icon0.png' dest='0,0,12,11' padding='10,0,0,0' valign='vcenter' " />
 							<VerticalLayout name="accordion_pane1" autocalcheight="true" bkcolor="0xFFC0DCC0" animation="scalevertical">
-								<Text text="pane1" align="center" />
+								<Text text="pane1" />
 							</VerticalLayout>
 							<Option height="30" selectedimage="file='images\leftjt02.png' dest='0,0,12,12' padding='0,0,10,0' align='right' valign='vcenter' " selectedbkcolor="0xFFA6CAF0" group="group_accordion_pane1" normalimage="file='images\leftjt01.png' dest='0,0,12,12' padding='0,0,10,0' align='right' valign='vcenter' " switchpanevisible="accordion_pane2" text="Pane2" bkcolor="0xFFA6CAF0" bordercolor="0xFFC0C0C0" bordersize="1" foreimage="file='images\icon0.png' dest='0,0,12,11' padding='10,0,0,0' valign='vcenter' " />
 							<VerticalLayout name="accordion_pane2" childalign="center" childvalign="vcenter" autocalcheight="true" bkcolor="0xFFC0DCC0" animation="scalevertical">
@@ -180,7 +180,7 @@
 						<VerticalLayout>
 							<Option height="30" selectedimage="file='images\leftjt02.png' dest='0,0,12,12' padding='0,0,10,0' align='right' valign='vcenter' " selectedbkcolor="0xFFA6CAF0" group="group_accordion_pane2" normalimage="file='images\leftjt01.png' dest='0,0,12,12' padding='0,0,10,0' align='right' valign='vcenter' " switchpanevisible="accordion_pane4" text="Pane1" bkcolor="0xFFA6CAF0" bordercolor="0xFFC0C0C0" bordersize="1" foreimage="file='images\icon0.png' dest='0,0,12,11' padding='10,0,0,0' valign='vcenter' " />
 							<VerticalLayout name="accordion_pane4" autocalcheight="true" bkcolor="0xFFC0DCC0" animation="scalevertical">
-								<Text text="pane1" align="center" />
+								<Text text="pane1" />
 							</VerticalLayout>
 							<Option height="30" selectedimage="file='images\leftjt02.png' dest='0,0,12,12' padding='0,0,10,0' align='right' valign='vcenter' " selectedbkcolor="0xFFA6CAF0" group="group_accordion_pane2" normalimage="file='images\leftjt01.png' dest='0,0,12,12' padding='0,0,10,0' align='right' valign='vcenter' " switchpanevisible="accordion_pane5" text="Pane2" bkcolor="0xFFA6CAF0" bordercolor="0xFFC0C0C0" bordersize="1" foreimage="file='images\icon0.png' dest='0,0,12,11' padding='10,0,0,0' valign='vcenter' " />
 							<VerticalLayout name="accordion_pane5" childalign="center" childvalign="vcenter" autocalcheight="true" bkcolor="0xFFC0DCC0" animation="scalevertical">
@@ -222,11 +222,11 @@
 					</HorizontalLayout>
 					<HorizontalLayout bkcolor="0xFFFFFFFF">
 						<Container name="pane_3" animation="scalehorizontal" framecount="10" framedelay="10" bkcolor="0xFF800080" resourceid="73" text="左边">
-							<Text text="左边栏" align="center" font="2" resourceid="74" />
+							<Text text="左边栏" font="2" resourceid="74" />
 						</Container>
 						<VerticalLayout>
 							<Container name="pane_1" animation="scalevertical" bkcolor="0xFFC0DCC0">
-								<Text text="上边栏" align="center" font="2" resourceid="75" />
+								<Text text="上边栏" font="2" resourceid="75" />
 							</Container>
 							<VerticalLayout inset="10,10,10,10" childpadding="10" childalign="center" childvalign="vcenter">
 								<Control />
@@ -241,11 +241,11 @@
 								<Control />
 							</VerticalLayout>
 							<Container name="pane_2" animation="scalevertical" childvalign="bottom" bkcolor="0xFF0000FF">
-								<Text text="底边栏" align="center" font="2" resourceid="80" />
+								<Text text="底边栏" font="2" resourceid="80" />
 							</Container>
 						</VerticalLayout>
 						<Container name="pane_4" animation="scalehorizontal" bkcolor="0xFF008080">
-							<Text text="右边栏" align="center" font="2" resourceid="81" />
+							<Text text="右边栏" font="2" resourceid="81" />
 						</Container>
 					</HorizontalLayout>
 					<VerticalLayout bkcolor="0xFFFFFFFF">

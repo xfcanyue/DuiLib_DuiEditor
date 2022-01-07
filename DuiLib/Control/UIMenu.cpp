@@ -359,7 +359,7 @@ namespace DuiLib {
 				}
 			}
 			m_pOwner->m_pWindow = NULL;
-			m_pOwner->m_uButtonState &= ~ UISTATE_PUSHED;
+			m_pOwner->SetPushedState(false);
 			m_pOwner->Invalidate();
 
 			// 内部创建的内部删除
@@ -747,7 +747,7 @@ namespace DuiLib {
 		return CListContainerElementUI::GetInterface(pstrName);
 	}
 
-	bool CMenuElementUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
+	bool CMenuElementUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 	{
 		SIZE m_cxyFixed = CMenuElementUI::m_cxyFixed;
 		m_cxyFixed.cx = GetManager()->GetDPIObj()->Scale(m_cxyFixed.cx);
@@ -761,7 +761,7 @@ namespace DuiLib {
 		if(m_bDrawLine)
 		{
 			RECT rcLine = { m_rcItem.left +  m_rcLinePadding.left, m_rcItem.top + m_cxyFixed.cy/2, m_rcItem.right - m_rcLinePadding.right, m_rcItem.top + m_cxyFixed.cy/2 };
-			CRenderEngine::DrawLine(hDC, rcLine, 1, m_dwLineColor);
+			pRender->DrawLine(rcLine, 1, m_dwLineColor);
 		}
 		else
 		{
@@ -776,13 +776,13 @@ namespace DuiLib {
 			//	}
 			//}
 
-			CRenderClip clip;
-			CRenderClip::GenerateClip(hDC, rcTemp, clip);
-			CMenuElementUI::DrawItemBk(hDC, m_rcItem);
-			DrawItemText(hDC, m_rcItem);
-			DrawItemBorder(hDC, rcTemp);
-			DrawItemIcon(hDC, m_rcItem);
-			DrawItemExpland(hDC, m_rcItem);
+			UIClip clip;
+			clip.GenerateClip(pRender, rcTemp);
+			CMenuElementUI::DrawItemBk(pRender, m_rcItem);
+			DrawItemText(pRender, m_rcItem);
+			DrawItemBorder(pRender, rcTemp);
+			DrawItemIcon(pRender, m_rcItem);
+			DrawItemExpland(pRender, m_rcItem);
 
 			if( m_items.GetSize() > 0 ) {
 				RECT rc = m_rcItem;
@@ -803,13 +803,13 @@ namespace DuiLib {
 						if( !::IntersectRect(&rcTemp, &rcPaint, &pControl->GetPos()) ) continue;
 						if( pControl->IsFloat() ) {
 							if( !::IntersectRect(&rcTemp, &m_rcItem, &pControl->GetPos()) ) continue;
-							if( !pControl->Paint(hDC, rcPaint, pStopControl) ) return false;
+							if( !pControl->Paint(pRender, rcPaint, pStopControl) ) return false;
 						}
 					}
 				}
 				else {
-					CRenderClip childClip;
-					CRenderClip::GenerateClip(hDC, rcTemp, childClip);
+					UIClip childClip;
+					childClip.GenerateClip(pRender, rcTemp);
 					for( int it = 0; it < m_items.GetSize(); it++ ) {
 						CControlUI* pControl = static_cast<CControlUI*>(m_items[it]);
 						if( pControl == pStopControl ) return false;
@@ -818,13 +818,13 @@ namespace DuiLib {
 						if( !::IntersectRect(&rcTemp, &rcPaint, &pControl->GetPos()) ) continue;
 						if( pControl->IsFloat() ) {
 							if( !::IntersectRect(&rcTemp, &m_rcItem, &pControl->GetPos()) ) continue;
-							CRenderClip::UseOldClipBegin(hDC, childClip);
-							if( !pControl->Paint(hDC, rcPaint, pStopControl) ) return false;
-							CRenderClip::UseOldClipEnd(hDC, childClip);
+							childClip.UseOldClipBegin(pRender);
+							if( !pControl->Paint(pRender, rcPaint, pStopControl) ) return false;
+							childClip.UseOldClipEnd(pRender);
 						}
 						else {
 							if( !::IntersectRect(&rcTemp, &rc, &pControl->GetPos()) ) continue;
-							if( !pControl->Paint(hDC, rcPaint, pStopControl) ) return false;
+							if( !pControl->Paint(pRender, rcPaint, pStopControl) ) return false;
 						}
 					}
 				}
@@ -836,7 +836,7 @@ namespace DuiLib {
 			if( m_pVerticalScrollBar == pStopControl ) return false;
 			if (m_pVerticalScrollBar->IsVisible()) {
 				if( ::IntersectRect(&rcTemp, &rcPaint, &m_pVerticalScrollBar->GetPos()) ) {
-					if( !m_pVerticalScrollBar->Paint(hDC, rcPaint, pStopControl) ) return false;
+					if( !m_pVerticalScrollBar->Paint(pRender, rcPaint, pStopControl) ) return false;
 				}
 			}
 		}
@@ -845,14 +845,14 @@ namespace DuiLib {
 			if( m_pHorizontalScrollBar == pStopControl ) return false;
 			if (m_pHorizontalScrollBar->IsVisible()) {
 				if( ::IntersectRect(&rcTemp, &rcPaint, &m_pHorizontalScrollBar->GetPos()) ) {
-					if( !m_pHorizontalScrollBar->Paint(hDC, rcPaint, pStopControl) ) return false;
+					if( !m_pHorizontalScrollBar->Paint(pRender, rcPaint, pStopControl) ) return false;
 				}
 			}
 		}
 		return true;
 	}
 
-	void CMenuElementUI::DrawItemIcon(HDC hDC, const RECT& rcItem)
+	void CMenuElementUI::DrawItemIcon(UIRender *pRender, const RECT& rcItem)
 	{
 		CDuiString strIcon = m_strIcon;
 		if(GetCheckItem())	//如果是复选框
@@ -916,12 +916,12 @@ namespace DuiLib {
 		CDuiString pStrImage;
 		pStrImage.Format(_T("dest='%d,%d,%d,%d'"), rcDest.left, rcDest.top, rcDest.right, rcDest.bottom);
 		//if(IsEnabled())
-			DrawImage(hDC, strIcon, pStrImage);	
+			DrawImage(pRender, strIcon, pStrImage);	
 		//else
 		//	DrawDisableItemIcon(hDC, strIcon, pStrImage);
 	}
 
-	void CMenuElementUI::DrawItemExpland(HDC hDC, const RECT& rcItem)
+	void CMenuElementUI::DrawItemExpland(UIRender *pRender, const RECT& rcItem)
 	{
 		if (m_bShowExplandIcon && IsEnabled())
 		{
@@ -939,25 +939,25 @@ namespace DuiLib {
 			m_cxyFixed.cy = GetManager()->GetDPIObj()->Scale(m_cxyFixed.cy);
 			int padding = GetManager()->GetDPIObj()->Scale(ITEM_DEFAULT_EXPLAND_ICON_WIDTH) / 3;
 			const TDrawInfo* pDrawInfo = GetManager()->GetDrawInfo((LPCTSTR)strExplandIcon, NULL);
-			const TImageInfo *pImageInfo = GetManager()->GetImageEx(pDrawInfo->sImageName, NULL, 0);
+			const UIImage *pImageInfo = GetManager()->GetImageEx(pDrawInfo->sImageName, NULL, 0);
 			if (!pImageInfo) {
 				return;
 			}
 			RECT rcDest =
 			{
-				m_cxyFixed.cx - pImageInfo->nX - padding,
-				(m_cxyFixed.cy - pImageInfo->nY) / 2,
-				m_cxyFixed.cx - pImageInfo->nX - padding + pImageInfo->nX,
-				(m_cxyFixed.cy - pImageInfo->nY) / 2 + pImageInfo->nY
+				m_cxyFixed.cx - pImageInfo->nWidth - padding,
+				(m_cxyFixed.cy - pImageInfo->nHeight) / 2,
+				m_cxyFixed.cx - pImageInfo->nWidth - padding + pImageInfo->nWidth,
+				(m_cxyFixed.cy - pImageInfo->nHeight) / 2 + pImageInfo->nHeight
 			};
 			GetManager()->GetDPIObj()->ScaleBack(&rcDest);
 			CDuiString pStrImage;
 			pStrImage.Format(_T("dest='%d,%d,%d,%d'"), rcDest.left, rcDest.top, rcDest.right, rcDest.bottom);
-			DrawImage(hDC, strExplandIcon, pStrImage);
+			DrawImage(pRender, strExplandIcon, pStrImage);
 		}
 	}
 
-	void CMenuElementUI::DrawItemText(HDC hDC, const RECT& rcItem)
+	void CMenuElementUI::DrawItemText(UIRender *pRender, const RECT& rcItem)
 	{
 		CDuiString sText = GetText();
 		if( sText.IsEmpty() ) return;
@@ -965,7 +965,7 @@ namespace DuiLib {
 		if( m_pOwner == NULL ) return;
 		TListInfoUI* pInfo = m_pOwner->GetListInfo();
 		DWORD iTextColor = pInfo->dwTextColor;
-		if( (m_uButtonState & UISTATE_HOT) != 0 ) {
+		if( IsHotState() ) {
 			iTextColor = pInfo->dwHotTextColor;
 		}
 		if( IsSelected() ) {
@@ -974,25 +974,41 @@ namespace DuiLib {
 		if( !IsEnabled() ) {
 			iTextColor = pInfo->dwDisabledTextColor;
 		}
-		int nLinks = 0;
-		RECT rcText = rcItem;
-		RECT rcTextPadding = pInfo->rcTextPadding;
-		GetManager()->GetDPIObj()->Scale(&rcTextPadding);
-		rcText.left += rcTextPadding.left;
-		rcText.right -= rcTextPadding.right;
-		rcText.top += rcTextPadding.top;
-		rcText.bottom -= rcTextPadding.bottom;
 
-		if( pInfo->bShowHtml )
-			CRenderEngine::DrawHtmlText(hDC, m_pManager, rcText, sText, iTextColor, \
-			NULL, NULL, nLinks, pInfo->nFont, DT_SINGLELINE | pInfo->uTextStyle);
-		else
-			CRenderEngine::DrawText(hDC, m_pManager, rcText, sText, iTextColor, \
+		RECT rcText = rcItem;
+ 		RECT rcTextPadding = pInfo->rcTextPadding;
+ 		GetManager()->GetDPIObj()->Scale(&rcTextPadding);
+// 		rcText.left += rcTextPadding.left;
+// 		rcText.right -= rcTextPadding.right;
+// 		rcText.top += rcTextPadding.top;
+// 		rcText.bottom -= rcTextPadding.bottom;
+		
+		pRender->DrawText(rcText, rcTextPadding, sText, iTextColor, \
 			pInfo->nFont, DT_SINGLELINE | pInfo->uTextStyle);
 	}
 
-	void CMenuElementUI::DrawItemBorder(HDC hDC, const RECT& rcItem)
+	void CMenuElementUI::DrawItemBorder(UIRender *pRender, const RECT& rcItem)
 	{
+		DWORD dwColor = 0;
+
+		if(dwColor == 0 && !IsEnabled() && GetDisableBorderColor() != 0)
+			dwColor = GetDisableBorderColor();
+
+		if(dwColor == 0 && IsFocused() && GetFocusBorderColor() != 0)
+			dwColor = GetFocusBorderColor();
+
+		if(dwColor == 0 && IsHotState() && GetHotBorderColor() != 0)
+			dwColor = GetHotBorderColor();
+
+		if(dwColor == 0) 
+			dwColor = GetBorderColor();
+
+		if(dwColor == 0) 
+			return;
+
+		pRender->DrawBorder(m_rcItem, GetBorderSize(), GetBorderRound(), 
+			GetBorderRectSize(), GetAdjustColor(dwColor), GetBorderStyle());
+		/*
 		int nBorderSize;
 		SIZE cxyBorderRound;
 		RECT rcBorderSize;
@@ -1011,23 +1027,23 @@ namespace DuiLib {
 			//画圆角边框
 			if(nBorderSize > 0 && ( cxyBorderRound.cx > 0 || cxyBorderRound.cy > 0 )) {
 				if (IsFocused() && m_dwFocusBorderColor != 0)
-					CRenderEngine::DrawRoundRect(hDC, rcItem, nBorderSize, cxyBorderRound.cx, cxyBorderRound.cy, GetAdjustColor(m_dwFocusBorderColor), m_nBorderStyle);	
+					pRender->DrawRoundRect(rcItem, nBorderSize, cxyBorderRound.cx, cxyBorderRound.cy, GetAdjustColor(m_dwFocusBorderColor), m_nBorderStyle);	
 				//////////////////////////////////////////////////////////////////////////
 				//add by liqs99
-				else if (IsHot() && m_dwHotBorderColor != 0)
-					CRenderEngine::DrawRoundRect(hDC, rcItem, nBorderSize, cxyBorderRound.cx, cxyBorderRound.cy, GetAdjustColor(m_dwHotBorderColor), m_nBorderStyle);
+				else if (IsHotState() && m_dwHotBorderColor != 0)
+					pRender->DrawRoundRect(rcItem, nBorderSize, cxyBorderRound.cx, cxyBorderRound.cy, GetAdjustColor(m_dwHotBorderColor), m_nBorderStyle);
 				//////////////////////////////////////////////////////////////////////////
 				else
-					CRenderEngine::DrawRoundRect(hDC, rcItem, nBorderSize, cxyBorderRound.cx, cxyBorderRound.cy, GetAdjustColor(m_dwBorderColor), m_nBorderStyle);
+					pRender->DrawRoundRect(rcItem, nBorderSize, cxyBorderRound.cx, cxyBorderRound.cy, GetAdjustColor(m_dwBorderColor), m_nBorderStyle);
 			}
 			else {
 				if (IsFocused() && m_dwFocusBorderColor != 0 && nBorderSize > 0) { 
-					CRenderEngine::DrawRect(hDC, rcItem, nBorderSize, GetAdjustColor(m_dwFocusBorderColor), m_nBorderStyle);
+					pRender->DrawRect(rcItem, nBorderSize, GetAdjustColor(m_dwFocusBorderColor), m_nBorderStyle);
 				}
 				//////////////////////////////////////////////////////////////////////////
 				//add by liqs99
-				else if (IsHot() && m_dwHotBorderColor != 0 && nBorderSize > 0) { 
-					CRenderEngine::DrawRect(hDC, rcItem, nBorderSize, GetAdjustColor(m_dwHotBorderColor), m_nBorderStyle);
+				else if (IsHotState() && m_dwHotBorderColor != 0 && nBorderSize > 0) { 
+					pRender->DrawRect(rcItem, nBorderSize, GetAdjustColor(m_dwHotBorderColor), m_nBorderStyle);
 				}
 				//////////////////////////////////////////////////////////////////////////
 				else if(rcBorderSize.left > 0 || rcBorderSize.top > 0 || rcBorderSize.right > 0 || rcBorderSize.bottom > 0) {
@@ -1036,31 +1052,31 @@ namespace DuiLib {
 					if(rcBorderSize.left > 0){
 						rcBorder		= rcItem;
 						rcBorder.right	= rcBorder.left;
-						CRenderEngine::DrawLine(hDC,rcBorder,rcBorderSize.left,GetAdjustColor(m_dwBorderColor),m_nBorderStyle);
+						pRender->DrawLine(rcBorder,rcBorderSize.left,GetAdjustColor(m_dwBorderColor),m_nBorderStyle);
 					}
 					if(rcBorderSize.top > 0){
 						rcBorder		= rcItem;
 						rcBorder.bottom	= rcBorder.top;
-						CRenderEngine::DrawLine(hDC,rcBorder,rcBorderSize.top,GetAdjustColor(m_dwBorderColor),m_nBorderStyle);
+						pRender->DrawLine(rcBorder,rcBorderSize.top,GetAdjustColor(m_dwBorderColor),m_nBorderStyle);
 					}
 					if(rcBorderSize.right > 0){
 						rcBorder		= rcItem;
 						rcBorder.right -= 1;
 						rcBorder.left	= rcBorder.right;
-						CRenderEngine::DrawLine(hDC,rcBorder,rcBorderSize.right,GetAdjustColor(m_dwBorderColor),m_nBorderStyle);
+						pRender->DrawLine(rcBorder,rcBorderSize.right,GetAdjustColor(m_dwBorderColor),m_nBorderStyle);
 					}
 					if(rcBorderSize.bottom > 0){
 						rcBorder		= rcItem;
 						rcBorder.bottom -= 1;
 						rcBorder.top	= rcBorder.bottom;
-						CRenderEngine::DrawLine(hDC,rcBorder,rcBorderSize.bottom,GetAdjustColor(m_dwBorderColor),m_nBorderStyle);
+						pRender->DrawLine(rcBorder,rcBorderSize.bottom,GetAdjustColor(m_dwBorderColor),m_nBorderStyle);
 					}
 				}
 				else if(nBorderSize > 0) {
-					CRenderEngine::DrawRect(hDC, rcItem, nBorderSize, GetAdjustColor(m_dwBorderColor), m_nBorderStyle);
+					pRender->DrawRect(rcItem, nBorderSize, GetAdjustColor(m_dwBorderColor), m_nBorderStyle);
 				}
 			}
-		}
+		}*/
 	}
 
 	SIZE CMenuElementUI::EstimateSize(SIZE szAvailable)
@@ -1087,7 +1103,7 @@ namespace DuiLib {
 			TListInfoUI* pInfo = m_pOwner->GetListInfo();
 
 			DWORD iTextColor = pInfo->dwTextColor;
-			if( (m_uButtonState & UISTATE_HOT) != 0 ) {
+			if( IsHotState() ) {
 				iTextColor = pInfo->dwHotTextColor;
 			}
 			if( IsSelected() ) {
@@ -1103,13 +1119,9 @@ namespace DuiLib {
 			GetManager()->GetDPIObj()->Scale(&rcTextPadding);
 			rcText.left += rcTextPadding.left;
 			rcText.right -= rcTextPadding.right;
-			if( pInfo->bShowHtml ) {   
-				int nLinks = 0;
-				CRenderEngine::DrawHtmlText(m_pManager->GetPaintDC(), m_pManager, rcText, sText, iTextColor, NULL, NULL, nLinks, pInfo->nFont, DT_CALCRECT | pInfo->uTextStyle);
-			}
-			else {
-				CRenderEngine::DrawText(m_pManager->GetPaintDC(), m_pManager, rcText, sText, iTextColor, pInfo->nFont, DT_CALCRECT | pInfo->uTextStyle);
-			}
+			
+				GetManager()->Render()->DrawText(rcText, pInfo->rcTextPadding, sText, iTextColor, pInfo->nFont, DT_CALCRECT | pInfo->uTextStyle);
+			
 			cXY.cx = rcText.right - rcText.left + rcTextPadding.left + rcTextPadding.right ;
 			cXY.cy = rcText.bottom - rcText.top + rcTextPadding.top + rcTextPadding.bottom;
 		}
@@ -1129,7 +1141,7 @@ namespace DuiLib {
 		{
 			CListContainerElementUI::DoEvent(event);
 			if( m_pWindow ) return;
-			SetHot(true);
+			SetHotState(true);
 			bool hasSubMenu = false;
 			for( int i = 0; i < GetCount(); ++i )
 			{
@@ -1159,7 +1171,7 @@ namespace DuiLib {
 
 
 		if (event.Type == UIEVENT_MOUSELEAVE) {
-			SetHot(false);
+			SetHotState(false);
 			bool hasSubMenu = false;
 			for (int i = 0; i < GetCount(); ++i)
 			{
@@ -1498,9 +1510,9 @@ namespace DuiLib {
 		LRESULT lRet = ::SendMessage(CMenuWnd::GetGlobalContextMenuObserver().GetManager()->GetPaintWindow(), UIMSG_MENU_UPDATE_COMMAND_UI, (WPARAM)&cmdUI, (LPARAM)this);		
 	}
 
-	void CMenuElementUI::DrawDisableItemIcon(HDC hDC, LPCTSTR pStrImage, LPCTSTR pStrModify)
+	void CMenuElementUI::DrawDisableItemIcon(UIRender *pRender, LPCTSTR pStrImage, LPCTSTR pStrModify)
 	{
-		if ((m_pManager == NULL) || (hDC == NULL)) return;
+		if ((m_pManager == NULL) || (pRender->GetDC() == NULL)) return;
 		const TDrawInfo* pDrawInfo = m_pManager->GetDrawInfo(pStrImage, pStrModify);
 
 		CPaintManagerUI *pManager = m_pManager;
@@ -1518,18 +1530,18 @@ namespace DuiLib {
 				rcDest.bottom = rcItem.top + pDrawInfo->rcDest.bottom;
 				if( rcDest.bottom > rcItem.bottom ) rcDest.bottom = rcItem.bottom;
 		}
-		bool bRet = _DrawImageMenuDisableIcon(hDC, pManager, rcItem, rcPaint, pDrawInfo->sImageName, pDrawInfo->sResType, rcDest, \
+		bool bRet = _DrawImageMenuDisableIcon(pRender, pManager, rcItem, rcPaint, pDrawInfo->sImageName, pDrawInfo->sResType, rcDest, \
 			pDrawInfo->rcSource, pDrawInfo->rcCorner, pDrawInfo->dwMask, pDrawInfo->uFade, pDrawInfo->bHole, pDrawInfo->bTiledX, pDrawInfo->bTiledY, pDrawInfo->width, pDrawInfo->height, pDrawInfo->fillcolor, m_instance);
 
 	}
-	bool CMenuElementUI::_DrawImageMenuDisableIcon(HDC hDC, CPaintManagerUI* pManager, const RECT& rc, const RECT& rcPaint, const CDuiString& sImageName, \
+	bool CMenuElementUI::_DrawImageMenuDisableIcon(UIRender *pRender, CPaintManagerUI* pManager, const RECT& rc, const RECT& rcPaint, const CDuiString& sImageName, \
 		const CDuiString& sImageResType, RECT rcItem, RECT rcBmpPart, RECT rcCorner, DWORD dwMask, BYTE bFade, \
 		bool bHole, bool bTiledX, bool bTiledY, int width, int height, DWORD fillcolor, HINSTANCE instance)
 	{
 		if (sImageName.IsEmpty()) {
 			return false;
 		}
-		const TImageInfo* data = NULL;
+		const UIImage* data = NULL;
 		if( sImageResType.IsEmpty() ) {
 			data = pManager->GetImageEx((LPCTSTR)sImageName, NULL, dwMask, width, height, fillcolor, false, instance);
 		}
@@ -1539,17 +1551,17 @@ namespace DuiLib {
 		if( !data ) return false;    
 
 		if( rcBmpPart.left == 0 && rcBmpPart.right == 0 && rcBmpPart.top == 0 && rcBmpPart.bottom == 0 ) {
-			rcBmpPart.right = data->nX;
-			rcBmpPart.bottom = data->nY;
+			rcBmpPart.right = data->nWidth;
+			rcBmpPart.bottom = data->nHeight;
 		}
-		if (rcBmpPart.right > data->nX) rcBmpPart.right = data->nX;
-		if (rcBmpPart.bottom > data->nY) rcBmpPart.bottom = data->nY;
+		if (rcBmpPart.right > data->nWidth) rcBmpPart.right = data->nWidth;
+		if (rcBmpPart.bottom > data->nHeight) rcBmpPart.bottom = data->nHeight;
 
 		RECT rcTemp;
 		if( !::IntersectRect(&rcTemp, &rcItem, &rc) ) return true;
 		if( !::IntersectRect(&rcTemp, &rcItem, &rcPaint) ) return true;
 
-		CRenderEngine::DrawImage(hDC, data->hBitmap, rcItem, rcPaint, rcBmpPart, rcCorner, pManager->IsLayered() ? true : data->bAlpha, bFade, bHole, bTiledX, bTiledY);
+		pRender->DrawBitmap(data->bitmap->GetBitmap(), rcItem, rcPaint, rcBmpPart, rcCorner, pManager->IsLayered() ? true : data->bAlpha, bFade, bHole, bTiledX, bTiledY);
 
 		//需要把data->hBitmap转为灰度图
 //		CRenderEngine::DrawImage(hDC, hbmp, rcItem, rcPaint, rcBmpPart, rcCorner, pManager->IsLayered() ? true : data->bAlpha, bFade, bHole, bTiledX, bTiledY);

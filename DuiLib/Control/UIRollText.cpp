@@ -86,7 +86,7 @@ namespace DuiLib
 		CLabelUI::DoEvent(event);
 	}
 
-	void CRollTextUI::PaintText(HDC hDC)
+	void CRollTextUI::PaintText(UIRender *pRender)
 	{
 		if( m_dwTextColor == 0 ) m_dwTextColor = m_pManager->GetDefaultFontColor();
 		if( m_dwDisabledTextColor == 0 ) m_dwDisabledTextColor = m_pManager->GetDefaultDisabledColor();
@@ -140,12 +140,9 @@ namespace DuiLib
 			}
 		}
 
-		if( m_bShowHtml ) {
-			int nLinks = 0;
-			CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, sText, dwTextColor, NULL, NULL, nLinks, m_iFont, uTextStyle);
-		} else {
-			CRenderEngine::DrawText(hDC, m_pManager, rc, sText, dwTextColor, m_iFont, uTextStyle);
-		}
+		
+		pRender->DrawText(rc, CDuiRect(0,0,0,0), sText, dwTextColor, m_iFont, uTextStyle);
+		
 
 		if(m_nText_W_H == 0)
 		{

@@ -33,7 +33,7 @@ public:
 	{
 		UINT cmdID;
 		CString attrName;
-		TFontInfo *pFontInfo;
+		UIFont *pFontInfo;
 	};
 	std::map<UINT, tagFontMenu *> m_mapFontMenu;
 public:

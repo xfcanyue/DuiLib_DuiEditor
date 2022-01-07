@@ -16,7 +16,7 @@ END_MESSAGE_MAP()
 
 CImageEditorListCtrl::CImageEditorListCtrl()
 {
-	
+	m_pRender = MakeRefPtr<UIRender>(UIGlobal::CreateRenderTarget());
 }
 
 CImageEditorListCtrl::~CImageEditorListCtrl()
@@ -195,11 +195,13 @@ void CImageEditorListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 		CRect rcIcon = rcItem;
 		rcIcon.left += 5;
 		rcIcon.right -= 5;
-		TImageInfo *pImageInfo = GetThumbnail(nItem);
+		UIImage *pImageInfo = GetThumbnail(nItem);
 		if(pImageInfo)
 		{
+			CRect rcPaint(0, 0, rcItem.right, rcItem.bottom);
+
 			CRect rcImage;
-			CRect rcTemp(0, 0, pImageInfo->nX, pImageInfo->nY);
+			CRect rcTemp(0, 0, pImageInfo->GetWidth(), pImageInfo->GetHeight());
 			if( rcTemp.Width() < rcIcon.Width())
 			{
 				CPoint pt = rcItem.CenterPoint();
@@ -224,15 +226,12 @@ void CImageEditorListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 			}
 
 			RECT rcSource = {0};
-			if( rcSource.left == 0 && rcSource.right == 0 && rcSource.top == 0 && rcSource.bottom == 0 ) {
-				rcSource.right = pImageInfo->nX;
-				rcSource.bottom = pImageInfo->nY;
-			}
-			if (rcSource.right > pImageInfo->nX) rcSource.right = pImageInfo->nX;
-			if (rcSource.bottom > pImageInfo->nY) rcSource.bottom = pImageInfo->nY;
-
+			rcSource.right = pImageInfo->GetWidth();
+			rcSource.bottom = pImageInfo->GetHeight();
+			
 			RECT rcCorner = {0};
-			CRenderEngine::DrawImage(pDC->GetSafeHdc(), pImageInfo->hBitmap, rcImage, rcImage, rcSource, rcCorner, pImageInfo->bAlpha, 255, false, false, false);
+			m_pRender->AttachDC(NULL, pDC->m_hDC);
+			m_pRender->DrawBitmap(pImageInfo->bitmap->GetBitmap(), rcImage, rcPaint, rcSource, rcCorner, pImageInfo->bAlpha, 255, false, false, false);
 		}
 		else
 		{
@@ -307,9 +306,9 @@ BOOL CImageEditorListCtrl::InitList()
 	return TRUE;
 }
 
-TImageInfo *CImageEditorListCtrl::GetThumbnail(int nItem)
+UIImage *CImageEditorListCtrl::GetThumbnail(int nItem)
 {
-	std::map<int, TImageInfo *>::iterator it = m_map.find(nItem);
+	std::map<int, UIImage *>::iterator it = m_map.find(nItem);
 	if(it != m_map.end())
 	{
 		return it->second;
@@ -318,22 +317,23 @@ TImageInfo *CImageEditorListCtrl::GetThumbnail(int nItem)
 	{
 		CString strPath;
 		GetItemPath(strPath, nItem);
-		TImageInfo *pImage = CRenderEngine::LoadImage(strPath);
-		if(pImage)
+		UIImage *pImage = UIGlobal::CreateImage();
+		if(pImage->LoadImage(strPath))
 		{
 			m_map[nItem] = pImage;
 			return pImage;
 		}
+		pImage->Release();
 	}
 	return NULL;
 }
 
 void CImageEditorListCtrl::ClearThumbnail()
 {
-	std::map<int, TImageInfo *>::iterator it;
+	std::map<int, UIImage *>::iterator it;
 	for(it=m_map.begin(); it!=m_map.end(); it++)
 	{
-		CRenderEngine::FreeImage(it->second);
+		it->second->Release();
 	}
 	m_map.clear();
 }

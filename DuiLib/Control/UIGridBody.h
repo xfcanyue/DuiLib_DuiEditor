@@ -4,7 +4,7 @@
 namespace DuiLib
 {
 
-class UILIB_API CGridBodyUI : public CVerticalLayoutUI
+class UILIB_API CGridBodyUI : public CContainerUI
 {
 	DECLARE_DUICONTROL(CGridBodyUI)
 public:
@@ -14,24 +14,24 @@ public:
 	void SetOwner(IGridUI *pGrid) { m_pOwner = pGrid; }
 	IGridUI *GetOwner() const { return m_pOwner; }
 
-	LPCTSTR GetClass() const;
-	UINT GetControlFlags() const;
-	LPVOID GetInterface(LPCTSTR pstrName);
+	virtual LPCTSTR GetClass() const override;
+	virtual UINT GetControlFlags() const override;
+	virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-	bool Add(CControlUI* pControl);
-	bool AddAt(CControlUI* pControl, int iIndex);
+	virtual bool Add(CControlUI* pControl) override;
+	virtual bool AddAt(CControlUI* pControl, int iIndex) override;
 
-	virtual void DoInit();
-	virtual void SetPos(RECT rc, bool bNeedInvalidate = true);
-	virtual SIZE EstimateSize(SIZE szAvailable);
-	virtual bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
+	virtual void DoInit() override;
+	virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
+	virtual SIZE EstimateSize(SIZE szAvailable) override;
+	virtual bool DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl) override;
 
-	virtual void LineUp();
-	virtual void LineDown();
-	virtual void PageUp();
-	virtual void PageDown();
-	virtual void HomeUp();
-	virtual void EndDown();
+	virtual void LineUp() override;
+	virtual void LineDown() override;
+	virtual void PageUp() override;
+	virtual void PageDown() override;
+	virtual void HomeUp() override;
+	virtual void EndDown() override;
 
 	void SetCyNeeded(int cyNeeded) { m_nCyNeeded = cyNeeded; }
 	int GetCyNeeded() const { return m_nCyNeeded; }

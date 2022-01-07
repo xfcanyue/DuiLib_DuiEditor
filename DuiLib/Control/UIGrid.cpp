@@ -45,7 +45,7 @@ CGridUI::~CGridUI(void)
 
 LPCTSTR CGridUI::GetClass() const
 {
-	return DUI_CTR_GRID;
+	return _T("GridUI");
 }
 
 UINT CGridUI::GetControlFlags() const
@@ -89,13 +89,29 @@ bool CGridUI::Add(CControlUI* pControl)
 		m_pBody->SetOwner(this);
 		return __super::AddAt(pControl, 1);
 	}
+
+	if(pControl->GetInterface(DUI_CTR_GRIDROW))
+	{
+// 		CGridRowUI *pRow = (CGridRowUI *)pControl;
+// 		int row = InsertRow();
+// 		for (int i=0; i<pRow->GetCount(); i++)
+// 		{
+// 			CControlUI *p = (CControlUI *)pRow->GetItemAt(i);
+// 			if(p->GetInterface(DUI_CTR_GRIDCELL))
+// 			{
+// 				CGridCellUI *pCell = (CGridCellUI *)p;
+// 				TCellData *pData = GetCellData(row,i);
+// 				if(pData)
+// 				{
+// 					pData->SetText(pCell->GetText());
+// 				}
+// 			}
+// 
+// 		}
+		return false;
+	}
+ 	
 	return false;
-// 	if(pControl->GetInterface(DUI_CTR_GRIDROW))
-// 	{
-// 		CGridRowUI *pRow = static_cast<CGridRowUI *>(pControl);
-// 		return m_pBody->Add(pControl);
-// 	}
-// 	
 // 	return __super::Add(pControl);
 }
 
@@ -1020,7 +1036,7 @@ void CGridUI::DoEvent(TEventUI& event)
 			ClearSelectedRows();
 		}
 
-		m_uButtonState |= UISTATE_CAPTURED;
+		SetCaptureState(true);
 
 		if(OnSizeColumnOrRow(event))
 			return;
@@ -1131,8 +1147,8 @@ void CGridUI::DoEvent(TEventUI& event)
 
 	else if( event.Type == UIEVENT_BUTTONUP )
 	{
-		if( (m_uButtonState & UISTATE_CAPTURED) != 0 ) 
-			m_uButtonState &= ~UISTATE_CAPTURED;
+		if( IsCaptureState() ) 
+			SetCaptureState(false);
 
 		if(!m_rcTracker.IsNull())
 		{
@@ -1209,7 +1225,7 @@ void CGridUI::DoEvent(TEventUI& event)
 			m_pHotRow = NULL;
 		}
 
-		if( (m_uButtonState & UISTATE_CAPTURED) != 0)
+		if( IsCaptureState() )
 		{
 			if(m_nSeparatorType == 1 && m_pCellLButtonDown)
 			{
@@ -1727,9 +1743,9 @@ void CGridUI::ProcessScrollBar(RECT rc, int cxRequired, int cyRequired)
 	}
 }
 
-bool CGridUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
+bool CGridUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 {
-	bool bPaint = __super::DoPaint(hDC, rcPaint, pStopControl);
+	bool bPaint = __super::DoPaint(pRender, rcPaint, pStopControl);
 	if(!bPaint) return false;
 
 	//paint merge cells here
@@ -1741,13 +1757,13 @@ bool CGridUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
 			CGridCellUI *pCell = (CGridCellUI *)pRow->GetItemAt(j);
 			if(IsMergedCell(pCell->GetRow(), pCell->GetCol()))
 			{
-				pCell->PaintBkColor(hDC);
-				pCell->PaintBkImage(hDC);
-				pCell->PaintStatusImage(hDC);
-				pCell->PaintForeColor(hDC);
-				pCell->PaintForeImage(hDC);
-				pCell->PaintText(hDC);
-				pCell->PaintBorder(hDC);
+				pCell->PaintBkColor(pRender);
+				pCell->PaintBkImage(pRender);
+				pCell->PaintStatusImage(pRender);
+				pCell->PaintForeColor(pRender);
+				pCell->PaintForeImage(pRender);
+				pCell->PaintText(pRender);
+				pCell->PaintBorder(pRender);
 
 				if(pCell->GetInnerControl())
 				{
@@ -1766,12 +1782,12 @@ bool CGridUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
 						rcItem.top == rcItemNew.top && 
 						rcItem.bottom == rcItemNew.bottom )
 					{
-						pCell->GetInnerControl()->Paint(hDC, rcCell, pStopControl);
+						pCell->GetInnerControl()->Paint(pRender, rcCell, pStopControl);
 					}
 					else
 					{
 						pCell->GetInnerControl()->SetPos(rcItemNew,false);
-						pCell->GetInnerControl()->Paint(hDC, rcCell, pStopControl);
+						pCell->GetInnerControl()->Paint(pRender, rcCell, pStopControl);
 					}			
 				}
 			}
@@ -1787,13 +1803,13 @@ bool CGridUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
 			CGridCellUI *pCell = (CGridCellUI *)pRow->GetItemAt(j);
 			if(IsMergedCell(pCell->GetRow(), pCell->GetCol()))
 			{
-				pCell->PaintBkColor(hDC);
-				pCell->PaintBkImage(hDC);
-				pCell->PaintStatusImage(hDC);
-				pCell->PaintForeColor(hDC);
-				pCell->PaintForeImage(hDC);
-				pCell->PaintText(hDC);
-				pCell->PaintBorder(hDC);
+				pCell->PaintBkColor(pRender);
+				pCell->PaintBkImage(pRender);
+				pCell->PaintStatusImage(pRender);
+				pCell->PaintForeColor(pRender);
+				pCell->PaintForeImage(pRender);
+				pCell->PaintText(pRender);
+				pCell->PaintBorder(pRender);
 			}
 		}
 	}	
@@ -1802,25 +1818,25 @@ bool CGridUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
 	{
 		CDuiRect rcRect = m_rcTracker;
 		rcRect.Normalize();
-		CRenderEngine::DrawRect(hDC, rcRect, 1, GetAdjustColor(GetLineColor()), PS_SOLID);
+		pRender->DrawRect(rcRect, 1, GetAdjustColor(GetLineColor()), PS_SOLID);
 	}
 
 	RECT rcTemp = { 0 };
 	if( m_pVerticalScrollBar != NULL && m_pVerticalScrollBar->IsVisible() ) {
 		if( m_pVerticalScrollBar == pStopControl ) return false;
 		if( ::IntersectRect(&rcTemp, &rcPaint, &m_pVerticalScrollBar->GetPos()) ) {
-			if( !m_pVerticalScrollBar->Paint(hDC, rcPaint, pStopControl) ) return false;
+			if( !m_pVerticalScrollBar->Paint(pRender, rcPaint, pStopControl) ) return false;
 		}
 	}
-	PaintBorder(hDC);
+	PaintBorder(pRender);
 	return bPaint;
 }
 
-void CGridUI::PaintBorder(HDC hDC)
+void CGridUI::PaintBorder(UIRender *pRender)
 {
 	if(GetLineColor() != 0)
 	{
-		CRenderEngine::DrawRect(hDC, m_rcItem, 1, GetAdjustColor(GetLineColor()), PS_SOLID);
+		pRender->DrawRect(m_rcItem, 1, GetAdjustColor(GetLineColor()), PS_SOLID);
 	}
 }
 

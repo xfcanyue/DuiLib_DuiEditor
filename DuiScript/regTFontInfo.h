@@ -14,25 +14,18 @@ namespace DuiLib
 		TEXTMETRIC tm;
 	} TFontInfo;
 	*/
-class regTFontInfo
+class regUIFont
 {
-	DECL_FACTORY(TFontInfo);
+	//DECL_FACTORY(UIFont);
+	static UIFont *UIFont_Ref_Factory() { return UIGlobal::CreateFont(); }
 public:
 	static void Register(asIScriptEngine *engine)
 	{
-		CStringA classname = "TFontInfo";
+		CStringA classname = "UIFont";
 
 		int r = 0;
 		r = engine->RegisterObjectType(classname, 0, asOBJ_REF|asOBJ_NOCOUNT); 
-		REG_FACTORY(TFontInfo);
-		
-		REG_OBJECT_PROPERTY(TFontInfo, HFONT, hFont);
-		REG_OBJECT_PROPERTY(TFontInfo, CDuiString, sFontName);
-		REG_OBJECT_PROPERTY(TFontInfo, int, iSize);
-		REG_OBJECT_PROPERTY(TFontInfo, bool, bBold);
-		REG_OBJECT_PROPERTY(TFontInfo, bool, bUnderline);
-		REG_OBJECT_PROPERTY(TFontInfo, bool, bItalic);
-		//REG_OBJECT_PROPERTY(TFontInfo, TEXTMETRIC, tm);
+		REG_FACTORY(UIFont);
 	}
 };
 

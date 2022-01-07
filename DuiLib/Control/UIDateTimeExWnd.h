@@ -26,6 +26,7 @@ protected:
 	SYSTEMTIME m_oldSysTime;
 	UINT m_uFormatStyle;
 	SYSTEMTIME m_dtTemp;
+	CStdRefPtr<UIFont> m_font;
 };
 
 }

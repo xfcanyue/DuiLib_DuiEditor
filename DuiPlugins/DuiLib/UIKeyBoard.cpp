@@ -15,7 +15,7 @@ CKeyButtonUI::CKeyButtonUI()
 
 LPCTSTR CKeyButtonUI::GetClass() const
 {
-	return _T("KeyButton");
+	return _T("KeyButtonUI");
 }
 
 LPVOID CKeyButtonUI::GetInterface(LPCTSTR pstrName)
@@ -102,56 +102,44 @@ CDuiString CKeyButtonUI::GetText() const
 	return m_ch;
 }
 
-bool CKeyButtonUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
+bool CKeyButtonUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 {
 	if(m_vkCode == VK_CAPITAL)
 	{
 		if(GetOwner()->IsCapsON())
-			m_uButtonState |= UISTATE_SELECTED;
+			SetSelectedState(true);
 		else
-			m_uButtonState &= ~UISTATE_SELECTED;
+			SetSelectedState(false);
 	}
 
 	if(m_vkCode == VK_SHIFT)
 	{
 		if(GetOwner()->IsShiftON())
-			m_uButtonState |= UISTATE_SELECTED;
+			SetSelectedState(true);
 		else
-			m_uButtonState &= ~UISTATE_SELECTED;
+			SetSelectedState(false);
 	}
 
-	return __super::DoPaint(hDC, rcPaint, pStopControl);
+	return __super::DoPaint(pRender, rcPaint, pStopControl);
 }
 
-void CKeyButtonUI::PaintText(HDC hDC)
+void CKeyButtonUI::PaintText(UIRender *pRender)
 {
-	if( IsFocused() ) m_uButtonState |= UISTATE_FOCUSED;
-	else m_uButtonState &= ~ UISTATE_FOCUSED;
-	if( !IsEnabled() ) m_uButtonState |= UISTATE_DISABLED;
-	else m_uButtonState &= ~ UISTATE_DISABLED;
-
 	if( m_dwTextColor == 0 ) m_dwTextColor = m_pManager->GetDefaultFontColor();
 	if( m_dwDisabledTextColor == 0 ) m_dwDisabledTextColor = m_pManager->GetDefaultDisabledColor();
 
 
 	DWORD clrColor = IsEnabled()?m_pKeyBoard->GetKeyTextColor():m_dwDisabledTextColor;
 
-	if( ((m_uButtonState & UISTATE_PUSHED) != 0) && (m_pKeyBoard->GetKeyPushedTextColor() != 0) )
+	if( IsPushedState() && (m_pKeyBoard->GetKeyPushedTextColor() != 0) )
 		clrColor = m_pKeyBoard->GetKeyPushedTextColor();
-	else if( ((m_uButtonState & UISTATE_SELECTED) != 0) && (m_pKeyBoard->GetKeyPushedTextColor() != 0) )
+	else if( IsSelectedState() && (m_pKeyBoard->GetKeyPushedTextColor() != 0) )
 		clrColor = m_pKeyBoard->GetKeyPushedTextColor();
-
-	RECT rcTextPadding = GetTextPadding();
-	GetManager()->GetDPIObj()->Scale(&rcTextPadding);
-	RECT rc = m_rcItem;
-	rc.left += rcTextPadding.left;
-	rc.right -= rcTextPadding.right;
-	rc.top += rcTextPadding.top;
-	rc.bottom -= rcTextPadding.bottom;
 
 	UINT uTextStyle = m_uTextStyle;
 	uTextStyle |= DT_NOPREFIX;
 
+	CDuiRect rc = m_rcItem;
 	if(IsOemKey())
 	{
 		CDuiString sText1 = m_ch;
@@ -160,7 +148,7 @@ void CKeyButtonUI::PaintText(HDC hDC)
 		rc1.right = rc.right;
 		rc1.top = rc.bottom - (rc.bottom - rc.top)/2;
 		rc1.bottom =  rc.bottom;
-		CRenderEngine::DrawText(hDC, m_pManager, rc1, sText1, clrColor, m_pKeyBoard->GetFont(m_vkCode), uTextStyle);
+		pRender->DrawText(rc1, GetTextPadding(), sText1, clrColor, m_pKeyBoard->GetFont(m_vkCode), uTextStyle);
 
 		CDuiString sText2 = m_chShift;
 		RECT rc2;
@@ -168,7 +156,7 @@ void CKeyButtonUI::PaintText(HDC hDC)
 		rc2.right = rc.right;
 		rc2.top = rc.top;
 		rc2.bottom =  rc.bottom - (rc.bottom - rc.top)/2;
-		CRenderEngine::DrawText(hDC, m_pManager, rc2, sText2, clrColor, m_pKeyBoard->GetFont(m_vkCode), uTextStyle);
+		pRender->DrawText(rc2, GetTextPadding(), sText2, clrColor, m_pKeyBoard->GetFont(m_vkCode), uTextStyle);
 
 	}
 	else
@@ -176,78 +164,58 @@ void CKeyButtonUI::PaintText(HDC hDC)
 		CDuiString sText = GetText();
 		if( sText.IsEmpty() ) return;
 
-		CRenderEngine::DrawText(hDC, m_pManager, rc, sText, clrColor, m_pKeyBoard->GetFont(m_vkCode), m_uTextStyle);
+		pRender->DrawText(rc, GetTextPadding(), sText, clrColor, m_pKeyBoard->GetFont(m_vkCode), m_uTextStyle);
 	}
 }
 
-void CKeyButtonUI::PaintBkColor(HDC hDC)
+void CKeyButtonUI::PaintBkColor(UIRender *pRender)
 {
-	if( (m_uButtonState & UISTATE_DISABLED) != 0 ) {
+	if( !IsEnabled() ) {
 		if(m_dwDisabledBkColor != 0) {
-			CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwDisabledBkColor));
+			pRender->DrawColor(m_rcPaint, GetBorderRound(), GetAdjustColor(m_dwDisabledBkColor));
 			return;
 		}
 	}
-	else if( (m_uButtonState & UISTATE_PUSHED) != 0 ) {
+	else if( IsPushedState() ) {
 		if(m_pKeyBoard->GetKeyPushedBkColor() != 0) {
-			CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_pKeyBoard->GetKeyPushedBkColor()));
+			pRender->DrawColor(m_rcPaint, GetBorderRound(), GetAdjustColor(m_pKeyBoard->GetKeyPushedBkColor()));
 			return;
 		}
 	}
-	else if( (m_uButtonState & UISTATE_SELECTED) != 0 ) {
+	else if( IsSelectedState() ) {
 		if(m_pKeyBoard->GetKeyPushedBkColor() != 0) 
 		{
-			CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_pKeyBoard->GetKeyPushedBkColor()));
+			pRender->DrawColor(m_rcPaint, GetBorderRound(), GetAdjustColor(m_pKeyBoard->GetKeyPushedBkColor()));
 			return;
 		}
 	}
 	else {
 		if(m_pKeyBoard->GetKeyBkColor() != 0) {
-			CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_pKeyBoard->GetKeyBkColor()));
+			pRender->DrawColor(m_rcPaint, GetBorderRound(), GetAdjustColor(m_pKeyBoard->GetKeyBkColor()));
 			return;
 		}
 	}
 
-	return CControlUI::PaintBkColor(hDC);
+	return CControlUI::PaintBkColor(pRender);
 }
 
-void CKeyButtonUI::PaintBorder(HDC hDC)
+void CKeyButtonUI::PaintBorder(UIRender *pRender)
 {
 	DWORD dwColor = 0;
 
-	if( (m_uButtonState & UISTATE_PUSHED) != 0 ) 
+	if( IsPushedState() ) 
 		dwColor = m_pKeyBoard->GetKeyPushedBorderColor();
 	else
 		dwColor = m_pKeyBoard->GetKeyBorderColor();
 
 	if(dwColor == 0)	
 	{
-		__super::PaintBorder(hDC);
+		__super::PaintBorder(pRender);
 		return;
 	}
 
-	int nBorderSize;
-	SIZE cxyBorderRound;
-	if (m_pManager) {
-		nBorderSize = GetManager()->GetDPIObj()->Scale(m_pKeyBoard->GetKeyBorderSize());
-		cxyBorderRound = GetManager()->GetDPIObj()->Scale(m_pKeyBoard->GetKeyBorderRound());
-	}
-	else {
-		nBorderSize = m_pKeyBoard->GetKeyBorderSize();
-		cxyBorderRound = m_pKeyBoard->GetKeyBorderRound();
-	}
-
-	if(nBorderSize > 0)
-	{
-		if(cxyBorderRound.cx > 0 || cxyBorderRound.cy > 0 ) 
-		{
-			CRenderEngine::DrawRoundRect(hDC, m_rcItem, nBorderSize, cxyBorderRound.cx, cxyBorderRound.cy, GetAdjustColor(dwColor), m_nBorderStyle);
-		}
-		else
-		{
-			CRenderEngine::DrawRect(hDC, m_rcItem, nBorderSize, GetAdjustColor(dwColor), m_nBorderStyle);
-		}
-	}
+	pRender->DrawBorder(m_rcItem, GetBorderSize(), GetBorderRound(), 
+		GetBorderRectSize(), GetAdjustColor(dwColor), GetBorderStyle());
 }
 //////////////////////////////////////////////////////////////////////////
 IMPLEMENT_DUICONTROL(CKeyBoardUI)
@@ -261,7 +229,6 @@ CKeyBoardUI::CKeyBoardUI(void)
 	m_nKeyPadding = 5;
 	m_nKeyWidth = 80;
 	m_nKeyHeight = 80;
-	m_iFont = -1;
 	m_iFontEnterControl = -1;
 	m_nKeyBorderSize = 1;
 	m_cxKeyBorderRound.cx = 5;
@@ -289,7 +256,7 @@ CKeyBoardUI::~CKeyBoardUI(void)
 
 LPCTSTR CKeyBoardUI::GetClass() const
 {
-	return _T("KeyBoard");
+	return _T("KeyBoardUI");
 }
 
 LPVOID CKeyBoardUI::GetInterface(LPCTSTR pstrName)
@@ -591,7 +558,7 @@ CControlUI* CKeyBoardUI::GetBindFocusControl()
 	{
 		if(pFocus == m_pLine[i]) return m_pFocus;
 	}
-	if(_tcscmp(pFocus->GetClass(), _T("KeyButton")) == 0)
+	if(_tcscmp(pFocus->GetClass(), _T("KeyButtonUI")) == 0)
 		return m_pFocus;
 
 	m_pFocus = pFocus;
@@ -671,12 +638,12 @@ int CKeyBoardUI::GetFont(BYTE vkCode)
 	if(vkCode == VK_RETURN)
 	{
 		if(GetEnterControlFont() <= -1)
-			return GetFont();
+			return CControlUI::GetFont();
 
 		return GetEnterControlFont();
 	}
 	
-	return GetFont();
+	return CControlUI::GetFont();
 }
 
 }

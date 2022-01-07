@@ -23,8 +23,8 @@ bool CXmlDocumentUI::load_string(LPCTSTR pstrXML)
 	if(ret.status != ui_pugi::status_ok)
 	{
 		_root = impxmldoc(_xml_document)->root().internal_object();
-		LSSTRING_CONVERSION;
-		return _Failed(LSUTF82T(ret.description()));
+		UISTRING_CONVERSION;
+		return _Failed(UIUTF82T(ret.description()));
 	}
 	_root = impxmldoc(_xml_document)->root().internal_object();
 	return true;
@@ -32,18 +32,18 @@ bool CXmlDocumentUI::load_string(LPCTSTR pstrXML)
 
 bool CXmlDocumentUI::load_buffer(const void* contents, size_t size)
 {
-	LSSTRING_CONVERSION;
+	UISTRING_CONVERSION;
 #ifdef _UNICODE
 	ui_pugi::xml_parse_result ret = impxmldoc(_xml_document)->load_buffer(contents, size, ui_pugi::parse_full);
 #else
-	LPCTSTR strContent = LSUTF82T(contents);
+	LPCTSTR strContent = UIUTF82T(contents);
 	ui_pugi::xml_parse_result ret = impxmldoc(_xml_document)->load_buffer(strContent, _tcslen(strContent), ui_pugi::parse_full);
 #endif
 	
 	if(ret.status != ui_pugi::status_ok)
 	{
 		_root = impxmldoc(_xml_document)->root().internal_object();
-		return _Failed(LSUTF82T(ret.description()));
+		return _Failed(UIUTF82T(ret.description()));
 	}
 	_root = impxmldoc(_xml_document)->root().internal_object();
 	return true;
@@ -114,13 +114,9 @@ bool CXmlDocumentUI::load_file(LPCTSTR pstrFilename)
 
 	m_sFileName = pstrFilename;
 
-	LPBYTE pByte = NULL;
-	DWORD dwSize = CRenderEngine::LoadImage2Memory(pstrFilename, NULL, pByte);
-	//if(!pByte || dwSize == 0) return false;
-
-	bool ret = load_buffer(pByte, dwSize);
-	if(pByte) { delete []pByte; pByte = NULL; }
-	return ret;
+	CUIFile file;
+	file.LoadFile(pstrFilename);
+	return load_buffer(file.GetData(), file.GetSize());
 }
 
 

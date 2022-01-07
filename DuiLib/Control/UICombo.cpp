@@ -108,7 +108,7 @@ namespace DuiLib {
 	void CComboWnd::OnFinalMessage(HWND hWnd)
 	{
 		m_pOwner->m_pWindow = NULL;
-		m_pOwner->m_uButtonState &= ~ UISTATE_PUSHED;
+		m_pOwner->SetPushedState(false);
 		m_pOwner->Invalidate();
 		delete this;
 	}
@@ -208,7 +208,7 @@ namespace DuiLib {
 			event.wParam = MAKELPARAM(zDelta < 0 ? SB_LINEDOWN : SB_LINEUP, 0);
 			event.lParam = lParam;
 			event.dwTimestamp = ::GetTickCount();
-			if(m_pOwner->GetScrollSelect()) {
+			if(m_pOwner->m_ListInfo.IsScrollSelect()) {
 				m_pOwner->DoEvent(event);
 				EnsureVisible(m_pOwner->GetCurSel());
 				return 0;
@@ -265,37 +265,15 @@ namespace DuiLib {
 	////////////////////////////////////////////////////////
 	IMPLEMENT_DUICONTROL(CComboUI)
 
-	CComboUI::CComboUI() : m_uTextStyle(DT_VCENTER | DT_SINGLELINE)
-		, m_dwTextColor(0)
-		, m_dwDisabledTextColor(0)
-		, m_iFont(-1)
-		, m_bShowHtml(false)
-		, m_pWindow(NULL)
+	CComboUI::CComboUI()
+		: m_pWindow(NULL)
 		, m_iCurSel(-1)
-		, m_bScrollSelect(false)
 	{
+		m_uTextStyle = DT_VCENTER | DT_SINGLELINE;
 		m_szDropBox = CDuiSize(0, 150);
 		::ZeroMemory(&m_rcTextPadding, sizeof(m_rcTextPadding));
 		m_rcTextPadding.left = 5;
 		m_rcTextPadding.right = 5;
-
-		m_ListInfo.nColumns = 0;
-		m_ListInfo.nFont = -1;
-		m_ListInfo.uTextStyle = DT_VCENTER | DT_SINGLELINE;
-		m_ListInfo.dwTextColor = 0xFF000000;
-		m_ListInfo.dwBkColor = 0;
-		m_ListInfo.bAlternateBk = false;
-		m_ListInfo.dwSelectedTextColor = 0xFF000000;
-		m_ListInfo.dwSelectedBkColor = 0xFFC1E3FF;
-		m_ListInfo.dwHotTextColor = 0xFF000000;
-		m_ListInfo.dwHotBkColor = 0xFFE9F5FF;
-		m_ListInfo.dwDisabledTextColor = 0xFFCCCCCC;
-		m_ListInfo.dwDisabledBkColor = 0xFFFFFFFF;
-		m_ListInfo.dwLineColor = 0;
-		m_ListInfo.bShowHtml = false;
-		m_ListInfo.bMultiExpandable = false;
-		::ZeroMemory(&m_ListInfo.rcTextPadding, sizeof(m_ListInfo.rcTextPadding));
-		::ZeroMemory(&m_ListInfo.rcColumn, sizeof(m_ListInfo.rcColumn));
 	}
 
 	LPCTSTR CComboUI::GetClass() const
@@ -374,7 +352,7 @@ namespace DuiLib {
 		//modify by liqs99
 		SetText(pControl->GetText());
 
-		if( m_pManager != NULL ) m_pManager->SendNotify(this, DUI_MSGTYPE_ITEMSELECT, m_iCurSel, iOldSel);
+		if( m_pManager != NULL ) m_pManager->SendNotify(this, DUI_MSGTYPE_ITEMSELECT, m_iCurSel, iOldSel, true);
 		Invalidate();
 
 
@@ -421,7 +399,7 @@ namespace DuiLib {
 		{
 			pListItem->SetOwner(this);
 			pListItem->SetIndex(m_items.GetSize());
-			pListItem->SetAutoCalcWidth(false);
+			pControl->SetAutoCalcWidth(false);
 		}
 		return CContainerUI::Add(pControl);
 	}
@@ -435,7 +413,7 @@ namespace DuiLib {
 		if( pListItem != NULL ) {
 			pListItem->SetOwner(this);
 			pListItem->SetIndex(iIndex);
-			pListItem->SetAutoCalcWidth(false);
+			pControl->SetAutoCalcWidth(false);
 		}
 
 		for(int i = iIndex + 1; i < GetCount(); ++i) {
@@ -518,14 +496,15 @@ namespace DuiLib {
 		{
 			if( IsEnabled() ) {
 				Activate();
-				m_uButtonState |= UISTATE_PUSHED | UISTATE_CAPTURED;
+				SetCaptureState(true);
+				SetPushedState(true);
 			}
 			return;
 		}
 		if( event.Type == UIEVENT_BUTTONUP )
 		{
-			if( (m_uButtonState & UISTATE_CAPTURED) != 0 ) {
-				m_uButtonState &= ~ UISTATE_CAPTURED;
+			if( IsCaptureState() ) {
+				SetCaptureState(false);
 				Invalidate();
 			}
 			return;
@@ -562,7 +541,7 @@ namespace DuiLib {
 		}
 		if( event.Type == UIEVENT_SCROLLWHEEL )
 		{
-			if(GetScrollSelect()) {
+			if(m_ListInfo.IsScrollSelect()) {
 				bool bDownward = LOWORD(event.wParam) == SB_LINEDOWN;
 				SelectItem(FindSelectable(m_iCurSel + (bDownward ? 1 : -1), bDownward));
 			}
@@ -575,16 +554,16 @@ namespace DuiLib {
 		if( event.Type == UIEVENT_MOUSEENTER )
 		{
 			if( ::PtInRect(&m_rcItem, event.ptMouse ) ) {
-				if( (m_uButtonState & UISTATE_HOT) == 0  )
-					m_uButtonState |= UISTATE_HOT;
+				if( !IsHotState()  )
+					SetHotState(true);
 				Invalidate();
 			}
 			return;
 		}
 		if( event.Type == UIEVENT_MOUSELEAVE )
 		{
-			if( (m_uButtonState & UISTATE_HOT) != 0 ) {
-				m_uButtonState &= ~UISTATE_HOT;
+			if( IsHotState() ) {
+				SetHotState(true);
 				Invalidate();
 			}
 			return;
@@ -594,7 +573,7 @@ namespace DuiLib {
 
 	SIZE CComboUI::EstimateSize(SIZE szAvailable)
 	{
-		if( IsAutoCalcHeight() ) return CDuiSize(m_cxyFixed.cx, m_pManager->GetDefaultFontInfo()->tm.tmHeight + 12);
+		if( IsAutoCalcHeight() ) return CDuiSize(m_cxyFixed.cx, m_pManager->GetFontHeight(-1) + 12);
 		return CControlUI::EstimateSize(szAvailable);
 	}
 
@@ -620,12 +599,6 @@ namespace DuiLib {
 // 		return pControl->GetText();
 // 	}
 
-	void CComboUI::SetEnabled(bool bEnable)
-	{
-		CContainerUI::SetEnabled(bEnable);
-		if( !IsEnabled() ) m_uButtonState = 0;
-	}
-
 	CDuiString CComboUI::GetDropBoxAttributeList()
 	{
 		return m_sDropBoxAttributes;
@@ -646,74 +619,6 @@ namespace DuiLib {
 		m_szDropBox = szDropBox;
 	}
 
-	void CComboUI::SetTextStyle(UINT uStyle)
-	{
-		m_uTextStyle = uStyle;
-		Invalidate();
-	}
-
-	UINT CComboUI::GetTextStyle() const
-	{
-		return m_uTextStyle;
-	}
-
-	void CComboUI::SetTextColor(DWORD dwTextColor)
-	{
-		m_dwTextColor = dwTextColor;
-		Invalidate();
-	}
-
-	DWORD CComboUI::GetTextColor() const
-	{
-		return m_dwTextColor;
-	}
-
-	void CComboUI::SetDisabledTextColor(DWORD dwTextColor)
-	{
-		m_dwDisabledTextColor = dwTextColor;
-		Invalidate();
-	}
-
-	DWORD CComboUI::GetDisabledTextColor() const
-	{
-		return m_dwDisabledTextColor;
-	}
-
-	void CComboUI::SetFont(int index)
-	{
-		m_iFont = index;
-		Invalidate();
-	}
-
-	int CComboUI::GetFont() const
-	{
-		return m_iFont;
-	}
-
-	RECT CComboUI::GetTextPadding() const
-	{
-		return m_rcTextPadding;
-	}
-
-	void CComboUI::SetTextPadding(RECT rc)
-	{
-		m_rcTextPadding = rc;
-		Invalidate();
-	}
-
-	bool CComboUI::IsShowHtml()
-	{
-		return m_bShowHtml;
-	}
-
-	void CComboUI::SetShowHtml(bool bShowHtml)
-	{
-		if( m_bShowHtml == bShowHtml ) return;
-
-		m_bShowHtml = bShowHtml;
-		Invalidate();
-	}
-
 	bool CComboUI::IsShowShadow()
 	{
 		return m_bShowShadow;
@@ -724,247 +629,6 @@ namespace DuiLib {
 		if( m_bShowShadow == bShow ) return;
 
 		m_bShowShadow = bShow;
-		Invalidate();
-	}
-
-	LPCTSTR CComboUI::GetNormalImage() const
-	{
-		return m_sNormalImage;
-	}
-
-	void CComboUI::SetNormalImage(LPCTSTR pStrImage)
-	{
-		m_sNormalImage = pStrImage;
-		Invalidate();
-	}
-
-	LPCTSTR CComboUI::GetHotImage() const
-	{
-		return m_sHotImage;
-	}
-
-	void CComboUI::SetHotImage(LPCTSTR pStrImage)
-	{
-		m_sHotImage = pStrImage;
-		Invalidate();
-	}
-
-	LPCTSTR CComboUI::GetPushedImage() const
-	{
-		return m_sPushedImage;
-	}
-
-	void CComboUI::SetPushedImage(LPCTSTR pStrImage)
-	{
-		m_sPushedImage = pStrImage;
-		Invalidate();
-	}
-
-	LPCTSTR CComboUI::GetFocusedImage() const
-	{
-		return m_sFocusedImage;
-	}
-
-	void CComboUI::SetFocusedImage(LPCTSTR pStrImage)
-	{
-		m_sFocusedImage = pStrImage;
-		Invalidate();
-	}
-
-	LPCTSTR CComboUI::GetDisabledImage() const
-	{
-		return m_sDisabledImage;
-	}
-
-	void CComboUI::SetDisabledImage(LPCTSTR pStrImage)
-	{
-		m_sDisabledImage = pStrImage;
-		Invalidate();
-	}
-
-	bool CComboUI::GetScrollSelect()
-	{
-		return m_bScrollSelect;
-	}
-
-	void CComboUI::SetScrollSelect(bool bScrollSelect)
-	{
-		m_bScrollSelect = bScrollSelect;
-	}
-
-	void CComboUI::SetItemFont(int index)
-	{
-		m_ListInfo.nFont = index;
-		Invalidate();
-	}
-
-	void CComboUI::SetItemTextStyle(UINT uStyle)
-	{
-		m_ListInfo.uTextStyle = uStyle;
-		Invalidate();
-	}
-
-	RECT CComboUI::GetItemTextPadding() const
-	{
-		return m_ListInfo.rcTextPadding;
-	}
-
-	void CComboUI::SetItemTextPadding(RECT rc)
-	{
-		m_ListInfo.rcTextPadding = rc;
-		Invalidate();
-	}
-
-	void CComboUI::SetItemTextColor(DWORD dwTextColor)
-	{
-		m_ListInfo.dwTextColor = dwTextColor;
-		Invalidate();
-	}
-
-	void CComboUI::SetItemBkColor(DWORD dwBkColor)
-	{
-		m_ListInfo.dwBkColor = dwBkColor;
-	}
-
-	void CComboUI::SetItemBkImage(LPCTSTR pStrImage)
-	{
-		m_ListInfo.sBkImage = pStrImage;
-	}
-
-	DWORD CComboUI::GetItemTextColor() const
-	{
-		return m_ListInfo.dwTextColor;
-	}
-
-	DWORD CComboUI::GetItemBkColor() const
-	{
-		return m_ListInfo.dwBkColor;
-	}
-
-	LPCTSTR CComboUI::GetItemBkImage() const
-	{
-		return m_ListInfo.sBkImage;
-	}
-
-	bool CComboUI::IsAlternateBk() const
-	{
-		return m_ListInfo.bAlternateBk;
-	}
-
-	void CComboUI::SetAlternateBk(bool bAlternateBk)
-	{
-		m_ListInfo.bAlternateBk = bAlternateBk;
-	}
-
-	void CComboUI::SetSelectedItemTextColor(DWORD dwTextColor)
-	{
-		m_ListInfo.dwSelectedTextColor = dwTextColor;
-	}
-
-	void CComboUI::SetSelectedItemBkColor(DWORD dwBkColor)
-	{
-		m_ListInfo.dwSelectedBkColor = dwBkColor;
-	}
-
-	void CComboUI::SetSelectedItemImage(LPCTSTR pStrImage)
-	{
-		m_ListInfo.sSelectedImage = pStrImage;
-	}
-
-	DWORD CComboUI::GetSelectedItemTextColor() const
-	{
-		return m_ListInfo.dwSelectedTextColor;
-	}
-
-	DWORD CComboUI::GetSelectedItemBkColor() const
-	{
-		return m_ListInfo.dwSelectedBkColor;
-	}
-
-	LPCTSTR CComboUI::GetSelectedItemImage() const
-	{
-		return m_ListInfo.sSelectedImage;
-	}
-
-	void CComboUI::SetHotItemTextColor(DWORD dwTextColor)
-	{
-		m_ListInfo.dwHotTextColor = dwTextColor;
-	}
-
-	void CComboUI::SetHotItemBkColor(DWORD dwBkColor)
-	{
-		m_ListInfo.dwHotBkColor = dwBkColor;
-	}
-
-	void CComboUI::SetHotItemImage(LPCTSTR pStrImage)
-	{
-		m_ListInfo.sHotImage = pStrImage;
-	}
-
-	DWORD CComboUI::GetHotItemTextColor() const
-	{
-		return m_ListInfo.dwHotTextColor;
-	}
-	DWORD CComboUI::GetHotItemBkColor() const
-	{
-		return m_ListInfo.dwHotBkColor;
-	}
-
-	LPCTSTR CComboUI::GetHotItemImage() const
-	{
-		return m_ListInfo.sHotImage;
-	}
-
-	void CComboUI::SetDisabledItemTextColor(DWORD dwTextColor)
-	{
-		m_ListInfo.dwDisabledTextColor = dwTextColor;
-	}
-
-	void CComboUI::SetDisabledItemBkColor(DWORD dwBkColor)
-	{
-		m_ListInfo.dwDisabledBkColor = dwBkColor;
-	}
-
-	void CComboUI::SetDisabledItemImage(LPCTSTR pStrImage)
-	{
-		m_ListInfo.sDisabledImage = pStrImage;
-	}
-
-	DWORD CComboUI::GetDisabledItemTextColor() const
-	{
-		return m_ListInfo.dwDisabledTextColor;
-	}
-
-	DWORD CComboUI::GetDisabledItemBkColor() const
-	{
-		return m_ListInfo.dwDisabledBkColor;
-	}
-
-	LPCTSTR CComboUI::GetDisabledItemImage() const
-	{
-		return m_ListInfo.sDisabledImage;
-	}
-
-	DWORD CComboUI::GetItemLineColor() const
-	{
-		return m_ListInfo.dwLineColor;
-	}
-
-	void CComboUI::SetItemLineColor(DWORD dwLineColor)
-	{
-		m_ListInfo.dwLineColor = dwLineColor;
-	}
-
-	bool CComboUI::IsItemShowHtml()
-	{
-		return m_ListInfo.bShowHtml;
-	}
-
-	void CComboUI::SetItemShowHtml(bool bShowHtml)
-	{
-		if( m_ListInfo.bShowHtml == bShowHtml ) return;
-
-		m_ListInfo.bShowHtml = bShowHtml;
 		Invalidate();
 	}
 
@@ -985,80 +649,13 @@ namespace DuiLib {
 	{
 		CControlUI::Move(szOffset, bNeedInvalidate);
 	}
+
 	void CComboUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
-		if( _tcsicmp(pstrName, _T("align")) == 0 ) {
-			if( _tcsstr(pstrValue, _T("left")) != NULL ) {
-				m_uTextStyle &= ~(DT_CENTER | DT_RIGHT | DT_SINGLELINE);
-				m_uTextStyle |= DT_LEFT;
-			}
-			if( _tcsstr(pstrValue, _T("center")) != NULL ) {
-				m_uTextStyle &= ~(DT_LEFT | DT_RIGHT );
-				m_uTextStyle |= DT_CENTER;
-			}
-			if( _tcsstr(pstrValue, _T("right")) != NULL ) {
-				m_uTextStyle &= ~(DT_LEFT | DT_CENTER | DT_SINGLELINE);
-				m_uTextStyle |= DT_RIGHT;
-			}
-		}
-		else if( _tcsicmp(pstrName, _T("valign")) == 0 ) {
-			if( _tcsstr(pstrValue, _T("top")) != NULL ) {
-				m_uTextStyle &= ~(DT_BOTTOM | DT_VCENTER);
-				m_uTextStyle |= (DT_TOP | DT_SINGLELINE);
-			}
-			if( _tcsstr(pstrValue, _T("vcenter")) != NULL ) {
-				m_uTextStyle &= ~(DT_TOP | DT_BOTTOM );            
-				m_uTextStyle |= (DT_VCENTER | DT_SINGLELINE);
-			}
-			if( _tcsstr(pstrValue, _T("bottom")) != NULL ) {
-				m_uTextStyle &= ~(DT_TOP | DT_VCENTER);
-				m_uTextStyle |= (DT_BOTTOM | DT_SINGLELINE);
-			}
-		}
-		else if( _tcsicmp(pstrName, _T("endellipsis")) == 0 ) {
-			if( _tcsicmp(pstrValue, _T("true")) == 0 ) m_uTextStyle |= DT_END_ELLIPSIS;
-			else m_uTextStyle &= ~DT_END_ELLIPSIS;
-		}   
-		else if( _tcsicmp(pstrName, _T("wordbreak")) == 0 ) {
-			if( _tcsicmp(pstrValue, _T("true")) == 0 ) {
-				m_uTextStyle &= ~DT_SINGLELINE;
-				m_uTextStyle |= DT_WORDBREAK | DT_EDITCONTROL;
-			}
-			else {
-				m_uTextStyle &= ~DT_WORDBREAK & ~DT_EDITCONTROL;
-				m_uTextStyle |= DT_SINGLELINE;
-			}
-		}    
-		else if( _tcsicmp(pstrName, _T("font")) == 0 ) SetFont(_ttoi(pstrValue));
-		else if( _tcsicmp(pstrName, _T("textcolor")) == 0 ) {
-			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
-			LPTSTR pstr = NULL;
-			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
-			SetTextColor(clrColor);
-		}
-		else if( _tcsicmp(pstrName, _T("disabledtextcolor")) == 0 ) {
-			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
-			LPTSTR pstr = NULL;
-			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
-			SetDisabledTextColor(clrColor);
-		}
-		else if( _tcsicmp(pstrName, _T("textpadding")) == 0 ) {
-			RECT rcTextPadding = { 0 };
-			LPTSTR pstr = NULL;
-			rcTextPadding.left = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
-			rcTextPadding.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
-			rcTextPadding.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);    
-			rcTextPadding.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);    
-			SetTextPadding(rcTextPadding);
-		}
-		else if( _tcsicmp(pstrName, _T("showhtml")) == 0 ) SetShowHtml(_tcsicmp(pstrValue, _T("true")) == 0);
-		else if( _tcsicmp(pstrName, _T("showshadow")) == 0 ) SetShowShadow(_tcsicmp(pstrValue, _T("true")) == 0);
-		else if( _tcsicmp(pstrName, _T("normalimage")) == 0 ) SetNormalImage(pstrValue);
-		else if( _tcsicmp(pstrName, _T("hotimage")) == 0 ) SetHotImage(pstrValue);
-		else if( _tcsicmp(pstrName, _T("pushedimage")) == 0 ) SetPushedImage(pstrValue);
-		else if( _tcsicmp(pstrName, _T("focusedimage")) == 0 ) SetFocusedImage(pstrValue);
-		else if( _tcsicmp(pstrName, _T("disabledimage")) == 0 ) SetDisabledImage(pstrValue);
-		else if( _tcsicmp(pstrName, _T("scrollselect")) == 0 ) SetScrollSelect(_tcsicmp(pstrValue, _T("true")) == 0);
+		if(m_ListInfo.SetAttribute(pstrName, pstrValue)) 
+			return;
+
+		if( _tcsicmp(pstrName, _T("showshadow")) == 0 ) SetShowShadow(_tcsicmp(pstrValue, _T("true")) == 0);
 		else if( _tcsicmp(pstrName, _T("dropbox")) == 0 ) SetDropBoxAttributeList(pstrValue);
 		else if( _tcsicmp(pstrName, _T("dropboxsize")) == 0)
 		{
@@ -1068,180 +665,7 @@ namespace DuiLib {
 			szDropBoxSize.cy = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
 			SetDropBoxSize(szDropBoxSize);
 		}
-		else if( _tcsicmp(pstrName, _T("itemfont")) == 0 ) SetItemFont(_ttoi(pstrValue));
-		else if( _tcsicmp(pstrName, _T("itemalign")) == 0 ) {
-			if( _tcsstr(pstrValue, _T("left")) != NULL ) {
-				m_ListInfo.uTextStyle &= ~(DT_CENTER | DT_RIGHT);
-				m_ListInfo.uTextStyle |= DT_LEFT;
-			}
-			if( _tcsstr(pstrValue, _T("center")) != NULL ) {
-				m_ListInfo.uTextStyle &= ~(DT_LEFT | DT_RIGHT);
-				m_ListInfo.uTextStyle |= DT_CENTER;
-			}
-			if( _tcsstr(pstrValue, _T("right")) != NULL ) {
-				m_ListInfo.uTextStyle &= ~(DT_LEFT | DT_CENTER);
-				m_ListInfo.uTextStyle |= DT_RIGHT;
-			}
-		}
-		else if( _tcsicmp(pstrName, _T("itemvalign")) == 0 ) {
-			if( _tcsstr(pstrValue, _T("top")) != NULL ) {
-				m_ListInfo.uTextStyle &= ~(DT_VCENTER | DT_BOTTOM);
-				m_ListInfo.uTextStyle |= DT_TOP;
-			}
-			if( _tcsstr(pstrValue, _T("vcenter")) != NULL ) {
-				m_ListInfo.uTextStyle &= ~(DT_TOP | DT_BOTTOM | DT_WORDBREAK);
-				m_ListInfo.uTextStyle |= DT_VCENTER | DT_SINGLELINE;
-			}
-			if( _tcsstr(pstrValue, _T("bottom")) != NULL ) {
-				m_ListInfo.uTextStyle &= ~(DT_TOP | DT_VCENTER);
-				m_ListInfo.uTextStyle |= DT_BOTTOM;
-			}
-		}
-		else if( _tcsicmp(pstrName, _T("itemendellipsis")) == 0 ) {
-			if( _tcsicmp(pstrValue, _T("true")) == 0 ) m_ListInfo.uTextStyle |= DT_END_ELLIPSIS;
-			else m_ListInfo.uTextStyle &= ~DT_END_ELLIPSIS;
-		}   
-		else if( _tcsicmp(pstrName, _T("itemtextpadding")) == 0 ) {
-			RECT rcTextPadding = { 0 };
-			LPTSTR pstr = NULL;
-			rcTextPadding.left = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
-			rcTextPadding.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
-			rcTextPadding.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);    
-			rcTextPadding.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);    
-			SetItemTextPadding(rcTextPadding);
-		}
-		else if( _tcsicmp(pstrName, _T("itemtextcolor")) == 0 ) {
-			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
-			LPTSTR pstr = NULL;
-			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
-			SetItemTextColor(clrColor);
-		}
-		else if( _tcsicmp(pstrName, _T("itembkcolor")) == 0 ) {
-			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
-			LPTSTR pstr = NULL;
-			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
-			SetItemBkColor(clrColor);
-		}
-		else if( _tcsicmp(pstrName, _T("itembkimage")) == 0 ) SetItemBkImage(pstrValue);
-		else if( _tcsicmp(pstrName, _T("itemaltbk")) == 0 ) SetAlternateBk(_tcsicmp(pstrValue, _T("true")) == 0);
-		else if( _tcsicmp(pstrName, _T("itemselectedtextcolor")) == 0 ) {
-			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
-			LPTSTR pstr = NULL;
-			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
-			SetSelectedItemTextColor(clrColor);
-		}
-		else if( _tcsicmp(pstrName, _T("itemselectedbkcolor")) == 0 ) {
-			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
-			LPTSTR pstr = NULL;
-			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
-			SetSelectedItemBkColor(clrColor);
-		}
-		else if( _tcsicmp(pstrName, _T("itemselectedimage")) == 0 ) SetSelectedItemImage(pstrValue);
-		else if( _tcsicmp(pstrName, _T("itemhottextcolor")) == 0 ) {
-			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
-			LPTSTR pstr = NULL;
-			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
-			SetHotItemTextColor(clrColor);
-		}
-		else if( _tcsicmp(pstrName, _T("itemhotbkcolor")) == 0 ) {
-			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
-			LPTSTR pstr = NULL;
-			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
-			SetHotItemBkColor(clrColor);
-		}
-		else if( _tcsicmp(pstrName, _T("itemhotimage")) == 0 ) SetHotItemImage(pstrValue);
-		else if( _tcsicmp(pstrName, _T("itemdisabledtextcolor")) == 0 ) {
-			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
-			LPTSTR pstr = NULL;
-			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
-			SetDisabledItemTextColor(clrColor);
-		}
-		else if( _tcsicmp(pstrName, _T("itemdisabledbkcolor")) == 0 ) {
-			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
-			LPTSTR pstr = NULL;
-			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
-			SetDisabledItemBkColor(clrColor);
-		}
-		else if( _tcsicmp(pstrName, _T("itemdisabledimage")) == 0 ) SetDisabledItemImage(pstrValue);
-		else if( _tcsicmp(pstrName, _T("itemlinecolor")) == 0 ) {
-			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
-			LPTSTR pstr = NULL;
-			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
-			SetItemLineColor(clrColor);
-		}
-		else if( _tcsicmp(pstrName, _T("itemshowhtml")) == 0 ) SetItemShowHtml(_tcsicmp(pstrValue, _T("true")) == 0);
-		else CContainerUI::SetAttribute(pstrName, pstrValue);
-	}
-
-	bool CComboUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
-	{
-		return CControlUI::DoPaint(hDC, rcPaint, pStopControl);
-	}
-
-	void CComboUI::PaintStatusImage(HDC hDC)
-	{
-		if( IsFocused() ) m_uButtonState |= UISTATE_FOCUSED;
-		else m_uButtonState &= ~ UISTATE_FOCUSED;
-		if( !IsEnabled() ) m_uButtonState |= UISTATE_DISABLED;
-		else m_uButtonState &= ~ UISTATE_DISABLED;
-
-		if( (m_uButtonState & UISTATE_DISABLED) != 0 ) {
-			if( !m_sDisabledImage.IsEmpty() ) {
-				if( !DrawImage(hDC, (LPCTSTR)m_sDisabledImage) ) {}
-				else return;
-			}
-		}
-		else if( (m_uButtonState & UISTATE_PUSHED) != 0 ) {
-			if( !m_sPushedImage.IsEmpty() ) {
-				if( !DrawImage(hDC, (LPCTSTR)m_sPushedImage) ) {}
-				else return;
-			}
-		}
-		else if( (m_uButtonState & UISTATE_HOT) != 0 ) {
-			if( !m_sHotImage.IsEmpty() ) {
-				if( !DrawImage(hDC, (LPCTSTR)m_sHotImage) ) {}
-				else return;
-			}
-		}
-		else if( (m_uButtonState & UISTATE_FOCUSED) != 0 ) {
-			if( !m_sFocusedImage.IsEmpty() ) {
-				if( !DrawImage(hDC, (LPCTSTR)m_sFocusedImage) ) {}
-				else return;
-			}
-		}
-
-		if( !m_sNormalImage.IsEmpty() ) {
-			if( !DrawImage(hDC, (LPCTSTR)m_sNormalImage) ) {}
-			else return;
-		}
-	}
-
-	void CComboUI::PaintText(HDC hDC)
-	{
-		if( m_dwTextColor == 0 ) m_dwTextColor = m_pManager->GetDefaultFontColor();
-		if( m_dwDisabledTextColor == 0 ) m_dwDisabledTextColor = m_pManager->GetDefaultDisabledColor();
-
-		RECT rc = m_rcItem;
-		rc.left += m_rcTextPadding.left;
-		rc.right -= m_rcTextPadding.right;
-		rc.top += m_rcTextPadding.top;
-		rc.bottom -= m_rcTextPadding.bottom;
-
-		CDuiString sText = GetText();
-		if( sText.IsEmpty() ) return;
-		int nLinks = 0;
-		if( IsEnabled() ) {
-			if( m_bShowHtml )
-				CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, sText, m_dwTextColor, NULL, NULL, nLinks, m_iFont, m_uTextStyle);
-			else
-				CRenderEngine::DrawText(hDC, m_pManager, rc, sText, m_dwTextColor, m_iFont, m_uTextStyle);
-		}
-		else {
-			if( m_bShowHtml )
-				CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, sText, m_dwDisabledTextColor, NULL, NULL, nLinks, m_iFont, m_uTextStyle);
-			else
-				CRenderEngine::DrawText(hDC, m_pManager, rc, sText, m_dwDisabledTextColor, m_iFont, m_uTextStyle);
-		}
+		else __super::SetAttribute(pstrName, pstrValue);
 	}
 
 } // namespace DuiLib

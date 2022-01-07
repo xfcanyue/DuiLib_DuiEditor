@@ -48,21 +48,6 @@
 #endif
 
 
-///////////////////////////////////////////////////////////////////////////
-//添加MFC支持
-//////////////////////////////////////////////////////////////////////////
-
-// #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS      // 某些 CString 构造函数将是显式的
-// 
-// #define VC_EXTRALEAN
-// #include <afxwin.h>         // MFC 核心组件和标准组件
-// #include <afxext.h>         // MFC 扩展
-// #include <afxdisp.h>        // MFC 自动化类
-// 
-// #ifndef _AFX_NO_AFXCMN_SUPPORT
-// #include <afxcmn.h>
-// // MFC 对 Windows 公共控件的支持
-// #endif // _AFX_NO_AFXCMN_SUPPORT
 
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
@@ -87,13 +72,112 @@
 #define CLAMP(x,a,b) (MIN(b,MAX(a,x)))
 
 //////////////////////////////////////////////////////////////////////////
-#include "Utils/LsStringConverter.h"
 
 #define PUGIXML_HEADER_ONLY
 #ifdef _UNICODE
 #define PUGIXML_WCHAR_MODE
 #endif
 #include "Utils/pugixml/pugixml.hpp"
+
+
+
+
+///////////////////////////////////////////////////////////////////////////
+//
+//
+/*
+inline bool sIsFocused(UINT uState)
+{
+	return (uState & UISTATE_FOCUSED) == UISTATE_FOCUSED;
+}
+
+inline void sSetFocused(UINT &uState, bool bTrue)
+{
+	if(bTrue)
+		uState |= UISTATE_FOCUSED;
+	else
+		uState &= ~UISTATE_FOCUSED;
+}
+
+inline bool sIsSelected(UINT uState)
+{
+	return (uState & UISTATE_SELECTED) == UISTATE_SELECTED;
+}
+
+inline void sSetSelected(UINT &uState, bool bTrue)
+{
+	if(bTrue)
+		uState |= UISTATE_SELECTED;
+	else
+		uState &= ~UISTATE_SELECTED;
+}
+
+inline bool sIsDisable(UINT uState)
+{
+	return (uState & UISTATE_DISABLED) == UISTATE_DISABLED;
+}
+
+inline void sSetDisable(UINT &uState, bool bTrue)
+{
+	if(bTrue)
+		uState |= UISTATE_DISABLED;
+	else
+		uState &= ~UISTATE_DISABLED;
+}
+
+inline bool sIsHot(UINT uState)
+{
+	return (uState & UISTATE_HOT) == UISTATE_HOT;
+}
+
+inline void sSetHot(UINT &uState, bool bTrue)
+{
+	if(bTrue)
+		uState |= UISTATE_HOT;
+	else
+		uState &= ~UISTATE_HOT;
+}
+
+inline bool sIsPushed(UINT uState)
+{
+	return (uState & UISTATE_PUSHED) == UISTATE_PUSHED;
+}
+
+inline void sSetPushed(UINT &uState, bool bTrue)
+{
+	if(bTrue)
+		uState |= UISTATE_PUSHED;
+	else
+		uState &= ~UISTATE_PUSHED;
+}
+
+inline bool sIsReadonly(UINT uState)
+{
+	return (uState & UISTATE_READONLY) == UISTATE_READONLY;
+}
+
+inline void sSetReadonly(UINT &uState, bool bTrue)
+{
+	if(bTrue)
+		uState |= UISTATE_READONLY;
+	else
+		uState &= ~UISTATE_READONLY;
+}
+
+inline bool sIsCaptured(UINT uState)
+{
+	return (uState & UISTATE_CAPTURED) == UISTATE_CAPTURED;
+}
+
+inline void sSetCaptured(UINT &uState, bool bTrue)
+{
+	if(bTrue)
+		uState |= UISTATE_CAPTURED;
+	else
+		uState &= ~UISTATE_CAPTURED;
+}
+*/
+
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 

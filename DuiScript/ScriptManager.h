@@ -23,7 +23,7 @@ public:
 	virtual bool ExecuteScript(void *pFun, CControlUI *pControl);
 	virtual bool ExecuteScript(void *pFun, CControlUI *pControl, TEventUI *ev);
 	virtual bool ExecuteScript(void *pFun, CControlUI *pControl, TNotifyUI *pMsg);
-	virtual bool ExecuteScript(void *pFun, CControlUI *pControl, HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
+	virtual bool ExecuteScript(void *pFun, CControlUI *pControl, UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl);
 
 	asIScriptEngine *GetEngine() const { return engine; }
 protected:

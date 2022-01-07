@@ -95,7 +95,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	afxGlobalData.fontRegular.GetLogFont(&lf);   
 	afxGlobalData.fontRegular.DeleteObject();   
 	lf.lfHeight =-13;   
-	lstrcpy(lf.lfFaceName, FontFaceName);     // using without style office 2007   
+	lstrcpy(lf.lfFaceName, FontFaceName); 
 	afxGlobalData.fontRegular.CreateFontIndirect(&lf);  
 
 	//设置加粗的字体 

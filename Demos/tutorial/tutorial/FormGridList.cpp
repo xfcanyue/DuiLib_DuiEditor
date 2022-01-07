@@ -26,7 +26,7 @@ void CFormGridList::InitWindow()
 	m_pGrid->SetCellType(8, celltypeContainer);
 	m_pGrid->SetCellType(9, celltypePicture);
 
-	m_pGrid->SetRowCount(1 * 20000);
+	m_pGrid->SetRowCount(1 * 1000);
 	for (int i=m_pGrid->GetFixedRowCount(); i<m_pGrid->GetRowCount(); i++)
 	{
 		for (int j=1; j<m_pGrid->GetColumnCount(); j++)
@@ -39,7 +39,7 @@ void CFormGridList::InitWindow()
 
 	m_pGrid->SetColumnSort(1, FALSE);
 	m_pGrid->SetVirtualGrid(TRUE);
-	m_pGrid->SetRowCount(10 * 10000);
+	m_pGrid->SetRowCount(1 * 1000);
 }
 
 void CFormGridList::OnNotifyClick(TNotifyUI& msg)

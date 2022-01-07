@@ -20,8 +20,11 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CStaticImageView m_staPicture;
+	CImage m_img;
+	CStatic m_staPicture;
+
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedOk();
 	CString m_strTemplateName;
+	afx_msg void OnPaint();
 };

@@ -18,6 +18,7 @@
 CUIWindowDesignView::CUIWindowDesignView()
 {
 	m_pDragToControl = NULL;
+	m_pRender = MakeRefPtr<UIRender>(UIGlobal::CreateRenderTarget());
 }
 
 CUIWindowDesignView::~CUIWindowDesignView()
@@ -583,17 +584,19 @@ LRESULT CUIWindowDesignView::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 	HDC hDC = ::GetDC(m_hWnd);
 	CDC *pDC = CDC::FromHandle(hDC);
 
+	m_pRender->AttachDC(NULL, hDC);
+
 	m_tracker.Draw(pDC, NULL);
 
 	//当拖动控件时，显示当前位置的控件
 	if(m_pDragToControl != NULL)
 	{
-		CRenderEngine::DrawRect(hDC, m_pDragToControl->GetPos(), 2, UIRGB(255,0,0));
+		m_pRender->DrawRect(m_pDragToControl->GetPos(), 2, UIRGB(255,0,0));
 	}
 
 	if(!m_rcHot.IsRectEmpty())
 	{
-		CRenderEngine::DrawRect(hDC, m_rcHot, 2, UIRGB(255,0,0));
+		m_pRender->DrawRect(m_rcHot, 2, UIRGB(255,0,0));
 	}
 
 	CRect rectClient;

@@ -30,6 +30,8 @@ CImageEditorImagePreview::CImageEditorImagePreview()
 	m_tracker.m_nStyle |= CRectTracker::resizeOutside;
 
 	m_zoom = 1;
+
+	m_pRender = MakeRefPtr<UIRender>(UIGlobal::CreateRenderTarget());
 }
 
 CImageEditorImagePreview::~CImageEditorImagePreview()
@@ -207,6 +209,7 @@ void CImageEditorImagePreview::OnChangeRect()
 void CImageEditorImagePreview::OnDraw(CDC* pDC)
 {
 	CMemDCEx memDC(pDC);
+	m_pRender->AttachDC(NULL, memDC->m_hDC);
 
 	CRect rcClient;
 	GetClientRect(&rcClient);
@@ -219,7 +222,7 @@ void CImageEditorImagePreview::OnDraw(CDC* pDC)
 	
 	if(g_pEditorImage->m_pFrame->m_bTrackSource)
 	{
-		TImageInfo *pImageInfo = (TImageInfo *)g_pEditorImage->m_imageFrames.GetAt(0);
+		UIImage *pImageInfo = (UIImage *)g_pEditorImage->m_imageFrames.GetAt(0);
 		if(pImageInfo)
 		{
 			CDuiRect rcSource = m_rcSource;
@@ -228,14 +231,16 @@ void CImageEditorImagePreview::OnDraw(CDC* pDC)
 				rcSource.right = m_rcImage.Width();
 				rcSource.bottom = m_rcImage.Height();
 			}
-			CRenderEngine::DrawImage(memDC->m_hDC, pImageInfo->hBitmap, m_rcImage, m_rcImage, rcSource, CDuiRect(0,0,0,0), pImageInfo->bAlpha);	
+			m_pRender->DrawBitmap(pImageInfo->bitmap->GetBitmap(), m_rcImage, m_rcImage, rcSource, CDuiRect(0,0,0,0), pImageInfo->bAlpha);	
 		}
 	}
 	else
 	{
-		TImageInfo *pImageInfo = (TImageInfo *)g_pEditorImage->m_imageFrames.GetAt(0);
+		UIImage *pImageInfo = (UIImage *)g_pEditorImage->m_imageFrames.GetAt(0);
 		if(pImageInfo)
-			CRenderEngine::DrawImage(memDC->m_hDC, pImageInfo->hBitmap, m_rcImage, m_rcImage, m_rcSource, CDuiRect(0,0,0,0), pImageInfo->bAlpha);
+		{
+			m_pRender->DrawBitmap(pImageInfo->bitmap->GetBitmap(), m_rcImage, m_rcImage, m_rcSource, CDuiRect(0,0,0,0), pImageInfo->bAlpha);
+		}
 	}
 	
 	m_tracker.Draw(&memDC);

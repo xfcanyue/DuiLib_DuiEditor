@@ -27,6 +27,7 @@ public:
 	void OnFinalMessage(HWND hWnd)
 	{
 		m_pOwner->m_pWindow = NULL;
+		__super::OnFinalMessage(hWnd);
 		delete this;
 	}
 
@@ -44,15 +45,27 @@ public:
 			RECT rc = m_pOwner->GetPos();
 			PAINTSTRUCT ps = { 0 };
 			::BeginPaint(m_hWnd, &ps);
+
+			RECT rcPaint;
+			::GetClientRect(m_hWnd, &rcPaint);
+
+			m_pm.Render()->Resize(rcPaint);
 			if(m_pOwner->GetBkColor() == 0)
-				CRenderEngine::DrawColor(m_pm.GetPaintDC(), ps.rcPaint, 0xFF000000);
+				m_pm.Render()->DrawColor(ps.rcPaint, CDuiSize(0,0), 0xFF000000);
 			else
-				CRenderEngine::DrawColor(m_pm.GetPaintDC(), ps.rcPaint, m_pOwner->GetBkColor());
+				m_pm.Render()->DrawColor(ps.rcPaint, CDuiSize(0,0), m_pOwner->GetBkColor());
+			::BitBlt(ps.hdc, rcPaint.left, rcPaint.top, rcPaint.right - rcPaint.left, rcPaint.bottom - rcPaint.top, m_pm.Render()->GetDC(), rcPaint.left, rcPaint.top, SRCCOPY);
+
 			::EndPaint(m_hWnd, &ps);
 		}
 		else if( uMsg == WM_SIZE)
 		{
 			m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_WINDOWSIZE, 0, 0);
+		}
+		else if( uMsg == WM_CLOSE)
+		{
+			::DestroyWindow(m_hWnd);
+			bHandled = TRUE;
 		}
 
 		if( !bHandled ) 
@@ -79,7 +92,7 @@ CChildWindowUI::CChildWindowUI(void) : m_pWindow(NULL)
 
 CChildWindowUI::~CChildWindowUI(void)
 {	
-	
+	//DestroyWnd();
 }
 
 void CChildWindowUI::DoInit()
@@ -107,7 +120,7 @@ void CChildWindowUI::SetInternVisible(bool bVisible)
 
 LPCTSTR CChildWindowUI::GetClass() const
 {
-	return DUI_CTR_CHILDWINDOW;
+	return _T("ChildWindowUI");
 }
 
 LPVOID CChildWindowUI::GetInterface(LPCTSTR pstrName)
@@ -167,7 +180,7 @@ void CChildWindowUI::DestroyWnd()
 {
 	if(m_pWindow)
 	{
-		delete m_pWindow;
+		m_pWindow->Close();
 		m_pWindow = NULL;
 	}
 }
@@ -181,12 +194,6 @@ void CChildWindowUI::RefreshWindow()
 {
 	if(m_pWindow)
 		::InvalidateRect(m_pWindow->GetHWND(), NULL, TRUE);
-}
-
-HDC CChildWindowUI::GetWndDC() const
-{
-	if(!m_pWindow) return NULL;
-	return ((CChildWnd *)m_pWindow)->m_pm.GetPaintDC();
 }
 
 }

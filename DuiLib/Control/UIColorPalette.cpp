@@ -258,7 +258,7 @@ namespace DuiLib {
 				m_nCurH = x;
 				m_nCurB = 200 - y;
 
-				m_uButtonState |= UISTATE_PUSHED;
+				SetPushedState(true);
 				m_bIsInPallet = true;
 				m_bIsInBar = false;
 
@@ -269,7 +269,7 @@ namespace DuiLib {
 				event.ptMouse.x < m_rcItem.right && event.ptMouse.y < m_rcItem.bottom)
 			{
 				m_nCurS = (event.ptMouse.x - m_rcItem.left) * 200 / (m_rcItem.right - m_rcItem.left);
-				m_uButtonState |= UISTATE_PUSHED;
+				SetPushedState(true);
 				m_bIsInBar = true;
 				m_bIsInPallet = false;
 				UpdatePalletData();
@@ -281,13 +281,13 @@ namespace DuiLib {
 		if (event.Type == UIEVENT_BUTTONUP)
 		{
 			DWORD color=0;
-			if ((m_uButtonState | UISTATE_PUSHED) && (IsEnabled()))
+			if ( IsPushedState() && (IsEnabled()))
 			{
 				color = GetSelectColor();
 				m_pManager->SendNotify(this, DUI_MSGTYPE_COLORCHANGED, color, 0);
 			}
 
-			m_uButtonState &= ~UISTATE_PUSHED;
+			SetPushedState(false);
 			m_bIsInPallet = false;
 			m_bIsInBar = false;
 
@@ -296,7 +296,7 @@ namespace DuiLib {
 		}
 		if (event.Type == UIEVENT_MOUSEMOVE)
 		{
-			if (!(m_uButtonState &UISTATE_PUSHED))
+			if (!IsPushedState())
 			{
 				m_bIsInBar = false;
 				m_bIsInPallet = false;
@@ -339,13 +339,14 @@ namespace DuiLib {
 
 	}
 
-	void CColorPaletteUI::PaintBkColor(HDC hDC)
+	void CColorPaletteUI::PaintBkColor(UIRender *pRender)
 	{
-		PaintPallet(hDC);
+		PaintPallet(pRender);
 	}
 	
-	void CColorPaletteUI::PaintPallet(HDC hDC)
+	void CColorPaletteUI::PaintPallet(UIRender *pRender)
 	{
+		HDC hDC = pRender->GetDC();
 		int nSaveDC = ::SaveDC(hDC);
 
 		::SetStretchBltMode(hDC, HALFTONE);
@@ -354,13 +355,13 @@ namespace DuiLib {
 		StretchBlt(hDC, m_rcItem.left, m_rcItem.bottom - m_nBarHeight, m_rcItem.right - m_rcItem.left, m_nBarHeight, m_MemDc, 0, 210, 200, m_nBarHeight, SRCCOPY);
 
 		RECT rcCurSorPaint = { m_ptLastPalletMouse.x - 4, m_ptLastPalletMouse.y - 4, m_ptLastPalletMouse.x + 4, m_ptLastPalletMouse.y + 4 };
-		CRenderEngine::DrawImageString(hDC, m_pManager, rcCurSorPaint, m_rcPaint, m_strThumbImage);
+		pRender->DrawImageString(rcCurSorPaint, m_rcPaint, m_strThumbImage);
 
 		rcCurSorPaint.left = m_rcItem.left + m_nCurS * (m_rcItem.right - m_rcItem.left) / 200 - 4;
 		rcCurSorPaint.right = m_rcItem.left + m_nCurS * (m_rcItem.right - m_rcItem.left) / 200 + 4;
 		rcCurSorPaint.top = m_rcItem.bottom - m_nBarHeight / 2 - 4;
 		rcCurSorPaint.bottom = m_rcItem.bottom - m_nBarHeight / 2 + 4;
-		CRenderEngine::DrawImageString(hDC, m_pManager, rcCurSorPaint, m_rcPaint, m_strThumbImage);
+		pRender->DrawImageString(rcCurSorPaint, m_rcPaint, m_strThumbImage);
 		::RestoreDC(hDC, nSaveDC);
 	}
 

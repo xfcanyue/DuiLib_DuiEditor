@@ -415,6 +415,30 @@ BOOL CUIManager::UpdateControlUI(xml_node node, xml_attribute attr)
 				CDuiSize sz(XML2T(attr.value()));
 				SetUIFormWindowSize(sz.cx, sz.cy);
 			}
+			else if(CompareString(attr.name(), _T("renderengine")) ) 
+			{
+				if( CompareString(attr.as_string(), _T("gdi")) )
+					CPaintManagerUI::SetRenderEngineType(DuiLib_Render_Default);
+				else if( CompareString(attr.as_string(), _T("gdiplus")) )
+					CPaintManagerUI::SetRenderEngineType(DuiLib_Render_GdiPlus);
+			} 
+			else if(CompareString(attr.name(), _T("forcehsl")))
+			{
+				GetManager()->SetForceHSL(attr.as_bool());
+			}
+			else if(CompareString(attr.name(), _T("hsl")))
+			{
+				CString strValue = XML2T(attr.value());
+				LPCTSTR pstrValue = (LPCTSTR)strValue;
+
+				int h = 180, s=100, l=100;
+				LPTSTR pstr = NULL;
+				h = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
+				s = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
+				l = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr); 
+				GetManager()->SetHSL(h, s, l);
+			}
+
 		}
 		else if(CompareString(attr.name(), _T("pos")))
 		{

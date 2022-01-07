@@ -19,6 +19,7 @@ public:
 	void SetInitSize(int cx, int cy);
 
 	void Refresh();
+
 private:
 };
 

@@ -240,7 +240,7 @@ protected:
 /////////////////////////////////////////////////////////////////////////////////////
 //
 
-class CListUI;
+//class CListUI;
 class CMenuWnd;
 class UILIB_API CMenuUI : public CListUI
 {
@@ -249,24 +249,23 @@ public:
 	CMenuUI();
 	virtual ~CMenuUI();
 	CMenuWnd*	m_pWindow;
-    LPCTSTR GetClass() const;
-    LPVOID GetInterface(LPCTSTR pstrName);
-	UINT GetListType();
 
-	virtual void DoEvent(TEventUI& event);
+    virtual LPCTSTR GetClass() const override;
+    virtual LPVOID GetInterface(LPCTSTR pstrName) override;
+	virtual UINT GetListType() override;
 
-    virtual bool Add(CControlUI* pControl);
-    virtual bool AddAt(CControlUI* pControl, int iIndex);
+	virtual void DoEvent(TEventUI& event) override;
 
-    virtual int GetItemIndex(CControlUI* pControl) const;
-    virtual bool SetItemIndex(CControlUI* pControl, int iIndex);
-    virtual bool Remove(CControlUI* pControl, bool bDoNotDestroy=false);
+    virtual bool Add(CControlUI* pControl) override;
+    virtual bool AddAt(CControlUI* pControl, int iIndex) override;
 
-	//modify by liqs99, 下面函数改为虚函数
-	virtual SIZE EstimateSize(SIZE szAvailable);
+    virtual int GetItemIndex(CControlUI* pControl) const override;
+    virtual bool SetItemIndex(CControlUI* pControl, int iIndex) override;
+    virtual bool Remove(CControlUI* pControl, bool bDoNotDestroy=false) override;
 
-	//modify by liqs99, 下面函数改为虚函数
-	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+	virtual SIZE EstimateSize(SIZE szAvailable) override;
+
+	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 
 	void SetExpandIcon(LPCTSTR strIcon);
 	CDuiString GetExpandIcon();
@@ -353,7 +352,7 @@ public:
 	bool		m_bAutoDestroy;
 };
 
-class CListContainerElementUI;
+//class CListContainerElementUI;
 class UILIB_API CMenuElementUI : public CListContainerElementUI
 {
 	DECLARE_DUICONTROL(CMenuElementUI)
@@ -362,14 +361,14 @@ public:
     CMenuElementUI();
 	~CMenuElementUI();
 
-    LPCTSTR GetClass() const;
-    LPVOID GetInterface(LPCTSTR pstrName);
-    bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
-	void DrawItemText(HDC hDC, const RECT& rcItem);
-	void DrawItemBorder(HDC hDC, const RECT& rcItem);
-	SIZE EstimateSize(SIZE szAvailable);
+    virtual LPCTSTR GetClass() const override;
+    virtual LPVOID GetInterface(LPCTSTR pstrName) override;
+    virtual bool DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl) override;
+	virtual void DrawItemText(UIRender *pRender, const RECT& rcItem) override;
+	void DrawItemBorder(UIRender *pRender, const RECT& rcItem);
+	virtual SIZE EstimateSize(SIZE szAvailable) override;
 
-	void DoEvent(TEventUI& event);
+	virtual void DoEvent(TEventUI& event);
 
 	CMenuWnd* GetMenuWnd();
 	CMenuUI* GetMenuUI();
@@ -383,14 +382,14 @@ public:
 	void SetIcon(LPCTSTR strIcon);
 	void SetUnCheckIcon(LPCTSTR strIcon);
 	void SetIconSize(LONG cx, LONG cy);
-	void DrawItemIcon(HDC hDC, const RECT& rcItem);
+	void DrawItemIcon(UIRender *pRender, const RECT& rcItem);
 	void SetChecked(bool bCheck = true);
 	bool GetChecked();
 	void SetCheckItem(bool bCheckItem = false);
 	bool GetCheckItem() const;
 
 	void SetShowExplandIcon(bool bShow);
-	void DrawItemExpland(HDC hDC, const RECT& rcItem);
+	void DrawItemExpland(UIRender *pRender, const RECT& rcItem);
 
 	void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 
@@ -399,9 +398,9 @@ public:
 
 	void OnUpdateCommandUI();
 
-	void DrawDisableItemIcon(HDC hDC, LPCTSTR pStrImage, LPCTSTR pStrModify);
+	void DrawDisableItemIcon(UIRender *pRender, LPCTSTR pStrImage, LPCTSTR pStrModify);
 protected:
-	bool _DrawImageMenuDisableIcon(HDC hDC, CPaintManagerUI* pManager, const RECT& rc, const RECT& rcPaint, const CDuiString& sImageName, \
+	bool _DrawImageMenuDisableIcon(UIRender *pRender, CPaintManagerUI* pManager, const RECT& rc, const RECT& rcPaint, const CDuiString& sImageName, \
 		const CDuiString& sImageResType, RECT rcItem, RECT rcBmpPart, RECT rcCorner, DWORD dwMask, BYTE bFade, \
 		bool bHole, bool bTiledX, bool bTiledY, int width, int height, DWORD fillcolor, HINSTANCE instance = NULL);
 protected:

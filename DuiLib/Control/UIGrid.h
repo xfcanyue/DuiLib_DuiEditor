@@ -14,14 +14,14 @@ public:
 	CGridUI(void); 
 	~CGridUI(void);
 
-	LPCTSTR GetClass() const;
-	virtual UINT GetControlFlags() const;
-	LPVOID GetInterface(LPCTSTR pstrName);
+	virtual LPCTSTR GetClass() const override;
+	virtual UINT GetControlFlags() const override;
+	virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-	virtual void Refresh(bool bNeedUpdate = false);
+	virtual void Refresh(bool bNeedUpdate = false) override;
 
-	bool Add(CControlUI* pControl);
-	bool AddAt(CControlUI* pControl, int iIndex);
+	virtual bool Add(CControlUI* pControl) override;
+	virtual bool AddAt(CControlUI* pControl, int iIndex) override;
 
 	int InsertRow(int nIndex = -1);
 	bool DeleteRow(int nIndex);
@@ -111,19 +111,19 @@ protected:
 	static int CALLBACK pfnCellTextCompare(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
 
 public:
-	virtual void DoInit();
-	virtual void DoEvent(TEventUI& event);
+	virtual void DoInit() override;
+	virtual void DoEvent(TEventUI& event) override;
 	bool OnSizeColumnOrRow(TEventUI& event);
-	virtual void SetPos(RECT rc, bool bNeedInvalidate = true);
+	virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
 	virtual void BuildRows(RECT rc, bool bNeedInvalidate = true);
 	virtual void OnDrawItem(int nBeginRow, int nEndRow);
-	virtual void SetScrollPos(SIZE szPos, bool bMsg);
-	virtual void ProcessScrollBar(RECT rc, int cxRequired, int cyRequired);
-	virtual bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
-	virtual void PaintBorder(HDC hDC);
+	virtual void SetScrollPos(SIZE szPos, bool bMsg) override;
+	virtual void ProcessScrollBar(RECT rc, int cxRequired, int cyRequired) override;
+	virtual bool DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl) override;
+	virtual void PaintBorder(UIRender *pRender) override;
 
 public:
-	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 
 protected:
 	CGridHeaderUI *m_pHeader;

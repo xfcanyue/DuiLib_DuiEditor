@@ -17,7 +17,7 @@ namespace DuiLib
 
 	LPCTSTR CTabCtrlUI::GetClass() const
 	{
-		return DUI_CTR_TABCTRL;
+		return _T("TabCtrlUI");
 	}
 
 	LPVOID CTabCtrlUI::GetInterface(LPCTSTR pstrName)
@@ -45,14 +45,26 @@ namespace DuiLib
 
 		if(event.Type == UIEVENT_MOUSEENTER)
 		{
-			if( IsActiveMouseOn() && ::PtInRect(&m_rcItem, event.ptMouse) && IsEnabled() ) {
-				m_uButtonState |= UISTATE_PUSHED | UISTATE_CAPTURED;
+			if( IsActiveMouseOn() && ::PtInRect(&m_rcItem, event.ptMouse) && IsEnabled() ) 
+			{
+				SetCaptureState(true);
+				SetPushedState(true);
 				Invalidate();
 				Activate();
 				return;
 			}
 		}
 
+		if( event.Type == UIEVENT_MOUSELEAVE )
+		{
+			if( IsActiveMouseOn() && IsCaptureState() ) 
+			{
+				SetCaptureState(false);
+				SetPushedState(false);
+				Invalidate();
+				return;	
+			}
+		}
 		__super::DoEvent(event);
 	}
 

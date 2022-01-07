@@ -30,6 +30,7 @@ namespace DuiLib{
 		CHotKeyUI * m_pOwner;
 		HBRUSH m_hBkBrush;
 		bool m_bInit;
+		CStdRefPtr<UIFont> m_font;
 	};
 
 	class UILIB_API CHotKeyUI : public CLabelUI
@@ -38,31 +39,22 @@ namespace DuiLib{
 		friend CHotKeyWnd;
 	public:
 		CHotKeyUI();
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
-		UINT GetControlFlags() const;
-		void SetEnabled(bool bEnable = true);
-		void SetText(LPCTSTR pstrText);
-		LPCTSTR GetNormalImage();
-		void SetNormalImage(LPCTSTR pStrImage);
-		LPCTSTR GetHotImage();
-		void SetHotImage(LPCTSTR pStrImage);
-		LPCTSTR GetFocusedImage();
-		void SetFocusedImage(LPCTSTR pStrImage);
-		LPCTSTR GetDisabledImage();
-		void SetDisabledImage(LPCTSTR pStrImage);
-		void SetNativeBkColor(DWORD dwBkColor);
-		DWORD GetNativeBkColor() const;
 
-		void SetPos(RECT rc, bool bNeedInvalidate = true);
-		void SetVisible(bool bVisible = true);
-		void SetInternVisible(bool bVisible = true);
-		SIZE EstimateSize(SIZE szAvailable);
-		void DoEvent(TEventUI& event);
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
+		virtual UINT GetControlFlags() const override;
+		virtual void SetText(LPCTSTR pstrText) override;
+		
+		virtual void SetNativeBkColor(DWORD dwBkColor);
+		virtual DWORD GetNativeBkColor() const;
 
-		void PaintStatusImage(HDC hDC);
-		void PaintText(HDC hDC);
+		virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
+		virtual void SetVisible(bool bVisible = true) override;
+		virtual void SetInternVisible(bool bVisible = true) override;
+		virtual SIZE EstimateSize(SIZE szAvailable) override;
+		virtual void DoEvent(TEventUI& event) override;
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
+
 	public:
 		void GetHotKey(WORD &wVirtualKeyCode, WORD &wModifiers) const;
 		DWORD GetHotKey(void) const;
@@ -70,10 +62,6 @@ namespace DuiLib{
 
 	protected:
 		CHotKeyWnd * m_pWindow;
-		CDuiString m_sNormalImage;
-		CDuiString m_sHotImage;
-		CDuiString m_sFocusedImage;
-		CDuiString m_sDisabledImage;
 		DWORD m_dwHotKeybkColor;
 
 	protected:

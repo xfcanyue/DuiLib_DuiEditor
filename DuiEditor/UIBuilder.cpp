@@ -369,11 +369,31 @@ void CUIBuilder::SetWindowAttribute(CPaintManagerUI *pManager, xml_node node)
 		else if( _tcsicmp(pstrName, _T("gdiplustext")) == 0 ) {
 			pManager->SetUseGdiplusText(_tcsicmp(pstrValue, _T("true")) == 0);
 		} 
+		else if( _tcsicmp(pstrName, _T("renderengine")) == 0 ) 
+		{
+			if( _tcsicmp(pstrValue, _T("gdi")) == 0 )
+				pManager->SetRenderEngineType(DuiLib_Render_Default);
+			else if( _tcsicmp(pstrValue, _T("gdiplus")) == 0 )
+				pManager->SetRenderEngineType(DuiLib_Render_GdiPlus);
+		} 
 		else if( _tcsicmp(pstrName, _T("textrenderinghint")) == 0 ) {
 			pManager->SetGdiplusTextRenderingHint(_ttoi(pstrValue));
 		} 
 		else if( _tcsicmp(pstrName, _T("tooltiphovertime")) == 0 ) {
 			pManager->SetHoverTime(_ttoi(pstrValue));
+		} 
+		else if( _tcsicmp(pstrName, _T("forcehsl")) == 0 ) 
+		{
+			pManager->SetForceHSL(_tcsicmp(pstrValue, _T("true")) == 0);
+		} 
+		else if( _tcsicmp(pstrName, _T("hsl")) == 0 ) 
+		{
+			int h = 180, s=100, l=100;
+			LPTSTR pstr = NULL;
+			h = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
+			s = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
+			l = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr); 
+			pManager->SetHSL(h, s, l);
 		} 
 	}
 }

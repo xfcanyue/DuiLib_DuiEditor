@@ -11,11 +11,9 @@ namespace DuiLib
 	public:
 		CSliderUI();
 
-		LPCTSTR GetClass() const;
-		UINT GetControlFlags() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
-
-		void SetEnabled(bool bEnable = true);
+		virtual LPCTSTR GetClass() const override;
+		virtual UINT GetControlFlags() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
 		int GetChangeStep();
 		void SetChangeStep(int step);
@@ -28,9 +26,9 @@ namespace DuiLib
 		LPCTSTR GetThumbPushedImage() const;
 		void SetThumbPushedImage(LPCTSTR pStrImage);
 
-		void DoEvent(TEventUI& event);
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
-		void PaintForeImage(HDC hDC);
+		virtual void DoEvent(TEventUI& event) override;
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
+		virtual void PaintForeImage(UIRender *pRender) override;
 
 		void SetValue(int nValue);
 		void SetCanSendMove(bool bCanSend);

@@ -370,10 +370,12 @@ void CScriptEngine::Init()
 	regCPaintManagerUI::Register_Extra(engine);
 	regTNotifyUI::Register(engine);
 	regTEventUI::Register_Extra(engine);
-	regTFontInfo::Register(engine);
-	regTImageInfo::Register(engine);
+	regUIFont::Register(engine);
+	regUIBitmap::Register(engine);
+	regUIImage::Register(engine);
 	regTDrawInfo::Register(engine);
-	regCRenderEngine::Register(engine);
+	regUIGlobal::Register(engine);
+	regUIRender::Register(engine);
 	
 	//×¢²áMsgBoxº¯Êý
 	r = engine->RegisterGlobalFunction("void MsgBox(const string &in)", asFUNCTIONPR(ScriptMsgBox, (const CDuiString&), void), asCALL_CDECL); assert( r >= 0 );

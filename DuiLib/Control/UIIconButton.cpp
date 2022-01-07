@@ -23,7 +23,7 @@ CIconButtonUI::~CIconButtonUI(void)
 
 LPCTSTR CIconButtonUI::GetClass() const
 {
-	return DUI_CTR_ICONBUTTON;
+	return _T("IconButtonUI");
 }
 
 LPVOID CIconButtonUI::GetInterface(LPCTSTR pstrName)
@@ -47,23 +47,20 @@ SIZE CIconButtonUI::EstimateSize(SIZE szAvailable)
 		RECT rcText = {0, 0, szAvailable.cx, szAvailable.cy};
 		int nLinks = 0;
 
-		if( m_bShowHtml ) CRenderEngine::DrawHtmlText(m_pManager->GetPaintDC(), m_pManager, rcText, sText, m_dwTextColor, NULL, NULL, nLinks, m_iFont, DT_CALCRECT | m_uTextStyle);
-		else CRenderEngine::DrawText(m_pManager->GetPaintDC(), m_pManager, rcText, sText, m_dwTextColor, m_iFont, DT_CALCRECT | m_uTextStyle);
+		GetManager()->Render()->DrawText(rcText, GetTextPadding(), sText, m_dwTextColor, m_iFont, DT_CALCRECT | m_uTextStyle);
 
 		RECT rcTextPadding = GetTextPadding();
 		RECT rcInset = GetInset();
 
 		if(IsAutoCalcWidth())
 		{	
-			int cx = rcText.right - rcText.left + rcInset.left + rcInset.right + rcTextPadding.left + rcTextPadding.right + m_szIcon.cx;
-			GetManager()->GetDPIObj()->Scale(cx);
+			int cx = rcText.right - rcText.left + rcInset.left + rcInset.right + m_szIcon.cx;
 			m_cxyFixed.cx = cx;
 		}
 
 		if(IsAutoCalcHeight())
 		{
-			int cy = rcText.bottom - rcText.top + rcInset.top + rcInset.bottom + rcTextPadding.top + rcTextPadding.bottom + m_szIcon.cy;
-			GetManager()->GetDPIObj()->Scale(cy);
+			int cy = rcText.bottom - rcText.top + rcInset.top + rcInset.bottom + m_szIcon.cy;
 			m_cxyFixed.cy = cy;
 		}
 
@@ -73,20 +70,57 @@ SIZE CIconButtonUI::EstimateSize(SIZE szAvailable)
 	return __super::EstimateSize(szAvailable);
 }
 
-void CIconButtonUI::PaintText(HDC hDC)
+void CIconButtonUI::PaintText(UIRender *pRender)
 {
-	if( IsFocused() ) m_uButtonState |= UISTATE_FOCUSED;
-	else m_uButtonState &= ~ UISTATE_FOCUSED;
-	if( !IsEnabled() ) m_uButtonState |= UISTATE_DISABLED;
-	else m_uButtonState &= ~ UISTATE_DISABLED;
-
-	if( m_dwTextColor == 0 ) m_dwTextColor = m_pManager->GetDefaultFontColor();
-	if( m_dwDisabledTextColor == 0 ) m_dwDisabledTextColor = m_pManager->GetDefaultDisabledColor();
-
 	CDuiString sText = GetText();
-	if( sText.IsEmpty() ) return;
+	if(sText.IsEmpty()) return;
 
 	RECT rcText = m_rcItem;
+	DWORD dwColor = 0;
+	int iFont = -1;
+
+	//////////////////////////////////////////////////////////////////////////
+	if( !IsEnabled() )
+		iFont = GetDisabledFont();
+
+	else if( IsPushedState() )
+		iFont = GetPushedFont();
+
+	else if( IsHotState() )
+		iFont = GetHotFont();
+
+	else if( IsSelectedState() )
+		iFont = GetSelectedFont();
+
+	else if( IsFocused() )
+		iFont = GetFocusedFont();
+
+	if(iFont == -1)
+		iFont = GetFont();
+
+	//////////////////////////////////////////////////////////////////////////
+	if( !IsEnabled() )
+		dwColor = GetDisabledTextColor();
+
+	else if( IsHotState() )
+		dwColor = GetHotTextColor();
+
+	else if( IsPushedState() )
+		dwColor = GetPushedTextColor();
+
+	else if( IsSelectedState() )
+		dwColor = GetSelectedTextColor();
+
+	else if( IsFocused() )
+		dwColor = GetFocusedTextColor();
+
+	if(dwColor == 0)
+		dwColor = GetTextColor();
+
+	if(dwColor == 0 && m_pManager)
+		dwColor = m_pManager->GetDefaultFontColor();
+
+	//////////////////////////////////////////////////////////////////////////
 	RECT rcInset = GetInset();
 	rcText.left += rcInset.left;
 	rcText.right -= rcInset.right;
@@ -95,38 +129,8 @@ void CIconButtonUI::PaintText(HDC hDC)
 
 	rcText.left += m_szIcon.cx;
 
-	RECT rcTextPadding = GetTextPadding();
-	GetManager()->GetDPIObj()->Scale(&rcTextPadding);
-	
-	rcText.left += rcTextPadding.left;
-	rcText.right -= rcTextPadding.right;
-	rcText.top += rcTextPadding.top;
-	rcText.bottom -= rcTextPadding.bottom;
-
-	DWORD clrColor = IsEnabled()?m_dwTextColor:m_dwDisabledTextColor;
-
-	if( ((m_uButtonState & UISTATE_PUSHED) != 0) && (GetPushedTextColor() != 0) )
-		clrColor = GetPushedTextColor();
-	else if( ((m_uButtonState & UISTATE_HOT) != 0) && (GetHotTextColor() != 0) )
-		clrColor = GetHotTextColor();
-	else if( ((m_uButtonState & UISTATE_FOCUSED) != 0) && (GetFocusedTextColor() != 0) )
-		clrColor = GetFocusedTextColor();
-
-	int iFont = GetFont();
-	if( ((m_uButtonState & UISTATE_PUSHED) != 0) && (GetPushedFont() != -1) )
-		iFont = GetPushedFont();
-	else if( ((m_uButtonState & UISTATE_HOT) != 0) && (GetHotFont() != -1) )
-		iFont = GetHotFont();
-	else if( ((m_uButtonState & UISTATE_FOCUSED) != 0) && (GetFocusedFont() != -1) )
-		iFont = GetFocusedFont();
-
-	int nLinks = 0;
-	if( m_bShowHtml )
-		CRenderEngine::DrawHtmlText(hDC, m_pManager, rcText, sText, clrColor, \
-		NULL, NULL, nLinks, iFont, m_uTextStyle);
-	else
-		CRenderEngine::DrawText(hDC, m_pManager, rcText, sText, clrColor, \
-		iFont, m_uTextStyle);
+	pRender->DrawText(rcText, GetTextPadding(), sText, dwColor, iFont, GetTextStyle());
+	return;
 }
 
 void CIconButtonUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)

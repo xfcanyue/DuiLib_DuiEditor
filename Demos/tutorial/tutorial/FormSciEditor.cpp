@@ -101,11 +101,12 @@ void CFormSciEditor::InitWindow()
 #else 
 	//Release版本从资源中载入文件, 
 	//读入的文件是UTF8编码，不能使用CSciEdit::SetText(LPCTSTR pstrText)
-	LPBYTE pByte = NULL;
-	int size = CRenderEngine::LoadImage2Memory(GetMainWnd()->GetSkinFile().GetData(), 0, pByte);
-	CStringA str((const char *)pByte, size);
-	m_pSci->sci_SetText(str);
-	CRenderEngine::FreeMemory(pByte);
+	CUIFile f;
+	if(f.LoadFile(GetMainWnd()->GetSkinFile().GetData()))
+	{
+		CStringA str((const char *)f.GetData(), f.GetSize());
+		m_pSci->sci_SetText(str);
+	}
 #endif
 	
 }

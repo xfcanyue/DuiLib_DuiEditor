@@ -14,9 +14,9 @@ namespace DuiLib {
 		CRichEditUI();
 		~CRichEditUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
-		UINT GetControlFlags() const;
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
+		virtual UINT GetControlFlags() const override;
 
 		bool IsMultiLine();
 		void SetMultiLine(bool bMultiLine);
@@ -32,17 +32,19 @@ namespace DuiLib {
 		void SetParagraphIndent(bool bIndent = true);
 		bool IsRich();
 		void SetRich(bool bRich = true);
-		bool IsReadOnly();
-		void SetReadOnly(bool bReadOnly = true);
+
+		virtual void SetReadOnly(bool bReadOnly = true) override;
 		bool IsWordWrap();
 		void SetWordWrap(bool bWordWrap = true);
-		int GetFont();
-		void SetFont(int index);
+
+		virtual void SetFont(int index) override;
 		void SetFont(LPCTSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic);
+
 		LONG GetWinStyle();
 		void SetWinStyle(LONG lStyle);
-		DWORD GetTextColor();
-		void SetTextColor(DWORD dwTextColor);
+
+		virtual void SetTextColor(DWORD dwTextColor) override;
+
 		int GetLimitText();
 		void SetLimitText(int iChars);
 		long GetTextLength(DWORD dwFlags = GTL_DEFAULT) const;
@@ -104,21 +106,8 @@ namespace DuiLib {
 		void SetAccumulateDBCMode(bool bDBCMode);
 		bool IsAccumulateDBCMode();
 
-		RECT GetTextPadding() const;
-		void SetTextPadding(RECT rc);
-		LPCTSTR GetNormalImage();
-		void SetNormalImage(LPCTSTR pStrImage);
-		LPCTSTR GetHotImage();
-		void SetHotImage(LPCTSTR pStrImage);
-		LPCTSTR GetFocusedImage();
-		void SetFocusedImage(LPCTSTR pStrImage);
-		LPCTSTR GetDisabledImage();
-		void SetDisabledImage(LPCTSTR pStrImage);
-		void PaintBkColor(HDC hDC);
-		void PaintStatusImage(HDC hDC);
-
 		void SetTipValue(LPCTSTR pStrTipValue);
-		LPCTSTR GetTipValue();
+		CDuiString GetTipValue();
 		void SetTipValueColor(LPCTSTR pStrColor);
 		DWORD GetTipValueColor();
 		void SetTipValueAlign(UINT uAlign);
@@ -133,31 +122,31 @@ namespace DuiLib {
 		virtual bool OnTxViewChanged();
 		virtual void OnTxNotify(DWORD iNotify, void *pv);
 
-		void SetScrollPos(SIZE szPos, bool bMsg = true);
-		void LineUp();
-		void LineDown();
-		void PageUp();
-		void PageDown();
-		void HomeUp();
-		void EndDown();
-		void LineLeft();
-		void LineRight();
-		void PageLeft();
-		void PageRight();
-		void HomeLeft();
-		void EndRight();
+		virtual void SetScrollPos(SIZE szPos, bool bMsg = true) override;
+		virtual void LineUp() override;
+		virtual void LineDown() override;
+		virtual void PageUp() override;
+		virtual void PageDown() override;
+		virtual void HomeUp() override;
+		virtual void EndDown() override;
+		virtual void LineLeft() override;
+		virtual void LineRight() override;
+		virtual void PageLeft() override;
+		virtual void PageRight() override;
+		virtual void HomeLeft() override;
+		virtual void EndRight() override;
 
-		virtual int GetFixedWidth() const;
-		virtual int GetFixedHeight() const;
-		SIZE EstimateSize(SIZE szAvailable);
-		void SetPos(RECT rc, bool bNeedInvalidate = true);
-		void Move(SIZE szOffset, bool bNeedInvalidate = true);
-		void DoEvent(TEventUI& event);
-		bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
+		virtual int GetFixedWidth() const override;
+		virtual int GetFixedHeight() const override;
+		virtual SIZE EstimateSize(SIZE szAvailable) override;
+		virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
+		virtual void Move(SIZE szOffset, bool bNeedInvalidate = true) override;
+		virtual void DoEvent(TEventUI& event) override;
+		virtual bool DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl) override;
 
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 
-		LRESULT MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, bool& bHandled);
+		virtual LRESULT MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, bool& bHandled) override;
 
 		virtual bool OnEnableResponseDefaultKeyEvent(WPARAM wParam) override;
 	protected:
@@ -172,11 +161,9 @@ namespace DuiLib {
 		bool m_bWantCtrlReturn;
 		bool m_bTransparent;
 		bool m_bRich;
-		bool m_bReadOnly;
 		bool m_bWordWrap;
 		bool m_bParagraphIndent;
-		DWORD m_dwTextColor;
-		int m_iFont;
+
 		int m_iLimitText;
 		LONG m_lTwhStyle;
 		bool m_bDrawCaret;
@@ -186,13 +173,6 @@ namespace DuiLib {
 		// we are in this mode when we receive VK_PROCESSKEY
 		UINT m_chLeadByte; // use when we are in _fAccumulateDBC mode
 
-		UINT	m_uTextStyle; //add by liqs99, DT_TOP, DT_CENTER, DT_BOTTOM
-
-		RECT m_rcTextPadding;
-		CDuiString m_sNormalImage;
-		CDuiString m_sHotImage;
-		CDuiString m_sFocusedImage;
-		CDuiString m_sDisabledImage;
 		CDuiString m_sTipValue;
 		DWORD m_dwTipValueColor;
 		UINT m_uTipValueAlign;

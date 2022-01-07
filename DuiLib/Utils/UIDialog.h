@@ -22,9 +22,11 @@ public:
 	virtual BOOL IsEscCloseCancel() const;
 
 	//显示模态对话窗口
+	virtual UINT DoModal(HWND hWndParent);
 	virtual UINT DoModal(CUIFrmBase *pParentWnd = NULL);
 
 	//显示非模态对话窗口, 注意非模态窗口必须是new出来的。
+	virtual void ShowDialog(HWND hWndParent);
 	virtual void ShowDialog(CUIFrmBase *pParentWnd = NULL);
 
 	virtual void Notify(TNotifyUI& msg);

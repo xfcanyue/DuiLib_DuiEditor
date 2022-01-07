@@ -14,14 +14,11 @@ namespace DuiLib
 		friend class CDateTimeWnd;
 	public:
 		CDateTimeUI();
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
 		SYSTEMTIME& GetTime();
 		void SetTime(SYSTEMTIME* pst);
-
-		void SetReadOnly(bool bReadOnly);
-		bool IsReadOnly() const;
 
 		void SetFormatStyle(UINT uStyle);
 		UINT GetFormatStyle();
@@ -39,7 +36,6 @@ namespace DuiLib
 
 	protected:
 		SYSTEMTIME m_sysTime;
-		bool       m_bReadOnly;
 		int        m_uFormatStyle; //0=date, 1=time, 2=datetime  add by liqs99
 
 		CDateTimeWnd* m_pWindow;

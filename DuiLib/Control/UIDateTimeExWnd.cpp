@@ -29,7 +29,8 @@ void CDateTimeExWnd::Init(CDateTimeExUI* pOwner, UINT uFormatStyle)
 		}
 
 		Create(m_pOwner->GetManager()->GetPaintWindow(), NULL, uStyle, 0, rcPos);
-		SetWindowFont(m_hWnd, m_pOwner->GetManager()->GetFontInfo(m_pOwner->GetFont())->hFont, TRUE);
+		m_font = MakeRefPtr<UIFont>(m_pOwner->GetManager()->CloneFont(m_pOwner->GetFont()));
+		::SendMessage(m_hWnd, WM_SETFONT, (WPARAM)m_font->GetHFont(m_pOwner->GetManager()), (LPARAM)TRUE);
 	}
 
 	memcpy(&m_oldSysTime, &m_pOwner->GetTime(), sizeof(SYSTEMTIME));

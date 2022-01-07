@@ -11,13 +11,13 @@ namespace DuiLib
 	public:
 		CTabLayoutUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-		bool Add(CControlUI* pControl);
-		bool AddAt(CControlUI* pControl, int iIndex);
-		bool Remove(CControlUI* pControl, bool bDoNotDestroy=false);
-		void RemoveAll();
+		virtual bool Add(CControlUI* pControl) override;
+		virtual bool AddAt(CControlUI* pControl, int iIndex) override;
+		virtual bool Remove(CControlUI* pControl, bool bDoNotDestroy=false) override;
+		virtual void RemoveAll() override;
 		int GetCurSel() const;
 		virtual bool SelectItem(int iIndex);
 		virtual bool SelectItem(CControlUI* pControl);
@@ -25,14 +25,14 @@ namespace DuiLib
 		virtual bool SelectForm(LPCTSTR lpstrFormName);
 		CDuiString GetCurForm();
 		
-		virtual void DoInit();
-		void SetPos(RECT rc, bool bNeedInvalidate = true);
+		virtual void DoInit() override;
+		virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
 
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 
-		virtual void OnAnimationStart(int nAnimationID, BOOL bFirstLoop);
-		virtual void OnAnimationStep(int nTotalFrame, int nCurFrame, int nAnimationID);
-		virtual void OnAnimationStop(int nAnimationID);
+		virtual void OnAnimationStart(int nAnimationID, BOOL bFirstLoop) override;
+		virtual void OnAnimationStep(int nTotalFrame, int nCurFrame, int nAnimationID) override;
+		virtual void OnAnimationStop(int nAnimationID) override;
 	protected:
 		int m_iCurSel;
 		int m_iOldSel;

@@ -17,7 +17,7 @@ CKeyBoardNumberUI::~CKeyBoardNumberUI(void)
 
 LPCTSTR CKeyBoardNumberUI::GetClass() const
 {
-	return _T("KeyBoardNumber");
+	return _T("KeyBoardNumberUI");
 }
 
 LPVOID CKeyBoardNumberUI::GetInterface(LPCTSTR pstrName)

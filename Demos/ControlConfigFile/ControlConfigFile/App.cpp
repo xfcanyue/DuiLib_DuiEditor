@@ -23,6 +23,8 @@ bool CApp::InitInstance(HINSTANCE hInstance)
 	//szPathName不为空的话，需要指定路径和文件
 	Config.LoadConfig();
 
+	int x = sizeof(CControlUI);
+
 	//建立主窗口
 	m_pMainWnd = new CMainFrame();
 	if( m_pMainWnd == NULL ) return false;

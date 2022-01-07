@@ -18,8 +18,8 @@ namespace DuiLib
 		DECLARE_DUICONTROL(CDateTimeExUI)
 	public:
 		CDateTimeExUI();
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
 		virtual void DoInit();
 
@@ -28,9 +28,6 @@ namespace DuiLib
 
 		SYSTEMTIME& GetTime();
 		void SetTime(SYSTEMTIME* pst);
-
-		void SetReadOnly(bool bReadOnly);
-		bool IsReadOnly() const;
 
 		void SetFormatStyle(UINT uStyle);	//UIDTS_DATE=date, UIDTS_TIME=time, UIDTS_DateTimeEx=DateTimeEx  add by liqs99
 		UINT GetFormatStyle();				//UIDTS_DATE=date, UIDTS_TIME=time, UIDTS_DateTimeEx=DateTimeEx  add by liqs99
@@ -44,17 +41,12 @@ namespace DuiLib
 		void SetInternVisible(bool bVisible = true);
 		void DoEvent(TEventUI& event);
 
-		void SetFont(int index);
-		int GetFont() const;
-
 		CLabelUI *GetDateLabel() const;
 		CLabelUI *GetTimeLabel() const;
 
 		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 	protected:
 		SYSTEMTIME m_sysTime;
-		int		m_iFont;
-		bool       m_bReadOnly;
 		int        m_uFormatStyle; //UIDTS_DATE=date, UIDTS_TIME=time, UIDTS_DateTimeEx=DateTimeEx  add by liqs99
 		
 		CLabelUI *m_pLabelDate;

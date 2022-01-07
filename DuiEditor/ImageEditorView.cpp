@@ -24,6 +24,8 @@ CImageEditorView::CImageEditorView()
 	m_tracker.m_nStyle = 0;
 	m_tracker.m_nStyle |= CRectTracker::dottedLine;
 	m_tracker.m_nStyle |= CRectTracker::resizeOutside;
+
+	m_pRender = MakeRefPtr<UIRender>(UIGlobal::CreateRenderTarget());
 }
 
 CImageEditorView::~CImageEditorView()
@@ -66,12 +68,15 @@ void CImageEditorView::OnDraw(CDC* pDC)
 	if(!m_pManager)
 		return;
 
+	m_pRender->AttachDC(m_pManager, memDC->m_hDC);
+
 	CImageEditor *pDlgMain = (CImageEditor *)GetParent()->GetParent();
 	
-	if(pDlgMain->m_imgControlX != NULL )
+	if(!pDlgMain->m_imgControlX.IsNull() )
 	{
-		CRect bmpPart(0,0,m_rcControl.Width(), m_rcControl.Height());
-		CRenderEngine::DrawImage(memDC->m_hDC, pDlgMain->m_imgControlX, m_rcControl, m_rcControl, bmpPart, CRect(0,0,0,0), false);
+// 		CRect bmpPart(0,0,m_rcControl.Width(), m_rcControl.Height());
+// 		m_pRender->DrawBitmap(pDlgMain->m_imgControlX, m_rcControl, m_rcControl, bmpPart, CRect(0,0,0,0), false);
+		pDlgMain->m_imgControlX.Draw(memDC->m_hDC, m_rcControl);
 	}
 	else
 	{
@@ -79,7 +84,7 @@ void CImageEditorView::OnDraw(CDC* pDC)
 		memDC->Rectangle(m_rcControl);
 	}
 
-	CRenderEngine::DrawImageInfo(memDC->m_hDC, m_pManager, m_rcControl, m_rcControl, &m_drawInfo, AfxGetResourceHandle());
+	m_pRender->DrawImageInfo(m_rcControl, m_rcControl, &m_drawInfo, AfxGetResourceHandle());
 
 
 	if(g_pEditorImage->m_pFrame->m_bTrackerDest)

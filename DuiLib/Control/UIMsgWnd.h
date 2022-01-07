@@ -11,11 +11,11 @@ public:
 	CMsgWndUI(void);
 	virtual ~CMsgWndUI(void);
 
-	LPCTSTR GetClass() const;
-	LPVOID GetInterface(LPCTSTR pstrName);
+	virtual LPCTSTR GetClass() const override;
+	virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-	virtual void DoInit();
-	virtual void DoEvent(TEventUI& event); 
+	virtual void DoInit() override;
+	virtual void DoEvent(TEventUI& event) override; 
 
 	bool OnInsertMsg(void* param);
 public:

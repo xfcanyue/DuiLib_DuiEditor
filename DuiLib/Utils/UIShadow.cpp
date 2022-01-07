@@ -297,13 +297,13 @@ void CShadowUI::Update(HWND hParent)
 	if (m_bIsImageMode)
 	{
 		RECT rcPaint = {0, 0, nShadWndWid, nShadWndHei};
-		const TImageInfo* data = m_pManager->GetImageEx((LPCTSTR)m_sShadowImage, NULL, 0);
+		const UIImage* data = m_pManager->GetImageEx((LPCTSTR)m_sShadowImage, NULL, 0);
 		if( !data ) return;    
 		RECT rcBmpPart = {0};
-		rcBmpPart.right = data->nX;
-		rcBmpPart.bottom = data->nY;
+		rcBmpPart.right = data->nWidth;
+		rcBmpPart.bottom = data->nHeight;
 		RECT corner = m_rcShadowCorner;
-		CRenderEngine::DrawImage(hMemDC, data->hBitmap, rcPaint, rcPaint, rcBmpPart, corner, data->bAlpha, 0xFF, true, false, false);
+		m_pManager->Render()->DrawBitmap(data->bitmap->GetBitmap(), rcPaint, rcPaint, rcBmpPart, corner, data->bAlpha, 0xFF, true, false, false);
 	}
 	else
 	{

@@ -593,8 +593,7 @@ namespace DuiLib
 				RECT rcTextPadding = GetTextPadding();
 				RECT rcText = {0, 0, szAvailable.cx, szAvailable.cy};
 				int nLinks = 0;
-				if( m_bShowHtml ) CRenderEngine::DrawHtmlText(m_pManager->GetPaintDC(), m_pManager, rcText, sText, m_dwTextColor, NULL, NULL, nLinks, m_iFont, DT_CALCRECT | m_uTextStyle);
-				else CRenderEngine::DrawText(m_pManager->GetPaintDC(), m_pManager, rcText, sText, m_dwTextColor, m_iFont, DT_CALCRECT | m_uTextStyle);
+				GetManager()->Render()->DrawText(rcText, GetTextPadding(), sText, m_dwTextColor, m_iFont, DT_CALCRECT | m_uTextStyle);
 				needWidth = MulDiv(rcText.right - rcText.left + GetManager()->GetDPIObj()->Scale(rcTextPadding.left) + GetManager()->GetDPIObj()->Scale(rcTextPadding.right), 100, GetManager()->GetDPIObj()->GetScale());
 			}
 

@@ -5,7 +5,7 @@
 
 namespace DuiLib
 {
-	class CIPAddressWnd;
+	//class CIPAddressWnd;
 
 	/// IP¿Ø¼þ
 	class UILIB_API CIPAddressUI : public CLabelUI
@@ -15,34 +15,30 @@ namespace DuiLib
 		friend class CIPAddressWnd;
 	public:
 		CIPAddressUI();
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
 		DWORD GetIP();
 		void SetIP(DWORD dwIP);
 
-		virtual void SetText(LPCTSTR pstrText);
-		virtual CDuiString GetText() const;
+		virtual void SetText(LPCTSTR pstrText) override;
+		virtual CDuiString GetText() const override;
 
-		virtual int  GetTextN();
-		virtual void SetTextN(int n);
-
-		void SetReadOnly(bool bReadOnly);
-		bool IsReadOnly() const;
+		virtual int  GetTextN() override;
+		virtual void SetTextN(int n) override;
 
 		void UpdateText();
 
-		void SetPos(RECT rc, bool bNeedInvalidate = true);
-		void Move(SIZE szOffset, bool bNeedInvalidate = true);
-		void SetVisible(bool bVisible = true);
-		void SetInternVisible(bool bVisible = true);
-		void DoEvent(TEventUI& event);
+		virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
+		virtual void Move(SIZE szOffset, bool bNeedInvalidate = true) override;
+		virtual void SetVisible(bool bVisible = true) override;
+		virtual void SetInternVisible(bool bVisible = true) override;
+		virtual void DoEvent(TEventUI& event) override;
 
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 
 	protected:
 		DWORD	m_dwIP;
-		bool       m_bReadOnly;
 		int		m_nIPUpdateFlag;
 
 		CIPAddressWnd* m_pWindow;

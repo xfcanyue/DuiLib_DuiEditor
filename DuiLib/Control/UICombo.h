@@ -16,28 +16,12 @@ namespace DuiLib {
 	public:
 		CComboUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-		void DoInit();
-		UINT GetControlFlags() const;
-
-		//modify by liqs99
-		//virtual CDuiString GetText() const;
-		void SetEnabled(bool bEnable = true);
-
-		void SetTextStyle(UINT uStyle);
-		UINT GetTextStyle() const;
-		void SetTextColor(DWORD dwTextColor);
-		DWORD GetTextColor() const;
-		void SetDisabledTextColor(DWORD dwTextColor);
-		DWORD GetDisabledTextColor() const;
-		void SetFont(int index);
-		int GetFont() const;
-		RECT GetTextPadding() const;
-		void SetTextPadding(RECT rc);
-		bool IsShowHtml();
-		void SetShowHtml(bool bShowHtml = true);
+		virtual void DoInit() override;
+		virtual UINT GetControlFlags() const override;
+	
 		bool IsShowShadow();
 		void SetShowShadow(bool bShow = true);
 
@@ -46,103 +30,38 @@ namespace DuiLib {
 		SIZE GetDropBoxSize() const;
 		void SetDropBoxSize(SIZE szDropBox);
 
-		UINT GetListType();
-		TListInfoUI* GetListInfo();
-		int GetCurSel() const;  
+		virtual UINT GetListType() override;
+		virtual TListInfoUI* GetListInfo() override;
+		virtual int GetCurSel() const override;  
 		bool SelectItem(LPCTSTR pstrText);
-		bool SelectItem(int iIndex, bool bTakeFocus = false);
-		bool SelectMultiItem(int iIndex, bool bTakeFocus = false);
-		bool UnSelectItem(int iIndex, bool bOthers = false);
-		bool SetItemIndex(CControlUI* pControl, int iIndex);
+		virtual bool SelectItem(int iIndex, bool bTakeFocus = false) override;
+		virtual bool SelectMultiItem(int iIndex, bool bTakeFocus = false) override;
+		virtual bool UnSelectItem(int iIndex, bool bOthers = false) override;
+		virtual bool SetItemIndex(CControlUI* pControl, int iIndex) override;
 
-		bool Add(CControlUI* pControl);
-		bool AddAt(CControlUI* pControl, int iIndex);
-		bool Remove(CControlUI* pControl, bool bDoNotDestroy=false);
-		bool RemoveAt(int iIndex, bool bDoNotDestroy=false);
-		void RemoveAll();
+		virtual bool Add(CControlUI* pControl) override;
+		virtual bool AddAt(CControlUI* pControl, int iIndex) override;
+		virtual bool Remove(CControlUI* pControl, bool bDoNotDestroy=false) override;
+		virtual bool RemoveAt(int iIndex, bool bDoNotDestroy=false) override;
+		virtual void RemoveAll() override;
 
-		bool Activate();
+		virtual bool Activate() override;
 
-		LPCTSTR GetNormalImage() const;
-		void SetNormalImage(LPCTSTR pStrImage);
-		LPCTSTR GetHotImage() const;
-		void SetHotImage(LPCTSTR pStrImage);
-		LPCTSTR GetPushedImage() const;
-		void SetPushedImage(LPCTSTR pStrImage);
-		LPCTSTR GetFocusedImage() const;
-		void SetFocusedImage(LPCTSTR pStrImage);
-		LPCTSTR GetDisabledImage() const;
-		void SetDisabledImage(LPCTSTR pStrImage);
-
-		bool GetScrollSelect();
-		void SetScrollSelect(bool bScrollSelect);
-		
-		void SetItemFont(int index);
-		void SetItemTextStyle(UINT uStyle);
-		RECT GetItemTextPadding() const;
-		void SetItemTextPadding(RECT rc);
-		DWORD GetItemTextColor() const;
-		void SetItemTextColor(DWORD dwTextColor);
-		DWORD GetItemBkColor() const;
-		void SetItemBkColor(DWORD dwBkColor);
-		LPCTSTR GetItemBkImage() const;
-		void SetItemBkImage(LPCTSTR pStrImage);
-		bool IsAlternateBk() const;
-		void SetAlternateBk(bool bAlternateBk);
-		DWORD GetSelectedItemTextColor() const;
-		void SetSelectedItemTextColor(DWORD dwTextColor);
-		DWORD GetSelectedItemBkColor() const;
-		void SetSelectedItemBkColor(DWORD dwBkColor);
-		LPCTSTR GetSelectedItemImage() const;
-		void SetSelectedItemImage(LPCTSTR pStrImage);
-		DWORD GetHotItemTextColor() const;
-		void SetHotItemTextColor(DWORD dwTextColor);
-		DWORD GetHotItemBkColor() const;
-		void SetHotItemBkColor(DWORD dwBkColor);
-		LPCTSTR GetHotItemImage() const;
-		void SetHotItemImage(LPCTSTR pStrImage);
-		DWORD GetDisabledItemTextColor() const;
-		void SetDisabledItemTextColor(DWORD dwTextColor);
-		DWORD GetDisabledItemBkColor() const;
-		void SetDisabledItemBkColor(DWORD dwBkColor);
-		LPCTSTR GetDisabledItemImage() const;
-		void SetDisabledItemImage(LPCTSTR pStrImage);
-		DWORD GetItemLineColor() const;
-		void SetItemLineColor(DWORD dwLineColor);
-		bool IsItemShowHtml();
-		void SetItemShowHtml(bool bShowHtml = true);
-
-		SIZE EstimateSize(SIZE szAvailable);
-		void SetPos(RECT rc, bool bNeedInvalidate = true);
-		void Move(SIZE szOffset, bool bNeedInvalidate = true);
-		void DoEvent(TEventUI& event);
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
-
-		bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
-		void PaintText(HDC hDC);
-		void PaintStatusImage(HDC hDC);
+		virtual SIZE EstimateSize(SIZE szAvailable) override;
+		virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
+		virtual void Move(SIZE szOffset, bool bNeedInvalidate = true) override;
+		virtual void DoEvent(TEventUI& event) override;
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 
 	protected:
 		CComboWnd* m_pWindow;
 
 		int m_iCurSel;
-		DWORD	m_dwTextColor;
-		DWORD	m_dwDisabledTextColor;
-		int		m_iFont;
-		UINT	m_uTextStyle;
-		RECT	m_rcTextPadding;
-		bool	m_bShowHtml;
+		
 		bool	m_bShowShadow;
 		CDuiString m_sDropBoxAttributes;
 		SIZE m_szDropBox;
 
-		CDuiString m_sNormalImage;
-		CDuiString m_sHotImage;
-		CDuiString m_sPushedImage;
-		CDuiString m_sFocusedImage;
-		CDuiString m_sDisabledImage;
-
-		bool m_bScrollSelect;
 		TListInfoUI m_ListInfo;
 	};
 

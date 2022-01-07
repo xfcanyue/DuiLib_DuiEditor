@@ -28,6 +28,10 @@ protected:
 	HBRUSH m_hBkBrush;
 	bool m_bInit;
 	bool m_bDrawCaret;
+
+	CStdRefPtr<UIFont> m_font;
+	CStdRefPtr<UIBitmap> m_bmpBrush;
+	CStdRefPtr<UIBrush> m_brush;
 };
 
 

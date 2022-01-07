@@ -49,9 +49,11 @@
 #include <comdef.h>
 #include <gdiplus.h>
 
+#include "Utils/DuiString.h"
 #include "Utils/Utils.h"
 #include "Utils/unzip.h"
 #include "Utils/VersionHelpers.h"
+#include "Core/UIFile.h"
 #include "Core/UIXmlAttribute.h"
 #include "Core/UIXmlNode.h"
 #include "Core/UIXmlDocument.h"
@@ -65,6 +67,7 @@
 #include "Core/UIDefine.h"
 #include "Core/UIResourceManager.h"
 #include "Core/UILangManager.h"
+#include "Render/IRender.h"
 #include "Core/UIManager.h"
 #include "Core/UIBase.h"
 #include "Core/ControlFactory.h"
@@ -74,7 +77,6 @@
 #include "Core/UIContainer.h"
 
 #include "Core/UIDlgBuilder.h"
-#include "Core/UIRender.h"
 #include "Utils/WinImplBase.h"
 
 #include "Layout/UIVerticalLayout.h"
@@ -84,23 +86,22 @@
 #include "Layout/UITabLayout.h"
 #include "Layout/UIChildLayout.h"
 
-#include "Control/UIList.h"
-#include "Control/UICombo.h"
-#include "Control/UIScrollBar.h"
-#include "Control/UITreeView.h"
 
 #include "Control/UILabel.h"
-#include "Layout/UILabelLayout.h"
 #include "Control/UIText.h"
 #include "Control/UIEdit.h"
 #include "Control/UIGifAnim.h"
 
+
 #include "Layout/UIAnimationTabLayout.h"
 #include "Control/UIButton.h"
-#include "Layout/UIButtonLayout.h"
 #include "Control/UIOption.h"
-#include "Layout/UIOptionLayout.h"
 #include "Control/UITabCtrl.h"
+
+#include "Control/UIList.h"
+#include "Control/UICombo.h"
+#include "Control/UIScrollBar.h"
+#include "Control/UITreeView.h"
 
 #include "Control/UIProgress.h"
 #include "Control/UISlider.h"
@@ -157,6 +158,7 @@
 #include "Utils/UIForm.h"
 #include "Utils/UIDialog.h"
 
+#include "Core/UIGlobal.h"
 
 #pragma comment( lib, "comctl32.lib" )
 #pragma comment( lib, "GdiPlus.lib" )

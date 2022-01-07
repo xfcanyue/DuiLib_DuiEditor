@@ -46,6 +46,8 @@ void CMainFrame::Notify(TNotifyUI& msg)
 
 void CMainFrame::InitWindow()
 {
+	CControlUI *pRoot = GetManager()->GetRoot();
+
 	//OpenZip(_T(""), NULL);
 	//°ó¶¨¿Ø¼þÖ¸Õë
 	//UI_BINDCONTROL(CImageBoxUI, m_pImageBox, _T("imagebox_1"));
@@ -144,6 +146,16 @@ bool CMainFrame::OnMenuCommand(const MenuCmd *cmd)
 		GetMainWnd()->GetManager()->GetLangManager()->ReloadLanguage();
 		return true;
 	}
+	if(IsMenuCommand(cmd, _T("menu_render_gdi")))
+	{
+		CPaintManagerUI::SetRenderEngineType(DuiLib_Render_Default);
+		return true;
+	}
+	if(IsMenuCommand(cmd, _T("menu_render_gdiplus")))
+	{
+		CPaintManagerUI::SetRenderEngineType(DuiLib_Render_GdiPlus);
+		return true;
+	}
 	return false;
 }
 
@@ -203,6 +215,16 @@ bool CMainFrame::OnMenuUpdateCommandUI(CMenuCmdUI *cmdUI)
 		cmdUI->SetCheck(CLangManagerUI::GetLangName() == _T("en"));
 		return true;
 	}
+	if(IsMenuCommand(cmdUI, _T("menu_render_gdi")))
+	{
+		cmdUI->SetCheck(CPaintManagerUI::GetRenderEngineType() == DuiLib_Render_Default);
+		return true;
+	}
+	if(IsMenuCommand(cmdUI, _T("menu_render_gdiplus")))
+	{
+		cmdUI->SetCheck(CPaintManagerUI::GetRenderEngineType() == DuiLib_Render_GdiPlus);
+		return true;
+	}
 	return false;
 }
 
@@ -230,8 +252,9 @@ void CMainFrame::OnNotifyClick(TNotifyUI& msg)
 
 	if(IsControl(msg, _T("btn_domodal")))
 	{
-		CDialog1 dlg;
-		dlg.DoModal(this);
+// 		CDialog1 dlg;
+// 		dlg.DoModal(this);
+		CPaintManagerUI::SetRenderEngineType(DuiLib_Render_Default);
 	}
 
 	if(IsControl(msg, _T("btn_show_dialog")))

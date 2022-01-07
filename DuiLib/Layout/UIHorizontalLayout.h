@@ -11,27 +11,27 @@ namespace DuiLib
 	public:
 		CHorizontalLayoutUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
-		UINT GetControlFlags() const;
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
+		virtual UINT GetControlFlags() const override;
 
 		void SetSepWidth(int iWidth);
 		int GetSepWidth() const;
 		void SetSepImmMode(bool bImmediately);
 		bool IsSepImmMode() const;
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
-		void DoEvent(TEventUI& event);
 
-		virtual SIZE EstimateSize(SIZE szAvailable);
-		void SetPos(RECT rc, bool bNeedInvalidate = true);
-		virtual bool CalcPos(CControlUI *pChildControl, RECT &rcChild); //子控件调用询问父控件，你将会给我分配多大的rect。
-		void DoPostPaint(HDC hDC, const RECT& rcPaint);
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
+		virtual void DoEvent(TEventUI& event) override;
+
+		virtual SIZE EstimateSize(SIZE szAvailable) override;
+		virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
+		virtual bool CalcPos(CControlUI *pChildControl, RECT &rcChild) override; //子控件调用询问父控件，你将会给我分配多大的rect。
+		virtual void DoPostPaint(UIRender *pRender, const RECT& rcPaint) override;
 
 		RECT GetThumbRect(bool bUseNew = false) const;
 
 	protected:
 		int m_iSepWidth;
-		POINT ptLastMouse;
 		RECT m_rcNewPos;
 		bool m_bImmMode;
 	};

@@ -20,7 +20,8 @@ namespace DuiLib{
 			{
 				break;
 			}
-			SetWindowFont(m_hWnd, m_pOwner->GetManager()->GetFontInfo(m_pOwner->GetFont())->hFont, TRUE);
+			m_font = MakeRefPtr<UIFont>(m_pOwner->GetManager()->CloneFont(m_pOwner->GetFont()));
+			::SendMessage(m_hWnd, WM_SETFONT, (WPARAM)m_font->GetHFont(m_pOwner->GetManager()), (LPARAM)TRUE);
 			SetHotKey(m_pOwner->m_wVirtualKeyCode, m_pOwner->m_wModifiers);
 			m_pOwner->m_sText = GetHotKeyName();
 			::EnableWindow(m_hWnd, m_pOwner->IsEnabled() == true);
@@ -39,7 +40,7 @@ namespace DuiLib{
 		rcPos.top += rcInset.top;
 		rcPos.right -= rcInset.right;
 		rcPos.bottom -= rcInset.bottom;
-		LONG lHeight = m_pOwner->GetManager()->GetFontInfo(m_pOwner->GetFont())->tm.tmHeight;
+		LONG lHeight = m_pOwner->GetManager()->GetFontHeight(m_pOwner->GetFont());
 		if( lHeight < rcPos.GetHeight() ) {
 			rcPos.top += (rcPos.GetHeight() - lHeight) / 2;
 			rcPos.bottom = rcPos.top + lHeight;
@@ -328,7 +329,7 @@ namespace DuiLib{
 		if( event.Type == UIEVENT_MOUSEENTER )
 		{
 			if( IsEnabled() ) {
-				m_uButtonState |= UISTATE_HOT;
+				SetHotState(true);
 				Invalidate();
 			}
 			return;
@@ -336,7 +337,7 @@ namespace DuiLib{
 		if( event.Type == UIEVENT_MOUSELEAVE )
 		{
 			if( IsEnabled() ) {
-				m_uButtonState &= ~UISTATE_HOT;
+				SetHotState(false);
 				Invalidate();
 			}
 			return;
@@ -344,62 +345,10 @@ namespace DuiLib{
 		CLabelUI::DoEvent(event);
 	}
 
-	void CHotKeyUI::SetEnabled(bool bEnable)
-	{
-		CControlUI::SetEnabled(bEnable);
-		if( !IsEnabled() ) {
-			m_uButtonState = 0;
-		}
-	}
-
 	void CHotKeyUI::SetText(LPCTSTR pstrText)
 	{
 		m_sText = pstrText;
 		if( m_pWindow != NULL ) Edit_SetText(*m_pWindow, m_sText);
-		Invalidate();
-	}
-
-	LPCTSTR CHotKeyUI::GetNormalImage()
-	{
-		return m_sNormalImage;
-	}
-
-	void CHotKeyUI::SetNormalImage(LPCTSTR pStrImage)
-	{
-		m_sNormalImage = pStrImage;
-		Invalidate();
-	}
-
-	LPCTSTR CHotKeyUI::GetHotImage()
-	{
-		return m_sHotImage;
-	}
-
-	void CHotKeyUI::SetHotImage(LPCTSTR pStrImage)
-	{
-		m_sHotImage = pStrImage;
-		Invalidate();
-	}
-
-	LPCTSTR CHotKeyUI::GetFocusedImage()
-	{
-		return m_sFocusedImage;
-	}
-
-	void CHotKeyUI::SetFocusedImage(LPCTSTR pStrImage)
-	{
-		m_sFocusedImage = pStrImage;
-		Invalidate();
-	}
-
-	LPCTSTR CHotKeyUI::GetDisabledImage()
-	{
-		return m_sDisabledImage;
-	}
-
-	void CHotKeyUI::SetDisabledImage(LPCTSTR pStrImage)
-	{
-		m_sDisabledImage = pStrImage;
 		Invalidate();
 	}
 
@@ -436,77 +385,19 @@ namespace DuiLib{
 
 	SIZE CHotKeyUI::EstimateSize(SIZE szAvailable)
 	{
-		if( m_cxyFixed.cy == 0 ) return CDuiSize(m_cxyFixed.cx, m_pManager->GetFontInfo(GetFont())->tm.tmHeight + 6);
+		if( m_cxyFixed.cy == 0 ) return CDuiSize(m_cxyFixed.cx, m_pManager->GetFontHeight(GetFont()) + 6);
 		return CControlUI::EstimateSize(szAvailable);
 	}
 
 	void CHotKeyUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
-		if( _tcscmp(pstrName, _T("normalimage")) == 0 ) SetNormalImage(pstrValue);
-		else if( _tcscmp(pstrName, _T("hotimage")) == 0 ) SetHotImage(pstrValue);
-		else if( _tcscmp(pstrName, _T("focusedimage")) == 0 ) SetFocusedImage(pstrValue);
-		else if( _tcscmp(pstrName, _T("disabledimage")) == 0 ) SetDisabledImage(pstrValue);
-		else if( _tcscmp(pstrName, _T("nativebkcolor")) == 0 ) {
+		if( _tcscmp(pstrName, _T("nativebkcolor")) == 0 ) {
 			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
 			LPTSTR pstr = NULL;
 			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
 			SetNativeBkColor(clrColor);
 		}
 		else CLabelUI::SetAttribute(pstrName, pstrValue);
-	}
-
-	void CHotKeyUI::PaintStatusImage(HDC hDC)
-	{
-		if( IsFocused() ) m_uButtonState |= UISTATE_FOCUSED;
-		else m_uButtonState &= ~ UISTATE_FOCUSED;
-		if( !IsEnabled() ) m_uButtonState |= UISTATE_DISABLED;
-		else m_uButtonState &= ~ UISTATE_DISABLED;
-
-		if( (m_uButtonState & UISTATE_DISABLED) != 0 ) {
-			if( !m_sDisabledImage.IsEmpty() ) {
-				if( !DrawImage(hDC, (LPCTSTR)m_sDisabledImage) ) {}
-				else return;
-			}
-		}
-		else if( (m_uButtonState & UISTATE_FOCUSED) != 0 ) {
-			if( !m_sFocusedImage.IsEmpty() ) {
-				if( !DrawImage(hDC, (LPCTSTR)m_sFocusedImage) ) {}
-				else return;
-			}
-		}
-		else if( (m_uButtonState & UISTATE_HOT) != 0 ) {
-			if( !m_sHotImage.IsEmpty() ) {
-				if( !DrawImage(hDC, (LPCTSTR)m_sHotImage) ) {}
-				else return;
-			}
-		}
-
-		if( !m_sNormalImage.IsEmpty() ) {
-			if( !DrawImage(hDC, (LPCTSTR)m_sNormalImage) ) {}
-			else return;
-		}
-	}
-
-	void CHotKeyUI::PaintText(HDC hDC)
-	{
-		if( m_dwTextColor == 0 ) m_dwTextColor = m_pManager->GetDefaultFontColor();
-		if( m_dwDisabledTextColor == 0 ) m_dwDisabledTextColor = m_pManager->GetDefaultDisabledColor();
-		if( m_sText.IsEmpty() ) return;
-		CDuiString sText = m_sText;
-		RECT rc = m_rcItem;
-		RECT rcTextPadding = GetTextPadding();
-		rc.left += rcTextPadding.left;
-		rc.right -= rcTextPadding.right;
-		rc.top += rcTextPadding.top;
-		rc.bottom -= rcTextPadding.bottom;
-		if( IsEnabled() ) {
-			CRenderEngine::DrawText(hDC, m_pManager, rc, sText, m_dwTextColor, \
-				m_iFont, DT_SINGLELINE | m_uTextStyle);
-		}
-		else {
-			CRenderEngine::DrawText(hDC, m_pManager, rc, sText, m_dwDisabledTextColor, \
-				m_iFont, DT_SINGLELINE | m_uTextStyle);
-		}
 	}
 
 	DWORD CHotKeyUI::GetHotKey() const

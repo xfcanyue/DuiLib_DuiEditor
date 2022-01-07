@@ -6,7 +6,6 @@ namespace DuiLib
 	IMPLEMENT_DUICONTROL(CVerticalLayoutUI)
 	CVerticalLayoutUI::CVerticalLayoutUI() : m_iSepHeight(0), m_bImmMode(false)
 	{
-		m_ptLastMouse.x = m_ptLastMouse.y = 0;
 		::ZeroMemory(&m_rcNewPos, sizeof(m_rcNewPos));
 	}
 
@@ -261,11 +260,11 @@ namespace DuiLib
 		ProcessScrollBar(rc, cxNeeded, cyNeeded);
 	}
 
-	void CVerticalLayoutUI::DoPostPaint(HDC hDC, const RECT& rcPaint)
+	void CVerticalLayoutUI::DoPostPaint(UIRender *pRender, const RECT& rcPaint)
 	{
-		if( (m_uButtonState & UISTATE_CAPTURED) != 0 && !m_bImmMode ) {
+		if( IsCaptureState() && !m_bImmMode ) {
 			RECT rcSeparator = GetThumbRect(true);
-			CRenderEngine::DrawColor(hDC, rcSeparator, 0xAA000000);
+			pRender->DrawColor(rcSeparator, CDuiSize(0,0), 0xAA000000);
 		}
 	}
 
@@ -282,7 +281,7 @@ namespace DuiLib
 	void CVerticalLayoutUI::SetSepImmMode(bool bImmediately)
 	{
 		if( m_bImmMode == bImmediately ) return;
-		if( (m_uButtonState & UISTATE_CAPTURED) != 0 && !m_bImmMode && m_pManager != NULL ) {
+		if( IsCaptureState() && !m_bImmMode && m_pManager != NULL ) {
 			m_pManager->RemovePostPaint(this);
 		}
 
@@ -307,8 +306,9 @@ namespace DuiLib
 			if( event.Type == UIEVENT_BUTTONDOWN && IsEnabled() )
 			{
 				RECT rcSeparator = GetThumbRect(false);
-				if( ::PtInRect(&rcSeparator, event.ptMouse) ) {
-					m_uButtonState |= UISTATE_CAPTURED;
+				if( ::PtInRect(&rcSeparator, event.ptMouse) ) 
+				{
+					SetCaptureState(true);
 					m_ptLastMouse = event.ptMouse;
 					m_rcNewPos = m_rcItem;
 					if( !m_bImmMode && m_pManager ) m_pManager->AddPostPaint(this);
@@ -317,8 +317,9 @@ namespace DuiLib
 			}
 			if( event.Type == UIEVENT_BUTTONUP )
 			{
-				if( (m_uButtonState & UISTATE_CAPTURED) != 0 ) {
-					m_uButtonState &= ~UISTATE_CAPTURED;
+				if( IsCaptureState() ) 
+				{
+					SetCaptureState(false);
 					m_rcItem = m_rcNewPos;
 					if( !m_bImmMode && m_pManager ) m_pManager->RemovePostPaint(this);
 					NeedParentUpdate();
@@ -327,7 +328,7 @@ namespace DuiLib
 			}
 			if( event.Type == UIEVENT_MOUSEMOVE )
 			{
-				if( (m_uButtonState & UISTATE_CAPTURED) != 0 ) {
+				if( IsCaptureState() ) {
 					LONG cy = event.ptMouse.y - m_ptLastMouse.y;
 					m_ptLastMouse = event.ptMouse;
 					RECT rc = m_rcNewPos;
@@ -388,7 +389,7 @@ namespace DuiLib
 
 	RECT CVerticalLayoutUI::GetThumbRect(bool bUseNew) const
 	{
-		if( (m_uButtonState & UISTATE_CAPTURED) != 0 && bUseNew) {
+		if( IsCaptureState() && bUseNew) {
 			if( m_iSepHeight >= 0 ) 
 				return CDuiRect(m_rcNewPos.left, MAX(m_rcNewPos.bottom - m_iSepHeight, m_rcNewPos.top), 
 				m_rcNewPos.right, m_rcNewPos.bottom);

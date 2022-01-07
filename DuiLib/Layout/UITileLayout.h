@@ -11,10 +11,10 @@ namespace DuiLib
 	public:
 		CTileLayoutUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-		void SetPos(RECT rc, bool bNeedInvalidate = true);
+		virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
 
 		int GetFixedColumns() const;
 		void SetFixedColumns(int iColums);
@@ -25,7 +25,8 @@ namespace DuiLib
 		void SetItemSize(SIZE szSize);
 		int GetColumns() const;
 		int GetRows() const;
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 
 	protected:
 		SIZE m_szItem;

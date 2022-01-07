@@ -13,17 +13,17 @@ namespace DuiLib {
 		CFadeButtonUI();
 		virtual ~CFadeButtonUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
-		void SetNormalImage(LPCTSTR pStrImage);
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
+		virtual void SetNormalImage(LPCTSTR pStrImage) override;
 
-		void DoEvent(TEventUI& event);
+		virtual void DoEvent(TEventUI& event) override;
 		void OnTimer( int nTimerID );
-		void PaintStatusImage(HDC hDC);
+		virtual void PaintStatusImage(UIRender *pRender) override;
 
-		virtual void OnAnimationStart(INT nAnimationID, BOOL bFirstLoop) {}
-		virtual void OnAnimationStep(INT nTotalFrame, INT nCurFrame, INT nAnimationID);
-		virtual void OnAnimationStop(INT nAnimationID) {}
+		virtual void OnAnimationStart(INT nAnimationID, BOOL bFirstLoop) override {}
+		virtual void OnAnimationStep(INT nTotalFrame, INT nCurFrame, INT nAnimationID) override;
+		virtual void OnAnimationStop(INT nAnimationID) override {}
 		
 	protected:
 		CDuiString m_sOldImage;

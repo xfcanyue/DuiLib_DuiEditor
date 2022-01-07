@@ -21,13 +21,13 @@ bool CApp::InitInstance(HINSTANCE hInstance)
 	DuiPluginsRegister();
 
 	//注册脚本接口
-	DuiScriptRegister();
+	//DuiScriptRegister();
 
 	//加入脚本文件
-	CPaintManagerUI::AddScriptFile(_T("Script\\Script.as"));
+	//CPaintManagerUI::AddScriptFile(_T("Script\\Script.as"));
 
 	//编译脚本
-	CPaintManagerUI::CompileScript();
+	//CPaintManagerUI::CompileScript();
 
 	//语言包路径
 	CLangManagerUI::SetLanguage(_T("Lang\\ChineseSimplified"), _T("chs"));

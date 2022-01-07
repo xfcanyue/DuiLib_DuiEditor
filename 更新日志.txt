@@ -277,3 +277,26 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
    1, List表头拖动问题
    2，设计器控件箱增加tip提示
    3，导出Res.xml写错了，path写成了value
+
+2022-01-01
+   1, 魔改，封装Render，UIFont, UIBrush, UIPen, UIBitmap, UIImage。统一使用Render接口进行绘制。
+   2, 魔改，把一些常用的属性，比如TextColor, TextStyle, NormalImage等等属性统统都丢到CControlUI了。其实duilib的控件都差不多一样的套路，这样可以避免扩展控件时频繁的出现重复代码。代价是牺牲了一丢丢的内存。
+   3，魔改，修改CDuiString为内存池版本，仿照CString做的，使用了内存复用技术。 可以完全不用CDuiString::GetData()这个函数了。
+      代码中除了GetClass()的返回值依然是LPCTSTR，其他看到的都改成了CDuiString，还有很多没改。 两者返回的效率是相等的。但是新版的，CDuiString sText = GetText()，相比旧版，少了一次字符串拷贝，效率应该要高点。 
+      相同的，传递参数用CDuiString效率还可能更高，实参和引用的差别非常小
+      这个改动会产生一个问题，比如 LPCTSTR s = pControl->GetNormalImage()，由于GetNormalImage返回一个临时对象CDuiString，s总是会返回空字符串的。不过一定要这么写的话，当初GetText就有这个坑的。
+      基于这个原因，GetClass不能改成返回CDuiString，因为有极大的可能各位代码中有出现过 LPCTSTR pClassName = pControl->GetClass()。
+   4，增加StringConverterUI，相应的提供了一系列的 A <==> W <==> UTF8 转换宏，转换过程中使用的是CDuiString的内存池。
+   5, 魔改，增加了3个模板类，TemplateLabelUI，TemplateButtonUI，TemplateOptionUI。
+      因此又衍生出了几个类。
+      CLabelHLayoutUI，CLabelVLayoutUI，CLabelLayoutUI。
+      CButtonHLayoutUI，CButtonVLayoutUI，CButtonLayoutUI。
+      COptionHLayoutUI，COptionVLayoutUI，COptionLayoutUI。
+   6, 删除了showhtml属性。
+   7, 增加了ForceHSL属性，强制所有图片和颜色进行HSL转换。可以在设计器中预览。
+
+
+   注：不兼容的地方只有一点， 一堆的PaintXXX函数，传递的参数不再是“HDC hDC”，而是 “UIRender *pRender”。要避免pRender->GetDC()然后继续用gdi绘制，应该使用Render提供的绘图函数。
+
+
+

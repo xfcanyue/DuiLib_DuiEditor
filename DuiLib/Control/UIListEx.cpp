@@ -350,18 +350,19 @@ namespace DuiLib {
 	//
 	IMPLEMENT_DUICONTROL(CListContainerHeaderItemUI)
 
-	CListContainerHeaderItemUI::CListContainerHeaderItemUI() : m_bDragable(TRUE), m_iSepWidth(4),
-		m_uTextStyle(DT_VCENTER | DT_CENTER | DT_SINGLELINE), m_dwTextColor(0), m_iFont(-1), m_bShowHtml(FALSE),
-		m_bEditable(FALSE),m_bComboable(FALSE),m_bCheckBoxable(FALSE),m_uCheckBoxState(0),m_bChecked(FALSE),m_pOwner(NULL)
+	CListContainerHeaderItemUI::CListContainerHeaderItemUI() : 
+		m_bEditable(FALSE),m_bComboable(FALSE),m_bCheckBoxable(FALSE),m_bChecked(FALSE),m_pOwner(NULL)
 	{
+		m_bDragable = true;
+		m_iSepWidth = 4;
+		m_uTextStyle = DT_VCENTER | DT_CENTER | DT_SINGLELINE;
 		SetTextPadding(CDuiRect(2, 0, 2, 0));
-		ptLastMouse.x = ptLastMouse.y = 0;
 		SetMinWidth(16);
 	}
 
 	LPCTSTR CListContainerHeaderItemUI::GetClass() const
 	{
-		return _T("ListContainerHeaderItem");
+		return _T("ListContainerHeaderItemUI");
 	}
 
 	LPVOID CListContainerHeaderItemUI::GetInterface(LPCTSTR pstrName)
@@ -376,131 +377,18 @@ namespace DuiLib {
 		else return 0;
 	}
 
-	void CListContainerHeaderItemUI::SetEnabled(bool bEnable) //modify by liqs99 BOOL bEnable 改成 bool bEnable
-	{
-		CContainerUI::SetEnabled(bEnable);
-		if( !IsEnabled() ) {
-			m_uButtonState = 0;
-		}
-	}
-
-	BOOL CListContainerHeaderItemUI::IsDragable() const
+	bool CListContainerHeaderItemUI::IsHeaderDragEnable() const
 	{
 		return m_bDragable;
 	}
 
-	void CListContainerHeaderItemUI::SetDragable(BOOL bDragable)
+	void CListContainerHeaderItemUI::SetHeaderDragEnable(bool bDragable)
 	{
 		m_bDragable = bDragable;
-		if ( !m_bDragable ) m_uButtonState &= ~UISTATE_CAPTURED;
+		if ( !m_bDragable ) SetCaptureState(false);
 	}
 
-	int CListContainerHeaderItemUI::GetSepWidth() const
-	{
-		return m_iSepWidth;
-	}
-
-	void CListContainerHeaderItemUI::SetSepWidth(int iWidth)
-	{
-		m_iSepWidth = iWidth;
-	}
-
-	DWORD CListContainerHeaderItemUI::GetTextStyle() const
-	{
-		return m_uTextStyle;
-	}
-
-	void CListContainerHeaderItemUI::SetTextStyle(UINT uStyle)
-	{
-		m_uTextStyle = uStyle;
-		Invalidate();
-	}
-
-	DWORD CListContainerHeaderItemUI::GetTextColor() const
-	{
-		return m_dwTextColor;
-	}
-
-
-	void CListContainerHeaderItemUI::SetTextColor(DWORD dwTextColor)
-	{
-		m_dwTextColor = dwTextColor;
-	}
-
-	RECT CListContainerHeaderItemUI::GetTextPadding() const
-	{
-		return m_rcTextPadding;
-	}
-
-	void CListContainerHeaderItemUI::SetTextPadding(RECT rc)
-	{
-		m_rcTextPadding = rc;
-		Invalidate();
-	}
-
-	void CListContainerHeaderItemUI::SetFont(int index)
-	{
-		m_iFont = index;
-	}
-
-	BOOL CListContainerHeaderItemUI::IsShowHtml()
-	{
-		return m_bShowHtml;
-	}
-
-	void CListContainerHeaderItemUI::SetShowHtml(BOOL bShowHtml)
-	{
-		if( m_bShowHtml == bShowHtml ) return;
-
-		m_bShowHtml = bShowHtml;
-		Invalidate();
-	}
-
-	LPCTSTR CListContainerHeaderItemUI::GetNormalImage() const
-	{
-		return m_sNormalImage;
-	}
-
-	void CListContainerHeaderItemUI::SetNormalImage(LPCTSTR pStrImage)
-	{
-		m_sNormalImage = pStrImage;
-		Invalidate();
-	}
-
-	LPCTSTR CListContainerHeaderItemUI::GetHotImage() const
-	{
-		return m_sHotImage;
-	}
-
-	void CListContainerHeaderItemUI::SetHotImage(LPCTSTR pStrImage)
-	{
-		m_sHotImage = pStrImage;
-		Invalidate();
-	}
-
-	LPCTSTR CListContainerHeaderItemUI::GetPushedImage() const
-	{
-		return m_sPushedImage;
-	}
-
-	void CListContainerHeaderItemUI::SetPushedImage(LPCTSTR pStrImage)
-	{
-		m_sPushedImage = pStrImage;
-		Invalidate();
-	}
-
-	LPCTSTR CListContainerHeaderItemUI::GetFocusedImage() const
-	{
-		return m_sFocusedImage;
-	}
-
-	void CListContainerHeaderItemUI::SetFocusedImage(LPCTSTR pStrImage)
-	{
-		m_sFocusedImage = pStrImage;
-		Invalidate();
-	}
-
-	LPCTSTR CListContainerHeaderItemUI::GetSepImage() const
+	CDuiString CListContainerHeaderItemUI::GetSepImage() const
 	{
 		return m_sSepImage;
 	}
@@ -513,53 +401,9 @@ namespace DuiLib {
 
 	void CListContainerHeaderItemUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
-		if( _tcsicmp(pstrName, _T("dragable")) == 0 ) SetDragable(_tcsicmp(pstrValue, _T("true")) == 0);
-		else if( _tcsicmp(pstrName, _T("sepwidth")) == 0 ) SetSepWidth(_ttoi(pstrValue));
-		else if( _tcsicmp(pstrName, _T("align")) == 0 ) 
-		{
-			if( _tcsstr(pstrValue, _T("left")) != NULL ) {
-				m_uTextStyle &= ~(DT_CENTER | DT_RIGHT);
-				m_uTextStyle |= DT_LEFT;
-			}
-			if( _tcsstr(pstrValue, _T("center")) != NULL ) {
-				m_uTextStyle &= ~(DT_LEFT | DT_RIGHT);
-				m_uTextStyle |= DT_CENTER;
-			}
-			if( _tcsstr(pstrValue, _T("right")) != NULL ) {
-				m_uTextStyle &= ~(DT_LEFT | DT_CENTER);
-				m_uTextStyle |= DT_RIGHT;
-			}
-		}
-		else if( _tcsicmp(pstrName, _T("endellipsis")) == 0 ) 
-		{
-			if( _tcsicmp(pstrValue, _T("true")) == 0 ) m_uTextStyle |= DT_END_ELLIPSIS;
-			else m_uTextStyle &= ~DT_END_ELLIPSIS;
-		}    
-		else if( _tcsicmp(pstrName, _T("font")) == 0 ) SetFont(_ttoi(pstrValue));
-		else if( _tcsicmp(pstrName, _T("textcolor")) == 0 ) 
-		{
-			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
-			LPTSTR pstr = NULL;
-			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
-			SetTextColor(clrColor);
-		}
-		else if( _tcsicmp(pstrName, _T("textpadding")) == 0 ) 
-		{
-			RECT rcTextPadding = { 0 };
-			LPTSTR pstr = NULL;
-			rcTextPadding.left = _tcstol(pstrValue, &pstr, 10);
-			rcTextPadding.top = _tcstol(pstr + 1, &pstr, 10);
-			rcTextPadding.right = _tcstol(pstr + 1, &pstr, 10);
-			rcTextPadding.bottom = _tcstol(pstr + 1, &pstr, 10);
-			SetTextPadding(rcTextPadding);
-		}
-		else if( _tcsicmp(pstrName, _T("showhtml")) == 0 ) SetShowHtml(_tcsicmp(pstrValue, _T("true")) == 0);
-		else if( _tcsicmp(pstrName, _T("normalimage")) == 0 ) SetNormalImage(pstrValue);
-		else if( _tcsicmp(pstrName, _T("hotimage")) == 0 ) SetHotImage(pstrValue);
-		else if( _tcsicmp(pstrName, _T("pushedimage")) == 0 ) SetPushedImage(pstrValue);
-		else if( _tcsicmp(pstrName, _T("focusedimage")) == 0 ) SetFocusedImage(pstrValue);
+		if( _tcsicmp(pstrName, _T("dragable")) == 0 ) SetHeaderDragEnable(_tcsicmp(pstrValue, _T("true")) == 0);
+		else if( _tcsicmp(pstrName, _T("sepwidth")) == 0 ) SetSepWidth(_ttoi(pstrValue));		
 		else if( _tcsicmp(pstrName, _T("sepimage")) == 0 ) SetSepImage(pstrValue);
-
 		else if( _tcsicmp(pstrName, _T("editable")) == 0 ) SetColumeEditable(_tcsicmp(pstrValue, _T("true")) == 0);
 		else if( _tcsicmp(pstrName, _T("comboable")) == 0 ) SetColumeComboable(_tcsicmp(pstrValue, _T("true")) == 0);
 		else if( _tcsicmp(pstrName, _T("checkable")) == 0 ) SetColumeCheckable(_tcsicmp(pstrValue, _T("true")) == 0);
@@ -594,34 +438,35 @@ namespace DuiLib {
 			{
 				if( ::PtInRect(&rcCheckBox, event.ptMouse)) 
 				{
-					m_uCheckBoxState |= UISTATE_PUSHED | UISTATE_CAPTURED;
+					SetCaptureState(true);
+					SetPushedState(true);
 					Invalidate();
 				}
 			}
 			else if( event.Type == UIEVENT_MOUSEMOVE )
 			{
-				if( (m_uCheckBoxState & UISTATE_CAPTURED) != 0 ) 
+				if( m_uCheckBoxState.IsCapture() ) 
 				{
 					if( ::PtInRect(&rcCheckBox, event.ptMouse) ) 
-						m_uCheckBoxState |= UISTATE_PUSHED;
+						m_uCheckBoxState.SetPushed(true);
 					else 
-						m_uCheckBoxState &= ~UISTATE_PUSHED;
+						m_uCheckBoxState.SetPushed(false);
 					Invalidate();
 				}
 				else if (::PtInRect(&rcCheckBox, event.ptMouse))
 				{
-					m_uCheckBoxState |= UISTATE_HOT;
+					m_uCheckBoxState.SetHot(true);
 					Invalidate();
 				}
 				else
 				{
-					m_uCheckBoxState &= ~UISTATE_HOT;
+					m_uCheckBoxState.SetHot(false);
 					Invalidate();
 				}
 			}
 			else if( event.Type == UIEVENT_BUTTONUP )
 			{
-				if( (m_uCheckBoxState & UISTATE_CAPTURED) != 0 )
+				if( m_uCheckBoxState.IsCapture() )
 				{
 					if( ::PtInRect(&rcCheckBox, event.ptMouse) ) 
 					{
@@ -633,7 +478,8 @@ namespace DuiLib {
 						}
 
 					}
-					m_uCheckBoxState &= ~(UISTATE_PUSHED | UISTATE_CAPTURED);
+					m_uCheckBoxState.SetPushed(false);
+					m_uCheckBoxState.SetCapture(false);
 					Invalidate();
 				}
 				else if (::PtInRect(&rcCheckBox, event.ptMouse))
@@ -645,13 +491,13 @@ namespace DuiLib {
 			{
 				if( ::PtInRect(&rcCheckBox, event.ptMouse) ) 
 				{
-					m_uCheckBoxState |= UISTATE_HOT;
+					m_uCheckBoxState.SetHot(true);
 					Invalidate();
 				}
 			}
 			else if( event.Type == UIEVENT_MOUSELEAVE )
 			{
-				m_uCheckBoxState &= ~UISTATE_HOT;
+				m_uCheckBoxState.SetHot(false);
 				Invalidate();
 			}
 		}
@@ -672,14 +518,15 @@ namespace DuiLib {
 				rcSeparator.left-=4;
 			else
 				rcSeparator.right+=4;
-			if( ::PtInRect(&rcSeparator, event.ptMouse) ) {
-				if( m_bDragable ) {
-					m_uButtonState |= UISTATE_CAPTURED;
-					ptLastMouse = event.ptMouse;
+			if( ::PtInRect(&rcSeparator, event.ptMouse) ) 
+			{
+				if( IsHeaderDragEnable() ) {
+					SetCaptureState(true);
+					m_ptLastMouse = event.ptMouse;
 				}
 			}
 			else {
-				m_uButtonState |= UISTATE_PUSHED;
+				SetCaptureState(true);
 				m_pManager->SendNotify(this, DUI_MSGTYPE_LISTHEADERCLICK);
 				Invalidate();
 			}
@@ -687,31 +534,31 @@ namespace DuiLib {
 		}
 		if( event.Type == UIEVENT_BUTTONUP )
 		{
-			if( (m_uButtonState & UISTATE_CAPTURED) != 0 ) {
-				m_uButtonState &= ~UISTATE_CAPTURED;
+			if( IsCaptureState() ) {
+				SetCaptureState(false);
 				if( GetParent() ) 
 					GetParent()->NeedParentUpdate();
 			}
-			else if( (m_uButtonState & UISTATE_PUSHED) != 0 ) {
-				m_uButtonState &= ~UISTATE_PUSHED;
+			else if( IsPushedState() ) {
+				SetPushedState(false);
 				Invalidate();
 			}
 			return;
 		}
 		if( event.Type == UIEVENT_MOUSEMOVE )
 		{
-			if( (m_uButtonState & UISTATE_CAPTURED) != 0 ) {
+			if( IsCaptureState() ) {
 				RECT rc = m_rcItem;
 				if( m_iSepWidth >= 0 ) {
-					rc.right -= ptLastMouse.x - event.ptMouse.x;
+					rc.right -= m_ptLastMouse.x - event.ptMouse.x;
 				}
 				else {
-					rc.left -= ptLastMouse.x - event.ptMouse.x;
+					rc.left -= m_ptLastMouse.x - event.ptMouse.x;
 				}
 
 				if( rc.right - rc.left > GetMinWidth() ) {
 					m_cxyFixed.cx = rc.right - rc.left;
-					ptLastMouse = event.ptMouse;
+					m_ptLastMouse = event.ptMouse;
 					if( GetParent() ) 
 						GetParent()->NeedParentUpdate();
 				}
@@ -725,7 +572,7 @@ namespace DuiLib {
 				rcSeparator.left-=4;
 			else
 				rcSeparator.right+=4;
-			if( IsEnabled() && m_bDragable && ::PtInRect(&rcSeparator, event.ptMouse) ) {
+			if( IsEnabled() && IsHeaderDragEnable() && ::PtInRect(&rcSeparator, event.ptMouse) ) {
 				::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZEWE)));
 				return;
 			}
@@ -733,7 +580,7 @@ namespace DuiLib {
 		if( event.Type == UIEVENT_MOUSEENTER )
 		{
 			if( IsEnabled() ) {
-				m_uButtonState |= UISTATE_HOT;
+				SetHotState(true);
 				Invalidate();
 			}
 			return;
@@ -741,7 +588,7 @@ namespace DuiLib {
 		if( event.Type == UIEVENT_MOUSELEAVE )
 		{
 			if( IsEnabled() ) {
-				m_uButtonState &= ~UISTATE_HOT;
+				SetHotState(false);
 				Invalidate();
 			}
 			return;
@@ -751,7 +598,7 @@ namespace DuiLib {
 
 	SIZE CListContainerHeaderItemUI::EstimateSize(SIZE szAvailable)
 	{
-		if( m_cxyFixed.cy == 0 ) return CDuiSize(m_cxyFixed.cx, m_pManager->GetDefaultFontInfo()->tm.tmHeight + 14);
+		if( m_cxyFixed.cy == 0 ) return CDuiSize(m_cxyFixed.cx, m_pManager->GetFontHeight(-1) + 14);
 		return CContainerUI::EstimateSize(szAvailable);
 	}
 
@@ -761,29 +608,9 @@ namespace DuiLib {
 		else return CDuiRect(m_rcItem.left, m_rcItem.top, m_rcItem.left - m_iSepWidth, m_rcItem.bottom);
 	}
 
-	void CListContainerHeaderItemUI::PaintStatusImage(HDC hDC)
+	void CListContainerHeaderItemUI::PaintStatusImage(UIRender *pRender)
 	{
-		//HeadItem Bkgnd
-		if( IsFocused() ) m_uButtonState |= UISTATE_FOCUSED;
-		else m_uButtonState &= ~ UISTATE_FOCUSED;
-
-		if( (m_uButtonState & UISTATE_PUSHED) != 0 ) {
-			if( m_sPushedImage.IsEmpty() && !m_sNormalImage.IsEmpty() ) DrawImage(hDC, (LPCTSTR)m_sNormalImage);
-			if( !DrawImage(hDC, (LPCTSTR)m_sPushedImage) ) {}
-		}
-		else if( (m_uButtonState & UISTATE_HOT) != 0 ) {
-			if( m_sHotImage.IsEmpty() && !m_sNormalImage.IsEmpty() ) DrawImage(hDC, (LPCTSTR)m_sNormalImage);
-			if( !DrawImage(hDC, (LPCTSTR)m_sHotImage) ) {}
-		}
-		else if( (m_uButtonState & UISTATE_FOCUSED) != 0 ) {
-			if( m_sFocusedImage.IsEmpty() && !m_sNormalImage.IsEmpty() ) DrawImage(hDC, (LPCTSTR)m_sNormalImage);
-			if( !DrawImage(hDC, (LPCTSTR)m_sFocusedImage) ) {}
-		}
-		else {
-			if( !m_sNormalImage.IsEmpty() ) {
-				if( !DrawImage(hDC, (LPCTSTR)m_sNormalImage) ) {}
-			}
-		}
+		CControlUI::PaintStatusImage(pRender);
 
 		if( !m_sSepImage.IsEmpty() ) {
 			RECT rcThumb = GetThumbRect();
@@ -794,63 +621,56 @@ namespace DuiLib {
 
 			m_sSepImageModify.Empty();
 			m_sSepImageModify.SmallFormat(_T("dest='%d,%d,%d,%d'"), rcThumb.left, rcThumb.top, rcThumb.right, rcThumb.bottom);
-			if( !DrawImage(hDC, (LPCTSTR)m_sSepImage, (LPCTSTR)m_sSepImageModify) ) {}
+			if( !DrawImage(pRender, (LPCTSTR)m_sSepImage, (LPCTSTR)m_sSepImageModify) ) {}
 		}
 
 		if(m_bCheckBoxable)
 		{
-			m_uCheckBoxState &= ~UISTATE_PUSHED;
-
-			if( (m_uCheckBoxState & UISTATE_SELECTED) != 0 ) {
+			if( m_uCheckBoxState.IsSelected() ) {
 				if( !m_sCheckBoxSelectedImage.IsEmpty() ) {
-					if( !DrawCheckBoxImage(hDC, (LPCTSTR)m_sCheckBoxSelectedImage) ) {}
+					if( !DrawCheckBoxImage(pRender, (LPCTSTR)m_sCheckBoxSelectedImage) ) {}
 					else goto Label_ForeImage;
 				}
 			}
 
-			if( IsFocused() ) m_uCheckBoxState |= UISTATE_FOCUSED;
-			else m_uCheckBoxState &= ~ UISTATE_FOCUSED;
-			if( !IsEnabled() ) m_uCheckBoxState |= UISTATE_DISABLED;
-			else m_uCheckBoxState &= ~ UISTATE_DISABLED;
-
-			if( (m_uCheckBoxState & UISTATE_DISABLED) != 0 ) {
+			if( !IsEnabled() ) {
 				if( !m_sCheckBoxDisabledImage.IsEmpty() ) {
-					if( !DrawCheckBoxImage(hDC, (LPCTSTR)m_sCheckBoxDisabledImage) ) {}
+					if( !DrawCheckBoxImage(pRender, (LPCTSTR)m_sCheckBoxDisabledImage) ) {}
 					else return;
 				}
 			}
-			else if( (m_uCheckBoxState & UISTATE_PUSHED) != 0 ) {
+			else if( m_uCheckBoxState.IsPushed() ) {
 				if( !m_sCheckBoxPushedImage.IsEmpty() ) {
-					if( !DrawCheckBoxImage(hDC, (LPCTSTR)m_sCheckBoxPushedImage) ) {}
+					if( !DrawCheckBoxImage(pRender, (LPCTSTR)m_sCheckBoxPushedImage) ) {}
 					else return;
 				}
 			}
-			else if( (m_uCheckBoxState & UISTATE_HOT) != 0 ) {
+			else if( m_uCheckBoxState.IsHot()  ) {
 				if( !m_sCheckBoxHotImage.IsEmpty() ) {
-					if( !DrawCheckBoxImage(hDC, (LPCTSTR)m_sCheckBoxHotImage) ) {}
+					if( !DrawCheckBoxImage(pRender, (LPCTSTR)m_sCheckBoxHotImage) ) {}
 					else return;
 				}
 			}
-			else if( (m_uCheckBoxState & UISTATE_FOCUSED) != 0 ) {
+			else if( IsFocused()  ) {
 				if( !m_sCheckBoxFocusedImage.IsEmpty() ) {
-					if( !DrawCheckBoxImage(hDC, (LPCTSTR)m_sCheckBoxFocusedImage) ) {}
+					if( !DrawCheckBoxImage(pRender, (LPCTSTR)m_sCheckBoxFocusedImage) ) {}
 					else return;
 				}
 			}
 
 			if( !m_sCheckBoxNormalImage.IsEmpty() ) {
-				if( !DrawCheckBoxImage(hDC, (LPCTSTR)m_sCheckBoxNormalImage) ) {}
+				if( !DrawCheckBoxImage(pRender, (LPCTSTR)m_sCheckBoxNormalImage) ) {}
 				else return;
 			}
 
 Label_ForeImage:
 			if( !m_sCheckBoxForeImage.IsEmpty() ) {
-				if( !DrawCheckBoxImage(hDC, (LPCTSTR)m_sCheckBoxForeImage) ) {}
+				if( !DrawCheckBoxImage(pRender, (LPCTSTR)m_sCheckBoxForeImage) ) {}
 			}
 		}
 	}
 
-	void CListContainerHeaderItemUI::PaintText(HDC hDC)
+	void CListContainerHeaderItemUI::PaintText(UIRender *pRender)
 	{
 		if( m_dwTextColor == 0 ) m_dwTextColor = m_pManager->GetDefaultFontColor();
 
@@ -868,12 +688,8 @@ Label_ForeImage:
 		CDuiString sText = GetText();
 		if( sText.IsEmpty() ) return;
 
-		int nLinks = 0;
-		if( m_bShowHtml )
-			CRenderEngine::DrawHtmlText(hDC, m_pManager, rcText, sText, m_dwTextColor, \
-			NULL, NULL, nLinks, m_iFont, DT_SINGLELINE | m_uTextStyle);
-		else
-			CRenderEngine::DrawText(hDC, m_pManager, rcText, sText, m_dwTextColor, \
+		
+			pRender->DrawText(rcText, GetTextPadding(), sText, m_dwTextColor, \
 			m_iFont, DT_SINGLELINE | m_uTextStyle);
 	}
 
@@ -909,8 +725,7 @@ Label_ForeImage:
 	{
 		if( m_bChecked == bCheck ) return;
 		m_bChecked = bCheck;
-		if( m_bChecked ) m_uCheckBoxState |= UISTATE_SELECTED;
-		else m_uCheckBoxState &= ~UISTATE_SELECTED;
+		m_uCheckBoxState.SetSelected(m_bChecked == TRUE);
 		Invalidate();
 	}
 
@@ -918,11 +733,11 @@ Label_ForeImage:
 	{
 		return m_bChecked;
 	}
-	BOOL CListContainerHeaderItemUI::DrawCheckBoxImage(HDC hDC, LPCTSTR pStrImage, LPCTSTR pStrModify)
+	BOOL CListContainerHeaderItemUI::DrawCheckBoxImage(UIRender *pRender, LPCTSTR pStrImage, LPCTSTR pStrModify)
 	{
 		RECT rcCheckBox;
 		GetCheckBoxRect(rcCheckBox);
-		return CRenderEngine::DrawImageString(hDC, m_pManager, rcCheckBox, m_rcPaint, pStrImage, pStrModify);
+		return pRender->DrawImageString(rcCheckBox, m_rcPaint, pStrImage, pStrModify);
 	}
 	LPCTSTR CListContainerHeaderItemUI::GetCheckBoxNormalImage()
 	{
@@ -1070,11 +885,11 @@ Label_ForeImage:
 		return UIFLAG_WANTRETURN | ( (IsEnabled() && m_nLinks > 0) ? UIFLAG_SETCURSOR : 0);
 	}
 
-	LPCTSTR CListTextExtElementUI::GetText(int iIndex) const
+	CDuiString CListTextExtElementUI::GetText(int iIndex) const
 	{
 		CDuiString* pText = static_cast<CDuiString*>(m_aTexts.GetAt(iIndex));
 		if( pText ) return pText->GetData();
-		return NULL;
+		return CDuiString();
 	}
 
 	void CListTextExtElementUI::SetText(int iIndex, LPCTSTR pstrText)
@@ -1237,20 +1052,20 @@ Label_ForeImage:
 
 		SIZE cXY = m_cxyFixed;
 		if( cXY.cy == 0 && m_pManager != NULL && pInfo != NULL) {
-			cXY.cy = m_pManager->GetFontInfo(pInfo->nFont)->tm.tmHeight + 8;
+			cXY.cy = m_pManager->GetFontHeight(pInfo->nFont) + 8;
 			cXY.cy += pInfo->rcTextPadding.top + pInfo->rcTextPadding.bottom;
 		}
 
 		return cXY;
 	}
 
-	void CListTextExtElementUI::DrawItemText(HDC hDC, const RECT& rcItem)
+	void CListTextExtElementUI::DrawItemText(UIRender *pRender, const RECT& rcItem)
 	{
 		if( m_pOwner == NULL ) return;
 		TListInfoUI* pInfo = m_pOwner->GetListInfo();
 		DWORD iTextColor = pInfo->dwTextColor;
 
-		if( (m_uButtonState & UISTATE_HOT) != 0 ) {
+		if( IsHotState() ) {
 			iTextColor = pInfo->dwHotTextColor;
 		}
 		if( IsSelected() ) {
@@ -1273,7 +1088,7 @@ Label_ForeImage:
 			DWORD iTextBkColor = 0;
 			if (GetColumItemColor(i, iTextBkColor))
 			{	
-				CRenderEngine::DrawColor(hDC, rcItem, iTextBkColor);
+				pRender->DrawColor(rcItem, CDuiSize(0,0), iTextBkColor);
 			}
 
 			rcItem.left += pInfo->rcTextPadding.left;
@@ -1292,11 +1107,8 @@ Label_ForeImage:
 			CDuiString strText;//不使用LPCTSTR，否则限制太多 by cddjr 2011/10/20
 			if( pCallback ) strText = pCallback->GetItemText(this, m_iIndex, i);
 			else strText.Assign(GetText(i));
-			if( pInfo->bShowHtml )
-				CRenderEngine::DrawHtmlText(hDC, m_pManager, rcItem, strText.GetData(), iTextColor, \
-				&m_rcLinks[m_nLinks], &m_sLinks[m_nLinks], nLinks, pInfo->nFont, DT_SINGLELINE | pInfo->uTextStyle);
-			else
-				CRenderEngine::DrawText(hDC, m_pManager, rcItem, strText.GetData(), iTextColor, \
+			
+				pRender->DrawText(rcItem, pInfo->rcTextPadding, strText.GetData(), iTextColor, \
 				pInfo->nFont, DT_SINGLELINE | pInfo->uTextStyle);
 
 			m_nLinks += nLinks;
@@ -1307,7 +1119,7 @@ Label_ForeImage:
 			((CDuiString*)(m_sLinks + i))->Empty();
 		}
 	}
-	void CListTextExtElementUI::PaintStatusImage(HDC hDC)
+	void CListTextExtElementUI::PaintStatusImage(UIRender *pRender)
 	{
 		CListExUI * pListCtrl = (CListExUI *)m_pOwner;
 		TListInfoUI* pInfo = m_pOwner->GetListInfo();
@@ -1322,7 +1134,7 @@ Label_ForeImage:
 
 				if( (m_uCheckBoxState & UISTATE_SELECTED) != 0 ) {
 					if( !m_sCheckBoxSelectedImage.IsEmpty() ) {
-						if( !DrawCheckBoxImage(hDC, (LPCTSTR)m_sCheckBoxSelectedImage, NULL, rcCheckBox) ) {}
+						if( !DrawCheckBoxImage(pRender, (LPCTSTR)m_sCheckBoxSelectedImage, NULL, rcCheckBox) ) {}
 						else goto Label_ForeImage;
 					}
 				}
@@ -1334,44 +1146,44 @@ Label_ForeImage:
 
 				if( (m_uCheckBoxState & UISTATE_DISABLED) != 0 ) {
 					if( !m_sCheckBoxDisabledImage.IsEmpty() ) {
-						if( !DrawCheckBoxImage(hDC, (LPCTSTR)m_sCheckBoxDisabledImage, NULL, rcCheckBox) ) {}
+						if( !DrawCheckBoxImage(pRender, (LPCTSTR)m_sCheckBoxDisabledImage, NULL, rcCheckBox) ) {}
 						else return;
 					}
 				}
 				else if( (m_uCheckBoxState & UISTATE_PUSHED) != 0 ) {
 					if( !m_sCheckBoxPushedImage.IsEmpty() ) {
-						if( !DrawCheckBoxImage(hDC, (LPCTSTR)m_sCheckBoxPushedImage, NULL, rcCheckBox) ) {}
+						if( !DrawCheckBoxImage(pRender, (LPCTSTR)m_sCheckBoxPushedImage, NULL, rcCheckBox) ) {}
 						else return;
 					}
 				}
-				else if( (m_uCheckBoxState & UISTATE_HOT) != 0 ) {
+				else if( IsHotState() ) {
 					if( !m_sCheckBoxHotImage.IsEmpty() ) {
-						if( !DrawCheckBoxImage(hDC, (LPCTSTR)m_sCheckBoxHotImage, NULL, rcCheckBox) ) {}
+						if( !DrawCheckBoxImage(pRender, (LPCTSTR)m_sCheckBoxHotImage, NULL, rcCheckBox) ) {}
 						else return;
 					}
 				}
 				else if( (m_uCheckBoxState & UISTATE_FOCUSED) != 0 ) {
 					if( !m_sCheckBoxFocusedImage.IsEmpty() ) {
-						if( !DrawCheckBoxImage(hDC, (LPCTSTR)m_sCheckBoxFocusedImage, NULL, rcCheckBox) ) {}
+						if( !DrawCheckBoxImage(pRender, (LPCTSTR)m_sCheckBoxFocusedImage, NULL, rcCheckBox) ) {}
 						else return;
 					}
 				}
 
 				if( !m_sCheckBoxNormalImage.IsEmpty() ) {
-					if( !DrawCheckBoxImage(hDC, (LPCTSTR)m_sCheckBoxNormalImage, NULL, rcCheckBox) ) {}
+					if( !DrawCheckBoxImage(pRender, (LPCTSTR)m_sCheckBoxNormalImage, NULL, rcCheckBox) ) {}
 					else return;
 				}
 
 Label_ForeImage:
 				if( !m_sCheckBoxForeImage.IsEmpty() ) {
-					if( !DrawCheckBoxImage(hDC, (LPCTSTR)m_sCheckBoxForeImage, NULL, rcCheckBox) ) {}
+					if( !DrawCheckBoxImage(pRender, (LPCTSTR)m_sCheckBoxForeImage, NULL, rcCheckBox) ) {}
 				}
 			}
 		}
 	}
-	BOOL CListTextExtElementUI::DrawCheckBoxImage(HDC hDC, LPCTSTR pStrImage, LPCTSTR pStrModify, RECT& rcCheckBox)
+	BOOL CListTextExtElementUI::DrawCheckBoxImage(UIRender *pRender, LPCTSTR pStrImage, LPCTSTR pStrModify, RECT& rcCheckBox)
 	{
-		return CRenderEngine::DrawImageString(hDC, m_pManager, rcCheckBox, m_rcPaint, pStrImage, pStrModify);
+		return pRender->DrawImageString(rcCheckBox, m_rcPaint, pStrImage, pStrModify);
 	}
 	void CListTextExtElementUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
@@ -1454,12 +1266,12 @@ Label_ForeImage:
 		m_sCheckBoxForeImage = pStrImage;
 	}
 
-	bool CListTextExtElementUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
+	bool CListTextExtElementUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 	{
 		if( !::IntersectRect(&m_rcPaint, &rcPaint, &m_rcItem) ) return true;
-		DrawItemBk(hDC, m_rcItem);
-		PaintStatusImage(hDC);
-		DrawItemText(hDC, m_rcItem);
+		DrawItemBk(pRender, m_rcItem);
+		PaintStatusImage(pRender);
+		DrawItemText(pRender, m_rcItem);
 		return true;
 	}
 	void CListTextExtElementUI::GetCheckBoxRect(int nIndex, RECT &rc)

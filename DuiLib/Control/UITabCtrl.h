@@ -12,19 +12,19 @@ namespace DuiLib
 		CTabCtrlUI();
 		~CTabCtrlUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-		bool Activate();
-		void DoEvent(TEventUI& event);
+		virtual bool Activate() override;
+		virtual void DoEvent(TEventUI& event) override;
 
-		virtual bool IsSelected() const;	
-		virtual void BindTriggerTabSel(int _SetSelectIndex = -1);	
+		virtual bool IsSelected() const override;	
+		virtual void BindTriggerTabSel(int _SetSelectIndex = -1) override;	
 
 		void SetActiveMouseOn(bool bActive); // Û±Í–¸Õ£ ±«–ªª“≥√Ê
 		bool IsActiveMouseOn();
 
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 
 	protected:
 		bool		m_bActiveMouseOn;

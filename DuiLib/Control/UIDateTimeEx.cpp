@@ -37,14 +37,12 @@ namespace DuiLib
 
 	CDateTimeExUI::CDateTimeExUI() 
 	: m_uFormatStyle(UIDTS_DATE) //add by liqs99
-	, m_iFont(-1)
 	, m_pLabelDate(NULL)
 	, m_pLabelTime(NULL)
 	, m_pWindowDate(NULL)
 	, m_pWindowTime(NULL)
 	{
 		::GetLocalTime(&m_sysTime);
-		m_bReadOnly = false;
 
 		m_pLabelDate = new CDateTimeLabelUI(this, UIDTS_DATE);
 		m_pLabelDate->SetTextPadding(CDuiRect(5,0,5,0));
@@ -60,7 +58,7 @@ namespace DuiLib
  
 	LPCTSTR CDateTimeExUI::GetClass() const
 	{
-		return DUI_CTR_DATETIMEEX;
+		return _T("DateTimeExUI");
 	}
 
 	LPVOID CDateTimeExUI::GetInterface(LPCTSTR pstrName)
@@ -183,17 +181,6 @@ namespace DuiLib
 	{
 		m_sysTime = *pst;
 		Invalidate();
-	}
-
-	void CDateTimeExUI::SetReadOnly(bool bReadOnly)
-	{
-		m_bReadOnly = bReadOnly;
-		Invalidate();
-	}
-
-	bool CDateTimeExUI::IsReadOnly() const
-	{
-		return m_bReadOnly;
 	}
 
 	void CDateTimeExUI::SetFormatStyle(UINT uStyle)
@@ -335,17 +322,6 @@ namespace DuiLib
 			return;
 		}
 		__super::DoEvent(event);
-	}
-
-	void CDateTimeExUI::SetFont(int index)
-	{
-		m_iFont = index;
-		Invalidate();
-	}
-
-	int CDateTimeExUI::GetFont() const
-	{
-		return m_iFont;
 	}
 
 	CLabelUI *CDateTimeExUI::GetDateLabel() const

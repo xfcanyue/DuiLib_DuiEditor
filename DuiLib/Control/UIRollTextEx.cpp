@@ -40,7 +40,7 @@ namespace DuiLib
 
 	LPCTSTR CRollTextExUI::GetClass() const
 	{
-		return DUI_CTR_ROLLTEXTEX;
+		return _T("RollTextExUI");
 	}
 
 	LPVOID CRollTextExUI::GetInterface(LPCTSTR pstrName)
@@ -77,9 +77,9 @@ namespace DuiLib
 		}
 	}
 
-	void CRollTextExUI::SetPos(RECT rc)
+	void CRollTextExUI::SetPos(RECT rc, bool bNeedInvalidate)
 	{
-		CLabelUI::SetPos(rc);
+		CLabelUI::SetPos(rc, bNeedInvalidate);
 		m_nText_W_H = 0;
 	}
 
@@ -198,7 +198,7 @@ namespace DuiLib
 		Invalidate();
 	}
 
-	void CRollTextExUI::PaintText(HDC hDC)
+	void CRollTextExUI::PaintText(UIRender *pRender)
 	{
 		if( m_dwTextColor == 0 ) m_dwTextColor = m_pManager->GetDefaultFontColor();
 		if( m_dwDisabledTextColor == 0 ) m_dwDisabledTextColor = m_pManager->GetDefaultDisabledColor();
@@ -226,24 +226,18 @@ namespace DuiLib
 // 				rc.bottom += 10000;
 // 			}
 
-			if( m_bShowHtml ) {
-				int nLinks = 0;
-				CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, sText, dwTextColor, NULL, NULL, nLinks, m_iFont, uTextStyle);
-			} else {
-				CRenderEngine::DrawText(hDC, m_pManager, rc, sText, dwTextColor, m_iFont, uTextStyle);
-			}	
+			
+			pRender->DrawText(rc, GetTextPadding(), sText, dwTextColor, m_iFont, uTextStyle);
+				
 
 			m_nText_W_H = (m_nRollDirection == ROLLTEXT_LEFT || m_nRollDirection == ROLLTEXT_RIGHT) ? (rc.right - rc.left) : (rc.bottom - rc.top);		//计算文本宽度或高度
 
 		}
 		else
 		{
-			if( m_bShowHtml ) {
-				int nLinks = 0;
-				CRenderEngine::DrawHtmlText(hDC, m_pManager, m_rcClient, sText, dwTextColor, NULL, NULL, nLinks, m_iFont, uTextStyle);
-			} else {
-				CRenderEngine::DrawText(hDC, m_pManager, m_rcClient, sText, dwTextColor, m_iFont, uTextStyle);
-			}	
+			
+				pRender->DrawText(m_rcClient, GetTextPadding(), sText, dwTextColor, m_iFont, uTextStyle);
+				
 		}	
 	}
 

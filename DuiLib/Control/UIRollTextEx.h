@@ -13,16 +13,16 @@ namespace DuiLib
 		~CRollTextExUI(void);
 
 	public:
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
 	public:	
 		virtual void DoInit();
 		void OnTimer(UINT_PTR idEvent);
-		virtual void PaintText(HDC hDC);
-		virtual void DoEvent(TEventUI& event);
-		virtual void SetPos(RECT rc);
-		virtual void SetText(LPCTSTR pstrText);
+		virtual void PaintText(UIRender *pRender) override;
+		virtual void DoEvent(TEventUI& event) override;
+		virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
+		virtual void SetText(LPCTSTR pstrText) override;
 
 		void SetRollDirection(int nDirect);
 		int GetRollDirection() const;
@@ -33,7 +33,7 @@ namespace DuiLib
 		void SetRollStep(int nStep);
 		int GetRollStep() const;
 
-		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 	public:
 		void BeginRoll();
 		void EndRoll();

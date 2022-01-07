@@ -49,8 +49,7 @@ namespace DuiLib
 	{
 		if(IsSelected() == bSelected) return;
 
-		if( bSelected ) m_uButtonState |= UISTATE_SELECTED;
-		else m_uButtonState &= ~UISTATE_SELECTED;
+		SetSelectedState(bSelected);
 
 		if(!m_pOwner) return;
 		CTreeItemUI *pItemUI = (CTreeItemUI *)GetOwner();
@@ -256,8 +255,8 @@ namespace DuiLib
 		nWidth += m_pFolderButton->GetFixedWidth() + m_pCheckBox->GetFixedWidth() + m_pIcon->GetFixedWidth();
 
 		RECT rcText = {0, 0, szAvailable.cx, szAvailable.cy};
-		CRenderEngine::DrawText(m_pManager->GetPaintDC(), m_pManager, rcText, m_pNodeData->GetText(), 0, m_pText->GetFont(), DT_CALCRECT | m_pText->GetTextStyle());
-		nWidth += MulDiv(rcText.right - rcText.left + GetManager()->GetDPIObj()->Scale(m_pText->GetTextPadding().left) + GetManager()->GetDPIObj()->Scale(m_pText->GetTextPadding().right), 100, GetManager()->GetDPIObj()->GetScale());
+		GetManager()->Render()->DrawText(rcText, m_pText->GetTextPadding(), m_pNodeData->GetText(), 0, m_pText->GetFont(), DT_CALCRECT | m_pText->GetTextStyle());
+		nWidth += rcText.right - rcText.left;
 
 		RECT rcInset = GetInset();
 		nWidth += rcInset.left;
@@ -304,7 +303,7 @@ namespace DuiLib
 		if( event.Type == UIEVENT_MOUSEENTER ) 
 		{
 			if( IsEnabled() ) {
-				SetHot(true);
+				SetHotState(true);
 				Invalidate();
 			}
 			return;
@@ -313,7 +312,7 @@ namespace DuiLib
 		if( event.Type == UIEVENT_MOUSELEAVE ) 
 		{
 			if( IsEnabled() ) {
-				SetHot(false);
+				SetHotState(false);
 				Invalidate();
 			}
 			return;

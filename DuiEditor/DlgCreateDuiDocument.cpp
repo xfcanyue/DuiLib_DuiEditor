@@ -14,7 +14,10 @@ IMPLEMENT_DYNAMIC(CDlgCreateDuiDocument, CDialogEx)
 CDlgCreateDuiDocument::CDlgCreateDuiDocument(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CDlgCreateDuiDocument::IDD, pParent)
 {
+	m_pRender = MakeRefPtr<UIRender>(UIGlobal::CreateRenderTarget());
+	m_pRender->Init(NULL, NULL);
 
+	m_uiImage = MakeRefPtr<UIImage>(UIGlobal::CreateImage());
 }
 
 CDlgCreateDuiDocument::~CDlgCreateDuiDocument()
@@ -32,6 +35,7 @@ void CDlgCreateDuiDocument::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CDlgCreateDuiDocument, CDialogEx)
 	ON_BN_CLICKED(IDOK, &CDlgCreateDuiDocument::OnBnClickedOk)
 	ON_LBN_SELCHANGE(IDC_LIST1, &CDlgCreateDuiDocument::OnSelchangeList1)
+	ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 
@@ -85,6 +89,32 @@ void CDlgCreateDuiDocument::OnSelchangeList1()
 		CString strFolder;
 		m_listBox.GetText(nSel, strFolder);
 
-		m_staPicture.SetPreviewImage(g_strAppPath + _T("template\\") + strFolder + _T("\\skin.jpg"));
+		CRect rcClient;
+		m_staPicture.GetWindowRect(&rcClient);
+		ScreenToClient(rcClient);
+		m_uiImage->LoadImage(g_strAppPath + _T("template\\") + strFolder + _T("\\skin.jpg"));
+		
+		CRect rcPaint(0,0,rcClient.Width(), rcClient.Height());
+		CRect rc(0,0,m_uiImage->nWidth, m_uiImage->nHeight);
+		CRect rcCorner;
+		m_pRender->Resize(rc);
+		m_pRender->DrawBitmap(m_uiImage->bitmap->GetBitmap(), rc, rc, rc, rcCorner, false);
+		//m_pRender->SelectObject(m_uiImage);
+		Invalidate();
+//		m_staPicture.SetPreviewImage(g_strAppPath + _T("template\\") + strFolder + _T("\\skin.jpg"));
 	}
+}
+
+
+void CDlgCreateDuiDocument::OnPaint()
+{
+	CPaintDC dc(this); // device context for painting
+	// TODO: 在此处添加消息处理程序代码
+	// 不为绘图消息调用 CDialogEx::OnPaint()
+
+	CPaintDC dcPic(&m_staPicture);
+	CRect rcClient;
+	m_staPicture.GetWindowRect(&rcClient);
+	::StretchBlt(dcPic.GetSafeHdc(), 0, 0, rcClient.Width(), rcClient.Height(), m_pRender->GetDC(), 0, 0, m_pRender->GetBitmap()->GetWidth(), m_pRender->GetBitmap()->GetHeight(), SRCCOPY);
+
 }

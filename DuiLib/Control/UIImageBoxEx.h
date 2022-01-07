@@ -37,15 +37,15 @@ public:
 	CImageBoxExUI(void);
 	~CImageBoxExUI(void);
 
-	LPCTSTR	GetClass() const;
-	LPVOID	GetInterface(LPCTSTR pstrName);
+	virtual LPCTSTR GetClass() const override;
+	virtual LPVOID	GetInterface(LPCTSTR pstrName) override;
 
-	virtual void DoInit();
-	virtual bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
-	virtual void DoEvent(TEventUI& event);	
-	virtual void SetPos(RECT rc, bool bNeedInvalidate = true);
-	virtual void Move(SIZE szOffset, bool bNeedInvalidate = true);
-	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+	virtual void DoInit() override;
+	virtual bool DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl) override;
+	virtual void DoEvent(TEventUI& event) override;	
+	virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
+	virtual void Move(SIZE szOffset, bool bNeedInvalidate = true) override;
+	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 	
 	void LoadImageList();
 	

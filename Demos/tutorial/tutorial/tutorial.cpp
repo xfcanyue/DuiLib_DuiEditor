@@ -16,7 +16,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 		return 1;
 	}
 
-	//_CrtSetBreakAlloc(90385);
+	//_CrtSetBreakAlloc(808);
 
 	//设置主窗口的名字
 	uiApp.SetAppName(_T("DuiLib Tutorial"));

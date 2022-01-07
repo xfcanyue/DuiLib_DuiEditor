@@ -99,7 +99,8 @@ namespace DuiLib {
 					bool defaultfont	= node.attribute(_T("default")).as_bool();
 					bool shared			= node.attribute(_T("shared")).as_bool();
 
-					if( id >= 0 ) {
+					if( id >= 0 ) 
+					{
 						pManager->AddFont(id, pFontName, size, bold, underline, italic, shared);
 						if( defaultfont ) pManager->SetDefaultFont(pFontName, pManager->GetDPIObj()->Scale(size), bold, underline, italic, shared);
 					}
@@ -166,6 +167,7 @@ namespace DuiLib {
 					for( CXmlAttributeUI attr = root.first_attribute(); attr; attr=attr.next_attribute() ) 
 					{
 						pstrName = attr.name();
+						pstrValue = attr.value();
 						if( _tcsicmp(pstrName, _T("size")) == 0 ) 
 						{
 							SIZE sz = attr.as_size();
@@ -284,6 +286,13 @@ namespace DuiLib {
 						{
 							pManager->SetUseGdiplusText(attr.as_bool());
 						} 
+						else if( _tcsicmp(pstrName, _T("renderengine")) == 0 ) 
+						{
+							if( _tcsicmp(attr.as_string(), _T("gdi")) == 0 )
+								pManager->SetRenderEngineType(DuiLib_Render_Default);
+							else if( _tcsicmp(attr.as_string(), _T("gdiplus")) == 0 )
+								pManager->SetRenderEngineType(DuiLib_Render_GdiPlus);
+						} 
 						else if( _tcsicmp(pstrName, _T("textrenderinghint")) == 0 ) 
 						{
 							pManager->SetGdiplusTextRenderingHint(attr.as_int());
@@ -291,6 +300,19 @@ namespace DuiLib {
 						else if( _tcsicmp(pstrName, _T("tooltiphovertime")) == 0 ) 
 						{
 							pManager->SetHoverTime(attr.as_int());
+						} 
+						else if( _tcsicmp(pstrName, _T("forcehsl")) == 0 ) 
+						{
+							pManager->SetForceHSL(attr.as_bool());
+						} 
+						else if( _tcsicmp(pstrName, _T("hsl")) == 0 ) 
+						{
+							int h = 180, s=100, l=100;
+							LPTSTR pstr = NULL;
+							h = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
+							s = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
+							l = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr); 
+							pManager->SetHSL(h, s, l);
 						} 
 					}
 
@@ -344,6 +366,10 @@ namespace DuiLib {
 				CDuiString strClass;
 				strClass.Format(_T("C%sUI"), pstrClass);
 				pControl = dynamic_cast<CControlUI*>(CControlFactory::GetInstance()->CreateControl(strClass));
+
+				#ifdef _DEBUG
+				//OutputDebugString(strClass + _T("\r\n"));
+				#endif
 
 				// ¼ì²é²å¼þ
 				if( pControl == NULL ) {

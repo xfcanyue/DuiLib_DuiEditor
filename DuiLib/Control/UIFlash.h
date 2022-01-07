@@ -13,7 +13,7 @@
 
 namespace DuiLib
 {
-	class CActiveXCtrl;
+	//class CActiveXCtrl;
 
 	class UILIB_API CFlashUI
 		: public CActiveXUI

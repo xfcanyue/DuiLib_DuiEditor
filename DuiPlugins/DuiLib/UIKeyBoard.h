@@ -25,10 +25,10 @@ public:
 protected:
 	bool Activate();
 	virtual CDuiString GetText() const;
-	virtual bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
-	virtual void PaintText(HDC hDC);
-	virtual void PaintBkColor(HDC hDC);
-	virtual void PaintBorder(HDC hDC);
+	virtual bool DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl);
+	virtual void PaintText(UIRender *pRender);
+	virtual void PaintBkColor(UIRender *pRender);
+	virtual void PaintBorder(UIRender *pRender);
 
 private:
 	TCHAR m_ch; 
@@ -62,9 +62,6 @@ public:
 
 	void SetKeyPadding(int iFont)		{ m_nKeyPadding = iFont; }
 	int  GetKeyPadding()				{ return m_nKeyPadding; }
-
-	void SetFont(int iFont)				{ m_iFont = iFont; }
-	int  GetFont()						{ return m_iFont; }
 
 	void SetKeyBorderSize(int nSize)	{ m_nKeyBorderSize = nSize; }
 	DWORD GetKeyBorderSize()			{ return m_nKeyBorderSize; }
@@ -136,7 +133,6 @@ private:
 	int m_nKeyWidth;
 	int m_nKeyHeight;
 	int m_nKeyPadding;
-	int	m_iFont;
 	int m_iFontEnterControl;
 	int m_nKeyBorderSize;
 	SIZE m_cxKeyBorderRound;

@@ -35,8 +35,7 @@ void CGridCellInnerCheckBoxUI::Selected(bool bSelected, bool bTriggerEvent)
 {
 	if(IsSelected() == bSelected) return;
 
-	if( bSelected ) m_uButtonState |= UISTATE_SELECTED;
-	else m_uButtonState &= ~UISTATE_SELECTED;
+	SetSelectedState(bSelected);
 
 	if(!m_pOwner) return;
 	CGridCellUI *pCellUI = (CGridCellUI *)m_pOwner;
@@ -94,7 +93,7 @@ CGridCellUI::~CGridCellUI(void)
 
 LPCTSTR CGridCellUI::GetClass() const
 {
-	return DUI_CTR_GRIDCELL;
+	return _T("GridCellUI");
 }
 
 UINT CGridCellUI::GetControlFlags() const
@@ -227,7 +226,7 @@ bool CGridCellUI::IsFocused() const
 	return false;
 }
 
-bool CGridCellUI::IsHot() const
+bool CGridCellUI::IsHotState() const
 {
 	if(!GetOwner() || GetOwner()->IsListMode()) return false;
 	CGridUI *pGrid = (CGridUI *)GetOwner();
@@ -514,10 +513,10 @@ void CGridCellUI::DoEvent(TEventUI& event)
 	__super::DoEvent(event);
 }
 
-bool CGridCellUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
+bool CGridCellUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 {
 	if(!GetOwner()) 
-		return __super::DoPaint(hDC, rcPaint, pStopControl);
+		return __super::DoPaint(pRender, rcPaint, pStopControl);
 	CGridUI *pGrid = (CGridUI *)GetOwner();
 	TCellData *pCellData = pGrid->GetCellData(m_row, m_col);
 	m_rcPaint2  = GetCellPos();
@@ -527,74 +526,54 @@ bool CGridCellUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl
 		if(pGrid->IsMergedCell(m_row, m_col) || pCellData->IsMergedWithOthers())
 			return true;
 	}
-	return __super::DoPaint(hDC, rcPaint, pStopControl);
+	return __super::DoPaint(pRender, rcPaint, pStopControl);
 }
 
-void CGridCellUI::PaintBkColor(HDC hDC)
+void CGridCellUI::PaintBkColor(UIRender *pRender)
 {
-	if(IsSelected() || IsFocused())
-	{
-		if(m_dwSelectedBkColor != 0) {
-			CRenderEngine::DrawColor(hDC, m_rcPaint2, GetAdjustColor(m_dwSelectedBkColor));
-			return;
-		}
-	}
-	else if( !IsEnabled() ) {
-		if(m_dwDisabledBkColor != 0) {
-			CRenderEngine::DrawColor(hDC, m_rcPaint2, GetAdjustColor(m_dwDisabledBkColor));
-			return;
-		}
-	}
-	else if( (m_uButtonState & UISTATE_PUSHED) != 0 ) {
-		if(m_dwPushedBkColor != 0) {
-			CRenderEngine::DrawColor(hDC, m_rcPaint2, GetAdjustColor(m_dwPushedBkColor));
-			return;
-		}
-	}
-	else if( IsHot() != 0 ) {
-		if(m_dwHotBkColor != 0) {
-			CRenderEngine::DrawColor(hDC, m_rcPaint2, GetAdjustColor(m_dwHotBkColor));
-			return;
-		}
-	}
+	DWORD dwBackColor = 0;
 
-	if( m_dwBackColor != 0 ) {
-		bool bVer = (m_sGradient.CompareNoCase(_T("hor")) != 0);
-		if( m_dwBackColor2 != 0 ) {
-			if( m_dwBackColor3 != 0 ) {
-				RECT rc = m_rcPaint2;
-				rc.bottom = (rc.bottom + rc.top) / 2;
-				CRenderEngine::DrawGradient(hDC, rc, GetAdjustColor(m_dwBackColor), GetAdjustColor(m_dwBackColor2), bVer, 8);
-				rc.top = rc.bottom;
-				rc.bottom = m_rcPaint2.bottom;
-				CRenderEngine::DrawGradient(hDC, rc, GetAdjustColor(m_dwBackColor2), GetAdjustColor(m_dwBackColor3), bVer, 8);
-			}
-			else {
-				CRenderEngine::DrawGradient(hDC, m_rcPaint2, GetAdjustColor(m_dwBackColor), GetAdjustColor(m_dwBackColor2), bVer, 16);
-			}
-		}
-		else if( m_dwBackColor >= 0xFF000000 ) CRenderEngine::DrawColor(hDC, m_rcPaint2, GetAdjustColor(m_dwBackColor));
-		else CRenderEngine::DrawColor(hDC, m_rcPaint2, GetAdjustColor(m_dwBackColor));
-	}
+	if(dwBackColor == 0 && !IsEnabled() && GetDisabledBkColor() != 0) 
+		dwBackColor = GetDisabledBkColor();
+
+	if(dwBackColor == 0 && (IsSelected() || IsFocused()) && GetSelectBkColor() != 0)
+		dwBackColor = GetSelectBkColor();
+
+	if(dwBackColor == 0 && IsPushedState() && GetPushedBkColor() != 0)
+		dwBackColor = GetPushedBkColor();
+	
+	if(dwBackColor == 0 && IsHotState() && GetHotBkColor() != 0)
+		dwBackColor = m_dwHotBkColor;
+
+	if(dwBackColor == 0)
+		dwBackColor = GetBkColor();
+
+	if(dwBackColor == 0) return;
+
+	pRender->DrawBackColor(m_rcItem, CDuiSize(0,0),
+		GetAdjustColor(dwBackColor), 
+		GetAdjustColor(GetBkColor2()), 
+		GetAdjustColor(GetBkColor3()), 
+		GetGradient());
 }
 
-void CGridCellUI::PaintBkImage(HDC hDC)
+void CGridCellUI::PaintBkImage(UIRender *pRender)
 {
 	if( m_sBkImage.IsEmpty() ) return;
-	CRenderEngine::DrawImageString(hDC, m_pManager, m_rcPaint2, m_rcPaint2, m_sBkImage.GetData(), NULL, m_instance);
+	pRender->DrawImageString(m_rcPaint2, m_rcPaint2, m_sBkImage.GetData(), NULL, m_instance);
 }
 
-void CGridCellUI::PaintStatusImage(HDC hDC)
+void CGridCellUI::PaintStatusImage(UIRender *pRender)
 {
 	
 }
 
-void CGridCellUI::PaintForeColor(HDC hDC)
+void CGridCellUI::PaintForeColor(UIRender *pRender)
 {
 
 }
 
-void CGridCellUI::PaintForeImage(HDC hDC)
+void CGridCellUI::PaintForeImage(UIRender *pRender)
 {
 	CGridUI *pGrid = (CGridUI *)GetOwner();
 	if(!pGrid) return;
@@ -614,15 +593,15 @@ void CGridCellUI::PaintForeImage(HDC hDC)
 		rcImage.AlignRect(rcItem);
 
 		if(pGrid->GetSortAscending())
-			CRenderEngine::DrawImageString(hDC, GetManager(), rcImage, rcImage, pGrid->GetSortAscendingImage());
+			pRender->DrawImageString(rcImage, rcImage, pGrid->GetSortAscendingImage());
 		else
-			CRenderEngine::DrawImageString(hDC, GetManager(), rcImage, rcImage, pGrid->GetSortDescendingImage());
+			pRender->DrawImageString(rcImage, rcImage, pGrid->GetSortDescendingImage());
 	}
 }
 
-void CGridCellUI::PaintText(HDC hDC)
+void CGridCellUI::PaintText(UIRender *pRender)
 {
-	if(!GetOwner()) return __super::PaintText(hDC);
+	if(!GetOwner()) return __super::PaintText(pRender);
 	CGridUI *pGrid = (CGridUI *)GetOwner();
 
 	GridCellType cellType = pGrid->GetCellType(m_row, m_col);
@@ -643,34 +622,41 @@ void CGridCellUI::PaintText(HDC hDC)
 	rc.top += rcTextPadding.top;
 	rc.bottom -= rcTextPadding.bottom;
 
-	DWORD clrColor = IsEnabled()?m_dwTextColor:m_dwDisabledTextColor;
+	DWORD dwColor = IsEnabled()?m_dwTextColor:m_dwDisabledTextColor;
 	if((IsSelected() || IsFocused()) && (GetSelectedTextColor() != 0))
 	{
-		clrColor = GetSelectedTextColor();
+		dwColor = GetSelectedTextColor();
 	}
-	else if( ((m_uButtonState & UISTATE_PUSHED) != 0) && (GetPushedTextColor() != 0) )
+	else if( IsPushedState() && (GetPushedTextColor() != 0) )
 	{
-		clrColor = GetPushedTextColor();
+		dwColor = GetPushedTextColor();
 	}
-	else if( IsHot() && (GetHotTextColor() != 0) )
+	else if( IsHotState() && (GetHotTextColor() != 0) )
 	{
-		clrColor = GetHotTextColor();
+		dwColor = GetHotTextColor();
 	}
 	else if( IsFocused() && (GetFocusedTextColor() != 0) )
 	{
-		clrColor = GetFocusedTextColor();
+		dwColor = GetFocusedTextColor();
 	}
 
+	if(dwColor == 0)
+		dwColor = GetTextColor();
+
+	if(dwColor == 0 && m_pManager)
+		dwColor = m_pManager->GetDefaultFontColor();
+
+	//////////////////////////////////////////////////////////////////////////
 	int iFont = GetFont();
 	if((IsSelected() || IsFocused()) && (GetSelectedFont() != 0) )
 	{
 		iFont = GetSelectedFont();
 	}
-	else if( ((m_uButtonState & UISTATE_PUSHED) != 0) && (GetPushedFont() != -1) )
+	else if( IsPushedState() && (GetPushedFont() != -1) )
 	{
 		iFont = GetPushedFont();
 	}
-	else if( IsHot() && (GetHotFont() != -1) )
+	else if( IsHotState() && (GetHotFont() != -1) )
 	{
 		iFont = GetHotFont();
 	}
@@ -679,13 +665,16 @@ void CGridCellUI::PaintText(HDC hDC)
 		iFont = GetFocusedFont();
 	}
 
+	if(iFont == -1)
+		iFont = GetFont();
+
 	if(IsFixedCol() && !IsFixedRow())
 	{
 		if(pGrid->GetFixedColumnCount() > 0 && pGrid->IsViewListNumber())
 		{
 			sText.Format(_T("%d"), m_row - pGrid->GetFixedRowCount() + 1);
 			RECT rcText = {0};
-			CRenderEngine::DrawText(hDC, m_pManager, rcText, sText, m_dwTextColor, iFont, DT_CALCRECT | m_uTextStyle);
+			pRender->DrawText(rcText, GetTextPadding(), sText, m_dwTextColor, iFont, DT_CALCRECT | m_uTextStyle);
 			rcText.right += rcTextPadding.left + rcTextPadding.right;
 			rcText.bottom += rcTextPadding.top + rcTextPadding.bottom;
 			if(pGrid->GetColumnWidth(m_col) < rcText.right - rcText.left + 10)
@@ -700,7 +689,7 @@ void CGridCellUI::PaintText(HDC hDC)
 		if(pGrid->IsExpandColumnByText())
 		{
 			RECT rcText = {0};
-			CRenderEngine::DrawText(hDC, m_pManager, rcText, sText, m_dwTextColor, iFont, DT_CALCRECT | m_uTextStyle);
+			pRender->DrawText(rcText, GetTextPadding(), sText, m_dwTextColor, iFont, DT_CALCRECT | m_uTextStyle);
 			rcText.right += rcTextPadding.left + rcTextPadding.right;
 			rcText.bottom += rcTextPadding.top + rcTextPadding.bottom;
 			if(pGrid->GetColumnWidth(m_col) < rcText.right - rcText.left + 10)
@@ -713,17 +702,12 @@ void CGridCellUI::PaintText(HDC hDC)
 	if( sText.IsEmpty() ) return;
 
 
-	if( m_bShowHtml )
-		CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, sText, clrColor, \
-		NULL, NULL, nLinks, iFont, m_uTextStyle);
-	else
-		CRenderEngine::DrawText(hDC, m_pManager, rc, sText, clrColor, \
-		iFont, m_uTextStyle);
+	pRender->DrawText(rc, GetTextPadding(), sText, dwColor, iFont, m_uTextStyle);
 }
 
-void CGridCellUI::PaintBorder(HDC hDC)
+void CGridCellUI::PaintBorder(UIRender *pRender)
 {
-	if(!GetOwner()) return __super::PaintBorder(hDC);
+	if(!GetOwner()) return __super::PaintBorder(pRender);
 	CGridUI *pGrid = (CGridUI *)GetOwner();
 
 	DWORD dwColor = 0;
@@ -731,60 +715,12 @@ void CGridCellUI::PaintBorder(HDC hDC)
 		dwColor = GetSelectedBorderColor();
 
 	//已选中单元格，或者 焦点单元格
-	if(dwColor != 0)
-	{
-		int nBorderSize;
-		SIZE cxyBorderRound;
-		RECT rcBorderSize;
-		if (m_pManager) {
-			nBorderSize = GetManager()->GetDPIObj()->Scale(m_nBorderSize);
-			cxyBorderRound = GetManager()->GetDPIObj()->Scale(m_cxyBorderRound);
-			rcBorderSize = GetManager()->GetDPIObj()->Scale(m_rcBorderSize);
-		}
-		else {
-			nBorderSize = m_nBorderSize;
-			cxyBorderRound = m_cxyBorderRound;
-			rcBorderSize = m_rcBorderSize;
-		}
-
-		if(nBorderSize > 0)
-		{
-			if(cxyBorderRound.cx > 0 || cxyBorderRound.cy > 0 ) 
-			{
-				CRenderEngine::DrawRoundRect(hDC, m_rcPaint2, nBorderSize, cxyBorderRound.cx, cxyBorderRound.cy, GetAdjustColor(dwColor), m_nBorderStyle);
-			}
-			else
-			{
-				CRenderEngine::DrawRect(hDC, m_rcPaint2, nBorderSize, GetAdjustColor(dwColor), m_nBorderStyle);
-			}
-		}
-		else
-		{
-			RECT rcBorder;
-
-			if(rcBorderSize.left > 0){
-				rcBorder		= m_rcPaint2;
-				rcBorder.right	= rcBorder.left;
-				CRenderEngine::DrawLine(hDC,rcBorder,rcBorderSize.left,GetAdjustColor(dwColor),m_nBorderStyle);
-			}
-			if(rcBorderSize.top > 0){
-				rcBorder		= m_rcPaint2;
-				rcBorder.bottom	= rcBorder.top;
-				CRenderEngine::DrawLine(hDC,rcBorder,rcBorderSize.top,GetAdjustColor(dwColor),m_nBorderStyle);
-			}
-			if(rcBorderSize.right > 0){
-				rcBorder		= m_rcPaint2;
-				rcBorder.right -= 1;
-				rcBorder.left	= rcBorder.right;
-				CRenderEngine::DrawLine(hDC,rcBorder,rcBorderSize.right,GetAdjustColor(dwColor),m_nBorderStyle);
-			}
-			if(rcBorderSize.bottom > 0){
-				rcBorder		= m_rcPaint2;
-				rcBorder.bottom -= 1;
-				rcBorder.top	= rcBorder.bottom;
-				CRenderEngine::DrawLine(hDC,rcBorder,rcBorderSize.bottom,GetAdjustColor(dwColor),m_nBorderStyle);
-			}
-		}
+	if(dwColor != 0 && 
+		( GetBorderSize() > 0 || 
+			(GetLeftBorderSize() > 0 && GetTopBorderSize() > 0 && GetRightBorderSize() > 0 && GetBottomBorderSize() > 0)
+		))
+	{	
+		pRender->DrawBorder(m_rcPaint2, GetBorderSize(), GetBorderRound(), GetBorderRectSize(), GetAdjustColor(dwColor), GetBorderStyle());
 	}
 	else
 	{
@@ -794,7 +730,7 @@ void CGridCellUI::PaintBorder(HDC hDC)
 			RECT rcBorder = m_rcPaint2;
 			rcBorder.bottom -= 1;
 			rcBorder.top = rcBorder.bottom;
-			CRenderEngine::DrawLine(hDC, rcBorder, 1, GetAdjustColor(dwBorderColor));
+			pRender->DrawLine(rcBorder, 1, GetAdjustColor(dwBorderColor));
 		}
 
 		if(pGrid->IsDrawColumnLine())
@@ -802,7 +738,7 @@ void CGridCellUI::PaintBorder(HDC hDC)
 			RECT rcBorder	= m_rcPaint2;
 			rcBorder.right -= 1;
 			rcBorder.left	= rcBorder.right;
-			CRenderEngine::DrawLine(hDC,rcBorder,1,GetAdjustColor(dwBorderColor));
+			pRender->DrawLine(rcBorder,1,GetAdjustColor(dwBorderColor));
 		}
 	}
 }

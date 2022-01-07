@@ -24,6 +24,8 @@ public:
 	double m_zoom;
 
 	CDuiRect m_rcSource;
+
+	CStdRefPtr<UIRender> m_pRender;
 protected:
 	virtual void OnDraw(CDC* pDC);      // 重写以绘制该视图
 

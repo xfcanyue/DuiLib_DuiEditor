@@ -4,7 +4,7 @@
 namespace DuiLib
 {
 
-class TNodeData
+class TNodeData : public ILinkedList
 {
 	friend class ITreeUI;
 public:
@@ -155,6 +155,10 @@ public:
 	void SelectNode(TNodeData *pNode, bool bSeleted=true);
 	bool IsSelectedNode(TNodeData *pNode);
 
+	int GetSelectNodeCount();
+	TNodeData *GetSelectNode();
+	TNodeData *GetNextSelectNode();
+
 	BOOL MoveNode(TNodeData *pNode, TNodeData *pNewParent, TNodeData *phInsertAfter = TNODE_LAST);
 protected:
 	TNodeData *AllocNodeData();
@@ -174,6 +178,7 @@ protected:
 protected:
 	CStdPtrArray m_NodeData;
 	std::map<TNodeData*, TNodeData *> m_mapSelectedNodes;
+	std::map<TNodeData*, TNodeData *>::iterator m_iteratorNodes;
 	TNodeData *m_pFocusNode;
 	std::map<UINT_PTR, TNodeData *> m_mapTag;
 };

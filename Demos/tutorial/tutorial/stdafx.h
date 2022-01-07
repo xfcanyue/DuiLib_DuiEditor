@@ -35,7 +35,7 @@
 // TODO: 在此处引用程序需要的其他头文件
 #include "../../../DuiLib/Duilib.h"
 #include "../../../DuiPlugins/Include/DuiPlugins.h"
-#include "../../../DuiScript/Include/DuiScriptInterface.h"
+//#include "../../../DuiScript/Include/DuiScriptInterface.h"
 //#include "../../../3rd/CxImage/Include/image.h"
 using namespace DuiLib;
 

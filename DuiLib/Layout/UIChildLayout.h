@@ -11,12 +11,12 @@ namespace DuiLib
 	public:
 		CChildLayoutUI();
 
-		void Init();
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+		virtual void Init() override;
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 		void SetChildLayoutXML(CDuiString pXML);
 		CDuiString GetChildLayoutXML();
-		virtual LPVOID GetInterface(LPCTSTR pstrName);
-		virtual LPCTSTR GetClass() const;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
+		virtual LPCTSTR GetClass() const override;
 
 	private:
 		CDuiString m_pstrXMLFile;

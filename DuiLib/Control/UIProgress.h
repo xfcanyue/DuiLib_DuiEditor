@@ -11,8 +11,8 @@ namespace DuiLib
 	public:
 		CProgressUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
 		bool IsShowText();
 		void SetShowText(bool bShowText = true);
@@ -26,9 +26,11 @@ namespace DuiLib
 		void SetMaxValue(int nMax);
 		int GetValue() const;
 		void SetValue(int nValue);
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
-		void PaintForeColor(HDC hDC);
-		void PaintForeImage(HDC hDC);
+
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
+		virtual void PaintForeColor(UIRender *pRender) override;
+		virtual void PaintForeImage(UIRender *pRender) override;
+
 		virtual void UpdateText();
 
 	protected:

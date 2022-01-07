@@ -14,7 +14,7 @@ namespace DuiLib
 		, public IQueryControlText
 	{
 	public:
-		WindowImplBase(){};
+		WindowImplBase();
 		virtual ~WindowImplBase(){};
 		// 只需主窗口重写（初始化资源与多语言接口）
 		virtual void InitResource(){};
@@ -27,7 +27,8 @@ namespace DuiLib
 		//DUI_DECLARE_MESSAGE_MAP()
 		//virtual void OnClick(TNotifyUI& msg);
 		virtual BOOL IsInStaticControl(CControlUI *pControl);
-
+	protected:
+		std::vector<CDuiString> m_vctStaticName;
 	protected:
 		virtual CDuiString GetSkinType() { return _T(""); }
 		virtual CDuiString GetSkinFile() = 0;

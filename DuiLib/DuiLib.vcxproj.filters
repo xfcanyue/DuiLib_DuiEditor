@@ -37,6 +37,12 @@
       <UniqueIdentifier>{96378940-5c71-4fe2-9097-15e5067bb6b2}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
+    <Filter Include="Source Files\Render">
+      <UniqueIdentifier>{cb3c3aa8-9550-4879-9d40-030c45ff3338}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render">
+      <UniqueIdentifier>{75292575-23a2-40d7-8236-5ae25aefb195}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Control\UIWebBrowser.cpp">
@@ -141,9 +147,6 @@
     <ClCompile Include="Core\UIManager.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="Core\UIRender.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
     <ClCompile Include="Layout\UIAnimationTabLayout.cpp">
       <Filter>Source Files\Layout</Filter>
     </ClCompile>
@@ -206,15 +209,6 @@
     </ClCompile>
     <ClCompile Include="Utils\UIFrameBase.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Layout\UIOptionLayout.cpp">
-      <Filter>Source Files\Layout</Filter>
-    </ClCompile>
-    <ClCompile Include="Layout\UILabelLayout.cpp">
-      <Filter>Source Files\Layout</Filter>
-    </ClCompile>
-    <ClCompile Include="Layout\UIButtonLayout.cpp">
-      <Filter>Source Files\Layout</Filter>
     </ClCompile>
     <ClCompile Include="Layout\UIChildWindow.cpp">
       <Filter>Source Files\Layout</Filter>
@@ -299,6 +293,36 @@
     </ClCompile>
     <ClCompile Include="Layout\UIDynamicLayout.cpp">
       <Filter>Source Files\Layout</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\UIFile.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\IRender.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\UIGlobal.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\UIObject_gdi.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\UIRenderFactory_gdi.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\UIRender_gdi.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\DuiString.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\UIObject_gdiplus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\UIRender_gdiplus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\UIRenderFactory_gdiplus.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -407,9 +431,6 @@
     <ClInclude Include="Core\UIManager.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Core\UIRender.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
     <ClInclude Include="Layout\UIAnimationTabLayout.h">
       <Filter>Header Files\Layout</Filter>
     </ClInclude>
@@ -481,15 +502,6 @@
     </ClInclude>
     <ClInclude Include="Utils\UIFrameBase.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Layout\UIOptionLayout.h">
-      <Filter>Header Files\Layout</Filter>
-    </ClInclude>
-    <ClInclude Include="Layout\UILabelLayout.h">
-      <Filter>Header Files\Layout</Filter>
-    </ClInclude>
-    <ClInclude Include="Layout\UIButtonLayout.h">
-      <Filter>Header Files\Layout</Filter>
     </ClInclude>
     <ClInclude Include="Layout\UIChildWindow.h">
       <Filter>Header Files\Layout</Filter>
@@ -574,6 +586,36 @@
     </ClInclude>
     <ClInclude Include="Layout\UIDynamicLayout.h">
       <Filter>Header Files\Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\UIFile.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\IRender.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\UIGlobal.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\UIObject_gdi.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\UIRender_gdi.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\UIRenderFactory_gdi.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\DuiString.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\UIObject_gdiplus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\UIRender_gdiplus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\UIRenderFactory_gdiplus.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

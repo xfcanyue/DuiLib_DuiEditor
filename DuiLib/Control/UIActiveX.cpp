@@ -907,7 +907,7 @@ namespace DuiLib {
 					RECT rcCaret;
 					rcCaret = guiThreadInfo.rcCaret;
 					rcCaret.right = rcCaret.left;
-					CRenderEngine::DrawLine((HDC)wParam, rcCaret, 1, 0xFF000000);
+					m_pOwner->m_pOwner->GetManager()->Render()->DrawLine(rcCaret, 1, 0xFF000000);
 				}
 			}
 		}
@@ -1013,11 +1013,11 @@ namespace DuiLib {
 		}
 	}
 
-	bool CActiveXUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
+	bool CActiveXUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 	{
 		if( m_pControl != NULL && m_pControl->m_bWindowless && m_pControl->m_pViewObject != NULL )
 		{
-			m_pControl->m_pViewObject->Draw(DVASPECT_CONTENT, -1, NULL, NULL, NULL, hDC, (RECTL*) &m_rcItem, (RECTL*) &m_rcItem, NULL, NULL); 
+			m_pControl->m_pViewObject->Draw(DVASPECT_CONTENT, -1, NULL, NULL, NULL, pRender->GetDC(), (RECTL*) &m_rcItem, (RECTL*) &m_rcItem, NULL, NULL); 
 		}
 		return true;
 	}

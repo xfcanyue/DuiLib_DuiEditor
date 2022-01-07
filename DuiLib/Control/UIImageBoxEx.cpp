@@ -57,7 +57,7 @@ CImageBoxExUI::~CImageBoxExUI(void)
 
 LPCTSTR CImageBoxExUI::GetClass() const
 {
-	return DUI_CTR_IMAGEBOXEX;
+	return _T("ImageBoxEx");
 }
 
 LPVOID CImageBoxExUI::GetInterface(LPCTSTR pstrName)
@@ -88,12 +88,12 @@ void CImageBoxExUI::DoInit()
 	Play();
 }
 
-bool CImageBoxExUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
+bool CImageBoxExUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 {
-	::SetStretchBltMode(hDC, COLORONCOLOR);
+	::SetStretchBltMode(pRender->GetDC(), COLORONCOLOR);
 	//::SetStretchBltMode(hDC, STRETCH_HALFTONE);
 	CRect rcClient = GetPos();
-	m_pOffScreenImage->Draw(hDC, rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height());
+	m_pOffScreenImage->Draw(pRender->GetDC(), rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height());
 
 	return true;
 }

@@ -39,6 +39,9 @@ public:
 
 	//	创建阴影窗体，由CPaintManagerUI自动调用,除非自己要单独创建阴影
 	void Create(CPaintManagerUI* pPaintManager);
+
+	// 父窗体改变大小，移动，或者主动重绘阴影时调用
+	void Update(HWND hParent);
 protected:
 
 	//	初始化并注册阴影类
@@ -49,9 +52,6 @@ protected:
 
 	//	子类化父窗体
 	static LRESULT CALLBACK ParentProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
-	// 父窗体改变大小，移动，或者主动重绘阴影时调用
-	void Update(HWND hParent);
 
 	// 通过算法计算阴影
 	void MakeShadow(UINT32 *pShadBits, HWND hParent, RECT *rcParent);

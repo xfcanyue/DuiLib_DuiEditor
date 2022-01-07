@@ -262,12 +262,14 @@ namespace DuiLib
         CLabelUI::DoEvent(event);
     }
 
-    void CIPAddressExUI::PaintText(HDC hDC)
+    void CIPAddressExUI::PaintText(UIRender *pRender)
     {
         if( m_dwTextColor == 0 ) m_dwTextColor = m_pManager->GetDefaultFontColor();
         if( m_dwDisabledTextColor == 0 ) m_dwDisabledTextColor = m_pManager->GetDefaultDisabledColor();
 
         if( m_sText.IsEmpty() ) return;
+
+		HDC hDC = pRender->GetDC();
 
         RECT rc = m_rcItem;
 		RECT rcTextPadding = GetTextPadding();
@@ -301,8 +303,8 @@ namespace DuiLib
         GetTextExtentPointA(hDC, szFourth, 3, &Fourth);
         GetTextExtentPointA(hDC, szFourth, 1, &divideSize);
 
-        ::SetBkMode(hDC, TRANSPARENT);
-        ::SetTextColor(hDC, RGB(GetBValue(dwTextColor), GetGValue(dwTextColor), GetRValue(dwTextColor)));
+        ::SetBkMode(pRender->GetDC(), TRANSPARENT);
+        ::SetTextColor(pRender->GetDC(), RGB(GetBValue(dwTextColor), GetGValue(dwTextColor), GetRValue(dwTextColor)));
 
         //Start Test Draw point (".")
         RECT rcPoint = rc;

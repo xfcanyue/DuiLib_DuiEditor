@@ -18,12 +18,13 @@ public:
 	DECLARE_MESSAGE_MAP()
 public:
 	BOOL InitList();
-	TImageInfo *GetThumbnail(int nItem);
+	UIImage *GetThumbnail(int nItem);
 	void ClearThumbnail();  
 private:
 	CImageList m_imageEmpty;
 	CImageList m_imageShell;
-	std::map<int, TImageInfo *> m_map;
+	std::map<int, UIImage *> m_map;
+	CStdRefPtr<UIRender> m_pRender;
 };
 /*
 class CImageEditorListToolBarMenuButton : public CMFCToolBarMenuButton

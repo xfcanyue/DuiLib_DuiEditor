@@ -94,7 +94,7 @@ namespace DuiLib
 		else CLabelUI::SetAttribute(pstrName, pstrValue);
 	}
 
-	void CProgressUI::PaintForeColor(HDC hDC)
+	void CProgressUI::PaintForeColor(UIRender *pRender)
 	{
 		if(m_dwForeColor == 0) return;
 
@@ -111,10 +111,10 @@ namespace DuiLib
 		
 		}
 		
-		CRenderEngine::DrawColor(hDC, rc, GetAdjustColor(m_dwForeColor));
+		pRender->DrawColor(rc, GetBorderRound(), GetAdjustColor(m_dwForeColor));
 	}
 
-	void CProgressUI::PaintForeImage(HDC hDC)
+	void CProgressUI::PaintForeImage(UIRender *pRender)
 	{
 		if( m_nMax <= m_nMin ) m_nMax = m_nMin + 1;
 		if( m_nValue > m_nMax ) m_nValue = m_nMax;
@@ -146,7 +146,7 @@ namespace DuiLib
 				m_sForeImageModify.SmallFormat(_T("dest='%d,%d,%d,%d' source='%d,%d,%d,%d'"), rc.left, rc.top, rc.right, rc.bottom, rc.left, rc.top, rc.right, rc.bottom);
 			}
 
-			if( !DrawImage(hDC, (LPCTSTR)m_sForeImage, (LPCTSTR)m_sForeImageModify) ) {}
+			if( !DrawImage(pRender, (LPCTSTR)m_sForeImage, (LPCTSTR)m_sForeImageModify) ) {}
 			else return;
 		}
 	}

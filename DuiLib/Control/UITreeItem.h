@@ -15,13 +15,13 @@ namespace DuiLib
 		void SetOwner(CControlUI *pCellUI) { m_pOwner = pCellUI; }
 		CControlUI *GetOwner() const { return m_pOwner; }
 
-		virtual bool Activate();
-		virtual bool IsSelected() const;
-		virtual void Selected(bool bSelected, bool bTriggerEvent=true);
+		virtual bool Activate() override;
+		virtual bool IsSelected() const override;
+		virtual void Selected(bool bSelected, bool bTriggerEvent=true) override;
 
-		virtual CDuiString GetText() const;
+		virtual CDuiString GetText() const override;
 
-		virtual void DoEvent(TEventUI& event);
+		virtual void DoEvent(TEventUI& event) override;
 
 		CControlUI *m_pOwner;
 		eType m_type;
@@ -37,16 +37,16 @@ namespace DuiLib
 		void SetOwner(ITreeUI *pGrid) { m_pOwner = pGrid; }
 		ITreeUI *GetOwner() const { return m_pOwner; }
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
-		UINT GetControlFlags() const;
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
+		virtual UINT GetControlFlags() const override;
 
 		void SetNodeData(TNodeData *pNodeData);
 		TNodeData *GetNodeData() const { return m_pNodeData; }
 
-		virtual void DoInit();
-		virtual int GetCxNeeded(SIZE szAvailable);
-		virtual void DoEvent(TEventUI& event);
+		virtual void DoInit() override;
+		int GetCxNeeded(SIZE szAvailable);
+		virtual void DoEvent(TEventUI& event) override;
 	protected:
 		ITreeUI *m_pOwner;
 		TNodeData *m_pNodeData;

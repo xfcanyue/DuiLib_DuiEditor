@@ -282,6 +282,27 @@ bool ITreeUI::IsSelectedNode(TNodeData *pNode)
 	return pNode->IsSelected();
 }
 
+int ITreeUI::GetSelectNodeCount()
+{
+	return m_mapSelectedNodes.size();
+}
+
+TNodeData *ITreeUI::GetSelectNode()
+{
+	m_iteratorNodes = m_mapSelectedNodes.begin();
+	if(m_iteratorNodes == m_mapSelectedNodes.end())
+		return NULL;
+	return m_iteratorNodes->second;
+}
+
+TNodeData *ITreeUI::GetNextSelectNode()
+{
+	m_iteratorNodes++;
+	if(m_iteratorNodes == m_mapSelectedNodes.end())
+		return NULL;
+	return m_iteratorNodes->second;
+}
+
 BOOL ITreeUI::MoveNode(TNodeData *pNode, TNodeData *pNewParent, TNodeData *phInsertAfter)
 {
 	return FALSE;

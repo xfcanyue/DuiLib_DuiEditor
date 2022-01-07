@@ -68,11 +68,7 @@ public:
 	void SetViewListNumber(bool bView);
 	bool GetViewListNumber();
 
-	void SetFont(int index);
-	int GetFont() const;
-
-	void SetTextColor(DWORD dwTextColor);
-	DWORD GetTextColor() const;
+	virtual void SetFont(int index) override;
 
 	void SetVirtualGrid(bool bVirtual);
 	bool GetVirtualGrid();
@@ -132,9 +128,6 @@ private:
 	bool m_bSingleRowSelection;
 	bool m_bListMode;
 	bool m_bViewListNo;
-
-	DWORD	m_dwTextColor;
-	int		m_iFont;
 
 	DWORD m_dwGridBkColor;
 	DWORD m_dwGridLineColor;

@@ -240,6 +240,8 @@ implfun bool CUIDataExchange::_UpdateCombo(_ddx_data *pData, bool bSaveAndValida
 	{
 		if(pData->valueType == _value_int)
 		{
+//			int va = *((int *)(pData->pValue));
+//			pCombo->SelectItem(va);
 			pCombo->SelectItem(*((int *)(pData->pValue)));
 		}
 	}

@@ -4,9 +4,12 @@
 namespace DuiLib
 {
 
+//#pragma init_seg(lib)
 static CStdControlPool<TCellData> poolcell;
 static CStdControlPool<TRowData> poolrow;
 
+//static TRowData grid_row_null;
+//static TCellData grid_cell_null;
 //////////////////////////////////////////////////////////////////////////
 IGridUI::IGridUI(void)
 {
@@ -90,11 +93,10 @@ TRowData *IGridUI::GetRowData(int row)
 	return (TRowData *)m_RowData.GetAt(row);
 }
 
-static TRowData grid_row_null;
 TRowData &IGridUI::Row(int row)
 {
 	TRowData *pRowData = GetRowData(row);
-	if(!pRowData) return grid_row_null;
+//	if(!pRowData) return grid_row_null;
 	return *pRowData;
 }
 
@@ -111,11 +113,10 @@ TCellData *IGridUI::GetCellData(const TCellID &cell)
 	return GetCellData(cell.row, cell.col);\
 }
 
-static TCellData grid_cell_null;
 TCellData &IGridUI::Cell(int row, int col)
 {
 	TCellData *pCellData = GetCellData(row, col);
-	if(!pCellData) return grid_cell_null;
+//	if(!pCellData) return grid_cell_null;
 	return *pCellData;
 }
 

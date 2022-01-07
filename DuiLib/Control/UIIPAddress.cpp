@@ -40,13 +40,11 @@ namespace DuiLib
 
 		LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
 		LRESULT OnKillFocus(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-
-		void CreateInnerFont();
 	protected:
 		CIPAddressUI* m_pOwner;
 		HBRUSH m_hBkBrush;
 		bool m_bInit;
-		TFontInfo m_font;
+		CStdRefPtr<UIFont> m_font;
 	};
 
 	CIPAddressWnd::CIPAddressWnd() : m_pOwner(NULL), m_hBkBrush(NULL), m_bInit(false)
@@ -71,8 +69,8 @@ namespace DuiLib
 			}
 			//不知何故，窗口关闭时，这个字体会被卸载掉。 有人知道请告诉我哈。
 			//SetWindowFont(m_hWnd, m_pOwner->GetManager()->GetFontInfo(m_pOwner->GetFont())->hFont, TRUE);
-			CreateInnerFont();
-			SetWindowFont(m_hWnd, m_font.hFont, TRUE);
+			m_font = MakeRefPtr<UIFont>(m_pOwner->GetManager()->CloneFont(m_pOwner->GetFont()));
+			::SendMessage(m_hWnd, WM_SETFONT, (WPARAM)m_font->GetHFont(m_pOwner->GetManager()), (LPARAM)TRUE);
 		}
 
 		if (m_pOwner->GetText().IsEmpty())
@@ -105,8 +103,6 @@ namespace DuiLib
 		// Clear reference and die
 		if( m_hBkBrush != NULL ) ::DeleteObject(m_hBkBrush);
 		m_pOwner->m_pWindow = NULL;
-		if(m_font.hFont)
-			::DeleteObject(m_font.hFont);
 		delete this;
 	}
 
@@ -170,28 +166,6 @@ namespace DuiLib
 		return lRes;
 	}
 
-	void CIPAddressWnd::CreateInnerFont()
-	{
-		TFontInfo *pFont = m_pOwner->GetManager()->GetFontInfo(m_pOwner->GetFont());
-
-		::ZeroMemory(&m_font, sizeof(TFontInfo));
-		m_font = *pFont;
-		m_font.hFont = NULL;
-
-		LOGFONT lf = { 0 };
-		::GetObject(::GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
-		if(lstrlen(pFont->sFontName) > 0) {
-			TCHAR szFaceName[32] = {0};//_T("@");
-			_tcsncat(szFaceName, pFont->sFontName, LF_FACESIZE);
-			_tcsncpy(lf.lfFaceName, szFaceName, LF_FACESIZE);
-		}
-		lf.lfCharSet = DEFAULT_CHARSET;
-		lf.lfHeight = -m_pOwner->GetManager()->GetDPIObj()->Scale(pFont->iSize);
-		if( pFont->bBold ) lf.lfWeight = FW_BOLD;
-		if( pFont->bUnderline ) lf.lfUnderline = TRUE;
-		if( pFont->bItalic ) lf.lfItalic = TRUE;
-		m_font.hFont = ::CreateFontIndirect(&lf);
-	}
 	//////////////////////////////////////////////////////////////////////////
 	//
 	IMPLEMENT_DUICONTROL(CIPAddressUI)
@@ -199,7 +173,6 @@ namespace DuiLib
 		CIPAddressUI::CIPAddressUI()
 	{
 		m_dwIP = GetLocalIpAddress();
-		m_bReadOnly = false;
 		m_pWindow = NULL;
 		m_nIPUpdateFlag=IP_UPDATE;
 		UpdateText();
@@ -208,7 +181,7 @@ namespace DuiLib
 
 	LPCTSTR CIPAddressUI::GetClass() const
 	{
-		return _T("DateTimeUI");
+		return _T("IPAddressUI");
 	}
 
 	LPVOID CIPAddressUI::GetInterface(LPCTSTR pstrName)
@@ -255,17 +228,6 @@ namespace DuiLib
 	void CIPAddressUI::SetTextN(int n)
 	{
 		SetIP(n);
-	}
-
-	void CIPAddressUI::SetReadOnly(bool bReadOnly)
-	{
-		m_bReadOnly = bReadOnly;
-		Invalidate();
-	}
-
-	bool CIPAddressUI::IsReadOnly() const
-	{
-		return m_bReadOnly;
 	}
 
 	void CIPAddressUI::UpdateText()

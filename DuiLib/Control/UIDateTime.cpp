@@ -27,6 +27,7 @@ namespace DuiLib
 		bool m_bInit;
 		bool m_bDropOpen;
 		SYSTEMTIME m_oldSysTime;
+		CStdRefPtr<UIFont> m_font;
 	};
 
 	CDateTimeWnd::CDateTimeWnd() : m_pOwner(NULL), m_hBkBrush(NULL), m_bInit(false), m_bDropOpen(false)
@@ -50,7 +51,8 @@ namespace DuiLib
 			}
 
 			Create(m_pOwner->GetManager()->GetPaintWindow(), NULL, uStyle, 0, rcPos);
-			SetWindowFont(m_hWnd, m_pOwner->GetManager()->GetFontInfo(m_pOwner->GetFont())->hFont, TRUE);
+			m_font = MakeRefPtr<UIFont>(m_pOwner->GetManager()->CloneFont(m_pOwner->GetFont()));
+			::SendMessage(m_hWnd, WM_SETFONT, (WPARAM)m_font->GetHFont(m_pOwner->GetManager()), (LPARAM)TRUE);
 		}
 
 		memcpy(&m_oldSysTime, &m_pOwner->m_sysTime, sizeof(SYSTEMTIME));
@@ -163,7 +165,6 @@ namespace DuiLib
 	: m_uFormatStyle(0) //add by liqs99
 	{
 		::GetLocalTime(&m_sysTime);
-		m_bReadOnly = false;
 		m_pWindow = NULL;
 	}
 
@@ -187,17 +188,6 @@ namespace DuiLib
 	{
 		m_sysTime = *pst;
 		Invalidate();
-	}
-
-	void CDateTimeUI::SetReadOnly(bool bReadOnly)
-	{
-		m_bReadOnly = bReadOnly;
-		Invalidate();
-	}
-
-	bool CDateTimeUI::IsReadOnly() const
-	{
-		return m_bReadOnly;
 	}
 
 	void CDateTimeUI::SetFormatStyle(UINT uStyle)

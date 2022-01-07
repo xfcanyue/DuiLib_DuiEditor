@@ -11,15 +11,15 @@ namespace DuiLib
 	public:
 		CScrollBarUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
 		CContainerUI* GetOwner() const;
 		void SetOwner(CContainerUI* pOwner);
 
-		void SetVisible(bool bVisible = true);
-		void SetEnabled(bool bEnable = true);
-		void SetFocus();
+		virtual void SetVisible(bool bVisible = true) override;
+		virtual void SetEnabled(bool bEnable = true) override;
+		virtual void SetFocus() override;
 
 		bool IsHorizontal();
 		void SetHorizontal(bool bHorizontal = true);
@@ -79,17 +79,17 @@ namespace DuiLib
 		LPCTSTR GetBkDisabledImage();
 		void SetBkDisabledImage(LPCTSTR pStrImage);
 
-		void SetPos(RECT rc, bool bNeedInvalidate = true);
-		void DoEvent(TEventUI& event);
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+		virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
+		virtual void DoEvent(TEventUI& event) override;
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 
-		bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
+		virtual bool DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl) override;
 
-		void PaintBk(HDC hDC);
-		void PaintButton1(HDC hDC);
-		void PaintButton2(HDC hDC);
-		void PaintThumb(HDC hDC);
-		void PaintRail(HDC hDC);
+		void PaintBk(UIRender *pRender);
+		void PaintButton1(UIRender *pRender);
+		void PaintButton2(UIRender *pRender);
+		void PaintThumb(UIRender *pRender);
+		void PaintRail(UIRender *pRender);
 
 	protected:
 
@@ -104,7 +104,6 @@ namespace DuiLib
 		int m_nScrollPos;
 		int m_nLineSize;
 		CContainerUI* m_pOwner;
-		POINT ptLastMouse;
 		int m_nLastScrollPos;
 		int m_nLastScrollOffset;
 		int m_nScrollRepeatDelay;

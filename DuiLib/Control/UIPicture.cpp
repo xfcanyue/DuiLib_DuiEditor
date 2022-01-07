@@ -29,7 +29,6 @@ CPictureUI::CPictureUI(void)
 
 	m_bTrackRect = false;
 	m_dwTrackColor = 0xFF000000;
-	m_uButtonState = 0;
 }
 
 
@@ -39,9 +38,9 @@ CPictureUI::~CPictureUI(void)
 	RemoveAllImages();
 }
 
-LPCTSTR	CPictureUI::GetClass() const
+LPCTSTR CPictureUI::GetClass() const
 {
-	return DUI_CTR_PICTURE;
+	return _T("PictureUI");
 }
 
 LPVOID	CPictureUI::GetInterface(LPCTSTR pstrName)
@@ -87,7 +86,7 @@ void CPictureUI::DoEvent(TEventUI& event)
 	{
 		if(::PtInRect(&m_rcItem, event.ptMouse))
 		{
-			m_uButtonState |= UISTATE_CAPTURED;
+			SetCaptureState(true);
 			if(IsEnableTrackRect())
 			{
 				m_rcTracker.left = event.ptMouse.x;
@@ -101,7 +100,7 @@ void CPictureUI::DoEvent(TEventUI& event)
 
 	if( event.Type == UIEVENT_MOUSEMOVE )
 	{
-		if( (m_uButtonState & UISTATE_CAPTURED) != 0 ) 
+		if( IsCaptureState() ) 
 		{
 			if(::PtInRect(&m_rcItem, event.ptMouse) && !m_rcTracker.IsNull())
 			{
@@ -115,9 +114,9 @@ void CPictureUI::DoEvent(TEventUI& event)
 
 	if( event.Type == UIEVENT_BUTTONUP )
 	{
-		if( (m_uButtonState & UISTATE_CAPTURED) != 0 ) 
+		if( IsCaptureState() ) 
 		{
-			m_uButtonState &= ~UISTATE_CAPTURED;
+			SetCaptureState(false);
 			if( ::PtInRect(&m_rcItem, event.ptMouse) ) Activate();		
 		}
 	}
@@ -125,18 +124,18 @@ void CPictureUI::DoEvent(TEventUI& event)
 	__super::DoEvent(event);
 }
 
-void CPictureUI::PaintBkImage(HDC hDC)
+void CPictureUI::PaintBkImage(UIRender *pRender)
 {
-	__super::PaintBkImage(hDC);
+	__super::PaintBkImage(pRender);
 
 	if(m_nFramePosition >= m_frames.GetSize())
 		m_nFramePosition = 0;
 
-	TImageInfo *pImageInfo = (TImageInfo *)m_frames.GetAt(m_nFramePosition);
+	UIImage *pImageInfo = (UIImage *)m_frames.GetAt(m_nFramePosition);
 	if(!pImageInfo) return;
 	TDrawInfo defaultDrawInfo;
 	TDrawInfo *pDrawInfo = &defaultDrawInfo;
-	std::map<TImageInfo *, TDrawInfo *>::iterator it = m_map.find(pImageInfo);
+	std::map<UIImage *, TDrawInfo *>::iterator it = m_map.find(pImageInfo);
 	if(it != m_map.end())
 	{
 		pDrawInfo = it->second;
@@ -156,14 +155,14 @@ void CPictureUI::PaintBkImage(HDC hDC)
 
 	RECT rcSource = pDrawInfo->rcSource;
 	if( rcSource.left == 0 && rcSource.right == 0 && rcSource.top == 0 && rcSource.bottom == 0 ) {
-		rcSource.right = pImageInfo->nX;
-		rcSource.bottom = pImageInfo->nY;
+		rcSource.right = pImageInfo->nWidth;
+		rcSource.bottom = pImageInfo->nHeight;
 	}
-	if (rcSource.right > pImageInfo->nX) rcSource.right = pImageInfo->nX;
-	if (rcSource.bottom > pImageInfo->nY) rcSource.bottom = pImageInfo->nY;
+	if (rcSource.right > pImageInfo->nWidth) rcSource.right = pImageInfo->nWidth;
+	if (rcSource.bottom > pImageInfo->nHeight) rcSource.bottom = pImageInfo->nHeight;
 
 	RECT rcCorner = {0};
-	CRenderEngine::DrawImage(hDC, pImageInfo->hBitmap, rcDest, m_rcPaint, rcSource, rcCorner, GetManager()->IsLayered() ? true : pImageInfo->bAlpha, pDrawInfo->uFade, pDrawInfo->bHole, pDrawInfo->bTiledX, pDrawInfo->bTiledY);
+	pRender->DrawBitmap(pImageInfo->bitmap->GetBitmap(), rcDest, m_rcPaint, rcSource, rcCorner, GetManager()->IsLayered() ? true : pImageInfo->bAlpha, pDrawInfo->uFade, pDrawInfo->bHole, pDrawInfo->bTiledX, pDrawInfo->bTiledY);
 
 	if(IsAutoPlay() && m_idEventTimer == 0 && m_frames.GetSize() > 1)
 	{
@@ -175,20 +174,20 @@ void CPictureUI::PaintBkImage(HDC hDC)
 
 	CDuiRect rcRect = m_rcTracker;
 	rcRect.Normalize();
-	CRenderEngine::DrawRect(hDC, rcRect, 1, GetAdjustColor(GetTrackColor()), PS_SOLID);
+	pRender->DrawRect(rcRect, 1, GetAdjustColor(GetTrackColor()), PS_SOLID);
 
 	//绘制蒙版
 	CDuiRect rcTop(m_rcPaint.left, m_rcPaint.top, m_rcPaint.right, rcRect.top);
-	CRenderEngine::DrawColor(hDC, rcTop, GetAdjustColor(0x77FFFFFF));
+	pRender->DrawColor(rcTop, CDuiSize(0,0), GetAdjustColor(0x77FFFFFF));
 
 	CDuiRect rcLeft(m_rcPaint.left, rcRect.top, rcRect.left, rcRect.bottom);
-	CRenderEngine::DrawColor(hDC, rcLeft, GetAdjustColor(0x77FFFFFF));
+	pRender->DrawColor(rcLeft, CDuiSize(0,0), GetAdjustColor(0x77FFFFFF));
 
 	CDuiRect rcRight(rcRect.right, rcRect.top, m_rcPaint.right, rcRect.bottom);
-	CRenderEngine::DrawColor(hDC, rcRight, GetAdjustColor(0x77FFFFFF));
+	pRender->DrawColor(rcRight, CDuiSize(0,0), GetAdjustColor(0x77FFFFFF));
 
 	CDuiRect rcBottom(m_rcPaint.left, rcRect.bottom, m_rcPaint.right, m_rcPaint.bottom);
-	CRenderEngine::DrawColor(hDC, rcBottom, GetAdjustColor(0x77FFFFFF));
+	pRender->DrawColor(rcBottom, CDuiSize(0,0), GetAdjustColor(0x77FFFFFF));
 }
 
 void CPictureUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
@@ -218,9 +217,9 @@ HBITMAP CPictureUI::GetHBitmap()
 {
 	if(m_nFramePosition >= m_frames.GetSize())
 		m_nFramePosition = 0;
-	TImageInfo *pImageInfo = (TImageInfo *)m_frames.GetAt(m_nFramePosition);
+	UIImage *pImageInfo = (UIImage *)m_frames.GetAt(m_nFramePosition);
 	if(!pImageInfo) return NULL;
-	return pImageInfo->hBitmap;
+	return pImageInfo->bitmap->GetBitmap();
 }
 
 bool CPictureUI::LoadHBitmap(HBITMAP hBitmap)
@@ -249,8 +248,8 @@ void CPictureUI::RemoveAllImages()
 
 	for (int i=0; i<m_frames.GetSize(); i++)
 	{
-		TImageInfo *bitmap = (TImageInfo *)m_frames.GetAt(i);
-		CRenderEngine::FreeImage(bitmap);
+		UIImage *bitmap = (UIImage *)m_frames.GetAt(i);
+		bitmap->Release();
 	}
 	m_frames.Empty();
 
@@ -289,9 +288,9 @@ void CPictureUI::SetAutoSize(bool bIsAuto)
 		SIZE sz = {0};
 		for (int i=0; i<m_frames.GetSize(); i++)
 		{
-			TImageInfo *pImageInfo = (TImageInfo *)m_frames.GetAt(i);
-			if(pImageInfo->nX > sz.cx)	sz.cx = pImageInfo->nX;
-			if(pImageInfo->nY > sz.cy)	sz.cy = pImageInfo->nY;
+			UIImage *pImageInfo = (UIImage *)m_frames.GetAt(i);
+			if(pImageInfo->nWidth > sz.cx)	sz.cx = pImageInfo->nWidth;
+			if(pImageInfo->nHeight > sz.cy)	sz.cy = pImageInfo->nHeight;
 		}
 		SetFixedWidth(sz.cx);
 		SetFixedHeight(sz.cy);
@@ -317,7 +316,7 @@ void CPictureUI::StartAnim()
 		int nDelay = m_nDelay;
 		if(nDelay <= 0) {
 			if(m_frames.GetSize() > 0) {
-				TImageInfo *pImageInfo = (TImageInfo *)m_frames.GetAt(0);
+				UIImage *pImageInfo = (UIImage *)m_frames.GetAt(0);
 				nDelay = pImageInfo->delay;
 			}
 		}
@@ -357,20 +356,15 @@ void CPictureUI::OnTimer(UINT_PTR idEvent)
 
 bool CPictureUI::__SetHBitmap(HBITMAP hBitmap)
 {
-	BITMAP bm;
-	::GetObject(hBitmap, sizeof(bm), &bm);
+//	BITMAP bm;
+//	::GetObject(hBitmap, sizeof(bm), &bm);
 
-	TImageInfo* data = new TImageInfo;
-	data->pBits = NULL;
-	data->pSrcBits = NULL;
-	data->hBitmap = hBitmap;
-	data->nX = bm.bmWidth; 
-	data->nY = bm.bmHeight;
-	data->bAlpha = false;
-	data->delay = 0;
+	UIImage* data = UIGlobal::CreateImage();
+	data->CreateImage(hBitmap, false);
+
 	if(!m_frames.Add(data))
 	{
-		delete data;
+		data->Release(); 
 		return false;
 	}
 	SetAutoSize(IsAutoSize());
@@ -380,26 +374,28 @@ bool CPictureUI::__SetHBitmap(HBITMAP hBitmap)
 bool CPictureUI::__LoadImageFromMemory(LPBYTE pData, DWORD dwSize)
 {
 	//尝试解析GIF
+	CStdRefPtr<UIImage> gifLoader = UIGlobal::CreateImage();
 	CStdPtrArray arrImageInfo;
-	if(CRenderEngine::LoadGifImageFromMemory(pData, dwSize, arrImageInfo))
+	if(gifLoader->LoadGifImageFromMemory(pData, dwSize, arrImageInfo))
 	{
 		for (int i=0; i<arrImageInfo.GetSize(); i++)
 		{
-			TImageInfo *pImageInfo = (TImageInfo *)arrImageInfo.GetAt(i);
+			UIImage *pImageInfo = (UIImage *)arrImageInfo.GetAt(i);
 			if(!m_frames.Add(pImageInfo))
 			{
-				delete pImageInfo;
+				pImageInfo->Release(); 
 				return false;
 			}
 		}
 		return true;
 	}
 
-	TImageInfo *pImageInfo = CRenderEngine::LoadImageFromMemory(pData, dwSize, 0, 0, 0,0, GetManager());
+	UIImage *pImageInfo = UIGlobal::CreateImage();
+	pImageInfo->LoadImageFromMemory(pData, dwSize, 0, 0, 0,0, GetManager());
 	if(!pImageInfo) return false;
 	if(!m_frames.Add(pImageInfo))
 	{
-		delete pImageInfo;
+		pImageInfo->Release(); 
 		return false;
 	}
 	SetAutoSize(IsAutoSize());
@@ -409,9 +405,8 @@ bool CPictureUI::__LoadImageFromMemory(LPBYTE pData, DWORD dwSize)
 bool CPictureUI::__LoadFile(LPCTSTR pstrImage)
 {
 	bool bRet = false;
-	TImageInfo *pImageInfo = NULL;
-	LPBYTE pData = NULL; 
-	DWORD dwSize = 0;
+	CUIFile file;
+	UIImage *pImageInfo = UIGlobal::CreateImage();
 
 	TDrawInfo *pDrawInfo = new TDrawInfo;
 	pDrawInfo->Parse(pstrImage, NULL, GetManager());
@@ -419,16 +414,17 @@ bool CPictureUI::__LoadFile(LPCTSTR pstrImage)
 	do 
 	{
 		//文件载入内存
-		dwSize = CRenderEngine::LoadImage2Memory(pDrawInfo->sImageName.GetData(), NULL, pData);
-		if(!pData || dwSize == 0) break;
+		if(!file.LoadFile(pDrawInfo->sImageName.GetData()))
+			break;
 
 		//尝试解析GIF
+		CStdRefPtr<UIImage> gifLoader = MakeRefPtr<UIImage>(UIGlobal::CreateImage());
 		CStdPtrArray arrImageInfo;
-		if(CRenderEngine::LoadGifImageFromMemory(pData, dwSize, arrImageInfo))
+		if(gifLoader->LoadGifImageFromMemory(file.GetData(), file.GetSize(), arrImageInfo))
 		{
 			for (int i=0; i<arrImageInfo.GetSize(); i++)
 			{
-				TImageInfo *pImageInfo2 = (TImageInfo *)arrImageInfo.GetAt(i);
+				UIImage *pImageInfo2 = (UIImage *)arrImageInfo.GetAt(i);
 				m_frames.Add(pImageInfo2);
 				m_map[pImageInfo2] = pDrawInfo;
 			}
@@ -439,8 +435,10 @@ bool CPictureUI::__LoadFile(LPCTSTR pstrImage)
 		}
 
 		//尝试其他格式的图像
-		pImageInfo = CRenderEngine::LoadImageFromMemory(pData, dwSize, pDrawInfo->dwMask, pDrawInfo->width, pDrawInfo->height, pDrawInfo->fillcolor, GetManager());
-		if(!pImageInfo) break;
+		if(!pImageInfo->LoadImageFromMemory(file.GetData(), file.GetSize(), pDrawInfo->dwMask, pDrawInfo->width, pDrawInfo->height, pDrawInfo->fillcolor, GetManager()))
+		{
+			break;
+		}
 
 		if(m_frames.Add(pImageInfo) && m_arrDrawInfo.Add(pDrawInfo))
 		{
@@ -453,9 +451,8 @@ bool CPictureUI::__LoadFile(LPCTSTR pstrImage)
 
 	} while (false);
 
-	if(pImageInfo)		delete pImageInfo;
+	if(pImageInfo)	{ pImageInfo->Release(); }
 	if(pDrawInfo)	delete pDrawInfo;
-	if(pData)		CRenderEngine::FreeMemory(pData);
 	SetAutoSize(IsAutoSize());
 	return bRet;
 }

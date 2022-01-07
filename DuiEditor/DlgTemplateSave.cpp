@@ -14,7 +14,6 @@ IMPLEMENT_DYNAMIC(CDlgTemplateSave, CDialogEx)
 CDlgTemplateSave::CDlgTemplateSave(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CDlgTemplateSave::IDD, pParent)
 {
-
 	m_strTemplateName = _T("");
 }
 
@@ -32,6 +31,7 @@ void CDlgTemplateSave::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CDlgTemplateSave, CDialogEx)
 	ON_BN_CLICKED(IDOK, &CDlgTemplateSave::OnBnClickedOk)
+	ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 
@@ -82,7 +82,10 @@ void CDlgTemplateSave::OnBnClickedOk()
 	CreateDirectory(strPath, NULL);
 
 	//保存截图
-	m_staPicture.GetImage()->Save(strPath+_T("\\skin.jpg"), Gdiplus::ImageFormatJPEG);
+	if(!m_img.IsNull())
+	{
+		m_img.Save(strPath+_T("\\skin.jpg"), Gdiplus::ImageFormatJPEG);
+	}
 
 	//过滤默认属性
 	xml_node root = m_pDoc->m_doc.root().child(XTEXT("Window"));
@@ -96,4 +99,21 @@ void CDlgTemplateSave::OnBnClickedOk()
 
 
 	CDialogEx::OnOK();
+}
+
+
+void CDlgTemplateSave::OnPaint()
+{
+	CPaintDC dc(this); // device context for painting
+	// TODO: 在此处添加消息处理程序代码
+	// 不为绘图消息调用 CDialogEx::OnPaint()
+
+	CPaintDC dcPic(&m_staPicture);
+	CRect rcClient;
+	m_staPicture.GetWindowRect(&rcClient);
+
+	if(!m_img.IsNull())
+	{
+		m_img.Draw(dcPic.GetSafeHdc(), 0, 0, rcClient.Width(), rcClient.Height());
+	}
 }

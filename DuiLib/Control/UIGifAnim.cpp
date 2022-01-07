@@ -42,14 +42,14 @@ namespace DuiLib
 		InitGifImage();
 	}
 
-	bool CGifAnimUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
+	bool CGifAnimUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 	{
 		if( !::IntersectRect( &m_rcPaint, &rcPaint, &m_rcItem ) ) return true;
 		if ( NULL == m_pGifImage )
 		{		
 			InitGifImage();
 		}
-		DrawFrame( hDC );
+		DrawFrame( pRender );
 		return true;
 	}
 
@@ -92,11 +92,6 @@ namespace DuiLib
 
 		Invalidate();
 
-	}
-
-	LPCTSTR CGifAnimUI::GetBkImage()
-	{
-		return m_sBkImage.GetData();
 	}
 
 	void CGifAnimUI::SetAutoPlay(bool bIsAuto)
@@ -160,7 +155,7 @@ namespace DuiLib
 
 	void CGifAnimUI::InitGifImage()
 	{
-		m_pGifImage = CRenderEngine::GdiplusLoadImage(GetBkImage());
+		m_pGifImage = GdiplusLoadImage(GetBkImage());
 		if ( NULL == m_pGifImage ) return;
 		UINT nCount	= 0;
 		nCount	=	m_pGifImage->GetFrameDimensionsCount();
@@ -218,12 +213,33 @@ namespace DuiLib
 		m_pManager->SetTimer( this, EVENT_TIEM_ID, lPause );
 	}
 
-	void CGifAnimUI::DrawFrame( HDC hDC )
+	void CGifAnimUI::DrawFrame( UIRender *pRender )
 	{
-		if ( NULL == hDC || NULL == m_pGifImage ) return;
+		if ( NULL == pRender->GetDC() || NULL == m_pGifImage ) return;
 		GUID pageGuid = Gdiplus::FrameDimensionTime;
-		Gdiplus::Graphics graphics( hDC );
+		Gdiplus::Graphics graphics( pRender->GetDC() );
 		graphics.DrawImage( m_pGifImage, m_rcItem.left, m_rcItem.top, m_rcItem.right-m_rcItem.left, m_rcItem.bottom-m_rcItem.top );
 		m_pGifImage->SelectActiveFrame( &pageGuid, m_nFramePosition );
+	}
+
+	Gdiplus::Image*	CGifAnimUI::GdiplusLoadImage(LPCTSTR pstrPath)
+	{
+		CUIFile f;
+		if(!f.LoadFile(pstrPath)) 
+			return NULL;
+
+		HGLOBAL hMem = ::GlobalAlloc(GMEM_FIXED, f.GetSize());
+		BYTE* pMem = (BYTE*)::GlobalLock(hMem);
+		memcpy(pMem, f.GetData(), f.GetSize());
+		IStream* pStm = NULL;
+		::CreateStreamOnHGlobal(hMem, TRUE, &pStm);
+		Gdiplus::Image *pImg = Gdiplus::Image::FromStream(pStm);
+		if(!pImg || pImg->GetLastStatus() != Gdiplus::Ok)
+		{
+			pStm->Release();
+			::GlobalUnlock(hMem);
+			return 0;
+		}
+		return pImg;
 	}
 }

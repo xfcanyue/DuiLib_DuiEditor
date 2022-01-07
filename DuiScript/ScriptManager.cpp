@@ -85,15 +85,14 @@ void CScriptManager::DeleteModule()
 bool CScriptManager::AddScriptFile(LPCTSTR pstrFileName)
 {
 	int r = 0;
-	LPBYTE pData = NULL;
-	DWORD dwSize = CRenderEngine::LoadImage2Memory(STRINGorID(pstrFileName), 0, pData);
-	if(dwSize == 0U || !pData)
+
+	CUIFile f;
+	if(!f.LoadFile(pstrFileName))
 		return false;
 
 	LSSTRING_CONVERSION;
-	r = m_builder.AddSectionFromMemory(LST2UTF8(pstrFileName), (const char *)pData, dwSize); assert(r>=0);
+	r = m_builder.AddSectionFromMemory(LST2UTF8(pstrFileName), (const char *)f.GetData(), f.GetSize()); assert(r>=0);
 
-	CRenderEngine::FreeMemory(pData); 
 	return r >= 0;
 }
 
@@ -223,7 +222,7 @@ bool CScriptManager::ExecuteScript(void *pFun, CControlUI *pControl, TNotifyUI *
 	return false;
 }
 
-bool CScriptManager::ExecuteScript(void *pFun, CControlUI *pControl, HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
+bool CScriptManager::ExecuteScript(void *pFun, CControlUI *pControl, UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 {
 	int r = 0;
 	if(!pFun) return false;
@@ -242,7 +241,7 @@ bool CScriptManager::ExecuteScript(void *pFun, CControlUI *pControl, HDC hDC, co
 	//传入入口参数
 	int n = sizeof(HDC);
 	r = ctx->SetArgObject(0, pControl); if( r < 0 ) return false;
-	r = ctx->SetArgAddress(1, &hDC); if( r < 0 ) return false;
+	r = ctx->SetArgAddress(1, pRender); if( r < 0 ) return false;
 	r = ctx->SetArgObject(2, (void *)&rcPaint); if( r < 0 ) return false;
 	r = ctx->SetArgObject(3, pStopControl); if( r < 0 ) return false;
 

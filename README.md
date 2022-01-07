@@ -1,9 +1,9 @@
-﻿c
+c
 
 ### 1. 开源说明
 
 
-```c++
+```
 本项目是针对DuiLib开发的可视化界面设计工具，可实际工作中使用
 如有想参与本工具的开发欢迎加入：
 							duilib设计器交流群：819272442
@@ -11,7 +11,7 @@
 
 ### 2.  项目帮助	
 
-```c++
+```
 本项目基于以下：
 	https://gitee.com/Liqs99/DuiLib_DuiEditor
 	https://github.com/xfcanyue/DuiLib_DuiEditor

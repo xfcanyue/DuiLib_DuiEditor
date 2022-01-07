@@ -19,7 +19,7 @@ CPictureBoxUI::~CPictureBoxUI(void)
 
 LPCTSTR	CPictureBoxUI::GetClass() const
 {
-	return DUI_CTR_PICTUREBOX;
+	return _T("PictureBoxUI");
 }
 
 LPVOID	CPictureBoxUI::GetInterface(LPCTSTR pstrName)

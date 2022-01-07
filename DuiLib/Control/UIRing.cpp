@@ -41,7 +41,7 @@ namespace DuiLib
 		Invalidate();
 	}
 
-	void CRingUI::PaintBkImage( HDC hDC )
+	void CRingUI::PaintBkImage( UIRender *pRender )
 	{
 		if(m_pBkimage == NULL) {
 			InitImage();
@@ -53,7 +53,7 @@ namespace DuiLib
 			int iHeight = rcItem.bottom - rcItem.top;
 			Gdiplus::PointF centerPos(rcItem.left + iWidth/2, rcItem.top + iHeight/2);
 
-			Gdiplus::Graphics graphics(hDC);
+			Gdiplus::Graphics graphics(pRender->GetDC());
 			graphics.TranslateTransform(centerPos.X,centerPos.Y);
 			graphics.RotateTransform(m_fCurAngle);
 			graphics.TranslateTransform(-centerPos.X, -centerPos.Y);//还原源点
@@ -77,7 +77,7 @@ namespace DuiLib
 
 	void CRingUI::InitImage()
 	{
-		m_pBkimage = CRenderEngine::GdiplusLoadImage(GetBkImage());
+		m_pBkimage = GdiplusLoadImage(GetBkImage());
 		if ( NULL == m_pBkimage ) return;
 		if(m_pManager) m_pManager->SetTimer(this, RING_TIMERID, 100);
 	}
@@ -89,5 +89,26 @@ namespace DuiLib
 			delete m_pBkimage;
 			m_pBkimage = NULL;
 		}
+	}
+
+	Gdiplus::Image*	CRingUI::GdiplusLoadImage(LPCTSTR pstrPath)
+	{
+		CUIFile f;
+		if(!f.LoadFile(pstrPath)) 
+			return NULL;
+
+		HGLOBAL hMem = ::GlobalAlloc(GMEM_FIXED, f.GetSize());
+		BYTE* pMem = (BYTE*)::GlobalLock(hMem);
+		memcpy(pMem, f.GetData(), f.GetSize());
+		IStream* pStm = NULL;
+		::CreateStreamOnHGlobal(hMem, TRUE, &pStm);
+		Gdiplus::Image *pImg = Gdiplus::Image::FromStream(pStm);
+		if(!pImg || pImg->GetLastStatus() != Gdiplus::Ok)
+		{
+			pStm->Release();
+			::GlobalUnlock(hMem);
+			return 0;
+		}
+		return pImg;
 	}
 }

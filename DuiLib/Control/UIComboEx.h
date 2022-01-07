@@ -4,7 +4,7 @@
 namespace DuiLib
 {
 
-class CComboEditWnd;
+//class CComboEditWnd;
 //下拉按钮单独定义
 class UILIB_API CComboExUI : public CComboUI
 {
@@ -14,11 +14,11 @@ public:
 	CComboExUI(void);
 	virtual ~CComboExUI(void);
 
-	LPCTSTR GetClass() const;
-	LPVOID GetInterface(LPCTSTR pstrName);
+	virtual LPCTSTR GetClass() const override;
+	virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-	virtual bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
-	bool DrawDropButtonImage(HDC hDC, LPCTSTR pStrImage, LPCTSTR pStrModify=NULL);
+	virtual bool DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl);
+	bool DrawDropButtonImage(UIRender *pRender, LPCTSTR pStrImage, LPCTSTR pStrModify=NULL);
 
 	CControlUI *AddString(LPCTSTR pstrText, UINT_PTR pItemData=0);
 	bool DeleteString(LPCTSTR pstrText); 
@@ -66,7 +66,7 @@ public:
 	bool OnLbuttonDown(TEventUI& event);
 	bool OnLbuttonUp(TEventUI& event);
 	virtual bool Activate();
-	virtual void PaintText(HDC hDC);
+	virtual void PaintText(UIRender *pRender);
 
 private:
 	CDuiSize m_szDropButtonSize;
@@ -79,7 +79,8 @@ private:
 	CDuiString m_sTipValue;
 	DWORD m_dwTipValueColor;
 private:
-	CComboEditWnd *m_pEditWindow;
+	//CComboEditWnd *m_pEditWindow;
+	CWindowWnd *m_pEditWindow;
 	int m_type; //CBS_DROPDOWN CBS_DROPDOWNLIST
 };
 

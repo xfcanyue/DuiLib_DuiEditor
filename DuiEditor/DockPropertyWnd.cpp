@@ -27,6 +27,7 @@ CDockPropertyWnd::~CDockPropertyWnd()
 BEGIN_MESSAGE_MAP(CDockPropertyWnd, CDockablePane)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
+	ON_WM_SETTINGCHANGE()
 	ON_REGISTERED_MESSAGE(AFX_WM_PROPERTY_CHANGED, OnPropertyChanged)
 	ON_COMMAND(ID_EXPAND_ALL, OnExpandAllProperties)
 	ON_UPDATE_COMMAND_UI(ID_EXPAND_ALL, OnUpdateExpandAllProperties)
@@ -58,7 +59,7 @@ CUIPropertyGridCtrl *CDockPropertyWnd::CreatePropList()
 	pPropList->EnableDescriptionArea();
 	pPropList->SetVSDotNetLook();
 	pPropList->MarkModifiedProperties();
-	pPropList->SetFont(&afxGlobalData.fontRegular);
+	pPropList->SetPropListFont();
 
 	pPropList->m_pPropertyWnd = this;
 
@@ -168,6 +169,17 @@ void CDockPropertyWnd::OnSize(UINT nType, int cx, int cy)
 
 	m_tabClass.SetWindowPos(NULL, rectClient.left, rectClient.top + cyTlb*2, rectClient.Width(), rectClient.Height()-cyTlb*2, 
 		SWP_NOACTIVATE | SWP_NOZORDER);
+}
+
+void CDockPropertyWnd::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
+{
+	CDockablePane::OnSettingChange(uFlags, lpszSection);
+	
+	for (int i=0; i<m_tabClass.GetTabsNum(); i++)
+	{
+		CUIPropertyGridCtrl *pPropList = (CUIPropertyGridCtrl *)m_tabClass.GetTabWnd(i);	
+		pPropList->SetPropListFont();
+	}
 }
 
 LRESULT CDockPropertyWnd::OnPropertyChanged (WPARAM,LPARAM lParam)

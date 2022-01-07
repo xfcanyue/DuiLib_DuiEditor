@@ -63,28 +63,23 @@ namespace DuiLib {
 		OnAnimationElapse( nTimerID );
 	}
 
-	void CFadeButtonUI::PaintStatusImage(HDC hDC)
+	void CFadeButtonUI::PaintStatusImage(UIRender *pRender)
 	{
-		if( IsFocused() ) m_uButtonState |= UISTATE_FOCUSED;
-		else m_uButtonState &= ~ UISTATE_FOCUSED;
-		if( !IsEnabled() ) m_uButtonState |= UISTATE_DISABLED;
-		else m_uButtonState &= ~ UISTATE_DISABLED;
-
-		if( (m_uButtonState & UISTATE_DISABLED) != 0 ) {
+		if( !IsEnabled() ) {
 			if( !m_sDisabledImage.IsEmpty() ) {
-				if( !DrawImage(hDC, (LPCTSTR)m_sDisabledImage) ) {}
+				if( !DrawImage(pRender, (LPCTSTR)m_sDisabledImage) ) {}
 				else return;
 			}
 		}
-		else if( (m_uButtonState & UISTATE_PUSHED) != 0 ) {
+		else if( IsPushedState() ) {
 			if( !m_sPushedImage.IsEmpty() ) {
-				if( !DrawImage(hDC, (LPCTSTR)m_sPushedImage) ) {}
+				if( !DrawImage(pRender, (LPCTSTR)m_sPushedImage) ) {}
 				else return;
 			}
 		}
-		else if( (m_uButtonState & UISTATE_FOCUSED) != 0 ) {
+		else if( IsFocused() ) {
 			if( !m_sFocusedImage.IsEmpty() ) {
-				if( !DrawImage(hDC, (LPCTSTR)m_sFocusedImage) ) {}
+				if( !DrawImage(pRender, (LPCTSTR)m_sFocusedImage) ) {}
 				else return;
 			}
 		}
@@ -94,14 +89,14 @@ namespace DuiLib {
 				if( m_bMouseHove ) {
 					m_bMouseHove = FALSE;
 					m_sLastImage = m_sHotImage;
-					if( !DrawImage(hDC, (LPCTSTR)m_sNormalImage) ) {}
+					if( !DrawImage(pRender, (LPCTSTR)m_sNormalImage) ) {}
 					return;
 				}
 
 				if( m_bMouseLeave ) {
 					m_bMouseLeave = FALSE;
 					m_sLastImage = m_sNormalImage;
-					if( !DrawImage(hDC, (LPCTSTR)m_sHotImage) ) {}
+					if( !DrawImage(pRender, (LPCTSTR)m_sHotImage) ) {}
 					return;
 				}
 
@@ -114,27 +109,27 @@ namespace DuiLib {
 				CDuiString sFadeOut, sFadeIn;
 				sFadeOut.Format(_T("fade='%d'"), 255 - m_bFadeAlpha);
 				sFadeIn.Format(_T("fade='%d'"), m_bFadeAlpha);
-				if( !DrawImage(hDC, (LPCTSTR)m_sOldImage, sFadeOut) ) {}
-				if( !DrawImage(hDC, (LPCTSTR)m_sNewImage, sFadeIn) ) {}
+				if( !DrawImage(pRender, (LPCTSTR)m_sOldImage, sFadeOut) ) {}
+				if( !DrawImage(pRender, (LPCTSTR)m_sNewImage, sFadeIn) ) {}
 				return;
 			}
 			else {
 				if( m_bMouseHove ) {
 					m_bMouseHove = FALSE;
 					m_sLastImage = m_sHotImage;
-					if( !DrawImage(hDC, (LPCTSTR)m_sNormalImage) ) {}
+					if( !DrawImage(pRender, (LPCTSTR)m_sNormalImage) ) {}
 					return;
 				}
 
 				if( m_bMouseLeave ) {
 					m_bMouseLeave = FALSE;
 					m_sLastImage = m_sNormalImage;
-					if( !DrawImage(hDC, (LPCTSTR)m_sHotImage) ) {}
+					if( !DrawImage(pRender, (LPCTSTR)m_sHotImage) ) {}
 					return;
 				}
 
 				if(m_sLastImage.IsEmpty()) m_sLastImage = m_sNormalImage;
-				if( !DrawImage(hDC, (LPCTSTR)m_sLastImage) ) {}
+				if( !DrawImage(pRender, (LPCTSTR)m_sLastImage) ) {}
 				return;
 			}
 		}

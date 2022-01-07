@@ -14,11 +14,11 @@ namespace DuiLib
 		DECLARE_DUICONTROL(CIPAddressExUI)
     public:
         CIPAddressExUI();
-        LPCTSTR GetClass() const;
-        LPVOID GetInterface(LPCTSTR pstrName);
-        UINT GetControlFlags() const;
-        void DoEvent(TEventUI& event);
-        void PaintText(HDC hDC);
+        virtual LPCTSTR GetClass() const override;
+        virtual LPVOID GetInterface(LPCTSTR pstrName) override;
+        virtual UINT GetControlFlags() const override;
+        virtual void DoEvent(TEventUI& event) override;
+        virtual void PaintText(UIRender *pRender) override;
 
         void SetIP(LPCWSTR lpIP);
         CDuiString GetIP();

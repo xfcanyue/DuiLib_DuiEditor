@@ -51,7 +51,5 @@ using namespace DuiLib;
 #include "pugixml/pugixml.hpp"
 using namespace pugi;
 
-#include "DuiLib/LsStringConverter.h" 
-
 extern DuiLib::CDuiString g_strDuiPluginsPath;
 

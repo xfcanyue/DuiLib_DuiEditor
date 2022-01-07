@@ -19,7 +19,7 @@ CComboExUI::~CComboExUI(void)
 
 LPCTSTR CComboExUI::GetClass() const
 {
-	return DUI_CTR_COMBOEX;
+	return _T("ComboExUI");
 }
 
 LPVOID CComboExUI::GetInterface(LPCTSTR pstrName)
@@ -28,53 +28,48 @@ LPVOID CComboExUI::GetInterface(LPCTSTR pstrName)
 	return __super::GetInterface(pstrName);
 }
 
-bool CComboExUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
+bool CComboExUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 {
-	if(!CControlUI::DoPaint(hDC, rcPaint, pStopControl))
+	if(!CControlUI::DoPaint(pRender, rcPaint, pStopControl))
 		return false;
 
-	if( IsFocused() ) m_uButtonState |= UISTATE_FOCUSED;
-	else m_uButtonState &= ~ UISTATE_FOCUSED;
-	if( !IsEnabled() ) m_uButtonState |= UISTATE_DISABLED;
-	else m_uButtonState &= ~ UISTATE_DISABLED;
-
-	if( (m_uButtonState & UISTATE_DISABLED) != 0 ) {
+	if( !IsEnabled() ) {
 		if( !m_dbDisabledImage.IsEmpty() ) {
-			if( DrawDropButtonImage(hDC, (LPCTSTR)m_dbDisabledImage) )
+			if( DrawDropButtonImage(pRender, (LPCTSTR)m_dbDisabledImage) )
 				return true;
 		}
 	}
-	else if( (m_uButtonState & UISTATE_PUSHED) != 0 ) {
+	else if( IsPushedState() ) {
 		if( !m_dbPushedImage.IsEmpty() ) {
-			if( DrawDropButtonImage(hDC, (LPCTSTR)m_dbPushedImage) )
+			if( DrawDropButtonImage(pRender, (LPCTSTR)m_dbPushedImage) )
 				return true;
 		}
 	}
-	else if( (m_uButtonState & UISTATE_HOT) != 0 ) {
+	else if( IsHotState() ) {
 		if( !m_dbHotImage.IsEmpty() ) {
-			if( DrawDropButtonImage(hDC, (LPCTSTR)m_dbHotImage) ) 
+			if( DrawDropButtonImage(pRender, (LPCTSTR)m_dbHotImage) ) 
 				return true;
 		}
 	}
-	else if( (m_uButtonState & UISTATE_FOCUSED) != 0 ) {
+	else if( IsFocused() ) {
 		if( !m_dbFocusedImage.IsEmpty() ) {
-			if( DrawDropButtonImage(hDC, (LPCTSTR)m_dbFocusedImage) )
+			if( DrawDropButtonImage(pRender, (LPCTSTR)m_dbFocusedImage) )
 				return true;
 		}
 	}
 
 	if( !m_dbNormalImage.IsEmpty() ) {
-		if( DrawDropButtonImage(hDC, (LPCTSTR)m_dbNormalImage) )
+		if( DrawDropButtonImage(pRender, (LPCTSTR)m_dbNormalImage) )
 			return true;
 	}
 
 	return true;
 }
 
-bool CComboExUI::DrawDropButtonImage(HDC hDC, LPCTSTR pStrImage, LPCTSTR pStrModify)
+bool CComboExUI::DrawDropButtonImage(UIRender *pRender, LPCTSTR pStrImage, LPCTSTR pStrModify)
 {
 	RECT rcButton = GetDropButtonRect();
-	return CRenderEngine::DrawImageString(hDC, m_pManager, rcButton, rcButton, pStrImage, pStrModify, m_instance);
+	return pRender->DrawImageString(rcButton, rcButton, pStrImage, pStrModify, m_instance);
 }
 
 CControlUI *CComboExUI::AddString(LPCTSTR pstrText, UINT_PTR pItemData)
@@ -316,7 +311,7 @@ void CComboExUI::SetPos(RECT rc, bool bNeedInvalidate)
 {
 	__super::SetPos(rc, bNeedInvalidate);
 	if( m_pEditWindow != NULL ) {
-		RECT rcPos = m_pEditWindow->CalPos();
+		RECT rcPos = ((CComboEditWnd *)m_pEditWindow)->CalPos();
 		::SetWindowPos(m_pEditWindow->GetHWND(), NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
 			rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE);        
 	}
@@ -326,7 +321,7 @@ void CComboExUI::Move(SIZE szOffset, bool bNeedInvalidate)
 {
 	__super::Move(szOffset, bNeedInvalidate);
 	if( m_pEditWindow != NULL ) {
-		RECT rcPos = m_pEditWindow->CalPos();
+		RECT rcPos = ((CComboEditWnd *)m_pEditWindow)->CalPos();
 		::SetWindowPos(m_pEditWindow->GetHWND(), NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
 			rcPos.bottom - rcPos.top, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);        
 	}
@@ -408,7 +403,7 @@ bool CComboExUI::OnLbuttonDown(TEventUI& event)
 	{
 		m_pEditWindow = new CComboEditWnd();
 		ASSERT(m_pEditWindow);
-		m_pEditWindow->Init(this);
+		((CComboEditWnd *)m_pEditWindow)->Init(this);
 
 		if( PtInRect(&m_rcItem, event.ptMouse) )
 		{
@@ -450,7 +445,7 @@ bool CComboExUI::Activate()
 	return true;
 }
 
-void CComboExUI::PaintText(HDC hDC)
+void CComboExUI::PaintText(UIRender *pRender)
 {
 	if( m_dwTextColor == 0 ) m_dwTextColor = m_pManager->GetDefaultFontColor();
 	if( m_dwDisabledTextColor == 0 ) m_dwDisabledTextColor = m_pManager->GetDefaultDisabledColor();
@@ -474,20 +469,7 @@ void CComboExUI::PaintText(HDC hDC)
 		dwTextColor = GetTipValueColor();
 	}
 	
-	if( sText.IsEmpty() ) return;
-	int nLinks = 0;
-	if( IsEnabled() ) {
-		if( m_bShowHtml )
-			CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, sText, dwTextColor, NULL, NULL, nLinks, m_iFont, m_uTextStyle);
-		else
-			CRenderEngine::DrawText(hDC, m_pManager, rc, sText, dwTextColor, m_iFont, m_uTextStyle);
-	}
-	else {
-		if( m_bShowHtml )
-			CRenderEngine::DrawHtmlText(hDC, m_pManager, rc, sText, m_dwDisabledTextColor, NULL, NULL, nLinks, m_iFont, m_uTextStyle);
-		else
-			CRenderEngine::DrawText(hDC, m_pManager, rc, sText, m_dwDisabledTextColor, m_iFont, m_uTextStyle);
-	}
+	pRender->DrawText(rc, CDuiRect(0,0,0,0), sText, dwTextColor, GetFont(), GetTextStyle());
 }
 
 }

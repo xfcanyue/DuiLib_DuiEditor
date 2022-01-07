@@ -88,6 +88,8 @@ public:
 	CUIPropertyGridCtrl();
 	virtual ~CUIPropertyGridCtrl();
 
+	void SetPropListFont();
+
 	CString m_strFilter;
 	void InitProp(xml_node TreeNode);
 
@@ -109,6 +111,7 @@ public:
 	BOOL IsSetModifyPropertyFlag() { return m_bSetModifyPropertyFlag; }
 protected:
 	CDockPropertyWnd *m_pPropertyWnd;
+	CFont m_fntPropList;
 public:
 	CDuiEditorViewDesign *GetView() const;
 	CUIManager *GetUIManager() const { return m_pUIManager; }

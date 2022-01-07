@@ -18,7 +18,7 @@ CKeyBoardSimpleUI::~CKeyBoardSimpleUI(void)
 
 LPCTSTR CKeyBoardSimpleUI::GetClass() const
 {
-	return _T("KeyBoardSimple");
+	return _T("KeyBoardSimpleUI");
 }
 
 LPVOID CKeyBoardSimpleUI::GetInterface(LPCTSTR pstrName)

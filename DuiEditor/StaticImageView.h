@@ -12,12 +12,14 @@ public:
 	virtual ~CStaticImageView();
 
 private:
-	CImage m_imgPreview;
+	CStdRefPtr<UIRender> m_pRender;
+	CStdRefPtr<UIImage> m_imgPreview;
 
 public:
-	CImage *GetImage() { return &m_imgPreview; }
+	UIImage *GetImage() { return m_imgPreview; }
 	void SetPreviewImage(LPCTSTR pstrImage);
-	void SetPreviewImage(const CImage &image);
+	void SetPreviewImage(HBITMAP hImage);
+	void SetPreviewImage(UIRender *pRender);
 
 protected:
 	afx_msg void OnPaint();

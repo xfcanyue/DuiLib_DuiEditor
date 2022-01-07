@@ -9,21 +9,21 @@ namespace DuiLib
 	public:
 		CAnimationTabLayoutUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-		bool SelectItem( int iIndex );
+		virtual bool SelectItem( int iIndex ) override;
 		void AnimationSwitch();
-		void DoEvent(TEventUI& event);
+		virtual void DoEvent(TEventUI& event) override;
 		void OnTimer( int nTimerID );
 
-		virtual void OnAnimationStart(int nAnimationID, BOOL bFirstLoop) {}
-		virtual void OnAnimationStep(int nTotalFrame, int nCurFrame, int nAnimationID);
-		virtual void OnAnimationStop(int nAnimationID);
+		virtual void OnAnimationStart(int nAnimationID, BOOL bFirstLoop) override {}
+		virtual void OnAnimationStep(int nTotalFrame, int nCurFrame, int nAnimationID) override;
+		virtual void OnAnimationStop(int nAnimationID) override;
 
-		void SetPos(RECT rc, bool bNeedInvalidate = true);
+		virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
 
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 
 	protected:
 		int m_nPositiveDirection;

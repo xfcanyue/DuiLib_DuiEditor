@@ -15,17 +15,17 @@ public:
 	void SetOwner(ITreeUI *pTree) { m_pOwner = pTree; }
 	ITreeUI *GetOwner() const { return m_pOwner; }
 
-	LPCTSTR GetClass() const;
-	LPVOID GetInterface(LPCTSTR pstrName);
+	virtual LPCTSTR GetClass() const override;
+	virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-	virtual void SetPos(RECT rc, bool bNeedInvalidate = true);
+	virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
 
-	virtual void LineUp();
-	virtual void LineDown();
-	virtual void PageUp();
-	virtual void PageDown();
-	virtual void HomeUp();
-	virtual void EndDown();
+	virtual void LineUp() override;
+	virtual void LineDown() override;
+	virtual void PageUp() override;
+	virtual void PageDown() override;
+	virtual void HomeUp() override;
+	virtual void EndDown() override;
 
 	void SetCxNeeded(int cxNeeded) { m_nCxNeeded = cxNeeded; }
 	int GetCxNeeded() const { return m_nCxNeeded; }
@@ -46,21 +46,21 @@ public:
 	~CTreeUI(void);
 
 public:
-	virtual LPCTSTR GetClass() const;
-	virtual LPVOID	GetInterface(LPCTSTR pstrName);
-	UINT GetControlFlags() const;
+	virtual LPCTSTR GetClass() const override;
+	virtual LPVOID	GetInterface(LPCTSTR pstrName) override;
+	UINT GetControlFlags() const override;
 
-	virtual void Refresh(bool bNeedUpdate = false);
-	virtual void SendNotify(LPCTSTR pstrMessage, WPARAM wParam = 0, LPARAM lParam = 0, bool bAsync = false);
+	virtual void Refresh(bool bNeedUpdate = false) override;
+	virtual void SendNotify(LPCTSTR pstrMessage, WPARAM wParam = 0, LPARAM lParam = 0, bool bAsync = false) override;
 public:
-	virtual void DoInit();
-	virtual void DoEvent(TEventUI& event);
-	virtual void SetPos(RECT rc, bool bNeedInvalidate = true);
-	virtual void BuildRows(RECT rc, bool bNeedInvalidate = true);
-	virtual void SetScrollPos(SIZE szPos, bool bMsg = true);
-	virtual void ProcessScrollBar(RECT rc, int cxRequired, int cyRequired);
+	virtual void DoInit() override;
+	virtual void DoEvent(TEventUI& event) override;
+	virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
+	void BuildRows(RECT rc, bool bNeedInvalidate = true);
+	virtual void SetScrollPos(SIZE szPos, bool bMsg = true) override;
+	virtual void ProcessScrollBar(RECT rc, int cxRequired, int cyRequired) override;
 
-	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);	
+	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;	
 
 protected:
 	CTreeBodyUI *m_pBody;

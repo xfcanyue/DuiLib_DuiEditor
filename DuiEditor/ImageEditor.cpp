@@ -18,16 +18,11 @@ CImageEditor::CImageEditor(CWnd* pParent /*=NULL*/)
 {
 	m_pFrame = NULL;
 	m_pParentGrid = NULL;
-	m_imgControlX = NULL;
 }
 
 CImageEditor::~CImageEditor()
 {
-	if(m_imgControlX != NULL)
-	{
-		::DeleteObject(m_imgControlX);
-		m_imgControlX = NULL;
-	}
+	
 }
 
 void CImageEditor::DoDataExchange(CDataExchange* pDX)
@@ -136,17 +131,6 @@ void CImageEditor::SetAttributeValue(LPCTSTR szAttribute)
 	return;
 }
 
-void CImageEditor::SetControlImage(HBITMAP img, RECT rcSource)
-{
-	m_imgControlX = img;
-	m_rcControl = rcSource;
-
-// 	BITMAP bm;
-// 	::GetObject(img, sizeof(bm), &bm);
-// 
-// 	CRect rc(0, 0, bm.bmWidth, bm.bmHeight);
-// 	m_rcControl = rc;
-}
 
 void CImageEditor::SetImageFile(LPCTSTR lpstrPathName)
 {
@@ -175,56 +159,50 @@ void CImageEditor::LoadImageFile(LPCTSTR lpstrPathName)
 	m_rcImage.SetRect(0,0,0,0);
 	ClearImage();
 
-	TImageInfo *pImageInfo = NULL;
-	LPBYTE pData = NULL; 
-	DWORD dwSize = 0;
+	UIImage *pImageInfo = UIGlobal::CreateImage();
+
 	do 
 	{
-		//文件载入内存
-		dwSize = CRenderEngine::LoadImage2Memory(lpstrPathName, NULL, pData);
-		if(!pData || dwSize == 0) break;
+		CUIFile f;
+		if(!f.LoadFile(lpstrPathName))
+			break;
 
 		//尝试解析GIF
 		CStdPtrArray arrImageInfo;
-		if(CRenderEngine::LoadGifImageFromMemory(pData, dwSize, arrImageInfo))
+		if(pImageInfo->LoadGifImageFromMemory(f.GetData(), f.GetSize(), arrImageInfo))
 		{
 			for (int i=0; i<arrImageInfo.GetSize(); i++)
 			{
-				TImageInfo *pImageInfo2 = (TImageInfo *)arrImageInfo.GetAt(i);
-				if(pImageInfo2->nX > m_rcImage.right) m_rcImage.right = pImageInfo2->nX; 
-				if(pImageInfo2->nY > m_rcImage.bottom) m_rcImage.bottom = pImageInfo2->nY; 
+				UIImage *pImageInfo2 = (UIImage *)arrImageInfo.GetAt(i);
+				if(pImageInfo2->nWidth > m_rcImage.right) m_rcImage.right = pImageInfo2->nWidth; 
+				if(pImageInfo2->nHeight > m_rcImage.bottom) m_rcImage.bottom = pImageInfo2->nHeight; 
 				m_imageFrames.Add(pImageInfo2);
 			}
 			break;
 		}
 
 		//尝试其他格式的图像
-		pImageInfo = CRenderEngine::LoadImageFromMemory(pData, dwSize);
+		pImageInfo->LoadImageFromMemory(f.GetData(), f.GetSize());
 		if(!pImageInfo) break;
 
 		if(m_imageFrames.Add(pImageInfo))
 		{
-			m_rcImage.SetRect(0, 0, pImageInfo->nX, pImageInfo->nY);
+			m_rcImage.SetRect(0, 0, pImageInfo->nWidth, pImageInfo->nHeight);
 			pImageInfo = NULL;
 			break;
 		}
 
 	} while (false);
 
-	if(pImageInfo)	delete pImageInfo;
-	if(pData)		CRenderEngine::FreeMemory(pData);
-
-// 	m_image.DestroyFrames(); m_image.Destroy();
-// 	m_image.Load(lpstrPathName);
-// 	m_rcImage.SetRect(0, 0, m_image.GetWidth(), m_image.GetHeight());
+	if(pImageInfo)	pImageInfo->Release();
 }
 
 void CImageEditor::ClearImage()
 {
 	for (int i=0; i<m_imageFrames.GetSize(); i++)
 	{
-		TImageInfo *pImageInfo = (TImageInfo *)m_imageFrames.GetAt(i);
-		CRenderEngine::FreeImage(pImageInfo);
+		UIImage *pImageInfo = (UIImage *)m_imageFrames.GetAt(i);
+		pImageInfo->Release();
 	}
 	m_imageFrames.Empty();
 }

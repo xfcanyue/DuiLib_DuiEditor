@@ -16,17 +16,18 @@ namespace DuiLib
 		CRingUI();
 		~CRingUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
-		void SetBkImage(LPCTSTR pStrImage);	
-		virtual void DoEvent(TEventUI& event);
-		virtual void PaintBkImage(HDC hDC);	
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
+		virtual void SetBkImage(LPCTSTR pStrImage) override;	
+		virtual void DoEvent(TEventUI& event) override;
+		virtual void PaintBkImage(UIRender *pRender) override;	
 
 	private:
 		void InitImage();
 		void DeleteImage();
 
+		Gdiplus::Image*	GdiplusLoadImage(LPCTSTR pstrPath);
 	public:
 		float m_fCurAngle;
 		Gdiplus::Image* m_pBkimage;

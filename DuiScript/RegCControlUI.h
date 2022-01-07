@@ -20,28 +20,35 @@ public:
 
 		REG_CONTROL_FACTORY();
 
-		REG_CONTROL_FUNPR(void,		 SetName,			(LPCTSTR)		);
-		REG_CONTROL_FUNPR(CDuiString,  GetName,			() const		);
-		REG_CONTROL_FUNPR(LPCTSTR,	 GetClass,			() const		);
-		REG_CONTROL_FUNPR(LPVOID,	 GetInterface,		(LPCTSTR pstrName));
-		REG_CONTROL_FUNPR(UINT,		 GetControlFlags,	() const		);
-		REG_CONTROL_FUNPR(bool,		 Activate,			()				);
+		REG_CONTROL_FUNPR(void,			SetName,			(LPCTSTR)		);
+		REG_CONTROL_FUNPR(CDuiString,	GetName,			() const		);
+		REG_CONTROL_FUNPR(LPCTSTR,		GetClass,			() const		);
+		REG_CONTROL_FUNPR(LPVOID,		GetInterface,		(LPCTSTR pstrName));
+		REG_CONTROL_FUNPR(UINT,			GetControlFlags,	() const		);
+		REG_CONTROL_FUNPR(bool,			Activate,			()				);
 
-		REG_CONTROL_FUNPR(CPaintManagerUI*, GetManager, ()const								);
-		REG_CONTROL_FUNPR(void,  SetManager, (CPaintManagerUI*, CControlUI*, bool)			);
-		REG_CONTROL_FUNPR(CControlUI*, GetParent, ()const									);
+		REG_CONTROL_FUNPR(CPaintManagerUI*, GetManager,		()const								);
+		REG_CONTROL_FUNPR(void,				SetManager,		(CPaintManagerUI*, CControlUI*, bool));
+		REG_CONTROL_FUNPR(CControlUI*,		GetParent,		()const								);
 
 		REG_CONTROL_FUNPR(bool,		  SetTimer,				(UINT nTimerID, UINT nElapse)	);
 		REG_CONTROL_FUNPR(void,		  KillTimer,			(UINT nTimerID)					);
+
 		REG_CONTROL_FUNPR(CDuiString, GetText,				() const						);
 		REG_CONTROL_FUNPR(void,		  SetText,				(LPCTSTR pstrText)				);
 		REG_CONTROL_FUNPR(int,		  GetTextN,				()								);
 		REG_CONTROL_FUNPR(void,		  SetTextN,				(int n)							);
+
+		REG_CONTROL_FUNPR(void,		 SetTextStyle,			(UINT uStyle)					);
+		REG_CONTROL_FUNPR(UINT,		 GetTextStyle,			() const					);
+		REG_CONTROL_FUNPR(RECT,		 GetTextPadding,		() const					);
+		REG_CONTROL_FUNPR(void,		 SetTextPadding,		(RECT rc)					);
+
 		REG_CONTROL_FUNPR(bool,		  IsResourceText,		() const						);
 		REG_CONTROL_FUNPR(void,		  SetResourceText,		(bool bResource)				);
 		REG_CONTROL_FUNPR(int,		  GetResourceID,		() const						);
 		REG_CONTROL_FUNPR(void,		  SetResourceID,		(int resid)						);
-		//REG_CONTROL_FUNPR(CLangPackageUI *, GetLangPackage, ()								);
+		//REG_CONTROL_FUNPR(CLangPackageUI *, GetLangPackage, ()							);
 		REG_CONTROL_FUNPR(void,		  SetSkinFile,			(LPCTSTR lpstrSkinFile)			);
 		REG_CONTROL_FUNPR(CDuiString, GetSkinFile,			()								);
 		REG_CONTROL_FUNPR(bool,		  IsDragEnabled,		() const						);
@@ -49,40 +56,115 @@ public:
 		REG_CONTROL_FUNPR(bool,		  IsDropEnabled,		() const						);
 		REG_CONTROL_FUNPR(void,		  SetDropEnable,		(bool bDrop)					);
 
-		// 图形相关
-		REG_CONTROL_FUNPR(LPCTSTR,	   GetGradient,			()								);
-		REG_CONTROL_FUNPR(void,		   SetGradient,			(LPCTSTR pStrImage)				);
-		REG_CONTROL_FUNPR(DWORD,		GetBkColor,			() const						);
-		REG_CONTROL_FUNPR(void,		   SetBkColor,			(DWORD dwBackColor)				);
-		REG_CONTROL_FUNPR(DWORD,		GetBkColor2,		() const						);
-		REG_CONTROL_FUNPR(void,		   SetBkColor2,			(DWORD dwBackColor)				);
-		REG_CONTROL_FUNPR(DWORD,		GetBkColor3,		() const						);
-		REG_CONTROL_FUNPR(void,		   SetBkColor3,			(DWORD dwBackColor)				);
+
+		//////////////////////////////////////////////////////////////////////////
+		//字体
+		REG_CONTROL_FUNPR(int,		 GetFont,				() const						);
+		REG_CONTROL_FUNPR(void,		 SetFont,				(int index)						);
+		REG_CONTROL_FUNPR(int,		 GetHotFont,			() const						);
+		REG_CONTROL_FUNPR(void,		 SetHotFont,			(int index)						);
+		REG_CONTROL_FUNPR(int,		 GetPushedFont,			() const						);
+		REG_CONTROL_FUNPR(void,		 SetPushedFont,			(int index)						);
+		REG_CONTROL_FUNPR(int,		 GetFocusedFont,		() const						);
+		REG_CONTROL_FUNPR(void,		 SetFocusedFont,		(int index)						);
+		REG_CONTROL_FUNPR(int,		 GetDisabledFont,		() const						);
+		REG_CONTROL_FUNPR(void,		 SetDisabledFont,		(int index)						);
+		REG_CONTROL_FUNPR(int,		 GetSelectedFont,		() const						);
+		REG_CONTROL_FUNPR(void,		 SetSelectedFont,		(int index)						);
+
+		//////////////////////////////////////////////////////////////////////////
+		//字体颜色
+		REG_CONTROL_FUNPR(DWORD,	 GetTextColor,			() const						);
+		REG_CONTROL_FUNPR(void,		 SetTextColor,			(DWORD dwColor)					);
+		REG_CONTROL_FUNPR(DWORD,	 GetHotTextColor,		() const						);
+		REG_CONTROL_FUNPR(void,		 SetHotTextColor,		(DWORD dwColor)					);
+		REG_CONTROL_FUNPR(DWORD,	 GetPushedTextColor,	() const						);
+		REG_CONTROL_FUNPR(void,		 SetPushedTextColor,	(DWORD dwColor)					);
+		REG_CONTROL_FUNPR(DWORD,	 GetFocusedTextColor,	() const						);
+		REG_CONTROL_FUNPR(void,		 SetFocusedTextColor,	(DWORD dwColor)					);
+		REG_CONTROL_FUNPR(DWORD,	 GetDisabledTextColor,	() const						);
+		REG_CONTROL_FUNPR(void,		 SetDisabledTextColor,	(DWORD dwColor)					);
+		REG_CONTROL_FUNPR(DWORD,	 GetSelectedTextColor,	() const						);
+		REG_CONTROL_FUNPR(void,		 SetSelectedTextColor,	(DWORD dwColor)					);
+
+		//////////////////////////////////////////////////////////////////////////
+		//背景渐变色
+		REG_CONTROL_FUNPR(bool,		GetGradient,			()								);
+		REG_CONTROL_FUNPR(void,		SetGradient,			(bool bVertical)				);
+		REG_CONTROL_FUNPR(DWORD,	GetBkColor2,			() const						);
+		REG_CONTROL_FUNPR(void,		SetBkColor2,			(DWORD dwBackColor)				);
+		REG_CONTROL_FUNPR(DWORD,	GetBkColor3,			() const						);
+		REG_CONTROL_FUNPR(void,		SetBkColor3,			(DWORD dwBackColor)				);
+
+		//////////////////////////////////////////////////////////////////////////
+		//背景色
+		REG_CONTROL_FUNPR(DWORD,	GetBkColor,				() const						);
+		REG_CONTROL_FUNPR(void,		SetBkColor,				(DWORD dwBackColor)				);
+		REG_CONTROL_FUNPR(DWORD,	GetHotBkColor,			() const						);
+		REG_CONTROL_FUNPR(void,		SetHotBkColor,			(DWORD dwColor)					);
+		REG_CONTROL_FUNPR(DWORD,	GetFocusBkColor,		() const						);
+		REG_CONTROL_FUNPR(void,		SetFocusBkColor,		(DWORD dwColor)					);
+		REG_CONTROL_FUNPR(DWORD,	GetPushedBkColor,		() const						);
+		REG_CONTROL_FUNPR(void,		SetPushedBkColor,		(DWORD dwColor)					);
+		REG_CONTROL_FUNPR(DWORD,	GetDisabledBkColor,		() const						);
+		REG_CONTROL_FUNPR(void,		SetDisabledBkColor,		(DWORD dwColor)					);
+		REG_CONTROL_FUNPR(DWORD,	GetSelectBkColor,		()								);
+		REG_CONTROL_FUNPR(void,		SetSelectedBkColor,		(DWORD dwBkColor)				);
+
+		//////////////////////////////////////////////////////////////////////////
+		//背景图
+		REG_CONTROL_FUNPR(CDuiString,  GetBkImage,			()								);
+		REG_CONTROL_FUNPR(void,		   SetBkImage,			(LPCTSTR pStrImage)				);
+
+		//////////////////////////////////////////////////////////////////////////
+		//前景色
 		REG_CONTROL_FUNPR(DWORD,		GetForeColor,		() const						);
 		REG_CONTROL_FUNPR(void,		   SetForeColor,		(DWORD dwForeColor)				);
-		REG_CONTROL_FUNPR(LPCTSTR,	   GetBkImage,			()								);
-		REG_CONTROL_FUNPR(void,		   SetBkImage,			(LPCTSTR pStrImage)				);
-		REG_CONTROL_FUNPR(LPCTSTR,	   GetForeImage,		() const						);
-		REG_CONTROL_FUNPR(void,		   SetForeImage,		(LPCTSTR pStrImage)				);
 
-		REG_CONTROL_FUNPR(DWORD,	   GetFocusBorderColor,		() const					);
-		REG_CONTROL_FUNPR(void,		   SetFocusBorderColor,		(DWORD dwBorderColor)		);
-		REG_CONTROL_FUNPR(DWORD,	   GetHotBorderColor,		() const					); 
-		REG_CONTROL_FUNPR(void,		   SetHotBorderColor,		(DWORD dwBorderColor)		); 
-		REG_CONTROL_FUNPR(void,		   SetDisableBorderColor,	(DWORD dwColor)	);
-		REG_CONTROL_FUNPR(DWORD,	   GetDisableBorderColor,	() const		);
-		REG_CONTROL_FUNPR(bool,		   IsColorHSL,				() const					);
-		REG_CONTROL_FUNPR(void,		   SetColorHSL,				(bool bColorHSL)			);
-		REG_CONTROL_FUNPR(SIZE,		   GetBorderRound,			() const					);
-		REG_CONTROL_FUNPR(void,		   SetBorderRound,			(SIZE cxyRound)				);
-		//REG_CONTROL_FUNPR(bool,		   DrawImage,				(HDC hDC, LPCTSTR pStrImage, LPCTSTR pStrModify)		);
+		//////////////////////////////////////////////////////////////////////////
+		//前景图
+		REG_CONTROL_FUNPR(CDuiString,	GetForeImage,			() const					);
+		REG_CONTROL_FUNPR(void,			SetForeImage,			(LPCTSTR pStrImage)			);
+		REG_CONTROL_FUNPR(CDuiString,	GetHotForeImage,		() const					);
+		REG_CONTROL_FUNPR(void,			SetHotForeImage,		(LPCTSTR pStrImage)			);
+		REG_CONTROL_FUNPR(CDuiString,	GetPushedForeImage,		() const					);
+		REG_CONTROL_FUNPR(void,			SetPushedForeImage,		(LPCTSTR pStrImage)			);
+		REG_CONTROL_FUNPR(CDuiString,	GetFocusedForeImage,	() const					);
+		REG_CONTROL_FUNPR(void,			SetFocusedForeImage,	(LPCTSTR pStrImage)			);
+		REG_CONTROL_FUNPR(CDuiString,	GetDisabledForeImage,	() const					);
+		REG_CONTROL_FUNPR(void,			SetDisabledForeImage,	(LPCTSTR pStrImage)			);
+		REG_CONTROL_FUNPR(CDuiString,	GetSelectedForeImage,	() const					);
+		REG_CONTROL_FUNPR(void,			SetSelectedForedImage,	(LPCTSTR pStrImage)			);
 
+		//////////////////////////////////////////////////////////////////////////
+		//状态相关
+		REG_CONTROL_FUNPR(CDuiString,	 GetNormalImage,			() const				);
+		REG_CONTROL_FUNPR(void,			 SetNormalImage,			(LPCTSTR pStrImage)		);
+		REG_CONTROL_FUNPR(CDuiString,	 GetHotImage,				() const				);
+		REG_CONTROL_FUNPR(void,			 SetHotImage,				(LPCTSTR pStrImage)		);
+		REG_CONTROL_FUNPR(CDuiString,	 GetPushedImage,			() const				);
+		REG_CONTROL_FUNPR(void,			 SetPushedImage,			(LPCTSTR pStrImage)		);
+		REG_CONTROL_FUNPR(CDuiString,	 GetFocusedImage,			() const				);
+		REG_CONTROL_FUNPR(void,			 SetFocusedImage,			(LPCTSTR pStrImage)		);
+		REG_CONTROL_FUNPR(CDuiString,	 GetDisabledImage,			() const				);
+		REG_CONTROL_FUNPR(void,			 SetDisabledImage,			(LPCTSTR pStrImage)		);
+
+		REG_CONTROL_FUNPR(CDuiString,	 GetSelectedImage,			() const				);
+		REG_CONTROL_FUNPR(void,			 SetSelectedImage,			(LPCTSTR pStrImage)		);
+		REG_CONTROL_FUNPR(CDuiString,	 GetSelectedHotImage,		() const				);
+		REG_CONTROL_FUNPR(void,			 SetSelectedHotImage,		(LPCTSTR pStrImage)		);
+		REG_CONTROL_FUNPR(CDuiString,	 GetSelectedPushedImage,	() const				);
+		REG_CONTROL_FUNPR(void,			 SetSelectedPushedImage,	(LPCTSTR pStrImage)		);
+		REG_CONTROL_FUNPR(CDuiString,	 GetSelectedFocusedImage,	() const				);
+		REG_CONTROL_FUNPR(void,			 SetSelectedFocusedImage,	(LPCTSTR pStrImage)		);
+		REG_CONTROL_FUNPR(CDuiString,	 GetSelectedDisabledImage,	() const				);
+		REG_CONTROL_FUNPR(void,			 SetSelectedDisabledImage,	(LPCTSTR pStrImage)		);
+
+		//////////////////////////////////////////////////////////////////////////
 		//边框相关
 		REG_CONTROL_FUNPR(int,		   GetBorderSize,			() const					);
 		REG_CONTROL_FUNPR(void,		   SetBorderSize,			(int nSize)					);
-		REG_CONTROL_FUNPR(DWORD,	   GetBorderColor,			() const					);
-		REG_CONTROL_FUNPR(void,		   SetBorderColor,			(DWORD dwBorderColor)		);
-		REG_CONTROL_FUNPR(void,		   SetBorderSize,			(RECT rc)					);
+		REG_CONTROL_FUNPR(void,		   SetBorderRectSize,		(RECT rc)					);
 		REG_CONTROL_FUNPR(int,		   GetLeftBorderSize,		() const					);
 		REG_CONTROL_FUNPR(void,		   SetLeftBorderSize,		(int nSize)					);
 		REG_CONTROL_FUNPR(int,		   GetTopBorderSize,		() const					);
@@ -93,6 +175,27 @@ public:
 		REG_CONTROL_FUNPR(void,		   SetBottomBorderSize,		(int nSize)					);
 		REG_CONTROL_FUNPR(int,		   GetBorderStyle,			() const					);
 		REG_CONTROL_FUNPR(void,		   SetBorderStyle,			(int nStyle)				);
+		REG_CONTROL_FUNPR(SIZE,		   GetBorderRound,			() const					);
+		REG_CONTROL_FUNPR(void,		   SetBorderRound,			(SIZE cxyRound)				);
+
+		REG_CONTROL_FUNPR(DWORD,	   GetBorderColor,			() const					);
+		REG_CONTROL_FUNPR(void,		   SetBorderColor,			(DWORD dwBorderColor)		);
+		REG_CONTROL_FUNPR(DWORD,	   GetHotBorderColor,		() const					); 
+		REG_CONTROL_FUNPR(void,		   SetHotBorderColor,		(DWORD dwBorderColor)		);
+		REG_CONTROL_FUNPR(DWORD,	   GetPushedBorderColor,	() const					);
+		REG_CONTROL_FUNPR(void,		   SetPushedBorderColor,	(DWORD dwBorderColor)		);
+		REG_CONTROL_FUNPR(DWORD,	   GetFocusBorderColor,		() const					);
+		REG_CONTROL_FUNPR(void,		   SetFocusBorderColor,		(DWORD dwBorderColor)		); 
+		REG_CONTROL_FUNPR(void,		   SetDisableBorderColor,	(DWORD dwColor)				);
+		REG_CONTROL_FUNPR(DWORD,	   GetDisableBorderColor,	() const					);
+		REG_CONTROL_FUNPR(DWORD,	   GetSelectedBorderColor,	() const					);
+		REG_CONTROL_FUNPR(void,		   SetSelectedBorderColor,	(DWORD dwBorderColor)		);
+
+		//HSL颜色
+		REG_CONTROL_FUNPR(bool,		   IsColorHSL,				() const					);
+		REG_CONTROL_FUNPR(void,		   SetColorHSL,				(bool bColorHSL)			);
+		//REG_CONTROL_FUNPR(bool,		   DrawImage,				(HDC hDC, LPCTSTR pStrImage, LPCTSTR pStrModify)		);
+
 
 		// 位置相关
 		REG_CONTROL_FUNPR(RECT,			  GetRelativePos,	() const				); 
@@ -172,8 +275,8 @@ public:
 		REG_CONTROL_FUNPR(bool,		 IsFloat,				() const				);
 		REG_CONTROL_FUNPR(void,		 SetFloat,				(bool bFloat)			);
 
-		REG_CONTROL_FUNPR(bool,		 IsHot,					() const				); 
-		REG_CONTROL_FUNPR(void,		 SetHot,				(bool bFloat)			); 
+		REG_CONTROL_FUNPR(bool,		 IsHotState,			() const				); 
+		REG_CONTROL_FUNPR(void,		 SetHotState,			(bool bFloat)			); 
 
 		//REG_CONTROL_FUN(CControlUI*, FindControl,				(FINDCONTROLPROC Proc, LPVOID pData, UINT uFlags);
 
@@ -199,17 +302,8 @@ public:
 		r = engine->RegisterObjectMethod(classname, "CControlUI @ApplyAttributeList()", asMETHODPR(T, ApplyAttributeList, (LPCTSTR pstrList), CControlUI*), asCALL_THISCALL); assert( r >= 0 );
 
 		REG_CONTROL_FUNPR(SIZE,		 EstimateSize,				(SIZE szAvailable)						);
-// 		REG_CONTROL_FUN(bool,		 Paint,						(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)		); 
-// 		REG_CONTROL_FUN(bool,		 DoPaint,					(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)		);
-// 		REG_CONTROL_FUNPR(void,		 PaintBkColor,				(HDC hDC)						);
-// 		REG_CONTROL_FUNPR(void,		 PaintBkImage,				(HDC hDC)						);
-// 		REG_CONTROL_FUNPR(void,		 PaintStatusImage,			(HDC hDC)						);
-// 		REG_CONTROL_FUNPR(void,		 PaintForeColor,			(HDC hDC)						);
-// 		REG_CONTROL_FUNPR(void,		 PaintForeImage,			(HDC hDC)						);
-// 		REG_CONTROL_FUNPR(void,		 PaintText,					(HDC hDC)						);
-// 		REG_CONTROL_FUNPR(void,		 PaintBorder,				(HDC hDC)						);
 
-		//REG_CONTROL_FUNPR2("void DoPostPaint(HDC,const RECT &)", void,	 DoPostPaint,				(HDC hDC, const RECT& rcPaint)	);
+		REG_CONTROL_FUNPR(void,		 DoPostPaint,				(UIRender *pRender, const RECT &)		);
 
 		//虚拟窗口参数
 		REG_CONTROL_FUNPR(void,		 SetVirtualWnd,				(LPCTSTR pstrValue)				);
@@ -406,19 +500,6 @@ public:
 	{
 		__super::reg(engine);
 		int r = 0;
-
-		REG_CONTROL_FUNPR(void,	 SetTextStyle,			(UINT uStyle)		);
-		REG_CONTROL_FUNPR(UINT,	 GetTextStyle,			() const			);
-		REG_CONTROL_FUNPR(void,	 SetTextColor,			(DWORD dwTextColor)	);
-		REG_CONTROL_FUNPR(DWORD,	 GetTextColor,			() const			);
-		REG_CONTROL_FUNPR(void,	 SetDisabledTextColor,	(DWORD dwTextColor)	);
-		REG_CONTROL_FUNPR(DWORD,	 GetDisabledTextColor,	() const			);
-		REG_CONTROL_FUNPR(void,	 SetFont,				(int index)			);
-		REG_CONTROL_FUNPR(int,	 GetFont,				() const			);
-		REG_CONTROL_FUNPR(RECT,	 GetTextPadding,		() const			);
-		REG_CONTROL_FUNPR(void,	 SetTextPadding,		(RECT rc)			);
-		REG_CONTROL_FUNPR(bool,	 IsShowHtml,			()					);
-		REG_CONTROL_FUNPR(void,	 SetShowHtml,			(bool bShowHtml)	);
 	}
 };
 
@@ -540,12 +621,6 @@ public:
 		REG_CONTROL_FUNPR(void,		SetBkPushedImage,	(LPCTSTR pStrImage)	);
 		REG_CONTROL_FUNPR(LPCTSTR,	 GetBkDisabledImage,()					);
 		REG_CONTROL_FUNPR(void,		SetBkDisabledImage,	(LPCTSTR pStrImage)	);
-
-		REG_CONTROL_FUNPR(void,	 PaintBk,		(HDC hDC)	);
-		REG_CONTROL_FUNPR(void,	 PaintButton1,	(HDC hDC)	);
-		REG_CONTROL_FUNPR(void,	 PaintButton2,	(HDC hDC)	);
-		REG_CONTROL_FUNPR(void,	 PaintThumb,	(HDC hDC)	);
-		REG_CONTROL_FUNPR(void,	 PaintRail,		(HDC hDC)	);
 	}
 };
 
@@ -582,13 +657,6 @@ public:
 	{
 		__super::reg(engine);
 		int r = 0;
-
-		REG_CONTROL_FUNPR(void,		SetTextColor,			(DWORD dwTextColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetTextColor,			() const			);
-		REG_CONTROL_FUNPR(void,		SetDisabledTextColor,	(DWORD dwTextColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetDisabledTextColor,	() const			);
-		REG_CONTROL_FUNPR(void,		SetFont,				(int index)			);
-		REG_CONTROL_FUNPR(int,		GetFont,				() const			);
 	}
 };
 
@@ -598,8 +666,8 @@ public:
 template <typename T>
 class regCListBodyUI : public regCVerticalLayoutUI<T>
 {
-//	DECL_CONTROL_FACTORY(CListBodyUI);
-//	DECL_CONTROL_REGFACT(CListBodyUI);
+	DECL_CONTROL_FACTORY(CListBodyUI);
+	DECL_CONTROL_REGFACT(CListBodyUI);
 public:
 	virtual void reg(asIScriptEngine *engine)
 	{
@@ -622,8 +690,6 @@ public:
 		__super::reg(engine);
 		int r = 0;
 
-		REG_CONTROL_FUNPR(bool,		GetScrollSelect,			()								);
-		REG_CONTROL_FUNPR(void,		SetScrollSelect,			(bool bScrollSelect)			);
 		REG_CONTROL_FUNPR(int,		GetCurSel,					() const						);
 		REG_CONTROL_FUNPR(int,		GetCurSelActivate,			() const						);
 		REG_CONTROL_FUNPR(bool,		SelectItem,					(int iIndex, bool bTakeFocus)	);
@@ -648,45 +714,6 @@ public:
 
 		REG_CONTROL_FUNPR(void,		EnsureVisible,				(int iIndex)		);
 		REG_CONTROL_FUNPR(void,		Scroll,						(int dx, int dy)	);
-
-		REG_CONTROL_FUNPR(void,		SetItemFont,				(int index)			);
-		REG_CONTROL_FUNPR(void,		SetItemTextStyle,			(UINT uStyle)		);
-		REG_CONTROL_FUNPR(void,		SetItemTextPadding,			(RECT rc)			);
-		REG_CONTROL_FUNPR(void,		SetItemTextColor,			(DWORD dwTextColor	));
-		REG_CONTROL_FUNPR(void,		SetItemBkColor,				(DWORD dwBkColor)	);
-		REG_CONTROL_FUNPR(void,		SetItemBkImage,				(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(void,		SetAlternateBk,				(bool bAlternateBk)	);
-		REG_CONTROL_FUNPR(void,		SetSelectedItemTextColor,	(DWORD dwTextColor)	);
-		REG_CONTROL_FUNPR(void,		SetSelectedItemBkColor,		(DWORD dwBkColor)	);
-		REG_CONTROL_FUNPR(void,		SetSelectedItemImage,		(LPCTSTR pStrImage)	); 
-		REG_CONTROL_FUNPR(void,		SetHotItemTextColor,		(DWORD dwTextColor)	);
-		REG_CONTROL_FUNPR(void,		SetHotItemBkColor,			(DWORD dwBkColor)	);
-		REG_CONTROL_FUNPR(void,		SetHotItemImage,			(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(void,		SetDisabledItemTextColor,	(DWORD dwTextColor)	);
-		REG_CONTROL_FUNPR(void,		SetDisabledItemBkColor,		(DWORD dwBkColor)	);
-		REG_CONTROL_FUNPR(void,		SetDisabledItemImage,		(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(void,		SetItemLineColor,			(DWORD dwLineColor)	);
-		REG_CONTROL_FUNPR(void,		SetItemShowRowLine,			(bool bShowLine)	);
-		REG_CONTROL_FUNPR(void,		SetItemShowColumnLine,		(bool bShowLine)	);
-		REG_CONTROL_FUNPR(bool,		IsItemShowHtml,				()					);
-		REG_CONTROL_FUNPR(void,		SetItemShowHtml,			(bool bShowHtml)	);
-		REG_CONTROL_FUNPR(bool,		IsItemRSelected,			()					);
-		REG_CONTROL_FUNPR(void,		SetItemRSelected,			(bool bSelected)	);
-		REG_CONTROL_FUNPR(RECT,		GetItemTextPadding,			() const	);
-		REG_CONTROL_FUNPR(DWORD,	GetItemTextColor,			() const	);
-		REG_CONTROL_FUNPR(DWORD,	GetItemBkColor,				() const	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetItemBkImage,				() const	);
-		REG_CONTROL_FUNPR(bool,		IsAlternateBk,				() const	);
-		REG_CONTROL_FUNPR(DWORD,	GetSelectedItemTextColor,	() const	);
-		REG_CONTROL_FUNPR(DWORD,	GetSelectedItemBkColor,		() const	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetSelectedItemImage,		() const	);
-		REG_CONTROL_FUNPR(DWORD,	GetHotItemTextColor,		() const	);
-		REG_CONTROL_FUNPR(DWORD,	GetHotItemBkColor,			() const	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetHotItemImage,			() const	);
-		REG_CONTROL_FUNPR(DWORD,	GetDisabledItemTextColor,	() const	);
-		REG_CONTROL_FUNPR(DWORD,	GetDisabledItemBkColor,		() const	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetDisabledItemImage,		() const	);
-		REG_CONTROL_FUNPR(DWORD,	GetItemLineColor,			() const	);
 	}
 };
 
@@ -750,27 +777,8 @@ public:
 		__super::reg(engine);
 		int r = 0;
 
-		REG_CONTROL_FUNPR(BOOL,		IsDragable,			() const			);
-		REG_CONTROL_FUNPR(void,		SetDragable,		(BOOL bDragable)	);
-		REG_CONTROL_FUNPR(DWORD,	GetTextStyle,		() const			);
-		REG_CONTROL_FUNPR(void,		SetTextStyle,		(UINT uStyle)		);
-		REG_CONTROL_FUNPR(DWORD,	GetTextColor,		() const			);
-		REG_CONTROL_FUNPR(void,		SetTextColor,		(DWORD dwTextColor)	);
-		REG_CONTROL_FUNPR(void,		SetTextPadding,		(RECT rc)			);
-		REG_CONTROL_FUNPR(RECT,		GetTextPadding,		() const			);
-		REG_CONTROL_FUNPR(void,		SetFont,			(int index)			);
-		REG_CONTROL_FUNPR(BOOL,		IsShowHtml,			()					);
-		REG_CONTROL_FUNPR(void,		SetShowHtml,		(BOOL bShowHtml)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetNormalImage,		() const			);
-		REG_CONTROL_FUNPR(void,		SetNormalImage,		(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetHotImage,		() const			);
-		REG_CONTROL_FUNPR(void,		SetHotImage,		(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetPushedImage,		() const			);
-		REG_CONTROL_FUNPR(void,		SetPushedImage,		(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetFocusedImage,	() const			);
-		REG_CONTROL_FUNPR(void,		SetFocusedImage,	(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetSepImage,		() const			);
-		REG_CONTROL_FUNPR(void,		SetSepImage,		(LPCTSTR pStrImage)	);
+		REG_CONTROL_FUNPR(CDuiString,	GetSepImage,		() const			);
+		REG_CONTROL_FUNPR(void,			SetSepImage,		(LPCTSTR pStrImage)	);
 	}
 };
 
@@ -813,14 +821,14 @@ public:
 		REG_CONTROL_FUNPR(bool,	IsCheckBoxSelected,	() const	);
 		REG_CONTROL_FUNPR(bool,	IsHasChild,	() const	);
 		REG_CONTROL_FUNPR(long,	GetTreeLevel,	() const	);
-		REG_CONTROL_FUNPR2("bool,	AddChildNode(CTreeNodeUI@ _pTreeNodeUI)", bool,	AddChildNode,	(CTreeNodeUI* _pTreeNodeUI)	);
-		REG_CONTROL_FUNPR2("bool RemoveNode(CTreeNodeUI@ _pTreeNodeUI)", bool, RemoveNode, (CTreeNodeUI* _pTreeNodeUI) );
-		REG_CONTROL_FUNPR2("void SetParentNode(CTreeNodeUI@ _pParentTreeNode)", void, SetParentNode,	(CTreeNodeUI* _pParentTreeNode)	);
-		REG_CONTROL_FUNPR2("CTreeNodeUI@ GetParentNode()", CTreeNodeUI*, GetParentNode, ()	);
+// 		REG_CONTROL_FUNPR2("bool,	AddChildNode(CTreeNodeUI@ _pTreeNodeUI)", bool,	AddChildNode,	(CTreeNodeUI* _pTreeNodeUI)	);
+// 		REG_CONTROL_FUNPR2("bool RemoveNode(CTreeNodeUI@ _pTreeNodeUI)", bool, RemoveNode, (CTreeNodeUI* _pTreeNodeUI) );
+// 		REG_CONTROL_FUNPR2("void SetParentNode(CTreeNodeUI@ _pParentTreeNode)", void, SetParentNode,	(CTreeNodeUI* _pParentTreeNode)	);
+// 		REG_CONTROL_FUNPR2("CTreeNodeUI@ GetParentNode()", CTreeNodeUI*, GetParentNode, ()	);
 		REG_CONTROL_FUNPR(long, GetCountChild, ()	);
 		//REG_CONTROL_FUNPR(void SetTreeView(CTreeViewUI* _CTreeViewUI);
 		//REG_CONTROL_FUNPR(CTreeViewUI* GetTreeView();
-		REG_CONTROL_FUNPR2("CTreeNodeUI@ GetChildNode(int _nIndex)", CTreeNodeUI*, GetChildNode, (int _nIndex)	);
+//		REG_CONTROL_FUNPR2("CTreeNodeUI@ GetChildNode(int _nIndex)", CTreeNodeUI*, GetChildNode, (int _nIndex)	);
 		REG_CONTROL_FUNPR(void,	SetVisibleFolderBtn,	(bool _IsVisibled)	);
 		REG_CONTROL_FUNPR(bool,	GetVisibleFolderBtn,	()	);
 		REG_CONTROL_FUNPR(void,	SetVisibleCheckBtn,	(bool _IsVisibled)	);
@@ -838,11 +846,11 @@ public:
 		REG_CONTROL_FUNPR(int,	GetTreeIndex,	()	);
 		REG_CONTROL_FUNPR(int,	GetNodeIndex,	()	);
 
-		REG_CONTROL_FUNPR2("CHorizontalLayoutUI@ GetTreeNodeHoriznotal() const", CHorizontalLayoutUI*, GetTreeNodeHoriznotal, () const	);
-		REG_CONTROL_FUNPR2("CCheckBoxUI@ GetFolderButton() const", CCheckBoxUI*, GetFolderButton, () const	);
-		REG_CONTROL_FUNPR2("CLabelUI@ GetDottedLine() const", CLabelUI*, GetDottedLine, () const	);
-		REG_CONTROL_FUNPR2("CCheckBoxUI@ GetCheckBox() const", CCheckBoxUI*, GetCheckBox, () const	);
-		REG_CONTROL_FUNPR2("COptionUI@ GetItemButton() const", COptionUI*, GetItemButton, () const	);
+// 		REG_CONTROL_FUNPR2("CHorizontalLayoutUI@ GetTreeNodeHoriznotal() const", CHorizontalLayoutUI*, GetTreeNodeHoriznotal, () const	);
+// 		REG_CONTROL_FUNPR2("CCheckBoxUI@ GetFolderButton() const", CCheckBoxUI*, GetFolderButton, () const	);
+// 		REG_CONTROL_FUNPR2("CLabelUI@ GetDottedLine() const", CLabelUI*, GetDottedLine, () const	);
+// 		REG_CONTROL_FUNPR2("CCheckBoxUI@ GetCheckBox() const", CCheckBoxUI*, GetCheckBox, () const	);
+// 		REG_CONTROL_FUNPR2("COptionUI@ GetItemButton() const", COptionUI*, GetItemButton, () const	);
 	}
 };
 
@@ -922,81 +930,20 @@ public:
 		__super::reg(engine);
 		int r = 0;
 
-		REG_CONTROL_FUNPR(void,		SetTextStyle,				(UINT uStyle)		);
-		REG_CONTROL_FUNPR(UINT,		GetTextStyle,				() const			);
-		REG_CONTROL_FUNPR(void,		SetTextColor,				(DWORD dwTextColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetTextColor,				() const			);
-		REG_CONTROL_FUNPR(void,		SetDisabledTextColor,		(DWORD dwTextColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetDisabledTextColor,		() const			);
-		REG_CONTROL_FUNPR(void,		SetFont,					(int index)			);
-		REG_CONTROL_FUNPR(int,		GetFont,					() const			);
-		REG_CONTROL_FUNPR(RECT,		GetTextPadding,				() const			);
-		REG_CONTROL_FUNPR(void,		SetTextPadding,				(RECT rc)			);
-		REG_CONTROL_FUNPR(bool,		IsShowHtml,					()					);
-		REG_CONTROL_FUNPR(void,		SetShowHtml,				(bool bShowHtml)	);
-		REG_CONTROL_FUNPR(bool,		IsShowShadow,				()					);
-		REG_CONTROL_FUNPR(void,		SetShowShadow,				(bool bShow)		);
+		REG_CONTROL_FUNPR(bool,			IsShowShadow,				()								);
+		REG_CONTROL_FUNPR(void,			SetShowShadow,				(bool bShow)					);
 
-		REG_CONTROL_FUNPR(CDuiString,	GetDropBoxAttributeList,()					);
-		REG_CONTROL_FUNPR(void,		SetDropBoxAttributeList,	(LPCTSTR pstrList)	);
-		REG_CONTROL_FUNPR(SIZE,		GetDropBoxSize,				() const			);
-		REG_CONTROL_FUNPR(void,		SetDropBoxSize,				(SIZE szDropBox)	);
+		REG_CONTROL_FUNPR(CDuiString,	GetDropBoxAttributeList,()									);
+		REG_CONTROL_FUNPR(void,			SetDropBoxAttributeList,	(LPCTSTR pstrList)				);
+		REG_CONTROL_FUNPR(SIZE,			GetDropBoxSize,				() const						);
+		REG_CONTROL_FUNPR(void,			SetDropBoxSize,				(SIZE szDropBox)				);
 
 		//UINT GetListType();
 		//TListInfoUI* GetListInfo();
-		REG_CONTROL_FUNPR(int,		GetCurSel,			() const						);  
-		REG_CONTROL_FUNPR(bool,		SelectItem,			(int iIndex, bool bTakeFocus)	);
-		REG_CONTROL_FUNPR(bool,		SelectMultiItem,	(int iIndex, bool bTakeFocus)	);
-		REG_CONTROL_FUNPR(bool,		UnSelectItem,		(int iIndex, bool bOthers)		);
-
-		REG_CONTROL_FUNPR(LPCTSTR,	GetNormalImage,		() const			);
-		REG_CONTROL_FUNPR(void,		SetNormalImage,		(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetHotImage,		() const			);
-		REG_CONTROL_FUNPR(void,		SetHotImage,		(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetPushedImage,		() const			);
-		REG_CONTROL_FUNPR(void,		SetPushedImage,		(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetFocusedImage,	() const			);
-		REG_CONTROL_FUNPR(void,		SetFocusedImage,	(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetDisabledImage,	() const			);
-		REG_CONTROL_FUNPR(void,		SetDisabledImage,	(LPCTSTR pStrImage)	);
-
-		REG_CONTROL_FUNPR(bool,		GetScrollSelect,	()					);
-		REG_CONTROL_FUNPR(void,		SetScrollSelect,	(bool bScrollSelect));
-
-		REG_CONTROL_FUNPR(void,		SetItemFont,				(int index)			);
-		REG_CONTROL_FUNPR(void,		SetItemTextStyle,			(UINT uStyle)		);
-		REG_CONTROL_FUNPR(RECT,		GetItemTextPadding,			() const			);
-		REG_CONTROL_FUNPR(void,		SetItemTextPadding,			(RECT rc)			);
-		REG_CONTROL_FUNPR(DWORD,	GetItemTextColor,			() const			);
-		REG_CONTROL_FUNPR(void,		SetItemTextColor,			(DWORD dwTextColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetItemBkColor,				() const			);
-		REG_CONTROL_FUNPR(void,		SetItemBkColor,				(DWORD dwBkColor)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetItemBkImage,				() const			);
-		REG_CONTROL_FUNPR(void,		SetItemBkImage,				(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(bool,		IsAlternateBk,				() const			);
-		REG_CONTROL_FUNPR(void,		SetAlternateBk,				(bool bAlternateBk)	);
-		REG_CONTROL_FUNPR(DWORD,	GetSelectedItemTextColor,	() const			);
-		REG_CONTROL_FUNPR(void,		SetSelectedItemTextColor,	(DWORD dwTextColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetSelectedItemBkColor,		() const			);
-		REG_CONTROL_FUNPR(void,		SetSelectedItemBkColor,		(DWORD dwBkColor)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetSelectedItemImage,		() const			);
-		REG_CONTROL_FUNPR(void,		SetSelectedItemImage,		(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(DWORD,	GetHotItemTextColor,		() const	);
-		REG_CONTROL_FUNPR(void,		SetHotItemTextColor,		(DWORD dwTextColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetHotItemBkColor,			() const			);
-		REG_CONTROL_FUNPR(void,		SetHotItemBkColor,			(DWORD dwBkColor)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetHotItemImage,			() const			);
-		REG_CONTROL_FUNPR(void,		SetHotItemImage,			(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(DWORD,	GetDisabledItemTextColor,	() const			);
-		REG_CONTROL_FUNPR(void,		SetDisabledItemTextColor,	(DWORD dwTextColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetDisabledItemBkColor,		() const			);
-		REG_CONTROL_FUNPR(void,		SetDisabledItemBkColor,		(DWORD dwBkColor)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetDisabledItemImage,		() const			);
-		REG_CONTROL_FUNPR(void,		SetDisabledItemImage,		(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(DWORD,	GetItemLineColor,			() const			);
-		REG_CONTROL_FUNPR(void,		SetItemLineColor,			(DWORD dwLineColor)	);
-		REG_CONTROL_FUNPR(bool,		IsItemShowHtml,				()					);
-		REG_CONTROL_FUNPR(void,		SetItemShowHtml,			(bool bShowHtml)	);
+		REG_CONTROL_FUNPR(int,			GetCurSel,					() const						);  
+		REG_CONTROL_FUNPR(bool,			SelectItem,					(int iIndex, bool bTakeFocus)	);
+		REG_CONTROL_FUNPR(bool,			SelectMultiItem,			(int iIndex, bool bTakeFocus)	);
+		REG_CONTROL_FUNPR(bool,			UnSelectItem,				(int iIndex, bool bOthers)		);
 	}
 };
 
@@ -1012,24 +959,6 @@ public:
 	{
 		__super::reg(engine);
 		int r = 0;
-
-		REG_CONTROL_FUNPR(void,	 SetTextStyle,			(UINT uStyle)		);
-		REG_CONTROL_FUNPR(UINT,	 GetTextStyle,			() const			);
-		REG_CONTROL_FUNPR(void,	 SetTextColor,			(DWORD dwTextColor)	);
-		REG_CONTROL_FUNPR(DWORD, GetTextColor,			() const			);
-		REG_CONTROL_FUNPR(void,	 SetDisabledTextColor,	(DWORD dwTextColor)	);
-		REG_CONTROL_FUNPR(DWORD, GetDisabledTextColor,	() const			);
-		REG_CONTROL_FUNPR(void,	 SetFont,				(int index)			);
-		REG_CONTROL_FUNPR(int,	 GetFont,				() const			);
-		REG_CONTROL_FUNPR(RECT,	 GetTextPadding,		() const			);
-		REG_CONTROL_FUNPR(void,	 SetTextPadding,		(RECT rc)			);
-		REG_CONTROL_FUNPR(bool,	 IsShowHtml,			()					);
-		REG_CONTROL_FUNPR(void,	 SetShowHtml,			(bool bShowHtml)	);
-
-// 		REG_CONTROL_FUNPR(bool,	 GetAutoCalcWidth,		() const				);
-// 		REG_CONTROL_FUNPR(void,	 SetAutoCalcWidth,		(bool bAutoCalcWidth)	);
-// 		REG_CONTROL_FUNPR(bool,	 GetAutoCalcHeight,		() const				);
-// 		REG_CONTROL_FUNPR(void,	 SetAutoCalcHeight,		(bool bAutoCalcHeight)	);
 	}
 };
 
@@ -1046,53 +975,12 @@ public:
 		__super::reg(engine);
 		int r = 0;
 
-		REG_CONTROL_FUNPR(LPCTSTR,	GetNormalImage,		()					);
-		REG_CONTROL_FUNPR(void,		SetNormalImage,		(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetHotImage,		()					);
-		REG_CONTROL_FUNPR(void,		SetHotImage,		(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetPushedImage,		()					);
-		REG_CONTROL_FUNPR(void,		SetPushedImage,		(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetFocusedImage,	()					);
-		REG_CONTROL_FUNPR(void,		SetFocusedImage,	(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetDisabledImage,	()					);
-		REG_CONTROL_FUNPR(void,		SetDisabledImage,	(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetHotForeImage,	()					);
-		REG_CONTROL_FUNPR(void,		SetHotForeImage,	(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(void,		SetStateCount,		(int nCount)		);
-		REG_CONTROL_FUNPR(int,		GetStateCount,		() const			);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetStateImage,		()					);
-		REG_CONTROL_FUNPR(void,		SetStateImage,		(LPCTSTR pStrImage)	);
-
-		REG_CONTROL_FUNPR(void,		BindTabIndex,			(int _BindTabIndex)			);
-		REG_CONTROL_FUNPR(void,		BindTabLayoutName,		(LPCTSTR _TabLayoutName)	);
-		REG_CONTROL_FUNPR(void,		BindTriggerTabSel,		(int _SetSelectIndex)		);
-		REG_CONTROL_FUNPR(void,		RemoveBindTabIndex,		()			);
-		REG_CONTROL_FUNPR(int,		GetBindTabLayoutIndex,	()			);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetBindTabLayoutName,	()			);
-
-		REG_CONTROL_FUNPR(void,		SetHotFont,				(int index)	);
-		REG_CONTROL_FUNPR(int,		GetHotFont,				() const	);
-		REG_CONTROL_FUNPR(void,		SetPushedFont,			(int index)	);
-		REG_CONTROL_FUNPR(int,		GetPushedFont,			() const	);
-		REG_CONTROL_FUNPR(void,		SetFocusedFont,			(int index)	);
-		REG_CONTROL_FUNPR(int,		GetFocusedFont,			() const	);
-
-		REG_CONTROL_FUNPR(void,		SetHotBkColor,			(DWORD dwColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetHotBkColor,			() const		);
-		REG_CONTROL_FUNPR(void,		SetPushedBkColor,		(DWORD dwColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetPushedBkColor,		() const		);
-		REG_CONTROL_FUNPR(void,		SetDisabledBkColor,		(DWORD dwColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetDisabledBkColor,		() const		);
-		REG_CONTROL_FUNPR(void,		SetHotTextColor,		(DWORD dwColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetHotTextColor,		() const		);
-		REG_CONTROL_FUNPR(void,		SetPushedTextColor,		(DWORD dwColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetPushedTextColor,		() const		);
-		REG_CONTROL_FUNPR(void,		SetFocusedTextColor,	(DWORD dwColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetFocusedTextColor,	() const		);
-
-		REG_CONTROL_FUNPR(void,		SetPushedBorderColor,	(DWORD dwColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetPushedBorderColor,	() const		);
-
+		REG_CONTROL_FUNPR(void,			BindTabIndex,			(int _BindTabIndex)			);
+		REG_CONTROL_FUNPR(void,			BindTabLayoutName,		(LPCTSTR _TabLayoutName)	);
+		REG_CONTROL_FUNPR(void,			BindTriggerTabSel,		(int _SetSelectIndex)		);
+		REG_CONTROL_FUNPR(void,			RemoveBindTabIndex,		()							);
+		REG_CONTROL_FUNPR(int,			GetBindTabLayoutIndex,	()							);
+		REG_CONTROL_FUNPR(CDuiString,	GetBindTabLayoutName,	()							);
 	}
 };
 
@@ -1109,39 +997,10 @@ public:
 		__super::reg(engine);
 		int r = 0;
 
-		REG_CONTROL_FUNPR(LPCTSTR,	GetSelectedImage,			()					);
-		REG_CONTROL_FUNPR(void,		SetSelectedImage,			(LPCTSTR pStrImage)	);
-
-		REG_CONTROL_FUNPR(LPCTSTR,	GetSelectedHotImage,		()					);
-		REG_CONTROL_FUNPR(void,		SetSelectedHotImage,		(LPCTSTR pStrImage)	);
-
-		REG_CONTROL_FUNPR(LPCTSTR,	GetSelectedPushedImage,		()					);
-		REG_CONTROL_FUNPR(void,		SetSelectedPushedImage,		(LPCTSTR pStrImage)	);
-
-		REG_CONTROL_FUNPR(void,		SetSelectedTextColor,		(DWORD dwTextColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetSelectedTextColor,		()					);
-
-		REG_CONTROL_FUNPR(void,		SetSelectedBkColor,			(DWORD dwBkColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetSelectBkColor,			()					);
-
-		REG_CONTROL_FUNPR(LPCTSTR,	GetSelectedForedImage,		()					);
-		REG_CONTROL_FUNPR(void,		SetSelectedForedImage,		(LPCTSTR pStrImage)	);
-
-		REG_CONTROL_FUNPR(void,		SetSelectedStateCount,		(int nCount)		);
-		REG_CONTROL_FUNPR(int,		GetSelectedStateCount,		() const			);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetSelectedStateImage,		()					);
-		REG_CONTROL_FUNPR(void,		SetSelectedStateImage,		(LPCTSTR pStrImage)	);
-
-		REG_CONTROL_FUNPR(void,		SetSelectedFont,			(int index)			);
-		REG_CONTROL_FUNPR(int,		GetSelectedFont,			() const			);
-
-		REG_CONTROL_FUNPR(void,		SetSelectedBorderColor,		(DWORD dwColor)		);
-		REG_CONTROL_FUNPR(DWORD,	GetSelectedBorderColor,		() const			);
-
-		REG_CONTROL_FUNPR(LPCTSTR,	GetGroup,					() const				);
-		REG_CONTROL_FUNPR(void,		SetGroup,					(LPCTSTR pStrGroupName)	);
-		REG_CONTROL_FUNPR(bool,		IsSelected,					() const				);
-		REG_CONTROL_FUNPR(void,		Selected,					(bool bSelected, bool bTriggerEvent)	);
+		REG_CONTROL_FUNPR(CDuiString,	GetGroup,					() const								);
+		REG_CONTROL_FUNPR(void,			SetGroup,					(LPCTSTR pStrGroupName)					);
+		REG_CONTROL_FUNPR(bool,			IsSelected,					() const								);
+		REG_CONTROL_FUNPR(void,			Selected,					(bool bSelected, bool bTriggerEvent)	);
 	}
 };
 
@@ -1158,27 +1017,8 @@ public:
 		__super::reg(engine);
 		int r = 0;
 
-		REG_CONTROL_FUNPR(bool,		IsDragable,			() const			);
-		REG_CONTROL_FUNPR(void,		SetDragable,		(bool bDragable)	);
 		REG_CONTROL_FUNPR(DWORD,	GetSepWidth,		() const			);
 		REG_CONTROL_FUNPR(void,		SetSepWidth,		(int iWidth)		);
-		REG_CONTROL_FUNPR(DWORD,	GetTextStyle,		() const			);
-		REG_CONTROL_FUNPR(void,		SetTextStyle,		(UINT uStyle)		);
-		REG_CONTROL_FUNPR(DWORD,	GetTextColor,		() const			);
-		REG_CONTROL_FUNPR(void,		SetTextColor,		(DWORD dwTextColor)	);
-		REG_CONTROL_FUNPR(void,		SetTextPadding,		(RECT rc)			);
-		REG_CONTROL_FUNPR(RECT,		GetTextPadding,		() const			);
-		REG_CONTROL_FUNPR(void,		SetFont,			(int index)			);
-		REG_CONTROL_FUNPR(bool,		IsShowHtml,			()					);
-		REG_CONTROL_FUNPR(void,		SetShowHtml,		(bool bShowHtml)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetNormalImage,		() const			);
-		REG_CONTROL_FUNPR(void,		SetNormalImage,		(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetHotImage,		() const			);
-		REG_CONTROL_FUNPR(void,		SetHotImage,		(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetPushedImage,		() const			);
-		REG_CONTROL_FUNPR(void,		SetPushedImage,		(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetFocusedImage,	() const			);
-		REG_CONTROL_FUNPR(void,		SetFocusedImage,	(LPCTSTR pStrImage)	);
 		REG_CONTROL_FUNPR(LPCTSTR,	GetSepImage,		() const			);
 		REG_CONTROL_FUNPR(void,		SetSepImage,		(LPCTSTR pStrImage)	);
 		REG_CONTROL_FUNPR(void,		SetScale,			(int nScale)		);
@@ -1211,33 +1051,22 @@ public:
 		REG_CONTROL_FUNPR(void,		SetTransparent,		(bool bTransparent)	);
 		REG_CONTROL_FUNPR(bool,		IsRich,				()	);
 		REG_CONTROL_FUNPR(void,		SetRich,			(bool bRich)	);
-		REG_CONTROL_FUNPR(bool,		IsReadOnly,			()	);
-		REG_CONTROL_FUNPR(void,		SetReadOnly,		(bool bReadOnly)	);
 		REG_CONTROL_FUNPR(bool,		IsWordWrap,			()	);
 		REG_CONTROL_FUNPR(void,		SetWordWrap,		(bool bWordWrap)	);
-		REG_CONTROL_FUNPR(int,		GetFont,			()	);
-		REG_CONTROL_FUNPR(void,		SetFont,			(int index)	);
 		REG_CONTROL_FUNPR(void,		SetFont,			(LPCTSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic)	);
 		REG_CONTROL_FUNPR(LONG,		GetWinStyle,		()	);
 		REG_CONTROL_FUNPR(void,		SetWinStyle,		(LONG lStyle)	);
-		REG_CONTROL_FUNPR(DWORD,	GetTextColor,		()	);
-		REG_CONTROL_FUNPR(void,		SetTextColor,		(DWORD dwTextColor)	);
 		REG_CONTROL_FUNPR(int,		GetLimitText,		()	);
 		REG_CONTROL_FUNPR(void,		SetLimitText,		(int iChars)	);
 		REG_CONTROL_FUNPR(long,		GetTextLength,		(DWORD dwFlags) const	);
 		REG_CONTROL_FUNPR(bool,		IsModify,			() const	);
 		REG_CONTROL_FUNPR(void,		SetModify,			(bool bModified) const	);
-		//void GetSel(CHARRANGE &cr) const;
-		//REG_CONTROL_FUNPR(void,		GetSel,				(long& nStartChar, long& nEndChar) const	);
-		//int SetSel(CHARRANGE &cr);
 		REG_CONTROL_FUNPR(int,		SetSel,				(long nStartChar, long nEndChar)	);
 		REG_CONTROL_FUNPR(void,		ReplaceSel,			(LPCTSTR lpszNewText, bool bCanUndo)	);
-		//REG_CONTROL_FUNPR(void,		ReplaceSelW,		(LPCWSTR lpszNewText, bool bCanUndo)	);
 		REG_CONTROL_FUNPR(CDuiString,GetSelText,		() const	);
 		REG_CONTROL_FUNPR(int,		SetSelAll,			()	);
 		REG_CONTROL_FUNPR(int,		SetSelNone,			()	);
 		REG_CONTROL_FUNPR(WORD,		GetSelectionType,	() const	);
-		//REG_CONTROL_FUNPR(bool,		GetZoom,			(int& nNum, int& nDen) const	);
 		REG_CONTROL_FUNPR(bool,		SetZoom,			(int nNum, int nDen)	);
 		REG_CONTROL_FUNPR(bool,		SetZoomOff,			()	);
 		REG_CONTROL_FUNPR(bool,		GetAutoURLDetect,	() const	);
@@ -1249,13 +1078,6 @@ public:
 		REG_CONTROL_FUNPR(void,		ScrollCaret,		()										);
 		REG_CONTROL_FUNPR(int,		InsertText,			(long nInsertAfterChar, LPCTSTR lpstrText, bool bCanUndo)	);
 		REG_CONTROL_FUNPR(int,		AppendText,			(LPCTSTR lpstrText, bool bCanUndo)		);
-// 		DWORD GetDefaultCharFormat(CHARFORMAT2 &cf) const;
-// 		bool SetDefaultCharFormat(CHARFORMAT2 &cf);
-// 		DWORD GetSelectionCharFormat(CHARFORMAT2 &cf) const;
-// 		bool SetSelectionCharFormat(CHARFORMAT2 &cf);
-// 		bool SetWordCharFormat(CHARFORMAT2 &cf);
-// 		DWORD GetParaFormat(PARAFORMAT2 &pf) const;
-// 		bool SetParaFormat(PARAFORMAT2 &pf);
 		REG_CONTROL_FUNPR(bool,		CanUndo,			()	);
 		REG_CONTROL_FUNPR(bool,		CanRedo,			()	);
 		REG_CONTROL_FUNPR(bool,		CanPaste,			()	);
@@ -1273,27 +1095,13 @@ public:
 		REG_CONTROL_FUNPR(CDuiPoint,GetCharPos,			(long lChar) const				);
 		REG_CONTROL_FUNPR(long,		LineFromChar,		(long nIndex) const				);
 		REG_CONTROL_FUNPR(CDuiPoint,PosFromChar,		(UINT nChar) const				);
-		//REG_CONTROL_FUNPR(int,		CharFromPos,		(CDuiPoint pt) const			);
 		REG_CONTROL_FUNPR(void,		EmptyUndoBuffer,	()								);
 		REG_CONTROL_FUNPR(UINT,		SetUndoLimit,		(UINT nLimit)					);
-// 		REG_CONTROL_FUNPR(long,		StreamIn,			(int nFormat, EDITSTREAM &es)	);
-// 		REG_CONTROL_FUNPR(long,		StreamOut,			(int nFormat, EDITSTREAM &es)	);
 		REG_CONTROL_FUNPR(void,		SetAccumulateDBCMode,(bool bDBCMode)		);
 		REG_CONTROL_FUNPR(bool,		IsAccumulateDBCMode,()						);
 
-		REG_CONTROL_FUNPR(RECT,		GetTextPadding,			() const			);
-		REG_CONTROL_FUNPR(void,		SetTextPadding,			(RECT rc)			);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetNormalImage,			()					);
-		REG_CONTROL_FUNPR(void,		SetNormalImage,			(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetHotImage,			()					);
-		REG_CONTROL_FUNPR(void,		SetHotImage,			(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetFocusedImage,		()					);
-		REG_CONTROL_FUNPR(void,		SetFocusedImage,		(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetDisabledImage,		()					);
-		REG_CONTROL_FUNPR(void,		SetDisabledImage,		(LPCTSTR pStrImage)	);
-
 		REG_CONTROL_FUNPR(void,		SetTipValue,			(LPCTSTR pStrTipValue)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetTipValue,			()					);
+		REG_CONTROL_FUNPR(CDuiString,	GetTipValue,			()					);
 		REG_CONTROL_FUNPR(void,		SetTipValueColor,		(LPCTSTR pStrColor)	);
 		REG_CONTROL_FUNPR(DWORD,	GetTipValueColor,		()					);
 		REG_CONTROL_FUNPR(void,		SetTipValueAlign,		(UINT uAlign)		);
@@ -1381,52 +1189,12 @@ public:
 		__super::reg(engine);
 		int r = 0;
 
-		REG_CONTROL_FUNPR(LPCTSTR,	GetNormalImage,		()					);
-		REG_CONTROL_FUNPR(void,		SetNormalImage,		(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetHotImage,		()					);
-		REG_CONTROL_FUNPR(void,		SetHotImage,		(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetPushedImage,		()					);
-		REG_CONTROL_FUNPR(void,		SetPushedImage,		(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetFocusedImage,	()					);
-		REG_CONTROL_FUNPR(void,		SetFocusedImage,	(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetDisabledImage,	()					);
-		REG_CONTROL_FUNPR(void,		SetDisabledImage,	(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetHotForeImage,	()					);
-		REG_CONTROL_FUNPR(void,		SetHotForeImage,	(LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(void,		SetStateCount,		(int nCount)		);
-		REG_CONTROL_FUNPR(int,		GetStateCount,		() const			);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetStateImage,		()					);
-		REG_CONTROL_FUNPR(void,		SetStateImage,		(LPCTSTR pStrImage)	);
-
 		REG_CONTROL_FUNPR(void,		BindTabIndex,			(int _BindTabIndex)			);
 		REG_CONTROL_FUNPR(void,		BindTabLayoutName,		(LPCTSTR _TabLayoutName)	);
 		REG_CONTROL_FUNPR(void,		BindTriggerTabSel,		(int _SetSelectIndex)		);
 		REG_CONTROL_FUNPR(void,		RemoveBindTabIndex,		()			);
 		REG_CONTROL_FUNPR(int,		GetBindTabLayoutIndex,	()			);
 		REG_CONTROL_FUNPR(LPCTSTR,	GetBindTabLayoutName,	()			);
-
-		REG_CONTROL_FUNPR(void,		SetHotFont,				(int index)	);
-		REG_CONTROL_FUNPR(int,		GetHotFont,				() const	);
-		REG_CONTROL_FUNPR(void,		SetPushedFont,			(int index)	);
-		REG_CONTROL_FUNPR(int,		GetPushedFont,			() const	);
-		REG_CONTROL_FUNPR(void,		SetFocusedFont,			(int index)	);
-		REG_CONTROL_FUNPR(int,		GetFocusedFont,			() const	);
-
-		REG_CONTROL_FUNPR(void,		SetHotBkColor,			(DWORD dwColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetHotBkColor,			() const		);
-		REG_CONTROL_FUNPR(void,		SetPushedBkColor,		(DWORD dwColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetPushedBkColor,		() const		);
-		REG_CONTROL_FUNPR(void,		SetDisabledBkColor,		(DWORD dwColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetDisabledBkColor,		() const		);
-		REG_CONTROL_FUNPR(void,		SetHotTextColor,		(DWORD dwColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetHotTextColor,		() const		);
-		REG_CONTROL_FUNPR(void,		SetPushedTextColor,		(DWORD dwColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetPushedTextColor,		() const		);
-		REG_CONTROL_FUNPR(void,		SetFocusedTextColor,	(DWORD dwColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetFocusedTextColor,	() const		);
-
-		REG_CONTROL_FUNPR(void,		SetPushedBorderColor,	(DWORD dwColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetPushedBorderColor,	() const		);
 	}
 };
 
@@ -1458,35 +1226,6 @@ public:
 	{
 		__super::reg(engine);
 		int r = 0;
-
-		REG_CONTROL_FUNPR(LPCTSTR,	GetSelectedImage,			()					);
-		REG_CONTROL_FUNPR(void,		SetSelectedImage,			(LPCTSTR pStrImage)	);
-
-		REG_CONTROL_FUNPR(LPCTSTR,	GetSelectedHotImage,		()					);
-		REG_CONTROL_FUNPR(void,		SetSelectedHotImage,		(LPCTSTR pStrImage)	);
-
-		REG_CONTROL_FUNPR(LPCTSTR,	GetSelectedPushedImage,		()					);
-		REG_CONTROL_FUNPR(void,		SetSelectedPushedImage,		(LPCTSTR pStrImage)	);
-
-		REG_CONTROL_FUNPR(void,		SetSelectedTextColor,		(DWORD dwTextColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetSelectedTextColor,		()					);
-
-		REG_CONTROL_FUNPR(void,		SetSelectedBkColor,			(DWORD dwBkColor)	);
-		REG_CONTROL_FUNPR(DWORD,	GetSelectBkColor,			()					);
-
-		REG_CONTROL_FUNPR(LPCTSTR,	GetSelectedForedImage,		()					);
-		REG_CONTROL_FUNPR(void,		SetSelectedForedImage,		(LPCTSTR pStrImage)	);
-
-		REG_CONTROL_FUNPR(void,		SetSelectedStateCount,		(int nCount)		);
-		REG_CONTROL_FUNPR(int,		GetSelectedStateCount,		() const			);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetSelectedStateImage,		()					);
-		REG_CONTROL_FUNPR(void,		SetSelectedStateImage,		(LPCTSTR pStrImage)	);
-
-		REG_CONTROL_FUNPR(void,		SetSelectedFont,			(int index)			);
-		REG_CONTROL_FUNPR(int,		GetSelectedFont,			() const			);
-
-		REG_CONTROL_FUNPR(void,		SetSelectedBorderColor,		(DWORD dwColor)		);
-		REG_CONTROL_FUNPR(DWORD,	GetSelectedBorderColor,		() const			);
 
 		REG_CONTROL_FUNPR(LPCTSTR,	GetGroup,					() const				);
 		REG_CONTROL_FUNPR(void,		SetGroup,					(LPCTSTR pStrGroupName)	);
@@ -1578,14 +1317,6 @@ public:
 		REG_CONTROL_FUNPR(bool,		IsNumberOnly,			() const				);
 		REG_CONTROL_FUNPR(int,		GetWindowStyls,			() const				);
 
-		REG_CONTROL_FUNPR(LPCTSTR,	GetNormalImage,			()						);
-		REG_CONTROL_FUNPR(void,		SetNormalImage,			(LPCTSTR pStrImage)		);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetHotImage,			()						);
-		REG_CONTROL_FUNPR(void,		SetHotImage,			(LPCTSTR pStrImage)		);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetFocusedImage,		()						);
-		REG_CONTROL_FUNPR(void,		SetFocusedImage,		(LPCTSTR pStrImage)		);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetDisabledImage,		()						);
-		REG_CONTROL_FUNPR(void,		SetDisabledImage,		(LPCTSTR pStrImage)		);
 		REG_CONTROL_FUNPR(void,		SetNativeEditBkColor,	(DWORD dwBkColor)		);
 		REG_CONTROL_FUNPR(DWORD,	GetNativeEditBkColor,	() const				);
 		REG_CONTROL_FUNPR(void,		SetNativeEditTextColor,	( LPCTSTR pStrColor)	);
@@ -1598,7 +1329,7 @@ public:
 		REG_CONTROL_FUNPR(void,		SetReplaceSel,			(LPCTSTR lpszReplace)	);
 
 		REG_CONTROL_FUNPR(void,		SetTipValue,			(LPCTSTR pStrTipValue)	);
-		REG_CONTROL_FUNPR(LPCTSTR,	GetTipValue,			()						);
+		REG_CONTROL_FUNPR(CDuiString,	GetTipValue,			()						);
 		REG_CONTROL_FUNPR(void,		SetTipValueColor,		(LPCTSTR pStrColor)		);
 		REG_CONTROL_FUNPR(DWORD,	GetTipValueColor,		()						);
 	}
@@ -1617,14 +1348,6 @@ public:
 		__super::reg(engine);
 		int r = 0;
 
-		REG_CONTROL_FUNPR(LPCTSTR, GetNormalImage, ()	);
-		REG_CONTROL_FUNPR(void, SetNormalImage, (LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR, GetHotImage, ()	);
-		REG_CONTROL_FUNPR(void, SetHotImage, (LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR, GetFocusedImage, ()	);
-		REG_CONTROL_FUNPR(void, SetFocusedImage, (LPCTSTR pStrImage)	);
-		REG_CONTROL_FUNPR(LPCTSTR, GetDisabledImage, ()	);
-		REG_CONTROL_FUNPR(void, SetDisabledImage, (LPCTSTR pStrImage)	);
 		REG_CONTROL_FUNPR(void, SetNativeBkColor, (DWORD dwBkColor)	);
 		REG_CONTROL_FUNPR(DWORD, GetNativeBkColor, () const	);
 	}

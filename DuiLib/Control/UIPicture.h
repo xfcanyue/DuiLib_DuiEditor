@@ -10,16 +10,16 @@ public:
 	CPictureUI(void);
 	virtual ~CPictureUI(void);
 
-	LPCTSTR	GetClass() const;
-	LPVOID	GetInterface(LPCTSTR pstrName);
+	virtual LPCTSTR GetClass() const override;
+	virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-	virtual void DoInit();
+	virtual void DoInit() override;
 
-	virtual bool Activate();
-	virtual void DoEvent(TEventUI& event);
+	virtual bool Activate() override;
+	virtual void DoEvent(TEventUI& event) override;
 
-	virtual void PaintBkImage(HDC hDC);
-	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+	virtual void PaintBkImage(UIRender *pRender) override;
+	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 
 	void SetFrameDelay(int nDelay);
 	int  GetFrameDelay();
@@ -65,7 +65,7 @@ private:
 
 	CStdPtrArray		m_frames;
 	CStdPtrArray		m_arrDrawInfo;
-	std::map<TImageInfo *, TDrawInfo *> m_map;	//TImageInfo 和 TDrawInfo的对应表
+	std::map<UIImage *, TDrawInfo *> m_map;	//TImageInfo 和 TDrawInfo的对应表
 };
 
 }

@@ -5,83 +5,214 @@
 
 namespace DuiLib
 {
+	//////////////////////////////////////////////////////////////////////////
+	template< typename T = CControlUI >
+	class TemplateOptionUI : public TemplateButtonUI<T>
+	{
+	public:
+		TemplateOptionUI() 
+		{
+			m_bSelected = false;
+		}
+
+		virtual ~TemplateOptionUI() 
+		{
+			if( !m_sGroupName.IsEmpty() && m_pManager ) 
+				m_pManager->RemoveOptionGroup(m_sGroupName, this);
+		}
+
+		virtual void DoInit() override
+		{
+			if(!m_sGroupName.IsEmpty() ) 
+			{
+				if (m_pManager) m_pManager->AddOptionGroup(m_sGroupName, this);
+			}
+		}
+
+// 		virtual void SetManager(CPaintManagerUI* pManager, CControlUI* pParent, bool bInit = true) override
+// 		{
+// 			CControlUI::SetManager(pManager, pParent, bInit);
+// 			if( bInit && !m_sGroupName.IsEmpty() ) {
+// 				if (m_pManager) m_pManager->AddOptionGroup(m_sGroupName, this);
+// 			}
+// 		}
+
+		virtual bool Activate() override
+		{
+			if( !CControlUI::Activate() ) return false;
+			if( !m_sGroupName.IsEmpty() ) Selected(true);
+			else Selected(!IsSelected());
+
+			if( m_pManager != NULL )
+			{
+				m_pManager->SendNotify(this, DUI_MSGTYPE_CLICK);
+				BindTriggerTabSel();
+				SwitchPaneVisible();
+			}
+
+			return true;
+		}
+
+		virtual void SwitchPaneVisible() override
+		{
+			if(m_sSwitchControlVisible.IsEmpty()) 
+				return;
+
+			CControlUI* pControl = GetManager()->FindControl(m_sSwitchControlVisible);
+			if(!pControl) return;
+			bool bVisible = pControl->IsPaneVisible();
+			if(m_bSelected && !bVisible)
+			{
+				pControl->SetPaneVisible(true);
+			}
+			else if(!m_bSelected && bVisible)
+			{
+				pControl->SetPaneVisible(false);
+			}
+		}
+
+		CDuiString GetGroup() const
+		{
+			return m_sGroupName;
+		}
+
+		void SetGroup(LPCTSTR pStrGroupName = NULL)
+		{
+			if( pStrGroupName == NULL ) 
+			{
+				if( m_sGroupName.IsEmpty() ) return;
+				m_sGroupName.Empty();
+			}
+			else 
+			{
+				if( m_sGroupName == pStrGroupName ) return;
+				if (!m_sGroupName.IsEmpty() && m_pManager) m_pManager->RemoveOptionGroup(m_sGroupName, this);
+				m_sGroupName = pStrGroupName;
+			}
+
+			if( !m_sGroupName.IsEmpty() ) 
+			{
+				if (m_pManager) m_pManager->AddOptionGroup(m_sGroupName, this);
+			}
+			else {
+				if (m_pManager) m_pManager->RemoveOptionGroup(m_sGroupName, this);
+			}
+
+			Selected(IsSelected());
+		}
+
+		virtual bool IsSelected() const
+		{
+			if(m_sSwitchControlVisible.IsEmpty())
+				return m_bSelected;
+
+			CControlUI* pControl = static_cast<CControlUI*>(GetManager()->FindControl(m_sSwitchControlVisible.GetData()));
+			if(!pControl) return m_bSelected;
+			return pControl->IsVisible();
+		}
+
+		virtual void Selected(bool bSelected, bool bTriggerEvent=true)
+		{
+			if(IsSelected() == bSelected) return;
+
+			m_bSelected = bSelected;
+			SetSelectedState(m_bSelected);
+
+			if( m_pManager != NULL ) {
+				if( !m_sGroupName.IsEmpty() ) {
+					if( m_bSelected ) {
+						CStdPtrArray* aOptionGroup = m_pManager->GetOptionGroup(m_sGroupName);
+						for( int i = 0; i < aOptionGroup->GetSize(); i++ ) 
+						{
+							CControlUI* pControlx = static_cast<CControlUI*>(aOptionGroup->GetAt(i));
+							if(pControlx->GetInterface(DUI_CTR_OPTION))
+							{
+								TemplateOptionUI<T> *pControl = static_cast<TemplateOptionUI<T>*>(aOptionGroup->GetAt(i));
+								if( pControl != this ) {
+									pControl->Selected(false);
+									pControl->SwitchPaneVisible();
+								}
+							}
+						}
+						if (bTriggerEvent) m_pManager->SendNotify(this, DUI_MSGTYPE_SELECTCHANGED);
+					}
+				}
+				else {
+					if (bTriggerEvent) m_pManager->SendNotify(this, DUI_MSGTYPE_SELECTCHANGED);
+				}
+			}
+
+			Invalidate();
+		}
+
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override
+		{
+			if( _tcsicmp(pstrName, _T("group")) == 0 ) SetGroup(pstrValue);
+			else if( _tcsicmp(pstrName, _T("selected")) == 0 ) Selected(_tcsicmp(pstrValue, _T("true")) == 0);
+			else __super::SetAttribute(pstrName, pstrValue);
+		}
+	protected:
+		bool			m_bSelected;
+		CDuiString		m_sGroupName;
+	};
+
+	//////////////////////////////////////////////////////////////////////////
+	class UILIB_API COptionHLayoutUI : public TemplateOptionUI<CHorizontalLayoutUI>
+	{
+	public:
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
+
+		DECLARE_DUICONTROL(COptionHLayoutUI)
+	};
+
+	//////////////////////////////////////////////////////////////////////////
+	class UILIB_API COptionVLayoutUI : public TemplateOptionUI<CVerticalLayoutUI>
+	{
+	public:
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
+
+		DECLARE_DUICONTROL(COptionVLayoutUI)
+	};
+
+	//////////////////////////////////////////////////////////////////////////
+	class UILIB_API COptionLayoutUI : public TemplateOptionUI<CDynamicLayoutUI>
+	{
+	public:
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
+
+		DECLARE_DUICONTROL(COptionLayoutUI)
+	};
+
+	//////////////////////////////////////////////////////////////////////////
 	class UILIB_API COptionUI : public CButtonUI
 	{
 		DECLARE_DUICONTROL(COptionUI)
 	public:
 		COptionUI();
-		~COptionUI();
+		virtual ~COptionUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-		void SetManager(CPaintManagerUI* pManager, CControlUI* pParent, bool bInit = true);
+		virtual void DoInit() override;
+		//void SetManager(CPaintManagerUI* pManager, CControlUI* pParent, bool bInit = true);
 
-		bool Activate();
-		void SetEnabled(bool bEnable = true);
+		virtual bool Activate() override;
 
-		virtual void SwitchPaneVisible();
-
-		LPCTSTR GetSelectedImage();
-		void SetSelectedImage(LPCTSTR pStrImage);
-
-		LPCTSTR GetSelectedHotImage();
-		void SetSelectedHotImage(LPCTSTR pStrImage);
-
-		LPCTSTR GetSelectedPushedImage();
-		void SetSelectedPushedImage(LPCTSTR pStrImage);
-
-		void SetSelectedTextColor(DWORD dwTextColor);
-		DWORD GetSelectedTextColor();
-
-		void SetSelectedBkColor(DWORD dwBkColor);
-		DWORD GetSelectBkColor();
-
-		LPCTSTR GetSelectedForedImage();
-		void SetSelectedForedImage(LPCTSTR pStrImage);
-
-		void SetSelectedStateCount(int nCount);
-		int GetSelectedStateCount() const;
-		virtual LPCTSTR GetSelectedStateImage();
-		virtual void SetSelectedStateImage(LPCTSTR pStrImage);
-
-		void SetSelectedFont(int index);
-		int GetSelectedFont() const;
-
-		void SetSelectedBorderColor(DWORD dwColor) { m_dwSelectedBorderColor = dwColor; }	//add by liqs99
-		DWORD GetSelectedBorderColor() const { return m_dwSelectedBorderColor; }			//add by liqs99
+		virtual void SwitchPaneVisible() override;
 
 		LPCTSTR GetGroup() const;
 		void SetGroup(LPCTSTR pStrGroupName = NULL);
 		virtual bool IsSelected() const;
 		virtual void Selected(bool bSelected, bool bTriggerEvent=true);
 
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
-
-		void PaintBkColor(HDC hDC);
-		void PaintStatusImage(HDC hDC);
-		void PaintForeImage(HDC hDC);
-		void PaintText(HDC hDC);
-		virtual void PaintBorder(HDC hDC); //add by liqs99
-
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 	protected:
 		bool			m_bSelected;
 		CDuiString		m_sGroupName;
-
-		int				m_iSelectedFont;
-
-		DWORD			m_dwSelectedBkColor;
-		DWORD			m_dwSelectedTextColor;
-
-		CDuiString		m_sSelectedImage;
-		CDuiString		m_sSelectedHotImage;
-		CDuiString		m_sSelectedPushedImage;
-		CDuiString		m_sSelectedForeImage;
-
-		int m_nSelectedStateCount;
-		CDuiString m_sSelectedStateImage;
-
-		DWORD m_dwSelectedBorderColor;
 	};
 
 	class UILIB_API CCheckBoxUI : public COptionUI
@@ -90,8 +221,8 @@ namespace DuiLib
 
 	public:
 		CCheckBoxUI();
-		virtual LPCTSTR GetClass() const;
-		virtual LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
 		virtual void SetCheck(bool bCheck);
 		virtual bool GetCheck() const;
@@ -99,10 +230,10 @@ namespace DuiLib
 		bool m_bAutoCheck; 
 
 	public:
-		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 		void SetAutoCheck(bool bEnable);
-		virtual void DoEvent(TEventUI& event);
-		virtual void Selected(bool bSelected, bool bTriggerEvent=true);
+		virtual void DoEvent(TEventUI& event) override;
+		virtual void Selected(bool bSelected, bool bTriggerEvent=true) override;
 	};
 } // namespace DuiLib
 

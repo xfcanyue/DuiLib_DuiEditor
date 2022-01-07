@@ -14,16 +14,14 @@ namespace DuiLib
 	public:
 		CEditUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
-		UINT GetControlFlags() const;
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
+		virtual UINT GetControlFlags() const override;
 
-		void SetEnabled(bool bEnable = true);
 		void SetText(LPCTSTR pstrText);
 		void SetMaxChar(UINT uMax);
 		UINT GetMaxChar();
 		void SetReadOnly(bool bReadOnly);
-		bool IsReadOnly() const;
 		void SetPasswordMode(bool bPasswordMode);
 		bool IsPasswordMode() const;
 		void SetPasswordChar(TCHAR cPasswordChar);
@@ -40,14 +38,6 @@ namespace DuiLib
 		bool IsWantReturn();
 		int GetWindowStyls() const;
 
-		LPCTSTR GetNormalImage();
-		void SetNormalImage(LPCTSTR pStrImage);
-		LPCTSTR GetHotImage();
-		void SetHotImage(LPCTSTR pStrImage);
-		LPCTSTR GetFocusedImage();
-		void SetFocusedImage(LPCTSTR pStrImage);
-		LPCTSTR GetDisabledImage();
-		void SetDisabledImage(LPCTSTR pStrImage);
 		void SetNativeEditBkColor(DWORD dwBkColor);
 		DWORD GetNativeEditBkColor() const;
 		void SetNativeEditTextColor( LPCTSTR pStrColor );
@@ -60,7 +50,7 @@ namespace DuiLib
 		void SetReplaceSel(LPCTSTR lpszReplace);
 
 		void SetTipValue(LPCTSTR pStrTipValue);
-		LPCTSTR GetTipValue();
+		CDuiString GetTipValue();
 		void SetTipValueColor(LPCTSTR pStrColor);
 		DWORD GetTipValueColor();
 
@@ -72,15 +62,13 @@ namespace DuiLib
 		void DoEvent(TEventUI& event);
 		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 
-		void PaintStatusImage(HDC hDC);
-		void PaintText(HDC hDC);
+		void PaintText(UIRender *pRender);
 
 		virtual bool OnEnableResponseDefaultKeyEvent(WPARAM wParam) override;
 	protected:
 		CEditWnd* m_pWindow;
 
 		UINT m_uMaxChar;
-		bool m_bReadOnly;
 		bool m_bPasswordMode;
 		bool m_bAutoSelAll;
 		TCHAR m_cPasswordChar;
@@ -88,10 +76,6 @@ namespace DuiLib
 		bool m_bMultiLine;
 		bool m_bWantReturn;
 
-		CDuiString m_sNormalImage;
-		CDuiString m_sHotImage;
-		CDuiString m_sFocusedImage;
-		CDuiString m_sDisabledImage;
 		CDuiString m_sTipValue;
 		DWORD m_dwTipValueColor;
 		DWORD m_dwEditbkColor;

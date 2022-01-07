@@ -11,33 +11,110 @@ namespace DuiLib {
 
 #define UILIST_MAX_COLUMNS 32
 
-	typedef struct tagTListInfoUI
+	struct UILIB_API TListInfoUI
 	{
+		TListInfoUI();
+
+		bool SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+
+		void SetItemFont(int index);
+		int  GetItemFont() const;
+
+		void SetItemTextStyle(UINT uStyle);
+		UINT GetItemTextStyle() const;
+
+		void SetItemTextPadding(RECT rc);
+		RECT GetItemTextPadding() const;
+
+		void SetItemTextColor(DWORD dwTextColor);
+		DWORD GetItemTextColor() const;
+
+		void SetItemBkColor(DWORD dwBkColor);
+		DWORD GetItemBkColor() const;
+
+		void SetItemBkImage(LPCTSTR pStrImage);
+		CDuiString GetItemBkImage() const;
+
+		void SetAlternateBk(bool bAlternateBk);
+		bool IsAlternateBk() const;
+
+		void SetSelectedItemTextColor(DWORD dwTextColor);
+		DWORD GetSelectedItemTextColor() const;
+
+		void SetSelectedItemBkColor(DWORD dwBkColor);
+		DWORD GetSelectedItemBkColor() const;
+
+		void SetSelectedItemImage(LPCTSTR pStrImage); 
+		CDuiString GetSelectedItemImage() const;
+
+		void SetHotItemTextColor(DWORD dwTextColor);
+		DWORD GetHotItemTextColor() const;
+
+		void SetHotItemBkColor(DWORD dwBkColor);
+		DWORD GetHotItemBkColor() const;
+
+		void SetHotItemImage(LPCTSTR pStrImage);
+		CDuiString GetHotItemImage() const;
+
+		void SetDisabledItemTextColor(DWORD dwTextColor);
+		DWORD GetDisabledItemTextColor() const;
+
+		void SetDisabledItemBkColor(DWORD dwBkColor);
+		DWORD GetDisabledItemBkColor() const;
+
+		void SetDisabledItemImage(LPCTSTR pStrImage);
+		CDuiString GetDisabledItemImage() const;
+
+		void SetItemLineColor(DWORD dwLineColor);
+		DWORD GetItemLineColor() const;
+
+		bool IsItemShowRowLine() const;
+		void SetItemShowRowLine(bool bShowLine = false);
+
+		bool IsItemShowColumnLine() const;
+		void SetItemShowColumnLine(bool bShowLine = false);
+
+		bool IsItemRSelected();
+		void SetItemRSelected(bool bSelected = true);
+
+		void SetMultiExpanding(bool bMultiExpandable); 
+		int GetExpandedItem() const;
+
+		bool IsScrollSelect() const;
+		void SetScrollSelect(bool bScrollSelect);
+		//////////////////////////////////////////////////////////////////////////
 		int nColumns;
 		RECT rcColumn[UILIST_MAX_COLUMNS];
+
 		int nFont;
 		UINT uTextStyle;
 		RECT rcTextPadding;
+
 		DWORD dwTextColor;
 		DWORD dwBkColor;
 		CDuiString sBkImage;
 		bool bAlternateBk;
+
 		DWORD dwSelectedTextColor;
 		DWORD dwSelectedBkColor;
 		CDuiString sSelectedImage;
+
 		DWORD dwHotTextColor;
 		DWORD dwHotBkColor;
 		CDuiString sHotImage;
+
 		DWORD dwDisabledTextColor;
 		DWORD dwDisabledBkColor;
 		CDuiString sDisabledImage;
+
 		DWORD dwLineColor;
 		bool bShowRowLine;
 		bool bShowColumnLine;
-		bool bShowHtml;
 		bool bMultiExpandable;
 		bool bRSelected;
-	} TListInfoUI;
+
+		bool bScrollSelect;
+	};
 
 
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -91,11 +168,7 @@ namespace DuiLib {
 		virtual bool SelectMulti(bool bSelect = true) = 0;
 		virtual bool IsExpanded() const = 0;
 		virtual bool Expand(bool bExpand = true) = 0;
-		virtual void DrawItemText(HDC hDC, const RECT& rcItem) = 0;
-		virtual bool IsAutoCalcWidth() const = 0;
-		virtual void SetAutoCalcWidth(bool bAutoCalcWidth) = 0;
-		virtual bool IsAutoCalcHeight() const = 0;
-		virtual void SetAutoCalcHeight(bool bAutoCalcWidth) = 0;
+		virtual void DrawItemText(UIRender *pRender, const RECT& rcItem) = 0;
 	};
 
 
@@ -104,7 +177,7 @@ namespace DuiLib {
 
 	class CListBodyUI;
 	class CListHeaderUI;
-	class CEditUI;
+	//class CEditUI;
 	class CComboUI;
 	class UILIB_API CListUI : public CVerticalLayoutUI, public IListUI
 	{
@@ -113,25 +186,23 @@ namespace DuiLib {
 	public:
 		CListUI();
 
-		LPCTSTR GetClass() const;
-		UINT GetControlFlags() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual UINT GetControlFlags() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-		bool GetScrollSelect();
-		void SetScrollSelect(bool bScrollSelect);
-		int GetCurSel() const;
+		virtual int GetCurSel() const override;
 		int GetCurSelActivate() const;
-		bool SelectItem(int iIndex, bool bTakeFocus = false);
+		virtual bool SelectItem(int iIndex, bool bTakeFocus = false) override;
 		bool SelectItemActivate(int iIndex);    // 双击选中
 
-		bool SelectMultiItem(int iIndex, bool bTakeFocus = false);
-		void SetMultiSelect(bool bMultiSel);
-		bool IsMultiSelect() const;
-		bool UnSelectItem(int iIndex, bool bOthers = false);
-		void SelectAllItems();
-		void UnSelectAllItems();
-		int GetSelectItemCount() const;
-		int GetNextSelItem(int nItem) const;
+		virtual bool SelectMultiItem(int iIndex, bool bTakeFocus = false) override;
+		virtual void SetMultiSelect(bool bMultiSel) override;
+		virtual bool IsMultiSelect() const override;
+		virtual bool UnSelectItem(int iIndex, bool bOthers = false) override;
+		virtual void SelectAllItems() override;
+		virtual void UnSelectAllItems() override;
+		virtual int GetSelectItemCount() const override;
+		virtual int GetNextSelItem(int nItem) const override;
 
 		bool IsFixedScrollbar();
 		void SetFixedScrollbar(bool bFixed);
@@ -141,93 +212,53 @@ namespace DuiLib {
 		UINT GetListType();
 		TListInfoUI* GetListInfo();
 
-		CControlUI* GetItemAt(int iIndex) const;
-		int GetItemIndex(CControlUI* pControl) const;
-		bool SetItemIndex(CControlUI* pControl, int iIndex);
-		int GetCount() const;
-		bool Add(CControlUI* pControl);
-		bool AddAt(CControlUI* pControl, int iIndex);
-		bool Remove(CControlUI* pControl, bool bDoNotDestroy=false);
-		bool RemoveAt(int iIndex, bool bDoNotDestroy=false);
-		void RemoveAll();
+		virtual CControlUI* GetItemAt(int iIndex) const override;
+		virtual int GetItemIndex(CControlUI* pControl) const override;
+		virtual bool SetItemIndex(CControlUI* pControl, int iIndex) override;
+		virtual int GetCount() const override;
+		virtual bool Add(CControlUI* pControl) override;
+		virtual bool AddAt(CControlUI* pControl, int iIndex) override;
+		virtual bool Remove(CControlUI* pControl, bool bDoNotDestroy=false) override;
+		virtual bool RemoveAt(int iIndex, bool bDoNotDestroy=false) override;
+		virtual void RemoveAll() override;
 
 		void EnsureVisible(int iIndex);
 		void Scroll(int dx, int dy);
 
-		bool IsDelayedDestroy() const;
-		void SetDelayedDestroy(bool bDelayed);
-		int GetChildPadding() const;
-		void SetChildPadding(int iPadding);
+		virtual bool IsDelayedDestroy() const override;
+		virtual void SetDelayedDestroy(bool bDelayed) override;
+		virtual int GetChildPadding() const override;
+		virtual void SetChildPadding(int iPadding) override;
 
-		void SetItemFont(int index);
-		void SetItemTextStyle(UINT uStyle);
-		void SetItemTextPadding(RECT rc);
-		void SetItemTextColor(DWORD dwTextColor);
-		void SetItemBkColor(DWORD dwBkColor);
-		void SetItemBkImage(LPCTSTR pStrImage);
-		void SetAlternateBk(bool bAlternateBk);
-		void SetSelectedItemTextColor(DWORD dwTextColor);
-		void SetSelectedItemBkColor(DWORD dwBkColor);
-		void SetSelectedItemImage(LPCTSTR pStrImage); 
-		void SetHotItemTextColor(DWORD dwTextColor);
-		void SetHotItemBkColor(DWORD dwBkColor);
-		void SetHotItemImage(LPCTSTR pStrImage);
-		void SetDisabledItemTextColor(DWORD dwTextColor);
-		void SetDisabledItemBkColor(DWORD dwBkColor);
-		void SetDisabledItemImage(LPCTSTR pStrImage);
-		void SetItemLineColor(DWORD dwLineColor);
-		void SetItemShowRowLine(bool bShowLine = false);
-		void SetItemShowColumnLine(bool bShowLine = false);
-		bool IsItemShowHtml();
-		void SetItemShowHtml(bool bShowHtml = true);
-		bool IsItemRSelected();
-		void SetItemRSelected(bool bSelected = true);
-		RECT GetItemTextPadding() const;
-		DWORD GetItemTextColor() const;
-		DWORD GetItemBkColor() const;
-		LPCTSTR GetItemBkImage() const;
-		bool IsAlternateBk() const;
-		DWORD GetSelectedItemTextColor() const;
-		DWORD GetSelectedItemBkColor() const;
-		LPCTSTR GetSelectedItemImage() const;
-		DWORD GetHotItemTextColor() const;
-		DWORD GetHotItemBkColor() const;
-		LPCTSTR GetHotItemImage() const;
-		DWORD GetDisabledItemTextColor() const;
-		DWORD GetDisabledItemBkColor() const;
-		LPCTSTR GetDisabledItemImage() const;
-		DWORD GetItemLineColor() const;
+		virtual int GetExpandedItem() const override;
+		virtual bool ExpandItem(int iIndex, bool bExpand = true) override;
 
-		void SetMultiExpanding(bool bMultiExpandable); 
-		int GetExpandedItem() const;
-		bool ExpandItem(int iIndex, bool bExpand = true);
-
-		void SetPos(RECT rc, bool bNeedInvalidate = true);
-		void Move(SIZE szOffset, bool bNeedInvalidate = true);
-		void DoEvent(TEventUI& event);
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+		virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
+		virtual void Move(SIZE szOffset, bool bNeedInvalidate = true) override;
+		virtual void DoEvent(TEventUI& event) override;
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 
 		IListCallbackUI* GetTextCallback() const;
 		void SetTextCallback(IListCallbackUI* pCallback);
 
-		SIZE GetScrollPos() const;
-		SIZE GetScrollRange() const;
-		void SetScrollPos(SIZE szPos, bool bMsg = true);
-		void LineUp();
-		void LineDown();
-		void PageUp();
-		void PageDown();
-		void HomeUp();
-		void EndDown();
-		void LineLeft();
-		void LineRight();
-		void PageLeft();
-		void PageRight();
-		void HomeLeft();
-		void EndRight();
-		void EnableScrollBar(bool bEnableVertical = true, bool bEnableHorizontal = false);
-		virtual CScrollBarUI* GetVerticalScrollBar() const;
-		virtual CScrollBarUI* GetHorizontalScrollBar() const;
+		virtual SIZE GetScrollPos() const override;
+		virtual SIZE GetScrollRange() const override;
+		virtual void SetScrollPos(SIZE szPos, bool bMsg = true) override;
+		virtual void LineUp() override;
+		virtual void LineDown() override;
+		virtual void PageUp() override;
+		virtual void PageDown() override;
+		virtual void HomeUp() override;
+		virtual void EndDown() override;
+		virtual void LineLeft() override;
+		virtual void LineRight() override;
+		virtual void PageLeft() override;
+		virtual void PageRight() override;
+		virtual void HomeLeft() override;
+		virtual void EndRight() override;
+		virtual void EnableScrollBar(bool bEnableVertical = true, bool bEnableHorizontal = false) override;
+		virtual CScrollBarUI* GetVerticalScrollBar() const override;
+		virtual CScrollBarUI* GetHorizontalScrollBar() const override;
 		BOOL SortItems(PULVCompareFunc pfnCompare, UINT_PTR dwData);
 
 		virtual BOOL CheckColumEditable(int nColum) { return FALSE; };
@@ -263,10 +294,10 @@ namespace DuiLib {
 		CListBodyUI(CListUI* pOwner);
 
 
-		int GetScrollStepSize() const;
-		void SetScrollPos(SIZE szPos, bool bMsg = true);
-		void SetPos(RECT rc, bool bNeedInvalidate = true);
-		void DoEvent(TEventUI& event);
+		virtual int GetScrollStepSize() const override;
+		virtual void SetScrollPos(SIZE szPos, bool bMsg = true) override;
+		virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
+		virtual void DoEvent(TEventUI& event) override;
 		BOOL SortItems(PULVCompareFunc pfnCompare, UINT_PTR dwData);
 	protected:
 		static int __cdecl ItemComareFunc(void *pvlocale, const void *item1, const void *item2);
@@ -286,12 +317,12 @@ namespace DuiLib {
 	public:
 		CListHeaderUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-		SIZE EstimateSize(SIZE szAvailable);
-		void SetPos(RECT rc, bool bNeedInvalidate = true);
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+		virtual SIZE EstimateSize(SIZE szAvailable) override;
+		virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 
 		void SetScaleHeader(bool bIsScale);
 		bool IsScaleHeader() const;
@@ -311,59 +342,32 @@ namespace DuiLib {
 	public:
 		CListHeaderItemUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
-		UINT GetControlFlags() const;
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
+		virtual UINT GetControlFlags() const override;
 
-		void SetEnabled(bool bEnable = true);
-
-		bool IsDragable() const;
-		void SetDragable(bool bDragable);
+		bool IsHeaderDragEnable() const;
+		void SetHeaderDragEnable(bool bDragable);
 		DWORD GetSepWidth() const;
 		void SetSepWidth(int iWidth);
-		DWORD GetTextStyle() const;
-		void SetTextStyle(UINT uStyle);
-		DWORD GetTextColor() const;
-		void SetTextColor(DWORD dwTextColor);
-		void SetTextPadding(RECT rc);
-		RECT GetTextPadding() const;
-		void SetFont(int index);
-		bool IsShowHtml();
-		void SetShowHtml(bool bShowHtml = true);
-		LPCTSTR GetNormalImage() const;
-		void SetNormalImage(LPCTSTR pStrImage);
-		LPCTSTR GetHotImage() const;
-		void SetHotImage(LPCTSTR pStrImage);
-		LPCTSTR GetPushedImage() const;
-		void SetPushedImage(LPCTSTR pStrImage);
-		LPCTSTR GetFocusedImage() const;
-		void SetFocusedImage(LPCTSTR pStrImage);
+		
 		LPCTSTR GetSepImage() const;
 		void SetSepImage(LPCTSTR pStrImage);
 		void SetScale(int nScale);
 		int GetScale() const;
 
-		void DoEvent(TEventUI& event);
-		SIZE EstimateSize(SIZE szAvailable);
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+		virtual void DoEvent(TEventUI& event) override;
+		virtual SIZE EstimateSize(SIZE szAvailable) override;
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 		RECT GetThumbRect() const;
 
-		void PaintText(HDC hDC);
-		void PaintStatusImage(HDC hDC);
+		virtual void PaintText(UIRender *pRender) override;
+		virtual void PaintStatusImage(UIRender *pRender) override;
 
 	protected:
-		POINT ptLastMouse;
 		bool m_bDragable;
 		int m_iSepWidth;
-		DWORD m_dwTextColor;
-		int m_iFont;
-		UINT m_uTextStyle;
-		bool m_bShowHtml;
-		RECT m_rcTextPadding;
-		CDuiString m_sNormalImage;
-		CDuiString m_sHotImage;
-		CDuiString m_sPushedImage;
-		CDuiString m_sFocusedImage;
+		
 		CDuiString m_sSepImage;
 		CDuiString m_sSepImageModify;
 		int m_nScale;
@@ -378,37 +382,32 @@ namespace DuiLib {
 	public:
 		CListElementUI();
 
-		LPCTSTR GetClass() const;
-		UINT GetControlFlags() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual UINT GetControlFlags() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-		void SetEnabled(bool bEnable = true);
 
-		int GetIndex() const;
-		void SetIndex(int iIndex);
+		virtual int GetIndex() const override;
+		virtual void SetIndex(int iIndex) override;
 
-		IListOwnerUI* GetOwner();
-		void SetOwner(CControlUI* pOwner);
-		void SetVisible(bool bVisible = true);
+		virtual IListOwnerUI* GetOwner() override;
+		virtual void SetOwner(CControlUI* pOwner) override;
+		virtual void SetVisible(bool bVisible = true) override;
 
-		bool IsSelected() const;
-		bool Select(bool bSelect = true);
-		bool SelectMulti(bool bSelect = true);
-		bool IsExpanded() const;
-		bool Expand(bool bExpand = true);
+		virtual bool IsSelected() const override;
+		virtual bool Select(bool bSelect = true) override;
+		virtual bool SelectMulti(bool bSelect = true) override;
+		virtual bool IsExpanded() const override;
+		virtual bool Expand(bool bExpand = true) override;
 
-		void Invalidate(); // 直接CControl::Invalidate会导致滚动条刷新，重写减少刷新区域
-		bool Activate();
+		virtual void Invalidate() override; // 直接CControl::Invalidate会导致滚动条刷新，重写减少刷新区域
+		virtual bool Activate() override;
 
-		void DoEvent(TEventUI& event);
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+		virtual void DoEvent(TEventUI& event) override;
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 
-		void DrawItemBk(HDC hDC, const RECT& rcItem);
+		void DrawItemBk(UIRender *pRender, const RECT& rcItem);
 
-		virtual bool IsAutoCalcWidth() const;
-		virtual void SetAutoCalcWidth(bool bAutoCalcWidth);
-		virtual bool IsAutoCalcHeight() const;
-		virtual void SetAutoCalcHeight(bool bAutoCalcHeight);
 	protected:
 		int m_iIndex;
 		bool m_bSelected;
@@ -425,14 +424,14 @@ namespace DuiLib {
 	public:
 		CListLabelElementUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-		void DoEvent(TEventUI& event);
-		SIZE EstimateSize(SIZE szAvailable);
-		bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
+		virtual void DoEvent(TEventUI& event) override;
+		virtual SIZE EstimateSize(SIZE szAvailable) override;
+		virtual bool DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl) override;
 
-		void DrawItemText(HDC hDC, const RECT& rcItem);
+		virtual void DrawItemText(UIRender *pRender, const RECT& rcItem) override;
 	};
 
 
@@ -446,22 +445,22 @@ namespace DuiLib {
 		CListTextElementUI();
 		~CListTextElementUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
-		UINT GetControlFlags() const;
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
+		virtual UINT GetControlFlags() const override;
 
-		LPCTSTR GetText(int iIndex) const;
+		CDuiString GetText(int iIndex) const;
 		void SetText(int iIndex, LPCTSTR pstrText);
 		
 		void SetText(int iIndex, int nDigit);	//modify by liqs99
 
-		void SetOwner(CControlUI* pOwner);
+		virtual void SetOwner(CControlUI* pOwner) override;
 		CDuiString* GetLinkContent(int iIndex);
 
-		void DoEvent(TEventUI& event);
-		SIZE EstimateSize(SIZE szAvailable);
+		virtual void DoEvent(TEventUI& event) override;
+		virtual SIZE EstimateSize(SIZE szAvailable) override;
 
-		void DrawItemText(HDC hDC, const RECT& rcItem);
+		virtual void DrawItemText(UIRender *pRender, const RECT& rcItem) override;
 
 	protected:
 		enum { MAX_LINK = 8 };
@@ -482,40 +481,34 @@ namespace DuiLib {
 	public:
 		CListContainerElementUI();
 
-		LPCTSTR GetClass() const;
-		UINT GetControlFlags() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual UINT GetControlFlags() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-		int GetIndex() const;
-		void SetIndex(int iIndex);
+		virtual int GetIndex() const override;
+		virtual void SetIndex(int iIndex) override;
 
-		IListOwnerUI* GetOwner();
-		void SetOwner(CControlUI* pOwner);
-		void SetVisible(bool bVisible = true);
-		void SetEnabled(bool bEnable = true);
+		virtual IListOwnerUI* GetOwner() override;
+		virtual void SetOwner(CControlUI* pOwner) override;
+		virtual void SetVisible(bool bVisible = true) override;
 
-		bool IsSelected() const;
-		bool Select(bool bSelect = true);
-		bool SelectMulti(bool bSelect = true);
-		bool IsExpanded() const;
-		bool Expand(bool bExpand = true);
+		virtual bool IsSelected() const override;
+		virtual bool Select(bool bSelect = true) override;
+		virtual bool SelectMulti(bool bSelect = true) override;
+		virtual bool IsExpanded() const override;
+		virtual bool Expand(bool bExpand = true) override;
 
-		void Invalidate(); // 直接CControl::Invalidate会导致滚动条刷新，重写减少刷新区域
-		bool Activate();
+		virtual void Invalidate() override; // 直接CControl::Invalidate会导致滚动条刷新，重写减少刷新区域
+		virtual bool Activate() override;
 
-		void DoEvent(TEventUI& event);
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
-		bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
+		virtual void DoEvent(TEventUI& event) override;
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
+		virtual bool DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl) override;
 
-		virtual void DrawItemText(HDC hDC, const RECT& rcItem);    
-		virtual void DrawItemBk(HDC hDC, const RECT& rcItem);
+		virtual void DrawItemText(UIRender *pRender, const RECT& rcItem) override;    
+		void DrawItemBk(UIRender *pRender, const RECT& rcItem);
 
-		void SetPos(RECT rc, bool bNeedInvalidate = true);
-
-		virtual bool IsAutoCalcWidth() const;
-		virtual void SetAutoCalcWidth(bool bAutoCalcWidth);
-		virtual bool IsAutoCalcHeight() const;
-		virtual void SetAutoCalcHeight(bool bAutoCalcHeight);
+		virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
 
 	protected:
 		int m_iIndex;

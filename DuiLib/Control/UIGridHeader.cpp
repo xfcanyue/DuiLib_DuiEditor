@@ -19,7 +19,7 @@ CGridHeaderUI::~CGridHeaderUI(void)
 
 LPCTSTR CGridHeaderUI::GetClass() const
 {
-	return DUI_CTR_GRIDHEADER;
+	return _T("GridHeaderUI");
 }
 
 UINT CGridHeaderUI::GetControlFlags() const

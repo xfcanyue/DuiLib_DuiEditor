@@ -22,5 +22,7 @@
 		<VerticalLayout height="100" sepheight="-8" sepimm="true" inset="0,8,0,0">
 			<MsgWnd name="msgwnd_frame" bordercolor="0xFFC0C0C0" bordersize="1" />
 		</VerticalLayout>
+		<Control pos="601,69,701,146" width="100" height="77" float="true" bordercolor="0xFF000080" bordersize="1" />
+		<Label text="qdqqwd" width="163" height="46" pos="524,229,687,275" float="true" />
 	</VerticalLayout>
 </Window>

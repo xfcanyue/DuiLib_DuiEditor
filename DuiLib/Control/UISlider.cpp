@@ -27,14 +27,6 @@ namespace DuiLib
 		return CProgressUI::GetInterface(pstrName);
 	}
 
-	void CSliderUI::SetEnabled(bool bEnable)
-	{
-		CControlUI::SetEnabled(bEnable);
-		if( !IsEnabled() ) {
-			m_uButtonState = 0;
-		}
-	}
-
 	int CSliderUI::GetChangeStep()
 	{
 		return m_nStep;
@@ -108,7 +100,7 @@ namespace DuiLib
 
 	void CSliderUI::SetValue(int nValue)
 	{
-		if( (m_uButtonState & UISTATE_CAPTURED) != 0 ) return;
+		if( IsCaptureState() ) return;
 		CProgressUI::SetValue(nValue);
 	}
 
@@ -122,7 +114,7 @@ namespace DuiLib
 
 		if( event.Type == UIEVENT_BUTTONDOWN || event.Type == UIEVENT_DBLCLICK ) {
 			if( IsEnabled() ) {
-				m_uButtonState |= UISTATE_CAPTURED;
+				SetCaptureState(true);
 
 				int nValue;
 				if( m_bHorizontal ) {
@@ -147,8 +139,8 @@ namespace DuiLib
 		if( event.Type == UIEVENT_BUTTONUP || event.Type == UIEVENT_RBUTTONUP) {
 			if( IsEnabled() ) {
 				int nValue = 0;
-				if( (m_uButtonState & UISTATE_CAPTURED) != 0 ) {
-					m_uButtonState &= ~UISTATE_CAPTURED;
+				if( IsCaptureState() ) {
+					SetCaptureState(false);
 				}
 				if( m_bHorizontal ) {
 					if( event.ptMouse.x >= m_rcItem.right - m_szThumb.cx / 2 ) nValue = m_nMax;
@@ -189,7 +181,7 @@ namespace DuiLib
 			}
 		}
 		if( event.Type == UIEVENT_MOUSEMOVE ) {
-			if( (m_uButtonState & UISTATE_CAPTURED) != 0 ) {
+			if( IsCaptureState() ) {
 				if( m_bHorizontal ) {
 					if( event.ptMouse.x >= m_rcItem.right - m_szThumb.cx / 2 ) m_nValue = m_nMax;
 					else if( event.ptMouse.x <= m_rcItem.left + m_szThumb.cx / 2 ) m_nValue = m_nMin;
@@ -209,12 +201,14 @@ namespace DuiLib
 
 			POINT pt = event.ptMouse;
 			RECT rcThumb = GetThumbRect();
-			if( IsEnabled() && ::PtInRect(&rcThumb, event.ptMouse) ) {
-				m_uButtonState |= UISTATE_HOT;
+			if( IsEnabled() && ::PtInRect(&rcThumb, event.ptMouse) ) 
+			{
+				SetHotState(true);
 				Invalidate();
 			}
-			else {
-				m_uButtonState &= ~UISTATE_HOT;
+			else 
+			{
+				SetHotState(false);
 				Invalidate();
 			}
 			return;
@@ -230,7 +224,7 @@ namespace DuiLib
 		if( event.Type == UIEVENT_MOUSELEAVE )
 		{
 			if( IsEnabled() ) {
-				m_uButtonState &= ~UISTATE_HOT;
+				SetHotState(false);
 				Invalidate();
 			}
 			return;
@@ -268,9 +262,9 @@ namespace DuiLib
 		else CProgressUI::SetAttribute(pstrName, pstrValue);
 	}
 
-	void CSliderUI::PaintForeImage(HDC hDC)
+	void CSliderUI::PaintForeImage(UIRender *pRender)
 	{
-		CProgressUI::PaintForeImage(hDC);
+		CProgressUI::PaintForeImage(pRender);
 
 		RECT rcThumb = GetThumbRect();
 		rcThumb.left -= m_rcItem.left;
@@ -280,19 +274,19 @@ namespace DuiLib
 
 		GetManager()->GetDPIObj()->ScaleBack(&rcThumb);
 
-		if( (m_uButtonState & UISTATE_CAPTURED) != 0 ) {
+		if( IsCaptureState() ) {
 			if( !m_sThumbPushedImage.IsEmpty() ) {
 				m_sImageModify.Empty();
 				m_sImageModify.SmallFormat(_T("dest='%d,%d,%d,%d'"), rcThumb.left, rcThumb.top, rcThumb.right, rcThumb.bottom);
-				if( !DrawImage(hDC, (LPCTSTR)m_sThumbPushedImage, (LPCTSTR)m_sImageModify) ) {}
+				if( !DrawImage(pRender, (LPCTSTR)m_sThumbPushedImage, (LPCTSTR)m_sImageModify) ) {}
 				else return;
 			}
 		}
-		else if( (m_uButtonState & UISTATE_HOT) != 0 ) {
+		else if( IsHotState() ) {
 			if( !m_sThumbHotImage.IsEmpty() ) {
 				m_sImageModify.Empty();
 				m_sImageModify.SmallFormat(_T("dest='%d,%d,%d,%d'"), rcThumb.left, rcThumb.top, rcThumb.right, rcThumb.bottom);
-				if( !DrawImage(hDC, (LPCTSTR)m_sThumbHotImage, (LPCTSTR)m_sImageModify) ) {}
+				if( !DrawImage(pRender, (LPCTSTR)m_sThumbHotImage, (LPCTSTR)m_sImageModify) ) {}
 				else return;
 			}
 		}
@@ -300,7 +294,7 @@ namespace DuiLib
 		if( !m_sThumbImage.IsEmpty() ) {
 			m_sImageModify.Empty();
 			m_sImageModify.SmallFormat(_T("dest='%d,%d,%d,%d'"), rcThumb.left, rcThumb.top, rcThumb.right, rcThumb.bottom);
-			if( !DrawImage(hDC, (LPCTSTR)m_sThumbImage, (LPCTSTR)m_sImageModify) ) {}
+			if( !DrawImage(pRender, (LPCTSTR)m_sThumbImage, (LPCTSTR)m_sImageModify) ) {}
 			else return;
 		}
 	}

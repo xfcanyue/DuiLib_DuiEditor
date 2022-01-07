@@ -101,7 +101,8 @@ BOOL CDuiEditorApp::InitInstance()
 	CWinAppEx::InitInstance();
 	InitShellManager();
 	AfxInitRichEdit2();
-	//_CrtSetBreakAlloc(528);
+	//_CrtSetBreakAlloc(45788);
+	//_CrtSetBreakAlloc(44536);
 
 	// ≥ı ºªØ OLE ø‚
 	if (!AfxOleInit())

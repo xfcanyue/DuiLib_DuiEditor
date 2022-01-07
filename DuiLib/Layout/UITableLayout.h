@@ -15,8 +15,8 @@ namespace DuiLib
 	public:
 		CTableLayoutUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
 		void SetColWidth(int col, int nWidth);
 		int GetColWidth(int col) const;
@@ -37,12 +37,12 @@ namespace DuiLib
 		void SetDefRowHeight(int height)			{ m_nDefRowHeight = height; }
 		int GetDefRowHeight() const					{ return m_nDefRowHeight; }
 
-		virtual void DoInit();
-		void DoEvent(TEventUI& event);
+		virtual void DoInit() override;
+		virtual void DoEvent(TEventUI& event) override;
 
-		void SetPos(RECT rc, bool bNeedInvalidate = true);
+		virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
 
-		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 	protected:
 		int m_aColWidth[MAX_TABLE_COLUMN_COUNT];
 		int m_aColMinWidth[MAX_TABLE_COLUMN_COUNT];
@@ -63,18 +63,18 @@ namespace DuiLib
 	public:
 		CTRUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
-		virtual UINT GetControlFlags() const;
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
+		virtual UINT GetControlFlags() const override;
 
 		CTableLayoutUI *GetTable() const;
 
-		bool Add(CControlUI* pControl);
-		bool AddAt(CControlUI* pControl, int iIndex);
+		virtual bool Add(CControlUI* pControl) override;
+		virtual bool AddAt(CControlUI* pControl, int iIndex) override;
 
-		virtual void DoInit();
-		virtual SIZE EstimateSize(SIZE szAvailable);
-		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+		virtual void DoInit() override;
+		virtual SIZE EstimateSize(SIZE szAvailable) override;
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 	};
 
 	//////////////////////////////////////////////////////////////////////////
@@ -85,32 +85,32 @@ namespace DuiLib
 	public:
 		CTDUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
-		virtual UINT GetControlFlags() const;
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
+		virtual UINT GetControlFlags() const override;
 
 		CTRUI *GetRow() const;
 		CTableLayoutUI *GetTable() const;
 
-		virtual void SetFixedWidth(int nWidth);
-		virtual int GetFixedWidth() const;
-		virtual void SetMinWidth(int nWidth);
-		virtual int GetMinWidth() const;
-		virtual void SetMaxWidth(int nWidth);
-		virtual int GetMaxWidth() const;
+		virtual void SetFixedWidth(int nWidth) override;
+		virtual int GetFixedWidth() const override;
+		virtual void SetMinWidth(int nWidth) override;
+		virtual int GetMinWidth() const override;
+		virtual void SetMaxWidth(int nWidth) override;
+		virtual int GetMaxWidth() const override;
 
-		virtual bool IsAutoCalcWidth() const;
-		virtual void SetAutoCalcWidth(bool bAutoCalcWidth);
+		virtual bool IsAutoCalcWidth() const override;
+		virtual void SetAutoCalcWidth(bool bAutoCalcWidth) override;
 
-		virtual RECT GetInset() const;
-		virtual void SetInset(RECT rcInset);
+		virtual RECT GetInset() const override;
+		virtual void SetInset(RECT rcInset) override;
 
-		virtual RECT GetTextPadding() const;
-		virtual void SetTextPadding(RECT rc);
+		virtual RECT GetTextPadding() const override;
+		virtual void SetTextPadding(RECT rc) override;
 
-		virtual void DoInit();
-		virtual SIZE EstimateSize(SIZE szAvailable);
-		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+		virtual void DoInit() override;
+		virtual SIZE EstimateSize(SIZE szAvailable) override;
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 	};
 }
 #endif // __UIVERTICALLAYOUT_H__

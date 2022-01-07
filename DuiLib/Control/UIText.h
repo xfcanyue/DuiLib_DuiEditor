@@ -12,23 +12,11 @@ namespace DuiLib
 		CTextUI();
 		~CTextUI();
 
-		LPCTSTR GetClass() const;
-		UINT GetControlFlags() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual UINT GetControlFlags() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-		CDuiString* GetLinkContent(int iIndex);
-
-		void DoEvent(TEventUI& event);
-		SIZE EstimateSize(SIZE szAvailable);
-
-		void PaintText(HDC hDC);
-
-	protected:
-		enum { MAX_LINK = 8 };
-		int m_nLinks;
-		RECT m_rcLinks[MAX_LINK];
-		CDuiString m_sLinks[MAX_LINK];
-		int m_nHoverLink;
+		virtual void DoEvent(TEventUI& event) override;
 	};
 
 } // namespace DuiLib

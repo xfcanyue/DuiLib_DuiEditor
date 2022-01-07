@@ -13,7 +13,7 @@ namespace DuiLib
 
 	LPCTSTR CTileLayoutUI::GetClass() const
 	{
-		return DUI_CTR_TILELAYOUT;
+		return _T("TileLayoutUI");
 	}
 
 	LPVOID CTileLayoutUI::GetInterface(LPCTSTR pstrName)

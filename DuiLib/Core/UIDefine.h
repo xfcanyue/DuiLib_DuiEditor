@@ -284,13 +284,21 @@ protected:                                                                \
 
 #define  DUI_CTR_COMBO                           (_T("Combo"))
 #define  DUI_CTR_LABEL                           (_T("Label"))
+#define  DUI_CTR_LABEL_HLAYOUT                  (_T("LabelHLayout"))
+#define  DUI_CTR_LABEL_VLAYOUT                  (_T("LabelVLayout"))
 #define  DUI_CTR_LABEL_LAYOUT                    (_T("LabelLayout"))
 #define  DUI_CTR_FLASH							 (_T("Flash"))
 
 #define  DUI_CTR_BUTTON                          (_T("Button"))
+#define  DUI_CTR_BUTTON_HLAYOUT                  (_T("ButtonHLayout"))
+#define  DUI_CTR_BUTTON_VLAYOUT                  (_T("ButtonVLayout"))
 #define  DUI_CTR_BUTTON_LAYOUT                   (_T("ButtonLayout"))
+
 #define  DUI_CTR_OPTION                          (_T("Option"))
+#define  DUI_CTR_OPTION_HLAYOUT                  (_T("OptionHLayout"))
+#define  DUI_CTR_OPTION_VLAYOUT                  (_T("OptionVLayout"))
 #define  DUI_CTR_OPTION_LAYOUT                   (_T("OptionLayout"))
+
 #define  DUI_CTR_SLIDER                          (_T("Slider"))
 
 #define  DUI_CTR_CONTROL                         (_T("Control"))

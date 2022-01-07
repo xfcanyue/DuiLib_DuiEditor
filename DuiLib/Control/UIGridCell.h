@@ -13,9 +13,9 @@ public:
 	void SetOwner(CControlUI *pCellUI) { m_pOwner = pCellUI; }
 	CControlUI *GetOwner() const { return m_pOwner; }
 
-	virtual bool Activate();
-	virtual bool IsSelected() const;
-	virtual void Selected(bool bSelected, bool bTriggerEvent=true);
+	virtual bool Activate() override;
+	virtual bool IsSelected() const override;
+	virtual void Selected(bool bSelected, bool bTriggerEvent=true) override;
 
 	CControlUI *m_pOwner;
 };
@@ -30,12 +30,12 @@ public:
 	void SetOwner(IGridUI *pGrid) { m_pOwner = pGrid; }
 	IGridUI *GetOwner() const { return m_pOwner; }
 
-	LPCTSTR GetClass() const;
-	UINT GetControlFlags() const;
-	LPVOID GetInterface(LPCTSTR pstrName);
+	virtual LPCTSTR GetClass() const override;
+	virtual UINT GetControlFlags() const override;
+	virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-	virtual CDuiString GetText() const;
-	virtual void SetText(LPCTSTR pstrText);
+	virtual CDuiString GetText() const override;
+	virtual void SetText(LPCTSTR pstrText) override;
 
 	bool IsMergedWithOthers();
 
@@ -48,11 +48,11 @@ public:
 	BOOL IsFixedRow() const;
 	BOOL IsFixedCol() const;
 
-	virtual void SetFixedWidth(int cx);
-	virtual bool IsSelected() const;
-	virtual void Selected(bool bSelected, bool bTriggerEvent=true);
-	virtual bool IsFocused() const;
-	virtual bool IsHot() const;
+	virtual void SetFixedWidth(int cx) override;
+	virtual bool IsSelected() const override;
+	virtual void Selected(bool bSelected, bool bTriggerEvent=true) override;
+	virtual bool IsFocused() const override;
+	virtual bool IsHotState() const override;
 
 	RECT GetCellPos();
 
@@ -64,21 +64,21 @@ public:
 	void OnCellSetFocus();
 	void OnCellKillFocus();
 
-	virtual void DoInit();
-	virtual void SetPos(RECT rc, bool bNeedInvalidate = true);
-	virtual SIZE EstimateSize(SIZE szAvailable);
+	virtual void DoInit() override;
+	virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
+	virtual SIZE EstimateSize(SIZE szAvailable) override;
 
-	void DoEvent(TEventUI& event);
-	virtual bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
-	virtual void PaintBkColor(HDC hDC);
-	virtual void PaintBkImage(HDC hDC);
-	virtual void PaintStatusImage(HDC hDC);
-	virtual void PaintForeColor(HDC hDC);
-	virtual void PaintForeImage(HDC hDC);
-	virtual void PaintText(HDC hDC);
-	virtual void PaintBorder(HDC hDC);
+	virtual void DoEvent(TEventUI& event) override;
+	virtual bool DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl) override;
+	virtual void PaintBkColor(UIRender *pRender) override;
+	virtual void PaintBkImage(UIRender *pRender) override;
+	virtual void PaintStatusImage(UIRender *pRender) override;
+	virtual void PaintForeColor(UIRender *pRender) override;
+	virtual void PaintForeImage(UIRender *pRender) override;
+	virtual void PaintText(UIRender *pRender) override;
+	virtual void PaintBorder(UIRender *pRender) override;
 
-	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 protected:
 	IGridUI *m_pOwner;
 	int m_row, m_col;

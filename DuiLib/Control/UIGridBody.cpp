@@ -20,7 +20,7 @@ CGridBodyUI::~CGridBodyUI(void)
 
 LPCTSTR CGridBodyUI::GetClass() const
 {
-	return DUI_CTR_GRIDBODY;
+	return _T("GridBodyUI");
 }
 
 UINT CGridBodyUI::GetControlFlags() const
@@ -201,9 +201,9 @@ SIZE CGridBodyUI::EstimateSize(SIZE szAvailable)
 	return __super::EstimateSize(szAvailable);
 }
 
-bool CGridBodyUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
+bool CGridBodyUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 {
-	return __super::DoPaint(hDC, rcPaint, pStopControl);
+	return __super::DoPaint(pRender, rcPaint, pStopControl);
 }
 
 void CGridBodyUI::LineUp()

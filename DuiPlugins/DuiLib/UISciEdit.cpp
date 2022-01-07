@@ -173,7 +173,7 @@ CSciEditUI::~CSciEditUI(void)
 
 LPCTSTR CSciEditUI::GetClass() const
 {
-	return DUI_CTR_SCIEDIT;
+	return _T("SciEditUI");
 }
 
 LPVOID CSciEditUI::GetInterface(LPCTSTR pstrName)
@@ -353,13 +353,13 @@ CDuiString CSciEditUI::GetText() const
 
 	int code = pThis->sci_GetCodePage();
 
-	LSSTRING_CONVERSION;
+	UISTRING_CONVERSION;
 	CStringA strA;
 	pThis->sci_GetTextAll(strA);
 
 	if(code == SC_CP_UTF8)
-		return LSUTF82T(strA);
-	return LSA2T(strA);
+		return UIUTF82T(strA);
+	return UIA2T(strA);
 }
 
 void CSciEditUI::SetText(LPCTSTR pstrText)
@@ -368,12 +368,12 @@ void CSciEditUI::SetText(LPCTSTR pstrText)
 
 	int code = sci_GetCodePage();
 
-	LSSTRING_CONVERSION;
+	UISTRING_CONVERSION;
 
 	if(code == SC_CP_UTF8)
-		sci_SetText(LST2UTF8(pstrText));
+		sci_SetText(UIT2UTF8(pstrText));
 	else
-		sci_SetText(LST2A(pstrText));
+		sci_SetText(UIT2A(pstrText));
 }
 
 void CSciEditUI::SetViewLineNumber()

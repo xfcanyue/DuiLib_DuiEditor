@@ -20,8 +20,12 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	CListBox m_listBox;
-	CStaticImageView m_staPicture;
+	CStatic m_staPicture;
+	CStdRefPtr<UIRender> m_pRender;
+	CStdRefPtr<UIImage> m_uiImage;
+
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnSelchangeList1();
+	afx_msg void OnPaint();
 };

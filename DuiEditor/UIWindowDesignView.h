@@ -13,7 +13,6 @@ public:
 	virtual CDuiString GetSkinFile() { return _T(""); }
 	virtual LPCTSTR GetWindowClassName(void) const { return _T("UIWindowEx"); }
 
-
 	virtual CPaintManagerUI *GetManager() { return &m_pm; }
 
 	virtual HWND GetSafeHwnd() { return GetHWND(); }
@@ -23,6 +22,7 @@ public:
 	CUITrackerMuliti m_tracker;
 	CContainerUI *m_pDragToControl;
 	CRect m_rcHot;
+	CStdRefPtr<UIRender> m_pRender;
 public:
 	BOOL OnDragingFromToolBox(CPoint point);
 	void OnDragEndFromToolBox();

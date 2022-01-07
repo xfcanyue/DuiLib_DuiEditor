@@ -254,14 +254,14 @@ namespace DuiLib
 
 	void CContainerUI::SetEnabled(bool bEnabled)
 	{
-		if( m_bEnabled == bEnabled ) return;
+		if( IsEnabled() == bEnabled ) return;
 
-		m_bEnabled = bEnabled;
+		m_state.SetEnabled(bEnabled);
 
-		for( int it = 0; it < m_items.GetSize(); it++ ) {
-			static_cast<CControlUI*>(m_items[it])->SetEnabled(m_bEnabled);
+		for( int it = 0; it < m_items.GetSize(); it++ ) 
+		{
+			static_cast<CControlUI*>(m_items[it])->SetEnabled(bEnabled);
 		}
-
 		Invalidate();
 	}
 
@@ -282,12 +282,12 @@ namespace DuiLib
 
 		if( event.Type == UIEVENT_SETFOCUS ) 
 		{
-			m_bFocused = true;
+			SetFocusState(true);
 			return;
 		}
 		if( event.Type == UIEVENT_KILLFOCUS ) 
 		{
-			m_bFocused = false;
+			SetFocusState(false);
 			return;
 		}
 		if( m_pVerticalScrollBar != NULL && m_pVerticalScrollBar->IsVisible() && m_pVerticalScrollBar->IsEnabled() )
@@ -444,7 +444,7 @@ namespace DuiLib
 		int cyLine = GetScrollStepSize();
 		if (cyLine == 0) {
 			cyLine = 8;
-			if( m_pManager ) cyLine = m_pManager->GetDefaultFontInfo()->tm.tmHeight + 8;
+			if( m_pManager ) cyLine = m_pManager->GetFontHeight(-1) + 8;
 		}
 
 		SIZE sz = GetScrollPos();
@@ -457,7 +457,7 @@ namespace DuiLib
 		int cyLine = GetScrollStepSize();
 		if (cyLine == 0) {
 			cyLine = 8;
-			if( m_pManager ) cyLine = m_pManager->GetDefaultFontInfo()->tm.tmHeight + 8;
+			if( m_pManager ) cyLine = m_pManager->GetFontHeight(-1) + 8;
 		}
 
 		SIZE sz = GetScrollPos();
@@ -925,14 +925,14 @@ namespace DuiLib
 		return pResult;
 	}
 
-	bool CContainerUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
+	bool CContainerUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 	{
 		RECT rcTemp = { 0 };
 		if( !::IntersectRect(&rcTemp, &rcPaint, &m_rcItem) ) return true;
 
-		CRenderClip clip;
-		CRenderClip::GenerateClip(hDC, rcTemp, clip);
-		CControlUI::DoPaint(hDC, rcPaint, pStopControl);
+		UIClip clip;
+		clip.GenerateClip(pRender, rcTemp);
+		CControlUI::DoPaint(pRender, rcPaint, pStopControl);
 
 		if( m_items.GetSize() > 0 ) {
 			RECT rcInset = GetInset();
@@ -952,13 +952,13 @@ namespace DuiLib
 					if( !::IntersectRect(&rcTemp, &rcPaint, &pControl->GetPos()) ) continue;
 					if( pControl ->IsFloat() ) {
 						if( !::IntersectRect(&rcTemp, &m_rcItem, &pControl->GetPos()) ) continue;
-						if( !pControl->Paint(hDC, rcPaint, pStopControl) ) return false;
+						if( !pControl->Paint(pRender, rcPaint, pStopControl) ) return false;
 					}
 				}
 			}
 			else {
-				CRenderClip childClip;
-				CRenderClip::GenerateClip(hDC, rcTemp, childClip);
+				UIClip childClip;
+				childClip.GenerateClip(pRender, rcTemp);
 				for( int it = 0; it < m_items.GetSize(); it++ ) {
 					CControlUI* pControl = static_cast<CControlUI*>(m_items[it]);
 					if( pControl == pStopControl ) return false;
@@ -966,13 +966,13 @@ namespace DuiLib
 					if( !::IntersectRect(&rcTemp, &rcPaint, &pControl->GetPos()) ) continue;
 					if( pControl->IsFloat() ) {
 						if( !::IntersectRect(&rcTemp, &m_rcItem, &pControl->GetPos()) ) continue;
-						CRenderClip::UseOldClipBegin(hDC, childClip);
-                        if( !pControl->Paint(hDC, rcPaint, pStopControl) ) return false;
-						CRenderClip::UseOldClipEnd(hDC, childClip);
+						childClip.UseOldClipBegin(pRender);
+                        if( !pControl->Paint(pRender, rcPaint, pStopControl) ) return false;
+						childClip.UseOldClipEnd(pRender);
 					}
 					else {
 						if( !::IntersectRect(&rcTemp, &rc, &pControl->GetPos()) ) continue;
-                        if( !pControl->Paint(hDC, rcPaint, pStopControl) ) return false;
+                        if( !pControl->Paint(pRender, rcPaint, pStopControl) ) return false;
 					}
 				}
 			}
@@ -981,14 +981,14 @@ namespace DuiLib
 		if( m_pVerticalScrollBar != NULL && m_pVerticalScrollBar->IsVisible() ) {
 			if( m_pVerticalScrollBar == pStopControl ) return false;
 			if( ::IntersectRect(&rcTemp, &rcPaint, &m_pVerticalScrollBar->GetPos()) ) {
-				if( !m_pVerticalScrollBar->Paint(hDC, rcPaint, pStopControl) ) return false;
+				if( !m_pVerticalScrollBar->Paint(pRender, rcPaint, pStopControl) ) return false;
 			}
 		}
 
 		if( m_pHorizontalScrollBar != NULL && m_pHorizontalScrollBar->IsVisible() ) {
 			if( m_pHorizontalScrollBar == pStopControl ) return false;
 			if( ::IntersectRect(&rcTemp, &rcPaint, &m_pHorizontalScrollBar->GetPos()) ) {
-				if( !m_pHorizontalScrollBar->Paint(hDC, rcPaint, pStopControl) ) return false;
+				if( !m_pHorizontalScrollBar->Paint(pRender, rcPaint, pStopControl) ) return false;
 			}
 		}
 		return true;

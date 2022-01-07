@@ -7,8 +7,7 @@ namespace DuiLib {
 	//
 
 	class CControlUI;
-	class CRichEditUI;
-	class CIDropTarget;
+	//class CIDropTarget;
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
 	enum UILIB_RESTYPE
@@ -82,7 +81,7 @@ namespace DuiLib {
 #define UIFIND_TOP_FIRST     0x00000010
 #define UIFIND_ME_FIRST      0x80000000
 
-	// Flags used for controlling the paint
+// Flags used for controlling the paint
 #define UISTATE_FOCUSED      0x00000001
 #define UISTATE_SELECTED     0x00000002
 #define UISTATE_DISABLED     0x00000004
@@ -91,63 +90,33 @@ namespace DuiLib {
 #define UISTATE_READONLY     0x00000020
 #define UISTATE_CAPTURED     0x00000040
 
-
-
-	/////////////////////////////////////////////////////////////////////////////////////
-	//
-
-	typedef struct UILIB_API tagTFontInfo
+	typedef struct UILIB_API tagButtonState 
 	{
-		int id;
-		HFONT hFont;
-		CDuiString sFontName;
-		int iSize;
-		bool bBold;
-		bool bUnderline;
-		bool bItalic;
-		bool bDefault;
-		TEXTMETRIC tm;
-	} TFontInfo;
+		tagButtonState() { m_uState = 0; }
 
-	typedef struct UILIB_API tagTImageInfo
-	{
-		HBITMAP hBitmap;
-		LPBYTE pBits;
-		LPBYTE pSrcBits;
-		int nX;
-		int nY;
-		bool bAlpha;
-		bool bUseHSL;
-		CDuiString sResType;
-		DWORD dwMask;
-		int delay;
-	} TImageInfo;
+		bool IsEnabled() const					{ return (m_uState & UISTATE_DISABLED) != UISTATE_DISABLED;					}
+		void SetEnabled(bool bEnable = true)	{ bEnable ? m_uState &= ~UISTATE_DISABLED : m_uState |= UISTATE_DISABLED;	}
 
-	typedef struct UILIB_API tagTDrawInfo
-	{
-		tagTDrawInfo();
-		void Parse(LPCTSTR pStrImage, LPCTSTR pStrModify, CPaintManagerUI *paintManager);
-		void Clear();
+		bool IsFocused() const					{ return (m_uState & UISTATE_FOCUSED) == UISTATE_FOCUSED;					}
+		void SetFocus(bool bFocus)				{ bFocus ? m_uState |= UISTATE_FOCUSED : m_uState &= ~UISTATE_FOCUSED;		}
 
-		CDuiString sDrawString;
-		CDuiString sDrawModify;
-		CDuiString sImageName;
-		CDuiString sResType;
-		RECT rcDest;
-		RECT rcSource;
-		RECT rcCorner;
-		DWORD dwMask;
-		BYTE uFade;
-		bool bHole;
-		bool bTiledX;
-		bool bTiledY;
-		bool bHSL;
-		RECT rcPadding;		//外边距
-		UINT uAlign;		//对齐方式
-		int width;			//SVG的宽度
-		int height;			//SVG的高度
-		DWORD fillcolor;	//SVG的填充颜色
-	} TDrawInfo;
+		bool IsHot() const						{ return (m_uState & UISTATE_HOT) == UISTATE_HOT;							}
+		void SetHot(bool bHot = true)			{ bHot ? m_uState |= UISTATE_HOT : m_uState &= ~UISTATE_HOT;				}
+
+		bool IsCapture() const					{ return (m_uState & UISTATE_CAPTURED) == UISTATE_CAPTURED;					}
+		void SetCapture(bool bCaptured)			{ bCaptured ? m_uState |= UISTATE_CAPTURED : m_uState &= ~UISTATE_CAPTURED;	}
+
+		bool IsPushed() const					{ return (m_uState & UISTATE_PUSHED) == UISTATE_PUSHED;						}
+		void SetPushed(bool bPushed)			{ bPushed ? m_uState |= UISTATE_PUSHED : m_uState &= ~UISTATE_PUSHED;		}
+
+		bool IsSelected() const					{ return (m_uState & UISTATE_SELECTED) == UISTATE_SELECTED;					}
+		void SetSelected(bool bSelected)		{ bSelected ? m_uState |= UISTATE_SELECTED : m_uState &= ~UISTATE_SELECTED;	}
+
+		bool IsReadOnly() const					{ return (m_uState & UISTATE_READONLY) == UISTATE_READONLY;					}
+		void SetReadonly(bool bReadOnly)		{ bReadOnly ? m_uState |= UISTATE_READONLY : m_uState &= ~UISTATE_READONLY;	}
+
+		UINT m_uState;
+	}TButtonState;
 
 	typedef struct UILIB_API tagTPercentInfo
 	{
@@ -164,12 +133,12 @@ namespace DuiLib {
 		DWORD m_dwDefaultLinkFontColor;
 		DWORD m_dwDefaultLinkHoverFontColor;
 		DWORD m_dwDefaultSelectedBkColor;
-		TFontInfo m_DefaultFontInfo;
-		CStdStringPtrMap m_CustomFonts;
-		CStdStringPtrMap m_ImageHash;
-		CStdStringPtrMap m_AttrHash;
-		CStdStringPtrMap m_StyleHash;
-		CStdStringPtrMap m_DrawInfoHash;
+		CStdRefPtr<UIFont> m_DefaultFontInfo;
+		CStdStringPtrMap m_CustomFonts;		//字体
+		CStdStringPtrMap m_ImageHash;		//图像
+		CStdStringPtrMap m_AttrHash;		
+		CStdStringPtrMap m_StyleHash;		//样式表
+		CStdStringPtrMap m_DrawInfoHash;	//绘制
 	} TResInfo;
 
 	// Structure for notifications from the system
@@ -224,7 +193,7 @@ namespace DuiLib {
 		virtual bool ExecuteScript(void *pFun, CControlUI *pControl) = 0;
 		virtual bool ExecuteScript(void *pFun, CControlUI *pControl, TEventUI *ev) = 0;
 		virtual bool ExecuteScript(void *pFun, CControlUI *pControl, TNotifyUI *pMsg) = 0;
-		virtual bool ExecuteScript(void *pFun, CControlUI *pControl, HDC hDC, const RECT& rcPaint, CControlUI* pStopControl) = 0;
+		virtual bool ExecuteScript(void *pFun, CControlUI *pControl, UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl) = 0;
 	};
 	typedef IScriptManager* (__stdcall *CREATE_SCRIPT_ENGINE_INSTANCE)();
 	typedef void (__stdcall *DELETE_SCRIPT_ENGINE_INSTANCE)(IScriptManager *pEngine);
@@ -241,6 +210,7 @@ namespace DuiLib {
 
 	public:
 		void Init(HWND hWnd, LPCTSTR pstrName = NULL);
+		UIRender *Render();
 		bool IsUpdateNeeded() const;
 		void NeedUpdate();
 		void LockUpdate(bool bLock);
@@ -285,6 +255,10 @@ namespace DuiLib {
 		void SetLayeredOpacity(BYTE nOpacity);
 		LPCTSTR GetLayeredImage();
 		void SetLayeredImage(LPCTSTR pstrImage);
+		TDrawInfo *GetLayeredDrawInfo();
+		void SetLayeredChanged(bool bChange);
+		bool IsLayeredChanged() const;
+		bool IsFocusNeeded() const;
 
 		CShadowUI* GetShadow();
 
@@ -293,6 +267,8 @@ namespace DuiLib {
 		void SetGdiplusTextRenderingHint(int trh);
 		int GetGdiplusTextRenderingHint() const;
 
+		static void SetRenderEngineType(emRenderEngine render);
+		static emRenderEngine GetRenderEngineType();
 		static HINSTANCE GetInstance();
 		static CDuiString GetInstancePath();
 		static CDuiString GetCurrentPath();
@@ -310,8 +286,15 @@ namespace DuiLib {
 		static void SetResourceZip(LPCTSTR pstrZip, bool bCachedResourceZip = false, LPCTSTR password = NULL);
 		static void SetResourceType(int nType);
 		static int GetResourceType();
+
 		static bool GetHSL(short* H, short* S, short* L);
-		static void SetHSL(bool bUseHSL, short H, short S, short L); // H:0~360, S:0~200, L:0~200 
+		static void SetHSL(short H=180, short S=100, short L=100); // H:0~360, S:0~200, L:0~200 
+
+		static bool IsUseHSL();
+
+		static void SetForceHSL(bool bForceHSL);
+		static bool IsForceHSL();
+
 		static void ReloadSkin();
 		static CPaintManagerUI* GetPaintManager(LPCTSTR pstrName);
 		static CStdPtrArray* GetPaintManagers();
@@ -333,31 +316,73 @@ namespace DuiLib {
 		void SetDefaultLinkHoverFontColor(DWORD dwColor, bool bShared = false);
 		DWORD GetDefaultSelectedBkColor() const;
 		void SetDefaultSelectedBkColor(DWORD dwColor, bool bShared = false);
-		TFontInfo* GetDefaultFontInfo();
+
+		UIFont* GetDefaultFontInfo();
 		void SetDefaultFont(LPCTSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bShared = false);
 		DWORD GetCustomFontCount(bool bShared = false) const;
+		
+		//从文件中安装字体
 		void AddFontArray(LPCTSTR pstrPath);
-		HFONT AddFont(int id, LPCTSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bShared = false);
-		HFONT GetFont(int id);
-		HFONT GetFont(LPCTSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic);
-		int GetFontIndex(HFONT hFont, bool bShared = false);
-		int GetFontIndex(LPCTSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bShared = false);
-		void RemoveFont(HFONT hFont, bool bShared = false);
-		void RemoveFont(int id, bool bShared = false);
-		void RemoveAllFonts(bool bShared = false);
-		TFontInfo* GetFontInfo(int id);
-		TFontInfo* GetFontInfo(HFONT hFont);
-		TFontInfo* GetFontInfo(int nIndex, bool bShared);
 
-		const TImageInfo* GetImage(LPCTSTR bitmap);
-		const TImageInfo* GetImageEx(LPCTSTR bitmap, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, bool bUseHSL = false, HINSTANCE instance = NULL);
-		const TImageInfo* AddImage(LPCTSTR bitmap, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, bool bUseHSL = false, bool bShared = false, HINSTANCE instance = NULL);
-		const TImageInfo* AddImage(LPCTSTR bitmap, HBITMAP hBitmap, int iWidth, int iHeight, bool bAlpha, bool bShared = false);
+		//增加字体
+		UIFont* AddFont(int id, LPCTSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic, bool bShared = false);
+		
+		//根据字体id获取字体
+		UIFont* GetFont(int id);
+
+		//根据字体数组序号获取字体
+		UIFont* GetFont(int nIndex, bool bShared);
+
+		//根据字体参数获取字体
+		UIFont* GetFont(LPCTSTR pStrFontName, int nSize, bool bBold, bool bUnderline, bool bItalic);
+		
+		//获取字体高度
+		int GetFontHeight(int id);
+		
+		//删除指定字体
+		void RemoveFont(UIFont *uiFont, bool bShared = false);
+
+		//删除指定id字体
+		void RemoveFont(int id, bool bShared = false);
+
+		//删除所有字体
+		void RemoveAllFonts(bool bShared = false);
+
+		//从字体id克隆一个字体
+		UIFont* CloneFont(int id);
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//获取指定名称的bitmap的图片，
+		const UIImage* GetImage(LPCTSTR bitmap);
+
+		//获取图片, bitmap为文件名或资源id
+		const UIImage* GetImageEx(LPCTSTR bitmap, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, bool bUseHSL = false, HINSTANCE instance = NULL);
+		
+		//获取图片, bitmap为文件名或资源id,上一函数的参数简化版.
+		const UIImage* GetImageExX(const TDrawInfo *pDrawInfo, HINSTANCE instance = NULL);
+		
+		//增加图片, bitmap为文件名或资源id 
+		const UIImage* AddImage(LPCTSTR bitmap, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, bool bUseHSL = false, bool bShared = false, HINSTANCE instance = NULL);
+		
+		//增加图片, bitmap为文件名或资源id, 上一函数的参数简化版.
+		const UIImage* AddImageX(const TDrawInfo *pDrawInfo, bool bShared = false, HINSTANCE instance = NULL);
+
+		//增加自定义图片, 若bitmap重复，插入失败。
+		const UIImage* AddImage(LPCTSTR bitmap, HBITMAP hBitmap, bool bAlpha, bool bShared = false);
+
+		//删除指定名称的bitmap的图片，
 		void RemoveImage(LPCTSTR bitmap, bool bShared = false);
+
+		//删除所有图片
 		void RemoveAllImages(bool bShared = false);
+
+		//重新载入共享图片
 		static void ReloadSharedImages();
+
+		//重新载入非共享图片
 		void ReloadImages();
 
+		//
 		const TDrawInfo* GetDrawInfo(LPCTSTR pStrImage, LPCTSTR pStrModify);
 		void RemoveDrawInfo(LPCTSTR pStrImage, LPCTSTR pStrModify);
 		void RemoveAllDrawInfos();
@@ -379,7 +404,7 @@ namespace DuiLib {
 		const CStdStringPtrMap& GetStyles(bool bShared = false) const;
 		void RemoveAllStyle(bool bShared = false);
 
-		const TImageInfo* GetImageString(LPCTSTR pStrImage, LPCTSTR pStrModify = NULL);
+		const UIImage* GetImageString(LPCTSTR pStrImage, LPCTSTR pStrModify = NULL);
 
 		// 初始化拖拽
 		bool InitDragDrop();
@@ -457,7 +482,6 @@ namespace DuiLib {
 
 		CDPI* GetDPIObj();
 		void ResetDPIAssets();
-		void RebuildFont(TFontInfo* pFontInfo);
 		void SetDPI(int iDPI);
 		static void SetAllDPI(int iDPI);
 
@@ -482,15 +506,11 @@ namespace DuiLib {
 		void PostAsyncNotify();
 
 	private:
+		static emRenderEngine m_emRenderEngine;
+		CStdRefPtr<UIRender> m_pRenderEngine;
 		CDuiString m_sName;
 		HWND m_hWndPaint;	//所附加的窗体的句柄
 		HDC m_hDcPaint;
-		HDC m_hDcOffscreen;
-		HDC m_hDcBackground;
-		HBITMAP m_hbmpOffscreen;
-		BYTE* m_pOffscreenBits;
-		HBITMAP m_hbmpBackground;
-		COLORREF* m_pBackgroundBits;
 
 		// 提示信息
 		HWND m_hwndTooltip;
@@ -564,12 +584,13 @@ namespace DuiLib {
 		// 是否开启Gdiplus
 		bool m_bUseGdiplusText;
 		int m_trh;
-		ULONG_PTR m_gdiplusToken;
-		Gdiplus::GdiplusStartupInput *m_pGdiplusStartupInput;
+		static ULONG_PTR m_gdiplusToken;
+		static Gdiplus::GdiplusStartupInput *m_pGdiplusStartupInput;
 
 		// 拖拽
 		bool m_bDragMode;
 		HBITMAP m_hDragBitmap;
+		CStdRefPtr<UIBitmap> m_dragBitmap;
 
 		
 		//
@@ -583,6 +604,7 @@ namespace DuiLib {
 		static int m_nResType;
 		static TResInfo m_SharedResInfo;
 		static bool m_bUseHSL;
+		static bool m_bForceHSL;
 		static short m_H;
 		static short m_S;
 		static short m_L;
@@ -611,7 +633,7 @@ namespace DuiLib {
 		static bool ExecuteScript(void *pFun, CControlUI *pControl);
 		static bool ExecuteScript(void *pFun, CControlUI *pControl, TEventUI *ev);
 		static bool ExecuteScript(void *pFun, CControlUI *pControl, TNotifyUI *pMsg);
-		static bool ExecuteScript(void *pFun, CControlUI *pControl, HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
+		static bool ExecuteScript(void *pFun, CControlUI *pControl, UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl);
 	private:
 		static IScriptManager *m_pSharedScriptEngine;
 		static CREATE_SCRIPT_ENGINE_INSTANCE m_funCreateScriptEngine;

@@ -14,8 +14,8 @@ namespace DuiLib {
 		virtual void GetItemComboTextArray(CControlUI* pCtrl, int iItem, int iSubItem) = 0;
 	};
 
-	class CEditUI;
-	class CComboUI;
+	//class CEditUI;
+	//class CComboUI;
 	class UILIB_API CListExUI : public CListUI, public INotifyUI
 	{
 		DECLARE_DUICONTROL(CListExUI)
@@ -23,12 +23,12 @@ namespace DuiLib {
 	public:
 		CListExUI();
 
-		LPCTSTR GetClass() const;
-		UINT GetControlFlags() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual UINT GetControlFlags() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
 	public: 
-		virtual void DoEvent(TEventUI& event);
+		virtual void DoEvent(TEventUI& event) override;
 
 	public:
 		void InitListCtrl();
@@ -78,57 +78,26 @@ namespace DuiLib {
 	public:
 		CListContainerHeaderItemUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
-		UINT GetControlFlags() const;
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
+		virtual UINT GetControlFlags() const override;
 
-		void SetEnabled(bool bEnable = TRUE); //modify by liqs99 BOOL bEnable ¸Ä³É bool bEnable
+		bool IsHeaderDragEnable() const;
+		void SetHeaderDragEnable(bool bDragable);
 
-		BOOL IsDragable() const;
-		void SetDragable(BOOL bDragable);
-		int GetSepWidth() const;
-		void SetSepWidth(int iWidth);
-		DWORD GetTextStyle() const;
-		void SetTextStyle(UINT uStyle);
-		DWORD GetTextColor() const;
-		void SetTextColor(DWORD dwTextColor);
-		void SetTextPadding(RECT rc);
-		RECT GetTextPadding() const;
-		void SetFont(int index);
-		BOOL IsShowHtml();
-		void SetShowHtml(BOOL bShowHtml = TRUE);
-		LPCTSTR GetNormalImage() const;
-		void SetNormalImage(LPCTSTR pStrImage);
-		LPCTSTR GetHotImage() const;
-		void SetHotImage(LPCTSTR pStrImage);
-		LPCTSTR GetPushedImage() const;
-		void SetPushedImage(LPCTSTR pStrImage);
-		LPCTSTR GetFocusedImage() const;
-		void SetFocusedImage(LPCTSTR pStrImage);
-		LPCTSTR GetSepImage() const;
+		CDuiString GetSepImage() const;
 		void SetSepImage(LPCTSTR pStrImage);
 
-		void DoEvent(TEventUI& event);
-		SIZE EstimateSize(SIZE szAvailable);
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+		virtual void DoEvent(TEventUI& event) override;
+		virtual SIZE EstimateSize(SIZE szAvailable) override;
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 		RECT GetThumbRect(bool bUseNew = false) const;
 
-		void PaintText(HDC hDC);
-		void PaintStatusImage(HDC hDC);
+		virtual void PaintText(UIRender *pRender) override;
+		virtual void PaintStatusImage(UIRender *pRender) override;
 
 	protected:
-		POINT ptLastMouse;
-		BOOL m_bDragable;
-		int m_iSepWidth;
-		DWORD m_dwTextColor;
-		int m_iFont;
-		UINT m_uTextStyle;
-		BOOL m_bShowHtml;
-		RECT m_rcTextPadding;
-		CDuiString m_sNormalImage;
-		CDuiString m_sHotImage;
-		CDuiString m_sPushedImage;
-		CDuiString m_sFocusedImage;
+		bool m_bDragable;
 		CDuiString m_sSepImage;
 		CDuiString m_sSepImageModify;
 
@@ -156,8 +125,8 @@ namespace DuiLib {
 		BOOL GetCheck();
 
 	private:
-		UINT	m_uCheckBoxState;
-		BOOL	m_bChecked;
+		TButtonState	m_uCheckBoxState;
+		BOOL			m_bChecked;
 
 		CDuiString m_sCheckBoxNormalImage;
 		CDuiString m_sCheckBoxHotImage;
@@ -171,7 +140,7 @@ namespace DuiLib {
 		SIZE m_cxyCheckBox;
 
 	public:
-		BOOL DrawCheckBoxImage(HDC hDC, LPCTSTR pStrImage, LPCTSTR pStrModify = NULL);
+		BOOL DrawCheckBoxImage(UIRender *pRender, LPCTSTR pStrImage, LPCTSTR pStrModify = NULL);
 		LPCTSTR GetCheckBoxNormalImage();
 		void SetCheckBoxNormalImage(LPCTSTR pStrImage);
 		LPCTSTR GetCheckBoxHotImage();
@@ -216,20 +185,20 @@ namespace DuiLib {
 		CListTextExtElementUI();
 		~CListTextExtElementUI();
 
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
-		UINT GetControlFlags() const;
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
+		virtual UINT GetControlFlags() const override;
 
-		LPCTSTR GetText(int iIndex) const;
+		CDuiString GetText(int iIndex) const;
 		void SetText(int iIndex, LPCTSTR pstrText);
 
-		void SetOwner(CControlUI* pOwner);
+		virtual void SetOwner(CControlUI* pOwner) override;
 		CDuiString* GetLinkContent(int iIndex);
 
-		void DoEvent(TEventUI& event);
-		SIZE EstimateSize(SIZE szAvailable);
+		virtual void DoEvent(TEventUI& event) override;
+		virtual SIZE EstimateSize(SIZE szAvailable) override;
 
-		void DrawItemText(HDC hDC, const RECT& rcItem);
+		virtual void DrawItemText(UIRender *pRender, const RECT& rcItem) override;
 
 	protected:
 		enum { MAX_LINK = 8 };
@@ -256,10 +225,10 @@ namespace DuiLib {
 		SIZE m_cxyCheckBox;
 
 	public:
-		virtual bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
+		virtual bool DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl);
 		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
-		virtual void PaintStatusImage(HDC hDC);
-		BOOL DrawCheckBoxImage(HDC hDC, LPCTSTR pStrImage, LPCTSTR pStrModify, RECT& rcCheckBox);
+		virtual void PaintStatusImage(UIRender *pRender);
+		BOOL DrawCheckBoxImage(UIRender *pRender, LPCTSTR pStrImage, LPCTSTR pStrModify, RECT& rcCheckBox);
 		LPCTSTR GetCheckBoxNormalImage();
 		void SetCheckBoxNormalImage(LPCTSTR pStrImage);
 		LPCTSTR GetCheckBoxHotImage();

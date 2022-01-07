@@ -36,25 +36,25 @@ namespace DuiLib {
 		virtual ~CContainerUI();
 
 	public:
-		LPCTSTR GetClass() const;
-		LPVOID GetInterface(LPCTSTR pstrName);
+		virtual LPCTSTR GetClass() const override;
+		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-		CControlUI* GetItemAt(int iIndex) const;
-		int GetItemIndex(CControlUI* pControl) const;
-		bool SetItemIndex(CControlUI* pControl, int iIndex);
-		int GetCount() const;
-		bool Add(CControlUI* pControl);
-		bool AddAt(CControlUI* pControl, int iIndex);
-		bool AddAt(CControlUI* pControl,CControlUI* _IndexControl);
-		bool Remove(CControlUI* pControl, bool bDoNotDestroy=false);
-		bool RemoveAt(int iIndex, bool bDoNotDestroy=false);
-		void RemoveAll();
+		virtual CControlUI* GetItemAt(int iIndex) const override;
+		virtual int GetItemIndex(CControlUI* pControl) const override;
+		virtual bool SetItemIndex(CControlUI* pControl, int iIndex) override;
+		virtual int GetCount() const override;
+		virtual bool Add(CControlUI* pControl) override;
+		virtual bool AddAt(CControlUI* pControl, int iIndex) override;
+		virtual bool AddAt(CControlUI* pControl,CControlUI* _IndexControl) override;
+		virtual bool Remove(CControlUI* pControl, bool bDoNotDestroy=false) override;
+		virtual bool RemoveAt(int iIndex, bool bDoNotDestroy=false) override;
+		virtual void RemoveAll() override;
 
-		void DoEvent(TEventUI& event);
-		void SetVisible(bool bVisible = true);
-		void SetInternVisible(bool bVisible = true);
-		void SetEnabled(bool bEnabled);
-		void SetMouseEnabled(bool bEnable = true);
+		virtual void DoEvent(TEventUI& event) override;
+		virtual void SetVisible(bool bVisible = true) override;
+		virtual void SetInternVisible(bool bVisible = true) override;
+		virtual void SetEnabled(bool bEnabled) override;
+		virtual void SetMouseEnabled(bool bEnable = true) override;
 
 		virtual RECT GetInset() const;
 		virtual void SetInset(RECT rcInset); // 设置内边距，相当于设置客户区
@@ -74,15 +74,15 @@ namespace DuiLib {
 		virtual int FindSelectable(int iIndex, bool bForward = true) const;
 
 		RECT GetClientPos() const;
-		virtual SIZE EstimateSize(SIZE szAvailable);
-		void SetPos(RECT rc, bool bNeedInvalidate = true);
-		virtual bool CalcPos(CControlUI *pChildControl, RECT &rcChild); //子控件调用询问父控件，你将会给我分配多大的rect。
-		void Move(SIZE szOffset, bool bNeedInvalidate = true);
-		bool DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl);
+		virtual SIZE EstimateSize(SIZE szAvailable) override;
+		virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
+		virtual bool CalcPos(CControlUI *pChildControl, RECT &rcChild) override; //子控件调用询问父控件，你将会给我分配多大的rect。
+		virtual void Move(SIZE szOffset, bool bNeedInvalidate = true) override;
+		virtual bool DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl) override;
 
-		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 
-		void SetManager(CPaintManagerUI* pManager, CControlUI* pParent, bool bInit = true);
+		virtual void SetManager(CPaintManagerUI* pManager, CControlUI* pParent, bool bInit = true) override;
 		CControlUI* FindControl(FINDCONTROLPROC Proc, LPVOID pData, UINT uFlags);
 
 		bool SetSubControlText(LPCTSTR pstrSubControlName,LPCTSTR pstrText);

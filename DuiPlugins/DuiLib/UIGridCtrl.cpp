@@ -93,9 +93,6 @@ CGridCtrlUI::CGridCtrlUI(void) : m_pWindow(0)
 	m_bViewListNo = true;
 	m_bVirtualGrid = false;
 
-	m_iFont = -1;
-	m_dwTextColor = 0xFF000000;
-
 	m_dwGridBkColor = 0xFFFFFFFF;
 	m_dwGridLineColor = 0xFFc0c0c0;
 	m_bHighLightBkColor = true;
@@ -118,7 +115,7 @@ CGridCtrlUI::~CGridCtrlUI(void)
 
 LPCTSTR CGridCtrlUI::GetClass() const
 {
-	return DUI_CTR_GRIDCTRL;
+	return _T("GridCtrlUI");
 }
 
 LPVOID CGridCtrlUI::GetInterface(LPCTSTR pstrName)
@@ -420,20 +417,6 @@ void CGridCtrlUI::SetFont(int index)
 	}
 }
 
-int CGridCtrlUI::GetFont() const
-{
-	return m_iFont;
-}
-
-void CGridCtrlUI::SetTextColor(DWORD dwTextColor)
-{
-	m_dwTextColor = dwTextColor;
-}
-
-DWORD CGridCtrlUI::GetTextColor() const
-{
-	return m_dwTextColor;
-}
 
 void CGridCtrlUI::SetVirtualGrid(bool bVirtual)
 {

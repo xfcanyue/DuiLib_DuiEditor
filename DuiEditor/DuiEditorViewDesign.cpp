@@ -701,7 +701,7 @@ void CDuiEditorViewDesign::OnEditGenerateCode_UiCommand()
 		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
 
 		CString strText;
-		strText.Format(_T("UI_COMMAND(_T(\"%s\"), On_);"), sControlName);
+		strText.Format(_T("UI_COMMAND(_T(\"%s\"), on_%s);"), sControlName, sControlName);
 		strMuiltiText += _T("\r\n");
 		strMuiltiText += strText;
 	}
@@ -1640,21 +1640,23 @@ void CDuiEditorViewDesign::OnUpdateSetDPI(CCmdUI *pCmdUI)
 
 void CDuiEditorViewDesign::OnFileSaveTemplate()
 {
-	CImage image;
+	CStdRefPtr<UIRender> pRender = MakeRefPtr<UIRender>(UIGlobal::CreateRenderTarget());
+	pRender->Init(GetUIManager()->GetManager());
 	CControlUI *pRoot = GetUIManager()->GetManager()->GetRoot();
 	CSize szForm = GetUIManager()->GetManager()->GetInitSize();
-	image.Create(szForm.cx, szForm.cy, 32);
-	CRect rcPaint(0,0,szForm.cx,szForm.cy);
-	pRoot->DoPaint(image.GetDC(), rcPaint, NULL);
+	pRender->Resize(szForm.cx, szForm.cy);
 
+	CRect rcPaint(0,0,szForm.cx,szForm.cy);
+	pRoot->Paint(pRender, rcPaint, NULL);
 
 	CDlgTemplateSave dlg;
 	dlg.m_pDoc = GetUIManager()->GetDocument();
-	dlg.m_staPicture.SetPreviewImage(image);
-	image.ReleaseDC();
+
+	dlg.m_img.Create(rcPaint.Width(), rcPaint.Height(), 32);
+	::BitBlt(dlg.m_img.GetDC(), 0, 0, rcPaint.Width(), rcPaint.Height(), pRender->GetDC(), 0, 0, SRCCOPY);
+	dlg.m_img.ReleaseDC();
 
 	dlg.DoModal();
-
 }
 
 
@@ -1954,14 +1956,14 @@ void CDuiEditorViewDesign::UpdateFontPropertyMenu(CCmdUI *pCmdUI, UINT uFontType
 	if(!nodeAttr) return;
 
 	UINT nID = id_font_begin;
-	tagTFontInfo *pDefaultFont = (TFontInfo *)GetUIManager()->GetManager()->GetDefaultFontInfo();
+	UIFont *pDefaultFont = (UIFont *)GetUIManager()->GetManager()->GetDefaultFontInfo();
 	if(pDefaultFont)
 	{
 		CString sMenuFontName;
-		sMenuFontName.Format(_T("д╛хо %s size=%d "), pDefaultFont->sFontName.GetData(), pDefaultFont->iSize);
-		if(pDefaultFont->bBold) sMenuFontName += _T("Bold ");
-		if(pDefaultFont->bUnderline) sMenuFontName += _T("Underline ");
-		if(pDefaultFont->bItalic) sMenuFontName += _T("Italic ");
+		sMenuFontName.Format(_T("д╛хо %s size=%d "), pDefaultFont->GetFontName(), pDefaultFont->GetSize());
+		if(pDefaultFont->IsBold()) sMenuFontName += _T("Bold ");
+		if(pDefaultFont->IsUnderline()) sMenuFontName += _T("Underline ");
+		if(pDefaultFont->IsItalic()) sMenuFontName += _T("Italic ");
 
 		pMenu->InsertMenu(nID, MF_STRING|MF_BYCOMMAND, nID, sMenuFontName);
 
@@ -1977,12 +1979,12 @@ void CDuiEditorViewDesign::UpdateFontPropertyMenu(CCmdUI *pCmdUI, UINT uFontType
 
 	for (int i=0; i<nFont; i++)
 	{
-		TFontInfo *pFontInfo = pManager->GetFontInfo(i, false);
+		UIFont *pFontInfo = pManager->GetFont(i, false);
 		CString sMenuFontName;
-		sMenuFontName.Format(_T("id=%d %s size=%d "), pFontInfo->id, pFontInfo->sFontName.GetData(), pFontInfo->iSize);
-		if(pFontInfo->bBold) sMenuFontName += _T("Bold ");
-		if(pFontInfo->bUnderline) sMenuFontName += _T("Underline ");
-		if(pFontInfo->bItalic) sMenuFontName += _T("Italic ");
+		sMenuFontName.Format(_T("id=%d %s size=%d "), pFontInfo->GetId(), pFontInfo->GetFontName(), pFontInfo->GetSize());
+		if(pFontInfo->IsBold()) sMenuFontName += _T("Bold ");
+		if(pFontInfo->IsUnderline()) sMenuFontName += _T("Underline ");
+		if(pFontInfo->IsItalic()) sMenuFontName += _T("Italic ");
 
 		pMenu->InsertMenu(nID, MF_STRING|MF_BYCOMMAND, nID, sMenuFontName);
 
@@ -1998,12 +2000,12 @@ void CDuiEditorViewDesign::UpdateFontPropertyMenu(CCmdUI *pCmdUI, UINT uFontType
 
 	for (int i=0; i<nFontShared; i++)
 	{
-		TFontInfo *pFontInfo = pManager->GetFontInfo(i, true);
+		UIFont *pFontInfo = pManager->GetFont(i, true);
 		CString sMenuFontName;
-		sMenuFontName.Format(_T("id=%d %s size=%d "), pFontInfo->id, pFontInfo->sFontName.GetData(), pFontInfo->iSize);
-		if(pFontInfo->bBold) sMenuFontName += _T("Bold ");
-		if(pFontInfo->bUnderline) sMenuFontName += _T("Underline ");
-		if(pFontInfo->bItalic) sMenuFontName += _T("Italic ");
+		sMenuFontName.Format(_T("id=%d %s size=%d "), pFontInfo->GetId(), pFontInfo->GetFontName(), pFontInfo->GetSize());
+		if(pFontInfo->IsBold()) sMenuFontName += _T("Bold ");
+		if(pFontInfo->IsUnderline()) sMenuFontName += _T("Underline ");
+		if(pFontInfo->IsItalic()) sMenuFontName += _T("Italic ");
 		sMenuFontName += _T("Shared");
 
 		pMenu->InsertMenu(nID, MF_STRING|MF_BYCOMMAND, nID, sMenuFontName);
@@ -2055,7 +2057,7 @@ BOOL CDuiEditorViewDesign::OnFontListRange(UINT uID)
 	if(it == m_mapFontMenu.end()) return FALSE;
 
 	tagFontMenu *pFontMenu = it->second;
-	int iFont = pFontMenu->pFontInfo->bDefault ? -1 : pFontMenu->pFontInfo->id; 
+	int iFont = pFontMenu->pFontInfo->IsDefault() ? -1 : pFontMenu->pFontInfo->GetId(); 
 
 	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
 	for (int i=0; i<GetUIManager()->GetUiTracker()->m_arrTracker.GetSize(); i++)
@@ -2087,7 +2089,7 @@ void CDuiEditorViewDesign::OnUpdateFontListRange(CCmdUI *pCmdUI)
 		return;
 
 	tagFontMenu *pFontMenu = it->second;
-	int iFont = pFontMenu->pFontInfo->bDefault ? -1 : pFontMenu->pFontInfo->id; 
+	int iFont = pFontMenu->pFontInfo->IsDefault() ? -1 : pFontMenu->pFontInfo->GetId(); 
 
 	CSciUndoBlock lock(GetUIManager()->GetCodeView()->GetSciWnd());
 	for (int i=0; i<GetUIManager()->GetUiTracker()->m_arrTracker.GetSize(); i++)

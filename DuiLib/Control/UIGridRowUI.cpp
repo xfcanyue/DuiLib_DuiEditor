@@ -20,7 +20,7 @@ CGridRowUI::~CGridRowUI(void)
 
 LPCTSTR CGridRowUI::GetClass() const
 {
-	return DUI_CTR_GRIDROW;
+	return _T("GridRowUI");
 }
 
 UINT CGridRowUI::GetControlFlags() const
@@ -56,7 +56,7 @@ void CGridRowUI::Selected(bool bSelected, bool bTriggerEvent)
 
 }
 
-bool CGridRowUI::IsHot()
+bool CGridRowUI::IsHotState() const
 {
 	if(!GetOwner() || !GetOwner()->IsListMode()) return false;
 	CGridUI *pGrid = (CGridUI *)GetOwner();
@@ -113,59 +113,39 @@ void CGridRowUI::DoEvent(TEventUI& event)
 {
 	if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
 		if( m_pParent != NULL ) m_pParent->DoEvent(event);
-		else CHorizontalLayoutUI::DoEvent(event);
+		else __super::DoEvent(event);
 		return;
 	}
 
-	CHorizontalLayoutUI::DoEvent(event);
+	__super::DoEvent(event);
 }
 
-void CGridRowUI::PaintBkColor(HDC hDC)
+void CGridRowUI::PaintBkColor(UIRender *pRender)
 {
-	if(IsSelected() || IsFocused())
-	{
-		if(m_dwSelectedBkColor != 0) {
-			CRenderEngine::DrawColor(hDC, m_rcItem, GetAdjustColor(m_dwSelectedBkColor));
-			return;
-		}
-	}
-	else if( !IsEnabled() ) {
-		if(m_dwDisabledBkColor != 0) {
-			CRenderEngine::DrawColor(hDC, m_rcItem, GetAdjustColor(m_dwDisabledBkColor));
-			return;
-		}
-	}
-	else if( (m_uButtonState & UISTATE_PUSHED) != 0 ) {
-		if(m_dwPushedBkColor != 0) {
-			CRenderEngine::DrawColor(hDC, m_rcItem, GetAdjustColor(m_dwPushedBkColor));
-			return;
-		}
-	}
-	else if( IsHot() != 0 ) {
-		if(m_dwHotBkColor != 0) {
-			CRenderEngine::DrawColor(hDC, m_rcItem, GetAdjustColor(m_dwHotBkColor));
-			return;
-		}
-	}
+	DWORD dwBackColor = 0;
 
-	if( m_dwBackColor != 0 ) {
-		bool bVer = (m_sGradient.CompareNoCase(_T("hor")) != 0);
-		if( m_dwBackColor2 != 0 ) {
-			if( m_dwBackColor3 != 0 ) {
-				RECT rc = m_rcItem;
-				rc.bottom = (rc.bottom + rc.top) / 2;
-				CRenderEngine::DrawGradient(hDC, rc, GetAdjustColor(m_dwBackColor), GetAdjustColor(m_dwBackColor2), bVer, 8);
-				rc.top = rc.bottom;
-				rc.bottom = m_rcItem.bottom;
-				CRenderEngine::DrawGradient(hDC, rc, GetAdjustColor(m_dwBackColor2), GetAdjustColor(m_dwBackColor3), bVer, 8);
-			}
-			else {
-				CRenderEngine::DrawGradient(hDC, m_rcItem, GetAdjustColor(m_dwBackColor), GetAdjustColor(m_dwBackColor2), bVer, 16);
-			}
-		}
-		else if( m_dwBackColor >= 0xFF000000 ) CRenderEngine::DrawColor(hDC, m_rcItem, GetAdjustColor(m_dwBackColor));
-		else CRenderEngine::DrawColor(hDC, m_rcItem, GetAdjustColor(m_dwBackColor));
-	}
+	if(dwBackColor == 0 && !IsEnabled() && GetDisabledBkColor() != 0) 
+		dwBackColor = GetDisabledBkColor();
+
+	if(dwBackColor == 0 && (IsSelected() || IsFocused()) && GetSelectBkColor() != 0)
+		dwBackColor = GetSelectBkColor();
+
+	if(dwBackColor == 0 && IsPushedState() && GetPushedBkColor() != 0)
+		dwBackColor = GetPushedBkColor();
+
+	if(dwBackColor == 0 && IsHotState() && GetHotBkColor() != 0)
+		dwBackColor = m_dwHotBkColor;
+
+	if(dwBackColor == 0)
+		dwBackColor = GetBkColor();
+
+	if(dwBackColor == 0) return;
+
+	pRender->DrawBackColor(m_rcItem, CDuiSize(0,0), 
+		GetAdjustColor(dwBackColor), 
+		GetAdjustColor(GetBkColor2()), 
+		GetAdjustColor(GetBkColor3()), 
+		GetGradient());
 }
 
 }

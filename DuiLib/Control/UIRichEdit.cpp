@@ -43,9 +43,9 @@ namespace DuiLib {
 
 		//modify by liqs99 
 		CRichEditUI::CRichEditUI() : m_pTwh(NULL), m_bVScrollBarFixing(false), m_bWantTab(true), m_bWantReturn(false), 
-		m_bWantCtrlReturn(false), m_bTransparent(true), m_bRich(false), m_bReadOnly(false), m_bWordWrap(false), m_bParagraphIndent(false), m_dwTextColor(0), m_iFont(-1), 
+		m_bWantCtrlReturn(false), m_bTransparent(true), m_bRich(false), m_bWordWrap(false), m_bParagraphIndent(false), 
 		m_iLimitText(cInitTextMax), m_lTwhStyle(ES_LEFT|ES_VERTICAL|ECO_VERTICAL), m_bDrawCaret(true), m_bInited(false), m_chLeadByte(0),
-		m_dwTipValueColor(0xFFBAC0C5), m_uTipValueAlign(DT_SINGLELINE | DT_LEFT), m_uTextStyle(DT_TOP), 
+		m_dwTipValueColor(0xFFBAC0C5), m_uTipValueAlign(DT_SINGLELINE | DT_LEFT), 
 		m_bReturnFixedWidth(true), m_bReturnFixedHeight(true)
 	{
 #ifndef _UNICODE
@@ -54,6 +54,7 @@ namespace DuiLib {
 		m_fAccumulateDBC= false;
 #endif
 		::ZeroMemory(&m_rcTextPadding, sizeof(m_rcTextPadding));
+		 m_uTextStyle = DT_TOP;
 	}
 
 	CRichEditUI::~CRichEditUI()
@@ -66,7 +67,7 @@ namespace DuiLib {
 
 	LPCTSTR CRichEditUI::GetClass() const
 	{
-		return DUI_CTR_RICHEDIT;
+		return _T("RichEditUI");
 	}
 
 	LPVOID CRichEditUI::GetInterface(LPCTSTR pstrName)
@@ -145,15 +146,11 @@ namespace DuiLib {
 		if( m_pTwh ) m_pTwh->SetRichTextFlag(bRich);
 	}
 
-	bool CRichEditUI::IsReadOnly()
-	{
-		return m_bReadOnly;
-	}
-
 	void CRichEditUI::SetReadOnly(bool bReadOnly)
 	{
+		if(IsReadOnly() == bReadOnly) return;
+		CControlUI::SetReadOnly(bReadOnly);
 		m_lTwhStyle |= ES_READONLY; 
-		m_bReadOnly = bReadOnly;
 		if( m_pTwh ) m_pTwh->SetReadOnly(bReadOnly);
 	}
 
@@ -185,16 +182,16 @@ namespace DuiLib {
 		}
 	}
 
-	int CRichEditUI::GetFont()
-	{
-		return m_iFont;
-	}
-
 	void CRichEditUI::SetFont(int index)
 	{
 		m_iFont = index;
-		if( m_pTwh ) {
-			m_pTwh->SetFont(GetManager()->GetFont(m_iFont));
+		if( m_pTwh && GetManager()) 
+		{
+			UIFont *pFont = GetManager()->GetFont(m_iFont);
+			if(pFont)
+			{
+				m_pTwh->SetFont(pFont->GetHFont(GetManager()));
+			}
 		}
 	}
 
@@ -226,14 +223,9 @@ namespace DuiLib {
 		m_lTwhStyle = lStyle;
 	}
 
-	DWORD CRichEditUI::GetTextColor()
-	{
-		return m_dwTextColor;
-	}
-
 	void CRichEditUI::SetTextColor(DWORD dwTextColor)
 	{
-		m_dwTextColor = dwTextColor;
+		__super::SetTextColor(dwTextColor);
 		if( m_pTwh ) {
 			m_pTwh->SetColor(dwTextColor);
 		}
@@ -749,7 +741,7 @@ namespace DuiLib {
 			m_pTwh->OnTxInPlaceActivate(NULL);
 			m_pManager->AddMessageFilter(this);
 			if( m_pManager->IsLayered() ) m_pManager->SetTimer(this, DEFAULT_TIMERID, ::GetCaretBlinkTime());
-			if (!m_bEnabled) {
+			if (!IsEnabled()) {
 				m_pTwh->SetColor(m_pManager->GetDefaultDisabledColor());
 			}
 		}
@@ -953,7 +945,7 @@ namespace DuiLib {
 				m_pTwh->OnTxInPlaceActivate(NULL);
 				m_pTwh->GetTextServices()->TxSendMessage(WM_SETFOCUS, 0, 0, 0);
 			}
-			m_bFocused = true;
+			SetFocusState(true);
 			Invalidate();
 			return;
 		}
@@ -962,7 +954,7 @@ namespace DuiLib {
 				m_pTwh->OnTxInPlaceActivate(NULL);
 				m_pTwh->GetTextServices()->TxSendMessage(WM_KILLFOCUS, 0, 0, 0);
 			}
-			m_bFocused = false;
+			SetFocusState(false);
 			Invalidate();
 			return;
 		}
@@ -1133,19 +1125,20 @@ namespace DuiLib {
 		//add by liqs99, 实现单行时RichEdit垂直居中
 		if(!IsMultiLine())
 		{
-			if(m_uTextStyle & DT_TOP)
+			if((m_uTextStyle & DT_TOP) == DT_TOP)
 			{
-
+				SIZE sz = GetManager()->Render()->GetTextSize(_T("A"), GetFont(), 0);
+				rc.top += (rc.bottom-rc.top-sz.cy) / 2;
 			}
-			else if(m_uTextStyle & DT_CENTER)
+			else if((m_uTextStyle & DT_VCENTER) == DT_VCENTER)
 			{
-				SIZE sz = CRenderEngine::GetTextSize(GetManager()->GetPaintDC(), GetManager(), _T("A"), GetFont(), 0);
+				SIZE sz = GetManager()->Render()->GetTextSize(_T("A"), GetFont(), 0);
 				rc.top += (rc.bottom-rc.top-sz.cy) / 2;
 				rc.bottom -= (rc.bottom-rc.top-sz.cy) / 2;
 			}
-			else if(m_uTextStyle & DT_BOTTOM)
+			else if((m_uTextStyle & DT_BOTTOM) == DT_BOTTOM)
 			{
-				SIZE sz = CRenderEngine::GetTextSize(GetManager()->GetPaintDC(), GetManager(), _T("A"), GetFont(), 0);
+				SIZE sz = GetManager()->Render()->GetTextSize(_T("A"), GetFont(), 0);
 				rc.top += rc.bottom-rc.top- sz.cy;
 			}
 		}
@@ -1261,14 +1254,14 @@ namespace DuiLib {
 		}
 	}
 
-	bool CRichEditUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
+	bool CRichEditUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 	{
 		RECT rcTemp = { 0 };
 		if( !::IntersectRect(&rcTemp, &rcPaint, &m_rcItem) ) return true;
 
-		CRenderClip clip;
-		CRenderClip::GenerateClip(hDC, rcTemp, clip);
-		CControlUI::DoPaint(hDC, rcPaint, pStopControl);
+		UIClip clip;
+		clip.GenerateClip(pRender, rcTemp);
+		CControlUI::DoPaint(pRender, rcPaint, pStopControl);
 
 		if( m_pTwh ) {
 			RECT rc;
@@ -1280,7 +1273,7 @@ namespace DuiLib {
 				/*-1*/0,				// Lindex
 				NULL,					// Info for drawing optimazation
 				NULL,					// target device information
-				hDC,			        // Draw device HDC
+				pRender->GetDC(),	   // Draw device HDC
 				NULL, 				   	// Target device HDC
 				(RECTL*)&rc,			// Bounding client rectangle
 				NULL, 		            // Clipping rectangle for metafiles
@@ -1325,13 +1318,13 @@ namespace DuiLib {
 					if( !::IntersectRect(&rcTemp, &rcPaint, &pControl->GetPos()) ) continue;
 					if( pControl->IsFloat() ) {
 						if( !::IntersectRect(&rcTemp, &m_rcItem, &pControl->GetPos()) ) continue;
-						if( !pControl->Paint(hDC, rcPaint, pStopControl) ) return false;
+						if( !pControl->Paint(pRender, rcPaint, pStopControl) ) return false;
 					}
 				}
 			}
 			else {
-				CRenderClip childClip;
-				CRenderClip::GenerateClip(hDC, rcTemp, childClip);
+				UIClip childClip;
+				childClip.GenerateClip(pRender, rcTemp);
 				for( int it = 0; it < m_items.GetSize(); it++ ) {
 					CControlUI* pControl = static_cast<CControlUI*>(m_items[it]);
 					if( pControl == pStopControl ) return false;
@@ -1339,13 +1332,13 @@ namespace DuiLib {
 					if( !::IntersectRect(&rcTemp, &rcPaint, &pControl->GetPos()) ) continue;
 					if( pControl->IsFloat() ) {
 						if( !::IntersectRect(&rcTemp, &m_rcItem, &pControl->GetPos()) ) continue;
-						CRenderClip::UseOldClipBegin(hDC, childClip);
-						if( !pControl->Paint(hDC, rcPaint, pStopControl) ) return false;
-						CRenderClip::UseOldClipEnd(hDC, childClip);
+						childClip.UseOldClipBegin(pRender);
+						if( !pControl->Paint(pRender, rcPaint, pStopControl) ) return false;
+						childClip.UseOldClipEnd(pRender);
 					}
 					else {
 						if( !::IntersectRect(&rcTemp, &rc, &pControl->GetPos()) ) continue;
-						if( !pControl->Paint(hDC, rcPaint, pStopControl) ) return false;
+						if( !pControl->Paint(pRender, rcPaint, pStopControl) ) return false;
 					}
 				}
 			}
@@ -1356,7 +1349,7 @@ namespace DuiLib {
 			::GetCaretPos(&ptCaret);
 			if( ::PtInRect(&m_rcItem, ptCaret) ) {
 				RECT rcCaret = { ptCaret.x, ptCaret.y, ptCaret.x, ptCaret.y + m_pTwh->GetCaretHeight() };
-				CRenderEngine::DrawLine(hDC, rcCaret, m_pTwh->GetCaretWidth(), 0xFF000000);
+				pRender->DrawLine(rcCaret, m_pTwh->GetCaretWidth(), 0xFF000000);
 			}
 		}
 
@@ -1364,7 +1357,7 @@ namespace DuiLib {
 			if( m_pVerticalScrollBar == pStopControl ) return false;
 			if (m_pVerticalScrollBar->IsVisible()) {
 				if( ::IntersectRect(&rcTemp, &rcPaint, &m_pVerticalScrollBar->GetPos()) ) {
-					if( !m_pVerticalScrollBar->Paint(hDC, rcPaint, pStopControl) ) return false;
+					if( !m_pVerticalScrollBar->Paint(pRender, rcPaint, pStopControl) ) return false;
 				}
 			}
 		}
@@ -1373,13 +1366,13 @@ namespace DuiLib {
 			if( m_pHorizontalScrollBar == pStopControl ) return false;
 			if (m_pHorizontalScrollBar->IsVisible()) {
 				if( ::IntersectRect(&rcTemp, &rcPaint, &m_pHorizontalScrollBar->GetPos()) ) {
-					if( !m_pHorizontalScrollBar->Paint(hDC, rcPaint, pStopControl) ) return false;
+					if( !m_pHorizontalScrollBar->Paint(pRender, rcPaint, pStopControl) ) return false;
 				}
 			}
 		}
 		// 绘制提示文字
 		CDuiString sDrawText = GetText();
-		if(sDrawText.IsEmpty() && !m_bFocused) {
+		if(sDrawText.IsEmpty() && !IsFocused()) {
 			DWORD dwTextColor = GetTipValueColor();
 			CDuiString sTipValue = GetTipValue();
 			RECT rc = m_rcItem;
@@ -1390,64 +1383,9 @@ namespace DuiLib {
 			UINT uTextAlign = GetTipValueAlign();
 			if(IsMultiLine()) uTextAlign |= DT_TOP;
 			else uTextAlign |= DT_VCENTER;
-			CRenderEngine::DrawText(hDC, m_pManager, rc, sTipValue, dwTextColor, m_iFont, uTextAlign);
+			pRender->DrawText(rc, GetTextPadding(), sTipValue, dwTextColor, m_iFont, uTextAlign);
 		}
 		return true;
-	}
-
-	LPCTSTR CRichEditUI::GetNormalImage()
-	{
-		return m_sNormalImage;
-	}
-
-	void CRichEditUI::SetNormalImage(LPCTSTR pStrImage)
-	{
-		m_sNormalImage = pStrImage;
-		Invalidate();
-	}
-
-	LPCTSTR CRichEditUI::GetHotImage()
-	{
-		return m_sHotImage;
-	}
-
-	void CRichEditUI::SetHotImage(LPCTSTR pStrImage)
-	{
-		m_sHotImage = pStrImage;
-		Invalidate();
-	}
-
-	LPCTSTR CRichEditUI::GetFocusedImage()
-	{
-		return m_sFocusedImage;
-	}
-
-	void CRichEditUI::SetFocusedImage(LPCTSTR pStrImage)
-	{
-		m_sFocusedImage = pStrImage;
-		Invalidate();
-	}
-
-	LPCTSTR CRichEditUI::GetDisabledImage()
-	{
-		return m_sDisabledImage;
-	}
-
-	void CRichEditUI::SetDisabledImage(LPCTSTR pStrImage)
-	{
-		m_sDisabledImage = pStrImage;
-		Invalidate();
-	}
-
-	RECT CRichEditUI::GetTextPadding() const
-	{
-		return m_rcTextPadding;
-	}
-
-	void CRichEditUI::SetTextPadding(RECT rc)
-	{
-		m_rcTextPadding = rc;
-		Invalidate();
 	}
 
 	void CRichEditUI::SetTipValue( LPCTSTR pStrTipValue )
@@ -1455,7 +1393,7 @@ namespace DuiLib {
 		m_sTipValue	= pStrTipValue;
 	}
 
-	LPCTSTR CRichEditUI::GetTipValue()
+	CDuiString CRichEditUI::GetTipValue()
 	{
 		if (IsResourceText()) 
 			return CResourceManager::GetInstance()->GetText(m_sTipValue);
@@ -1493,60 +1431,6 @@ namespace DuiLib {
 	UINT CRichEditUI::GetTipValueAlign()
 	{
 		return m_uTipValueAlign;
-	}
-
-	void CRichEditUI::PaintBkColor(HDC hDC)
-	{
-		if( IsFocused() ) m_uButtonState |= UISTATE_FOCUSED;
-		else m_uButtonState &= ~ UISTATE_FOCUSED;
-		if( !IsEnabled() ) m_uButtonState |= UISTATE_DISABLED;
-		else m_uButtonState &= ~ UISTATE_DISABLED;
-
-		if( (m_uButtonState & UISTATE_FOCUSED) != 0 ) {
-			if(m_dwFocusBkColor != 0) {
-				CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwFocusBkColor));
-				return;
-			}
-		}
-		else if( (m_uButtonState & UISTATE_HOT ) != 0 ) {
-			if(m_dwHotBkColor != 0) {
-				CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwHotBkColor));
-				return;
-			}
-		}
-		return __super::PaintBkColor(hDC);
-	}
-
-	void CRichEditUI::PaintStatusImage(HDC hDC)
-	{
-		if( IsFocused() ) m_uButtonState |= UISTATE_FOCUSED;
-		else m_uButtonState &= ~ UISTATE_FOCUSED;
-		if( !IsEnabled() ) m_uButtonState |= UISTATE_DISABLED;
-		else m_uButtonState &= ~ UISTATE_DISABLED;
-
-		if( (m_uButtonState & UISTATE_DISABLED) != 0 ) {
-			if( !m_sDisabledImage.IsEmpty() ) {
-				if( !DrawImage(hDC, (LPCTSTR)m_sDisabledImage) ) {}
-				else return;
-			}
-		}
-		else if( (m_uButtonState & UISTATE_FOCUSED) != 0 ) {
-			if( !m_sFocusedImage.IsEmpty() ) {
-				if( !DrawImage(hDC, (LPCTSTR)m_sFocusedImage) ) {}
-				else return;
-			}
-		}
-		else if( (m_uButtonState & UISTATE_HOT ) != 0 ) {
-			if( !m_sHotImage.IsEmpty() ) {
-				if( !DrawImage(hDC, (LPCTSTR)m_sHotImage) ) {}
-				else return;
-			}
-		}
-
-		if( !m_sNormalImage.IsEmpty() ) {
-			if( !DrawImage(hDC, (LPCTSTR)m_sNormalImage) ) {}
-			else return;
-		}
 	}
 
 	void CRichEditUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
@@ -1587,68 +1471,10 @@ namespace DuiLib {
 		else if( _tcscmp(pstrName, _T("multiline")) == 0 ) {
 			if( _tcscmp(pstrValue, _T("false")) == 0 ) m_lTwhStyle &= ~ES_MULTILINE;
 		}
-		else if( _tcscmp(pstrName, _T("readonly")) == 0 ) 
-		{
-			//if( _tcscmp(pstrValue, _T("true")) == 0 ) { m_lTwhStyle |= ES_READONLY; m_bReadOnly = true; }
-			SetReadOnly(_tcscmp(pstrValue, _T("true")) == 0);
-		}
 		else if( _tcscmp(pstrName, _T("password")) == 0 ) {
 			if( _tcscmp(pstrValue, _T("true")) == 0 ) m_lTwhStyle |= ES_PASSWORD;
 		}
-		else if( _tcscmp(pstrName, _T("align")) == 0 ) {
-			if( _tcsstr(pstrValue, _T("left")) != NULL ) {
-				m_lTwhStyle &= ~(ES_CENTER | ES_RIGHT);
-				m_lTwhStyle |= ES_LEFT;
-			}
-			if( _tcsstr(pstrValue, _T("center")) != NULL ) {
-				m_lTwhStyle &= ~(ES_LEFT | ES_RIGHT);
-				m_lTwhStyle |= ES_CENTER;
-			}
-			if( _tcsstr(pstrValue, _T("right")) != NULL ) {
-				m_lTwhStyle &= ~(ES_LEFT | ES_CENTER);
-				m_lTwhStyle |= ES_RIGHT;
-			}
-		}
-
-		//////////////////////////////////////////////////////////////////////////
-		//add by liqs99
-		else if( _tcscmp(pstrName, _T("valign")) == 0 ) {
-			if( _tcsstr(pstrValue, _T("top")) != NULL ) {
-				m_uTextStyle &= ~(DT_CENTER | DT_RIGHT);
-				m_uTextStyle |= DT_TOP;
-			}
-			if( _tcsstr(pstrValue, _T("center")) != NULL ) {
-				m_uTextStyle &= ~(DT_TOP | DT_BOTTOM);
-				m_uTextStyle |= DT_CENTER;
-			}
-			if( _tcsstr(pstrValue, _T("bottom")) != NULL ) {
-				m_uTextStyle &= ~(DT_TOP | DT_CENTER);
-				m_uTextStyle |= DT_BOTTOM;
-			}
-		}
-		//////////////////////////////////////////////////////////////////////////
-		else if( _tcscmp(pstrName, _T("font")) == 0 ) SetFont(_ttoi(pstrValue));
-		else if( _tcscmp(pstrName, _T("textcolor")) == 0 ) {
-			while( *pstrValue > _T('\0') && *pstrValue <= _T(' ') ) pstrValue = ::CharNext(pstrValue);
-			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
-			LPTSTR pstr = NULL;
-			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
-			SetTextColor(clrColor);
-		}
 		else if( _tcsicmp(pstrName, _T("maxchar")) == 0 ) SetLimitText(_ttoi(pstrValue));
-		else if( _tcsicmp(pstrName, _T("normalimage")) == 0 ) SetNormalImage(pstrValue);
-		else if( _tcsicmp(pstrName, _T("hotimage")) == 0 ) SetHotImage(pstrValue);
-		else if( _tcsicmp(pstrName, _T("focusedimage")) == 0 ) SetFocusedImage(pstrValue);
-		else if( _tcsicmp(pstrName, _T("disabledimage")) == 0 ) SetDisabledImage(pstrValue);
-		else if( _tcsicmp(pstrName, _T("textpadding")) == 0 ) {
-			RECT rcTextPadding = { 0 };
-			LPTSTR pstr = NULL;
-			rcTextPadding.left = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
-			rcTextPadding.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
-			rcTextPadding.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);    
-			rcTextPadding.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);    
-			SetTextPadding(rcTextPadding);
-		}
 		else if( _tcsicmp(pstrName, _T("tipvalue")) == 0 ) SetTipValue(pstrValue);
 		else if( _tcsicmp(pstrName, _T("tipvaluecolor")) == 0 ) SetTipValueColor(pstrValue);
 		else if( _tcsicmp(pstrName, _T("tipvaluealign")) == 0 ) {

@@ -14,16 +14,16 @@ public:
 	void SetOwner(IGridUI *pGrid) { m_pOwner = pGrid; }
 	IGridUI *GetOwner() const { return m_pOwner; }
 
-	LPCTSTR GetClass() const;
-	UINT GetControlFlags() const;
-	LPVOID GetInterface(LPCTSTR pstrName);
+	virtual LPCTSTR GetClass() const override;
+	virtual UINT GetControlFlags() const override;
+	virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-	bool Add(CControlUI* pControl);
-	bool AddAt(CControlUI* pControl, int iIndex);
+	virtual bool Add(CControlUI* pControl) override;
+	virtual bool AddAt(CControlUI* pControl, int iIndex) override;
 
-	virtual void DoInit();
-	virtual void SetPos(RECT rc, bool bNeedInvalidate = true);
-	virtual SIZE EstimateSize(SIZE szAvailable);
+	virtual void DoInit() override;
+	virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
+	virtual SIZE EstimateSize(SIZE szAvailable) override;
 protected:
 	IGridUI *m_pOwner;
 };

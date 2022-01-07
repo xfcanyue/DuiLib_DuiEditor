@@ -17,6 +17,8 @@ public:
 	void RecalcImageRect();
 	void OnChangeRect();
 
+	CStdRefPtr<UIRender> m_pRender;
+
 	CPaintManagerUI *m_pManager;
 	TDrawInfo m_drawInfo;
 

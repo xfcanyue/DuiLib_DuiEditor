@@ -11,12 +11,9 @@ namespace DuiLib {
 		m_bVisible(true), 
 		m_bInternVisible(true),
 		m_bPaneVisible(true),
-		m_bFocused(false),
-		m_bEnabled(true),
 		m_bMouseEnabled(true),
 		m_bKeyboardEnabled(true),
 		m_bFloat(false),
-		m_uButtonState(0),
 		m_uFloatAlign(0),
 		m_bSetPos(false),
 		m_bDragEnabled(false),
@@ -25,16 +22,9 @@ namespace DuiLib {
 		m_nResourceID(0),
 		m_chShortcut('\0'),
 		m_pTag(NULL),
-		m_dwBackColor(0),
+		m_bGradientVertical(true),
 		m_dwBackColor2(0),
 		m_dwBackColor3(0),
-		m_dwHotBkColor(0),
-		m_dwFocusBkColor(0),
-		m_dwForeColor(0),
-		m_dwBorderColor(0),
-		m_dwFocusBorderColor(0),
-		m_dwHotBorderColor(0),
-		m_dwDisableBorderColor(0),
 		m_bColorHSL(false),
 		m_nBorderSize(0),
 		m_nBorderStyle(PS_SOLID),
@@ -64,6 +54,42 @@ namespace DuiLib {
 		::ZeroMemory(&m_ptFloatPosition,sizeof(POINT));
 
 		__refCount = 1;
+		//////////////////////////////////////////////////////////////////////////
+
+		m_uTextStyle = 0;	
+		memset(&m_rcTextPadding, 0, sizeof(m_rcTextPadding));
+
+		m_iFont					= -1;
+		m_iHotFont				= -1;
+		m_iPushedFont			= -1;
+		m_iFocusedFont			= -1;
+		m_iDisabledFont			= -1;
+		m_iSelectedFont			= -1;
+
+		m_dwTextColor			= 0;
+		m_dwHotTextColor		= 0;
+		m_dwPushedTextColor		= 0;
+		m_dwFocusedTextColor	= 0;
+		m_dwDisabledTextColor	= 0;
+		m_dwSelectedTextColor	= 0;
+
+		m_dwBackColor			= 0;
+		m_dwHotBkColor			= 0;
+		m_dwFocusBkColor		= 0;
+		m_dwPushedBkColor		= 0;
+		m_dwDisabledBkColor		= 0;
+		m_dwSelectedBkColor		= 0;
+
+		m_dwForeColor			= 0;
+
+		m_dwBorderColor			= 0;
+		m_dwHotBorderColor		= 0;
+		m_dwPushedBorderColor	= 0;
+		m_dwFocusBorderColor	= 0;
+		m_dwDisableBorderColor	= 0;
+		m_dwSelectedBorderColor	= 0;
+
+		m_ptLastMouse.x = m_ptLastMouse.y = 0;
 	}
 
 	CControlUI::~CControlUI()
@@ -161,7 +187,11 @@ namespace DuiLib {
 		m_sText = pstrText;
 		// ½âÎöxml»»ÐÐ·û
 		m_sText.Replace(_T("{\\n}"), _T("\n"));
-		Invalidate();
+
+		if(IsAutoCalcWidth())
+			NeedParentUpdate();
+		else
+			Invalidate();
 	}
 
 	int  CControlUI::GetTextN()			//add by liqs99
@@ -184,6 +214,29 @@ namespace DuiLib {
 		s.InnerFormat(lpszFormat, argList);
 		SetText(s);
 		va_end(argList);
+	}
+
+	void CControlUI::SetTextStyle(UINT uStyle)
+	{
+		m_uTextStyle = uStyle;
+		Invalidate();
+	}
+
+	UINT CControlUI::GetTextStyle() const
+	{
+		return m_uTextStyle;
+	}
+
+	RECT CControlUI::GetTextPadding() const
+	{
+		if(m_pManager != NULL) return m_pManager->GetDPIObj()->Scale(m_rcTextPadding);
+		return m_rcTextPadding;
+	}
+
+	void CControlUI::SetTextPadding(RECT rc)
+	{
+		m_rcTextPadding = rc;
+		Invalidate();
 	}
 
 	bool CControlUI::IsResourceText() const
@@ -244,29 +297,49 @@ namespace DuiLib {
 		m_bDropEnabled = bDrop;
 	}
 
-	LPCTSTR CControlUI::GetGradient()
+	//////////////////////////////////////////////////////////////////////////
+	int CControlUI::GetFont() const					{ return m_iFont;			}
+	void CControlUI::SetFont(int index)				{ m_iFont = index;			}
+	int CControlUI::GetHotFont() const				{ return m_iHotFont;		}
+	void CControlUI::SetHotFont(int index)			{ m_iHotFont = index;		}
+	int CControlUI::GetPushedFont() const			{ return m_iPushedFont;		}
+	void CControlUI::SetPushedFont(int index)		{ m_iPushedFont = index;	}
+	int CControlUI::GetFocusedFont() const			{ return m_iFocusedFont;	}
+	void CControlUI::SetFocusedFont(int index)		{ m_iFocusedFont = index;	}
+	int CControlUI::GetDisabledFont() const			{ return m_iDisabledFont;	}
+	void CControlUI::SetDisabledFont(int index)		{ m_iDisabledFont = index;	}
+	int CControlUI::GetSelectedFont() const			{ return m_iSelectedFont;	}
+	void CControlUI::SetSelectedFont(int index)		{ m_iSelectedFont = index;	}
+
+	//////////////////////////////////////////////////////////////////////////
+	DWORD CControlUI::GetTextColor() const					{ return m_dwTextColor;				}
+	void CControlUI::SetTextColor(DWORD dwColor)			{ m_dwTextColor = dwColor;			}
+	DWORD CControlUI::GetHotTextColor() const				{ return m_dwHotTextColor;			}
+	void CControlUI::SetHotTextColor(DWORD dwColor)			{ m_dwHotTextColor = dwColor;		}
+	DWORD CControlUI::GetPushedTextColor() const			{ return m_dwPushedTextColor;		}
+	void CControlUI::SetPushedTextColor(DWORD dwColor)		{ m_dwPushedTextColor = dwColor;	}
+	DWORD CControlUI::GetFocusedTextColor() const			{ return m_dwFocusedTextColor;		}
+	void CControlUI::SetFocusedTextColor(DWORD dwColor)		{ m_dwFocusedTextColor = dwColor;	}
+	DWORD CControlUI::GetDisabledTextColor() const			
+	{ 
+		if(m_dwDisabledTextColor == 0 && m_pManager)
+			return m_pManager->GetDefaultDisabledColor();
+		return m_dwDisabledTextColor;		
+	}
+	void CControlUI::SetDisabledTextColor(DWORD dwColor)	{ m_dwDisabledTextColor = dwColor;	}
+	DWORD CControlUI::GetSelectedTextColor() const			{ return m_dwSelectedTextColor;		}
+	void CControlUI::SetSelectedTextColor(DWORD dwColor)	{ m_dwSelectedTextColor = dwColor;	}
+
+	//////////////////////////////////////////////////////////////////////////
+	bool CControlUI::GetGradient()
 	{
-		return m_sGradient;
+		return m_bGradientVertical;
 	}
 
-	void CControlUI::SetGradient(LPCTSTR pStrImage)
+	void CControlUI::SetGradient(bool bVertical)
 	{
-		if( m_sGradient == pStrImage ) return;
-
-		m_sGradient = pStrImage;
-		Invalidate();
-	}
-
-	DWORD CControlUI::GetBkColor() const
-	{
-		return m_dwBackColor;
-	}
-
-	void CControlUI::SetBkColor(DWORD dwBackColor)
-	{
-		if( m_dwBackColor == dwBackColor ) return;
-
-		m_dwBackColor = dwBackColor;
+		if(m_bGradientVertical == bVertical) return;
+		m_bGradientVertical = bVertical;
 		Invalidate();
 	}
 
@@ -295,12 +368,36 @@ namespace DuiLib {
 		m_dwBackColor3 = dwBackColor;
 		Invalidate();
 	}
-	void CControlUI::SetHotBkColor(DWORD dwColor) { m_dwHotBkColor = dwColor; Invalidate(); }
-	DWORD CControlUI::GetHotBkColor() const { return m_dwHotBkColor; }
 
-	void CControlUI::SetFocusBkColor(DWORD dwColor) {m_dwFocusBkColor = dwColor; Invalidate(); }
-	DWORD CControlUI::GetFocusBkColor() const { return m_dwFocusBkColor; }
+	DWORD CControlUI::GetBkColor() const
+	{
+		return m_dwBackColor;
+	}
 
+	void CControlUI::SetBkColor(DWORD dwBackColor)
+	{
+		if( m_dwBackColor == dwBackColor ) return;
+
+		m_dwBackColor = dwBackColor;
+		Invalidate();
+	}
+
+	DWORD CControlUI::GetHotBkColor() const				{ return m_dwHotBkColor; }
+	void CControlUI::SetHotBkColor(DWORD dwColor)		{ m_dwHotBkColor = dwColor; }
+
+	DWORD CControlUI::GetFocusBkColor() const			{ return m_dwFocusBkColor; }
+	void CControlUI::SetFocusBkColor(DWORD dwColor)		{ m_dwFocusBkColor = dwColor; }
+
+	DWORD CControlUI::GetPushedBkColor() const			{ return m_dwPushedBkColor; }
+	void CControlUI::SetPushedBkColor(DWORD dwColor)	{ m_dwPushedBkColor = dwColor; }
+
+	DWORD CControlUI::GetDisabledBkColor() const		{ return m_dwDisabledBkColor; }
+	void CControlUI::SetDisabledBkColor(DWORD dwColor)	{ m_dwDisabledBkColor = dwColor; }
+
+	DWORD CControlUI::GetSelectBkColor()				 { return m_dwSelectedBkColor; }
+	void CControlUI::SetSelectedBkColor(DWORD dwBkColor) { m_dwSelectedBkColor = dwBkColor; }
+
+	//////////////////////////////////////////////////////////////////////////
 	DWORD CControlUI::GetForeColor() const
 	{
 		return m_dwForeColor;
@@ -314,7 +411,8 @@ namespace DuiLib {
 		Invalidate();
 	}
 
-	LPCTSTR CControlUI::GetBkImage()
+	//////////////////////////////////////////////////////////////////////////
+	CDuiString CControlUI::GetBkImage()
 	{
 		return m_sBkImage;
 	}
@@ -328,63 +426,71 @@ namespace DuiLib {
 		Invalidate();
 	}
 	
-	LPCTSTR CControlUI::GetForeImage() const
-	{
-		return m_sForeImage;
-	}
+	//////////////////////////////////////////////////////////////////////////
+	CDuiString	CControlUI::GetForeImage() const					{ return m_sForeImage;				}
+	void		CControlUI::SetForeImage(LPCTSTR pStrImage)			{ m_sForeImage = pStrImage;			}
 
-	void CControlUI::SetForeImage(LPCTSTR pStrImage)
-	{
-		if( m_sForeImage == pStrImage ) return;
+	CDuiString	CControlUI::GetHotForeImage() const					{ return m_sHotForeImage;			}
+	void		CControlUI::SetHotForeImage(LPCTSTR pStrImage)		{ m_sHotForeImage = pStrImage;		}
 
-		m_sForeImage = pStrImage;
-		Invalidate();
-	}
+	CDuiString	CControlUI::GetPushedForeImage() const				{ return m_sPushedForeImage;		}
+	void		CControlUI::SetPushedForeImage(LPCTSTR pStrImage)	{ m_sPushedForeImage = pStrImage;	}
 
-	DWORD CControlUI::GetBorderColor() const
-	{
-		return m_dwBorderColor;
-	}
+	CDuiString	CControlUI::GetFocusedForeImage() const				{ return m_sFocusedForeImage;		}
+	void		CControlUI::SetFocusedForeImage(LPCTSTR pStrImage)	{ m_sFocusedForeImage = pStrImage;	}
 
-	void CControlUI::SetBorderColor(DWORD dwBorderColor)
-	{
-		if( m_dwBorderColor == dwBorderColor ) return;
+	CDuiString	CControlUI::GetDisabledForeImage() const			{ return m_sDisabledForeImage;		}
+	void		CControlUI::SetDisabledForeImage(LPCTSTR pStrImage){ m_sDisabledForeImage = pStrImage;	}
 
-		m_dwBorderColor = dwBorderColor;
-		Invalidate();
-	}
+	CDuiString	CControlUI::GetSelectedForeImage() const			{ return m_sSelectedForeImage;		}
+	void		CControlUI::SetSelectedForedImage(LPCTSTR pStrImage){ m_sSelectedForeImage = pStrImage; }
 
-	DWORD CControlUI::GetFocusBorderColor() const
-	{
-		return m_dwFocusBorderColor;
-	}
+	//////////////////////////////////////////////////////////////////////////
+	CDuiString	CControlUI::GetNormalImage() const						{ return m_sNormalImage;		}
+	void		CControlUI::SetNormalImage(LPCTSTR pStrImage)			{ m_sNormalImage = pStrImage;	}
 
-	void CControlUI::SetFocusBorderColor(DWORD dwBorderColor)
-	{
-		m_dwFocusBorderColor = dwBorderColor;
-	}
+	CDuiString	CControlUI::GetHotImage() const							{ return m_sHotImage;			}
+	void		CControlUI::SetHotImage(LPCTSTR pStrImage)				{ m_sHotImage = pStrImage;		}
 
-	DWORD CControlUI::GetHotBorderColor() const
-	{
-		return m_dwHotBorderColor;
-	}
+	CDuiString	CControlUI::GetPushedImage() const						{ return m_sPushedImage;		}
+	void		CControlUI::SetPushedImage(LPCTSTR pStrImage)			{ m_sPushedImage = pStrImage;	}
 
-	void CControlUI::SetHotBorderColor(DWORD dwBorderColor)
-	{
-		m_dwHotBorderColor = dwBorderColor;
-	}
+	CDuiString	CControlUI::GetFocusedImage() const						{ return m_sFocusedImage;		}
+	void		CControlUI::SetFocusedImage(LPCTSTR pStrImage)			{ m_sFocusedImage = pStrImage;	}
 
-	DWORD CControlUI::GetDisableBorderColor() const
-	{
-		return m_dwDisableBorderColor;
-	}
+	CDuiString	CControlUI::GetDisabledImage() const					{ return m_sDisabledImage;		}
+	void		CControlUI::SetDisabledImage(LPCTSTR pStrImage)			{ m_sDisabledImage = pStrImage; }
 
-	void CControlUI::SetDisableBorderColor(DWORD dwBorderColor)
-	{
-		if( m_dwDisableBorderColor == dwBorderColor ) return;
-		m_dwDisableBorderColor = dwBorderColor;
-		Invalidate();
-	}
+	CDuiString	CControlUI::GetSelectedImage() const					{ return m_sSelectedImage;		}
+	void		CControlUI::SetSelectedImage(LPCTSTR pStrImage)			{ m_sSelectedImage = pStrImage; }
+
+	CDuiString	CControlUI::GetSelectedHotImage() const					{ return m_sSelectedHotImage;			}
+	void		CControlUI::SetSelectedHotImage(LPCTSTR pStrImage)		{ m_sSelectedHotImage = pStrImage;		}
+	CDuiString	CControlUI::GetSelectedPushedImage() const				{ return m_sSelectedPushedImage;		}
+	void		CControlUI::SetSelectedPushedImage(LPCTSTR pStrImage)	{ m_sSelectedPushedImage = pStrImage;	}
+	CDuiString	CControlUI::GetSelectedFocusedImage() const				{ return m_sSelectedFocusedImage;		}
+	void		CControlUI::SetSelectedFocusedImage(LPCTSTR pStrImage)	{ m_sSelectedFocusedImage = pStrImage;	}
+	CDuiString	CControlUI::GetSelectedDisabledImage() const			{ return m_sSelectedDisabledImage;		}
+	void		CControlUI::SetSelectedDisabledImage(LPCTSTR pStrImage)	{ m_sSelectedDisabledImage = pStrImage; }
+
+	//////////////////////////////////////////////////////////////////////////
+	DWORD CControlUI::GetBorderColor() const					{ return m_dwBorderColor;					}
+	void CControlUI::SetBorderColor(DWORD dwBorderColor)		{ m_dwBorderColor = dwBorderColor;			}
+		
+	DWORD CControlUI::GetHotBorderColor() const					{ return m_dwHotBorderColor;				}
+	void CControlUI::SetHotBorderColor(DWORD dwBorderColor)		{ m_dwHotBorderColor = dwBorderColor;		}
+
+	DWORD CControlUI::GetPushedBorderColor() const				{ return m_dwPushedBorderColor;				}
+	void CControlUI::SetPushedBorderColor(DWORD dwBorderColor)	{ m_dwPushedBorderColor = dwBorderColor;	}
+
+	DWORD CControlUI::GetFocusBorderColor() const				{ return m_dwFocusBorderColor;				}
+	void CControlUI::SetFocusBorderColor(DWORD dwBorderColor)	{ m_dwFocusBorderColor = dwBorderColor;		}
+
+	DWORD CControlUI::GetDisableBorderColor() const				{ return m_dwDisableBorderColor;			}
+	void CControlUI::SetDisableBorderColor(DWORD dwBorderColor) { m_dwDisableBorderColor = dwBorderColor;	}
+
+	DWORD CControlUI::GetSelectedBorderColor() const			{ return m_dwSelectedBorderColor;			}
+	void CControlUI::SetSelectedBorderColor(DWORD dwBorderColor) { m_dwSelectedBorderColor = dwBorderColor; }
 
 	bool CControlUI::IsColorHSL() const
 	{
@@ -413,10 +519,16 @@ namespace DuiLib {
 		Invalidate();
 	}
 
-	void CControlUI::SetBorderSize( RECT rc )
+	void CControlUI::SetBorderRectSize( RECT rc )
 	{
 		m_rcBorderSize = rc;
 		Invalidate();
+	}
+
+	RECT CControlUI::GetBorderRectSize() const
+	{
+		if(m_pManager != NULL) return m_pManager->GetDPIObj()->Scale(m_rcBorderSize);
+		return m_rcBorderSize;
 	}
 
 	SIZE CControlUI::GetBorderRound() const
@@ -431,9 +543,9 @@ namespace DuiLib {
 		Invalidate();
 	}
 
-	bool CControlUI::DrawImage(HDC hDC, LPCTSTR pStrImage, LPCTSTR pStrModify)
+	bool CControlUI::DrawImage(UIRender *pRender, LPCTSTR pStrImage, LPCTSTR pStrModify)
 	{
-		return CRenderEngine::DrawImageString(hDC, m_pManager, m_rcItem, m_rcPaint, pStrImage, pStrModify, m_instance);
+		return pRender->DrawImageString(m_rcItem, m_rcPaint, pStrImage, pStrModify, m_instance);
 	}
 
 	const RECT& CControlUI::GetPos() const
@@ -813,10 +925,13 @@ namespace DuiLib {
 			
 		bool v = IsVisible();
 		m_bVisible = bVisible;
-		if( m_bFocused ) m_bFocused = false;
-		if (!bVisible && m_pManager && m_pManager->GetFocus() == this) {
+		if( IsFocused() ) SetFocusState(false);
+
+		if (!bVisible && m_pManager && m_pManager->GetFocus() == this) 
+		{
 			m_pManager->SetFocus(NULL) ;
 		}
+
 		if( IsVisible() != v ) {
 			NeedParentUpdate();
 		}
@@ -828,19 +943,6 @@ namespace DuiLib {
 		if (!bVisible && m_pManager && m_pManager->GetFocus() == this) {
 			m_pManager->SetFocus(NULL) ;
 		}
-	}
-
-	bool CControlUI::IsEnabled() const
-	{
-		return m_bEnabled;
-	}
-
-	void CControlUI::SetEnabled(bool bEnabled)
-	{
-		if( m_bEnabled == bEnabled ) return;
-
-		m_bEnabled = bEnabled;
-		Invalidate();
 	}
 
 	bool CControlUI::IsMouseEnabled() const
@@ -857,19 +959,10 @@ namespace DuiLib {
 	{
 		return m_bKeyboardEnabled ;
 	}
+
 	void CControlUI::SetKeyboardEnabled(bool bEnabled)
 	{
 		m_bKeyboardEnabled = bEnabled ; 
-	}
-
-	bool CControlUI::IsFocused() const
-	{
-		return m_bFocused;
-	}
-
-	void CControlUI::SetFocus()
-	{
-		if( m_pManager != NULL ) m_pManager->SetFocus(this);
 	}
 
 	bool CControlUI::IsFloat() const
@@ -885,18 +978,40 @@ namespace DuiLib {
 		NeedParentUpdate();
 	}
 
-	bool CControlUI::IsHot() const
+	bool CControlUI::IsEnabled() const
 	{
-		return (m_uButtonState & UISTATE_HOT) == UISTATE_HOT;
+		return m_state.IsEnabled();
 	}
 
-	void CControlUI::SetHot(bool bHot)
+	void CControlUI::SetEnabled(bool bEnabled)
 	{
-		if(bHot)
-			m_uButtonState |= UISTATE_HOT;
-		else
-			m_uButtonState &= ~UISTATE_HOT;
+		if( IsEnabled() == bEnabled ) return;
+		m_state.SetEnabled(bEnabled);
+		Invalidate();
 	}
+
+	bool CControlUI::IsFocused() const					{ return m_state.IsFocused();		}
+	void CControlUI::SetFocusState(bool bFocus)			{ m_state.SetFocus(bFocus);			}
+
+	void CControlUI::SetFocus()
+	{
+		if( m_pManager != NULL ) m_pManager->SetFocus(this);
+	}
+
+	bool CControlUI::IsHotState() const					{ return m_state.IsHot();			}
+	void CControlUI::SetHotState(bool bHot)				{ m_state.SetHot(bHot);				}
+
+	bool CControlUI::IsCaptureState() const				{ return m_state.IsCapture();		}
+	void CControlUI::SetCaptureState(bool bCaptured)	{ m_state.SetCapture(bCaptured);	}
+
+	bool CControlUI::IsPushedState() const				{ return m_state.IsCapture();		}
+	void CControlUI::SetPushedState(bool bPushed)		{ m_state.SetPushed(bPushed);		}
+
+	void CControlUI::SetSelectedState(bool bSelected)	{ m_state.SetSelected(bSelected);	}
+	bool CControlUI::IsSelectedState() const			{ return m_state.IsSelected();		}
+
+	void CControlUI::SetReadOnly(bool bReadOnly)		{ m_state.SetReadonly(bReadOnly);	}
+	bool CControlUI::IsReadOnly() const					{ return m_state.IsReadOnly();		}
 
 	CControlUI* CControlUI::FindControl(FINDCONTROLPROC Proc, LPVOID pData, UINT uFlags)
 	{
@@ -957,10 +1072,11 @@ namespace DuiLib {
 
 	DWORD CControlUI::GetAdjustColor(DWORD dwColor)
 	{
-		if( !m_bColorHSL ) return dwColor;
+		if( !m_bColorHSL && !CPaintManagerUI::IsForceHSL()) return dwColor;
+		if(!CPaintManagerUI::IsUseHSL()) return dwColor;
 		short H, S, L;
 		CPaintManagerUI::GetHSL(&H, &S, &L);
-		return CRenderEngine::AdjustColor(dwColor, H, S, L);
+		return UIGlobal::AdjustHslColor(dwColor, H, S, L);
 	}
 
 	void CControlUI::Init()
@@ -999,16 +1115,18 @@ namespace DuiLib {
 
 		if( event.Type == UIEVENT_SETFOCUS ) 
 		{
-			m_bFocused = true;
+			SetFocusState(true);
 			Invalidate();
 			return;
 		}
+
 		if( event.Type == UIEVENT_KILLFOCUS ) 
 		{
-			m_bFocused = false;
+			SetFocusState(false);
 			Invalidate();
 			return;
 		}
+
 		if( event.Type == UIEVENT_TIMER )
 		{
 			if(GetAnimation() != DuiAnim_null)
@@ -1122,7 +1240,177 @@ namespace DuiLib {
 				return;
 			}
 		}
-		if( _tcsicmp(pstrName, _T("pos")) == 0 ) {
+
+		if( _tcsicmp(pstrName, _T("selectedimage")) == 0 ) SetSelectedImage(pstrValue);
+		else if( _tcsicmp(pstrName, _T("selectedhotimage")) == 0 ) SetSelectedHotImage(pstrValue);
+		else if( _tcsicmp(pstrName, _T("selectedpushedimage")) == 0 ) SetSelectedPushedImage(pstrValue);
+		else if( _tcsicmp(pstrName, _T("selectedforeimage")) == 0 ) SetSelectedForedImage(pstrValue);
+		else if( _tcsicmp(pstrName, _T("selectedbkcolor")) == 0 ) {
+			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetSelectedBkColor(clrColor);
+		}
+		else if( _tcsicmp(pstrName, _T("selectedtextcolor")) == 0 ) {
+			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetSelectedTextColor(clrColor);
+		}
+		else if( _tcsicmp(pstrName, _T("selectedfont")) == 0 ) SetSelectedFont(_ttoi(pstrValue));
+		else if( _tcsicmp(pstrName, _T("selectedbordercolor")) == 0 ) {
+			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetSelectedBorderColor(clrColor);
+		}
+		//////////////////////////////////////////////////////////////////////////
+		else if( _tcsicmp(pstrName, _T("normalimage")) == 0 ) SetNormalImage(pstrValue);
+		else if( _tcsicmp(pstrName, _T("hotimage")) == 0 ) SetHotImage(pstrValue);
+		else if( _tcsicmp(pstrName, _T("pushedimage")) == 0 ) SetPushedImage(pstrValue);
+		else if( _tcsicmp(pstrName, _T("focusedimage")) == 0 ) SetFocusedImage(pstrValue);
+		else if( _tcsicmp(pstrName, _T("disabledimage")) == 0 ) SetDisabledImage(pstrValue);
+		else if( _tcsicmp(pstrName, _T("hotforeimage")) == 0 ) SetHotForeImage(pstrValue);
+		else if( _tcsicmp(pstrName, _T("hotbkcolor")) == 0 )
+		{
+			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetHotBkColor(clrColor);
+		}
+		else if( _tcsicmp(pstrName, _T("pushedbkcolor")) == 0 )
+		{
+			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetPushedBkColor(clrColor);
+		}
+		else if( _tcsicmp(pstrName, _T("disabledbkcolor")) == 0 )
+		{
+			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetDisabledBkColor(clrColor);
+		}
+		else if( _tcsicmp(pstrName, _T("hottextcolor")) == 0 )
+		{
+			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetHotTextColor(clrColor);
+		}
+		else if( _tcsicmp(pstrName, _T("pushedtextcolor")) == 0 )
+		{
+			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetPushedTextColor(clrColor);
+		}
+		else if( _tcsicmp(pstrName, _T("focusedtextcolor")) == 0 )
+		{
+			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetFocusedTextColor(clrColor);
+		}
+		else if( _tcsicmp(pstrName, _T("hotfont")) == 0 ) SetHotFont(_ttoi(pstrValue));
+		else if( _tcsicmp(pstrName, _T("pushedfont")) == 0 ) SetPushedFont(_ttoi(pstrValue));
+		else if( _tcsicmp(pstrName, _T("focuedfont")) == 0 ) SetFocusedFont(_ttoi(pstrValue));
+		else if( _tcsicmp(pstrName, _T("pushedbordercolor")) == 0 ) //add by liqs99
+		{
+			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetPushedBorderColor(clrColor);
+		}
+		else if( _tcsicmp(pstrName, _T("disablebordercolor")) == 0 ) //add by liqs99
+		{
+			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetDisableBorderColor(clrColor);
+		}
+		//////////////////////////////////////////////////////////////////////////
+		else if( _tcsicmp(pstrName, _T("align")) == 0 ) {
+			if( _tcsstr(pstrValue, _T("left")) != NULL ) {
+				m_uTextStyle &= ~(DT_CENTER | DT_RIGHT);
+				m_uTextStyle |= DT_LEFT;
+			}
+			if( _tcsstr(pstrValue, _T("center")) != NULL ) {
+				m_uTextStyle &= ~(DT_LEFT | DT_RIGHT );
+				m_uTextStyle |= DT_CENTER;
+			}
+			if( _tcsstr(pstrValue, _T("right")) != NULL ) {
+				m_uTextStyle &= ~(DT_LEFT | DT_CENTER);
+				m_uTextStyle |= DT_RIGHT;
+			}
+		}
+		else if( _tcsicmp(pstrName, _T("valign")) == 0 ) {
+			if( _tcsstr(pstrValue, _T("top")) != NULL ) {
+				m_uTextStyle &= ~(DT_BOTTOM | DT_VCENTER | DT_WORDBREAK);
+				m_uTextStyle |= (DT_TOP | DT_SINGLELINE);
+			}
+			else if(( _tcsstr(pstrValue, _T("vcenter")) != NULL ) || ( _tcsstr(pstrValue, _T("center")) != NULL ))
+			{
+				m_uTextStyle &= ~(DT_TOP | DT_BOTTOM | DT_WORDBREAK);            
+				m_uTextStyle |= (DT_VCENTER | DT_SINGLELINE);
+			}
+			else if( _tcsstr(pstrValue, _T("bottom")) != NULL ) {
+				m_uTextStyle &= ~(DT_TOP | DT_VCENTER | DT_WORDBREAK);
+				m_uTextStyle |= (DT_BOTTOM | DT_SINGLELINE);
+			}
+		}
+		else if( _tcsicmp(pstrName, _T("endellipsis")) == 0 ) {
+			if( _tcsicmp(pstrValue, _T("true")) == 0 ) m_uTextStyle |= DT_END_ELLIPSIS;
+			else m_uTextStyle &= ~DT_END_ELLIPSIS;
+		}   
+		else if( _tcsicmp(pstrName, _T("wordbreak")) == 0 ) {
+			if( _tcsicmp(pstrValue, _T("true")) == 0 ) {
+				m_uTextStyle &= ~DT_SINGLELINE;
+				m_uTextStyle |= DT_WORDBREAK | DT_EDITCONTROL;
+			}
+			else {
+				m_uTextStyle &= ~DT_WORDBREAK & ~DT_EDITCONTROL;
+				m_uTextStyle |= DT_SINGLELINE;
+			}
+		}
+		else if( _tcsicmp(pstrName, _T("noprefix")) == 0 ) {
+			if( _tcsicmp(pstrValue, _T("true")) == 0)
+			{
+				m_uTextStyle |= DT_NOPREFIX;
+			}
+			else
+			{
+				m_uTextStyle = m_uTextStyle & ~DT_NOPREFIX;
+			}
+		}
+		else if( _tcsicmp(pstrName, _T("font")) == 0 ) 
+			SetFont(_ttoi(pstrValue));
+		else if( _tcsicmp(pstrName, _T("disabledfont")) == 0 ) 
+			SetDisabledFont(_ttoi(pstrValue));
+		else if( _tcsicmp(pstrName, _T("textcolor")) == 0 ) {
+			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetTextColor(clrColor);
+		}
+		else if( _tcsicmp(pstrName, _T("disabledtextcolor")) == 0 ) {
+			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetDisabledTextColor(clrColor);
+		}
+		else if( _tcsicmp(pstrName, _T("textpadding")) == 0 ) {
+			RECT rcTextPadding = { 0 };
+			LPTSTR pstr = NULL;
+			rcTextPadding.left = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
+			rcTextPadding.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
+			rcTextPadding.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);    
+			rcTextPadding.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);    
+			SetTextPadding(rcTextPadding);
+		}
+		//////////////////////////////////////////////////////////////////////////
+		else if( _tcsicmp(pstrName, _T("pos")) == 0 ) {
 			RECT rcPos = { 0 };
 			LPTSTR pstr = NULL;
 			rcPos.left = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
@@ -1241,7 +1529,11 @@ namespace DuiLib {
 			rcPadding.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);    
 			SetPadding(rcPadding);
 		}
-		else if( _tcsicmp(pstrName, _T("gradient")) == 0 ) SetGradient(pstrValue);
+		else if( _tcsicmp(pstrName, _T("gradient")) == 0 ) 
+		{
+			bool bVer = (_tcsicmp(_T("hor"), pstrValue) != 0);
+			SetGradient(bVer);
+		}
 		else if( _tcsicmp(pstrName, _T("bkcolor")) == 0 || _tcsicmp(pstrName, _T("bkcolor1")) == 0 ) {
 			while( *pstrValue > _T('\0') && *pstrValue <= _T(' ') ) pstrValue = ::CharNext(pstrValue);
 			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
@@ -1313,17 +1605,17 @@ namespace DuiLib {
 			CDuiString nValue = pstrValue;
 			if(nValue.Find(',') < 0) {
 				SetBorderSize(_ttoi(pstrValue));
-				RECT rcPadding = {0};
-				SetBorderSize(rcPadding);
+				RECT rcBorder = {0};
+				SetBorderRectSize(rcBorder);
 			}
 			else {
-				RECT rcPadding = { 0 };
+				RECT rcBorder = { 0 };
 				LPTSTR pstr = NULL;
-				rcPadding.left = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);
-				rcPadding.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);
-				rcPadding.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);
-				rcPadding.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);
-				SetBorderSize(rcPadding);
+				rcBorder.left = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);
+				rcBorder.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);
+				rcBorder.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);
+				rcBorder.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);
+				SetBorderRectSize(rcBorder);
 			}
 		}
 		else if( _tcsicmp(pstrName, _T("leftbordersize")) == 0 ) SetLeftBorderSize(_ttoi(pstrValue));
@@ -1358,6 +1650,7 @@ namespace DuiLib {
 		else if( _tcsicmp(pstrName, _T("tooltip")) == 0 ) SetToolTip(pstrValue);
 		else if( _tcsicmp(pstrName, _T("userdata")) == 0 ) SetUserData(pstrValue);
 		else if( _tcsicmp(pstrName, _T("enabled")) == 0 ) SetEnabled(_tcsicmp(pstrValue, _T("true")) == 0);
+		else if( _tcsicmp(pstrName, _T("readonly")) == 0 ) SetReadOnly(_tcsicmp(pstrValue, _T("true")) == 0);
 		else if( _tcsicmp(pstrName, _T("mouse")) == 0 ) SetMouseEnabled(_tcsicmp(pstrValue, _T("true")) == 0);
 		else if( _tcsicmp(pstrName, _T("keyboard")) == 0 ) SetKeyboardEnabled(_tcsicmp(pstrValue, _T("true")) == 0);
 		else if( _tcsicmp(pstrName, _T("visible")) == 0 ) SetVisible(_tcsicmp(pstrValue, _T("true")) == 0);
@@ -1554,23 +1847,23 @@ namespace DuiLib {
 		return m_cxyFixed;
 	}
 
-	bool CControlUI::Paint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
+	bool CControlUI::Paint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 	{
 		if (pStopControl == this) return false;
 		if( !::IntersectRect(&m_rcPaint, &rcPaint, &m_rcItem) ) return true;
 		if(m_asOnPaint)
 		{
-			if(GetManager()->ExecuteScript(m_asOnPaint, this, hDC, rcPaint, pStopControl)) 
+			if(GetManager()->ExecuteScript(m_asOnPaint, this, pRender, rcPaint, pStopControl)) 
 				return true;
 		}
 		if( OnPaint ) {
-			if( !OnPaint(hDC) ) return true;
+			if( !OnPaint(pRender) ) return true;
 		}
-		if (!DoPaint(hDC, m_rcPaint, pStopControl)) return false;
+		if (!DoPaint(pRender, m_rcPaint, pStopControl)) return false;
 		return true;
 	}
 
-	bool CControlUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
+	bool CControlUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 	{
 		// »æÖÆÑ­Ðò£º±³¾°ÑÕÉ«->±³¾°Í¼->×´Ì¬Í¼->ÎÄ±¾->±ß¿ò
 		SIZE cxyBorderRound;
@@ -1585,145 +1878,228 @@ namespace DuiLib {
 		}
 
 		if( cxyBorderRound.cx > 0 || cxyBorderRound.cy > 0 ) {
-			CRenderClip roundClip;
-			CRenderClip::GenerateRoundClip(hDC, m_rcPaint,  m_rcItem, cxyBorderRound.cx, cxyBorderRound.cy, roundClip);
-			PaintBkColor(hDC);
-			PaintBkImage(hDC);
-			PaintStatusImage(hDC);
-			PaintForeColor(hDC);
-			PaintForeImage(hDC);
-			PaintText(hDC);
-			PaintBorder(hDC);
+			UIClip roundClip;
+			roundClip.GenerateRoundClip(pRender, m_rcPaint,  m_rcItem, cxyBorderRound.cx, cxyBorderRound.cy);
+			PaintBkColor(pRender);
+			PaintBkImage(pRender);
+			PaintStatusImage(pRender);
+			PaintForeColor(pRender);
+			PaintForeImage(pRender);
+			PaintText(pRender);
+			PaintBorder(pRender);
 		}
 		else {
-			PaintBkColor(hDC);
-			PaintBkImage(hDC);
-			PaintStatusImage(hDC);
-			PaintForeColor(hDC);
-			PaintForeImage(hDC);
-			PaintText(hDC);
-			PaintBorder(hDC);
+			PaintBkColor(pRender);
+			PaintBkImage(pRender);
+			PaintStatusImage(pRender);
+			PaintForeColor(pRender);
+			PaintForeImage(pRender);
+			PaintText(pRender);
+			PaintBorder(pRender);
 		}
 		return true;
 	}
 
-	void CControlUI::PaintBkColor(HDC hDC)
+	//
+	//
+	//  ×´Ì¬ÏÔÊ¾µÄÓÅÏÈ¼¶£º  ½ûÓÃ  >  Ñ¡ÖÐ  >  °´ÏÂ  >  ÐüÍ£  >  ½¹µã
+	//
+	//
+
+	void CControlUI::PaintBkColor(UIRender *pRender)
 	{
-		if( m_dwBackColor != 0 ) {
-			bool bVer = (m_sGradient.CompareNoCase(_T("hor")) != 0);
-			if( m_dwBackColor2 != 0 ) {
-				if( m_dwBackColor3 != 0 ) {
-					RECT rc = m_rcItem;
-					rc.bottom = (rc.bottom + rc.top) / 2;
-					CRenderEngine::DrawGradient(hDC, rc, GetAdjustColor(m_dwBackColor), GetAdjustColor(m_dwBackColor2), bVer, 8);
-					rc.top = rc.bottom;
-					rc.bottom = m_rcItem.bottom;
-					CRenderEngine::DrawGradient(hDC, rc, GetAdjustColor(m_dwBackColor2), GetAdjustColor(m_dwBackColor3), bVer, 8);
-				}
-				else {
-					CRenderEngine::DrawGradient(hDC, m_rcItem, GetAdjustColor(m_dwBackColor), GetAdjustColor(m_dwBackColor2), bVer, 16);
-				}
-			}
-			else if( m_dwBackColor >= 0xFF000000 ) CRenderEngine::DrawColor(hDC, m_rcPaint, GetAdjustColor(m_dwBackColor));
-			else CRenderEngine::DrawColor(hDC, m_rcItem, GetAdjustColor(m_dwBackColor));
-		}
+		DWORD dwColor = 0;
+
+		if( !IsEnabled() )
+			dwColor = GetDisabledBkColor();
+
+		if( dwColor == 0 && IsSelectedState() )
+			dwColor = GetSelectBkColor();
+
+		if( dwColor == 0 && IsPushedState() )
+			dwColor = GetPushedBkColor();
+
+		if( dwColor == 0 && IsHotState() )
+			dwColor = GetHotBkColor();
+
+		if( dwColor == 0 && IsFocused() )
+			dwColor = GetFocusBkColor();
+
+		if(dwColor == 0)
+			dwColor = GetBkColor();
+
+		if(dwColor == 0) return;
+		pRender->DrawBackColor(m_rcItem, GetBorderRound(), 
+			GetAdjustColor(dwColor), 
+			GetAdjustColor(GetBkColor2()), 
+			GetAdjustColor(GetBkColor3()), 
+			GetGradient());
 	}
 
-	void CControlUI::PaintBkImage(HDC hDC)
+	void CControlUI::PaintBkImage(UIRender *pRender)
 	{
 		if( m_sBkImage.IsEmpty() ) return;
-		if( !DrawImage(hDC, (LPCTSTR)m_sBkImage) ) {}
+		DrawImage(pRender, (LPCTSTR)m_sBkImage);
 	}
 
-	void CControlUI::PaintStatusImage(HDC hDC)
+	void CControlUI::PaintStatusImage(UIRender *pRender)
 	{
-		return;
-	}
-
-	void CControlUI::PaintForeColor(HDC hDC)
-	{
-		CRenderEngine::DrawColor(hDC, m_rcItem, GetAdjustColor(m_dwForeColor));
-	}
-	
-	void CControlUI::PaintForeImage(HDC hDC)
-	{
-		if( m_sForeImage.IsEmpty() ) return;
-		DrawImage(hDC, (LPCTSTR)m_sForeImage);
-	}
-
-	void CControlUI::PaintText(HDC hDC)
-	{
-		return;
-	}
-
-	void CControlUI::PaintBorder(HDC hDC)
-	{
-		int nBorderSize;
-		SIZE cxyBorderRound;
-		RECT rcBorderSize;
-		if (m_pManager) {
-			nBorderSize = GetManager()->GetDPIObj()->Scale(m_nBorderSize);
-			cxyBorderRound = GetManager()->GetDPIObj()->Scale(m_cxyBorderRound);
-			rcBorderSize = GetManager()->GetDPIObj()->Scale(m_rcBorderSize);
-		}
-		else {
-			nBorderSize = m_nBorderSize;
-			cxyBorderRound = m_cxyBorderRound;
-			rcBorderSize = m_rcBorderSize;
-		}
-
-		DWORD dwColor = 0;
-		if(!IsEnabled() && GetDisableBorderColor() != 0)
-			dwColor = GetDisableBorderColor();
-		if(IsFocused() && GetFocusBorderColor() != 0)
-			dwColor = GetFocusBorderColor();
-		else if(IsHot() && GetHotBorderColor() != 0)
-			dwColor = GetHotBorderColor();
-
-		if(dwColor == 0) dwColor = GetBorderColor();
-		if(dwColor == 0) return;
-
-		if(nBorderSize > 0)
+		CDuiString sImage;
+		
+		if(IsSelectedState())
 		{
-			if(cxyBorderRound.cx > 0 || cxyBorderRound.cy > 0 ) //»­Ô²½Ç±ß¿ò
-			{
-				CRenderEngine::DrawRoundRect(hDC, m_rcItem, nBorderSize, cxyBorderRound.cx, cxyBorderRound.cy, GetAdjustColor(dwColor), m_nBorderStyle);
-			}
-			else
-			{
-				CRenderEngine::DrawRect(hDC, m_rcItem, nBorderSize, GetAdjustColor(dwColor), m_nBorderStyle);
-			}
+			if( !IsEnabled() )
+				sImage = GetSelectedDisabledImage();
+
+			if( sImage.IsEmpty() && IsPushedState() )
+				sImage = GetSelectedPushedImage();
+
+			if( sImage.IsEmpty() && IsHotState() )
+				sImage = GetSelectedHotImage();
+
+			if( sImage.IsEmpty() && IsFocused() )
+				sImage = GetSelectedFocusedImage();
+
+			if(sImage.IsEmpty())
+				sImage = GetSelectedImage();
 		}
 		else
 		{
-			RECT rcBorder;
+			if( !IsEnabled() )
+				sImage = GetDisabledImage();
 
-			if(rcBorderSize.left > 0){
-				rcBorder		= m_rcItem;
-				rcBorder.right	= rcBorder.left;
-				CRenderEngine::DrawLine(hDC,rcBorder,rcBorderSize.left,GetAdjustColor(dwColor),m_nBorderStyle);
-			}
-			if(rcBorderSize.top > 0){
-				rcBorder		= m_rcItem;
-				rcBorder.bottom	= rcBorder.top;
-				CRenderEngine::DrawLine(hDC,rcBorder,rcBorderSize.top,GetAdjustColor(dwColor),m_nBorderStyle);
-			}
-			if(rcBorderSize.right > 0){
-				rcBorder		= m_rcItem;
-				rcBorder.right -= 1;
-				rcBorder.left	= rcBorder.right;
-				CRenderEngine::DrawLine(hDC,rcBorder,rcBorderSize.right,GetAdjustColor(dwColor),m_nBorderStyle);
-			}
-			if(rcBorderSize.bottom > 0){
-				rcBorder		= m_rcItem;
-				rcBorder.bottom -= 1;
-				rcBorder.top	= rcBorder.bottom;
-				CRenderEngine::DrawLine(hDC,rcBorder,rcBorderSize.bottom,GetAdjustColor(dwColor),m_nBorderStyle);
-			}
+			else if( sImage.IsEmpty() && IsPushedState() )
+				sImage = GetPushedImage();
+
+			else if( sImage.IsEmpty() && IsHotState() )
+				sImage = GetHotImage();
+
+			else if( sImage.IsEmpty() && IsFocused() )
+				sImage = GetFocusedImage();
 		}
+
+		if(sImage.IsEmpty())
+			sImage = GetNormalImage();
+
+		if( sImage.IsEmpty() ) return;
+		DrawImage(pRender, sImage);
 	}
 
-	void CControlUI::DoPostPaint(HDC hDC, const RECT& rcPaint)
+	void CControlUI::PaintForeColor(UIRender *pRender)
+	{
+		if(m_dwForeColor == 0) 
+			return;
+		pRender->DrawColor(m_rcItem, GetBorderRound(), GetAdjustColor(m_dwForeColor));
+	}
+	
+	void CControlUI::PaintForeImage(UIRender *pRender)
+	{
+		CDuiString sImage;
+		if( !IsEnabled() )
+			sImage = GetDisabledForeImage();
+
+		else if( IsSelectedState() )
+			sImage = GetSelectedForeImage();
+
+		else if( IsPushedState() )
+			sImage = GetPushedForeImage();
+
+		else if( IsHotState() )
+			sImage = GetHotForeImage();
+
+		else if( IsFocused() )
+			sImage = GetFocusedForeImage();
+
+		if(sImage.IsEmpty())
+			sImage = GetForeImage();
+
+		if( sImage.IsEmpty() ) return;
+		DrawImage(pRender, sImage);
+	}
+
+	void CControlUI::PaintText(UIRender *pRender)
+	{/*
+		CDuiString sText = GetText();
+		if(sText.IsEmpty()) return;
+
+		RECT rcText = m_rcItem;
+		DWORD dwColor = 0;
+		int iFont = -1;
+
+		//////////////////////////////////////////////////////////////////////////
+		if( !IsEnabled() )
+			iFont = GetDisabledFont();
+
+		else if( IsPushedState() )
+			iFont = GetPushedFont();
+
+		else if( IsHotState() )
+			iFont = GetHotFont();
+
+		else if( IsSelectedState() )
+			iFont = GetSelectedFont();
+
+		else if( IsFocused() )
+			iFont = GetFocusedFont();
+
+		if(iFont == -1)
+			iFont = GetFont();
+
+		//////////////////////////////////////////////////////////////////////////
+		if( !IsEnabled() )
+			dwColor = GetDisabledTextColor();
+
+		else if( IsHotState() )
+			dwColor = GetHotTextColor();
+
+		else if( IsPushedState() )
+			dwColor = GetPushedTextColor();
+
+		else if( IsSelectedState() )
+			dwColor = GetSelectedTextColor();
+
+		else if( IsFocused() )
+			dwColor = GetFocusedTextColor();
+
+		if(dwColor == 0)
+			dwColor = GetTextColor();
+
+		if(dwColor == 0 && m_pManager)
+			dwColor = m_pManager->GetDefaultFontColor();
+
+		pRender->DrawText(rcText, GetTextPadding(), sText, dwColor, iFont, GetTextStyle());
+		return;
+		*/
+	}
+
+	void CControlUI::PaintBorder(UIRender *pRender)
+	{
+		DWORD dwColor = 0;
+
+		if( !IsEnabled() )
+			dwColor = GetDisableBorderColor();
+
+		else if( IsSelectedState() )
+			dwColor = GetSelectedBorderColor();
+
+		else if( IsPushedState() )
+			dwColor = GetPushedBorderColor();
+
+		else if( IsHotState() )
+			dwColor = GetHotBorderColor();
+
+		else if( IsFocused() )
+			dwColor = GetFocusBorderColor();
+
+		if(dwColor == 0) 
+			dwColor = GetBorderColor();
+
+		if(dwColor == 0) return;
+		pRender->DrawBorder(m_rcItem, GetBorderSize(), GetBorderRound(), 
+			GetBorderRectSize(), GetAdjustColor(dwColor), GetBorderStyle());
+	}
+
+	void CControlUI::DoPostPaint(UIRender *pRender, const RECT& rcPaint)
 	{
 		return;
 	}

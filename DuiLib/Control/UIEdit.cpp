@@ -19,6 +19,7 @@ namespace DuiLib
 		LRESULT OnKillFocus(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 		LRESULT OnEditChanged(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
+		void InitNativeRender();
 	protected:
 		enum { 
 			DEFAULT_TIMERID = 20,
@@ -28,6 +29,9 @@ namespace DuiLib
 		HBRUSH m_hBkBrush;
 		bool m_bInit;
 		bool m_bDrawCaret;
+		CStdRefPtr<UIFont> m_font;
+		CStdRefPtr<UIBitmap> m_bmpBrush;
+		CStdRefPtr<UIBrush> m_brush;
 	};
 
 
@@ -61,14 +65,9 @@ namespace DuiLib
 		if( m_pOwner->IsMultiLine()) uStyle |= ES_MULTILINE | ES_AUTOVSCROLL;
 		if( m_pOwner->IsWantReturn()) uStyle |= ES_WANTRETURN;
 		Create(m_pOwner->GetManager()->GetPaintWindow(), NULL, uStyle, 0, rcPos);
-		HFONT hFont=NULL;
-		int iFontIndex=m_pOwner->GetFont();
-		if (iFontIndex!=-1)
-			hFont = m_pOwner->GetManager()->GetFont(iFontIndex);
-		if (hFont == NULL)
-			hFont = m_pOwner->GetManager()->GetDefaultFontInfo()->hFont;
 
-		SetWindowFont(m_hWnd, hFont, TRUE);
+		m_font = MakeRefPtr<UIFont>(m_pOwner->GetManager()->CloneFont(m_pOwner->GetFont()));
+		::SendMessage(m_hWnd, WM_SETFONT, (WPARAM)m_font->GetHFont(m_pOwner->GetManager()), (LPARAM)TRUE);
 		Edit_LimitText(m_hWnd, m_pOwner->GetMaxChar());
 		if( m_pOwner->IsPasswordMode() ) Edit_SetPasswordChar(m_hWnd, m_pOwner->GetPasswordChar());
 		Edit_SetText(m_hWnd, m_pOwner->GetText());
@@ -107,7 +106,7 @@ namespace DuiLib
 		rcPos.bottom -= rcInset.bottom;
 		if(m_pOwner && !m_pOwner->IsMultiLine())
 		{
-			LONG lEditHeight = m_pOwner->GetManager()->GetFontInfo(m_pOwner->GetFont())->tm.tmHeight;
+			LONG lEditHeight = m_pOwner->GetManager()->GetFontHeight(m_pOwner->GetFont());
 			if( lEditHeight < rcPos.GetHeight() ) {
 				rcPos.top += (rcPos.GetHeight() - lEditHeight) / 2;
 				rcPos.bottom = rcPos.top + lEditHeight;
@@ -157,7 +156,8 @@ namespace DuiLib
 	{
 		LRESULT lRes = 0;
 		BOOL bHandled = TRUE;
-		if( uMsg == WM_CREATE ) {
+		if( uMsg == WM_CREATE ) 
+		{
 			//m_pOwner->GetManager()->AddNativeWindow(m_pOwner, m_hWnd);
 			//if( m_pOwner->GetManager()->IsLayered() ) {
 			//	::SetTimer(m_hWnd, DEFAULT_TIMERID, ::GetCaretBlinkTime(), NULL);
@@ -192,19 +192,24 @@ namespace DuiLib
 			::SetBkMode((HDC)wParam, TRANSPARENT);
 			DWORD dwTextColor = m_pOwner->GetTextColor();
 			::SetTextColor((HDC)wParam, RGB(GetBValue(dwTextColor),GetGValue(dwTextColor),GetRValue(dwTextColor)));
-			if (clrColor < 0xFF000000) {
-				if (m_hBkBrush != NULL) ::DeleteObject(m_hBkBrush);
+			return (LRESULT)m_brush->GetHBrush();
+		}
+		else if( uMsg == WM_SIZE)
+		{
+			//OutputDebugString(_T("InitNativeRender \r\n"));
+			DWORD clrColor = m_pOwner->GetNativeEditBkColor();
+			if (clrColor < 0xFF000000) 
+			{
 				RECT rcWnd = m_pOwner->GetManager()->GetNativeWindowRect(m_hWnd);
-				HBITMAP hBmpEditBk = CRenderEngine::GenerateBitmap(m_pOwner->GetManager(), rcWnd, m_pOwner, clrColor);
-				m_hBkBrush = ::CreatePatternBrush(hBmpEditBk);
-				::DeleteObject(hBmpEditBk);
+				m_bmpBrush = MakeRefPtr<UIBitmap>(UIGlobal::CreateControlBackBitmap(m_pOwner, rcWnd, clrColor));
+				m_brush = MakeRefPtr<UIBrush>(UIGlobal::CreateBrush());
+				m_brush->CreateBitmapBrush(m_bmpBrush);
 			}
-			else {
-				if (m_hBkBrush == NULL) {
-					m_hBkBrush = ::CreateSolidBrush(RGB(GetBValue(clrColor), GetGValue(clrColor), GetRValue(clrColor)));
-				}
+			else 
+			{
+				m_brush = MakeRefPtr<UIBrush>(UIGlobal::CreateBrush());
+				m_brush->CreateSolidBrush(clrColor);
 			}
-			return (LRESULT)m_hBkBrush;
 		}
 		else if( uMsg == WM_PAINT) {
 			//if (m_pOwner->GetManager()->IsLayered()) {
@@ -274,7 +279,7 @@ namespace DuiLib
 	//
 	IMPLEMENT_DUICONTROL(CEditUI)
 
-	CEditUI::CEditUI() : m_pWindow(NULL), m_uMaxChar(255), m_bReadOnly(false), 
+	CEditUI::CEditUI() : m_pWindow(NULL), m_uMaxChar(255), 
 		m_bPasswordMode(false), m_cPasswordChar(_T('*')), m_bAutoSelAll(false), 
 		m_dwEditbkColor(0xFFFFFFFF), m_dwEditTextColor(0x00000000), m_iWindowStyls(0),m_dwTipValueColor(0xFFBAC0C5)
 	{
@@ -382,8 +387,8 @@ namespace DuiLib
 		{
 			if( ::PtInRect(&m_rcItem, event.ptMouse ) ) {
                 if( IsEnabled() ) {
-                    if( (m_uButtonState & UISTATE_HOT) == 0  ) {
-                        m_uButtonState |= UISTATE_HOT;
+                    if( !IsHotState() ) {
+                        SetHotState(true);
                         Invalidate();
                     }
                 }
@@ -392,7 +397,7 @@ namespace DuiLib
 		if( event.Type == UIEVENT_MOUSELEAVE )
 		{
 			if( IsEnabled() ) {
-				m_uButtonState &= ~UISTATE_HOT;
+				SetHotState(false);
 				Invalidate();
 			}
 			return;
@@ -412,14 +417,6 @@ namespace DuiLib
    //         }
 		}
 		CLabelUI::DoEvent(event);
-	}
-
-	void CEditUI::SetEnabled(bool bEnable)
-	{
-		CControlUI::SetEnabled(bEnable);
-		if( !IsEnabled() ) {
-			m_uButtonState = 0;
-		}
 	}
 
 	void CEditUI::SetText(LPCTSTR pstrText)
@@ -442,16 +439,11 @@ namespace DuiLib
 
 	void CEditUI::SetReadOnly(bool bReadOnly)
 	{
-		if( m_bReadOnly == bReadOnly ) return;
+		if( IsReadOnly() == bReadOnly ) return;
 
-		m_bReadOnly = bReadOnly;
-		if( m_pWindow != NULL ) Edit_SetReadOnly(*m_pWindow, m_bReadOnly);
+		CControlUI::SetReadOnly(bReadOnly);
+		if( m_pWindow != NULL ) Edit_SetReadOnly(*m_pWindow, bReadOnly);
 		Invalidate();
-	}
-
-	bool CEditUI::IsReadOnly() const
-	{
-		return m_bReadOnly;
 	}
 
 	void CEditUI::SetNumberOnly(bool bNumberOnly)
@@ -538,50 +530,6 @@ namespace DuiLib
 		return m_cPasswordChar;
 	}
 
-	LPCTSTR CEditUI::GetNormalImage()
-	{
-		return m_sNormalImage;
-	}
-
-	void CEditUI::SetNormalImage(LPCTSTR pStrImage)
-	{
-		m_sNormalImage = pStrImage;
-		Invalidate();
-	}
-
-	LPCTSTR CEditUI::GetHotImage()
-	{
-		return m_sHotImage;
-	}
-
-	void CEditUI::SetHotImage(LPCTSTR pStrImage)
-	{
-		m_sHotImage = pStrImage;
-		Invalidate();
-	}
-
-	LPCTSTR CEditUI::GetFocusedImage()
-	{
-		return m_sFocusedImage;
-	}
-
-	void CEditUI::SetFocusedImage(LPCTSTR pStrImage)
-	{
-		m_sFocusedImage = pStrImage;
-		Invalidate();
-	}
-
-	LPCTSTR CEditUI::GetDisabledImage()
-	{
-		return m_sDisabledImage;
-	}
-
-	void CEditUI::SetDisabledImage(LPCTSTR pStrImage)
-	{
-		m_sDisabledImage = pStrImage;
-		Invalidate();
-	}
-
 	void CEditUI::SetNativeEditBkColor(DWORD dwBkColor)
 	{
 		m_dwEditbkColor = dwBkColor;
@@ -636,7 +584,7 @@ namespace DuiLib
 		m_sTipValue	= pStrTipValue;
 	}
 
-	LPCTSTR CEditUI::GetTipValue()
+	CDuiString CEditUI::GetTipValue()
 	{
 		if (IsResourceText()) 
 			return CResourceManager::GetInstance()->GetText(m_sTipValue);
@@ -699,14 +647,13 @@ namespace DuiLib
 	SIZE CEditUI::EstimateSize(SIZE szAvailable)
 	{
 		if(IsAutoCalcHeight() && !IsMultiLine()) 
-			return CDuiSize(m_cxyFixed.cx, m_pManager->GetFontInfo(GetFont())->tm.tmHeight + 6);
+			return CDuiSize(m_cxyFixed.cx, m_pManager->GetFontHeight(GetFont()) + 6);
 		return CControlUI::EstimateSize(szAvailable);
 	}
 
 	void CEditUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
-		if( _tcsicmp(pstrName, _T("readonly")) == 0 ) SetReadOnly(_tcsicmp(pstrValue, _T("true")) == 0);
-		else if( _tcsicmp(pstrName, _T("numberonly")) == 0 ) SetNumberOnly(_tcsicmp(pstrValue, _T("true")) == 0);
+		if( _tcsicmp(pstrName, _T("numberonly")) == 0 ) SetNumberOnly(_tcsicmp(pstrValue, _T("true")) == 0);
 		else if( _tcscmp(pstrName, _T("autoselall")) == 0 ) SetAutoSelAll(_tcscmp(pstrValue, _T("true")) == 0);	
 		else if( _tcsicmp(pstrName, _T("password")) == 0 ) SetPasswordMode(_tcsicmp(pstrValue, _T("true")) == 0);
 		else if( _tcsicmp(pstrName, _T("passwordchar")) == 0 ) SetPasswordChar(*pstrValue);
@@ -715,10 +662,6 @@ namespace DuiLib
 		else if( _tcsicmp(pstrName, _T("uppercase")) == 0 ) SetUpperCase(_tcsicmp(pstrValue, _T("true")) == 0);
 		else if( _tcsicmp(pstrName, _T("multiline")) == 0 ) SetMultiLine(_tcsicmp(pstrValue, _T("true")) == 0);
 		else if( _tcsicmp(pstrName, _T("wantreturn")) == 0 ) SetWantReturn(_tcsicmp(pstrValue, _T("true")) == 0);
-		else if( _tcsicmp(pstrName, _T("normalimage")) == 0 ) SetNormalImage(pstrValue);
-		else if( _tcsicmp(pstrName, _T("hotimage")) == 0 ) SetHotImage(pstrValue);
-		else if( _tcsicmp(pstrName, _T("focusedimage")) == 0 ) SetFocusedImage(pstrValue);
-		else if( _tcsicmp(pstrName, _T("disabledimage")) == 0 ) SetDisabledImage(pstrValue);
 		else if( _tcsicmp(pstrName, _T("tipvalue")) == 0 ) SetTipValue(pstrValue);
 		else if( _tcsicmp(pstrName, _T("tipvaluecolor")) == 0 ) SetTipValueColor(pstrValue);
 		else if( _tcsicmp(pstrName, _T("nativetextcolor")) == 0 ) SetNativeEditTextColor(pstrValue);
@@ -731,88 +674,71 @@ namespace DuiLib
 		else CLabelUI::SetAttribute(pstrName, pstrValue);
 	}
 
-	void CEditUI::PaintStatusImage(HDC hDC)
+
+	void CEditUI::PaintText(UIRender *pRender)
 	{
-		if( IsFocused() ) m_uButtonState |= UISTATE_FOCUSED;
-		else m_uButtonState &= ~ UISTATE_FOCUSED;
-		if( !IsEnabled() ) m_uButtonState |= UISTATE_DISABLED;
-		else m_uButtonState &= ~ UISTATE_DISABLED;
+		CDuiString sText = GetText();
+		RECT rcText = m_rcItem;
+		DWORD dwColor = 0;
+		int iFont = -1;
 
-		if( (m_uButtonState & UISTATE_DISABLED) != 0 ) {
-			if( !m_sDisabledImage.IsEmpty() ) {
-				if( !DrawImage(hDC, (LPCTSTR)m_sDisabledImage) ) {}
-				else return;
+		if(sText.IsEmpty())
+		{
+			sText = GetTipValue();
+			dwColor = GetTipValueColor();
+		}
+		else 
+		{
+			if(IsPasswordMode())
+			{
+				int length = sText.GetLength();
+				sText.Empty();
+				for(int i=0; i<length; i++) 
+					sText += GetPasswordChar();
 			}
-		}
-		else if( (m_uButtonState & UISTATE_FOCUSED) != 0 ) {
-			if( !m_sFocusedImage.IsEmpty() ) {
-				if( !DrawImage(hDC, (LPCTSTR)m_sFocusedImage) ) {}
-				else return;
-			}
-		}
-		else if( (m_uButtonState & UISTATE_HOT) != 0 ) {
-			if( !m_sHotImage.IsEmpty() ) {
-				if( !DrawImage(hDC, (LPCTSTR)m_sHotImage) ) {}
-				else return;
-			}
+
+			if( !IsEnabled() )
+				dwColor = GetDisabledTextColor();
+
+			else if( IsHotState() )
+				dwColor = GetHotTextColor();
+
+			else if( IsPushedState() )
+				dwColor = GetPushedTextColor();
+
+			else if( IsFocused() )
+				dwColor = GetFocusedTextColor();
+
+			if(dwColor == 0)
+				dwColor = GetTextColor();
+
+			if(dwColor == 0 && m_pManager)
+				dwColor = m_pManager->GetDefaultFontColor();
 		}
 
-		if( !m_sNormalImage.IsEmpty() ) {
-			if( !DrawImage(hDC, (LPCTSTR)m_sNormalImage) ) {}
-			else return;
-		}
-	}
+		//////////////////////////////////////////////////////////////////////////
+		if( !IsEnabled() )
+			iFont = GetDisabledFont();
 
-	void CEditUI::PaintText(HDC hDC)
-	{
-		DWORD mCurTextColor = m_dwTextColor;
+		else if( IsPushedState() )
+			iFont = GetPushedFont();
 
-		if( m_dwTextColor == 0 ) mCurTextColor = m_dwTextColor = m_pManager->GetDefaultFontColor();		
-		if( m_dwDisabledTextColor == 0 ) m_dwDisabledTextColor = m_pManager->GetDefaultDisabledColor();
+		else if( IsHotState() )
+			iFont = GetHotFont();
 
-		CDuiString sDrawText = GetText();
-		CDuiString sTipValue = GetTipValue();
-		if(sDrawText == sTipValue || sDrawText == _T("")) {
-			mCurTextColor = m_dwTipValueColor;
-			sDrawText = sTipValue;
-		}
-		else {
-			CDuiString sTemp = sDrawText;
-			if( m_bPasswordMode ) {
-				sDrawText.Empty();
-				LPCTSTR pStr = sTemp.GetData();
-				while( *pStr != _T('\0') ) {
-					sDrawText += m_cPasswordChar;
-					pStr = ::CharNext(pStr);
-				}
-			}
-		}
+		else if( IsFocused() )
+			iFont = GetFocusedFont();
+
+		if(iFont == -1)
+			iFont = GetFont();
 
 		UINT uTextStyle = GetTextStyle();
 		if(IsMultiLine())
-		{
-			//uTextStyle &= ~(DT_BOTTOM | DT_VCENTER);
 			uTextStyle = DT_LEFT | DT_TOP | DT_WORDBREAK | DT_EDITCONTROL;
-		}
 		else
-		{
 			uTextStyle |= DT_SINGLELINE;
-		}
 
-		RECT rc = m_rcItem;
-		RECT rcTextPadding = GetTextPadding();
-		rc.left += rcTextPadding.left;
-		rc.right -= rcTextPadding.right;
-		rc.top += rcTextPadding.top;
-		rc.bottom -= rcTextPadding.bottom;
-		if( IsEnabled() ) {
-			CRenderEngine::DrawText(hDC, m_pManager, rc, sDrawText, mCurTextColor, \
-				m_iFont, uTextStyle);
-		}
-		else {
-			CRenderEngine::DrawText(hDC, m_pManager, rc, sDrawText, m_dwDisabledTextColor, \
-				m_iFont, uTextStyle);
-		}
+		pRender->DrawText(rcText, GetTextPadding(), sText, dwColor, iFont, uTextStyle);
 	}
 
 

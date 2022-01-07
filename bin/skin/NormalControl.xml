@@ -8,7 +8,7 @@
 			<OptionLayout width="150" selectedbkcolor="0xFF808000" style="style_button">
 				<HorizontalLayout inset="10,0,10,0" childvalign="vcenter">
 					<Option width="16" height="16" selectedimage="images\check-select.png" normalimage="images\check-unselect.png" />
-					<Text text="按钮容器" align="center" resourceid="5" />
+					<Text text="按钮容器" resourceid="5" />
 					<Control width="16" height="16" foreimage="images\edtico.png" />
 				</HorizontalLayout>
 			</OptionLayout>
@@ -30,7 +30,7 @@
 			<Option width="16" height="16" selectedimage="file='images\common\checkbox\btn_wnd_checkbox.png' source='60,0,75,16' " selectedhotimage="file='images\common\checkbox\btn_wnd_checkbox.png' source='75,0,90,16' " selectedpushedimage="file='images\common\checkbox\btn_wnd_checkbox.png' source='90,0,105,16' " selected="true" normalimage="file='images\common\checkbox\btn_wnd_checkbox.png' source='0,0,15,16' " hotimage="file='images\common\checkbox\btn_wnd_checkbox.png' source='15,0,30,16' " pushedimage="file='images\common\checkbox\btn_wnd_checkbox.png' source='30,0,45,16' " disabledimage="file='images\common\checkbox\btn_wnd_checkbox.png' source='45,0,60,16' " />
 			<Option width="100" height="32" selectedimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='60,0,75,16' " selectedhotimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='75,0,90,16' " selectedpushedimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='90,0,105,16' " selectedfont="1" normalimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='0,0,15,16' " hotimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='15,0,30,16' " pushedimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='30,0,45,16' " disabledimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='45,0,60,16' " text="文本内容" textpadding="14,0,0,0" bordercolor="0xFFC0C0C0" bordersize="1" resourceid="12" />
 			<Option width="100" height="32" selectedimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='60,0,75,16' " selectedhotimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='75,0,90,16' " selectedpushedimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='90,0,105,16' " selected="true" normalimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='0,0,15,16' " hotimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='15,0,30,16' " pushedimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='30,0,45,16' " disabledimage="file='images\common\checkbox\btn_wnd_checkbox.png' dest='5,6,21,22' source='45,0,60,16' " text="文本内容" textpadding="14,0,0,0" bordercolor="0xFFC0C0C0" bordersize="1" resourceid="13" />
-			<Label text="svg图标(支持填充颜色)" textpadding="5,0,5,0" autocalcwidth="true" resourceid="44" />
+			<Label text="svg图标(支持填充颜色)" textpadding="5,0,5,0" autocalcwidth="true" />
 			<Button width="16" height="16" normalimage="images\si-glyph-suitcase.svg" />
 			<Button width="32" height="32" normalimage="file='images\si-glyph-suitcase-person.svg' width='32' height='32' fillcolor='0xFFFF0000' " />
 			<Button width="32" height="32" normalimage="file='images\si-glyph-suitcase-person.svg' width='32' height='32' fillcolor='0xFF008000' " />
@@ -50,9 +50,10 @@
 		</HorizontalLayout>
 		<HorizontalLayout height="60" childpadding="10" childvalign="vcenter">
 			<Label text="编辑框" autocalcwidth="true" resourceid="20" />
-			<Edit width="150" tipvalue="编辑框" bordercolor="0xFFC0C0C0" bordersize="1" resourceid="39" tooltip="真的是编辑框" />
+			<Edit width="150" nativebkcolor="0x7FFF0000" tipvalue="编辑框" bordercolor="0xFFC0C0C0" bordersize="1" resourceid="39" tooltip="真的是编辑框" />
 			<Label text="多行编辑框" autocalcwidth="true" />
 			<Edit width="150" height="60" multiline="true" wantreturn="true" tipvalue="编辑框" valign="top" bordercolor="0xFFC0C0C0" bordersize="1" />
+			<Button width="60" height="60" hotbkcolor="0xFFC0C0C0" text="圆角按钮" pos="0,0,60,60" bkcolor="0xFFA0A0A4" bordercolor="0xFFFF0000" bordersize="1" borderround="10,10" />
 		</HorizontalLayout>
 		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
 			<Label text="日期" autocalcwidth="true" resourceid="21" />
@@ -79,25 +80,25 @@
 			<Label text="图像控件" autocalcwidth="true" resourceid="28" />
 			<VerticalLayout width="100" inset="1,1,1,1" bordercolor="0xFF969696" bordersize="1">
 				<Picture fileimage="images\loading.gif" framedelay="100" width="100" />
-				<Text height="20" text="GIF" align="center" bkcolor="0xFFE1E1E1" resourceid="29" />
+				<Text height="20" text="GIF" bkcolor="0xFFE1E1E1" resourceid="29" />
 			</VerticalLayout>
 			<VerticalLayout width="100" inset="1,1,1,1" bordercolor="0xFF969696" bordersize="1">
 				<VerticalLayout childalign="center" childvalign="vcenter">
 					<Picture fileimage="images\ico.jpg" autosize="true" />
 				</VerticalLayout>
-				<Text height="20" text="JPG" align="center" bkcolor="0xFFE1E1E1" resourceid="30" />
+				<Text height="20" text="JPG" bkcolor="0xFFE1E1E1" resourceid="30" />
 			</VerticalLayout>
 			<VerticalLayout width="100" inset="1,1,1,1" bordercolor="0xFF969696" bordersize="1">
 				<VerticalLayout childalign="center" childvalign="vcenter">
 					<Picture fileimage="images\common\webbrowser\load_error.png" autosize="true" />
 				</VerticalLayout>
-				<Text height="20" text="PNG" align="center" bkcolor="0xFFE1E1E1" resourceid="31" />
+				<Text height="20" text="PNG" bkcolor="0xFFE1E1E1" resourceid="31" />
 			</VerticalLayout>
 			<VerticalLayout width="100" inset="1,1,1,1" bordercolor="0xFF969696" bordersize="1">
 				<VerticalLayout childalign="center" childvalign="vcenter">
 					<Picture fileimage="images\bmp.bmp" autosize="true" />
 				</VerticalLayout>
-				<Text height="20" text="BMP" align="center" bkcolor="0xFFE1E1E1" resourceid="32" />
+				<Text height="20" text="BMP" bkcolor="0xFFE1E1E1" resourceid="32" />
 			</VerticalLayout>
 		</HorizontalLayout>
 		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
@@ -115,6 +116,7 @@
 		</HorizontalLayout>
 		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
 			<Label autocalcwidth="true" />
+			<Button width="100" text="拖动" drag="true" style="style_button" />
 		</HorizontalLayout>
 		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
 			<Label autocalcwidth="true" />

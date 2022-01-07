@@ -189,6 +189,7 @@ void CUIPropertyGridImageProperty::OnClickButton(CPoint point)
 	CControlUI *pControl = (CControlUI *)node.get_tag();
 	if(pControl)
 	{
+		/*
 		//获取图片之前，先给控件设置空图片再拍照
 		pControl->SetAttribute(GetName(), _T(""));
 
@@ -211,6 +212,31 @@ void CUIPropertyGridImageProperty::OnClickButton(CPoint point)
 
 		//裁剪结果给图像编辑器使用
 		dlg.SetControlImage(img2.Detach(), rcControl);
+
+		//获取图片之后，先给控件的图片设置回去
+		pControl->SetAttribute(GetName(), (LPCTSTR)GetValue().bstrVal);
+		*/
+
+		CControlUI *pRoot = pControl->GetManager()->GetRoot();
+		CRect rcRoot = pRoot->GetPos();
+
+		CRect rcControl = pControl->GetPos();
+		CStdRefPtr<UIRender> pRender = MakeRefPtr<UIRender>(UIGlobal::CreateRenderTarget());
+		pRender->Init(pControl->GetManager());
+		pRender->Resize(rcRoot);
+
+		//获取图片之前，先给控件相关属性设置空图片再拍照
+		pControl->SetAttribute(GetName(), _T(""));
+
+		//整个界面绘制一次
+		pRoot->Paint(pRender, rcRoot, NULL);
+		 
+		//把rcControl部分拷贝到CImage
+		dlg.m_imgControlX.Create(rcControl.Width(), rcControl.Height(), 32);
+		::BitBlt(dlg.m_imgControlX.GetDC(), 0, 0, rcControl.Width(), rcControl.Height(), pRender->GetDC(), rcControl.left, rcControl.top, SRCCOPY);
+		dlg.m_imgControlX.ReleaseDC();
+
+		dlg.m_rcControl = rcControl;
 
 		//获取图片之后，先给控件的图片设置回去
 		pControl->SetAttribute(GetName(), (LPCTSTR)GetValue().bstrVal);
@@ -496,6 +522,27 @@ CDuiEditorViewDesign *CUIPropertyGridCtrl::GetView() const
 {
 	if(!GetUIManager()) return NULL;
 	return GetUIManager()->GetDesignView();
+}
+
+void CUIPropertyGridCtrl::SetPropListFont()
+{
+	::DeleteObject(m_fntPropList.Detach());
+
+	LOGFONT lf;
+	afxGlobalData.fontRegular.GetLogFont(&lf);
+
+	NONCLIENTMETRICS info;
+	info.cbSize = sizeof(info);
+
+	afxGlobalData.GetNonClientMetrics(info);
+
+	lf.lfHeight = info.lfMenuFont.lfHeight;
+	lf.lfWeight = info.lfMenuFont.lfWeight;
+	lf.lfItalic = info.lfMenuFont.lfItalic;
+
+	m_fntPropList.CreateFontIndirect(&lf);
+
+	SetFont(&m_fntPropList);
 }
 
 void CUIPropertyGridCtrl::InitProp(xml_node TreeNode)
@@ -900,6 +947,53 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 		SetModifyPropertyFlag(pProperty);
 
 	}
+	else if(CompareString(attrType.value(), _T("HSL")))
+	{
+		CMFCPropertyGridProperty* pHsl = new CMFCPropertyGridProperty(XML2T(attrName.value()), (DWORD_PTR)attrDefValue.as_int(), TRUE);
+		pHsl->SetData((DWORD_PTR)attrNode.internal_object());
+		pGroupParent->AddSubItem(pHsl);
+
+		CStringArray strArrDef;
+		SplitCString(strArrDef, XML2T(attrDefValue.value()));
+
+		int nDefH = 0;
+		int nDefS = 0;
+		int nDefL = 0;
+		if(strArrDef.GetSize() > 0) nDefH = _tstoi(strArrDef[0]);
+		if(strArrDef.GetSize() > 1) nDefS = _tstoi(strArrDef[1]);
+		if(strArrDef.GetSize() > 2) nDefL = _tstoi(strArrDef[2]);
+
+		int nH = 180;
+		int nS = 100;
+		int nL = 100;
+		xml_attribute attr = TreeNode.attribute(attrName.value());
+		if(attr)
+		{
+			CStringArray strArray;
+			SplitCString(strArray, XML2T(attr.value()));
+			if(strArray.GetSize() > 0) nH = _tstoi(strArray[0]);
+			if(strArray.GetSize() > 1) nS = _tstoi(strArray[1]);
+			if(strArray.GetSize() > 2) nL = _tstoi(strArray[2]);
+		}
+
+		pProperty = new CMFCPropertyGridProperty(_T("h"), _variant_t((long)nH, VT_I4), XML2T(attrComment.value()));
+		pProperty->EnableSpinControl(TRUE, 0, 360);
+		pProperty->SetOriginalValue(_variant_t((long)nDefH, VT_I4));	
+		pHsl->AddSubItem(pProperty);
+		SetModifyPropertyFlag(pProperty);
+
+		pProperty = new CMFCPropertyGridProperty( _T("s"), _variant_t((long)nS, VT_I4), XML2T(attrComment.value()));
+		pProperty->EnableSpinControl(TRUE, 0, 200);
+		pProperty->SetOriginalValue(_variant_t((long)nDefS, VT_I4));	
+		pHsl->AddSubItem(pProperty);
+		SetModifyPropertyFlag(pProperty);
+
+		pProperty = new CMFCPropertyGridProperty( _T("l"), _variant_t((long)nL, VT_I4), XML2T(attrComment.value()));
+		pProperty->EnableSpinControl(TRUE, 0, 200);
+		pProperty->SetOriginalValue(_variant_t((long)nDefL, VT_I4));	
+		pHsl->AddSubItem(pProperty);
+		SetModifyPropertyFlag(pProperty);
+	}
 	else if(CompareString(attrType.value(), _T("CHAR")))
 	{
 		pProperty = new CMFCPropertyGridProperty(XML2T(attrName.value()), (_variant_t)attrDefValue.value(),  XML2T(attrComment.value()));
@@ -1084,6 +1178,10 @@ void CUIPropertyGridCtrl::OnPropertyChanged(CMFCPropertyGridProperty* pProp) con
 		attrTree = g_duiProp.AddAttribute(m_TreeNode, XML2T(attrName.value()), (LPCTSTR)pProp->GetValue().bstrVal, GetUIManager());
 	}
 	else if(CompareString(attrType.value(), _T("RECT")))
+	{
+		attrTree = g_duiProp.AddAttribute(m_TreeNode, XML2T(attrName.value()), (LPCTSTR)pProp->GetValue().bstrVal, GetUIManager());
+	}
+	else if(CompareString(attrType.value(), _T("HSL")))
 	{
 		attrTree = g_duiProp.AddAttribute(m_TreeNode, XML2T(attrName.value()), (LPCTSTR)pProp->GetValue().bstrVal, GetUIManager());
 	}

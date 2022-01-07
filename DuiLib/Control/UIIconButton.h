@@ -10,15 +10,15 @@ public:
 	CIconButtonUI(void);
 	virtual ~CIconButtonUI(void);
 
-	LPCTSTR GetClass() const;
-	LPVOID GetInterface(LPCTSTR pstrName);
+	virtual LPCTSTR GetClass() const override;
+	virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
-	virtual void DoInit();
-	SIZE EstimateSize(SIZE szAvailable);
+	virtual void DoInit() override;
+	virtual SIZE EstimateSize(SIZE szAvailable) override;
 
-	void PaintText(HDC hDC);
+	virtual void PaintText(UIRender *pRender) override;
 
-	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+	virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 
 	LPCTSTR GetIconNormalImage() const;
 	void SetIconNormalImage(LPCTSTR pStrImage);

@@ -38,15 +38,20 @@ namespace DuiLib {
 	HRESULT InitDefaultCharFormat(CRichEditUI* re, CHARFORMAT2W* pcf, HFONT hfont) 
 	{
 		memset(pcf, 0, sizeof(CHARFORMAT2W));
-		if(hfont == NULL) {
-			hfont = re->GetManager()->GetFont(re->GetFont());
+		if(hfont == NULL) 
+		{
+			if(re->GetManager()) 
+			{
+				UIFont *pFont = re->GetManager()->GetFont(re->GetFont());
+				hfont = pFont->GetHFont(re->GetManager());
+			}
 		}
 		LOGFONT lf;
 		::GetObject(hfont, sizeof(LOGFONT), &lf);
 
 		DWORD dwColor = re->GetTextColor();
 		if(re->GetManager()->IsLayered()) {
-			CRenderEngine::CheckAlphaColor(dwColor);
+			UIGlobal::CheckAlphaColor(dwColor);
 		}
 		pcf->cbSize = sizeof(CHARFORMAT2W);
 		pcf->crTextColor = RGB(GetBValue(dwColor), GetGValue(dwColor), GetRValue(dwColor));

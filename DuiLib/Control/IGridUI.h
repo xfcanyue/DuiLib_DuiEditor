@@ -36,7 +36,7 @@ struct TGridMergeRange
 };
 
 //单元格数据, 扩展这个类，注意综合考虑 内存占用 和 运行速度。
-class TCellData
+class TCellData : public ILinkedList
 {
 	friend class IGridUI;
 public:
@@ -95,7 +95,7 @@ protected:
 };
 
 //表格行数据
-struct TRowData
+struct TRowData : public ILinkedList
 {
 	TRowData()
 	{

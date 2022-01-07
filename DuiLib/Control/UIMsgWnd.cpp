@@ -60,7 +60,7 @@ CMsgWndUI::~CMsgWndUI(void)
 
 LPCTSTR CMsgWndUI::GetClass() const
 {
-	return DUI_CTR_MSGWND;
+	return _T("MsgWndUI");
 	return __super::GetClass();
 }
 

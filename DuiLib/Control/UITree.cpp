@@ -22,7 +22,7 @@ CTreeBodyUI::~CTreeBodyUI(void)
 
 LPCTSTR CTreeBodyUI::GetClass() const
 {
-	return DUI_CTR_TREEBODY;
+	return _T("TreeBodyUI");
 }
 
 LPVOID CTreeBodyUI::GetInterface(LPCTSTR pstrName)

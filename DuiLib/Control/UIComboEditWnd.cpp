@@ -31,14 +31,10 @@ void CComboEditWnd::Init(CComboExUI* pOwner)
 	else if(uTextStyle & DT_CENTER) uStyle |= ES_CENTER;
 	else if(uTextStyle & DT_RIGHT) uStyle |= ES_RIGHT;
 	Create(m_pOwner->GetManager()->GetPaintWindow(), NULL, uStyle, 0, rcPos);
-	HFONT hFont=NULL;
-	int iFontIndex=m_pOwner->GetFont();
-	if (iFontIndex!=-1)
-		hFont = m_pOwner->GetManager()->GetFont(iFontIndex);
-	if (hFont == NULL)
-		hFont = m_pOwner->GetManager()->GetDefaultFontInfo()->hFont;
 
-	SetWindowFont(m_hWnd, hFont, TRUE);
+	m_font = MakeRefPtr<UIFont>(m_pOwner->GetManager()->CloneFont(m_pOwner->GetFont()));
+	::SendMessage(m_hWnd, WM_SETFONT, (WPARAM)m_font->GetHFont(m_pOwner->GetManager()), (LPARAM)TRUE);
+
 	Edit_SetText(m_hWnd, m_pOwner->GetText());
 	Edit_SetModify(m_hWnd, FALSE);
 	SendMessage(EM_SETMARGINS, EC_LEFTMARGIN | EC_RIGHTMARGIN, MAKELPARAM(0, 0));
@@ -67,7 +63,7 @@ RECT CComboEditWnd::CalPos()
 	rcPos.top += rcInset.top;
 	rcPos.right -= rcInset.right;
 	rcPos.bottom -= rcInset.bottom;
-	LONG lEditHeight = m_pOwner->GetManager()->GetFontInfo(m_pOwner->GetFont())->tm.tmHeight;
+	LONG lEditHeight = m_pOwner->GetManager()->GetFontHeight(m_pOwner->GetFont());
 	if( lEditHeight < rcPos.GetHeight() ) {
 		rcPos.top += (rcPos.GetHeight() - lEditHeight) / 2;
 		rcPos.bottom = rcPos.top + lEditHeight;
@@ -150,19 +146,24 @@ LRESULT CComboEditWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		::SetBkMode((HDC)wParam, TRANSPARENT);
 		DWORD dwTextColor = m_pOwner->GetTextColor();
 		::SetTextColor((HDC)wParam, RGB(GetBValue(dwTextColor),GetGValue(dwTextColor),GetRValue(dwTextColor)));
-		if (clrColor < 0xFF000000) {
-			if (m_hBkBrush != NULL) ::DeleteObject(m_hBkBrush);
+		return (LRESULT)m_brush->GetHBrush();
+	}
+	else if( uMsg == WM_SIZE)
+	{
+		//OutputDebugString(_T("InitNativeRender \r\n"));
+		DWORD clrColor = m_pOwner->GetBkColor();
+		if (clrColor < 0xFF000000) 
+		{
 			RECT rcWnd = m_pOwner->GetManager()->GetNativeWindowRect(m_hWnd);
-			HBITMAP hBmpEditBk = CRenderEngine::GenerateBitmap(m_pOwner->GetManager(), rcWnd, m_pOwner, clrColor);
-			m_hBkBrush = ::CreatePatternBrush(hBmpEditBk);
-			::DeleteObject(hBmpEditBk);
+			m_bmpBrush = MakeRefPtr<UIBitmap>(UIGlobal::CreateControlBackBitmap(m_pOwner, rcWnd, clrColor));
+			m_brush = MakeRefPtr<UIBrush>(UIGlobal::CreateBrush());
+			m_brush->CreateBitmapBrush(m_bmpBrush);
 		}
-		else {
-			if (m_hBkBrush == NULL) {
-				m_hBkBrush = ::CreateSolidBrush(RGB(GetBValue(clrColor), GetGValue(clrColor), GetRValue(clrColor)));
-			}
+		else 
+		{
+			m_brush = MakeRefPtr<UIBrush>(UIGlobal::CreateBrush());
+			m_brush->CreateSolidBrush(clrColor);
 		}
-		return (LRESULT)m_hBkBrush;
 	}
 	else if( uMsg == WM_PAINT) {
 		//if (m_pOwner->GetManager()->IsLayered()) {
