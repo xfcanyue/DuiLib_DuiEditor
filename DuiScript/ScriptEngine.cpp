@@ -196,6 +196,16 @@ DECL_PROP_UINT( UIEVENT_SETCURSOR );
 DECL_PROP_UINT( UIEVENT_TIMER );
 DECL_PROP_UINT( UIEVENT__LAST );
 
+//注册Render相关的
+DECL_PROP_UINT( DuiLib_Render_Default );
+DECL_PROP_UINT( DuiLib_Render_GdiPlus );
+DECL_PROP_UINT( OT_NULL );
+DECL_PROP_UINT( OT_HDC );
+DECL_PROP_UINT( OT_FONT );
+DECL_PROP_UINT( OT_PEN );
+DECL_PROP_UINT( OT_BRUSH );
+DECL_PROP_UINT( OT_BITMAP );
+DECL_PROP_UINT( OT_IMAGE );
 //////////////////////////////////////////////////////////////////////////
 CScriptEngine g_ScriptEngine;
 
@@ -374,6 +384,7 @@ void CScriptEngine::Init()
 	regUIBitmap::Register(engine);
 	regUIImage::Register(engine);
 	regTDrawInfo::Register(engine);
+	regUIFile::Register(engine);
 	regUIGlobal::Register(engine);
 	regUIRender::Register(engine);
 	
@@ -528,6 +539,17 @@ void CScriptEngine::reg_GlobalProperty()
 	REGI_PROP_UINT( UIEVENT_SETCURSOR );
 	REGI_PROP_UINT( UIEVENT_TIMER );
 	REGI_PROP_UINT( UIEVENT__LAST );
+
+	//注册Render相关的
+	REGI_PROP_UINT( DuiLib_Render_Default );
+	REGI_PROP_UINT( DuiLib_Render_GdiPlus );
+	REGI_PROP_UINT( OT_NULL );
+	REGI_PROP_UINT( OT_HDC );
+	REGI_PROP_UINT( OT_FONT );
+	REGI_PROP_UINT( OT_PEN );
+	REGI_PROP_UINT( OT_BRUSH );
+	REGI_PROP_UINT( OT_BITMAP );
+	REGI_PROP_UINT( OT_IMAGE );
 }
 
 void CScriptEngine::reg_ControlHierarchies()

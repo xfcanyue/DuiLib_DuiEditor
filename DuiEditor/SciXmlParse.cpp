@@ -11,6 +11,7 @@ CSciXmlParse::~CSciXmlParse(void)
 {
 }
 
+//doc是原来的文档，xml是当前要新的
 void CSciXmlParse::Parse(xml_node doc, xml_node xml)
 {
 	dest = doc;

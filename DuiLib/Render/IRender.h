@@ -293,7 +293,7 @@ namespace DuiLib {
 		virtual void DrawEllipse(const RECT& rc, int nSize, DWORD dwPenColor, int nStyle = PS_SOLID) = 0;
 
 		//绘制文本
-		virtual void DrawText(RECT& rc, const RECT &rcTextPadding, LPCTSTR pstrText, DWORD dwTextColor, int iFont, UINT uStyle) = 0;
+		virtual void DrawText(RECT& rc, LPCTSTR pstrText, DWORD dwTextColor, int iFont, UINT uStyle) = 0;
 
 		//绘制文字的占用的空间大小
 		virtual SIZE GetTextSize(LPCTSTR pstrText, int iFont, UINT uStyle) = 0;
@@ -305,7 +305,10 @@ namespace DuiLib {
 
 		//画边框
 		void DrawBorder(const RECT &rcItem, int nBorderSize, SIZE szBorderRound, RECT rcBorderSize, DWORD dwColor, int nBorderStyle);
-		
+
+		//绘制文本
+		void DrawText(RECT& rc, const RECT &rcTextPadding, LPCTSTR pstrText, DWORD dwTextColor, int iFont, UINT uStyle);
+
 		//绘制带背景颜色的文本
 		void DrawText(RECT& rc, const RECT &rcTextPadding, LPCTSTR pstrText,DWORD dwTextColor, int iFont, UINT uStyle, DWORD dwTextBKColor);
 

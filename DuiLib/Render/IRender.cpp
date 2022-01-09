@@ -441,6 +441,26 @@ namespace DuiLib {
 		}
 	}
 
+	void UIRender::DrawText(RECT& rc, const RECT &rcTextPadding, LPCTSTR pstrText, DWORD dwTextColor, int iFont, UINT uStyle)
+	{
+		if((uStyle & DT_CALCRECT) == DT_CALCRECT)
+		{
+			DrawText(rc, pstrText, dwTextColor, iFont, uStyle);
+
+			rc.right += rcTextPadding.left + rcTextPadding.right;
+			rc.bottom += rcTextPadding.top + rcTextPadding.bottom;
+		}
+		else
+		{
+			rc.left += rcTextPadding.left;
+			rc.right -= rcTextPadding.right;
+			rc.top += rcTextPadding.top;
+			rc.bottom -= rcTextPadding.bottom;
+
+			DrawText(rc, pstrText, dwTextColor, iFont, uStyle);
+		}
+	}
+
 	void UIRender::DrawText(RECT& rc, const RECT &rcTextPadding, LPCTSTR pstrText,DWORD dwTextColor, int iFont, UINT uStyle, DWORD dwTextBKColor)
 	{
 		DrawColor(rc, CDuiSize(0,0), dwTextBKColor);

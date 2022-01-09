@@ -1076,7 +1076,6 @@ namespace DuiLib {
 				}
 
 				Render()->RestoreObject();
-
 				::EndPaint(m_hWndPaint, &ps);
 
 				// »æÖÆ½áÊø

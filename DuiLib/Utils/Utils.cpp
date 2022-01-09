@@ -325,8 +325,10 @@ namespace DuiLib
 
 	bool CStdPtrArray::InsertAt(int iIndex, LPVOID pData)
 	{
+		//if( iIndex < 0 || iIndex > m_nCount ) return false;
+		if( iIndex < 0) return false;
+		if(iIndex > m_nCount) iIndex = m_nCount; //插入位置超出原有长度时，总是插入到最后。
 		if( iIndex == m_nCount ) return Add(pData);
-		if( iIndex < 0 || iIndex > m_nCount ) return false;
 		if( ++m_nCount >= m_nAllocated) {
 			int nAllocated = m_nAllocated * 2;
 			if( nAllocated == 0 ) nAllocated = 11;

@@ -48,6 +48,8 @@ BEGIN_MESSAGE_MAP(CDockFileViewCtrl, CTreeCtrl)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_EXPORT_NAME_CPP, &CDockFileViewCtrl::OnUpdateEditExportNameCpp)
 	ON_COMMAND(ID_EDIT_EXPORT_RES_XML, &CDockFileViewCtrl::OnEditExportResXml)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_EXPORT_RES_XML, &CDockFileViewCtrl::OnUpdateEditExportResXml)
+	ON_COMMAND(ID_EDIT_FILE_OPEN_IN_EXPLORER, &CDockFileViewCtrl::OnEditFileOpenInExplorer)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_FILE_OPEN_IN_EXPLORER, &CDockFileViewCtrl::OnUpdateEditFileOpenInExplorer)
 END_MESSAGE_MAP()
 
 
@@ -496,7 +498,7 @@ void CDockFileViewCtrl::OnFileOpen()
 
 	LPAFX_SHELLITEMINFO pItem = (LPAFX_SHELLITEMINFO)GetItemData(ht);
 	SHFILEINFO sfi;
-	HRESULT hr = SHGetFileInfo((LPCTSTR)pItem->pidlFQ, 0, &sfi, sizeof(sfi), SHGFI_PIDL | SHGFI_DISPLAYNAME|SHGFI_ATTRIBUTES);
+	HRESULT hr = SHGetFileInfo((LPCTSTR)pItem->pidlFQ, 0, &sfi, sizeof(sfi), SHGFI_PIDL | SHGFI_DISPLAYNAME | SHGFI_TYPENAME | SHGFI_ATTRIBUTES);
 	if(FAILED(hr)) return;
 
 	if(sfi.dwAttributes & SFGAO_FOLDER)
@@ -662,6 +664,26 @@ void CDockFileViewCtrl::OnEditExportResXml()
 
 
 void CDockFileViewCtrl::OnUpdateEditExportResXml(CCmdUI *pCmdUI)
+{
+	// TODO: 在此添加命令更新用户界面处理程序代码
+}
+
+
+void CDockFileViewCtrl::OnEditFileOpenInExplorer()
+{
+	HTREEITEM ht = GetSelectedItem();
+	if(ht == NULL)	return;
+
+	LPAFX_SHELLITEMINFO pItem = (LPAFX_SHELLITEMINFO)GetItemData(ht);
+	SHFILEINFO sfi;
+	HRESULT hr = SHGetFileInfo((LPCTSTR)pItem->pidlFQ, 0, &sfi, sizeof(sfi), SHGFI_PIDL | SHGFI_DISPLAYNAME | SHGFI_TYPENAME | SHGFI_ATTRIBUTES);
+	if(FAILED(hr)) return;
+
+	SHOpenFolderAndSelectItems(pItem->pidlFQ, 0, NULL, 0);
+}
+
+
+void CDockFileViewCtrl::OnUpdateEditFileOpenInExplorer(CCmdUI *pCmdUI)
 {
 	// TODO: 在此添加命令更新用户界面处理程序代码
 }

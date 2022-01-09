@@ -972,15 +972,10 @@ namespace DuiLib {
 		::Ellipse(m_hDC, rc.left, rc.top, rc.right, rc.bottom);
 	}
 
-	void UIRender_gdi::DrawText(RECT& rc, const RECT &rcTextPadding, LPCTSTR pstrText, DWORD dwTextColor, int iFont, UINT uStyle)
+	void UIRender_gdi::DrawText(RECT& rc, LPCTSTR pstrText, DWORD dwTextColor, int iFont, UINT uStyle)
 	{
 		CPaintManagerUI *pManager = GetManager();
 		HDC hDC = GetDC();
-
-		rc.left += rcTextPadding.left;
-		rc.right -= rcTextPadding.right;
-		rc.top += rcTextPadding.top;
-		rc.bottom -= rcTextPadding.bottom;
 
 		ASSERT(::GetObjectType(hDC)==OBJ_DC || ::GetObjectType(hDC)==OBJ_MEMDC);
 		if( pstrText == NULL || pManager == NULL ) return;
@@ -1048,12 +1043,11 @@ namespace DuiLib {
 				stringFormat.SetLineAlignment(Gdiplus::StringAlignmentNear);
 			}
 #ifdef UNICODE
-			if ((uStyle & DT_CALCRECT) != 0)
+			if ((uStyle & DT_CALCRECT) == DT_CALCRECT)
 			{
-				Gdiplus::RectF rectFCalc(0,0,9999,9999);
 				Gdiplus::RectF bounds;
 
-				graphics.MeasureString(pstrText, -1, &font, rectFCalc, &stringFormat, &bounds);
+				graphics.MeasureString(pstrText, -1, &font, rectF, &stringFormat, &bounds);
 
 				// MeasureString存在计算误差，这里加一像素
 				rc.bottom = rc.top + (long)bounds.Height + 1;
@@ -1070,9 +1064,8 @@ namespace DuiLib {
 			MultiByteToWideChar(CP_ACP, NULL, pstrText, -1, pcwszDest, dwSize);
 			if(pcwszDest != NULL)
 			{
-				if ((uStyle & DT_CALCRECT) != 0)
+				if ((uStyle & DT_CALCRECT) == DT_CALCRECT)
 				{
-					Gdiplus::RectF rectFCalc(0,0,9999,9999);
 					Gdiplus::RectF bounds;
 					graphics.MeasureString(pcwszDest, -1, &font, rectF, &stringFormat, &bounds);
 					rc.bottom = rc.top + (long)(bounds.Height * 1.06);

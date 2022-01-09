@@ -149,4 +149,15 @@ namespace DuiLib {
 		return m_dwSize > 0;
 	}
 
+
+	BOOL CUIFile::LoadFile(LPCTSTR pStrImage, LPCTSTR type, HINSTANCE instance)
+	{
+		return LoadFile(STRINGorID(pStrImage), type, instance);
+	}
+
+	BOOL CUIFile::LoadFile(UINT nID, LPCTSTR type, HINSTANCE instance)
+	{
+		return LoadFile(STRINGorID(nID), type, instance);
+	}
+
 } // namespace DuiLib

@@ -54,6 +54,8 @@ public:
 	afx_msg void OnUpdateEditExportNameCpp(CCmdUI *pCmdUI);
 	afx_msg void OnEditExportResXml();
 	afx_msg void OnUpdateEditExportResXml(CCmdUI *pCmdUI);
+	afx_msg void OnEditFileOpenInExplorer();
+	afx_msg void OnUpdateEditFileOpenInExplorer(CCmdUI *pCmdUI);
 };
 
 

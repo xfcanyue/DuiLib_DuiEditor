@@ -231,20 +231,17 @@ namespace DuiLib {
 		graphics.DrawEllipse(&pen, rc.left, rc.top, rc.right-rc.left, rc.bottom-rc.top);
 	}
 
-	void UIRender_gdiplus::DrawText(RECT& rc, const RECT &rcTextPadding, LPCTSTR pstrText, DWORD dwTextColor, int iFont, UINT uStyle)
+	void UIRender_gdiplus::DrawText(RECT& rc, LPCTSTR pstrText, DWORD dwTextColor, int iFont, UINT uStyle)
 	{
 		CPaintManagerUI *pManager = GetManager();
 		HDC hDC = GetDC();
-
-		rc.left += rcTextPadding.left;
-		rc.right -= rcTextPadding.right;
-		rc.top += rcTextPadding.top;
-		rc.bottom -= rcTextPadding.bottom;
 
 		ASSERT(::GetObjectType(hDC)==OBJ_DC || ::GetObjectType(hDC)==OBJ_MEMDC);
 		if( pstrText == NULL || pManager == NULL ) return;
 
 		UIObject *pOldFont = SelectObject(pManager->GetFont(iFont));
+
+		Gdiplus::Font font(hDC, (HFONT)pManager->GetFont(iFont)->GetHFont(GetManager()));
 
 		Gdiplus::Graphics graphics( hDC );
 		Gdiplus::TextRenderingHint trh = Gdiplus::TextRenderingHintSystemDefault;
@@ -306,15 +303,13 @@ namespace DuiLib {
 			stringFormat.SetLineAlignment(Gdiplus::StringAlignmentNear);
 		}
 #ifdef UNICODE
-		if ((uStyle & DT_CALCRECT) != 0)
+		if ((uStyle & DT_CALCRECT) == DT_CALCRECT)
 		{
-			Gdiplus::RectF rectFCalc(0,0,9999,9999);
 			Gdiplus::RectF bounds;
 
 			//UIFont_gdiplus *pFont = *(UIFont_gdiplus **)&m_curFont;
 			//graphics.MeasureString(pstrText, -1, pFont->GetGdiPlusFont(), rectFCalc, &stringFormat, &bounds);
-			Gdiplus::Font font(hDC, (HFONT)pManager->GetFont(iFont)->GetHFont(GetManager()));
-			graphics.MeasureString(pstrText, -1, &font, rectFCalc, &stringFormat, &bounds);
+			graphics.MeasureString(pstrText, -1, &font, rectF, &stringFormat, &bounds);
 
 			// MeasureString存在计算误差，这里加一像素
 			rc.bottom = rc.top + (long)bounds.Height + 1;
@@ -324,7 +319,6 @@ namespace DuiLib {
 		{
 			//UIFont_gdiplus *pFont = *(UIFont_gdiplus **)&m_curFont;
 			//graphics.DrawString(pstrText, -1, pFont->GetGdiPlusFont(), rectF, &stringFormat, &brush);
-			Gdiplus::Font font(hDC, (HFONT)pManager->GetFont(iFont)->GetHFont(GetManager()));
 			graphics.DrawString(pstrText, -1, &font, rectF, &stringFormat, &brush);
 		}
 #else
@@ -334,11 +328,10 @@ namespace DuiLib {
 		MultiByteToWideChar(CP_ACP, NULL, pstrText, -1, pcwszDest, dwSize);
 		if(pcwszDest != NULL)
 		{
-			if ((uStyle & DT_CALCRECT) != 0)
+			if ((uStyle & DT_CALCRECT) == DT_CALCRECT)
 			{
-				Gdiplus::RectF rectFCalc(0,0,9999,9999);
 				Gdiplus::RectF bounds;
-				graphics.MeasureString(pcwszDest, -1, &font, rectFCalc, &stringFormat, &bounds);
+				graphics.MeasureString(pcwszDest, -1, &font, rectF, &stringFormat, &bounds);
 				rc.bottom = rc.top + (long)(bounds.Height * 1.06);
 				rc.right = rc.left + (long)(bounds.Width * 1.06);
 			}

@@ -300,3 +300,14 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
 
 
 
+2021-01-09
+   1, DuiLib：void DrawText(RECT& rc, const RECT &rcTextPadding ....)， 当调用参数为DT_CALCRECT，计算结果错误。
+   2，设计器：项目文件右键，增加菜单“在资源管理器中查看”。
+   3, DuiLib: 修改函数 CStdPtrArray::InsertAt(int iIndex, LPVOID pData)。插入位置超出原有长度时，总是插入到最后。
+      修改原因是，当编辑器中字符变化时，导致之后的所有控件重构，设计器可能会崩溃。 
+      有些控件，重写了AddAt函数，并且偷偷插入到类内部的容器中，比如List。 
+      根据xml结构推断iIndex显然是错误的，这个值会大于实际的数组长度（+1），然后AddAt失败............世界都乱了。
+
+
+
+

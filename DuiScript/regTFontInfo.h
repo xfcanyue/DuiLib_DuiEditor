@@ -14,20 +14,7 @@ namespace DuiLib
 		TEXTMETRIC tm;
 	} TFontInfo;
 	*/
-class regUIFont
-{
-	//DECL_FACTORY(UIFont);
-	static UIFont *UIFont_Ref_Factory() { return UIGlobal::CreateFont(); }
-public:
-	static void Register(asIScriptEngine *engine)
-	{
-		CStringA classname = "UIFont";
 
-		int r = 0;
-		r = engine->RegisterObjectType(classname, 0, asOBJ_REF|asOBJ_NOCOUNT); 
-		REG_FACTORY(UIFont);
-	}
-};
 
 
 } //namespace DuiLib

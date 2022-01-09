@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Window size="600,458" sizebox="0,0,4,4" caption="0,0,0,20" shadowsize="2" shadowposition="2,2" shadowcolor="0xFF4B4B4B" forcehsl="true">
+<Window size="600,458" sizebox="0,0,4,4" caption="0,0,0,20" showdirty="true" shadowsize="2" shadowposition="2,2" shadowcolor="0xFF4B4B4B" forcehsl="true">
 	<Font id="0" name="宋体" size="14" shared="true" default="true" />
 	<VerticalLayout inset="1,1,1,1" bkcolor="0xFFD1E8F5" bordercolor="0xFF969696" bordersize="1">
 		<Button width="200" height="200" hotbkcolor="0xFF00FF00" text="我是按钮" pos="147,120,347,320" float="true" bkcolor="0xFF008080" bordercolor="0xFFFF0000" borderround="200,200" />
