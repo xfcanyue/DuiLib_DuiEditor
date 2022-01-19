@@ -15,22 +15,24 @@ namespace DuiLib
 
 		virtual UINT GetControlFlags() const override
 		{
-			return IsEnabled() ? UIFLAG_SETCURSOR : 0;
+			return T::IsEnabled() ? UIFLAG_SETCURSOR : 0;
 		}
 
 		virtual SIZE EstimateSize(SIZE szAvailable) override
 		{
-			if (IsAutoCalcWidth() || IsAutoCalcHeight()) 
+			if (T::IsAutoCalcWidth() || T::IsAutoCalcHeight())
 			{
 				RECT rcText = {0, 0, szAvailable.cx, szAvailable.cy};
-				GetManager()->Render()->DrawText(rcText, m_rcTextPadding, GetText(), m_dwTextColor, m_iFont, DT_CALCRECT | m_uTextStyle);
+				RECT rcTextPadding = T::GetTextPadding();
+				T::GetManager()->Render()->DrawText(rcText, rcTextPadding, T::GetText(), T::GetTextColor(), T::GetFont(), DT_CALCRECT | T::GetTextStyle());
 				
-				if(IsAutoCalcWidth())
-					m_cxyFixed.cx = rcText.right - rcText.left;
-				if(IsAutoCalcHeight())
-					m_cxyFixed.cy = rcText.bottom - rcText.top;	
+				SIZE szFact;
+				if(T::IsAutoCalcWidth())
+					szFact.cx = rcText.right - rcText.left;
+				if(T::IsAutoCalcHeight())
+					szFact.cy = rcText.bottom - rcText.top;	
 
-				return GetManager()->GetDPIObj()->Scale(m_cxyFixed);
+				return T::GetManager()->GetDPIObj()->Scale(szFact);
 			}
 
 			return CControlUI::EstimateSize(szAvailable);
@@ -40,12 +42,12 @@ namespace DuiLib
 		{
 			if( event.Type == UIEVENT_SETFOCUS ) 
 			{
-				SetFocusState(true);
+				T::SetFocusState(true);
 				return;
 			}
 			if( event.Type == UIEVENT_KILLFOCUS ) 
 			{
-				SetFocusState(false);
+				T::SetFocusState(false);
 				return;
 			}
 			CControlUI::DoEvent(event);
@@ -58,55 +60,55 @@ namespace DuiLib
 
 		virtual void PaintText(UIRender *pRender) override
 		{
-			CDuiString sText = GetText();
+			CDuiString sText = T::GetText();
 			if(sText.IsEmpty()) return;
 
-			RECT rcText = m_rcItem;
+			RECT rcText = T::GetPos();
 			DWORD dwColor = 0;
 			int iFont = -1;
 
 			//////////////////////////////////////////////////////////////////////////
-			if( !IsEnabled() )
-				iFont = GetDisabledFont();
+			if( !T::IsEnabled() )
+				iFont = T::GetDisabledFont();
 
-			else if( IsSelectedState() )
-				iFont = GetSelectedFont();
+			else if(T::IsSelectedState() )
+				iFont = T::GetSelectedFont();
 
-			else if( IsPushedState() )
-				iFont = GetPushedFont();
+			else if(T::IsPushedState() )
+				iFont = T::GetPushedFont();
 
-			else if( IsHotState() )
-				iFont = GetHotFont();
+			else if(T::IsHotState() )
+				iFont = T::GetHotFont();
 
-			else if( IsFocused() )
-				iFont = GetFocusedFont();
+			else if(T::IsFocused() )
+				iFont = T::GetFocusedFont();
 
 			if(iFont == -1)
-				iFont = GetFont();
+				iFont = T::GetFont();
 
 			//////////////////////////////////////////////////////////////////////////
-			if( !IsEnabled() )
-				dwColor = GetDisabledTextColor();
+			if( !T::IsEnabled() )
+				dwColor = T::GetDisabledTextColor();
 
-			else if( IsSelectedState() )
-				dwColor = GetSelectedTextColor();
+			else if(T::IsSelectedState() )
+				dwColor = T::GetSelectedTextColor();
 
-			else if( IsPushedState() )
-				dwColor = GetPushedTextColor();
+			else if(T::IsPushedState() )
+				dwColor = T::GetPushedTextColor();
 
-			else if( IsHotState() )
-				dwColor = GetHotTextColor();
+			else if(T::IsHotState() )
+				dwColor = T::GetHotTextColor();
 
-			else if( IsFocused() )
-				dwColor = GetFocusedTextColor();
+			else if(T::IsFocused() )
+				dwColor = T::GetFocusedTextColor();
 
 			if(dwColor == 0)
-				dwColor = GetTextColor();
+				dwColor = T::GetTextColor();
 
-			if(dwColor == 0 && m_pManager)
-				dwColor = m_pManager->GetDefaultFontColor();
+			if(dwColor == 0 && T::GetManager())
+				dwColor = T::GetManager()->GetDefaultFontColor();
 
-			pRender->DrawText(rcText, GetTextPadding(), sText, dwColor, iFont, GetTextStyle());
+			pRender->DrawText(rcText, T::GetTextPadding(), sText, dwColor, iFont, T::GetTextStyle());
 			return;
 		}
 	};
