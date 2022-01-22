@@ -31,15 +31,11 @@
 #include <atlbase.h>
 #include <atlstr.h>
 
-
 // TODO: 在此处引用程序需要的其他头文件
+//////////////////////////////////////////////////////////////////////////
 #include "../../../DuiLib/Duilib.h"
 #include "../../../DuiPlugins/Include/DuiPlugins.h"
-#include "../../../DuiScript/Include/DuiScriptInterface.h"
-//#include "../../../3rd/CxImage/Include/image.h"
+#include "../../..//DuiScript/Include/DuiScriptInterface.h"
 using namespace DuiLib;
 
 #include "App.h"
-#include "MainFrame.h"
-extern CApp uiApp;
-inline CMainFrame *GetMainWnd(){ return (CMainFrame *)uiApp.GetMainWnd(); }

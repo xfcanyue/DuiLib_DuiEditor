@@ -136,12 +136,6 @@ bool CScriptManager::CompileScript()
 	return true;
 }
 
-void *CScriptManager::GetFunAddress(LPCTSTR lpszFunName)
-{
-	asIScriptFunction *pFun = static_cast<asIScriptFunction *>(m_mapContent.Find(lpszFunName));
-	return pFun;
-}
-
 bool CScriptManager::SetMainFun(LPCTSTR lpszMainFun)
 {
 	int r = 0;
@@ -174,9 +168,10 @@ bool CScriptManager::Execute()
 	return false;
 }
 
-bool CScriptManager::ExecuteScript(void *pFun, CControlUI *pControl)
+bool CScriptManager::ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl)
 {
 	int r = 0;
+	asIScriptFunction *pFun = static_cast<asIScriptFunction *>(m_mapContent.Find(lpszFunName));
 	if(!pFun) return false;
 	if(ctx->Prepare((asIScriptFunction *)pFun) < 0) return false;
 
@@ -188,9 +183,10 @@ bool CScriptManager::ExecuteScript(void *pFun, CControlUI *pControl)
 	return false;
 }
 
-bool CScriptManager::ExecuteScript(void *pFun, CControlUI *pControl, TEventUI *ev)
+bool CScriptManager::ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, TEventUI *ev)
 {
 	int r = 0;
+	asIScriptFunction *pFun = static_cast<asIScriptFunction *>(m_mapContent.Find(lpszFunName));
 	if(!pFun) return false;
 	if(ctx->Prepare((asIScriptFunction *)pFun) < 0) return false;
 
@@ -205,9 +201,10 @@ bool CScriptManager::ExecuteScript(void *pFun, CControlUI *pControl, TEventUI *e
 	return false;
 }
 
-bool CScriptManager::ExecuteScript(void *pFun, CControlUI *pControl, TNotifyUI *pMsg)
+bool CScriptManager::ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, TNotifyUI *pMsg)
 {
 	int r = 0;
+	asIScriptFunction *pFun = static_cast<asIScriptFunction *>(m_mapContent.Find(lpszFunName));
 	if(!pFun) return false;
 	if(ctx->Prepare((asIScriptFunction *)pFun) < 0) return false;
 
@@ -222,21 +219,22 @@ bool CScriptManager::ExecuteScript(void *pFun, CControlUI *pControl, TNotifyUI *
 	return false;
 }
 
-bool CScriptManager::ExecuteScript(void *pFun, CControlUI *pControl, UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
+bool CScriptManager::ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 {
 	int r = 0;
+	asIScriptFunction *pFun = static_cast<asIScriptFunction *>(m_mapContent.Find(lpszFunName));
 	if(!pFun) return false;
 	if(ctx->Prepare((asIScriptFunction *)pFun) < 0) return false;
 
-	asIScriptFunction *pFun1 =(asIScriptFunction *)pFun;
-	for (asUINT i=0; i<pFun1->GetParamCount(); i++)
-	{
-		int typeId;
-		DWORD flag;
-		const char *name;
-		pFun1->GetParam(i, &typeId, &flag, &name);
-		continue;
-	}
+// 	asIScriptFunction *pFun1 =(asIScriptFunction *)pFun;
+// 	for (asUINT i=0; i<pFun1->GetParamCount(); i++)
+// 	{
+// 		int typeId;
+// 		DWORD flag;
+// 		const char *name;
+// 		pFun1->GetParam(i, &typeId, &flag, &name);
+// 		continue;
+// 	}
 
 	//传入入口参数
 	int n = sizeof(HDC);
@@ -249,6 +247,126 @@ bool CScriptManager::ExecuteScript(void *pFun, CControlUI *pControl, UIRender *p
 	{
 		return ctx->GetReturnByte() == 1;
 	}
+	return false;
+}
+
+bool CScriptManager::ExecuteScript(IScriptFunction *pFun)
+{
+	int r = 0;
+	asIScriptFunction *pAsFun = static_cast<asIScriptFunction *>(m_mapContent.Find(pFun->m_sFunName));
+	if(!pAsFun) return false;
+	if(ctx->Prepare((asIScriptFunction *)pAsFun) < 0) return false;
+
+	asIScriptFunction *pFun1 =(asIScriptFunction *)pAsFun;
+	for (asUINT i=0; i<pFun1->GetParamCount(); i++)
+	{
+		int typeId;
+		DWORD flag;
+		const char *name;
+		pFun1->GetParam(i, &typeId, &flag, &name);
+		continue;
+	}
+
+	//传入入口参数
+	for (int i=0; i<pFun->m_arrArgs.GetSize(); i++)
+	{
+		IScriptFunction::TArgItem *pItem = (IScriptFunction::TArgItem *)pFun->m_arrArgs.GetAt(i);
+		switch (pItem->_type)
+		{
+		case UIArg_void:
+			return false;
+			break;
+		case UIArg_BYTE:
+			{
+				r = ctx->SetArgByte(i, pItem->_byte); 
+				if( r < 0 ) return false;
+			}
+			break;
+		case UIArg_WORD:
+			{
+				r = ctx->SetArgWord(i, pItem->_word); 
+				if( r < 0 ) return false;
+			}
+			break;
+		case UIArg_DWORD:
+			{
+				r = ctx->SetArgDWord(i, pItem->_dword); 
+				if( r < 0 ) return false;
+			}
+			break;
+		case UIArg_float:
+			{
+				r = ctx->SetArgFloat(i, pItem->_float); 
+				if( r < 0 ) return false;
+			}
+			break;
+		case UIArg_double:
+			{
+				r = ctx->SetArgDouble(i, pItem->_double); 
+				if( r < 0 ) return false;
+			}
+			break;
+		case UIArg_address:
+			{
+				r = ctx->SetArgAddress(i, pItem->_addr); 
+				if( r < 0 ) return false;
+			}
+			break;
+		case UIArg_object:
+			{
+				r = ctx->SetArgObject(i, pItem->_obj); 
+				if( r < 0 ) return false;
+			}
+			break;
+		}
+	}
+
+	if(Execute())
+	{
+		switch (pFun->m_result._type)
+		{
+		case UIArg_void:
+			break;
+		case UIArg_BYTE:
+			{
+				pFun->m_result._byte = ctx->GetReturnByte();
+			}
+			break;
+		case UIArg_WORD:
+			{
+				pFun->m_result._word = ctx->GetReturnWord();
+			}
+			break;
+		case UIArg_DWORD:
+			{
+				pFun->m_result._dword = ctx->GetReturnDWord();
+			}
+			break;
+		case UIArg_float:
+			{
+				pFun->m_result._float = ctx->GetReturnFloat();
+			}
+			break;
+		case UIArg_double:
+			{
+				pFun->m_result._double = ctx->GetReturnDouble();
+			}
+			break;
+		case UIArg_address:
+			{
+				pFun->m_result._addr = ctx->GetReturnAddress();
+			}
+			break;
+		case UIArg_object:
+			{
+				pFun->m_result._obj = ctx->GetReturnObject();
+			}
+			break;
+		}
+
+		return true;
+	}
+
 	return false;
 }
 

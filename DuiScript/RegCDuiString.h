@@ -135,6 +135,7 @@ protected:
 
 	static LPCTSTR StringToLPCTSTR(const CDuiString &b)
 	{
+		//return b;
 		return b.GetData();
 	}
 public:
@@ -144,6 +145,7 @@ public:
 
 		//×¢²á×Ö·û´®Àà
 		r = engine->RegisterObjectType("string", sizeof(CDuiString), asOBJ_VALUE | asOBJ_APP_CLASS_CDAK); assert( r >= 0 );
+		//r = engine->RegisterObjectType("string", 0, asOBJ_REF|asOBJ_NOCOUNT|asOBJ_APP_CLASS_CDAK); assert( r >= 0 );
 
 		//×¢²á×Ö·û´®Àà¹¤³§
 		r = engine->RegisterStringFactory("string", asFUNCTION(StringFactory), asCALL_CDECL); assert( r >= 0 );

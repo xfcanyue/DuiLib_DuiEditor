@@ -183,17 +183,34 @@ namespace DuiLib {
 		virtual LRESULT TranslateAccelerator(MSG *pMsg) = 0;
 	};
 
+
 	//duilib script interface  add by liqs99
 	class UILIB_API IScriptManager
 	{
 	public:
+		//加入脚本文件
 		virtual bool AddScriptFile(LPCTSTR pstrFileName) = 0;
+
+		//加入脚本代码
+		virtual bool AddScriptCode(LPCTSTR pstrCode) = 0;
+
+		//编译脚本。 一次性加入脚本文件完毕，然后只能编译一次。
 		virtual bool CompileScript() = 0;
-		virtual void *GetFunAddress(LPCTSTR lpszFunName) = 0;
-		virtual bool ExecuteScript(void *pFun, CControlUI *pControl) = 0;
-		virtual bool ExecuteScript(void *pFun, CControlUI *pControl, TEventUI *ev) = 0;
-		virtual bool ExecuteScript(void *pFun, CControlUI *pControl, TNotifyUI *pMsg) = 0;
-		virtual bool ExecuteScript(void *pFun, CControlUI *pControl, UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl) = 0;
+
+		//执行脚本函数，传入参数：(CControlUI *)
+		virtual bool ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl) = 0;
+
+		//执行脚本函数，传入参数：(CControlUI *, TEventUI *); duilib控件事件响应函数。
+		virtual bool ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, TEventUI *ev) = 0;
+
+		//执行脚本函数，传入参数：(CControlUI *, TNotifyUI *pMsg); duilib消息响应函数。
+		virtual bool ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, TNotifyUI *pMsg) = 0;
+
+		//执行脚本函数，传入参数：(CControlUI *, UIRender *, const RECT&, CControlUI*); duilib绘图类函数。
+		virtual bool ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl) = 0;
+		
+		//执行脚本函数，通用函数调用
+		virtual bool ExecuteScript(IScriptFunction *pFun) = 0;
 	};
 	typedef IScriptManager* (__stdcall *CREATE_SCRIPT_ENGINE_INSTANCE)();
 	typedef void (__stdcall *DELETE_SCRIPT_ENGINE_INSTANCE)(IScriptManager *pEngine);
@@ -471,6 +488,7 @@ namespace DuiLib {
 		CControlUI* GetRoot() const;
 		CControlUI* FindControl(POINT pt) const;
 		CControlUI* FindControl(LPCTSTR pstrName) const;
+		CControlUI* FindControl(const CDuiString &strName) const;
 		CControlUI* FindSubControlByPoint(CControlUI* pParent, POINT pt) const;
 		CControlUI* FindSubControlByName(CControlUI* pParent, LPCTSTR pstrName) const;
 		CControlUI* FindSubControlByClass(CControlUI* pParent, LPCTSTR pstrClass, int iIndex = 0);
@@ -623,17 +641,16 @@ namespace DuiLib {
 	// 脚本
 	//////////////////////////////////////////////////////////////////////////
 	public:
-		//static bool LoadScriptPlugin(LPCTSTR pstrModuleName);
+		//载入脚本引擎插件
 		static bool LoadScriptPlugin(CREATE_SCRIPT_ENGINE_INSTANCE pFunCreate, DELETE_SCRIPT_ENGINE_INSTANCE pFunDelete);
+		static IScriptManager *GetScriptEngine();
 
-		static IScriptManager *GetScriptEngine(bool bCreateScriptEngine=false);
 		static void AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pLanguageType=NULL);
 		static bool CompileScript();
-		static void *GetScriptFunAddress(LPCTSTR lpszFunName);
-		static bool ExecuteScript(void *pFun, CControlUI *pControl);
-		static bool ExecuteScript(void *pFun, CControlUI *pControl, TEventUI *ev);
-		static bool ExecuteScript(void *pFun, CControlUI *pControl, TNotifyUI *pMsg);
-		static bool ExecuteScript(void *pFun, CControlUI *pControl, UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl);
+		static bool ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl);
+		static bool ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, TEventUI *ev);
+		static bool ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, TNotifyUI *pMsg);
+		static bool ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl);
 	private:
 		static IScriptManager *m_pSharedScriptEngine;
 		static CREATE_SCRIPT_ENGINE_INSTANCE m_funCreateScriptEngine;

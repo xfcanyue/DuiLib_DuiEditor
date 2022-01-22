@@ -118,9 +118,12 @@ namespace DuiLib
 			m_bSelected = bSelected;
 			T::SetSelectedState(m_bSelected);
 
-			if(T::GetManager() != NULL ) {
-				if( !m_sGroupName.IsEmpty() ) {
-					if( m_bSelected ) {
+			if(T::GetManager() != NULL ) 
+			{
+				if( !m_sGroupName.IsEmpty() ) 
+				{
+					if( m_bSelected ) 
+					{
 						CStdPtrArray* aOptionGroup = T::GetManager()->GetOptionGroup(m_sGroupName);
 						for( int i = 0; i < aOptionGroup->GetSize(); i++ ) 
 						{
@@ -134,12 +137,9 @@ namespace DuiLib
 								}
 							}
 						}
-						if (bTriggerEvent) T::GetManager()->SendNotify(this, DUI_MSGTYPE_SELECTCHANGED);
 					}
-				}
-				else {
-					if (bTriggerEvent) T::GetManager()->SendNotify(this, DUI_MSGTYPE_SELECTCHANGED);
-				}
+				}	
+				if (bTriggerEvent) T::GetManager()->SendNotify(this, DUI_MSGTYPE_SELECTCHANGED);
 			}
 
 			T::Invalidate();

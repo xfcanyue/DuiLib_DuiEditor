@@ -255,11 +255,11 @@
 						<PictureBox name="imagebox_2" imagepath="ad" framedelay="5000" />
 					</VerticalLayout>
 					<HorizontalLayout bkcolor="0xFFFFFFFF">
-						<RollTextEx name="rolltext_1" rolldirection="up" rollspeed="10" rollstep="1" text="我是字幕，我向上滚动。" bkcolor="0xFFC0C0C0" resourceid="82" />
-						<RollTextEx name="rolltext_2" rolldirection="down" rollspeed="10" rollstep="1" text="我是字幕，我向下滚动。" bkcolor="0xFFC0DCC0" resourceid="83" />
+						<RollTextEx name="rolltext_1" rolldirection="up" rollspeed="10" rollstep="1" text="我是字幕，我向上滚动。" bkcolor="0xFFC0C0C0" />
+						<RollTextEx name="rolltext_2" rolldirection="down" rollspeed="10" rollstep="1" text="我是字幕，我向下滚动。" bkcolor="0xFFC0DCC0" />
 						<VerticalLayout>
-							<RollTextEx name="rolltext_3" rollspeed="10" rollstep="1" text="我是字幕，我向左滚动。" bkcolor="0xFFA6CAF0" resourceid="84" />
-							<RollTextEx name="rolltext_4" rolldirection="right" rollspeed="10" rollstep="1" text="我是字幕，我向右滚动。" bkcolor="0xFF008080" resourceid="85" />
+							<RollTextEx name="rolltext_3" rollspeed="10" rollstep="1" text="我是字幕，我向左滚动。" bkcolor="0xFFA6CAF0" />
+							<RollTextEx name="rolltext_4" rolldirection="right" rollspeed="10" rollstep="1" text="我是字幕，我向右滚动。" bkcolor="0xFF008080" />
 						</VerticalLayout>
 					</HorizontalLayout>
 				</AnimationTabLayout>
@@ -299,7 +299,7 @@
 		</TabLayout>
 		<Label text="日志输出窗口:" height="20" resourceid="88" />
 		<VerticalLayout height="100" sepheight="-8" sepimm="true" inset="0,8,0,0">
-			<MsgWnd name="msgwnd_frame" bordercolor="0xFFC0C0C0" bordersize="1" />
+			<MsgWnd name="msgwnd_frame" showdate="false" bordercolor="0xFFC0C0C0" bordersize="1" />
 		</VerticalLayout>
 	</VerticalLayout>
 </Window>

@@ -324,6 +324,9 @@
     <ClCompile Include="Render\UIRenderFactory_gdiplus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Core\UIScript.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Control\UIWebBrowser.h">
@@ -616,6 +619,9 @@
     </ClInclude>
     <ClInclude Include="Render\UIRenderFactory_gdiplus.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\UIScript.h">
+      <Filter>Header Files\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

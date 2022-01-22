@@ -20,7 +20,7 @@ public:
 		REG_METHOD_FUNPR(CUIFile, DWORD,	GetSize,	() const	);
 		REG_METHOD_FUNPR(CUIFile, void,		Empty,		()			);
 
-		REG_METHOD_FUNPR(CUIFile, BOOL, LoadFile, (const STRINGorID &bitmap, LPCTSTR type, HINSTANCE instance)	);
+		//REG_METHOD_FUNPR(CUIFile, BOOL, LoadFile, (const STRINGorID &bitmap, LPCTSTR type, HINSTANCE instance)	);
 		REG_METHOD_FUNPR(CUIFile, BOOL, LoadFile, (LPCTSTR pStrImage, LPCTSTR type, HINSTANCE instance)			);
 		REG_METHOD_FUNPR(CUIFile, BOOL, LoadFile, (UINT nID, LPCTSTR type, HINSTANCE instance)					);
 	}	
@@ -33,12 +33,12 @@ public:
 	{
 		int r = 0;
 
-		REG_GLOBAL_FUNPR(UIRender *,	UIGlobal::CreateRenderTarget,	()	);
-		REG_GLOBAL_FUNPR(UIFont *,		UIGlobal::CreateFont,			()	);
-		REG_GLOBAL_FUNPR(UIPen *,		UIGlobal::CreatePen,			()	);
-		REG_GLOBAL_FUNPR(UIBitmap *,	UIGlobal::CreateBitmap,			()	);
-		REG_GLOBAL_FUNPR(UIBrush *,		UIGlobal::CreateBrush,			()	);
-		REG_GLOBAL_FUNPR(UIImage *,		UIGlobal::CreateImage,			()	);
+// 		REG_GLOBAL_FUNPR(UIRender *,	UIGlobal::CreateRenderTarget,	()	);
+// 		REG_GLOBAL_FUNPR(UIFont *,		UIGlobal::CreateFont,			()	);
+// 		REG_GLOBAL_FUNPR(UIPen *,		UIGlobal::CreatePen,			()	);
+// 		REG_GLOBAL_FUNPR(UIBitmap *,	UIGlobal::CreateBitmap,			()	);
+// 		REG_GLOBAL_FUNPR(UIBrush *,		UIGlobal::CreateBrush,			()	);
+// 		REG_GLOBAL_FUNPR(UIImage *,		UIGlobal::CreateImage,			()	);
 	}
 };
 
@@ -70,9 +70,9 @@ public:
 		REG_METHOD_FUNPR(UIRender, void, SaveDC, () );
 		REG_METHOD_FUNPR(UIRender, void, RestoreDC, () );
 
-		REG_METHOD_FUNPR(UIRender, UIObject*, SelectObject, (UIObject *pObject) );
-		REG_METHOD_FUNPR(UIRender, void, RestoreObject, (UIObject *pObject) );
-		REG_METHOD_FUNPR(UIRender, void, RestoreDefaultObject, () );
+		//REG_METHOD_FUNPR(UIRender, UIObject*, SelectObject, (UIObject *pObject) );
+		//REG_METHOD_FUNPR(UIRender, void, RestoreObject, (UIObject *pObject) );
+		//REG_METHOD_FUNPR(UIRender, void, RestoreDefaultObject, () );
 
 		//BitBlt (bit block transfer)
 		REG_METHOD_FUNPR(UIRender, BOOL, BitBlt, (int x, int y, int nWidth, int nHeight, UIRender *pSrcRender, int xSrc, int ySrc, DWORD dwRop) );

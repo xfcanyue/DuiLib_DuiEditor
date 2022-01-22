@@ -300,7 +300,7 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
 
 
 
-2021-01-09
+2022-01-09
    1, DuiLib：void DrawText(RECT& rc, const RECT &rcTextPadding ....)， 当调用参数为DT_CALCRECT，计算结果错误。
    2，设计器：项目文件右键，增加菜单“在资源管理器中查看”。
    3, DuiLib: 修改函数 CStdPtrArray::InsertAt(int iIndex, LPVOID pData)。插入位置超出原有长度时，总是插入到最后。
@@ -309,5 +309,14 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
       根据xml结构推断iIndex显然是错误的，这个值会大于实际的数组长度（+1），然后AddAt失败............世界都乱了。
 
 
+2022-01-21
+   1，更新脚本接口。
+      脚本中有个BUG，暂时无法解决。
+      比如脚本中这么写，SetText("1234")，首先"1234"初始化为CDuiString，然后是脚本引擎调用opImplConv转为LPCTSTR，转完后，原先的CDuiString被释放掉了。看起来是作用域没写好。导致真正调用CControlUI::SetText时，是个空字符串。要避免这个问题，注册到脚本内的函数都不能使用LPCTSTR作为参数。。。。又要改一大片-_-!!
+      那么以前怎么不会出错呢。因为原先CDuiString内部有个szBuffer[64]，短字符串是存在这个数组里，转换之后，SetText()接收到的LPCTSTR实际上指向的是一片野内存。
+      目前脚本中应该这么写，CDuiString s = "1234"; SetText(s);
+      不要在传递参数过程中，产生CDuiString临时对象。
+   3，CMsgWnd，增加配置显示日期和时间，增加接口CMsgWnd::ClearMsg()。
+   4, 一组Option，当改变Selected时，取消和选中的那个都会收到 DUI_MSGTYPE_SELECTCHANGED 消息。
 
 

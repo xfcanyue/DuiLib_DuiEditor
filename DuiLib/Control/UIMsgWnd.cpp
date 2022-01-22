@@ -12,12 +12,35 @@ void CMsgWndUI::InsertMsg(LPCTSTR pstring, COLORREF cr)
 		return;
 
 	CDuiString strRet;
-	SYSTEMTIME _Time;
-	GetLocalTime(&_Time);
-	strRet.Format(_T("%04d-%02d-%02d %02d:%02d:%02d.%03d : %s"), 
-		_Time.wYear, _Time.wMonth, _Time.wDay,
-		_Time.wHour, _Time.wMinute, _Time.wSecond, _Time.wMilliseconds, 
-		pstring);
+	if(m_pStaticWindow->IsShowDateTime())
+	{
+		SYSTEMTIME _Time;
+		GetLocalTime(&_Time);
+		strRet.Format(_T("%04d-%02d-%02d %02d:%02d:%02d.%03d : %s"), 
+			_Time.wYear, _Time.wMonth, _Time.wDay,
+			_Time.wHour, _Time.wMinute, _Time.wSecond, _Time.wMilliseconds, 
+			pstring);
+	}
+	else if(m_pStaticWindow->IsShowDate())
+	{
+		SYSTEMTIME _Time;
+		GetLocalTime(&_Time);
+		strRet.Format(_T("%04d-%02d-%02d : %s"), 
+			_Time.wYear, _Time.wMonth, _Time.wDay,
+			pstring);
+	}
+	else if(m_pStaticWindow->IsShowTime())
+	{
+		SYSTEMTIME _Time;
+		GetLocalTime(&_Time);
+		strRet.Format(_T("%02d:%02d:%02d.%03d : %s"), 
+			_Time.wHour, _Time.wMinute, _Time.wSecond, _Time.wMilliseconds, 
+			pstring);
+	}
+	else
+	{
+		strRet = pstring;
+	}
 
 	CDuiString *pNewString = new CDuiString;
 	*pNewString = strRet;
@@ -36,6 +59,13 @@ void CMsgWndUI::InsertMsgV(LPCTSTR lpszFormat, ...)
 	InsertMsg(strText);
 }
 
+void CMsgWndUI::ClearMsg()
+{
+	if(m_pStaticWindow == NULL)
+		return;
+	m_pStaticWindow->SetText(_T(""));
+}
+
 IMPLEMENT_DUICONTROL(CMsgWndUI)
 
 CMsgWndUI::CMsgWndUI(void)
@@ -50,6 +80,9 @@ CMsgWndUI::CMsgWndUI(void)
 	SetInset(CRect(5,5,5,5));
 
 	m_pStaticWindow = this;
+
+	m_bWithDate = true;
+	m_bWithTime = true;
 }
 
 
@@ -101,6 +134,46 @@ bool CMsgWndUI::OnInsertMsg(void* param)
 		return true;
 	}
 	return false;
+}
+
+void CMsgWndUI::ShowDateTime(bool bShow)
+{
+	m_bWithDate = bShow;
+	m_bWithTime = bShow;
+}
+
+bool CMsgWndUI::IsShowDateTime() const
+{
+	return m_bWithDate && m_bWithTime;
+}
+
+void CMsgWndUI::ShowDate(bool bShow)
+{
+	m_bWithDate = bShow;
+}
+
+bool CMsgWndUI::IsShowDate() const
+{
+	return m_bWithDate;
+}
+
+void CMsgWndUI::ShowTime(bool bShow)
+{
+	m_bWithTime = bShow;
+}
+
+bool CMsgWndUI::IsShowTime() const
+{
+	return m_bWithTime;
+}
+
+void CMsgWndUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
+{
+	if( _tcsicmp(pstrName, _T("showdate")) == 0 ) 
+		ShowDate(_tcsicmp(pstrValue, _T("true")) == 0);
+	else if( _tcsicmp(pstrName, _T("showtime")) == 0 ) 
+		ShowDate(_tcsicmp(pstrValue, _T("true")) == 0);
+	else __super::SetAttribute(pstrName, pstrValue);
 }
 
 }

@@ -72,8 +72,8 @@
 				</GroupBox>
 			</HorizontalLayout>
 			<HorizontalLayout height="100" childpadding="10" childvalign="vcenter">
-				<Label text="脚本时钟控件" autocalcwidth="true" />
-				<Label width="200" height="100" OnInit="OnClockControlInit" OnEvent="OnClockControlEvent" />
+				<Label name="label_xxxxxx" text="脚本时钟控件" autocalcwidth="true" />
+				<Label name="label_clock" width="200" height="100" OnInit="OnClockControlInit" OnEvent="OnClockControlEvent" />
 			</HorizontalLayout>
 		</HorizontalLayout>
 		<HorizontalLayout height="120" childpadding="10" childvalign="vcenter">

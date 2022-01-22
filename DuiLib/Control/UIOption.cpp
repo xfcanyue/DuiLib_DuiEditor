@@ -128,9 +128,12 @@ namespace DuiLib
 		m_bSelected = bSelected;
 		SetSelectedState(m_bSelected);
 
-		if( m_pManager != NULL ) {
-			if( !m_sGroupName.IsEmpty() ) {
-				if( m_bSelected ) {
+		if( m_pManager != NULL ) 
+		{
+			if( !m_sGroupName.IsEmpty() ) 
+			{
+				if( m_bSelected ) 
+				{
 					CStdPtrArray* aOptionGroup = m_pManager->GetOptionGroup(m_sGroupName);
 					for( int i = 0; i < aOptionGroup->GetSize(); i++ ) 
 					{
@@ -144,12 +147,9 @@ namespace DuiLib
 							}
 						}
 					}
-					if (bTriggerEvent) m_pManager->SendNotify(this, DUI_MSGTYPE_SELECTCHANGED);
 				}
 			}
-			else {
-				if (bTriggerEvent) m_pManager->SendNotify(this, DUI_MSGTYPE_SELECTCHANGED);
-			}
+			if (bTriggerEvent) m_pManager->SendNotify(this, DUI_MSGTYPE_SELECTCHANGED);
 		}
 
 		Invalidate();

@@ -68,6 +68,7 @@
 #include "Core/UIResourceManager.h"
 #include "Core/UILangManager.h"
 #include "Render/IRender.h"
+#include "Core/UIScript.h"
 #include "Core/UIManager.h"
 #include "Core/UIBase.h"
 #include "Core/ControlFactory.h"

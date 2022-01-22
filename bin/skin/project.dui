@@ -2,6 +2,6 @@
 <Project path="E:\MyLibrary\DuiLib\bin\skin\">
 	<ProjectPath>E:\MyLibrary\DuiLib\bin\skin\</ProjectPath>
 	<Startup>
-		<File></File>
+		<File />
 	</Startup>
 </Project>

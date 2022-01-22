@@ -28,4 +28,4 @@ namespace DuiLib {
 
 } // namespace DuiLib
 
-#endif // __UIRENDER_H__
+#endif // __UIFILE_H__

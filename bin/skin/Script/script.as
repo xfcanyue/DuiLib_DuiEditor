@@ -1,3 +1,4 @@
+
 bool OnClockControlInit(CControlUI &obj)
 {
 	obj.SetTimer(1,1000);
@@ -10,7 +11,8 @@ bool OnClockControlEvent(CControlUI &obj, TEventUI &ev)
 	{
 		datetime dt;
 		dt.GetCurrentTime();
-		obj.SetText(dt.Format("%Y-%m-%d %H:%M:%S"));
+		string s = dt.Format("%Y-%m-%d %H:%M:%S");
+		obj.SetText(s);
 	}
 	return false;
 }

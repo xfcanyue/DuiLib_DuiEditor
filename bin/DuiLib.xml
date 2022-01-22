@@ -878,6 +878,8 @@ INT类型(最小值，最大值)：
 	
 	<MsgWnd parent="RichEdit" comment="日志输出控件">
 		<Attribute name="name" default="" type="STRING" comment="控件名字"/>
+		<Attribute name="showdate" default="true" type="BOOL" comment="每条日志前加入日期" />
+		<Attribute name="showtime" default="true" type="BOOL" comment="每条日志前加入时间" />
 	</MsgWnd>
 	<KeyBoard parent="VerticalLayout" comment="全键盘控件">
 		<Attribute name="name" default="" type="STRING" comment="控件名字"/>

@@ -291,6 +291,9 @@ void CScriptEngine::Init()
 	r = engine->RegisterObjectType("LPCTSTR", sizeof(const char *), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_PRIMITIVE);		assert( r >= 0 );
 #endif
 
+	//LPBYTE
+	r = engine->RegisterObjectType("LPBYTE", sizeof(const BYTE *), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_PRIMITIVE);		assert( r >= 0 );
+
 	r = engine->RegisterObjectType("HINSTANCE", sizeof(HINSTANCE), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_PRIMITIVE);	assert( r >= 0 );
 	r = engine->RegisterObjectType("HDC", sizeof(HDC), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_PRIMITIVE);	assert( r >= 0 );
 	r = engine->RegisterObjectType("HBITMAP", sizeof(HBITMAP), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_PRIMITIVE);	assert( r >= 0 );
@@ -322,6 +325,14 @@ void CScriptEngine::Init()
 	regCLangManagerUI::Register(engine);
 	regCPaintManagerUI::Register_Prepare(engine);
 	regTEventUI::Register_Prepare(engine);
+
+	regUIFont::Register(engine);
+	regUIBitmap::Register(engine);
+	regUIImage::Register(engine);
+	regTDrawInfo::Register(engine);
+	regUIFile::Register(engine);
+	regUIRender::Register(engine);
+	regUIGlobal::Register(engine);
 
 	REGISTER_CONTROL( CControlUI ); 
 	REGISTER_CONTROL( CActiveXUI );
@@ -380,13 +391,6 @@ void CScriptEngine::Init()
 	regCPaintManagerUI::Register_Extra(engine);
 	regTNotifyUI::Register(engine);
 	regTEventUI::Register_Extra(engine);
-	regUIFont::Register(engine);
-	regUIBitmap::Register(engine);
-	regUIImage::Register(engine);
-	regTDrawInfo::Register(engine);
-	regUIFile::Register(engine);
-	regUIGlobal::Register(engine);
-	regUIRender::Register(engine);
 	
 	//×¢²áMsgBoxº¯Êý
 	r = engine->RegisterGlobalFunction("void MsgBox(const string &in)", asFUNCTIONPR(ScriptMsgBox, (const CDuiString&), void), asCALL_CDECL); assert( r >= 0 );

@@ -14,17 +14,17 @@ public:
 
 	virtual bool CreateModule(LPCTSTR moduleName = NULL);
 	virtual void DeleteModule();
-	virtual bool AddScriptFile(LPCTSTR pstrFileName);
-	virtual bool AddScriptCode(LPCTSTR pstrCode);
-	virtual bool CompileScript();
-	virtual void *GetFunAddress(LPCTSTR lpszFunName);
+
+	virtual bool AddScriptFile(LPCTSTR pstrFileName) override;
+	virtual bool AddScriptCode(LPCTSTR pstrCode) override;
+	virtual bool CompileScript() override;
 	virtual bool SetMainFun(LPCTSTR lpszMainFun);
 	virtual bool Execute();
-	virtual bool ExecuteScript(void *pFun, CControlUI *pControl);
-	virtual bool ExecuteScript(void *pFun, CControlUI *pControl, TEventUI *ev);
-	virtual bool ExecuteScript(void *pFun, CControlUI *pControl, TNotifyUI *pMsg);
-	virtual bool ExecuteScript(void *pFun, CControlUI *pControl, UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl);
-
+	virtual bool ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl) override;
+	virtual bool ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, TEventUI *ev) override;
+	virtual bool ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, TNotifyUI *pMsg) override;
+	virtual bool ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl) override;
+	virtual bool ExecuteScript(IScriptFunction *pFun) override;
 	asIScriptEngine *GetEngine() const { return engine; }
 protected:
 	virtual void MessageCallback(const asSMessageInfo &msg);

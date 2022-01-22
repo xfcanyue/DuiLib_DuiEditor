@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Window size="600,458" sizebox="0,0,4,4" caption="0,0,0,20" showdirty="true" shadowsize="2" shadowposition="2,2" shadowcolor="0xFF4B4B4B" forcehsl="true">
+<Window size="600,458" sizebox="0,0,4,4" caption="0,0,0,20" shadowsize="2" shadowposition="2,2" shadowcolor="0xFF4B4B4B" forcehsl="true">
 	<Font id="0" name="宋体" size="14" shared="true" default="true" />
 	<VerticalLayout inset="1,1,1,1" bkcolor="0xFFD1E8F5" bordercolor="0xFF969696" bordersize="1">
-		<Button width="200" height="200" hotbkcolor="0xFF00FF00" text="我是按钮" pos="147,120,347,320" float="true" bkcolor="0xFF008080" bordercolor="0xFFFF0000" borderround="200,200" />
-		<Label text="r323r23raaaaaaaa" height="100" autocalcwidth="true" pos="0,0,0,100" bkcolor="0xFFFFFFFF" />
-		<Control pos="416,307,556,418" width="140" height="111" float="true" bkcolor="0xFF000080" bkcolor2="0xFFFFFFFF" />
+		<Grid name="grid_main" columnwith="150" fitcolumnbytext="true" fitcolumns="false" ascendingimage="file='images\common\list\listhead_arrow.png' source='0,0,18,18' " descendingimage="file='images\common\list\listhead_arrow.png' source='18,0,36,18' " sorticonsize="18,18" fixedcell="normalimage=&quot;file='images\common\list\listhead_btn.png' source='14,0,27,32' &quot; hotimage=&quot;file='images\common\list\listhead_btn.png' source='28,0,41,32' &quot; childalign=&quot;center&quot; childvalign=&quot;vcenter&quot; bkcolor=&quot;0xFFF0F0F0&quot; " row="selectedbkcolor=&quot;0xFFA6CAF0&quot; hotbkcolor=&quot;0xFFE9E9FF&quot; " cell="selectedbkcolor=&quot;0xFFC0DCC0&quot; hotbkcolor=&quot;0xFFE9E9FF&quot; childalign=&quot;center&quot; childvalign=&quot;vcenter&quot; " edit="align=&quot;center&quot; valign=&quot;center&quot; " checkbox="width=&quot;18&quot; height=&quot;16&quot; selectedimage=&quot;images\check-select.png&quot; normalimage=&quot;images\check-unselect.png&quot; " combo="dropbuttonsize=&quot;21,21&quot; dropbuttonnormalimage=&quot;file='images\common\combobox\dropbtn.png' source='21,0,42,21' &quot; dropbuttonhotimage=&quot;file='images\common\combobox\dropbtn.png' source='21,0,42,21' &quot; dropbuttonpushedimage=&quot;file='images\common\combobox\dropbtn.png' source='42,0,63,21' &quot; " bkcolor="0xFFFFFFFF">
+			<GridHeader>
+				<GridRow>
+					<GridCell width="20" />
+					<GridCell celltype="check" width="50" text="單選框" />
+					<GridCell width="80" text="速度" />
+					<GridCell width="80" text="起始" />
+					<GridCell width="80" text="結束" />
+					<GridCell width="80" text="上次結束（s）" />
+					<GridCell width="80" text="理論時間（s）" />
+					<GridCell width="80" text="實際時間（s）" />
+					<GridCell width="80" text="誤差（%）" />
+					<GridCell width="80" text="限 值（%）" />
+					<GridCell width="80" text="損耗（Kw）" />
+					<GridCell width="80" text="結果" />
+				</GridRow>
+			</GridHeader>
+		</Grid>
 	</VerticalLayout>
 </Window>

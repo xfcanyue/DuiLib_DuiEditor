@@ -621,19 +621,19 @@ namespace DuiLib {
 		SIZE m_szAnimationCurrect;		//当前动画区域
 
 	public:
-		void *m_asOnInit;		//事件发生时，调用脚本的函数指针
-		void *m_asOnEvent;		
-		void *m_asOnNotify;	
-		void *m_asOnDestroy;	
-		void *m_asOnSize;
-		void *m_asOnPaint;
-		void *m_asOnPaintBkColor;
-		void *m_asOnPaintBkImage;
-		void *m_asOnPaintStatusImage;
-		void *m_asOnPaintForeColor;
-		void *m_asOnPaintForeImage;
-		void *m_asOnPaintText;
-		void *m_asOnPaintBorder;
+		CDuiString m_asOnInit;		//事件发生时，调用脚本的函数指针
+		CDuiString m_asOnEvent;		
+		CDuiString m_asOnNotify;	
+		CDuiString m_asOnDestroy;	
+		CDuiString m_asOnSize;
+		CDuiString m_asOnPaint;
+		CDuiString m_asOnPaintBkColor;
+		CDuiString m_asOnPaintBkImage;
+		CDuiString m_asOnPaintStatusImage;
+		CDuiString m_asOnPaintForeColor;
+		CDuiString m_asOnPaintForeImage;
+		CDuiString m_asOnPaintText;
+		CDuiString m_asOnPaintBorder;
 
 		void __AddRef();
 		void __ReleaseRef();

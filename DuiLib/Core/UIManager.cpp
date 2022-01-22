@@ -872,7 +872,7 @@ namespace DuiLib {
 					m_aAsyncNotify.Remove(0);
 					if( pMsg->pSender != NULL ) {
 						if( pMsg->pSender->OnNotify ) pMsg->pSender->OnNotify(pMsg);
-						if(pMsg->pSender->m_asOnNotify) 
+						if(!pMsg->pSender->m_asOnNotify.IsEmpty()) 
 							ExecuteScript(pMsg->pSender->m_asOnNotify, pMsg->pSender, pMsg);
 					}
 					for( int j = 0; j < m_aNotifiers.GetSize(); j++ ) {
@@ -2384,7 +2384,7 @@ namespace DuiLib {
 			// Send to all listeners
 			if( Msg.pSender != NULL ) {
 				if( Msg.pSender->OnNotify ) Msg.pSender->OnNotify(&Msg);
-				if(Msg.pSender->m_asOnNotify) 
+				if(!Msg.pSender->m_asOnNotify.IsEmpty()) 
 					ExecuteScript(Msg.pSender->m_asOnNotify, Msg.pSender, &Msg);
 			}
 			for( int i = 0; i < m_aNotifiers.GetSize(); i++ ) {
@@ -3288,6 +3288,12 @@ namespace DuiLib {
 		return static_cast<CControlUI*>(m_mNameHash.Find(pstrName));
 	}
 
+	CControlUI* CPaintManagerUI::FindControl(const CDuiString &strName) const
+	{
+		if(!m_pRoot) return NULL;
+		return static_cast<CControlUI*>(m_mNameHash.Find(strName));
+	}
+
 	CControlUI* CPaintManagerUI::FindSubControlByPoint(CControlUI* pParent, POINT pt) const
 	{
 		if( pParent == NULL ) pParent = GetRoot();
@@ -3825,22 +3831,6 @@ namespace DuiLib {
 	DELETE_SCRIPT_ENGINE_INSTANCE CPaintManagerUI::m_funDeleteScriptEngine = NULL;	//add by liqs99
 	IScriptManager* CPaintManagerUI::m_pSharedScriptEngine = NULL;					//add by liqs99
 
-	// 	bool CPaintManagerUI::LoadScriptPlugin(LPCTSTR pstrModuleName)
-	// 	{
-	// 		ASSERT( !::IsBadStringPtr(pstrModuleName,-1) || pstrModuleName == NULL );
-	// 		if( pstrModuleName == NULL ) return false;
-	// 		HMODULE hModule = ::LoadLibrary(pstrModuleName);
-	// 		if( hModule != NULL ) 
-	// 		{
-	// 			m_funCreateScriptEngine = (CREATE_SCRIPT_ENGINE_INSTANCE)::GetProcAddress(hModule, "CreateScriptEngine");
-	// 			m_funDeleteScriptEngine = (DELETE_SCRIPT_ENGINE_INSTANCE)::GetProcAddress(hModule, "DeleteScriptEngine");
-	// 			if(m_funCreateScriptEngine != NULL || m_funDeleteScriptEngine != NULL)
-	// 			{
-	// 				return true;
-	// 			}
-	// 		}
-	// 		return false;
-	// 	}
 	bool CPaintManagerUI::LoadScriptPlugin(CREATE_SCRIPT_ENGINE_INSTANCE pFunCreate, DELETE_SCRIPT_ENGINE_INSTANCE pFunDelete)
 	{
 		m_funCreateScriptEngine = (CREATE_SCRIPT_ENGINE_INSTANCE)pFunCreate;
@@ -3848,19 +3838,19 @@ namespace DuiLib {
 		return true;
 	}
 
-	IScriptManager *CPaintManagerUI::GetScriptEngine(bool bCreateScriptEngine)
+	IScriptManager *CPaintManagerUI::GetScriptEngine()
 	{
 		if(m_funCreateScriptEngine == NULL)	
 			return NULL;
 
-		if(m_pSharedScriptEngine == NULL && bCreateScriptEngine)
+		if(m_pSharedScriptEngine == NULL)
 			m_pSharedScriptEngine = (*m_funCreateScriptEngine)();
 		return m_pSharedScriptEngine;
 	}
 
 	void CPaintManagerUI::AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pLanguageType)
 	{
-		IScriptManager *pScriptEngine = GetScriptEngine(true);
+		IScriptManager *pScriptEngine = GetScriptEngine();
 		if(pScriptEngine == NULL) return;
 		pScriptEngine->AddScriptFile(pstrFileName);
 	}
@@ -3872,50 +3862,43 @@ namespace DuiLib {
 		return pScriptEngine->CompileScript();
 	}
 
-	void *CPaintManagerUI::GetScriptFunAddress(LPCTSTR lpszFunName)
-	{
-		IScriptManager *pScriptEngine = GetScriptEngine();
-		if(pScriptEngine == NULL) return NULL;
-		return pScriptEngine->GetFunAddress(lpszFunName);
-	}
-
-	bool CPaintManagerUI::ExecuteScript(void *pFun, CControlUI *pControl)
+	bool CPaintManagerUI::ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl)
 	{
 		IScriptManager *pScriptEngine = GetScriptEngine();
 		if(pScriptEngine)
 		{
-			return pScriptEngine->ExecuteScript(pFun, pControl);
+			return pScriptEngine->ExecuteScript(lpszFunName, pControl);
 		}
 		return false;
 	}
 
-	bool CPaintManagerUI::ExecuteScript(void *pFun, CControlUI *pControl, TEventUI *ev)
+	bool CPaintManagerUI::ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, TEventUI *ev)
 	{
 		IScriptManager *pScriptEngine = GetScriptEngine();
 		if(pScriptEngine)
 		{
-			return pScriptEngine->ExecuteScript(pFun, pControl, ev);
+			return pScriptEngine->ExecuteScript(lpszFunName, pControl, ev);
 		}
 		return false;
 	}
 
-	bool CPaintManagerUI::ExecuteScript(void *pFun, CControlUI *pControl, TNotifyUI *pMsg)
+	bool CPaintManagerUI::ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, TNotifyUI *pMsg)
 	{
 		IScriptManager *pScriptEngine = GetScriptEngine();
 		if(pScriptEngine)
 		{
-			return pScriptEngine->ExecuteScript(pFun, pControl, pMsg);
+			return pScriptEngine->ExecuteScript(lpszFunName, pControl, pMsg);
 		}
 
 		return false;
 	}
 
-	bool CPaintManagerUI::ExecuteScript(void *pFun, CControlUI *pControl, UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
+	bool CPaintManagerUI::ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 	{
 		IScriptManager *pScriptEngine = GetScriptEngine();
 		if(pScriptEngine)
 		{
-			return pScriptEngine->ExecuteScript(pFun, pControl, pRender, rcPaint, pStopControl);
+			return pScriptEngine->ExecuteScript(lpszFunName, pControl, pRender, rcPaint, pStopControl);
 		}
 
 		return false;

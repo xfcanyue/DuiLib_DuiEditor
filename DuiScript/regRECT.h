@@ -88,7 +88,7 @@ public:
 		r = engine->RegisterObjectBehaviour("CRect", asBEHAVE_CONSTRUCT,  "void f()", asFUNCTION(CDuiRect_Construct), asCALL_CDECL_OBJLAST);  assert( r >= 0 );
 		r = engine->RegisterObjectBehaviour("CRect", asBEHAVE_CONSTRUCT,  "void f(const CRect &in)", asFUNCTION(CDuiRect_Copy), asCALL_CDECL_OBJLAST);  assert( r >= 0 );
 		r = engine->RegisterObjectBehaviour("CRect", asBEHAVE_CONSTRUCT,  "void f(const POINT &in)", asFUNCTION(CDuiRect_Construct2), asCALL_CDECL_OBJLAST);  assert( r >= 0 );
-		r = engine->RegisterObjectBehaviour("CRect", asBEHAVE_CONSTRUCT,  "void f(int x, int y)", asFUNCTION(CDuiRect_Construct3), asCALL_CDECL_OBJLAST);  assert( r >= 0 );
+		r = engine->RegisterObjectBehaviour("CRect", asBEHAVE_CONSTRUCT,  "void f(int, int, int, int)", asFUNCTION(CDuiRect_Construct3), asCALL_CDECL_OBJLAST);  assert( r >= 0 );
 		r = engine->RegisterObjectBehaviour("CRect", asBEHAVE_CONSTRUCT,  "void f(const string &in)", asFUNCTION(CDuiRect_Construct4), asCALL_CDECL_OBJLAST);  assert( r >= 0 );
 		r = engine->RegisterObjectBehaviour("CRect", asBEHAVE_DESTRUCT,   "void f()", asFUNCTION(CDuiRect_Destruct),  asCALL_CDECL_OBJLAST); assert( r >= 0 );
 
