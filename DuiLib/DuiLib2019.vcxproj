@@ -1105,6 +1105,7 @@
     <ClCompile Include="Core\UILangManager.cpp" />
     <ClCompile Include="Core\UIManager.cpp" />
     <ClCompile Include="Core\UIResourceManager.cpp" />
+    <ClCompile Include="Core\UIScript.cpp" />
     <ClCompile Include="Core\UIXmlAttribute.cpp" />
     <ClCompile Include="Core\UIXmlDocument.cpp" />
     <ClCompile Include="Core\UIXmlNode.cpp" />
@@ -1227,6 +1228,7 @@
     <ClInclude Include="Core\UIManager.h" />
     <ClInclude Include="Core\UIMarkup.h" />
     <ClInclude Include="Core\UIResourceManager.h" />
+    <ClInclude Include="Core\UIScript.h" />
     <ClInclude Include="Core\UIXmlAttribute.h" />
     <ClInclude Include="Core\UIXmlDocument.h" />
     <ClInclude Include="Core\UIXmlNode.h" />

@@ -58,6 +58,8 @@ BEGIN_MESSAGE_MAP(CDuiEditorViewDesign, CScrollView)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_BINDCONTROL, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_BindControl)
 	ON_COMMAND(ID_EDIT_GENERATE_BINDSUBCONTROL, &CDuiEditorViewDesign::OnEditGenerateCode_BindSubControl)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_BINDSUBCONTROL, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_BindSubControl)
+	ON_COMMAND(ID_EDIT_GENERATE_DECLARE_COMMAND, &CDuiEditorViewDesign::OnEditGenerateCode_DeclareCommand)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_DECLARE_COMMAND, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_DeclareCommand)
 	ON_COMMAND(ID_EDIT_GENERATE_UICOMMAND, &CDuiEditorViewDesign::OnEditGenerateCode_UiCommand)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_GENERATE_UICOMMAND, &CDuiEditorViewDesign::OnUpdateEditGenerateCode_UiCommand)
 
@@ -681,6 +683,35 @@ void CDuiEditorViewDesign::OnEditGenerateCode_BindSubControl()
 }
 
 void CDuiEditorViewDesign::OnUpdateEditGenerateCode_BindSubControl(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
+}
+
+void CDuiEditorViewDesign::OnEditGenerateCode_DeclareCommand()
+{
+	//期望创建的程序代码
+	//绑定消息处理函数
+	//On...fun();
+
+	CString strMuiltiText;
+
+	int count = GetUIManager()->GetUiTracker()->m_arrTracker.GetSize();
+	for (int i=0; i<count; i++)
+	{
+		CUITrackerMuliti::CTrackerElement *pTrackElem = GetUIManager()->GetUiTracker()->m_arrTracker[i];
+
+		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
+
+		CString strText;
+		strText.Format(_T("void on_%s();"), sControlName, sControlName);
+		strMuiltiText += _T("\r\n");
+		strMuiltiText += strText;
+	}
+
+	CopyToClipboard(strMuiltiText);
+}
+
+void CDuiEditorViewDesign::OnUpdateEditGenerateCode_DeclareCommand(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(GetUIManager()->GetUiTracker()->GetSize()>0);
 }

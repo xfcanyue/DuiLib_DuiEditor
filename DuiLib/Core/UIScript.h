@@ -11,6 +11,7 @@ namespace DuiLib {
 	enum emUIArgTypes
 	{
 		UIArg_void		= 0,
+		UIArg_bool,
 		UIArg_BYTE,
 		UIArg_WORD,
 		UIArg_DWORD,
@@ -27,6 +28,7 @@ namespace DuiLib {
 		struct TArgItem
 		{
 			emUIArgTypes _type;
+			bool _bool;
 			BYTE _byte;
 			WORD _word;
 			DWORD _dword;
@@ -46,6 +48,7 @@ namespace DuiLib {
 		virtual void SetFuctionName(LPCTSTR sFunName);
 
 		//从左到右入栈参数
+		virtual void PushArgBool(bool value);
 		virtual void PushArgByte(BYTE value);
 		virtual void PushArgWord(WORD value);
 		virtual void PushArgDWord(DWORD value);
@@ -55,6 +58,7 @@ namespace DuiLib {
 		virtual void PushArgObject(void *obj);
 
 		//获取返回值
+		virtual bool	GetReturnBool();
 		virtual BYTE	GetReturnByte();
 		virtual WORD	GetReturnWord();
 		virtual DWORD	GetReturnDWord();

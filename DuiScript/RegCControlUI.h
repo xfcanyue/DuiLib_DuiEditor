@@ -717,6 +717,80 @@ public:
 	}
 };
 
+class regMenuCmd
+{
+	static MenuCmd *MenuCmd_Ref_Factory()
+	{
+		return new MenuCmd();
+	}
+public:
+	static void Register(asIScriptEngine *engine)
+	{
+		int r =0;
+
+		//Registering DuiLib Class
+		r = engine->RegisterObjectType("MenuCmd", 0, asOBJ_REF|asOBJ_NOCOUNT); 
+
+		// Registering the factory behaviour
+		r = engine->RegisterObjectBehaviour("MenuCmd", asBEHAVE_FACTORY, "MenuCmd@ f()", asFUNCTION(MenuCmd_Ref_Factory), asCALL_CDECL);  assert( r >= 0 );
+		
+		r = engine->RegisterObjectMethod("MenuCmd", "string GetName()",		asMETHOD(MenuCmd, GetName),		asCALL_THISCALL);  assert( r >= 0 );
+		r = engine->RegisterObjectMethod("MenuCmd", "string GetUserData()", asMETHOD(MenuCmd, GetUserData), asCALL_THISCALL);  assert( r >= 0 );
+		r = engine->RegisterObjectMethod("MenuCmd", "string GetText()",		asMETHOD(MenuCmd, GetText),		asCALL_THISCALL);  assert( r >= 0 );
+		r = engine->RegisterObjectMethod("MenuCmd", "UINT_PTR GetTag()",	asMETHOD(MenuCmd, GetTag),		asCALL_THISCALL);  assert( r >= 0 );
+
+// 		r = engine->RegisterObjectProperty("MenuCmd", "string szName",		asOFFSET(MenuCmd, szName));			assert( r >= 0 );
+// 		r = engine->RegisterObjectProperty("MenuCmd", "string szUserData",	asOFFSET(MenuCmd, szUserData));		assert( r >= 0 );
+// 		r = engine->RegisterObjectProperty("MenuCmd", "string szText",		asOFFSET(MenuCmd, szText));			assert( r >= 0 );
+// 		r = engine->RegisterObjectProperty("MenuCmd", "BOOL bChecked",		asOFFSET(MenuCmd, bChecked));		assert( r >= 0 );
+	}
+};
+
+class regCMenuCmdUI
+{
+// 	static CMenuCmdUI *CMenuCmdUI_Ref_Factory()
+// 	{
+// 		return new CMenuCmdUI();
+// 	}
+public:
+	static void Register(asIScriptEngine *engine)
+	{
+		int r =0;
+
+		//Registering DuiLib Class
+		r = engine->RegisterObjectType("CMenuCmdUI", 0, asOBJ_REF|asOBJ_NOCOUNT); 
+
+		// Registering the factory behaviour
+		//r = engine->RegisterObjectBehaviour("CMenuCmdUI", asBEHAVE_FACTORY, "CMenuCmdUI@ f()", asFUNCTION(CMenuCmdUI_Ref_Factory), asCALL_CDECL);  assert( r >= 0 );
+
+		r = engine->RegisterObjectMethod("CMenuCmdUI", "void Enable(BOOL bEnable)", asMETHOD(CMenuCmdUI, Enable), asCALL_THISCALL);  assert( r >= 0 );
+		r = engine->RegisterObjectMethod("CMenuCmdUI", "BOOL IsEnable()", asMETHOD(CMenuCmdUI, IsEnable), asCALL_THISCALL);  assert( r >= 0 );
+
+		r = engine->RegisterObjectMethod("CMenuCmdUI", "void SetCheck(BOOL bCheck)", asMETHOD(CMenuCmdUI, SetCheck), asCALL_THISCALL);  assert( r >= 0 );
+		r = engine->RegisterObjectMethod("CMenuCmdUI", "BOOL IsCheck()", asMETHOD(CMenuCmdUI, IsCheck), asCALL_THISCALL);  assert( r >= 0 );
+
+		r = engine->RegisterObjectMethod("CMenuCmdUI", "void SetText(LPCTSTR lpszText)", asMETHOD(CMenuCmdUI, SetText), asCALL_THISCALL);  assert( r >= 0 );
+		r = engine->RegisterObjectMethod("CMenuCmdUI", "string GetText()", asMETHOD(CMenuCmdUI, GetText), asCALL_THISCALL);  assert( r >= 0 );
+
+		r = engine->RegisterObjectMethod("CMenuCmdUI", "string GetName()", asMETHOD(CMenuCmdUI, GetName), asCALL_THISCALL);  assert( r >= 0 );
+	}
+};
+
+//////////////////////////////////////////////////////////////////////////
+//CMenuUI
+template <typename T>
+class regCMenuUI : public regCListUI<T>
+{
+	DECL_CONTROL_FACTORY(CMenuUI);
+	DECL_CONTROL_REGFACT(CMenuUI);
+public:
+	virtual void reg(asIScriptEngine *engine)
+	{
+		__super::reg(engine);
+		int r = 0;
+	}
+};
+
 //////////////////////////////////////////////////////////////////////////
 //CHorizontalLayoutUI
 template <typename T>

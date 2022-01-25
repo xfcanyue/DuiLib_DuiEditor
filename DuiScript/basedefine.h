@@ -94,9 +94,13 @@
 #define REGISTER_CONTROL(x) { reg##x<x> ctrl; ctrl.classname=#x;  ctrl.reg(engine); }	
 
 
+#define DECL_PROP_BOOL(m)		static bool m##property = m;		//定义bool全局变量
+#define DECL_PROP_INT(m)		static int m##property = m;			//定义int全局变量
 #define DECL_PROP_UINT(m)		static UINT m##property = m;		//定义UINT全局变量
 #define DECL_PROP_STRING(m)		static CDuiString m##property = m;	//定义string全局变量
 #define PROP_PARAPETER(type,value)	type##value	//连接typevalue字符串
+#define REGI_PROP_BOOL(m)		r = engine->RegisterGlobalProperty(PROP_PARAPETER("const bool ",#m), &##m##property); assert( r >= 0 );		//注册bool全局变量
+#define REGI_PROP_INT(m)		r = engine->RegisterGlobalProperty(PROP_PARAPETER("const int ",#m), &##m##property); assert( r >= 0 );		//注册int全局变量
 #define REGI_PROP_UINT(m)		r = engine->RegisterGlobalProperty(PROP_PARAPETER("const uint ",#m), &##m##property); assert( r >= 0 );		//注册UINT全局变量
 #define REGI_PROP_STRING(m)		r = engine->RegisterGlobalProperty(PROP_PARAPETER("const string ",#m), &##m##property); assert( r >= 0 );	//注册string全局变量
 

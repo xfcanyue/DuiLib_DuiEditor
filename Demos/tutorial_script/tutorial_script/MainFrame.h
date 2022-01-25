@@ -15,5 +15,6 @@ public:
 	virtual bool OnMenuCommand(const MenuCmd *cmd);
 	virtual bool OnMenuUpdateCommandUI(CMenuCmdUI *cmdUI);
 	virtual void OnNotifyClick(TNotifyUI& msg);
+	virtual void OnNotifyTimer(TNotifyUI& msg);
 };
 

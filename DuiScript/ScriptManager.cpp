@@ -275,6 +275,11 @@ bool CScriptManager::ExecuteScript(IScriptFunction *pFun)
 		{
 		case UIArg_void:
 			return false;
+		case UIArg_bool:
+			{
+				r = ctx->SetArgByte(i, pItem->_bool); 
+				if( r < 0 ) return false;
+			}
 			break;
 		case UIArg_BYTE:
 			{
@@ -326,6 +331,11 @@ bool CScriptManager::ExecuteScript(IScriptFunction *pFun)
 		switch (pFun->m_result._type)
 		{
 		case UIArg_void:
+			break;
+		case UIArg_bool:
+			{
+				pFun->m_result._bool = ctx->GetReturnByte() == 1;
+			}
 			break;
 		case UIArg_BYTE:
 			{

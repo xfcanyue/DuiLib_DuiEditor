@@ -1220,10 +1220,11 @@ namespace DuiLib {
 						{
 
 							MenuCmd* pMenuCmd = new MenuCmd();
-							_tcscpy(pMenuCmd->szName, GetName().GetData());
-							_tcscpy(pMenuCmd->szUserData, GetUserData().GetData());
-							_tcscpy(pMenuCmd->szText, GetText().GetData());
-							pMenuCmd->bChecked = GetChecked();
+							pMenuCmd->szName		= GetName();
+							pMenuCmd->szUserData	= GetUserData();
+							pMenuCmd->szText		= GetText();
+							pMenuCmd->tag			= GetTag();
+							pMenuCmd->bChecked		= GetChecked();
 							if (!PostMessage(CMenuWnd::GetGlobalContextMenuObserver().GetManager()->GetPaintWindow(), UIMSG_MENUCLICK, (WPARAM)pMenuCmd, (LPARAM)this))
 							{
 								delete pMenuCmd;
@@ -1579,6 +1580,11 @@ namespace DuiLib {
 		pMenuElement->SetEnabled(bEnable == TRUE);
 	}
 
+	BOOL CMenuCmdUI::IsEnable()
+	{
+		return pMenuElement->IsEnabled();
+	}
+
 	void CMenuCmdUI::SetCheck(BOOL bCheck)
 	{
 		//m_bCheck = bCheck;
@@ -1586,7 +1592,7 @@ namespace DuiLib {
 		
 	}
 
-	bool CMenuCmdUI::GetCheck()
+	BOOL CMenuCmdUI::IsCheck()
 	{
 		//return m_bCheck;
 		return pMenuElement->GetChecked();

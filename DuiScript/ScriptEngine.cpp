@@ -206,6 +206,9 @@ DECL_PROP_UINT( OT_PEN );
 DECL_PROP_UINT( OT_BRUSH );
 DECL_PROP_UINT( OT_BITMAP );
 DECL_PROP_UINT( OT_IMAGE );
+
+DECL_PROP_BOOL( TRUE );
+DECL_PROP_BOOL( FALSE );
 //////////////////////////////////////////////////////////////////////////
 CScriptEngine g_ScriptEngine;
 
@@ -275,7 +278,7 @@ void CScriptEngine::Init()
 	r = engine->RegisterTypedef("short", "int8");	assert( r >= 0 );
 	r = engine->RegisterTypedef("wchar_t", "int16");assert( r >= 0 );
 	r = engine->RegisterTypedef("UINT_PTR", "int64");assert( r >= 0 );
-	r = engine->RegisterTypedef("BOOL", "int");assert( r >= 0 );
+	r = engine->RegisterTypedef("BOOL", "bool");		assert( r >= 0 );
 	r = engine->RegisterObjectType("LPVOID", sizeof(LPVOID), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_PRIMITIVE);	assert( r >= 0 );
 
 #ifdef _UNICODE
@@ -356,6 +359,10 @@ void CScriptEngine::Init()
 	REGISTER_CONTROL( CListHeaderUI );
 	REGISTER_CONTROL( CListUI );
 
+	regMenuCmd::Register(engine);
+	regCMenuCmdUI::Register(engine);
+	REGISTER_CONTROL( CMenuUI );
+
 	// 	REGISTER_CONTROL( CTreeNodeUI );
 	// 	REGISTER_CONTROL( CTreeViewUI );
 
@@ -391,6 +398,8 @@ void CScriptEngine::Init()
 	regCPaintManagerUI::Register_Extra(engine);
 	regTNotifyUI::Register(engine);
 	regTEventUI::Register_Extra(engine);
+
+	reg_GlobalFunction();
 	
 	//注册MsgBox函数
 	r = engine->RegisterGlobalFunction("void MsgBox(const string &in)", asFUNCTIONPR(ScriptMsgBox, (const CDuiString&), void), asCALL_CDECL); assert( r >= 0 );
@@ -554,6 +563,10 @@ void CScriptEngine::reg_GlobalProperty()
 	REGI_PROP_UINT( OT_BRUSH );
 	REGI_PROP_UINT( OT_BITMAP );
 	REGI_PROP_UINT( OT_IMAGE );
+
+	//
+	REGI_PROP_BOOL( TRUE );
+	REGI_PROP_BOOL( FALSE );
 }
 
 void CScriptEngine::reg_ControlHierarchies()
@@ -616,6 +629,19 @@ void CScriptEngine::reg_ControlHierarchies()
 
 	REG_CLASS_HIERARCHIES(CListElementUI, CListLabelElementUI);
 	
+}
+
+static void script_CreateMenu(CPaintManagerUI *pManager, LPCTSTR xml)
+{
+	//异步构建菜单，同步不行。
+	CDuiString *pString = new CDuiString(xml);
+	::PostMessage(pManager->GetPaintWindow(), UIMSG_CREATE_MENU, (WPARAM)pString, 0);
+}
+
+void CScriptEngine::reg_GlobalFunction()
+{
+	int r = 0;
+	r = engine->RegisterGlobalFunction("void CreateMenu(CPaintManagerUI @mgr, LPCTSTR xml)", asFUNCTIONPR(script_CreateMenu, (CPaintManagerUI *, LPCTSTR), void), asCALL_CDECL); assert( r >= 0 );
 }
 
 void ScriptOutputDebugString(CDuiString &str)

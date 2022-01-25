@@ -134,6 +134,14 @@ LRESULT CUIFrameWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam
 		return 0;
 	}
 
+	if(uMsg == UIMSG_CREATE_MENU)
+	{
+		CDuiString *pstring = (CDuiString *)wParam;
+		CreateMenu(pstring->GetData());
+		delete pstring;
+		return 0;
+	}
+
 	if(OnCustomMessage(uMsg, wParam, lParam))
 	{
 		bHandled = TRUE;

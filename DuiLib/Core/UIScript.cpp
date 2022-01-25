@@ -34,6 +34,15 @@ namespace DuiLib {
 		m_sFunName = sFunName;
 	}
 
+	void IScriptFunction::PushArgBool(bool value)
+	{
+		TArgItem *pItem = new TArgItem;
+		memset(pItem, 0, sizeof(TArgItem));
+		pItem->_type = UIArg_bool;
+		pItem->_byte = value;
+		m_arrArgs.Add(pItem);
+	}
+
 	//从左到右入栈参数
 	void IScriptFunction::PushArgByte(BYTE value)
 	{
@@ -96,6 +105,11 @@ namespace DuiLib {
 		pItem->_type = UIArg_object;
 		pItem->_obj = obj;
 		m_arrArgs.Add(pItem);
+	}
+
+	bool IScriptFunction::GetReturnBool()
+	{
+		return m_result._bool;
 	}
 
 	BYTE IScriptFunction::GetReturnByte()

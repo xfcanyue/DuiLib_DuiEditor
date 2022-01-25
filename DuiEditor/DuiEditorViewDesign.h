@@ -91,6 +91,8 @@ public:
 	afx_msg void OnUpdateEditGenerateCode_BindControl(CCmdUI *pCmdUI);
 	afx_msg void OnEditGenerateCode_BindSubControl();
 	afx_msg void OnUpdateEditGenerateCode_BindSubControl(CCmdUI *pCmdUI);
+	afx_msg void OnEditGenerateCode_DeclareCommand();
+	afx_msg void OnUpdateEditGenerateCode_DeclareCommand(CCmdUI *pCmdUI);
 	afx_msg void OnEditGenerateCode_UiCommand();
 	afx_msg void OnUpdateEditGenerateCode_UiCommand(CCmdUI *pCmdUI);
 

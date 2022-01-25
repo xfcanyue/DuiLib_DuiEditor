@@ -20,12 +20,19 @@ struct MenuItemInfo
 	TCHAR szName[256];
 	bool bChecked;
 };
+
 struct MenuCmd
 {
-	TCHAR szName[256];
-	TCHAR szUserData[1024];
-	TCHAR szText[1024];
+	CDuiString GetName()		{ return szName;		}
+	CDuiString GetUserData()	{ return szUserData;	}
+	CDuiString GetText()		{ return szText;		}
+	UINT_PTR   GetTag()			{ return tag;			}
+
+	CDuiString szName;
+	CDuiString szUserData;
+	CDuiString szText;
 	BOOL bChecked;
+	UINT tag;
 };
 
 enum MenuAlignment
@@ -425,19 +432,16 @@ class CMenuCmdUI
 public:
 	CMenuCmdUI(CMenuElementUI *p);
 	virtual void Enable(BOOL bEnable = TRUE);
+	virtual BOOL IsEnable();
 
 	virtual void SetCheck(BOOL bCheck = TRUE);
-	virtual bool GetCheck();
+	virtual BOOL IsCheck();
 
 	virtual void SetText(LPCTSTR lpszText);
 	virtual CDuiString GetText();
 
 	virtual CDuiString GetName();
 private:
-// 	bool m_bEnable;
-// 	bool m_bCheck;
-// 	CDuiString m_sText;
-// 	CDuiString m_sName;
 	CMenuElementUI *pMenuElement;
 };
 
