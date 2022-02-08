@@ -88,6 +88,11 @@ namespace DuiLib
 		return false;
 	}
 
+	bool CTabCtrlUI::IsSelectedState() const
+	{
+		return IsSelected();
+	}
+
 	void CTabCtrlUI::BindTriggerTabSel( int _SetSelectIndex /*= -1*/ )
 	{
 		LPCTSTR pstrName = GetBindTabLayoutName();

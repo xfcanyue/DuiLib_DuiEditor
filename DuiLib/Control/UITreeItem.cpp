@@ -109,6 +109,11 @@ namespace DuiLib
 
 	}
 
+	bool CTreeInnerCheckBoxUI::IsSelectedState() const
+	{
+		return IsSelected();
+	}
+
 	CDuiString CTreeInnerCheckBoxUI::GetText() const
 	{
 		if(!m_pOwner) return _T("");

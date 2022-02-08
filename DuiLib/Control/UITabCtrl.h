@@ -19,6 +19,7 @@ namespace DuiLib
 		virtual void DoEvent(TEventUI& event) override;
 
 		virtual bool IsSelected() const override;	
+		virtual bool IsSelectedState() const override;
 		virtual void BindTriggerTabSel(int _SetSelectIndex = -1) override;	
 
 		void SetActiveMouseOn(bool bActive); // Û±Í–¸Õ£ ±«–ªª“≥√Ê

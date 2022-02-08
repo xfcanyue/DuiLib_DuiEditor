@@ -19,6 +19,8 @@ namespace DuiLib
 		virtual bool IsSelected() const override;
 		virtual void Selected(bool bSelected, bool bTriggerEvent=true) override;
 
+		virtual bool IsSelectedState() const override;
+
 		virtual CDuiString GetText() const override;
 
 		virtual void DoEvent(TEventUI& event) override;

@@ -68,6 +68,11 @@ void CGridCellInnerCheckBoxUI::Selected(bool bSelected, bool bTriggerEvent)
 	pGrid->Invalidate();
 }
 
+bool CGridCellInnerCheckBoxUI::IsSelectedState() const
+{
+	return IsSelected();
+}
+
 //////////////////////////////////////////////////////////////////////////
 IMPLEMENT_DUICONTROL(CGridCellUI)
 

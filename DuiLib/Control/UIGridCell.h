@@ -17,6 +17,8 @@ public:
 	virtual bool IsSelected() const override;
 	virtual void Selected(bool bSelected, bool bTriggerEvent=true) override;
 
+	virtual bool IsSelectedState() const override;
+
 	CControlUI *m_pOwner;
 };
 
