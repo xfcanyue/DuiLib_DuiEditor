@@ -15,7 +15,7 @@ namespace DuiLib
 	LPVOID CLabelHLayoutUI::GetInterface(LPCTSTR pstrName)
 	{
 		if( _tcsicmp(pstrName, DUI_CTR_LABEL_HLAYOUT) == 0 ) return static_cast<CLabelHLayoutUI*>(this);
-		return CControlUI::GetInterface(pstrName);
+		return __super::GetInterface(pstrName);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,7 @@ namespace DuiLib
 	LPVOID CLabelVLayoutUI::GetInterface(LPCTSTR pstrName)
 	{
 		if( _tcsicmp(pstrName, DUI_CTR_LABEL_VLAYOUT) == 0 ) return static_cast<CLabelVLayoutUI*>(this);
-		return CControlUI::GetInterface(pstrName);
+		return __super::GetInterface(pstrName);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -43,7 +43,7 @@ namespace DuiLib
 	LPVOID CLabelLayoutUI::GetInterface(LPCTSTR pstrName)
 	{
 		if( _tcsicmp(pstrName, DUI_CTR_LABEL_LAYOUT) == 0 ) return static_cast<CLabelLayoutUI*>(this);
-		return CControlUI::GetInterface(pstrName);
+		return __super::GetInterface(pstrName);
 	}
 
 	//////////////////////////////////////////////////////////////////////////

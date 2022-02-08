@@ -167,12 +167,30 @@ namespace DuiLib {
 // 		graphics.FillRectangle(&linGrBrush, rc.left, rc.top, rc.right, rc.bottom);
 // 	}
 
-	void UIRender_gdiplus::DrawLine(const RECT& rc, int nSize, DWORD dwPenColor,int nStyle/* = PS_SOLID*/)
+	void UIRender_gdiplus::DrawLine(int x1, int y1, int x2, int y2, int nSize, DWORD dwPenColor,int nStyle)
 	{
 		Gdiplus::Graphics graphics(m_hDC);
 		graphics.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
 		Gdiplus::Pen pen(Gdiplus::Color(dwPenColor), (Gdiplus::REAL)nSize);
-		graphics.DrawLine(&pen, rc.left, rc.top, rc.right, rc.bottom);
+		switch(nStyle)
+		{
+		case PS_SOLID :								// 0
+			pen.SetDashStyle(Gdiplus::DashStyleSolid);
+			break;
+		case PS_DASH :								// 1       /* -------  */
+			pen.SetDashStyle(Gdiplus::DashStyleDash);
+			break;
+		case PS_DOT :								// 2       /* .......  */
+			pen.SetDashStyle(Gdiplus::DashStyleDot);
+			break;
+		case PS_DASHDOT :							// 3       /* _._._._  */
+			pen.SetDashStyle(Gdiplus::DashStyleDashDot);
+			break;
+		case PS_DASHDOTDOT :						// 4       /* _.._.._  */
+			pen.SetDashStyle(Gdiplus::DashStyleDashDotDot);
+			break;
+		}
+		graphics.DrawLine(&pen, x1, y1, x2, y2);
 	}
 
 	void UIRender_gdiplus::DrawRect(const RECT& rc, int nSize, DWORD dwPenColor,int nStyle/* = PS_SOLID*/)
@@ -231,6 +249,14 @@ namespace DuiLib {
 		graphics.DrawEllipse(&pen, rc.left, rc.top, rc.right-rc.left, rc.bottom-rc.top);
 	}
 
+	void UIRender_gdiplus::FillEllipse(const RECT& rc, DWORD dwColor)
+	{
+		Gdiplus::Graphics graphics(m_hDC);
+		graphics.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+		Gdiplus::SolidBrush brush(dwColor);
+		graphics.FillEllipse(&brush, rc.left, rc.top, rc.right-rc.left, rc.bottom-rc.top);
+	}
+
 	void UIRender_gdiplus::DrawText(RECT& rc, LPCTSTR pstrText, DWORD dwTextColor, int iFont, UINT uStyle)
 	{
 		CPaintManagerUI *pManager = GetManager();
@@ -239,7 +265,7 @@ namespace DuiLib {
 		ASSERT(::GetObjectType(hDC)==OBJ_DC || ::GetObjectType(hDC)==OBJ_MEMDC);
 		if( pstrText == NULL || pManager == NULL ) return;
 
-		UIObject *pOldFont = SelectObject(pManager->GetFont(iFont));
+		CStdRefPtr<UIObject> pOldFont = SelectObject(pManager->GetFont(iFont));
 
 		Gdiplus::Font font(hDC, (HFONT)pManager->GetFont(iFont)->GetHFont(GetManager()));
 
@@ -345,4 +371,24 @@ namespace DuiLib {
 		SelectObject(pOldFont);
 	}
 
+	UIPath* UIRender_gdiplus::CreatePath()
+	{
+		return new UIPath_gdiplus();
+	}
+
+	BOOL UIRender_gdiplus::DrawPath(const UIPath* path, int nSize, DWORD dwColor)
+	{
+		Gdiplus::Graphics graphics(m_hDC);
+		graphics.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+		Gdiplus::Pen pen(dwColor, (Gdiplus::REAL)nSize);
+		return graphics.DrawPath(&pen, ((UIPath_gdiplus *)path)->Getpath()) == Gdiplus::Ok;
+	}
+
+	BOOL UIRender_gdiplus::FillPath(const UIPath* path, const DWORD dwColor)
+	{
+		Gdiplus::Graphics graphics(m_hDC);
+		graphics.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+		Gdiplus::SolidBrush brush(dwColor);
+		return graphics.FillPath(&brush, ((UIPath_gdiplus *)path)->Getpath()) == Gdiplus::Ok;
+	}
 } // namespace DuiLib

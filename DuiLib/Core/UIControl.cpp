@@ -18,6 +18,7 @@ namespace DuiLib {
 		m_bSetPos(false),
 		m_bDragEnabled(false),
 		m_bDropEnabled(false),
+		m_bAcceptDropFile(false),
 		m_bResourceText(false),
 		m_nResourceID(0),
 		m_chShortcut('\0'),
@@ -294,6 +295,15 @@ namespace DuiLib {
 		m_bDropEnabled = bDrop;
 	}
 
+	bool CControlUI::IsAcceptDropFile() const
+	{
+		return m_bAcceptDropFile;
+	}
+
+	void CControlUI::SetAcceptDropFile(bool bDrop)
+	{
+		m_bAcceptDropFile = bDrop;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	int CControlUI::GetFont() const					{ return m_iFont;			}
 	void CControlUI::SetFont(int index)				{ m_iFont = index;			}
@@ -1640,6 +1650,7 @@ namespace DuiLib {
 		else if( _tcsicmp(pstrName, _T("name")) == 0 ) SetName(pstrValue);
 		else if( _tcsicmp(pstrName, _T("drag")) == 0 ) SetDragEnable(_tcsicmp(pstrValue, _T("true")) == 0);
 		else if( _tcsicmp(pstrName, _T("drop")) == 0 ) SetDropEnable(_tcsicmp(pstrValue, _T("true")) == 0);
+		else if( _tcsicmp(pstrName, _T("acceptfile")) == 0 ) SetAcceptDropFile(_tcsicmp(pstrValue, _T("true")) == 0);
 		else if( _tcsicmp(pstrName, _T("resourcetext")) == 0 ) SetResourceText(_tcsicmp(pstrValue, _T("true")) == 0);
 		else if( _tcsicmp(pstrName, _T("resourceid")) == 0 ) 
 			SetResourceID(_ttoi(pstrValue));
@@ -2167,11 +2178,11 @@ namespace DuiLib {
 
 		if(m_animation == DuiAnim_ScaleVertical || m_animation == DuiAnim_ScaleHorizontal || m_animation == DuiAnim_ScaleSize)
 		{
-			m_bPaneVisible = bVisible;
-
 			if(bVisible)
 			{
 				StopAnimation(ANIMATION_ID_SHOW);
+
+				m_bPaneVisible = bVisible;
 
 				if(m_animation == DuiAnim_ScaleVertical) {
 					m_szAnimationCurrect.cx = m_szAnimationTotal.cx;
@@ -2223,6 +2234,8 @@ namespace DuiLib {
 				}
 
 				m_szAnimationCurrect = m_szAnimationTotal;
+
+				m_bPaneVisible = bVisible;
 				StartAnimation(GetFrameDelay(), GetFrameCount(), ANIMATION_ID_HIDE);
 			}
 			return;

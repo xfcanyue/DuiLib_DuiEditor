@@ -90,6 +90,32 @@ namespace DuiLib {
 		HBRUSH m_hBrush;
 	};
 
+	//////////////////////////////////////////////////////////////////////////
+	//
+	//
+	class UILIB_API UIPath_gdiplus  : public UIPath
+	{
+	public:
+		UIPath_gdiplus();
+
+		virtual void DeleteObject() override;
+
+		virtual BOOL Beginpath() override;
+		virtual BOOL EndPath() override;
+		virtual BOOL AbortPath() override;
+
+		virtual BOOL AddLine(int x1, int y1, int x2, int y2) override;
+		virtual BOOL AddLines(CDuiPoint *points, int count) override;
+
+		Gdiplus::GraphicsPath* Getpath();
+
+	protected:
+		virtual ~UIPath_gdiplus();
+
+	protected:
+		Gdiplus::GraphicsPath *m_pPath;
+	};
+
 
 } // namespace DuiLib
 

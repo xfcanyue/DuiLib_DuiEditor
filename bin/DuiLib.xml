@@ -124,6 +124,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="shortcut" default="" type="CHAR" comment="对应的快捷键,如(P)" />
 		<Attribute name="menu" default="false" type="BOOL" comment="是否需要右键菜单,如(true)" />
 		<Attribute name="cursor" default="false" type="STRING" value="arrow,ibeam,wait,cross,uparrow,size,icon,sizenwse,sizenesw,sizewe,sizens,sizeall,no,hand" comment="鼠标样式" />
+		<Attribute name="acceptfile" default="false" type="BOOL" comment="是否接受文件拖拽" />
 		<Attribute name="virtualwnd" default="" type="STRING" comment="设置控件的虚拟窗体的名字" />		
 		<Attribute name="style" default="" type="STRING" comment="通过样式名称设置控件的样式" />
 		<Attribute name="innerstyle" default="" type="STRING" comment="通过样式表设置控件的样式" />		
@@ -439,7 +440,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="align" default="center" type="STRING" value="left,right,center" comment="对齐方式,取值left、right、center" />		
 		<Attribute name="valign" default="vcenter" type="STRING" value="top,bottom,vcenter" comment="对齐方式,取值top,bottom,center" />				
 	</Text>
-	<Progress parent="Label" notifies="setfocus killfocus timer menu windowinit(root)" comment="进度条控件">
+	<Progress parent="LabelLayout" notifies="setfocus killfocus timer menu windowinit(root)" comment="进度条控件">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
 		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />

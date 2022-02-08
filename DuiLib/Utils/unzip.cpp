@@ -3925,12 +3925,16 @@ ZRESULT TUnzip::Get(int index,ZIPENTRY *ze)
 }
 
 ZRESULT TUnzip::Find(const TCHAR *tname,bool ic,int *index,ZIPENTRY *ze)
-{ char name[MAX_PATH];
+{ 
+	
+	char name[MAX_PATH];
 #ifdef UNICODE
-  WideCharToMultiByte(CP_UTF8,0,tname,-1,name,MAX_PATH,0,0);
+  //WideCharToMultiByte(CP_UTF8,0,tname,-1,name,MAX_PATH,0,0);
+	WideCharToMultiByte(CP_ACP,0,tname,-1,name,MAX_PATH,0,0);
 #else
   strcpy(name,tname);
 #endif
+  
   int res = unzLocateFile(uf,name,ic?CASE_INSENSITIVE:CASE_SENSITIVE);
   if (res!=UNZ_OK)
   { if (index!=0) *index=-1;

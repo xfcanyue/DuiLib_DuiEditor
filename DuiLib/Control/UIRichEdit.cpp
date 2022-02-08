@@ -287,6 +287,8 @@ namespace DuiLib {
 	void CRichEditUI::SetText(LPCTSTR pstrText)
 	{
 		m_sText = pstrText;
+		// ½âÎöxml»»ÐÐ·û
+		m_sText.Replace(_T("{\\n}"), _T("\n"));
 		if( !m_pTwh ) return;
 		SetSel(0, -1);
 		ReplaceSel(pstrText, FALSE);

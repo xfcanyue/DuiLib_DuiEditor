@@ -121,6 +121,8 @@ namespace DuiLib
 #define DUI_MSGTYPE_LISTHEADITEMCHECKED		(_T("listheaditemchecked"))
 #define DUI_MSGTYPE_LISTPAGECHANGED			(_T("listpagechanged"))
 
+#define DUI_MSGTYPE_ACCEPTFILE				(_T("acceptfile"))
+
 #define DUI_MSGTYPE_INITCELL				(_T("initcell"))			//CGirdUI初始化单元格控件
 #define DUI_MSGTYPE_INITROWDATA				(_T("initrowdata"))			//实表模式下，CGirdUI初始化数据行内容，一般是容器里的控件状态啥的。
 #define DUI_MSGTYPE_DRAWITEM				(_T("drawitem"))

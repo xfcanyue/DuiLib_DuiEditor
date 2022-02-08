@@ -3720,11 +3720,49 @@ namespace DuiLib {
 			return (WORD)(DIBNumColors (lpbih) * sizeof (RGBTRIPLE));
 	}
 
+	bool CPaintManagerUI::OnDropOver(DWORD grfKeyState, LPDWORD pdwEffect)
+	{
+		POINT point;
+		::GetCursorPos(&point);
+		::ScreenToClient(GetPaintWindow(), &point);
+		CControlUI* pControl = FindControl(point);
+		if( pControl == NULL )
+		{
+			*pdwEffect = DROPEFFECT_NONE;
+			return true;
+		}
+		if(pControl->IsAcceptDropFile())
+		{
+			*pdwEffect = DROPEFFECT_COPY;
+			return true;
+		}
+		*pdwEffect = DROPEFFECT_NONE;
+		return true;
+	}
+
 	bool CPaintManagerUI::OnDrop(FORMATETC* pFmtEtc, STGMEDIUM& medium,DWORD *pdwEffect)
 	{
 		POINT ptMouse = {0};
 		GetCursorPos(&ptMouse);
 		::SendMessage(m_hTargetWnd, WM_LBUTTONUP, NULL, MAKELPARAM(ptMouse.x, ptMouse.y));
+
+		::ScreenToClient(GetPaintWindow(), &ptMouse);
+		CControlUI* pControl = FindControl(ptMouse);
+		if(pControl && pControl->IsAcceptDropFile())
+		{
+			HDROP hDrop = (HDROP)GlobalLock(medium.hGlobal);
+			if(hDrop != NULL)
+			{
+				UINT cFiles = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
+				if(cFiles > 0)
+				{
+					TCHAR szFileName[MAX_PATH];
+					DragQueryFile(hDrop, 0, szFileName, sizeof(szFileName)); 
+					SendNotify(pControl, DUI_MSGTYPE_ACCEPTFILE, (WPARAM)szFileName, 0);
+				}
+			}
+			GlobalUnlock(medium.hGlobal);
+		}
 
 		if(pFmtEtc->cfFormat == CF_DIB && medium.tymed == TYMED_HGLOBAL)
 		{

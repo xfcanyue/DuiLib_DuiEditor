@@ -555,6 +555,7 @@ namespace DuiLib {
 		if(m_pDropTargetHelper)
 			m_pDropTargetHelper->DragOver((LPPOINT)&pt, *pdwEffect);
 		QueryDrop(grfKeyState, pdwEffect);
+		OnDropOver(grfKeyState, pdwEffect);
 		return S_OK;
 	}
 

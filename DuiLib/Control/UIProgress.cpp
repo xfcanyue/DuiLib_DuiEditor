@@ -8,7 +8,7 @@ namespace DuiLib
 	CProgressUI::CProgressUI() : m_bShowText(false), m_bHorizontal(true), m_nMin(0), m_nMax(100), m_nValue(0), m_bStretchForeImage(true)
 	{
 		m_uTextStyle = DT_SINGLELINE | DT_CENTER;
-		SetFixedHeight(12);
+		//SetFixedHeight(12);
 	}
 
 	LPCTSTR CProgressUI::GetClass() const
@@ -19,7 +19,7 @@ namespace DuiLib
 	LPVOID CProgressUI::GetInterface(LPCTSTR pstrName)
 	{
 		if( _tcsicmp(pstrName, DUI_CTR_PROGRESS) == 0 ) return static_cast<CProgressUI*>(this);
-		return CLabelUI::GetInterface(pstrName);
+		return __super::GetInterface(pstrName);
 	}
 	
 	bool CProgressUI::IsShowText()
@@ -91,7 +91,7 @@ namespace DuiLib
 		else if( _tcsicmp(pstrName, _T("max")) == 0 ) SetMaxValue(_ttoi(pstrValue));
 		else if( _tcsicmp(pstrName, _T("value")) == 0 ) SetValue(_ttoi(pstrValue));
 		else if( _tcsicmp(pstrName, _T("isstretchfore"))==0) SetStretchForeImage(_tcsicmp(pstrValue, _T("true")) == 0? true : false);
-		else CLabelUI::SetAttribute(pstrName, pstrValue);
+		else __super::SetAttribute(pstrName, pstrValue);
 	}
 
 	void CProgressUI::PaintForeColor(UIRender *pRender)

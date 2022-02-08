@@ -426,7 +426,8 @@ namespace DuiLib {
 
 		// ³õÊ¼»¯ÍÏ×§
 		bool InitDragDrop();
-		virtual bool OnDrop(FORMATETC* pFmtEtc, STGMEDIUM& medium,DWORD *pdwEffect);
+		virtual bool OnDropOver(DWORD grfKeyState, LPDWORD pdwEffect) override;
+		virtual bool OnDrop(FORMATETC* pFmtEtc, STGMEDIUM& medium,DWORD *pdwEffect) override;
 
 		bool AttachDialog(CControlUI* pControl);
 		bool InitControls(CControlUI* pControl, CControlUI* pParent = NULL);

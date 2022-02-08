@@ -180,6 +180,77 @@ namespace DuiLib {
 	//////////////////////////////////////////////////////////////////////////
 	//
 	//
+	UIPath_gdi::UIPath_gdi()
+	{
+		m_hDC = NULL;
+		memset(&m_curPoint, 0, sizeof(POINT));
+	}
+
+	UIPath_gdi::UIPath_gdi(HDC hDC)
+	{
+		m_hDC = hDC;
+		memset(&m_curPoint, 0, sizeof(POINT));
+	}
+
+	UIPath_gdi::~UIPath_gdi()
+	{
+		
+	}
+
+	void UIPath_gdi::DeleteObject()
+	{
+		
+	}
+
+	BOOL UIPath_gdi::Beginpath()
+	{
+		if(m_hDC == NULL) return FALSE;
+		return ::BeginPath(m_hDC);
+	}
+
+	BOOL UIPath_gdi::EndPath()
+	{
+		if(m_hDC == NULL) return FALSE;
+		return ::EndPath(m_hDC);
+	}
+
+	BOOL UIPath_gdi::AbortPath()
+	{
+		if(m_hDC == NULL) return FALSE;
+		return ::AbortPath(m_hDC);
+	}
+
+	BOOL UIPath_gdi::AddLine(int x1, int y1, int x2, int y2)
+	{
+		if(m_hDC == NULL) return FALSE;
+		
+		if(m_curPoint.x != x1 && m_curPoint.y != y1)
+		{
+			POINT lastPoint;
+			::MoveToEx(m_hDC, x1, y1, &lastPoint);
+		}
+		::LineTo(m_hDC, x2, y2);
+		m_curPoint.x = x2;
+		m_curPoint.y = y2;
+		return TRUE;
+	}
+
+	BOOL UIPath_gdi::AddLines(CDuiPoint *points, int count)
+	{
+		if(m_hDC == NULL) return FALSE;
+		POINT pt;
+		::MoveToEx(m_hDC, points[0].x, points[0].y, &pt);
+		for (int i=1; i<count; i++)
+		{
+			::LineTo(m_hDC, points[i].x, points[i].y);
+		}
+		::LineTo(m_hDC, points[0].x, points[0].y);
+		return TRUE;
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	//
+	//
 	UIBitmap_gdi::UIBitmap_gdi()
 	{
 		m_hBitmap = NULL;

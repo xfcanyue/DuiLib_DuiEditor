@@ -52,6 +52,7 @@ namespace DuiLib {
 		OT_FONT,
 		OT_PEN,
 		OT_BRUSH,
+		OT_PATH,
 		OT_BITMAP,
 		OT_IMAGE,
 	};
@@ -235,6 +236,29 @@ namespace DuiLib {
 		virtual BOOL CreateBitmapBrush(UIBitmap *bitmap) = 0;
 	};
 
+	class UILIB_API UIPath  : public TObjRefImpl<UIObject>
+	{
+	protected:
+		virtual ~UIPath() {}
+
+	public:
+		const emUIOBJTYPE ObjectType() const override {  return OT_PATH;  }
+
+		//开始定义新的路径 
+		virtual BOOL Beginpath()	= 0;
+
+		//结束定义路径
+		virtual BOOL EndPath()		= 0;
+
+		//结束定义路径 并且 清理
+		virtual BOOL AbortPath()	= 0;
+
+		//由多个线段组成的多边形
+		virtual BOOL AddLine(int x1, int y1, int x2, int y2) = 0;
+
+		//由多个点组成的多边形
+		virtual BOOL AddLines(CDuiPoint *points, int count) = 0;
+	};
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
@@ -261,7 +285,7 @@ namespace DuiLib {
 		virtual void SaveDC() = 0;
 		virtual void RestoreDC() = 0;
 
-		virtual UIObject* SelectObject(UIObject *pObject) = 0;
+		virtual CStdRefPtr<UIObject> SelectObject(UIObject *pObject) = 0;
 		virtual void RestoreObject(UIObject *pObject = NULL) = 0;
 		virtual void RestoreDefaultObject() = 0;
 
@@ -280,8 +304,8 @@ namespace DuiLib {
 		//画渐变色
 		virtual void DrawGradient(const RECT& rc, DWORD dwFirst, DWORD dwSecond, bool bVertical, int nSteps) = 0;
 
-		//画线  MoveTo(rc.left, rc.top)，LineTo(rc.right, rc.bottom)
-		virtual void DrawLine(const RECT& rc, int nSize, DWORD dwPenColor,int nStyle = PS_SOLID) = 0;
+		//画线  MoveTo(x1, y1)，LineTo(x2, y2)
+		virtual void DrawLine(int x1, int y1, int x2, int y2, int nSize, DWORD dwPenColor,int nStyle = PS_SOLID) = 0;
 
 		//画边框
 		virtual void DrawRect(const RECT& rc, int nSize, DWORD dwPenColor,int nStyle = PS_SOLID) = 0;
@@ -289,11 +313,23 @@ namespace DuiLib {
 		//画圆角边框
 		virtual void DrawRoundRect(const RECT& rc, int nSize, const SIZE &round, DWORD dwPenColor,int nStyle = PS_SOLID) = 0;
 
-		//画椭圆
+		//画圆或椭圆
 		virtual void DrawEllipse(const RECT& rc, int nSize, DWORD dwPenColor, int nStyle = PS_SOLID) = 0;
+
+		//填充圆或椭圆
+		virtual void FillEllipse(const RECT& rc, DWORD dwColor) = 0;
 
 		//绘制文本
 		virtual void DrawText(RECT& rc, LPCTSTR pstrText, DWORD dwTextColor, int iFont, UINT uStyle) = 0;
+
+		//建立路径
+		virtual UIPath* CreatePath() = 0;	
+
+		//绘制路径
+		virtual BOOL DrawPath(const UIPath* path, int nSize, DWORD dwColor) = 0;
+
+		//填充路径
+		virtual BOOL FillPath(const UIPath* path, const DWORD dwColor) = 0;
 
 		//绘制文字的占用的空间大小
 		virtual SIZE GetTextSize(LPCTSTR pstrText, int iFont, UINT uStyle) = 0;
@@ -302,6 +338,9 @@ namespace DuiLib {
 
 		//画背景色
 		void DrawBackColor(const RECT& rc, const SIZE &round, DWORD dwBackColor, DWORD dwBackColor2=0, DWORD dwBackColor3=0, bool bVertical=true);
+
+		//画线  MoveTo(rc.left, rc.top)，LineTo(rc.right, rc.bottom)
+		void DrawLine(const RECT& rc, int nSize, DWORD dwPenColor,int nStyle = PS_SOLID);
 
 		//画边框
 		void DrawBorder(const RECT &rcItem, int nBorderSize, SIZE szBorderRound, RECT rcBorderSize, DWORD dwColor, int nBorderStyle);

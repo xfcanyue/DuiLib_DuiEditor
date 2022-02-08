@@ -54,7 +54,9 @@ public:
 	virtual void OnNotifyItemCollapse(TNotifyUI& msg) {}
 	virtual void OnNotifyItemActivate(TNotifyUI& msg) {}
 	virtual void OnNotifyValueChanged(TNotifyUI& msg) {}
-	virtual void OnNotifySelectChanged(TNotifyUI& msg) {}   
+	virtual void OnNotifySelectChanged(TNotifyUI& msg) {}  
+
+	virtual void OnNotifyAcceptFile(TNotifyUI& msg) {}
 
 	virtual void OnNotifyInitCell(TNotifyUI& msg) {}
 	virtual void OnNotifyDrawItem(TNotifyUI& msg) {}

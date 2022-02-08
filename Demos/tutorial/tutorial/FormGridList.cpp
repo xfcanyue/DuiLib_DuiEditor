@@ -39,7 +39,7 @@ void CFormGridList::InitWindow()
 
 	m_pGrid->SetColumnSort(1, FALSE);
 	m_pGrid->SetVirtualGrid(TRUE);
-	m_pGrid->SetRowCount(1 * 1000);
+	m_pGrid->SetRowCount(1 * 10000);
 }
 
 void CFormGridList::OnNotifyClick(TNotifyUI& msg)

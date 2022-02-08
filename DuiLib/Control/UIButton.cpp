@@ -205,13 +205,13 @@ namespace DuiLib
 
 		if(GetBindTabLayoutIndex() >= 0 || _SetSelectIndex >= 0 )
 		{
-			CTabLayoutUI* pTabLayout = static_cast<CTabLayoutUI*>(GetManager()->FindControl(pstrName));
+			CTabLayoutUI* pTabLayout = dynamic_cast<CTabLayoutUI*>(GetManager()->FindControl(pstrName));
 			if(!pTabLayout) return;
 			pTabLayout->SelectItem(_SetSelectIndex >=0?_SetSelectIndex:GetBindTabLayoutIndex());
 		}
 		else if(!m_sBindTabIndexName.IsEmpty())
 		{
-			CTabLayoutUI* pTabLayout = static_cast<CTabLayoutUI*>(GetManager()->FindControl(pstrName));
+			CTabLayoutUI* pTabLayout = dynamic_cast<CTabLayoutUI*>(GetManager()->FindControl(pstrName));
 			if(!pTabLayout) return;
 			CControlUI *pControl = static_cast<CControlUI*>(GetManager()->FindControl(m_sBindTabIndexName));
 			if(pControl)

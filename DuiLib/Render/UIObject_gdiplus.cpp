@@ -123,6 +123,64 @@ namespace DuiLib {
 	{
 		
 	}
+	//////////////////////////////////////////////////////////////////////////
+	//
+	//
+	UIPath_gdiplus::UIPath_gdiplus()
+	{
+		m_pPath = new Gdiplus::GraphicsPath;
+	}
+
+	UIPath_gdiplus::~UIPath_gdiplus()
+	{
+		delete m_pPath;
+	}
+
+	void UIPath_gdiplus::DeleteObject()
+	{
+		delete m_pPath;
+	}
+
+	BOOL UIPath_gdiplus::Beginpath()
+	{
+		m_pPath->StartFigure();
+		return TRUE;
+	}
+
+	BOOL UIPath_gdiplus::EndPath()
+	{
+		m_pPath->CloseFigure();
+		return TRUE;
+	}
+
+	BOOL UIPath_gdiplus::AbortPath()
+	{
+		m_pPath->CloseFigure();
+		return TRUE;
+	}
+
+	BOOL UIPath_gdiplus::AddLine(int x1, int y1, int x2, int y2)
+	{
+		m_pPath->AddLine(x1, y1, x2, y2);
+		return TRUE;
+	}
+
+	BOOL UIPath_gdiplus::AddLines(CDuiPoint *points, int count)
+	{
+		if(count < 2) return FALSE;
+
+		std::vector<Gdiplus::Point> p;
+		for (int i = 0; i < count; i++)
+		{
+			p.emplace_back(Gdiplus::Point(points[i].x, points[i].y));
+		}
+		return m_pPath->AddLines(&p[0], p.size()) == Gdiplus::Ok;
+	}
+
+	Gdiplus::GraphicsPath* UIPath_gdiplus::Getpath()
+	{
+		return m_pPath;
+	}
 
 	//////////////////////////////////////////////////////////////////////////
 	//

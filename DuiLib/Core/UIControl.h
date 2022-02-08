@@ -82,6 +82,9 @@ namespace DuiLib {
 		virtual bool IsDropEnabled() const;
 		virtual void SetDropEnable(bool bDrop);
 
+		//接受文件拖拽
+		virtual bool IsAcceptDropFile() const;
+		virtual void SetAcceptDropFile(bool bDrop);
 		//////////////////////////////////////////////////////////////////////////
 		//字体
 		int GetFont() const;
@@ -503,6 +506,7 @@ namespace DuiLib {
 
 		bool m_bDragEnabled;			//允许拖动
 		bool m_bDropEnabled;			//接受其它控件被拖动时放下到当前控件
+		bool m_bAcceptDropFile;			//是否接受文件拖拽
 
 		bool m_bResourceText;			//是否使用资源替换文本
 

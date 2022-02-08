@@ -150,9 +150,9 @@ namespace DuiLib
 			}
 			else if(!m_sBindTabIndexName.IsEmpty())
 			{
-				CTabLayoutUI* pTabLayout = static_cast<CTabLayoutUI*>(T::GetManager()->FindControl(pstrName));
+				CTabLayoutUI* pTabLayout = dynamic_cast<CTabLayoutUI*>(GetManager()->FindControl(pstrName));
 				if(!pTabLayout) return;
-				CControlUI *pControl = static_cast<CControlUI*>(T::GetManager()->FindControl(m_sBindTabIndexName));
+				CControlUI *pControl = static_cast<CControlUI*>(GetManager()->FindControl(m_sBindTabIndexName));
 				if(pControl)
 					pTabLayout->SelectItem(pControl);
 			}

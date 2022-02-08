@@ -399,6 +399,11 @@ namespace DuiLib {
 		}
 	}
 
+	void UIRender::DrawLine(const RECT& rc, int nSize, DWORD dwPenColor, int nStyle)
+	{
+		DrawLine(rc.left, rc.top, rc.right, rc.bottom, nSize, dwPenColor, nStyle);
+	}
+
 	void UIRender::DrawBorder(const RECT &rcItem, int nBorderSize, SIZE cxyBorderRound, RECT rcBorderSize, DWORD dwColor, int nBorderStyle)
 	{
 		if(nBorderSize > 0)

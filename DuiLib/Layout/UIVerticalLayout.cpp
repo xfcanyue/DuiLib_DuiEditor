@@ -561,7 +561,11 @@ namespace DuiLib
 				}
 				RECT rcCtrl = { iPosX - sz.cx/2, iPosY + rcPadding.top, iPosX + sz.cx - sz.cx/2, iPosY + sz.cy + rcPadding.top };
 				//pControl->SetPos(rcCtrl, false);		
-				if(pControl == pChildControl) { rcChild = rcCtrl; return true; }
+				if(pControl == pChildControl) 
+				{ 
+					rcChild = rcCtrl; 
+					return true; 
+				}
 			}
 			else if (iChildAlign == DT_RIGHT) {
 				int iPosX = rc.right;
@@ -571,7 +575,11 @@ namespace DuiLib
 				}
 				RECT rcCtrl = { iPosX - rcPadding.right - sz.cx, iPosY + rcPadding.top, iPosX - rcPadding.right, iPosY + sz.cy + rcPadding.top };
 				//pControl->SetPos(rcCtrl, false);
-				if(pControl == pChildControl) { rcChild = rcCtrl; return true; }
+				if(pControl == pChildControl) 
+				{ 
+					rcChild = rcCtrl; 
+					return true; 
+				}
 			}
 			else {
 				int iPosX = rc.left;
@@ -580,7 +588,11 @@ namespace DuiLib
 				}
 				RECT rcCtrl = { iPosX + rcPadding.left, iPosY + rcPadding.top, iPosX + rcPadding.left + sz.cx, iPosY + sz.cy + rcPadding.top };
 				//pControl->SetPos(rcCtrl, false);
-				if(pControl == pChildControl) { rcChild = rcCtrl; return true; }
+				if(pControl == pChildControl) 
+				{ 
+					rcChild = rcCtrl; 
+					return true; 
+				}
 			}
 
 

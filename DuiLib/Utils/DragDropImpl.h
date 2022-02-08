@@ -169,6 +169,8 @@ namespace DuiLib {
 		void AddSuportedFormat(FORMATETC& ftetc) { m_formatetc.push_back(ftetc); }
 		void SetTargetWnd(HWND hWnd) { m_hTargetWnd = hWnd; }
 
+		virtual bool OnDropOver(DWORD grfKeyState, LPDWORD pdwEffect) = 0;
+
 		//return values: true - release the medium. false - don't release the medium 
 		virtual bool OnDrop(FORMATETC* pFmtEtc, STGMEDIUM& medium,DWORD *pdwEffect) = 0;
 

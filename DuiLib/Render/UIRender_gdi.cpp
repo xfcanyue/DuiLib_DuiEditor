@@ -239,7 +239,7 @@ namespace DuiLib {
 		::RestoreDC(m_hDC, m_iSaveDC);
 	}
 
-	UIObject* UIRender_gdi::SelectObject(UIObject *pObject)
+	CStdRefPtr<UIObject> UIRender_gdi::SelectObject(UIObject *pObject)
 	{
 		emUIOBJTYPE eType = pObject->ObjectType();
 		if(eType == OT_FONT)
@@ -906,7 +906,7 @@ namespace DuiLib {
 		}
 	}
 
-	void UIRender_gdi::DrawLine(const RECT& rc, int nSize, DWORD dwPenColor,int nStyle /*= PS_SOLID*/ )
+	void UIRender_gdi::DrawLine(int x1, int y1, int x2, int y2, int nSize, DWORD dwPenColor,int nStyle)
 	{
 		HDC hDC = GetDC();
 		ASSERT(::GetObjectType(hDC)==OBJ_DC || ::GetObjectType(hDC)==OBJ_MEMDC);
@@ -928,8 +928,8 @@ namespace DuiLib {
 		HPEN hPen = CreatePenIndirect(&lg);
 		HPEN hOldPen = (HPEN)::SelectObject(hDC, hPen);
 		POINT ptTemp = { 0 };
-		::MoveToEx(hDC, rc.left, rc.top, &ptTemp);
-		::LineTo(hDC, rc.right, rc.bottom);
+		::MoveToEx(hDC, x1, y1, &ptTemp);
+		::LineTo(hDC, x2, y2);
 		::SelectObject(hDC, hOldPen);
 		::DeleteObject(hPen);
 	}
@@ -969,7 +969,27 @@ namespace DuiLib {
 
 	void UIRender_gdi::DrawEllipse(const RECT& rc, int nSize, DWORD dwPenColor, int nStyle)
 	{
+		HPEN hPen = ::CreatePen(nStyle, nSize, RGB(GetBValue(dwPenColor), GetGValue(dwPenColor), GetRValue(dwPenColor)));
+		HPEN hOldPen = (HPEN)::SelectObject(m_hDC, hPen);
 		::Ellipse(m_hDC, rc.left, rc.top, rc.right, rc.bottom);
+		::SelectObject(m_hDC, hOldPen);
+		::DeleteObject(hPen);
+	}
+
+	void UIRender_gdi::FillEllipse(const RECT& rc, DWORD dwColor)
+	{
+		HPEN hPen = ::CreatePen(PS_SOLID, 1, RGB(GetBValue(dwColor), GetGValue(dwColor), GetRValue(dwColor)));
+		HPEN hOldPen = (HPEN)::SelectObject(m_hDC, hPen);
+
+		HBRUSH hBrush = ::CreateSolidBrush(RGB(GetBValue(dwColor), GetGValue(dwColor), GetRValue(dwColor)));
+		HBRUSH hOldBrush = (HBRUSH)::SelectObject(m_hDC, hBrush);
+
+		::Ellipse(m_hDC, rc.left, rc.top, rc.right, rc.bottom);
+
+		::SelectObject(m_hDC, hOldBrush);
+		::SelectObject(m_hDC, hOldPen);
+		::DeleteObject(hPen);
+		::DeleteObject(hBrush);
 	}
 
 	void UIRender_gdi::DrawText(RECT& rc, LPCTSTR pstrText, DWORD dwTextColor, int iFont, UINT uStyle)
@@ -1083,10 +1103,35 @@ namespace DuiLib {
 		{
 			::SetBkMode(hDC, TRANSPARENT);
 			::SetTextColor(hDC, RGB(GetBValue(dwTextColor), GetGValue(dwTextColor), GetRValue(dwTextColor)));
-			UIObject *pOldFont = SelectObject(pManager->GetFont(iFont));
+			CStdRefPtr<UIObject> pOldFont = SelectObject(pManager->GetFont(iFont));
 			::DrawText(hDC, pstrText, -1, &rc, uStyle);
 			SelectObject(pOldFont);
 		}
+	}
+
+	UIPath* UIRender_gdi::CreatePath()
+	{
+		return new UIPath_gdi(m_hDC);
+	}
+
+	BOOL UIRender_gdi::DrawPath(const UIPath* path, int nSize, DWORD dwColor)
+	{
+		HPEN hPen = ::CreatePen(PS_SOLID, 1, RGB(GetBValue(dwColor), GetGValue(dwColor), GetRValue(dwColor)));
+		HPEN hOldPen = (HPEN)::SelectObject(m_hDC, hPen);
+		BOOL bRet = ::StrokePath(m_hDC);
+		::SelectObject(m_hDC, hOldPen);
+		::DeleteObject(hPen);
+		return bRet;
+	}
+
+	BOOL UIRender_gdi::FillPath(const UIPath* path, const DWORD dwColor)
+	{
+		HBRUSH hBrush = ::CreateSolidBrush(RGB(GetBValue(dwColor), GetGValue(dwColor), GetRValue(dwColor)));
+		HBRUSH hOldBrush = (HBRUSH)::SelectObject(m_hDC, hBrush);
+		BOOL bRet = ::FillPath(m_hDC);
+		::SelectObject(m_hDC, hOldBrush);
+		::DeleteObject(hBrush);
+		return bRet;
 	}
 
 	SIZE UIRender_gdi::GetTextSize(LPCTSTR pstrText, int iFont, UINT uStyle )
