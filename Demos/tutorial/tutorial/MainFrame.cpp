@@ -77,11 +77,12 @@ void CMainFrame::InitWindow()
 
 	CDuiString str1 = CLangManagerUI::GetString(1);
 	CDuiString str2 = CLangManagerUI::GetStringExtra(1);
+
+	GetManager()->SetDPI(CDPI::GetMainMonitorDPI());
 }
 
 bool CMainFrame::OnCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-
 	return false;
 }
 

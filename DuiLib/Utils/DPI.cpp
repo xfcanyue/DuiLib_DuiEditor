@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "DPI.h"
-#include "VersionHelpers.h"
+
 namespace DuiLib
 {
 	//96 DPI = 100% scaling
@@ -40,7 +40,9 @@ namespace DuiLib
 	int CDPI::GetDPIOfMonitor(HMONITOR hMonitor)
 	{
 		UINT dpix = 96, dpiy = 96;
-		if (IsWindows8Point1OrGreater()) {
+		//if (IsWindows8Point1OrGreater()) //由于这个函数不支持win8.1 or greater，假设win8就是8.1 or greater。
+		if (IsWindows8OrGreater())
+		{
 			HRESULT  hr = E_FAIL;
 			HMODULE hModule =::LoadLibrary(_T("Shcore.dll"));
 			if(hModule != NULL) {
@@ -77,7 +79,8 @@ namespace DuiLib
 
 	PROCESS_DPI_AWARENESS CDPI::GetDPIAwareness()
 	{
-		if (IsWindows8Point1OrGreater()) {
+		//if (IsWindows8Point1OrGreater()) //由于这个函数不支持win8.1 or greater，假设win8就是8.1 or greater。
+		if (IsWindows8OrGreater()) {
 			HMODULE hModule =::LoadLibrary(_T("Shcore.dll"));
 			if(hModule != NULL) {
 				LPGetProcessDpiAwareness GetProcessDpiAwareness = (LPGetProcessDpiAwareness)GetProcAddress(hModule, "GetProcessDpiAwareness");
@@ -95,7 +98,8 @@ namespace DuiLib
 	BOOL CDPI::SetDPIAwareness(PROCESS_DPI_AWARENESS Awareness)
 	{
 		BOOL bRet = FALSE;
-		if (IsWindows8Point1OrGreater()) {
+		//if (IsWindows8Point1OrGreater()) //由于这个函数不支持win8.1 or greater，假设win8就是8.1 or greater。
+		if (IsWindows8OrGreater()) {
 			HMODULE hModule =::LoadLibrary(_T("Shcore.dll"));
 			if(hModule != NULL) {
 				LPSetProcessDpiAwareness SetProcessDpiAwareness = (LPSetProcessDpiAwareness)GetProcAddress(hModule, "SetProcessDpiAwareness");

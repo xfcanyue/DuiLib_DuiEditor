@@ -36,13 +36,13 @@ namespace DuiLib {
 	{
 		Empty();
 
-		//读取顺序  skin文件夹 ==> zip文件 ==> dll资源 ==> 文件绝对路径
+		//读取顺序  skin文件夹 ==> zip文件 ==> 资源 ==> 文件绝对路径
 		do 
 		{
 			if( type == NULL )
 			{
 				CDuiString sFile = CPaintManagerUI::GetResourcePath();
-				if( CPaintManagerUI::GetResourceZip().IsEmpty() )
+				if( CPaintManagerUI::GetResourceZip().IsEmpty() ) //直接读文件夹
 				{
 					sFile += bitmap.m_lpstr;
 					HANDLE hFile = ::CreateFile(sFile.GetData(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, \
@@ -63,13 +63,16 @@ namespace DuiLib {
 						break;
 					}
 				}
-				else 
+				else //读zip
 				{
 					sFile += CPaintManagerUI::GetResourceZip();
 					HZIP hz = NULL;
-					if( CPaintManagerUI::IsCachedResourceZip() ) 
+					if (CPaintManagerUI::IsCachedResourceZip())  //zip资源
+					{
 						hz = (HZIP)CPaintManagerUI::GetResourceZipHandle();
-					else {
+					}
+					else //zip文件
+					{
 						CDuiString sFilePwd = CPaintManagerUI::GetResourceZipPwd();
 						UISTRING_CONVERSION;
 						hz = OpenZip(sFile.GetData(), UIT2A(sFilePwd.GetData()));
@@ -96,7 +99,7 @@ namespace DuiLib {
 						CloseZip(hz);
 				}
 			}
-			else 
+			else //读取资源id
 			{
 				HINSTANCE dllinstance = NULL;
 				if (instance)

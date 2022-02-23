@@ -499,8 +499,10 @@ LRESULT CUIWindowDesignView::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 
 	ResizeWindow();
 
-	GetManager()->GetDPIObj()->SetDPIAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
-	GetManager()->SetDPI(CDPI::GetMainMonitorDPI());
+	//GetManager()->GetDPIObj()->SetDPIAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
+	//GetManager()->SetDPI(CDPI::GetMainMonitorDPI());
+	//设计器中，默认不要跟随DPI
+	GetManager()->SetDPI(96);
 
 	return 0;
 }

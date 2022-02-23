@@ -39,6 +39,9 @@ public:
 	virtual CDuiString GetText() const override;
 	virtual void SetText(LPCTSTR pstrText) override;
 
+	virtual DWORD GetTextColor() const override;
+	virtual void SetTextColor(DWORD dwColor) override;
+
 	bool IsMergedWithOthers();
 
 	void SetCellIndex(int row, int col);

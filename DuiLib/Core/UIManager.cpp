@@ -1984,12 +1984,11 @@ namespace DuiLib {
 		}
 		m_SharedResInfo.m_DefaultFontInfo->RebuildFont(this);
 
-		CStdPtrArray *richEditList = FindSubControlsByClass(GetRoot(), _T("RichEditUI"));
+		CStdPtrArray *richEditList = FindSubControlsByInterface(GetRoot(), DUI_CTR_RICHEDIT);
 		for (int i = 0; i < richEditList->GetSize(); i++)
 		{
 			CRichEditUI* pT = static_cast<CRichEditUI*>((*richEditList)[i]);
 			pT->SetFont(pT->GetFont());
-
 		}
 	}
 
@@ -3329,6 +3328,16 @@ namespace DuiLib {
 		return &m_aFoundControls;
 	}
 
+	CStdPtrArray* CPaintManagerUI::FindSubControlsByInterface(CControlUI* pParent, LPCTSTR pstrClass)
+	{
+		if (pParent == NULL) pParent = GetRoot();
+		//ASSERT(pParent);
+		if (!pParent) return NULL;
+		m_aFoundControls.Empty();
+		pParent->FindControl(__FindControlsFromInterface, (LPVOID)pstrClass, UIFIND_ALL);
+		return &m_aFoundControls;
+	}
+
 	CStdPtrArray* CPaintManagerUI::GetFoundControls()
 	{
 		return &m_aFoundControls;
@@ -3407,6 +3416,14 @@ namespace DuiLib {
 		LPCTSTR pstrType = static_cast<LPCTSTR>(pData);
 		LPCTSTR pType = pThis->GetClass();
 		if( _tcscmp(pstrType, _T("*")) == 0 || _tcscmp(pstrType, pType) == 0 ) 
+			pThis->GetManager()->GetFoundControls()->Add((LPVOID)pThis);
+		return NULL;
+	}
+
+	CControlUI* CALLBACK CPaintManagerUI::__FindControlsFromInterface(CControlUI* pThis, LPVOID pData)
+	{
+		LPCTSTR pstrType = static_cast<LPCTSTR>(pData);
+		if (pThis->GetInterface(pstrType) != NULL)
 			pThis->GetManager()->GetFoundControls()->Add((LPVOID)pThis);
 		return NULL;
 	}

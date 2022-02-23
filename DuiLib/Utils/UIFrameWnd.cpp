@@ -16,47 +16,38 @@ CUIFrameWnd::~CUIFrameWnd(void)
 
 void CUIFrameWnd::OnFinalMessage( HWND hWnd )
 {
-	if(m_listForm.size() > 0)
+	for (int i=0; i<m_listForm.GetSize(); i++)
 	{
-		std::list<CUIForm *>::iterator it;
-		for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
-		{
-				delete (CUIForm *)(*it);
-		}
-		m_listForm.clear();
+		CUIForm *pForm = (CUIForm *)m_listForm.GetAt(i);
+		delete pForm;
 	}
+	m_listForm.Empty();
 
 	__super::OnFinalMessage(hWnd);	
 }
 
 void CUIFrameWnd::AttachVirtualForm(CUIForm *pForm)
 {
-	if(m_listForm.size() > 0)
+	for (int i=0; i<m_listForm.GetSize(); i++)
 	{
-		std::list<CUIForm *>::iterator it;
-		for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
-		{
-			if(*it == pForm)
-				return;
-		}
+		CUIForm *pForm1 = (CUIForm *)m_listForm.GetAt(i);
+		if(pForm1 == pForm)
+			return;
 	}
 
 	pForm->SetFrameWnd(this);
-	m_listForm.push_back(pForm);
+	m_listForm.Add(pForm);
 }
 
 void CUIFrameWnd::DetachVirtualForm(CUIForm *pForm)
 {
-	if(m_listForm.size() > 0)
+	for (int i=0; i<m_listForm.GetSize(); i++)
 	{
-		std::list<CUIForm *>::iterator it;
-		for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
+		CUIForm *pForm1 = (CUIForm *)m_listForm.GetAt(i);
+		if(pForm1 == pForm)
 		{
-			if(*it == pForm)
-			{
-				m_listForm.erase(it);
-				return;
-			}
+			m_listForm.Remove(i);
+			return;
 		}
 	}
 }
@@ -142,22 +133,31 @@ LRESULT CUIFrameWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam
 		return 0;
 	}
 
+	//当你的窗口移动到DPI不同的显示器上时，会收到 WM_DPICHANGED 消息。
+	//直接修改当前显示设置改动dpi，不会收到此消息
+	if (uMsg == WM_DPICHANGED)
+	{
+		//wParam 的 HIWORD 包含窗口的新 dpi 的 Y 轴值。wParam 的 LOWORD 包含窗口的新 DPI 的 X 轴值。
+		//例如，96、120、144 或 192。对于 Windows 应用，X 轴和 Y 轴的值是相同的。
+		m_pm.SetDPI(LOWORD(wParam));
+		m_pm.ResetDPIAssets();
+		bHandled = TRUE;
+		return 0;
+	}
+
 	if(OnCustomMessage(uMsg, wParam, lParam))
 	{
 		bHandled = TRUE;
 		return 0;
 	}
 
-	if(m_listForm.size() > 0)
+	for (int i=0; i<m_listForm.GetSize(); i++)
 	{
-		std::list<CUIForm *>::iterator it;
-		for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
+		CUIForm *pForm = (CUIForm *)m_listForm.GetAt(i);
+		if(pForm->OnCustomMessage(uMsg, wParam, lParam))
 		{
-			if((*it)->OnCustomMessage(uMsg, wParam, lParam))
-			{
-				bHandled = TRUE;
-				return 0; 
-			}
+			bHandled = TRUE;
+			return 0;
 		}
 	}
 
@@ -180,17 +180,14 @@ LRESULT CUIFrameWnd::HandleMenuCommandMessage(UINT uMsg, WPARAM wParam, LPARAM l
 				return 0;
 			}
 
-			if(m_listForm.size() > 0)
+			for (int i=0; i<m_listForm.GetSize(); i++)
 			{
-				std::list<CUIForm *>::iterator it;
-				for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
+				CUIForm *pForm = (CUIForm *)m_listForm.GetAt(i);
+				if(pForm->OnMenuCommand(pMenuCmd))
 				{
-					if((*it)->OnMenuCommand(pMenuCmd))
-					{
-						delete pMenuCmd;
-						bHandled = TRUE;
-						return 0; 
-					}
+					delete pMenuCmd;
+					bHandled = TRUE;
+					return 0; 
 				}
 			}
 
@@ -211,16 +208,13 @@ LRESULT CUIFrameWnd::HandleMenuCommandMessage(UINT uMsg, WPARAM wParam, LPARAM l
 				return 1;
 			}
 
-			if(m_listForm.size() > 0)
+			for (int i=0; i<m_listForm.GetSize(); i++)
 			{
-				std::list<CUIForm *>::iterator it;
-				for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
+				CUIForm *pForm = (CUIForm *)m_listForm.GetAt(i);
+				if(pForm->OnMenuUpdateCommandUI(pCmdUI))
 				{
-					if((*it)->OnMenuUpdateCommandUI(pCmdUI))
-					{
-						bHandled = TRUE;
-						return 1; 
-					}
+					bHandled = TRUE;
+					return 1; 
 				}
 			}
 
@@ -288,50 +282,34 @@ void CUIFrameWnd::Notify(TNotifyUI& msg)
 	
 	else if(msg.sType == DUI_MSGTYPE_TABACTIVEFORM)
 	{
-		if(m_listForm.size() > 0)
+		for (int i=0; i<m_listForm.GetSize(); i++)
 		{
-			std::list<CUIForm *>::iterator it;
-			for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
+			CUIForm *pForm = (CUIForm *)m_listForm.GetAt(i);
+			if(pForm->IsForm(msg.pSender->GetName()))
 			{
-				CUIForm *pForm = (CUIForm *)(*it);
-				if(pForm->IsForm(msg.pSender->GetName()))
-				{
-					pForm->OnActiveForm();
-					return;
-				}
+				pForm->OnActiveForm();
+				return;
 			}
 		}
 	}
 
 	else if(msg.sType == DUI_MSGTYPE_TABNOACTIVEFORM)
 	{
-		if(m_listForm.size() > 0)
+		for (int i=0; i<m_listForm.GetSize(); i++)
 		{
-			std::list<CUIForm *>::iterator it;
-			for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
+			CUIForm *pForm = (CUIForm *)m_listForm.GetAt(i);
+			if(pForm->IsForm(msg.pSender->GetName()))
 			{
-				CUIForm *pForm = (CUIForm *)(*it);
-				if(pForm->IsForm(msg.pSender->GetName()))
-				{
-					pForm->OnHideForm();
-					return;
-				}
+				pForm->OnHideForm();
+				return;
 			}
 		}
 	}
 
-	if(m_listForm.size() > 0)
+	for (int i=0; i<m_listForm.GetSize(); i++)
 	{
-		std::list<CUIForm *>::iterator it;
-		for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
-		{
-#ifdef _DEBUG
-			CUIForm *pForm = (CUIForm *)(*it);
-			pForm->Notify(msg);
-#else
-			(*it)->Notify(msg);
-#endif
-		}
+		CUIForm *pForm = (CUIForm *)m_listForm.GetAt(i);
+		pForm->Notify(msg);
 	}
 
 	CUIFrmBase::Notify(msg);
@@ -372,23 +350,13 @@ void CUIFrameWnd::__InitWindow()
 {
 	__super::__InitWindow();
 
-	if(m_listForm.size() > 0)
+	for (int i=0; i<m_listForm.GetSize(); i++)
 	{
-		std::list<CUIForm *>::iterator it;
-		for (it=m_listForm.begin(); it!=m_listForm.end(); it++)
-		{
-#ifdef _DEBUG
-			CUIForm *pForm = (CUIForm *)(*it);
-			pForm->__InitWindow();
-			pForm->InitWindow();
-#else
-			(*it)->__InitWindow();
-			(*it)->InitWindow();
-#endif
-		}
+		CUIForm *pForm = (CUIForm *)m_listForm.GetAt(i);
+		pForm->__InitWindow();
+		pForm->InitWindow();
 	}
 	
-
 	InitWindow();
 }
 

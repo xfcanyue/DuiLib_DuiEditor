@@ -19,38 +19,34 @@ namespace DuiLib {
 			}
 		}
 
-		if( HIWORD(xml.m_lpstr) != NULL ) {
-			if( *(xml.m_lpstr) == _T('<') ) {
+		CLangPackageUI* pkg = NULL;
+
+		if( HIWORD(xml.m_lpstr) != NULL ) 
+		{
+			if( *(xml.m_lpstr) == _T('<') ) 
+			{
 				if( !m_xml.load_string(xml.m_lpstr) ) return NULL;
 			}
-			else {
-				if( !m_xml.load_file(xml.m_lpstr) ) return NULL;
+			else 
+			{
+				CUIFile file;
+				file.LoadFile(xml, type, m_instance);
+				if (!m_xml.load_buffer(file.GetData(), file.GetSize()))
+					return NULL;
+				pkg = pManager->GetLangManager()->AddPackage(xml.m_lpstr);
 			}
 		}
-		else {
-			HINSTANCE dll_instence = NULL;
-			if (m_instance)
-			{
-				dll_instence = m_instance;
-			}
-			else
-			{
-				dll_instence = CPaintManagerUI::GetResourceDll();
-			}
-			HRSRC hResource = ::FindResource(dll_instence, xml.m_lpstr, type);
-			if( hResource == NULL ) return NULL;
-			HGLOBAL hGlobal = ::LoadResource(dll_instence, hResource);
-			if( hGlobal == NULL ) {
-				FreeResource(hResource);
+		else 
+		{
+			CUIFile file;
+			file.LoadFile(xml, type, m_instance);
+			if (!m_xml.load_buffer(file.GetData(), file.GetSize()))
 				return NULL;
-			}
 
 			m_pCallback = pCallback;
-			if( !m_xml.load_buffer((BYTE*)::LockResource(hGlobal), ::SizeofResource(dll_instence, hResource) )) return NULL;
-			::FreeResource(hResource);
 			m_pstrtype = type;
 		}
-		CLangPackageUI *pkg = pManager->GetLangManager()->AddPackage(xml.m_lpstr);
+		
 		return Create(pCallback, pManager, pParent, pkg);
 	}
 
@@ -403,7 +399,7 @@ namespace DuiLib {
 
 			if( pControl == NULL ) {
 				CDuiString sMsg;
-				sMsg.Format(_T("CDialogBuilder::_Parse Error\r\nFile: %s\r\nControl: %s"), pkg->GetSkinFile(), pstrClass);
+				sMsg.Format(_T("CDialogBuilder::_Parse Error\r\nFile: %s\r\nControl: %s"), pkg ? pkg->GetSkinFile() : _T("res"), pstrClass);
 				MessageBox(NULL, sMsg, _T("Create Control Failed"), MB_OK);
 				continue;
 			}

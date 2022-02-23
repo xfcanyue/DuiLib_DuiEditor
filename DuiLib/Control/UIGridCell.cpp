@@ -139,6 +139,35 @@ void CGridCellUI::SetText(LPCTSTR pstrText)
 	__super::SetText(pstrText);
 }
 
+DWORD CGridCellUI::GetTextColor() const
+{
+	if(!GetOwner()) return __super::GetTextColor();
+
+	CGridUI *pGrid = (CGridUI *)GetOwner();
+	TCellData *pCellData = pGrid->GetCellData(m_row, m_col);
+	if(pCellData)
+	{
+		return pCellData->GetTextColor();
+	}
+
+	return __super::GetTextColor();
+}
+
+void CGridCellUI::SetTextColor(DWORD dwColor)
+{
+	if(!GetOwner()) return __super::SetTextColor(dwColor);
+
+	CGridUI *pGrid = (CGridUI *)GetOwner();
+	TCellData *pCellData = pGrid->GetCellData(m_row, m_col);
+	if(pCellData)
+	{
+		pCellData->SetTextColor(dwColor);
+		return;
+	}
+
+	__super::SetTextColor(dwColor);
+}
+
 bool CGridCellUI::IsMergedWithOthers()
 {
 	if(!GetOwner()) return false;
@@ -627,7 +656,7 @@ void CGridCellUI::PaintText(UIRender *pRender)
 	rc.top += rcTextPadding.top;
 	rc.bottom -= rcTextPadding.bottom;
 
-	DWORD dwColor = IsEnabled()?m_dwTextColor:m_dwDisabledTextColor;
+	DWORD dwColor = IsEnabled() ? GetTextColor() : GetDisabledTextColor();
 	if((IsSelected() || IsFocused()) && (GetSelectedTextColor() != 0))
 	{
 		dwColor = GetSelectedTextColor();
@@ -673,41 +702,54 @@ void CGridCellUI::PaintText(UIRender *pRender)
 	if(iFont == -1)
 		iFont = GetFont();
 
+	RECT rcText = {0};
 	if(IsFixedCol() && !IsFixedRow())
 	{
 		if(pGrid->GetFixedColumnCount() > 0 && pGrid->IsViewListNumber())
 		{
 			sText.Format(_T("%d"), m_row - pGrid->GetFixedRowCount() + 1);
-			RECT rcText = {0};
-			pRender->DrawText(rcText, GetTextPadding(), sText, m_dwTextColor, iFont, DT_CALCRECT | m_uTextStyle);
-			rcText.right += rcTextPadding.left + rcTextPadding.right;
-			rcText.bottom += rcTextPadding.top + rcTextPadding.bottom;
+			pRender->DrawText(rcText, GetTextPadding(), sText, m_dwTextColor, iFont, DT_CALCRECT | GetTextStyle());
 			if(pGrid->GetColumnWidth(m_col) < rcText.right - rcText.left + 10)
 			{
 				pGrid->SetColumnWidth(m_col, rcText.right - rcText.left + 10);
 				pGrid->NeedUpdate();
 			}
+		}
+		else
+		{
+			pRender->DrawText(rcText, GetTextPadding(), sText, m_dwTextColor, iFont, DT_CALCRECT | GetTextStyle());
 		}
 	}
 	else
 	{
 		if(pGrid->IsExpandColumnByText())
 		{
-			RECT rcText = {0};
-			pRender->DrawText(rcText, GetTextPadding(), sText, m_dwTextColor, iFont, DT_CALCRECT | m_uTextStyle);
-			rcText.right += rcTextPadding.left + rcTextPadding.right;
-			rcText.bottom += rcTextPadding.top + rcTextPadding.bottom;
+			pRender->DrawText(rcText, GetTextPadding(), sText, m_dwTextColor, iFont, DT_CALCRECT | GetTextStyle());
 			if(pGrid->GetColumnWidth(m_col) < rcText.right - rcText.left + 10)
 			{
 				pGrid->SetColumnWidth(m_col, rcText.right - rcText.left + 10);
 				pGrid->NeedUpdate();
 			}
 		}
+		else
+		{
+			pRender->DrawText(rcText, GetTextPadding(), sText, m_dwTextColor, iFont, DT_CALCRECT | GetTextStyle());
+		}
 	}
 	if( sText.IsEmpty() ) return;
 
+	UINT uTextStyle = GetTextStyle();
+	if(rc.right - rc.left < rcText.right - rcText.left) //单元格不够显示文字
+	{
+		uTextStyle = DT_END_ELLIPSIS | DT_LEFT | DT_VCENTER | DT_SINGLELINE;
+		SetToolTip(sText);
+	}
+	else
+	{
+		SetToolTip(NULL);
+	}
 
-	pRender->DrawText(rc, GetTextPadding(), sText, dwColor, iFont, m_uTextStyle);
+	pRender->DrawText(rc, GetTextPadding(), sText, dwColor, iFont, uTextStyle);
 }
 
 void CGridCellUI::PaintBorder(UIRender *pRender)

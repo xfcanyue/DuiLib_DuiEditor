@@ -125,20 +125,22 @@ namespace DuiLib
 
 #define DUI_MSGTYPE_INITCELL				(_T("initcell"))			//CGirdUI初始化单元格控件
 #define DUI_MSGTYPE_INITROWDATA				(_T("initrowdata"))			//实表模式下，CGirdUI初始化数据行内容，一般是容器里的控件状态啥的。
-#define DUI_MSGTYPE_DRAWITEM				(_T("drawitem"))
-#define DUI_MSGTYPE_SORTITEM				(_T("sortitem"))
-#define DUI_MSGTYPE_STARTEDIT				(_T("startedit"))
-#define DUI_MSGTYPE_ENDEDIT					(_T("endedit"))
+#define DUI_MSGTYPE_DRAWITEM				(_T("drawitem"))			//虚表模式下，填充单元格内容。
+#define DUI_MSGTYPE_SORTITEM				(_T("sortitem"))			//表格排序消息
+#define DUI_MSGTYPE_STARTEDIT				(_T("startedit"))			//单元格开始编辑
+#define DUI_MSGTYPE_ENDEDIT					(_T("endedit"))				//单元格结束编辑
 #define DUI_MSGTYPE_DELETEITEM				(_T("deleteitem"))			//删除控件消息
+#define DUI_MSGTYPE_STARTSELCHANGE			(_T("startselchange"))		//开始选择
+#define DUI_MSGTYPE_ENDSELCHANGE			(_T("endselchange"))		//结束选择
 
-#define DUI_MSGTYPE_GRID_STARTEDIT          (_T("gridstartedit"))		//add by liqs99
-#define DUI_MSGTYPE_GRID_ENDEDIT			(_T("gridendedit"))			//add by liqs99
-#define DUI_MSGTYPE_GRID_STARTSELCHANGE		(_T("gridstartselchange"))	//add by liqs99
-#define DUI_MSGTYPE_GRID_ENDSELCHANGE		(_T("gridendselchange"))	//add by liqs99
-#define DUI_MSGTYPE_GRID_DROPDOWNLIST       (_T("griddropdownlist"))	//add by liqs99
-#define DUI_MSGTYPE_GRID_GETDISPINFO        (_T("gridgetdispinfo"))		//add by liqs99
+#define DUI_MSGTYPE_GRID_STARTEDIT          (_T("gridstartedit"))		//用于 MFCGridControl
+#define DUI_MSGTYPE_GRID_ENDEDIT			(_T("gridendedit"))			//用于 MFCGridControl
+#define DUI_MSGTYPE_GRID_STARTSELCHANGE		(_T("gridstartselchange"))	//用于 MFCGridControl
+#define DUI_MSGTYPE_GRID_ENDSELCHANGE		(_T("gridendselchange"))	//用于 MFCGridControl
+#define DUI_MSGTYPE_GRID_DROPDOWNLIST       (_T("griddropdownlist"))	//用于 MFCGridControl
+#define DUI_MSGTYPE_GRID_GETDISPINFO        (_T("gridgetdispinfo"))		//用于 MFCGridControl
 
-#define DUI_MSGTYPE_SCI_NOTIFY				(_T("scinotify"))			//add by liqs99
+#define DUI_MSGTYPE_SCI_NOTIFY				(_T("scinotify"))			//Scintallia控件消息
 	//////////////////////////////////////////////////////////////////////////
 
 	struct DUI_MSGMAP_ENTRY;

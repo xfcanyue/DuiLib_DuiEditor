@@ -41,7 +41,7 @@ public:
 	CUIApplication *m_pApplication;
 
 protected:
-	std::list<CUIForm *>	m_listForm;
+	CStdPtrArray	m_listForm;
 };
 
 inline CMenuWnd *DuiCreateMenu(LPCTSTR xmlFile, CPaintManagerUI *pManager)

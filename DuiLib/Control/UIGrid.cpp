@@ -1049,6 +1049,9 @@ void CGridUI::DoEvent(TEventUI& event)
 			m_rcTracker.top = event.ptMouse.y;
 			m_rcTracker.right = event.ptMouse.x;
 			m_rcTracker.bottom = event.ptMouse.y;
+
+			if(GetManager())
+				GetManager()->SendNotify(this, DUI_MSGTYPE_STARTSELCHANGE, 0, 0);
 		}
 
 		if(m_pCellLButtonDown == NULL)
@@ -1171,8 +1174,8 @@ void CGridUI::DoEvent(TEventUI& event)
 				CGridRowUI *pRowUI = (CGridRowUI *)m_pBody->GetItemAt(i);
 				if(IsListMode())
 				{
-					if(rcIntersect.IntersectRect(m_rcTracker, pRowUI->GetPos()))
-						SelectRow(i + GetFixedRowCount());
+					if (rcIntersect.IntersectRect(m_rcTracker, pRowUI->GetPos()))
+						SelectRow(pRowUI->GetRow());
 				}
 				else
 				{
@@ -1180,7 +1183,7 @@ void CGridUI::DoEvent(TEventUI& event)
 					{
 						CGridCellUI *pCellUI = (CGridCellUI *)pRowUI->GetItemAt(j);
 						if(rcIntersect.IntersectRect(m_rcTracker, pCellUI->GetPos()))
-							SelectCell(i + GetFixedRowCount(), j);
+							SelectCell(pRowUI->GetRow(), j);
 					}
 				}
 			}
@@ -1206,6 +1209,8 @@ void CGridUI::DoEvent(TEventUI& event)
 		{
 			if(GetManager()) GetManager()->SendNotify(this, DUI_MSGTYPE_CLICK);
 		}
+
+		if(GetManager()) GetManager()->SendNotify(this, DUI_MSGTYPE_ENDSELCHANGE, 0, 0);
 
 		m_rcTracker.Empty();
 		m_pCellLButtonDown = NULL;
@@ -1300,6 +1305,20 @@ void CGridUI::DoEvent(TEventUI& event)
 
 	else if(event.Type == UIEVENT_RBUTTONUP)
 	{	
+		CGridCellUI *pCellUI = GetCellUIFromPoint(event.ptMouse);
+		if(pCellUI == NULL)
+		{
+			ClearSelectedCells();
+			ClearSelectedRows();
+			Refresh();
+			return;
+		}
+
+		int row = pCellUI->GetRow();
+		int col = pCellUI->GetCol();
+
+		if(GetManager())
+			GetManager()->SendNotify(this, DUI_MSGTYPE_ITEMRCLICK, row, col);
 		return;
 	}
 

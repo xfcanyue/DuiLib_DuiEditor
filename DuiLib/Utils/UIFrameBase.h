@@ -64,6 +64,8 @@ public:
 	virtual void OnNotifyStartEdit(TNotifyUI& msg) {}
 	virtual void OnNotifyEndEdit(TNotifyUI& msg) {}
 	virtual void OnNotifyDeleteItem(TNotifyUI& msg) {}
+	virtual void OnNotifyStartSelChange(TNotifyUI& msg) {}
+	virtual void OnNotifyEndSelChange(TNotifyUI& msg) {}
 
 	virtual void OnNotityGridStartEdit(TNotifyUI &msg) {}
 	virtual void OnNotityGridEndEdit(TNotifyUI &msg) {}

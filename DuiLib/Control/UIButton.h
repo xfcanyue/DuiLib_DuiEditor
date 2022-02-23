@@ -11,6 +11,7 @@ namespace DuiLib
 	public:
 		TemplateButtonUI() 
 		{
+			m_iBindTabIndex = -1;
 			T::SetTextStyle(DT_SINGLELINE | DT_VCENTER | DT_CENTER);
 		}
 		virtual ~TemplateButtonUI() {}

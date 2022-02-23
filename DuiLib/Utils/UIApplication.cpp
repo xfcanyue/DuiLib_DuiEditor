@@ -149,7 +149,7 @@ void CUIApplication::InitResource()
 			// 加密
 			CPaintManagerUI::SetResourceZip(m_strAppPath + m_strZipFile, true, NULL);
 			// 加载资源管理器
-			//CResourceManager::GetInstance()->LoadResource(_T("res.xml"), NULL);
+			CResourceManager::GetInstance()->LoadResource(_T("res.xml"), NULL);
 			break;
 		}
 	case UILIB_ZIPRESOURCE:

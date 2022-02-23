@@ -1006,7 +1006,7 @@ namespace DuiLib {
 		if(dwColor == 0) 
 			return;
 
-		pRender->DrawBorder(m_rcItem, GetBorderSize(), GetBorderRound(), 
+		pRender->DrawBorder(rcItem, GetBorderSize(), GetBorderRound(), 
 			GetBorderRectSize(), GetAdjustColor(dwColor), GetBorderStyle());
 		/*
 		int nBorderSize;

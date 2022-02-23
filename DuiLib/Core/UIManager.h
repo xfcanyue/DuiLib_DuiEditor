@@ -96,7 +96,14 @@ namespace DuiLib {
 		tagButtonState() { m_uState = 0; }
 
 		bool IsEnabled() const					{ return (m_uState & UISTATE_DISABLED) != UISTATE_DISABLED;					}
-		void SetEnabled(bool bEnable = true)	{ bEnable ? m_uState &= ~UISTATE_DISABLED : m_uState |= UISTATE_DISABLED;	}
+		void SetEnabled(bool bEnable = true)	
+		{ 
+			if (bEnable)
+				m_uState &= ~UISTATE_DISABLED;
+			else
+				m_uState |= UISTATE_DISABLED;
+				m_uState &= ~(UISTATE_FOCUSED | UISTATE_HOT | UISTATE_CAPTURED | UISTATE_PUSHED);
+		}
 
 		bool IsFocused() const					{ return (m_uState & UISTATE_FOCUSED) == UISTATE_FOCUSED;					}
 		void SetFocus(bool bFocus)				{ bFocus ? m_uState |= UISTATE_FOCUSED : m_uState &= ~UISTATE_FOCUSED;		}
@@ -495,6 +502,7 @@ namespace DuiLib {
 		CControlUI* FindSubControlByName(CControlUI* pParent, LPCTSTR pstrName) const;
 		CControlUI* FindSubControlByClass(CControlUI* pParent, LPCTSTR pstrClass, int iIndex = 0);
 		CStdPtrArray* FindSubControlsByClass(CControlUI* pParent, LPCTSTR pstrClass);
+		CStdPtrArray* FindSubControlsByInterface(CControlUI* pParent, LPCTSTR pstrClass);
 
 		static void MessageLoop();
 		static bool TranslateMessage(const LPMSG pMsg);
@@ -519,6 +527,7 @@ namespace DuiLib {
 		static CControlUI* CALLBACK __FindControlFromName(CControlUI* pThis, LPVOID pData);
 		static CControlUI* CALLBACK __FindControlFromClass(CControlUI* pThis, LPVOID pData);
 		static CControlUI* CALLBACK __FindControlsFromClass(CControlUI* pThis, LPVOID pData);
+		static CControlUI* CALLBACK __FindControlsFromInterface(CControlUI* pThis, LPVOID pData);
 		static CControlUI* CALLBACK __FindControlsFromUpdate(CControlUI* pThis, LPVOID pData);
 
 		static void AdjustSharedImagesHSL();

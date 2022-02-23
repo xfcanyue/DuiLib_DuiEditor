@@ -102,7 +102,7 @@ namespace DuiLib {
 
 		//////////////////////////////////////////////////////////////////////////
 		//×ÖÌåÑÕÉ«
-		DWORD GetTextColor() const;
+		virtual DWORD GetTextColor() const;
 		virtual void SetTextColor(DWORD dwColor);
 		DWORD GetHotTextColor() const;
 		void SetHotTextColor(DWORD dwColor);

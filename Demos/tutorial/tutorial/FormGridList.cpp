@@ -26,7 +26,6 @@ void CFormGridList::InitWindow()
 	m_pGrid->SetCellType(8, celltypeContainer);
 	m_pGrid->SetCellType(9, celltypePicture);
 
-	m_pGrid->SetRowCount(1 * 1000);
 	for (int i=m_pGrid->GetFixedRowCount(); i<m_pGrid->GetRowCount(); i++)
 	{
 		for (int j=1; j<m_pGrid->GetColumnCount(); j++)
@@ -157,4 +156,21 @@ void CFormGridList::OnNotifyDrawItem(TNotifyUI& msg)
 			}
 		}
 	}
+}
+
+void CFormGridList::OnNotifyStartSelChange(TNotifyUI& msg)
+{
+	InsertMsgUI(_T("StartSelChange"));
+}
+
+void CFormGridList::OnNotifyEndSelChange(TNotifyUI& msg)
+{
+	InsertMsgUI(_T("EndSelChange"));
+
+	CDuiString s = _T("已选中行：");
+	for (int row = m_pGrid->GetSelectRow(); row > 1; row = m_pGrid->GetNextSelectRow())
+	{
+		s.AppendFormat(_T("%d  "), row);
+	}
+	InsertMsgUI(s);
 }

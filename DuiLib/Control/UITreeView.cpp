@@ -140,6 +140,14 @@ namespace DuiLib
 
 			return;
 		}
+		if(event.Type == UIEVENT_RBUTTONUP)
+		{
+			if( IsEnabled() ) 
+			{
+				m_pManager->SendNotify(this, DUI_MSGTYPE_ITEMRCLICK);
+			}
+			return;
+		}
 	}
 
 	//************************************

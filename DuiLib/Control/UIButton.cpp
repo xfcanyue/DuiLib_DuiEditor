@@ -51,6 +51,7 @@ namespace DuiLib
 
 	CButtonUI::CButtonUI()
 	{
+		m_iBindTabIndex = -1;
 		m_uTextStyle = DT_SINGLELINE | DT_VCENTER | DT_CENTER;
 	}
 

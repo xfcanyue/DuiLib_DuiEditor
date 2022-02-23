@@ -9,6 +9,8 @@ public:
 	virtual void OnNotifyClick(TNotifyUI& msg);
 	virtual void OnNotifyInitCell(TNotifyUI& msg);
 	virtual void OnNotifyDrawItem(TNotifyUI& msg);
+	virtual void OnNotifyStartSelChange(TNotifyUI& msg);
+	virtual void OnNotifyEndSelChange(TNotifyUI& msg);
 
 	CGridUI *m_pGrid;
 };

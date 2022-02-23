@@ -44,6 +44,7 @@ public:
 	{
 		m_state = 0;
 		m_tag = NULL;
+		m_dwTextColor = 0;
 	}
 
 protected:
@@ -84,6 +85,9 @@ public:
 
 	void SetTag(UINT_PTR tag) { m_tag = tag; }
 	UINT_PTR GetTag() const { return m_tag; }
+
+	void SetTextColor(DWORD dwColor) { m_dwTextColor = dwColor; }
+	DWORD GetTextColor() const { return m_dwTextColor; }
 protected:
 	CDuiString m_sText;
 	UINT_PTR m_tag;
@@ -92,6 +96,8 @@ protected:
 	//bt1 = 单选框选中状态
 	//bt2 = IsMergedWidthOthers 是否被合并
 	BYTE m_state;
+
+	DWORD m_dwTextColor;
 };
 
 //表格行数据
@@ -101,6 +107,7 @@ struct TRowData : public ILinkedList
 	{
 		m_nHeight = 0;
 		m_bSelected = FALSE;
+		m_tag = 0;
 	}
 
 	void SetHeight(int n) { m_nHeight = n; }

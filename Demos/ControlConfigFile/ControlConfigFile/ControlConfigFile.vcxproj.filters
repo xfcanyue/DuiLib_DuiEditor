@@ -62,4 +62,7 @@
       <Filter>资源文件</Filter>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Xml Include="res\ControlConfigFile.xml" />
+  </ItemGroup>
 </Project>
