@@ -319,4 +319,10 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
    3，CMsgWnd，增加配置显示日期和时间，增加接口CMsgWnd::ClearMsg()。
    4, 一组Option，当改变Selected时，取消和选中的那个都会收到 DUI_MSGTYPE_SELECTCHANGED 消息。
 
-
+2022-02-24
+   1，增加消息DUI_MSGTYPE_ACCEPTFILE，控件属性acceptfile=true时，会接收到文件拖放消息。
+   2，zip解压时，如果文件名包含中文，会导致读取失败。原因是代码中把文件名转为了utf8格式。
+   3，dpi设置中，IsWindows8Point1OrGreater() 这个函数无效的，始终会返回win8.0，所以我改成了IsWindows8OrGreater() ，如果碰到了win8.0系统。。。。无效而已。
+   4，CPaintManager增加FindSubControlsByInterface。
+   5，GridUI。Cell(x,y)增加SetTextColor函数。增加消息DUI_MSGTYPE_STARTSELCHANG和DUI_MSGTYPE_ENDSELCHANGE，开始选择和结束选择。
+   6，处理bug。按钮SetEnable(false)时会保留hot状态；菜单弹出时主菜单项右边框不显示；使用资源xml时语言包出错。AutoCalcWidth和AutoCalcHeight有些问题。

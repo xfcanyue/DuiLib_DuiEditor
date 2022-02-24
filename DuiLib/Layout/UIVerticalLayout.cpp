@@ -64,7 +64,6 @@ namespace DuiLib
 			if(IsAutoCalcWidth())
 			{
 				sz.cx += rcInset.left + rcInset.right;
-				if(GetCount() > 1) sz.cx += (GetCount() - 1) * m_iChildPadding;
 			}
 			if(IsAutoCalcHeight())
 			{

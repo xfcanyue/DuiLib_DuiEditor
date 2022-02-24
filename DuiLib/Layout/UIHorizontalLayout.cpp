@@ -28,7 +28,54 @@ namespace DuiLib
 
 	SIZE CHorizontalLayoutUI::EstimateSize(SIZE szAvailable)
 	{
-		return __super::EstimateSize(szAvailable);
+		if (IsAnimationRunning(ANIMATION_ID_SHOW) || IsAnimationRunning(ANIMATION_ID_HIDE)) {
+			return m_szAnimationCurrect;
+		}
+
+		if (!IsPaneVisible())
+		{
+			return m_szAnimationCurrect;
+		}
+
+		if (IsAutoCalcWidth() || IsAutoCalcHeight())
+		{
+			SIZE sz = { 0 };
+			for (int it = 0; it < GetCount(); it++)
+			{
+				SIZE szControl = { 0 };
+				CControlUI* pControl = GetItemAt(it);
+				if (!pControl->IsVisible()) continue;
+				szControl = pControl->EstimateSize(szAvailable);
+				RECT padding = pControl->GetPadding();
+				if (IsAutoCalcWidth())
+				{
+					sz.cx += szControl.cx;
+					sz.cx += padding.left + padding.right;
+				}
+
+				if (IsAutoCalcHeight())
+				{
+					if (sz.cy < szControl.cy + padding.top + padding.bottom)
+					{
+						sz.cy = szControl.cy + padding.top + padding.bottom;
+					}
+				}
+			}
+
+			RECT rcInset = GetInset();
+			if (IsAutoCalcWidth())
+			{
+				sz.cx += rcInset.left + rcInset.right;
+				if (GetCount() > 1) sz.cx += (GetCount() - 1) * m_iChildPadding;
+			}
+			if (IsAutoCalcHeight())
+			{
+				sz.cy += rcInset.top + rcInset.bottom;
+			}
+
+			return sz;
+		}
+		return CControlUI::EstimateSize(szAvailable);
 	}
 
 	void CHorizontalLayoutUI::SetPos(RECT rc, bool bNeedInvalidate)

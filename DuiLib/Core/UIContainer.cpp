@@ -680,14 +680,16 @@ namespace DuiLib
 				RECT padding = pControl->GetPadding();
 				if(IsAutoCalcWidth())
 				{
-					sz.cx += szControl.cx;
-					sz.cx += padding.left + padding.right;
+					if (sz.cx < szControl.cx + padding.left + padding.right)
+						sz.cx = szControl.cx + padding.left + padding.right;
 				}
 
 				if(IsAutoCalcHeight())
 				{	
-					sz.cy += szControl.cy;
-					sz.cy += padding.top + padding.bottom;
+					if (sz.cy < szControl.cy + padding.top + padding.bottom)
+					{
+						sz.cy = szControl.cy + padding.top + padding.bottom;
+					}
 				}
 			}
 
@@ -695,12 +697,10 @@ namespace DuiLib
 			if(IsAutoCalcWidth())
 			{
 				sz.cx += rcInset.left + rcInset.right;
-				if(GetCount() > 1) sz.cx += (GetCount() - 1) * m_iChildPadding;
 			}
 			if(IsAutoCalcHeight())
 			{
 				sz.cy += rcInset.top + rcInset.bottom;
-				if(GetCount() > 1) sz.cy += (GetCount() - 1) * m_iChildPadding;
 			}
 
 			return sz;
