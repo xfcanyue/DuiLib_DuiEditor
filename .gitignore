@@ -4,3 +4,17 @@
 
 
 *.svn
+/.vs/DuiEditor2019/v16
+*.dll
+*.pdb
+*.exe
+*.tlog
+*.obj
+*.log
+*.ilk
+*.pch
+*.lib
+*.recipe
+*.exp
+*.res
+*.idb

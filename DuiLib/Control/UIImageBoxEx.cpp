@@ -110,8 +110,11 @@ void CImageBoxExUI::DoEvent(TEventUI& event)
 void CImageBoxExUI::SetPos(RECT rc, bool bNeedInvalidate)
 {
 	CControlUI::SetPos(rc, bNeedInvalidate);
-	m_pOffScreenImage->Destroy();
-	m_pOffScreenImage->Create(rc.right-rc.left, rc.bottom-rc.top, 24, 0);
+	if (m_pOffScreenImage->GetWidth() != (rc.right - rc.left) && m_pOffScreenImage->GetHeight() != (rc.bottom - rc.top))//add wenchangwei 2022-02-24
+	{
+		m_pOffScreenImage->Destroy();
+		m_pOffScreenImage->Create(rc.right - rc.left, rc.bottom - rc.top, 24, 0);
+	}
 }
 
 void CImageBoxExUI::Move(SIZE szOffset, bool bNeedInvalidate)
