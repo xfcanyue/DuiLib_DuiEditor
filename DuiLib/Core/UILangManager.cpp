@@ -181,6 +181,11 @@ namespace DuiLib {
 	CDuiString CLangManagerUI::s_sLangPath;
 	CDuiString CLangManagerUI::s_sLangName;
 	std::map<int, CLangManagerUI::tagStringTable *> CLangManagerUI::m_mStringTable;
+
+	std::map<CDuiString, CDuiString> CLangManagerUI::m_mStringResource;
+	CXmlDocumentUI CLangManagerUI::m_xmlStringRecource;
+	BOOL CLangManagerUI::m_bNeedSaveStringRecource = FALSE;
+
 	CLangManagerUI::CLangManagerUI(void)
 	{
 		
@@ -276,6 +281,7 @@ namespace DuiLib {
 		s_sLangPath = lpstrPath;
 		s_sLangName = lpstrname;
 		LoadStringTable();
+		InitStringReource();
 	}
 
 	CDuiString CLangManagerUI::GetLangPath()
@@ -392,5 +398,53 @@ namespace DuiLib {
 		std::map<int, tagStringTable *>::iterator it = m_mStringTable.find(id);
 		if(it == m_mStringTable.end()) return _T("");
 		return it->second->text2.GetData();
+	}
+
+	void CLangManagerUI::InitStringReource()
+	{
+		m_bNeedSaveStringRecource = FALSE;
+		m_mStringResource.clear();
+
+		CDuiString sPath = CLangManagerUI::GetLangPath();
+		if (sPath.GetAt(sPath.GetLength() - 1) != '\\')	sPath += '\\';
+		sPath += _T("StringResource.lng");
+
+		m_xmlStringRecource.load_file(sPath);
+
+		CXmlNodeUI root = m_xmlStringRecource.child(_T("Language"));
+		for (CXmlNodeUI node = root.child(_T("String")); node; node = node.next_sibling(_T("String")))
+		{
+			CDuiString id = node.attribute(_T("id")).as_string();
+			CDuiString text = node.attribute(_T("text")).as_string();
+			if (id.IsEmpty()) continue;;
+			m_mStringResource[id] = text;
+		}
+	}
+
+	CDuiString CLangManagerUI::LoadString(LPCTSTR defaultString)
+	{
+		std::map<CDuiString, CDuiString>::iterator it = m_mStringResource.find(defaultString);
+		if (it != m_mStringResource.end())
+		{
+			return it->second;
+		}
+
+		CDuiString id = defaultString;
+		CDuiString text = defaultString;
+
+		CXmlNodeUI node = m_xmlStringRecource.child_auto(_T("Language")).append_child(_T("String"));
+		node.attribute_auto(_T("id")).set_value(id);
+		node.attribute_auto(_T("text")).set_value(text);
+
+		m_mStringResource[id] = text;
+
+		m_bNeedSaveStringRecource = TRUE;
+		return text;
+	}
+
+	void CLangManagerUI::SaveStrings(LPCTSTR filePathName)
+	{
+		if(m_bNeedSaveStringRecource)
+			m_xmlStringRecource.save_file(filePathName);
 	}
 } // namespace DuiLib

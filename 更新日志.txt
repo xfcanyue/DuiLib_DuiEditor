@@ -326,3 +326,10 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
    4，CPaintManager增加FindSubControlsByInterface。
    5，GridUI。Cell(x,y)增加SetTextColor函数。增加消息DUI_MSGTYPE_STARTSELCHANG和DUI_MSGTYPE_ENDSELCHANGE，开始选择和结束选择。
    6，处理bug。按钮SetEnable(false)时会保留hot状态；菜单弹出时主菜单项右边框不显示；使用资源xml时语言包出错。AutoCalcWidth和AutoCalcHeight有些问题。
+
+2022-03-22
+1，CDuiString有2处BUG，Unicode版本直接赋值多字节字符串时 和 多字节版本直接赋值Unicode字符串时，缓冲区分配错误。
+2，CGridUI::GetCellUI 效率太低。
+3，多语言管理增加新的字符串接口: CLangManagerUI::LoadString(LPCTSTR defaultString).
+     程序退出时, 调用CLangManagerUI::SaveStrings(LPCTSTR filePathName)，保存已更新的StringResource.lng，在当前语言包路径下。
+     

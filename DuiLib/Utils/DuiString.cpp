@@ -380,10 +380,12 @@ namespace DuiLib
 		if ( lpStr )
 		{
 			ASSERT(!::IsBadStringPtrA(lpStr,-1));
-			int cchStr = (int) strlen(lpStr) + 1;
-			LPWSTR pwstr = (LPWSTR) _alloca(cchStr);
-			if( pwstr != NULL ) ::MultiByteToWideChar(::GetACP(), 0, lpStr, -1, pwstr, cchStr) ;
-			Assign(pwstr);
+// 			int cchStr = (int) strlen(lpStr) + 1;
+// 			LPWSTR pwstr = (LPWSTR) _alloca(cchStr);
+// 			if( pwstr != NULL ) ::MultiByteToWideChar(::GetACP(), 0, lpStr, -1, pwstr, cchStr) ;
+//			Assign(pwstr);
+			UISTRING_CONVERSION;
+			Assign(UIA2T(lpStr));
 		}
 		else
 		{
@@ -397,10 +399,12 @@ namespace DuiLib
 		if ( lpStr )
 		{
 			ASSERT(!::IsBadStringPtrA(lpStr,-1));
-			int cchStr = (int) strlen(lpStr) + 1;
-			LPWSTR pwstr = (LPWSTR) _alloca(cchStr);
-			if( pwstr != NULL ) ::MultiByteToWideChar(::GetACP(), 0, lpStr, -1, pwstr, cchStr) ;
-			Append(pwstr);
+// 			int cchStr = (int) strlen(lpStr) + 1;
+// 			LPWSTR pwstr = (LPWSTR) _alloca(cchStr);
+// 			if( pwstr != NULL ) ::MultiByteToWideChar(::GetACP(), 0, lpStr, -1, pwstr, cchStr) ;
+// 			Append(pwstr);
+			UISTRING_CONVERSION;
+			Append(UIA2T(lpStr));
 		}
 		
 		return *this;
@@ -413,10 +417,12 @@ namespace DuiLib
 		if ( lpwStr )
 		{
 			ASSERT(!::IsBadStringPtrW(lpwStr,-1));
-			int cchStr = ((int) wcslen(lpwStr) * 2) + 1;
-			LPSTR pstr = (LPSTR) _alloca(cchStr);
-			if( pstr != NULL ) ::WideCharToMultiByte(::GetACP(), 0, lpwStr, -1, pstr, cchStr, NULL, NULL);
-			Assign(pstr);
+// 			int cchStr = ((int) wcslen(lpwStr) * 2) + 1;
+// 			LPSTR pstr = (LPSTR) _alloca(cchStr);
+// 			if( pstr != NULL ) ::WideCharToMultiByte(::GetACP(), 0, lpwStr, -1, pstr, cchStr, NULL, NULL);
+// 			Assign(pstr);
+			UISTRING_CONVERSION;
+			Assign(UIW2T(lpwStr));
 		}
 		else
 		{
@@ -431,10 +437,12 @@ namespace DuiLib
 		if ( lpwStr )
 		{
 			ASSERT(!::IsBadStringPtrW(lpwStr,-1));
-			int cchStr = ((int) wcslen(lpwStr) * 2) + 1;
-			LPSTR pstr = (LPSTR) _alloca(cchStr);
-			if( pstr != NULL ) ::WideCharToMultiByte(::GetACP(), 0, lpwStr, -1, pstr, cchStr, NULL, NULL);
-			Append(pstr);
+// 			int cchStr = ((int) wcslen(lpwStr) * 2) + 1;
+// 			LPSTR pstr = (LPSTR) _alloca(cchStr);
+// 			if( pstr != NULL ) ::WideCharToMultiByte(::GetACP(), 0, lpwStr, -1, pstr, cchStr, NULL, NULL);
+// 			Append(pstr);
+			UISTRING_CONVERSION;
+			Append(UIW2T(lpwStr));
 		}
 		
 		return *this;

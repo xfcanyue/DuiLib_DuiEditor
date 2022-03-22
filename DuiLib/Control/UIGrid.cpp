@@ -650,22 +650,28 @@ CGridCellUI *CGridUI::GetCellUI(int row, int col)
 	for (int i=0; i<m_pHeader->GetCount(); i++)
 	{
 		CGridRowUI *pRowUI = (CGridRowUI *)m_pHeader->GetItemAt(i);
-		for (int j=0; j<pRowUI->GetCount(); j++)
+		if (pRowUI->GetRow() == row)
 		{
-			CGridCellUI *pCellUI = (CGridCellUI *)pRowUI->GetItemAt(j);
-			if(pCellUI->GetRow() == row && pCellUI->GetCol() == col)
-				return pCellUI;
+			for (int j = 0; j < pRowUI->GetCount(); j++)
+			{
+				CGridCellUI* pCellUI = (CGridCellUI*)pRowUI->GetItemAt(j);
+				if (pCellUI->GetCol() == col)
+					return pCellUI;
+			}
 		}
 	}
 
 	for (int i=0; i<m_pBody->GetCount(); i++)
 	{
 		CGridRowUI *pRowUI = (CGridRowUI *)m_pBody->GetItemAt(i);
-		for (int j=0; j<pRowUI->GetCount(); j++)
+		if (pRowUI->GetRow() == row)
 		{
-			CGridCellUI *pCellUI = (CGridCellUI *)pRowUI->GetItemAt(j);
-			if(pCellUI->GetRow() == row && pCellUI->GetCol() == col)
-				return pCellUI;
+			for (int j = 0; j < pRowUI->GetCount(); j++)
+			{
+				CGridCellUI* pCellUI = (CGridCellUI*)pRowUI->GetItemAt(j);
+				if (pCellUI->GetCol() == col)
+					return pCellUI;
+			}
 		}
 	}
 
