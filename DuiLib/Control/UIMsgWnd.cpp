@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "UIMsgWnd.h"
+#include "TxtWinHost.h"
 
 
 namespace DuiLib
@@ -42,10 +43,10 @@ void CMsgWndUI::InsertMsg(LPCTSTR pstring, COLORREF cr)
 		strRet = pstring;
 	}
 
-	CDuiString *pNewString = new CDuiString;
-	*pNewString = strRet;
-	//m_pStaticWindow->GetManager()->SendNotify(m_pStaticWindow, _T("CMsgWndUI::InsertMsg"), 0, (LPARAM)pNewString, true);
-	::PostMessage(m_pStaticWindow->GetManager()->GetPaintWindow(), UIMSG_INSERT_MSG, (WPARAM)m_pStaticWindow, (LPARAM)pNewString);
+	TMsgWnd* pMsg = new TMsgWnd;
+	pMsg->sText = strRet;
+	pMsg->dwColor = cr;
+	::PostMessage(m_pStaticWindow->GetManager()->GetPaintWindow(), UIMSG_INSERT_MSG, (WPARAM)m_pStaticWindow, (LPARAM)pMsg);
 }
 
 void CMsgWndUI::InsertMsgV(LPCTSTR lpszFormat, ...)
@@ -125,12 +126,38 @@ bool CMsgWndUI::OnInsertMsg(void* param)
 			SetSel(0,-1);
 			Clear();
 		}
+		TMsgWnd* pMsgWnd = (TMsgWnd*)(pMsg->lParam);
 
-		CDuiString *pString = (CDuiString *)(pMsg->lParam);
-		InsertText(-1, *pString);
+// 		long nStart, nEnd;
+// 		GetSel(nStart, nEnd);
+
+		InsertText(-1, pMsgWnd->sText);
 		InsertText(-1, _T("\r\n"));
+
+// 		long nStart2, nEnd2;
+// 		GetSel(nStart2, nEnd2);
+// 		SetSel(nEnd, nEnd2);
+// 
+// 		CHARFORMAT2   cf;
+// 		memset(&cf, 0, sizeof(CHARFORMAT2));
+// 		cf.cbSize = sizeof(CHARFORMAT2);
+// 		cf.dwMask = CFM_COLOR | CFM_UNDERLINE | CFE_BOLD;
+// 		cf.dwEffects = (unsigned   long)~(CFE_AUTOCOLOR | CFE_UNDERLINE | CFE_BOLD);
+// 		cf.crTextColor = pMsgWnd->dwColor; //RGB(255,   0,   0);  
+// 		SetSelectionCharFormat(cf);
+
+// 		CHARFORMAT2W   cf;
+// 		memset(&cf, 0, sizeof(CHARFORMAT2W));
+// 		cf.cbSize = sizeof(CHARFORMAT2W);
+// 		cf.dwMask = CFM_COLOR | CFM_UNDERLINE | CFE_BOLD;
+// 		cf.dwEffects = (unsigned   long)~(CFE_AUTOCOLOR | CFE_UNDERLINE | CFE_BOLD);
+// 		cf.crTextColor = RGB(255, 0, 0); // pMsgWnd->dwColor; //RGB(255,   0,   0); 
+// 		TxSendMessage(EM_SETCHARFORMAT, SCF_SELECTION | SCF_WORD, (LPARAM)&cf, 0);
+// 		ReplaceSel(pMsgWnd->sText, FALSE);
+// 		ReplaceSel(_T("\r\n"), FALSE);
+
 		TxSendMessage(WM_VSCROLL, SB_BOTTOM, 0,0);
-		delete pString;
+		delete pMsgWnd;
 		return true;
 	}
 	return false;

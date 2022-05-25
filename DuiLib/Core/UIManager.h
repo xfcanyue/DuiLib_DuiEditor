@@ -613,8 +613,6 @@ namespace DuiLib {
 		// ÊÇ·ñ¿ªÆôGdiplus
 		bool m_bUseGdiplusText;
 		int m_trh;
-		static ULONG_PTR m_gdiplusToken;
-		static Gdiplus::GdiplusStartupInput *m_pGdiplusStartupInput;
 
 		// ÍÏ×§
 		bool m_bDragMode;

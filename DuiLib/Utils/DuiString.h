@@ -16,8 +16,15 @@ namespace DuiLib
 		CDuiString(LPCTSTR lpsz, int nLen = -1);
 		~CDuiString();
 
+		//设置缓冲区长度
 		void SetBufferLength(int iLength);
-		int  GetBufferLength();
+
+		//获取缓冲区长度，返回值可能大于设置的长度
+		int GetBufferLength();
+
+		//返回字符串缓冲区, nMinBufferLength>0时，当前缓冲区小于nMinBufferLength，重新分配缓冲区。
+		//没有对应的ReleaseBuffer().
+		LPTSTR GetBuffer(int nMinBufferLength = -1);
 
 		void Empty();
 		int GetLength() const;

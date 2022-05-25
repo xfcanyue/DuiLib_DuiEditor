@@ -78,6 +78,7 @@ bool CUIApplication::InitInstance(HINSTANCE hInstance)
 	// 初始化资源
 	InitResource();
 
+	// 是否单例运行程序
 	if(m_bSingleApplication && (!m_GuidAppName.IsEmpty()) )
 	{
 		m_UIAPP_SINGLEAPPLICATION_MSG = ::RegisterWindowMessage(m_GuidAppName);

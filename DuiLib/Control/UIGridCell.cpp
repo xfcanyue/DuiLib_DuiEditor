@@ -119,7 +119,15 @@ CDuiString CGridCellUI::GetText() const
 	TCellData *pCellData = GetOwner()->GetCellData(m_row, m_col);
 	if(pCellData)
 	{
-		return pCellData->GetText();
+		CDuiString sText = pCellData->GetText();
+		CControlUI* pThis = const_cast<CGridCellUI*>(this);
+		CLangPackageUI* pkg = pThis->GetLangPackage();
+		if (pkg && GetResourceID() > 0)
+		{
+			CDuiString s = pkg->GetText(GetResourceID());
+			if (!s.IsEmpty()) return s;
+		}
+		return sText;
 	}
 	return __super::GetText();
 }

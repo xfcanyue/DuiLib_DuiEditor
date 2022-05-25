@@ -480,6 +480,7 @@ LRESULT CALLBACK CWindowWnd::__ControlProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 BOOL CWindowWnd::DoTouchInformation(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	return FALSE;
+	/*
 	if(uMsg == WM_CREATE)
 	{
 		::RegisterTouchWindow(hWnd, TWF_FINETOUCH); //×¢²á´¥ÆÁÏûÏ¢ add by liqs99
@@ -539,6 +540,7 @@ BOOL CWindowWnd::DoTouchInformation(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM 
 	}
 	CloseTouchInputHandle((HTOUCHINPUT)lParam);
 	return TRUE;
+	*/
 }
 
 LRESULT CWindowWnd::SendMessage(UINT uMsg, WPARAM wParam /*= 0*/, LPARAM lParam /*= 0*/)

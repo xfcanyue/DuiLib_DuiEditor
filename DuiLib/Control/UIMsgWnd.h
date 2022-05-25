@@ -7,6 +7,11 @@ namespace DuiLib
 class UILIB_API CMsgWndUI : public CRichEditUI
 {
 	DECLARE_DUICONTROL(CMsgWndUI)
+	struct TMsgWnd
+	{
+		CDuiString sText;
+		DWORD dwColor;
+	};
 public:
 	CMsgWndUI(void);
 	virtual ~CMsgWndUI(void);

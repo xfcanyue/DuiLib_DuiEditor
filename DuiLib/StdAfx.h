@@ -82,101 +82,31 @@
 
 
 
-///////////////////////////////////////////////////////////////////////////
-//
-//
-/*
-inline bool sIsFocused(UINT uState)
+//////////////////////////////////////////////////////////////////////////
+// 
+//GdiPlus初始化
+#define GDIPLUS_STARTUP_INSTANCE GdiplusStartup::Instance()
+class GdiplusStartup
 {
-	return (uState & UISTATE_FOCUSED) == UISTATE_FOCUSED;
-}
-
-inline void sSetFocused(UINT &uState, bool bTrue)
-{
-	if(bTrue)
-		uState |= UISTATE_FOCUSED;
-	else
-		uState &= ~UISTATE_FOCUSED;
-}
-
-inline bool sIsSelected(UINT uState)
-{
-	return (uState & UISTATE_SELECTED) == UISTATE_SELECTED;
-}
-
-inline void sSetSelected(UINT &uState, bool bTrue)
-{
-	if(bTrue)
-		uState |= UISTATE_SELECTED;
-	else
-		uState &= ~UISTATE_SELECTED;
-}
-
-inline bool sIsDisable(UINT uState)
-{
-	return (uState & UISTATE_DISABLED) == UISTATE_DISABLED;
-}
-
-inline void sSetDisable(UINT &uState, bool bTrue)
-{
-	if(bTrue)
-		uState |= UISTATE_DISABLED;
-	else
-		uState &= ~UISTATE_DISABLED;
-}
-
-inline bool sIsHot(UINT uState)
-{
-	return (uState & UISTATE_HOT) == UISTATE_HOT;
-}
-
-inline void sSetHot(UINT &uState, bool bTrue)
-{
-	if(bTrue)
-		uState |= UISTATE_HOT;
-	else
-		uState &= ~UISTATE_HOT;
-}
-
-inline bool sIsPushed(UINT uState)
-{
-	return (uState & UISTATE_PUSHED) == UISTATE_PUSHED;
-}
-
-inline void sSetPushed(UINT &uState, bool bTrue)
-{
-	if(bTrue)
-		uState |= UISTATE_PUSHED;
-	else
-		uState &= ~UISTATE_PUSHED;
-}
-
-inline bool sIsReadonly(UINT uState)
-{
-	return (uState & UISTATE_READONLY) == UISTATE_READONLY;
-}
-
-inline void sSetReadonly(UINT &uState, bool bTrue)
-{
-	if(bTrue)
-		uState |= UISTATE_READONLY;
-	else
-		uState &= ~UISTATE_READONLY;
-}
-
-inline bool sIsCaptured(UINT uState)
-{
-	return (uState & UISTATE_CAPTURED) == UISTATE_CAPTURED;
-}
-
-inline void sSetCaptured(UINT &uState, bool bTrue)
-{
-	if(bTrue)
-		uState |= UISTATE_CAPTURED;
-	else
-		uState &= ~UISTATE_CAPTURED;
-}
-*/
+public:
+	//创建任何Gdiplus对象之前都要先调用一下
+	static void Instance()
+	{
+		static GdiplusStartup obj;
+	}
+protected:
+	GdiplusStartup()
+	{
+		Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+	}
+	~GdiplusStartup()
+	{
+		Gdiplus::GdiplusShutdown(gdiplusToken);
+	}
+private:
+	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+	ULONG_PTR gdiplusToken;
+};
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

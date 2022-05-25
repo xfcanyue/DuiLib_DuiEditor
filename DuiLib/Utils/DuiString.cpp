@@ -277,6 +277,13 @@ namespace DuiLib
 		return data->nAllocLength;
 	}
 
+	LPTSTR CDuiString::GetBuffer(int nMinBufferLength)
+	{
+		if (GetBufferLength() < nMinBufferLength)
+			AllocString(nMinBufferLength);
+		return m_pstr;
+	}
+
 	int CDuiString::GetLength() const
 	{
 		return (int) _tcslen(m_pstr); 

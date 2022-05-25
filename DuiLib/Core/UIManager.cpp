@@ -82,9 +82,6 @@ namespace DuiLib {
 	CStdPtrArray CPaintManagerUI::m_aPreMessages;
 	CStdPtrArray CPaintManagerUI::m_aPlugins;
 
-	ULONG_PTR CPaintManagerUI::m_gdiplusToken = 0;
-	Gdiplus::GdiplusStartupInput *CPaintManagerUI::m_pGdiplusStartupInput = NULL;
-
 	BOOL CPaintManagerUI::UIDESIGNMODE = FALSE;
 	BOOL CPaintManagerUI::UIDESIGNPREVIEW = FALSE;
 
@@ -119,11 +116,7 @@ namespace DuiLib {
 		m_iHoverTime(400UL),
 		m_bLockUpdate(false)
 	{
-		if(m_pGdiplusStartupInput == NULL)
-		{
-			m_pGdiplusStartupInput = new Gdiplus::GdiplusStartupInput;
-			Gdiplus::GdiplusStartup( &m_gdiplusToken, m_pGdiplusStartupInput, NULL); // ¼ÓÔØGDI½Ó¿Ú
-		}
+		GDIPLUS_STARTUP_INSTANCE;
 
 		if (!m_SharedResInfo.m_DefaultFontInfo)
 		{
@@ -1921,13 +1914,6 @@ namespace DuiLib {
 		if( m_bCachedResourceZip && m_hResourceZip != NULL ) {
 			CloseZip((HZIP)m_hResourceZip);
 			m_hResourceZip = NULL;
-		}
-
-		//Ð¶ÔØGDIPlus
-		if(m_pGdiplusStartupInput != NULL)
-		{
-			Gdiplus::GdiplusShutdown(m_gdiplusToken);
-			delete m_pGdiplusStartupInput;
 		}
 	}
 

@@ -313,6 +313,12 @@ bool CXmlNodeUI::remove_children()
 	return impxmlnode(_root).remove_children();
 }
 
+
+CXmlNodeUI CXmlNodeUI::find_child_by_attribute(LPCTSTR name, LPCTSTR attr_name, LPCTSTR attr_value)
+{
+	return CXmlNodeUI(impxmlnode(_root).find_child_by_attribute(name, attr_name, attr_value).internal_object());
+}
+
 PVOID CXmlNodeUI::internal_object() const
 {
 	return _root;

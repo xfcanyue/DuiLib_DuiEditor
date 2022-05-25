@@ -18,9 +18,27 @@
 #ifdef _WIN64
 #	ifdef _UNICODE
 #		ifdef _DEBUG
-#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/CxImage64u_staticd.lib"))
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/x64/static/CxImageud.lib"))
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/x64/static/jasperud.lib"))
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/x64/static/jbigud.lib"))
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/x64/static/Jpegud.lib"))
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/x64/static/libdcrud.lib"))
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/x64/static/libpsdud.lib"))
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/x64/static/mngud.lib"))
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/x64/static/pngud.lib"))
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/x64/static/Tiffud.lib"))
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/x64/static/zlibud.lib"))
 #		else
-#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/CxImage64u_static.lib"))
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/x64/static/CxImageu.lib"))
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/x64/static/jasperu.lib"))
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/x64/static/jbigu.lib"))
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/x64/static/Jpegu.lib"))
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/x64/static/libdcru.lib"))
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/x64/static/libpsdu.lib"))
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/x64/static/mngu.lib"))
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/x64/static/pngu.lib"))
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/x64/static/Tiffu.lib"))
+#			pragma comment(lib, _LIBPATH_(__FILE__,   "/../../Lib/x64/static/zlibu.lib"))
 #		endif
 #	else
 #		ifdef _DEBUG

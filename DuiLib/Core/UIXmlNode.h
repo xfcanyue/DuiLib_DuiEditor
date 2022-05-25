@@ -124,6 +124,9 @@ namespace DuiLib {
 		// Remove all children
 		bool remove_children();
 
+		//根据子节点属性值查询子节点
+		CXmlNodeUI find_child_by_attribute(LPCTSTR name, LPCTSTR attr_name, LPCTSTR attr_value);
+
 		// Get internal pointer
 		PVOID internal_object() const;
 	protected:
