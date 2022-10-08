@@ -61,6 +61,7 @@ namespace DuiLib {
 		UIMSG_MENUCLICK,					//用来接收按钮单击的消息
 		UIMSG_MENU_UPDATE_COMMAND_UI,		//更新菜单消息
 		UIMSG_CREATE_MENU,					//异步创建菜单
+		UIMSG_GRID_NOTIFY,			//异步调用CGridUI::EnsureVisible
 
 		// 程序自定义消息
 		UIMSG_USER = WM_USER + 100,

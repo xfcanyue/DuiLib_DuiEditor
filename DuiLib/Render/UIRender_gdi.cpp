@@ -222,6 +222,18 @@ namespace DuiLib {
 		return Resize(rc.right - rc.left, rc.bottom - rc.top);
 	}
 
+	int UIRender_gdi::GetWidth() const
+	{
+		if(!m_curBmp) return 0;
+		return m_curBmp->GetWidth();
+	}
+
+	int UIRender_gdi::GetHeight() const
+	{
+		if(!m_curBmp) return 0;
+		return m_curBmp->GetHeight();
+	}
+
 	void UIRender_gdi::Clear()
 	{
 		if(!m_curBmp) 

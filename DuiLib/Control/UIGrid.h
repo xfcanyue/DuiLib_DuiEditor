@@ -10,6 +10,13 @@ namespace DuiLib
 class UILIB_API CGridUI : public CVerticalLayoutUI, public IGridUI
 {
 	DECLARE_DUICONTROL(CGridUI)
+
+	struct TGridNotify
+	{
+		CDuiString sNotifyName;
+		WPARAM wparam;
+		LPARAM lparam;
+	};
 public:
 	CGridUI(void); 
 	~CGridUI(void);
@@ -18,6 +25,7 @@ public:
 	virtual UINT GetControlFlags() const override;
 	virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
+	virtual void SendGridNotify(LPCTSTR pstrMessage, WPARAM wParam = 0, LPARAM lParam = 0, bool bAsync = false) override;
 	virtual void Refresh(bool bNeedUpdate = false) override;
 
 	virtual bool Add(CControlUI* pControl) override;
@@ -31,6 +39,8 @@ public:
 
 	void ResetGrid();
 	void ResetGridBody();
+
+	void EnsureVisible(int row, int col); //滚动使单元格可见。
 
 	virtual BOOL SetRowCount(int rows);
 	virtual int GetRowCount();
@@ -99,6 +109,7 @@ public:
 
 	//执行按col列进行排序
 	void SortItems(int col);
+	void SortItems(int col, BOOL bSortAscending); //指定升序还是降序， TRUE=升序，FALSE=降序
 	virtual void OnSortItem(int col, BOOL bAscending);
 
 	//获取当前排序的列
@@ -109,7 +120,7 @@ public:
 protected:
 	BOOL SortItems(PFNLVCOMPARE pfnCompare, int col, BOOL bAscending, LPARAM data, int low, int high);
 	static int CALLBACK pfnCellTextCompare(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
-
+	bool OnGridNotify(void *param);
 public:
 	virtual void DoInit() override;
 	virtual void DoEvent(TEventUI& event) override;

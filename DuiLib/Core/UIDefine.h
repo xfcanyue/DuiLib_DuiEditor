@@ -377,6 +377,10 @@ protected:                                                                \
 #define  DUI_CTR_TABLELAYOUT            (_T("TableLayout"))
 #define  DUI_CTR_TABLEROW               (_T("TR"))
 #define  DUI_CTR_TABLECOL               (_T("TD"))
+
+#define DUI_CTR_QRCODE					(_T("QRCode"))
+#define DUI_CTR_BARCODE					(_T("BarCode"))
+
 // #define DUI_CTR_GRIDLIST					(_T("GridList"))
 // #define DUI_CTR_GRIDLISTHEADER				(_T("GridListHeader"))
 // #define DUI_CTR_GRIDLISTBODY				(_T("GridListBody"))

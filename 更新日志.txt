@@ -333,3 +333,6 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
 3，多语言管理增加新的字符串接口: CLangManagerUI::LoadString(LPCTSTR defaultString).
      程序退出时, 调用CLangManagerUI::SaveStrings(LPCTSTR filePathName)，保存已更新的StringResource.lng，在当前语言包路径下。
      
+
+2022-09-21
+1,  增加CBarCodeUI, CQRCodeUI。条码控件和二维码控件。

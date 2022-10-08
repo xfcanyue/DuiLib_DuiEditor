@@ -89,6 +89,25 @@ namespace DuiLib
 		LPTSTR m_pstr;
 	};
 	
+	class UILIB_API CBufferUI
+	{
+	public:
+		CBufferUI();
+		~CBufferUI();
+
+		void Reset();
+
+		LPBYTE GetBuffer();
+		int GetLength();
+
+		int AddBuffer(const void *buffer, int len);
+
+	protected:
+		void Alloc(int size);
+	protected:
+		BYTE *_buffer;
+		int _bufferLen;
+	};
 	//////////////////////////////////////////////////////////////////////////
 	//
 	//

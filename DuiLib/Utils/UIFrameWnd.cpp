@@ -124,6 +124,13 @@ LRESULT CUIFrameWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam
 		GetManager()->SendNotify(pMsgWindow, _T("CMsgWndUI::InsertMsg"), wParam, lParam);
 		return 0;
 	}
+	else if (uMsg == UIMSG_GRID_NOTIFY)
+	{
+		bHandled = TRUE;
+		CGridUI* pGrid = (CGridUI*)wParam;
+		GetManager()->SendNotify(pGrid, _T("CGridUI::OnGridNotify"), wParam, lParam);
+		return 0;
+	}
 
 	if(uMsg == UIMSG_CREATE_MENU)
 	{

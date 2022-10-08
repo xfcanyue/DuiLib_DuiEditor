@@ -258,6 +258,12 @@ namespace DuiLib
 		}
 	}
 
+	BOOL CDuiRect::EqualRect(const CDuiRect& rc) const
+	{
+		return left == rc.left && right == rc.right && top == rc.top && bottom == rc.bottom;
+	}
+
+	//bool CDuiRect::operator == (LPCRECT lpRect) const { return EqualRect(lpRect); };
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
 	//

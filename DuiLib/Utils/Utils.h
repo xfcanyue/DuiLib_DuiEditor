@@ -81,6 +81,9 @@ namespace DuiLib
 		BOOL IntersectRect(const RECT &rect1, const RECT &rect2);
 		POINT CenterPoint() const;
 		void AlignRect(const RECT &rc, UINT uAlign = DT_CENTER|DT_VCENTER);
+		BOOL EqualRect(const CDuiRect& rc) const;
+		
+		//bool operator == (LPCRECT lpRect) const;
 	};
 
 	/////////////////////////////////////////////////////////////////////////////////////

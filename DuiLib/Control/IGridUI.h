@@ -133,6 +133,8 @@ public:
 	IGridUI(void);
 	virtual ~IGridUI(void);
 
+	virtual void SendGridNotify(LPCTSTR pstrMessage, WPARAM wParam = 0, LPARAM lParam = 0, bool bAsync = false) = 0;
+
 	virtual void Refresh(bool bNeedUpdate=false)		= 0;
 
 	virtual void SetVirtualGrid(BOOL bVirtual)	= 0;
@@ -290,11 +292,11 @@ public:
 	TCellData &Cell(const TCellID &cell);
 
 	void ClearSelectedRows();
-	void SelectRow(int row, BOOL bSelected=TRUE);
+	void SelectRow(int row, BOOL bSelected=TRUE, BOOL bTriggerEvent= FALSE);
 	BOOL IsSelectedRow(int row);
 
 	void ClearSelectedCells();
-	void SelectCell(int row, int col, BOOL bSelected=TRUE);
+	void SelectCell(int row, int col, BOOL bSelected=TRUE, BOOL bTriggerEvent = FALSE);
 	BOOL IsSelectedCell(int row, int col);
 
 	int GetSelectRowCount();

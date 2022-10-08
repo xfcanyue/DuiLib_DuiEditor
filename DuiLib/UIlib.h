@@ -142,6 +142,8 @@
 #include "Control/UIMsgWnd.h"
 #include "Control/UIPicture.h"
 #include "Control/UIPictureBox.h"
+#include "Control/UIQRCode.h"
+#include "Control/UIBarCode.h"
 
 #include "Control/UIGrid.h"
 

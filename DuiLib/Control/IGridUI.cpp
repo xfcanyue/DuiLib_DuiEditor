@@ -139,7 +139,7 @@ void IGridUI::ClearSelectedRows()
 	SetFocusCell(-1,-1);
 }
 
-void IGridUI::SelectRow(int row, BOOL bSelected)
+void IGridUI::SelectRow(int row, BOOL bSelected, BOOL bTriggerEvent)
 {
 	if(IsSingleRowSelection()) //只允许单行选中时
 	{
@@ -165,6 +165,11 @@ void IGridUI::SelectRow(int row, BOOL bSelected)
 		if(it != m_aSelectedRows.end()) {
 			m_aSelectedRows.erase(it);
 		}
+	}
+
+	if (bTriggerEvent)
+	{
+		SendGridNotify(DUI_MSGTYPE_CLICK, row, 0);
 	}
 
 	Refresh();
@@ -196,7 +201,7 @@ void IGridUI::ClearSelectedCells()
 	SetFocusCell(-1,-1);
 }
 
-void IGridUI::SelectCell(int row, int col, BOOL bSelected)
+void IGridUI::SelectCell(int row, int col, BOOL bSelected, BOOL bTriggerEvent)
 {
 	if(IsSelectedCell(row,col) == bSelected)
 		return;
@@ -221,6 +226,11 @@ void IGridUI::SelectCell(int row, int col, BOOL bSelected)
 		}
 		SetFocusCell(-1,-1);
 	}	
+
+	if (bTriggerEvent)
+	{
+		SendGridNotify(DUI_MSGTYPE_CLICK, row, col);
+	}
 
 	Refresh();
 }

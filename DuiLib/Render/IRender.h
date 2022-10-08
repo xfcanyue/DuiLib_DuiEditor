@@ -279,6 +279,9 @@ namespace DuiLib {
 		virtual bool Resize(int width, int height) = 0;
 		virtual bool Resize(const RECT &rc) = 0;
 
+		virtual int GetWidth() const = 0;
+		virtual int GetHeight() const = 0;
+
 		//²Á³ýµ±Ç°»­²¼¡£
 		virtual void Clear() = 0;
 

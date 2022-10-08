@@ -691,7 +691,70 @@ namespace DuiLib
         return nLen;
 #endif
     }
-	
+
+	//////////////////////////////////////////////////////////////////////////
+	//
+	//
+	CBufferUI::CBufferUI()
+	{
+		DuiStringMgr::GetInstance();
+		_buffer = NULL;
+		_bufferLen = 0;
+	}
+
+	CBufferUI::~CBufferUI()
+	{
+		Reset();
+	}
+
+	void CBufferUI::Reset()
+	{
+		if(_buffer != NULL) 
+		{ 
+			duistringdata *data = ((duistringdata *)_buffer)-1;
+			DuiStringMgr::GetInstance()->Free(data);
+			_buffer = NULL; 
+			_bufferLen = 0;
+		}
+	}
+
+	LPBYTE CBufferUI::GetBuffer()
+	{
+		return _buffer;
+	}
+
+	int CBufferUI::GetLength()
+	{
+		return _bufferLen;
+	}
+
+	int CBufferUI::AddBuffer(const void *buffer, int len)
+	{
+		int newSize = _bufferLen + len;
+		Alloc(newSize);
+		memcpy(_buffer+_bufferLen, buffer, len);
+		_bufferLen += len;
+		return _bufferLen;
+	}
+
+	void CBufferUI::Alloc(int size)
+	{
+		if(_buffer == NULL)
+		{
+			duistringdata *newdata = DuiStringMgr::GetInstance()->Alloc(size);
+			_buffer = (BYTE *)newdata->data();
+		}
+		else
+		{
+			duistringdata *data = ((duistringdata *)_buffer)-1;
+			if(data->nAllocLength < size)
+			{
+				duistringdata *newdata = DuiStringMgr::GetInstance()->Alloc(size);
+				LPVOID pNewBuffer = newdata->data();
+				memcpy(pNewBuffer, _buffer, _bufferLen);
+			}
+		}
+	}
 	//////////////////////////////////////////////////////////////////////////
 	//
 	//

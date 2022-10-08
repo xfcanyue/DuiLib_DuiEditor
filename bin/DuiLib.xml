@@ -12,7 +12,7 @@ ATTRIBUTELIST:
 <Attribute name="value" default="" type="ATTRIBUTELIST" value="类名" />
 
 INT类型(最小值，最大值)：
-<Attribute name="alpha" default="" type="ATTRIBUTELIST" value="0,255" /> //表示alpha取值范围是：0 ~ 255
+<Attribute name="alpha" default="" type="INT" value="0,255" /> //表示alpha取值范围是：0 ~ 255
 
 2, 图片节点的type属性, 改为IMAGE. 否则程序不能识别为图片属性.
 例如 <Attribute name="bkimage" default="" type="IMAGE" comment=""/>
@@ -958,6 +958,22 @@ INT类型(最小值，最大值)：
 	<ChildWindow parent="Container" comment="嵌入win32子窗口" >
 		<Attribute name="name" default="" type="STRING" comment="控件名字" />
 	</ChildWindow>
+	<QRCode parent="DynamicLayout" notifies="" comment="二维码控件">
+		<Attribute name="name" default="" type="STRING" comment="控件名字" />
+		<Attribute name="qrlevel" default="0" type="INT" value="0,3" comment="纠错等级(0=7%,1=15%,2=25%,3=30%)"/>
+		<Attribute name="qrversion" default="0" type="INT" value="0,40" comment="版本号(0~40) 为0时自动判断。"/>
+		<Attribute name="qrmark" default="-1" type="INT" value="-1,7" comment="掩码等级(-1,0~7) 为-1时自动选择"/>
+		<Attribute name="qrsize" default="0" type="INT" value="0,20" comment="图形大小(0~20),为0时跟随控件大小。"/>
+		<Attribute name="qrmargin" default="4" type="INT" comment="二维码空白边缘大小"/>
+		<Attribute name="text" default="" type="STRING" comment="二维码内容" />
+		<Attribute name="encoding" default="unicode" type="STRING" value="ascii,unicode,utf8" comment="二维码内容的字符编码" />
+	</QRCode>
+	<BarCode parent="DynamicLayout" notifies="" comment="条码控件">
+		<Attribute name="name" default="" type="STRING" comment="控件名字" />
+		<Attribute name="barcodetype" default="code39" type="STRING" value="code39,code93" comment="条码类型" />
+		<Attribute name="barcodesize" default="1" type="INT" comment="条码单线宽度"/>
+		<Attribute name="text" default="" type="STRING" comment="条码内容" />
+	</BarCode>
 	
 	<!-- 以下只给设计器使用 -->
 	<Font>

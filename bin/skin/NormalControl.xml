@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Window size="800,800">
+<Window size="800,1000">
 	<VerticalLayout vscrollbar="true" childpadding="10" padding="10,10,10,10" bkcolor="0xFFD1E8F5">
 		<HorizontalLayout height="30" childpadding="10">
 			<Label text="按钮" autocalcwidth="true" resourceid="3" />
@@ -53,7 +53,7 @@
 			<Edit width="150" nativebkcolor="0x7FFF0000" tipvalue="编辑框" bordercolor="0xFFC0C0C0" bordersize="1" resourceid="39" tooltip="真的是编辑框" />
 			<Label text="多行编辑框" autocalcwidth="true" />
 			<Edit width="150" height="60" multiline="true" wantreturn="true" tipvalue="编辑框" valign="top" bordercolor="0xFFC0C0C0" bordersize="1" />
-			<Button width="60" height="60" hotbkcolor="0xFFC0C0C0" text="圆角按钮" pos="0,0,60,60" bkcolor="0xFFA0A0A4" bordercolor="0xFFFF0000" bordersize="1" borderround="10,10" />
+			<Button width="60" height="60" hotbkcolor="0xFFC0C0C0" text="圆角按钮" bkcolor="0xFFA0A0A4" bordercolor="0xFFFF0000" bordersize="1" borderround="10,10" />
 		</HorizontalLayout>
 		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
 			<Label text="日期" autocalcwidth="true" resourceid="21" />
@@ -118,11 +118,13 @@
 			<Label autocalcwidth="true" />
 			<Button width="100" text="拖动" drag="true" style="style_button" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
-			<Label autocalcwidth="true" />
+		<HorizontalLayout height="40" childpadding="10" childvalign="vcenter">
+			<Label text="条码" autocalcwidth="true" />
+			<BarCode text="12345123456789012345" width="400" />
 		</HorizontalLayout>
-		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
-			<Label autocalcwidth="true" />
+		<HorizontalLayout height="196" childpadding="10" childvalign="vcenter">
+			<Label text="二维码" autocalcwidth="true" />
+			<QRCode qrversion="6" qrmark="0" text="1234512345678912345中文字符" encoding="utf8" width="150" height="150" bkcolor="0xFFFFFFFF" />
 		</HorizontalLayout>
 	</VerticalLayout>
 </Window>

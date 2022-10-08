@@ -23,6 +23,8 @@ namespace DuiLib {
 
 		virtual bool Resize(int width, int height) override;
 		virtual bool Resize(const RECT &rc) override;
+		virtual int GetWidth() const override;
+		virtual int GetHeight() const override;
 		virtual void Clear() override;
 
 		virtual void SaveDC() override;

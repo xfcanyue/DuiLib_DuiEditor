@@ -59,6 +59,11 @@ LPVOID CGridUI::GetInterface(LPCTSTR pstrName)
 	return __super::GetInterface(pstrName);
 }
 
+void CGridUI::SendGridNotify(LPCTSTR pstrMessage, WPARAM wParam, LPARAM lParam, bool bAsync)
+{
+	if (GetManager()) GetManager()->SendNotify(this, pstrMessage, wParam, lParam, bAsync);
+}
+
 void CGridUI::Refresh(bool bNeedUpdate)
 {
 	if(bNeedUpdate) NeedUpdate();
@@ -312,6 +317,35 @@ void CGridUI::ResetGridBody()
 	{
 		DeleteRow(GetRowCount()-1);
 	}
+}
+
+void CGridUI::EnsureVisible(int row, int col)
+{
+	TGridNotify* pNotify = new TGridNotify;
+	pNotify->sNotifyName = _T("CGridUI::EnsureVisible");
+	pNotify->wparam = row;
+	pNotify->lparam = col;
+	::PostMessage(GetManager()->GetPaintWindow(), UIMSG_GRID_NOTIFY, (WPARAM)this, (LPARAM)pNotify);
+
+	/*
+	if (IsVirtualGrid()) return;
+
+	CGridCellUI* pCell = GetCellUI(row, col);
+	if (!pCell) return;
+	CDuiRect rc = pCell->GetPos();
+	CDuiRect rcBody = m_pBody->GetPos();
+	if (GetVerticalScrollBar())
+	{
+		int range = GetVerticalScrollBar()->GetScrollRange();
+		int pos = rc.top;
+		//尝试居中显示
+		if (rc.top > rcBody.top)
+		{
+			pos += (rc.top - rcBody.top) / 2;
+		}
+		GetVerticalScrollBar()->SetScrollPos(pos);
+	}
+	*/
 }
 
 BOOL CGridUI::SetRowCount(int rows)
@@ -883,9 +917,30 @@ void CGridUI::SortItems(int col)
 	Refresh(true);
 }
 
+void CGridUI::SortItems(int col, BOOL bSortAscending)
+{
+	if (!IsHeaderSort() || !IsColumnSort(col)) return;
+
+	ClearSelectedRows();
+	ClearSelectedCells();
+
+	BOOL bAscending = bSortAscending;
+	if (!IsVirtualGrid())
+	{
+		int lo = GetFixedRowCount();
+		int hi = -1;
+		SortItems(m_pfnCompare, col, bAscending, 0, GetFixedRowCount(), -1);
+	}
+	m_nSortCol = col;
+	m_bSortAscending = bAscending;
+
+	OnSortItem(col, bAscending);
+	Refresh(true);
+}
+
 void CGridUI::OnSortItem(int col, BOOL bAscending)
 {
-	if(GetManager()) GetManager()->SendNotify(this, DUI_MSGTYPE_SORTITEM, (WPARAM)col, (LPARAM)bAscending);
+	SendGridNotify(DUI_MSGTYPE_SORTITEM, (WPARAM)col, (LPARAM)bAscending);
 }
 
 BOOL CGridUI::SortItems(PFNLVCOMPARE pfnCompare, int col, BOOL bAscending, LPARAM data, int low, int high)
@@ -967,9 +1022,55 @@ int CALLBACK CGridUI::pfnCellTextCompare(LPARAM lParam1, LPARAM lParam2, LPARAM 
 	return _tcscmp(pCell1->GetText(), pCell2->GetText());
 }
 
+bool CGridUI::OnGridNotify(void* param)
+{
+	TNotifyUI* pMsg = (TNotifyUI*)param;
+	CGridUI* pControl = (CGridUI*)pMsg->wParam;
+	if (pControl != this || _tcsicmp(pMsg->sType, _T("CGridUI::OnGridNotify")) != 0)
+		return false;
+
+	TGridNotify* pNotify = (TGridNotify*)pMsg->lParam;
+	if(pNotify->sNotifyName == _T("CGridUI::EnsureVisible"))
+	{
+		if (IsVirtualGrid()) goto LABEL_END;
+
+		int row = pNotify->wparam;
+		int col = pNotify->lparam;
+
+		TCellData* pCell = GetCellData(row, col);
+		CDuiString s = pCell->GetText();
+		if (!pCell) 
+			goto LABEL_END;
+
+		int ypos = 0;
+		for (int i=0; i<=row; i++)
+		{
+			ypos += GetRowHeight(i);
+		}
+
+		CDuiRect rcBody = m_pBody->GetPos();
+		if (GetVerticalScrollBar())
+		{
+			int range = GetVerticalScrollBar()->GetScrollRange();
+			int pos = ypos - rcBody.GetHeight();
+			//尝试居中显示
+			if (ypos > rcBody.top)
+			{
+				pos += (ypos - rcBody.top) / 2;
+			}
+			GetVerticalScrollBar()->SetScrollPos(pos);
+		}
+	}
+
+LABEL_END:
+	delete pNotify;
+	return true;
+}
 //////////////////////////////////////////////////////////////////////////
 void CGridUI::DoInit()
 {
+	OnNotify += MakeDelegate(this, &CGridUI::OnGridNotify);
+
 	EnableScrollBar(true, true);
 	m_pHorizontalScrollBar->SetScrollRange(0);
 
@@ -1056,8 +1157,7 @@ void CGridUI::DoEvent(TEventUI& event)
 			m_rcTracker.right = event.ptMouse.x;
 			m_rcTracker.bottom = event.ptMouse.y;
 
-			if(GetManager())
-				GetManager()->SendNotify(this, DUI_MSGTYPE_STARTSELCHANGE, 0, 0);
+			SendGridNotify(DUI_MSGTYPE_STARTSELCHANGE, 0, 0);
 		}
 
 		if(m_pCellLButtonDown == NULL)
@@ -1213,10 +1313,10 @@ void CGridUI::DoEvent(TEventUI& event)
 
 		if( ::PtInRect(&m_rcItem, event.ptMouse) ) 
 		{
-			if(GetManager()) GetManager()->SendNotify(this, DUI_MSGTYPE_CLICK);
+			SendGridNotify(DUI_MSGTYPE_CLICK);
 		}
 
-		if(GetManager()) GetManager()->SendNotify(this, DUI_MSGTYPE_ENDSELCHANGE, 0, 0);
+		SendGridNotify(DUI_MSGTYPE_ENDSELCHANGE, 0, 0);
 
 		m_rcTracker.Empty();
 		m_pCellLButtonDown = NULL;
@@ -1323,8 +1423,7 @@ void CGridUI::DoEvent(TEventUI& event)
 		int row = pCellUI->GetRow();
 		int col = pCellUI->GetCol();
 
-		if(GetManager())
-			GetManager()->SendNotify(this, DUI_MSGTYPE_ITEMRCLICK, row, col);
+		SendGridNotify(DUI_MSGTYPE_ITEMRCLICK, row, col);
 		return;
 	}
 
@@ -1362,7 +1461,7 @@ void CGridUI::DoEvent(TEventUI& event)
 		if( ::PtInRect(&m_rcItem, event.ptMouse) ) 
 		{
 			//InsertMsgUI(_T("grid dbclick"));
-			if(GetManager()) GetManager()->SendNotify(this, DUI_MSGTYPE_DBCLICK, 0, 0, true);
+			SendGridNotify(DUI_MSGTYPE_DBCLICK, 0, 0, true);
 		}
 		return;
 	}
@@ -1611,10 +1710,10 @@ void CGridUI::BuildRows(RECT rc, bool bNeedInvalidate)
 				{
 					//celltypeContainer类型时，发送消息出去，可以在消息响应中插入自定义控件
 					if(pCellUI->GetCount() == 0)
-						GetManager()->SendNotify(this, DUI_MSGTYPE_INITCELL, nCurrentRow, j);
+						SendGridNotify(DUI_MSGTYPE_INITCELL, nCurrentRow, j);
 				}
 			}
-			GetManager()->SendNotify(this, DUI_MSGTYPE_INITROWDATA, nCurrentRow, 0);
+			SendGridNotify(DUI_MSGTYPE_INITROWDATA, nCurrentRow, 0);
 		}
 
 		iPosY += GetRowHeight(nCurrentRow);
@@ -1630,7 +1729,7 @@ void CGridUI::BuildRows(RECT rc, bool bNeedInvalidate)
 
 void CGridUI::OnDrawItem(int nBeginRow, int nEndRow)
 {
-	GetManager()->SendNotify(this, DUI_MSGTYPE_DRAWITEM, nBeginRow, nEndRow);
+	SendGridNotify(DUI_MSGTYPE_DRAWITEM, nBeginRow, nEndRow);
 }
 
 void CGridUI::SetScrollPos(SIZE szPos, bool bMsg)
@@ -1675,7 +1774,7 @@ void CGridUI::SetScrollPos(SIZE szPos, bool bMsg)
 		// 发送滚动消息
 		if( m_pManager != NULL && bMsg ) {
 			int nPage = (m_pVerticalScrollBar->GetScrollPos() + m_pVerticalScrollBar->GetLineSize()) / m_pVerticalScrollBar->GetLineSize();
-			m_pManager->SendNotify(this, DUI_MSGTYPE_SCROLL, (WPARAM)nPage);
+			SendGridNotify(DUI_MSGTYPE_SCROLL, (WPARAM)nPage);
 		}
 	}
 }
