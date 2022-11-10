@@ -105,7 +105,7 @@ namespace DuiLib {
 		pRenderClone->Init(pManager);
 
 		UIBitmap *pBitmapClone = UIGlobal::CreateBitmap();
-		pBitmapClone->CreateARGB32Bitmap(pManager->GetPaintDC(), cx, cy);
+		pBitmapClone->CreateARGB32Bitmap(pManager->GetPaintDC(), cx, cy, TRUE);
 		pRenderClone->SelectObject(pBitmapClone);
 
 		pRenderClone->BitBlt(0, 0, cx, cy, pRender, rcControl.left, rcControl.top, SRCCOPY);
@@ -143,7 +143,7 @@ namespace DuiLib {
 
 		//创建返回的位图，调用方需要释放。
 		UIBitmap *pBitmapClone = UIGlobal::CreateBitmap();
-		pBitmapClone->CreateARGB32Bitmap(pManager->GetPaintDC(), cx, cy);
+		pBitmapClone->CreateARGB32Bitmap(pManager->GetPaintDC(), cx, cy, TRUE);
 		pRenderClone->SelectObject(pBitmapClone);
 		pRenderClone->BitBlt(0, 0, cx, cy, pRender, rcWnd.left, rcWnd.top, SRCCOPY);
 

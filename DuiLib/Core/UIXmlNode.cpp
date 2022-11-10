@@ -324,4 +324,22 @@ PVOID CXmlNodeUI::internal_object() const
 	return _root;
 }
 
+struct ui_xml_string_writer : ui_pugi::xml_writer
+{
+	virtual void write(const void* data, size_t size)
+	{
+		m_str += std::string((const char *)data, size);
+	}
+	std::string m_str;
+};
+
+CDuiString CXmlNodeUI::ToString()
+{
+	ui_xml_string_writer wt;
+	impxmlnode(_root).print(wt);
+
+	UISTRING_CONVERSION;
+	return UIUTF82T(wt.m_str.c_str());
+}
+
 } // namespace DuiLib

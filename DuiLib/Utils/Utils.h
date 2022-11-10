@@ -727,7 +727,7 @@ namespace DuiLib
 			_blockcountnext = 32;
 			_nMaxMemoryPageSize = 1024 * 5;
 #ifdef _DEBUG
-			OutputDebugStringA("construct pool\r\n");
+//			OutputDebugStringA("construct pool\r\n");
 #endif
 		}
 
@@ -735,7 +735,7 @@ namespace DuiLib
 		{
 			ClearMemory();
 #ifdef _DEBUG
-			OutputDebugStringA("destroy pool\r\n");
+//			OutputDebugStringA("destroy pool\r\n");
 #endif
 		}
 

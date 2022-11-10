@@ -59,7 +59,7 @@ namespace DuiLib {
 
 		virtual BOOL CreateFromHBitmap(HBITMAP hBitmap) override;
 
-		virtual BOOL CreateARGB32Bitmap(HDC hDC, int width, int height) override;
+		virtual BOOL CreateARGB32Bitmap(HDC hDC, int width, int height, BOOL bFlip) override;
 
 		virtual BOOL CreateCompatibleBitmap(HDC hDC, int width, int height) override;
 

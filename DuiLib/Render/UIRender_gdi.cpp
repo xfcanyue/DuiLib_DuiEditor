@@ -162,7 +162,7 @@ namespace DuiLib {
 		::SetBkMode(hDC, TRANSPARENT);
 
 		m_defBmp = MakeRefPtr<UIBitmap>(UIGlobal::CreateBitmap());
-		m_defBmp->CreateARGB32Bitmap(m_hDC, 1, 1);
+		m_defBmp->CreateARGB32Bitmap(m_hDC, 1, 1, TRUE);
 
 		m_defBrush = MakeRefPtr<UIBrush>(UIGlobal::CreateBrush());
 		m_defBrush->CreateFromHBrush((HBRUSH)::GetStockObject(NULL_BRUSH));
@@ -210,7 +210,7 @@ namespace DuiLib {
 			return false;
 
 		m_curBmp->DeleteObject();
-		if(!m_curBmp->CreateARGB32Bitmap(m_hDC, width, height))
+		if(!m_curBmp->CreateARGB32Bitmap(m_hDC, width, height, TRUE))
 			return false;
 
 		SelectObject(m_curBmp);

@@ -27,7 +27,7 @@ namespace DuiLib
 			m_nextCount128	= 32;
 			MakeEmptyString();
 #ifdef _DEBUG
-			OutputDebugStringA("construct duistringmem\r\n");
+//			OutputDebugStringA("construct duistringmem\r\n");
 #endif
 		}
 
@@ -39,7 +39,7 @@ namespace DuiLib
 			}
 			free((BYTE* )m_pEmptyString);
 #ifdef _DEBUG
-			OutputDebugStringA("destroy duistringmem\r\n");
+//			OutputDebugStringA("destroy duistringmem\r\n");
 #endif
 		}
 
@@ -143,9 +143,9 @@ namespace DuiLib
 				nMakeCount *= 2;
 
 #ifdef _DEBUG
-				CString ss;
-				ss.Format(_T("分配字符串内存池，长度=%d, 个数=%d。\r\n"), strlength, nMakeCount);
-				OutputDebugString(ss);
+// 				CString ss;
+// 				ss.Format(_T("分配字符串内存池，长度=%d, 个数=%d。\r\n"), strlength, nMakeCount);
+// 				OutputDebugString(ss);
 #endif
 			}
 #ifdef _DEBUG
@@ -732,7 +732,10 @@ namespace DuiLib
 	{
 		int newSize = _bufferLen + len;
 		Alloc(newSize);
-		memcpy(_buffer+_bufferLen, buffer, len);
+		if(buffer)
+		{
+			memcpy(_buffer+_bufferLen, buffer, len);
+		}
 		_bufferLen += len;
 		return _bufferLen;
 	}

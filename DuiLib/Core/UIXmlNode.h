@@ -129,6 +129,9 @@ namespace DuiLib {
 
 		// Get internal pointer
 		PVOID internal_object() const;
+
+		//格式化为字符串
+		CDuiString ToString();
 	protected:
 		PVOID _root; //xml_node_struct*
 	};

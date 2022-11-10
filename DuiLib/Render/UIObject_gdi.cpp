@@ -288,7 +288,7 @@ namespace DuiLib {
 		return TRUE;
 	}
 
-	BOOL UIBitmap_gdi::CreateARGB32Bitmap(HDC hDC, int width, int height)
+	BOOL UIBitmap_gdi::CreateARGB32Bitmap(HDC hDC, int width, int height, BOOL bFlip)
 	{
 		DeleteObject();
 		m_nWidth = width;
@@ -298,7 +298,7 @@ namespace DuiLib {
 		::ZeroMemory(&bmi, sizeof(BITMAPINFO));
 		bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
 		bmi.bmiHeader.biWidth = width;
-		bmi.bmiHeader.biHeight = height;
+		bmi.bmiHeader.biHeight = bFlip? -height : height;
 		bmi.bmiHeader.biPlanes = 1;
 		bmi.bmiHeader.biBitCount = 32;
 		bmi.bmiHeader.biCompression = BI_RGB;
@@ -557,7 +557,7 @@ namespace DuiLib {
 	static UIImage *make_imageinfo_from_stbi_memory(LPBYTE pImage, int x, int y, DWORD mask, int delay=0)
 	{
 		UIImage* data = UIGlobal::CreateImage(); //new UIImage_gdi;
-		if(!data->bitmap->CreateARGB32Bitmap(NULL, x, y))
+		if(!data->bitmap->CreateARGB32Bitmap(NULL, x, y, TRUE))
 		{
 			data->Release();
 			return NULL;
@@ -712,7 +712,7 @@ namespace DuiLib {
 
 
 		bool bAlphaChannel = false;
-		if(!bitmap->CreateARGB32Bitmap(NULL, x, -y))
+		if(!bitmap->CreateARGB32Bitmap(NULL, x, y, TRUE))
 		{
 			stbi_image_free(pImage);
 			return FALSE;

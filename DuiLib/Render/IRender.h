@@ -159,7 +159,7 @@ namespace DuiLib {
 		//hBitmap由内部释放
 		virtual BOOL CreateFromHBitmap(HBITMAP hBitmap) = 0;
 
-		virtual BOOL CreateARGB32Bitmap(HDC hDC, int width, int height) = 0;
+		virtual BOOL CreateARGB32Bitmap(HDC hDC, int width, int height, BOOL bFlip) = 0;
 
 		virtual BOOL CreateCompatibleBitmap(HDC hDC, int width, int height) = 0;
 
