@@ -1,44 +1,44 @@
 <?xml version="1.0"?>
-<Language>
-	<Text id="1" text="button text" />
-	<Text id="3" text="button" />
-	<Text id="2" text="button text" />
-	<Text id="4" text="图标按钮" />
-	<Text id="5" text="按钮容器" />
-	<Text id="6" text="打开模态对话框" />
-	<Text id="7" text="打开非模态对话框" />
-	<Text id="8" text="单选框" />
-	<Text id="9" text="文本内容" />
-	<Text id="10" text="文本内容" />
-	<Text id="11" text="复选框" />
-	<Text id="12" text="文本内容" />
-	<Text id="13" text="文本内容" />
-	<Text id="14" text="下拉框" />
+<Language isocode="en">
+	<Text id="1" text="Button Text" />
+	<Text id="3" text="Button" />
+	<Text id="2" text="Button Text" />
+	<Text id="4" text="Icon button" />
+	<Text id="5" text="Button container" />
+	<Text id="6" text="Open Modal Dialog" />
+	<Text id="7" text="Open modeless dialog" />
+	<Text id="8" text="Radio " />
+	<Text id="9" text="Text content" />
+	<Text id="10" text="Text content" />
+	<Text id="11" text="check box" />
+	<Text id="12" text="Text content" />
+	<Text id="13" text="Text content" />
+	<Text id="14" text="Drop down box" />
 	<Text id="15" text="Text1" />
 	<Text id="16" text="Text2" />
-	<Text id="17" text="可编辑的Combo" />
+	<Text id="17" text="Editable drop-down box" />
 	<Text id="18" text="Text1" />
 	<Text id="19" text="Text2" />
-	<Text id="20" text="编辑框" />
-	<Text id="21" text="日期" />
-	<Text id="22" text="时间" />
-	<Text id="23" text="日期时间" />
-	<Text id="24" text="组合框" />
-	<Text id="25" text="我是组合框" />
+	<Text id="20" text="Edit Box" />
+	<Text id="21" text="date" />
+	<Text id="22" text="time" />
+	<Text id="23" text="Date Time" />
+	<Text id="24" text="combo box" />
+	<Text id="25" text="I'm a combo box" />
 	<Text id="26" text="Label1" />
 	<Text id="27" text="Label2" />
-	<Text id="28" text="图像控件" />
+	<Text id="28" text="Image Control" />
 	<Text id="29" text="GIF" />
 	<Text id="30" text="JPG" />
 	<Text id="31" text="PNG" />
 	<Text id="32" text="BMP" />
 	<Text id="33" text="ICO" />
-	<Text id="34" text="进度条" />
+	<Text id="34" text="progress bar" />
 	<Text id="35" text="RichEdit" />
-	<Text id="36" text="单行文本" />
-	<Text id="37" text="多行文本" />
-	<Text id="38" text="IP地址" />
-	<Text id="39" tipvalue="edit" tooltip="真的是编辑框" />
-	<Text id="40" text="svg图标" />
-	<Text id="44" text="svg图标" />
+	<Text id="36" text="Single line text" />
+	<Text id="37" text="Multiline Text" />
+	<Text id="38" text="IP address" />
+	<Text id="39" tipvalue="Edit Box" tooltip="It's really an edit box" />
+	<Text id="40" text="" />
+	<Text id="44" text="Svg icon 1" />
 </Language>

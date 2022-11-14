@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<Language>
+<Language isocode="zh-cn">
 	<Text id="1" text="菜单选项1" />
 	<Text id="2" text="菜单选项2 复选框" />
 	<Text id="3" text="菜单选项2 复选框2" />
 	<Text id="4" text="菜单选项3 图标菜单" />
-	<Text id="5" text="菜单选项4 二级菜单     " />
+	<Text id="5" text="菜单选项4 二级菜单" />
 	<Text id="6" text="菜单选项1" />
 	<Text id="7" text="菜单选项2" />
 	<Text id="8" text="菜单选项3" />

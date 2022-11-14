@@ -1,0 +1,91 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AutoTranslation", "AutoTranslation\AutoTranslation.vcxproj", "{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E} = {E106ACD7-4E53-4AEE-942B-D0DD426DB34E}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DuiLib", "..\DuiLib\DuiLib.vcxproj", "{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+		UnicodeDebug|Win32 = UnicodeDebug|Win32
+		UnicodeDebug|x64 = UnicodeDebug|x64
+		UnicodeRelease|Win32 = UnicodeRelease|Win32
+		UnicodeRelease|x64 = UnicodeRelease|x64
+		xsDebug|Win32 = xsDebug|Win32
+		xsDebug|x64 = xsDebug|x64
+		xsRelease|Win32 = xsRelease|Win32
+		xsRelease|x64 = xsRelease|x64
+		xsUnicodeDebug|Win32 = xsUnicodeDebug|Win32
+		xsUnicodeDebug|x64 = xsUnicodeDebug|x64
+		xsUnicodeRelease|Win32 = xsUnicodeRelease|Win32
+		xsUnicodeRelease|x64 = xsUnicodeRelease|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.Debug|Win32.ActiveCfg = Debug|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.Debug|Win32.Build.0 = Debug|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.Debug|x64.ActiveCfg = Debug|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.Release|Win32.ActiveCfg = Release|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.Release|Win32.Build.0 = Release|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.Release|x64.ActiveCfg = Release|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.UnicodeDebug|Win32.ActiveCfg = UnicodeDebug|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.UnicodeDebug|Win32.Build.0 = UnicodeDebug|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.UnicodeDebug|x64.ActiveCfg = UnicodeDebug|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.UnicodeRelease|Win32.ActiveCfg = UnicodeRelease|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.UnicodeRelease|Win32.Build.0 = UnicodeRelease|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.UnicodeRelease|x64.ActiveCfg = UnicodeRelease|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.xsDebug|Win32.ActiveCfg = xsDebug|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.xsDebug|Win32.Build.0 = xsDebug|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.xsDebug|x64.ActiveCfg = xsDebug|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.xsRelease|Win32.ActiveCfg = xsRelease|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.xsRelease|Win32.Build.0 = xsRelease|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.xsRelease|x64.ActiveCfg = xsRelease|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.xsUnicodeDebug|Win32.ActiveCfg = xsUnicodeDebug|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.xsUnicodeDebug|Win32.Build.0 = xsUnicodeDebug|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.xsUnicodeDebug|x64.ActiveCfg = xsUnicodeDebug|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.xsUnicodeRelease|Win32.ActiveCfg = xsUnicodeRelease|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.xsUnicodeRelease|Win32.Build.0 = xsUnicodeRelease|Win32
+		{70D6CC9C-9363-43B3-A40C-4958F1FD8E29}.xsUnicodeRelease|x64.ActiveCfg = xsUnicodeRelease|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.Debug|Win32.Build.0 = Debug|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.Debug|x64.ActiveCfg = Debug|x64
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.Debug|x64.Build.0 = Debug|x64
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.Release|Win32.ActiveCfg = Release|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.Release|Win32.Build.0 = Release|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.Release|x64.ActiveCfg = Release|x64
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.Release|x64.Build.0 = Release|x64
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.UnicodeDebug|Win32.ActiveCfg = UnicodeDebug|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.UnicodeDebug|Win32.Build.0 = UnicodeDebug|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.UnicodeDebug|x64.ActiveCfg = UnicodeDebug|x64
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.UnicodeDebug|x64.Build.0 = UnicodeDebug|x64
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.UnicodeRelease|Win32.ActiveCfg = UnicodeRelease|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.UnicodeRelease|Win32.Build.0 = UnicodeRelease|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.UnicodeRelease|x64.ActiveCfg = UnicodeRelease|x64
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.UnicodeRelease|x64.Build.0 = UnicodeRelease|x64
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsDebug|Win32.ActiveCfg = xsDebug|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsDebug|Win32.Build.0 = xsDebug|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsDebug|x64.ActiveCfg = xsDebug|x64
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsDebug|x64.Build.0 = xsDebug|x64
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsRelease|Win32.ActiveCfg = xsRelease|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsRelease|Win32.Build.0 = xsRelease|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsRelease|x64.ActiveCfg = xsRelease|x64
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsRelease|x64.Build.0 = xsRelease|x64
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsUnicodeDebug|Win32.ActiveCfg = xsUnicodeDebug|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsUnicodeDebug|Win32.Build.0 = xsUnicodeDebug|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsUnicodeDebug|x64.ActiveCfg = xsUnicodeDebug|x64
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsUnicodeDebug|x64.Build.0 = xsUnicodeDebug|x64
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsUnicodeRelease|Win32.ActiveCfg = xsUnicodeRelease|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsUnicodeRelease|Win32.Build.0 = xsUnicodeRelease|Win32
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsUnicodeRelease|x64.ActiveCfg = xsUnicodeRelease|x64
+		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E}.xsUnicodeRelease|x64.Build.0 = xsUnicodeRelease|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<Window size="1000,800" sizebox="0,0,4,4" caption="0,0,0,80" roundcorner="4,4" defaultfontcolor="0xFF4A4A4A" showshadow="true" shadowcorner="8,8,8,8" shadowsize="5" shadowcolor="0xFF696969">
+	<Include source="config.xml" />
+	<VerticalLayout inset="1,1,1,1" bkcolor="0xFFFFFFFF" bordercolor="0xFF808080" bordersize="1">
+		<HorizontalLayout height="40" inset="0,0,5,0" bkimage="images\topbg.png" foreimage="images\toplight.png">
+			<HorizontalLayout inset="10,0,0,0" childvalign="vcenter" bkimage="images\topline.png">
+				<Label text="翻译工具" font="0" textcolor="0xFFFFFFFF" textpadding="0,0,10,0" autocalcwidth="true" resourceid="1" />
+				<Label name="label_file_name" textcolor="0xFFFFFFFF" />
+			</HorizontalLayout>
+			<HorizontalLayout inset="0,0,5,0" childpadding="10" childalign="right" childvalign="vcenter" autocalcwidth="true">
+				<FadeButton style="style_windowminbtn" />
+				<FadeButton style="style_windowrestorebtn" />
+				<FadeButton style="style_windowmaxbtn" />
+				<FadeButton style="style_windowclosebtn" />
+			</HorizontalLayout>
+		</HorizontalLayout>
+		<VerticalLayout>
+			<HorizontalLayout height="40" inset="10,5,5,5" childpadding="5">
+				<ComboEx name="cb_translation_tool" width="150" style="style_combo" />
+				<ComboEx name="cb_source_language" width="250" dropboxsize="0,500" style="style_combo" />
+				<Label text="===&gt;" style="style_label" />
+				<ComboEx name="cb_dest_language" width="250" dropboxsize="0,500" style="style_combo" />
+				<Control />
+				<Button name="btn_create_lang_package" width="100" text="构造语言包" enabled="false" style="style_button_common" />
+			</HorizontalLayout>
+			<HorizontalLayout height="40" inset="10,5,5,5" childpadding="5">
+				<Label text="资源类型：" autocalcwidth="true" style="style_label" />
+				<Option name="opt_res_text" group="group_resource_type" text="翻译编辑框内容" autocalcwidth="true" style="style_radio" />
+				<Option name="opt_res_xml_file" group="group_resource_type" text="翻译xml文件" autocalcwidth="true" style="style_radio" />
+				<Option name="opt_res_auto" group="group_resource_type" text="自动翻译所有语言并创建或更新对应语言包文件" autocalcwidth="true" style="style_radio" />
+				<Control />
+			</HorizontalLayout>
+			<HorizontalLayout height="40" inset="10,5,0,5" childpadding="5">
+				<Label text="保存文件：" autocalcwidth="true" style="style_label" />
+				<Option name="opt_auto_translate_and_no_save_file" group="group_auto_save_file" text="不需要" autocalcwidth="true" style="style_radio" />
+				<Option name="opt_auto_translate_and_save_file" group="group_auto_save_file" text="自动保存翻译文件" autocalcwidth="true" style="style_radio" />
+				<Control />
+			</HorizontalLayout>
+			<HorizontalLayout height="40" inset="10,5,0,5" childpadding="5">
+				<Label text="目标语言：" autocalcwidth="true" style="style_label" />
+				<Option name="opt_dest_language_none" group="group_dest_language" text="不需要" autocalcwidth="true" style="style_radio" />
+				<Option name="opt_dest_language_auto" group="group_dest_language" text="根据文件名或路径判断目标语言" autocalcwidth="true" style="style_radio" />
+				<Control />
+				<Button name="btn_open_file" width="100" text="选择文件" style="style_button_common" />
+				<Button name="btn_open_path" width="100" text="选择目录" style="style_button_common" />
+				<Button name="btn_start_translate" width="100" text="翻译" style="style_button_common" />
+				<Button name="btn_save_file" width="100" text="保存" style="style_button_common" />
+			</HorizontalLayout>
+			<HorizontalLayout childpadding="2">
+				<HorizontalLayout sepwidth="8" sepimm="true" inset="1,1,2,1">
+					<RichEdit name="edit_source_text" multiline="true" style="style_richedit" />
+				</HorizontalLayout>
+				<RichEdit name="edit_dest_text" style="style_richedit" />
+			</HorizontalLayout>
+			<VerticalLayout height="300" sepheight="-8" sepimm="true" inset="1,5,1,1" bordercolor="0xFFC0C0C0" bordersize="1">
+				<MsgWnd />
+			</VerticalLayout>
+		</VerticalLayout>
+	</VerticalLayout>
+</Window>

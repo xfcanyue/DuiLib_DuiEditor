@@ -123,7 +123,15 @@ bool CMainFrame::OnMenuCommand(const MenuCmd *cmd)
 		//更新本地菜单选中状态
 		m_nMenuSelected = 1;
 	}
-	if(IsMenuCommand(cmd, _T("menu_lang_chs")))
+	if(IsMenuCommand(cmd, _T("menu_lang_list")))
+	{
+		CDuiString sLang = _T("Lang\\");
+		sLang += cmd->GetText();
+		CLangManagerUI::SetLanguage(sLang, cmd->GetText());
+		GetMainWnd()->GetManager()->GetLangManager()->ReloadLanguage();
+		return true;
+	}
+	/*if(IsMenuCommand(cmd, _T("menu_lang_chs")))
 	{
 		CLangManagerUI::SetLanguage(_T("Lang\\ChineseSimplified"), _T("chs"));
 		GetMainWnd()->GetManager()->GetLangManager()->ReloadLanguage();
@@ -147,6 +155,7 @@ bool CMainFrame::OnMenuCommand(const MenuCmd *cmd)
 		GetMainWnd()->GetManager()->GetLangManager()->ReloadLanguage();
 		return true;
 	}
+	*/
 	if(IsMenuCommand(cmd, _T("menu_render_gdi")))
 	{
 		CPaintManagerUI::SetRenderEngineType(DuiLib_Render_Default);
@@ -201,6 +210,12 @@ bool CMainFrame::OnMenuUpdateCommandUI(CMenuCmdUI *cmdUI)
 		cmdUI->SetCheck(m_nMenuSelected == 1);
 		return true;
 	}
+	if(IsMenuCommand(cmdUI, _T("menu_lang_list")))
+	{
+		cmdUI->SetCheck(CLangManagerUI::GetLangName() == cmdUI->GetText());
+		return true;
+	}
+	/*
 	if(IsMenuCommand(cmdUI, _T("menu_lang_chs")))
 	{
 		cmdUI->SetCheck(CLangManagerUI::GetLangName() == _T("chs"));
@@ -216,6 +231,7 @@ bool CMainFrame::OnMenuUpdateCommandUI(CMenuCmdUI *cmdUI)
 		cmdUI->SetCheck(CLangManagerUI::GetLangName() == _T("en"));
 		return true;
 	}
+	*/
 	if(IsMenuCommand(cmdUI, _T("menu_render_gdi")))
 	{
 		cmdUI->SetCheck(CPaintManagerUI::GetRenderEngineType() == DuiLib_Render_Default);
@@ -224,6 +240,33 @@ bool CMainFrame::OnMenuUpdateCommandUI(CMenuCmdUI *cmdUI)
 	if(IsMenuCommand(cmdUI, _T("menu_render_gdiplus")))
 	{
 		cmdUI->SetCheck(CPaintManagerUI::GetRenderEngineType() == DuiLib_Render_GdiPlus);
+		return true;
+	}
+	if(IsMenuCommand(cmdUI, _T("menu_lang")))
+	{
+		CFileFind finder;
+		BOOL bFind = finder.FindFile(uiApp.GetAppPath() + ("skin\\Lang\\*.*"));
+		if(!bFind) return true;
+		while (bFind)
+		{
+			bFind = finder.FindNextFile();
+			if(finder.IsDots())
+				continue;
+
+			CString FileName = finder.GetFileName();
+			CString FilePath = finder.GetFilePath();
+			if(finder.IsDirectory())
+			{
+				CMenuElementUI *pMenuElement = new CMenuElementUI;
+				pMenuElement->SetText(FileName);
+				pMenuElement->SetName(_T("menu_lang_list"));
+
+				CMenuElementUI *pMenuParent = cmdUI->GetMenuElementUI();
+				pMenuParent->Add(pMenuElement);
+				pMenuElement->ApplyAttributeList(_T("style_menu_lang_list"));
+			}
+		}
+		
 		return true;
 	}
 	return false;

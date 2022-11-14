@@ -2,6 +2,7 @@
 <Window size="304,300" roundcorner="5,5" shadowsize="2" shadowposition="1,1" shadowcolor="0xFF000000" showshadow="true">
 	<Default name="Menu" value="inset=&quot;0,2,2,2&quot; expandicon=&quot;images\menu_expand.png&quot; checkicon=&quot;images\menu_check.png&quot; iconbkcolor=&quot;0xFFFF0000&quot; itemtextpadding=&quot;30,0,10,0&quot; bkimage=&quot;file='images\menu_bk.png' source='6,6,44,25' corner='26,2,2,2' &quot; " />
 	<Default name="MenuElement" value="hotbordercolor=&quot;0xFFA0A0A4&quot; bordersize=&quot;1&quot; " />
+	<Style name="style_menu_lang_list" class="MenuElement" shared="true" value="icon=&quot;file='images\common\checkbox\btn_wnd_radio.png' source='75,0,90,15' &quot; uncheckicon=&quot;file='images\common\checkbox\btn_wnd_radio.png' source='15,0,30,15' &quot; iconsize=&quot;16,16&quot; checkitem=&quot;true&quot; " />
 	<Font id="0" name="微软雅黑" size="12" default="true" />
 	<Font id="1" name="微软雅黑" size="12" bold="true" />
 	<!--
@@ -20,12 +21,7 @@
 		<MenuElement name="menu_cmd_5" text="菜单选项5 单选框" icon="file='images\common\checkbox\btn_wnd_radio.png' source='75,0,90,15' " uncheckicon="file='images\common\checkbox\btn_wnd_radio.png' source='15,0,30,15' " iconsize="16,16" checkitem="true" width="150" pos="0,0,150,30" resourceid="9" />
 		<MenuElement name="menu_cmd_6" text="菜单选项6 单选框" icon="file='images\common\checkbox\btn_wnd_radio.png' source='75,0,90,15' " uncheckicon="file='images\common\checkbox\btn_wnd_radio.png' source='15,0,30,15' " iconsize="16,16" checkitem="true" linepadding="20,0,7,0" width="150" pos="0,0,150,30" resourceid="10" />
 		<MenuElement linetype="true" height="5" width="150" />
-		<MenuElement text="多语言" expland="true">
-			<MenuElement name="menu_lang_chs" text="简体中文" icon="file='images\common\checkbox\btn_wnd_radio.png' source='75,0,90,15' " uncheckicon="file='images\common\checkbox\btn_wnd_radio.png' source='15,0,30,15' " iconsize="16,16" checkitem="true" width="150" pos="0,0,150,30" />
-			<MenuElement name="menu_lang_ChineseTraditional" text="繁体中文" icon="file='images\common\checkbox\btn_wnd_radio.png' source='75,0,90,15' " uncheckicon="file='images\common\checkbox\btn_wnd_radio.png' source='15,0,30,15' " iconsize="16,16" checkitem="true" width="150" pos="0,0,150,30" />
-			<MenuElement name="menu_lang_english" text="英文" icon="file='images\common\checkbox\btn_wnd_radio.png' source='75,0,90,15' " uncheckicon="file='images\common\checkbox\btn_wnd_radio.png' source='15,0,30,15' " iconsize="16,16" checkitem="true" width="150" pos="0,0,150,30" />
-			<MenuElement name="menu_lang_japan" text="日语" icon="file='images\common\checkbox\btn_wnd_radio.png' source='75,0,90,15' " uncheckicon="file='images\common\checkbox\btn_wnd_radio.png' source='15,0,30,15' " iconsize="16,16" checkitem="true" width="150" pos="0,0,150,30" />
-		</MenuElement>
+		<MenuElement name="menu_lang" text="多语言" expland="true" />
 		<MenuElement text="绘图引擎" expland="true">
 			<MenuElement name="menu_render_gdi" text="gdi" icon="file='images\common\checkbox\btn_wnd_radio.png' source='75,0,90,15' " uncheckicon="file='images\common\checkbox\btn_wnd_radio.png' source='15,0,30,15' " iconsize="16,16" checkitem="true" width="150" pos="0,0,150,30" />
 			<MenuElement name="menu_render_gdiplus" text="gdiplus" icon="file='images\common\checkbox\btn_wnd_radio.png' source='75,0,90,15' " uncheckicon="file='images\common\checkbox\btn_wnd_radio.png' source='15,0,30,15' " iconsize="16,16" checkitem="true" width="150" pos="0,0,150,30" />

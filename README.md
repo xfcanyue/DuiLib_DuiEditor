@@ -55,6 +55,8 @@ xsUnicodeRelease	静态库 - Unicode - 发行
 
 除非为了兼容老项目，新项目优先使用Unicode版本。 
 
+重要提醒：设计器非Unicode版本会出错！！！ Duilib库和相关插件无此限制。
+
     
    
    ### 4. 重要说明

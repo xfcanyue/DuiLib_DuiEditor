@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
-<Language>
-	<Text id="1" text="這是基礎控件" tooltip="這是基礎控件" />
-	<Text id="2" text="高級控件" />
-	<Text id="3" text="動畫控件" />
+<Language isocode="zh-tw">
+	<Text id="1" text="基本控制項1" tooltip="基本控制項2" tipvalue="基本控制項3" />
+	<Text id="2" text="高級控制項" />
+	<Text id="3" text="動畫控制項" />
 	<Text id="4" text="鍵盤" />
-	<Text id="5" text="表格(MFC)" />
-	<Text id="6" text="代碼編輯器" />
-	<Text id="7" text="DuiLib控件展示     QQ群：819272442" />
-	<Text id="8" text="列表" />
+	<Text id="5" text="表格（MFC）" />
+	<Text id="6" text="程式碼編輯器" />
+	<Text id="7" text="DuiLib控制項展示QQ群：819272442" />
+	<Text id="8" text="清單" />
 	<Text id="9" text="姓名" />
-	<Text id="10" text="用户名" />
-	<Text id="11" text="手机号码" />
-	<Text id="12" text="固定电话" />
+	<Text id="10" text="用戶名" />
+	<Text id="11" text="手機號碼" />
+	<Text id="12" text="固定電話" />
 	<Text id="13" text="操作" />
 	<Text id="14" text="text1" />
 	<Text id="15" text="text2" />
@@ -67,25 +67,25 @@
 	<Text id="65" text="TreeNode" />
 	<Text id="66" text="TreeNode" />
 	<Text id="67" text="Animation TabLayout" />
-	<Text id="68" text="手风琴" />
-	<Text id="69" text="侧边栏动画" />
-	<Text id="70" text="图片轮播" />
-	<Text id="71" text="图片轮播2" />
-	<Text id="72" text="滚动字幕" />
-	<Text id="73" text="左边" />
-	<Text id="74" text="左边栏" />
-	<Text id="75" text="上边栏" />
-	<Text id="76" text="隐藏/显示上边栏" />
-	<Text id="77" text="隐藏/显示左边栏" />
-	<Text id="78" text="隐藏/显示右边栏" />
-	<Text id="79" text="隐藏/显示底边栏" />
-	<Text id="80" text="底边栏" />
-	<Text id="81" text="右边栏" />
-	<Text id="82" text="我是字幕，我向上滚动。" />
-	<Text id="83" text="我是字幕，我向下滚动。" />
-	<Text id="84" text="我是字幕，我向左滚动。" />
-	<Text id="85" text="我是字幕，我向右滚动。" />
-	<Text id="86" text="RichEdit   " />
-	<Text id="87" text="这是一个简易的键盘控件" />
-	<Text id="88" text="日志输出窗口:" />
+	<Text id="68" text="手風琴" />
+	<Text id="69" text="側邊欄動畫" />
+	<Text id="70" text="圖片輪播" />
+	<Text id="71" text="圖片輪播2" />
+	<Text id="72" text="滾動字幕" />
+	<Text id="73" text="左邊" />
+	<Text id="74" text="左邊欄" />
+	<Text id="75" text="上邊欄" />
+	<Text id="76" text="隱藏/顯示上邊欄" />
+	<Text id="77" text="隱藏/顯示左邊欄" />
+	<Text id="78" text="隱藏/顯示右邊欄" />
+	<Text id="79" text="隱藏/顯示底邊欄" />
+	<Text id="80" text="底邊欄" />
+	<Text id="81" text="右邊欄" />
+	<Text id="82" text="我是字幕，我向上滾動。" />
+	<Text id="83" text="我是字幕，我向下滾動。" />
+	<Text id="84" text="我是字幕，我向左滾動。" />
+	<Text id="85" text="我是字幕，我向右滾動。" />
+	<Text id="86" text="RichEdit" />
+	<Text id="87" text="這是一個簡易的鍵盤控制項" />
+	<Text id="88" text="日誌輸出視窗：" />
 </Language>

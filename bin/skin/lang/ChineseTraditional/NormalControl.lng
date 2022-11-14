@@ -1,44 +1,44 @@
 <?xml version="1.0"?>
-<Language>
-	<Text id="1" text="按鈕文本" />
-	<Text id="3" text="按钮" />
-	<Text id="2" text="按鈕文本" />
-	<Text id="4" text="图标按钮" />
-	<Text id="5" text="按钮容器" />
-	<Text id="6" text="打开模态对话框" />
-	<Text id="7" text="打开非模态对话框" />
-	<Text id="8" text="单选框" />
-	<Text id="9" text="文本内容" />
-	<Text id="10" text="文本内容" />
-	<Text id="11" text="复选框" />
-	<Text id="12" text="文本内容" />
-	<Text id="13" text="文本内容" />
-	<Text id="14" text="下拉框" />
+<Language isocode="zh-tw">
+	<Text id="1" text="按鈕文字" />
+	<Text id="3" text="按鈕" />
+	<Text id="2" text="按鈕文字" />
+	<Text id="4" text="圖標按鈕" />
+	<Text id="5" text="按鈕容器" />
+	<Text id="6" text="打開模態對話方塊" />
+	<Text id="7" text="打開非模態對話方塊" />
+	<Text id="8" text="單選框" />
+	<Text id="9" text="文字內容" />
+	<Text id="10" text="文字內容" />
+	<Text id="11" text="核取方塊" />
+	<Text id="12" text="文字內容" />
+	<Text id="13" text="文字內容" />
+	<Text id="14" text="下拉清單" />
 	<Text id="15" text="Text1" />
 	<Text id="16" text="Text2" />
-	<Text id="17" text="可编辑的Combo" />
+	<Text id="17" text="可編輯的下拉清單" />
 	<Text id="18" text="Text1" />
 	<Text id="19" text="Text2" />
-	<Text id="20" text="编辑框" />
+	<Text id="20" text="編輯方塊" />
 	<Text id="21" text="日期" />
-	<Text id="22" text="时间" />
-	<Text id="23" text="日期时间" />
-	<Text id="24" text="组合框" />
-	<Text id="25" text="我是组合框" />
+	<Text id="22" text="時間" />
+	<Text id="23" text="日期時間" />
+	<Text id="24" text="下拉式列示方塊" />
+	<Text id="25" text="我是下拉式列示方塊" />
 	<Text id="26" text="Label1" />
 	<Text id="27" text="Label2" />
-	<Text id="28" text="图像控件" />
+	<Text id="28" text="影像控制項" />
 	<Text id="29" text="GIF" />
 	<Text id="30" text="JPG" />
 	<Text id="31" text="PNG" />
 	<Text id="32" text="BMP" />
 	<Text id="33" text="ICO" />
-	<Text id="34" text="进度条" />
+	<Text id="34" text="進度條" />
 	<Text id="35" text="RichEdit" />
-	<Text id="36" text="单行文本" />
-	<Text id="37" text="多行文本" />
+	<Text id="36" text="單行文字" />
+	<Text id="37" text="多行文字" />
 	<Text id="38" text="IP地址" />
-	<Text id="39" tooltip="真的是编辑框" tipvalue="编辑框" />
-	<Text id="40" text="svg图标" />
-	<Text id="44" text="svg图标" />
+	<Text id="39" tipvalue="編輯方塊" tooltip="真的是編輯方塊" />
+	<Text id="40" text="" />
+	<Text id="44" text="svg圖標1" />
 </Language>

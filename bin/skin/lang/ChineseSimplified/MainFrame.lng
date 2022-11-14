@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Language>
+<Language isocode="zh-cn">
 	<Text id="1" text="基本控件1" tooltip="基本控件2" tipvalue="基本控件3" />
 	<Text id="2" text="高级控件" />
 	<Text id="3" text="动画控件" />
@@ -85,7 +85,7 @@
 	<Text id="83" text="我是字幕，我向下滚动。" />
 	<Text id="84" text="我是字幕，我向左滚动。" />
 	<Text id="85" text="我是字幕，我向右滚动。" />
-	<Text id="86" text="RichEdit   " />
+	<Text id="86" text="RichEdit" />
 	<Text id="87" text="这是一个简易的键盘控件" />
 	<Text id="88" text="日志输出窗口:" />
 </Language>

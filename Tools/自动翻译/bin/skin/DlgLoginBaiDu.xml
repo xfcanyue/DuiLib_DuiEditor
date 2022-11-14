@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<Window size="500,226" sizebox="0,0,4,4" caption="0,0,0,80" roundcorner="4,4" defaultfontcolor="0xFF4A4A4A" showshadow="true" shadowcorner="8,8,8,8" shadowsize="5" shadowcolor="0xFF696969" resourceid="5">
+	<Include source="config.xml" />
+	<VerticalLayout inset="1,0,1,1" bkcolor="0xFFFFFFFF" bordercolor="0xFF808080" bordersize="1">
+		<HorizontalLayout height="30" inset="0,0,5,0" bkimage="images\topbg.png" foreimage="images\toplight.png">
+			<HorizontalLayout inset="10,0,0,0" childvalign="vcenter" bkimage="images\topline.png">
+				<Label text="登录百度翻译" font="0" textcolor="0xFFFFFFFF" resourceid="1" />
+			</HorizontalLayout>
+			<HorizontalLayout inset="0,0,5,0" childpadding="10" childalign="right" childvalign="vcenter" autocalcwidth="true">
+				<FadeButton name="windowminbtn" width="20" height="20" normalimage="file='images\common\windowminbtn.svg' dest='0,10,20,20' width='20' height='20' fillcolor='0xFFFFFFFF' " hotimage="file='images\common\windowminbtn.svg' dest='0,10,20,20' width='20' height='20' fillcolor='0xFFFF0000' " pushedimage="file='images\common\windowminbtn.svg' dest='0,10,20,20' width='20' height='20' fillcolor='0xFFFF0000' " resourceid="3" tooltip="最小化" />
+				<FadeButton name="windowclosebtn" width="20" height="20" normalimage="file='images\common\windowclosebtn.svg' width='20' height='20' fillcolor='0xFFFFFFFF' " hotimage="file='images\common\windowclosebtn.svg' width='20' height='20' fillcolor='0xFFFF0000' " pushedimage="file='images\common\windowclosebtn.svg' width='20' height='20' fillcolor='0xFFFF0000' " resourceid="4" tooltip="关闭" />
+			</HorizontalLayout>
+		</HorizontalLayout>
+		<VerticalLayout inset="19,10,20,10" childpadding="20" childalign="center" childvalign="vcenter">
+			<HorizontalLayout height="35">
+				<Label text="Appid:" width="100" />
+				<Edit name="text_appid" style="style_edit" />
+			</HorizontalLayout>
+			<HorizontalLayout height="35">
+				<Label text="key:" width="100" />
+				<Edit name="text_key" style="style_edit" />
+			</HorizontalLayout>
+			<HorizontalLayout inset="0,0,10,0" childpadding="5" childvalign="vcenter" autocalcheight="true">
+				<Control />
+				<Button name="btn_ok" width="130" height="35" text="确定" resourceid="6" style="style_button_common" />
+				<Button name="btn_cancel" width="130" height="35" text="取消" resourceid="7" style="style_button_common" />
+			</HorizontalLayout>
+		</VerticalLayout>
+	</VerticalLayout>
+</Window>

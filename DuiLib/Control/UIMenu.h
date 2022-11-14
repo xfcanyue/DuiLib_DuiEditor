@@ -23,10 +23,10 @@ struct MenuItemInfo
 
 struct MenuCmd
 {
-	CDuiString GetName()		{ return szName;		}
-	CDuiString GetUserData()	{ return szUserData;	}
-	CDuiString GetText()		{ return szText;		}
-	UINT_PTR   GetTag()			{ return tag;			}
+	CDuiString GetName()	const		{ return szName;		}
+	CDuiString GetUserData() const		{ return szUserData;	}
+	CDuiString GetText()	const		{ return szText;		}
+	UINT_PTR   GetTag()		const		{ return tag;			}
 
 	CDuiString szName;
 	CDuiString szUserData;
@@ -441,6 +441,8 @@ public:
 	virtual CDuiString GetText();
 
 	virtual CDuiString GetName();
+
+	virtual CMenuElementUI *GetMenuElementUI() const;
 private:
 	CMenuElementUI *pMenuElement;
 };

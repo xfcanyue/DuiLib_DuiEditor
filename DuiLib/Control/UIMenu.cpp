@@ -1615,4 +1615,9 @@ namespace DuiLib {
 		//return m_sName;
 		return pMenuElement->GetName();
 	}
+
+	CMenuElementUI *CMenuCmdUI::GetMenuElementUI() const
+	{
+		return pMenuElement;
+	}
 } // namespace DuiLib

@@ -30,7 +30,7 @@ bool CApp::InitInstance(HINSTANCE hInstance)
 	CPaintManagerUI::CompileScript();
 
 	//语言包路径
-	CLangManagerUI::SetLanguage(_T("Lang\\ChineseSimplified"), _T("chs"));
+	CLangManagerUI::SetLanguage(_T("Lang\\ChineseSimplified"), _T("ChineseSimplified"));
 
 	//调整DPI时，仅缩放显示图片。
 	//CPaintManagerUI::SetAdjustDPIRecource(false);

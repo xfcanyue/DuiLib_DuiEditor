@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Language>
+<Language isocode="zh-cn">
 	<Text id="1" text="按钮文本" />
 	<Text id="3" text="按钮" />
 	<Text id="2" text="按钮文本" />
