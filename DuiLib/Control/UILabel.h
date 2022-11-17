@@ -21,16 +21,24 @@ namespace DuiLib
 		virtual SIZE EstimateSize(SIZE szAvailable) override
 		{
 			if (T::IsAutoCalcWidth() || T::IsAutoCalcHeight())
-			{
-				RECT rcText = {0, 0, szAvailable.cx, szAvailable.cy};
-				RECT rcTextPadding = T::GetTextPadding();
-				T::GetManager()->Render()->DrawText(rcText, rcTextPadding, T::GetText(), T::GetTextColor(), T::GetFont(), DT_CALCRECT | T::GetTextStyle());
-				
-				SIZE szFact;
+			{			
+				SIZE szFact = {szAvailable.cx, szAvailable.cy};
+
 				if(T::IsAutoCalcWidth())
+				{
+					RECT rcText = {0, 0, szAvailable.cx, szAvailable.cy};
+					RECT rcTextPadding = T::GetTextPadding();
+					T::GetManager()->Render()->DrawText(rcText, rcTextPadding, T::GetText(), T::GetTextColor(), T::GetFont(), DT_CALCRECT | T::GetTextStyle());
+
 					szFact.cx = rcText.right - rcText.left;
+				}
+
 				if(T::IsAutoCalcHeight())
-					szFact.cy = rcText.bottom - rcText.top;	
+				{
+					UIFont *pFont = T::GetManager()->GetFont(T::GetFont());
+					int h = pFont->GetHeight(T::GetManager());
+					szFact.cy = T::m_rcTextPadding.top + T::m_rcTextPadding.bottom + h + 4;
+				}
 
 				return T::GetManager()->GetDPIObj()->Scale(szFact);
 			}

@@ -78,16 +78,19 @@ namespace DuiLib
 	SIZE CLabelUI::EstimateSize(SIZE szAvailable)
 	{
 		if (IsAutoCalcWidth() || IsAutoCalcHeight()) 
-		{
-			RECT rcText = {0, 0, szAvailable.cx, szAvailable.cy};
-			GetManager()->Render()->DrawText(rcText, m_rcTextPadding, GetText(), m_dwTextColor, m_iFont, DT_CALCRECT | m_uTextStyle);
-
+		{		
 			if(IsAutoCalcWidth())
+			{
+				RECT rcText = {0, 0, szAvailable.cx, szAvailable.cy};
+				GetManager()->Render()->DrawText(rcText, m_rcTextPadding, GetText(), m_dwTextColor, m_iFont, DT_CALCRECT | m_uTextStyle);
 				m_cxyFixed.cx = rcText.right - rcText.left;
+			}
 		
 			if(IsAutoCalcHeight())
 			{
-				m_cxyFixed.cy = rcText.bottom - rcText.top;		
+				UIFont *pFont = GetManager()->GetFont(GetFont());
+				int h = pFont->GetHeight(GetManager());
+				m_cxyFixed.cy = m_rcTextPadding.top + m_rcTextPadding.bottom + h + 4;		
 			}
 			
 			if(m_pManager)
