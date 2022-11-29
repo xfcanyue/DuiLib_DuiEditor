@@ -563,7 +563,7 @@ namespace DuiLib {
 		if( event.Type == UIEVENT_MOUSELEAVE )
 		{
 			if( IsHotState() ) {
-				SetHotState(true);
+				SetHotState(false);
 				Invalidate();
 			}
 			return;

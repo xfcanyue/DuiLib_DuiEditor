@@ -187,7 +187,26 @@ bool CGridCellUI::IsMergedWithOthers()
 	return m_bMergeWithOther;
 }
 
-void CGridCellUI::SetCellIndex(int row, int col) { m_row = row; m_col = col; }
+void CGridCellUI::SetCellIndex(int row, int col) 
+{
+	CGridUI *pGrid = (CGridUI *)GetOwner();
+	if((m_row != row || m_col != col) && m_pInnerControl && pGrid)
+	{
+		//当行列发生变化时，删除内置控件。不然好麻烦。
+		GridCellType cellType = pGrid->GetCellType(m_row, m_col);
+		if(cellType == celltypeEdit			||
+			cellType == celltypeCombo		||
+			cellType == celltypeDateTime	||
+			cellType == celltypeDate		||
+			cellType == celltypeTime		)
+		{
+			DeleteInnerControl();
+		}
+	}
+
+	m_row = row; 
+	m_col = col; 
+}
 
 void CGridCellUI::InitCell()
 {
