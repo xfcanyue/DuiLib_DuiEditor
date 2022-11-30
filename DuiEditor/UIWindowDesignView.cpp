@@ -72,6 +72,13 @@ BOOL CUIWindowDesignView::OnDragingFromToolBox(CPoint point)
 		return FALSE;
 	}
 
+	while(pCurControl->GetTag() == NULL)
+	{
+		pCurControl = pCurControl->GetParent();
+		if(pCurControl == pManager->GetManager()->GetRoot())
+			return FALSE;
+	}
+
 	if(m_pDragToControl != pCurControl)
 	{
 		m_pDragToControl = (CContainerUI *)pCurControl;
