@@ -89,6 +89,7 @@ INT类型(最小值，最大值)：
 		<Attribute name="bkcolor3" default="0x00000000" type="DWORD" comment="背景渐变色3,和bkcolor、bkcolor2配合使用,如(0xFFFF00FF)" />	
 		<Attribute name="hotbkcolor" default="0x00000000" type="DWORD" comment="鼠标悬浮背景颜色,如(0xFFFF00FF)" />	
 		<Attribute name="focusbkcolor" default="0x00000000" type="DWORD" comment="获得焦点时背景颜色,如(0xFFFF00FF)" />
+		<Attribute name="disabledbkcolor" default="0x00000000" type="DWORD" comment="禁用时背景颜色,如(0xFFFF00FF)" />
 		<Attribute name="forecolor" default="0x00000000" type="DWORD" comment="" />	
 		<Attribute name="nativebkcolor" default="0x00000000" type="DWORD" comment="获得...的背景颜色,如(0xFFFF0000)" />
 		<Attribute name="colorhsl" default="false" type="BOOL" comment="本控件的颜色是否随窗口的hsl变化而变化,如(false)" />
@@ -315,7 +316,8 @@ INT类型(最小值，最大值)：
 	<IPAddress parent="Label" notifies="setfocus killfocus timer menu windowinit(root)" comment="IP地址控件">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		
 		<Attribute name="width" default="0" type="INT" comment="控件预设的宽度，如(100)" />
-		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />		
+		<Attribute name="height" default="0" type="INT" comment="控件预设的高度，如(30)" />	
+		<Attribute name="staticwindow" default="false" type="BOOL" comment="失去焦点时是否隐藏内部窗口" />	
 	</IPAddress> 
 	<Button parent="Label" notifies="setfocus killfocus timer menu click windowinit(root)" comment="按钮">
 		<Attribute name="name" default="" type="STRING" comment="控件名字，如(testbtn)" />		

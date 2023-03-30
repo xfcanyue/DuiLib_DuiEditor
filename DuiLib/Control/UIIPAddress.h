@@ -18,8 +18,12 @@ namespace DuiLib
 		virtual LPCTSTR GetClass() const override;
 		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
+		virtual void DoInit() override;
 		DWORD GetIP();
 		void SetIP(DWORD dwIP);
+
+		BOOL IsStaticWindow() const;
+		void SetStaticWindow(BOOL bStaticWindow);
 
 		virtual void SetText(LPCTSTR pstrText) override;
 		virtual CDuiString GetText() const override;
@@ -42,6 +46,7 @@ namespace DuiLib
 		int		m_nIPUpdateFlag;
 
 		CIPAddressWnd* m_pWindow;
+		BOOL m_bStaicWindow;		//失去焦点时，不要隐藏内部窗口
 	};
 }
 #endif // __UIIPADDRESS_H__

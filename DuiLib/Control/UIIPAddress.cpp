@@ -162,7 +162,11 @@ namespace DuiLib
 			m_pOwner->m_nIPUpdateFlag = IP_UPDATE;
 			m_pOwner->UpdateText();
 		}
-		::ShowWindow(m_hWnd, SW_HIDE);
+
+		if(!m_pOwner->IsStaticWindow())
+		{
+			::ShowWindow(m_hWnd, SW_HIDE);
+		}
 		return lRes;
 	}
 
@@ -174,6 +178,7 @@ namespace DuiLib
 	{
 		m_dwIP = GetLocalIpAddress();
 		m_pWindow = NULL;
+		m_bStaicWindow = FALSE;
 		m_nIPUpdateFlag=IP_UPDATE;
 		UpdateText();
 		m_nIPUpdateFlag = IP_NONE;
@@ -190,6 +195,15 @@ namespace DuiLib
 		return CLabelUI::GetInterface(pstrName);
 	}
 
+	void CIPAddressUI::DoInit()
+	{
+		if(m_bStaicWindow && m_pWindow == NULL)
+		{
+			//m_pWindow = new CIPAddressWnd;
+			//m_pWindow->Init(this);
+		}
+	}
+
 	DWORD CIPAddressUI::GetIP()
 	{
 		return m_dwIP;
@@ -199,6 +213,16 @@ namespace DuiLib
 	{
 		m_dwIP = dwIP;
 		UpdateText();
+	}
+
+	BOOL CIPAddressUI::IsStaticWindow() const
+	{
+		return m_bStaicWindow;
+	}
+
+	void CIPAddressUI::SetStaticWindow(BOOL bStaticWindow)
+	{
+		m_bStaicWindow = bStaticWindow;
 	}
 
 	void CIPAddressUI::SetText(LPCTSTR pstrText)
@@ -355,6 +379,11 @@ namespace DuiLib
 
 	void CIPAddressUI::SetAttribute( LPCTSTR pstrName, LPCTSTR pstrValue )
 	{
-		CLabelUI::SetAttribute(pstrName, pstrValue);
+		if(_tcsicmp(pstrName, _T("staticwindow")) == 0)
+		{
+			SetStaticWindow(_tcsicmp(pstrValue, _T("true")) == 0);
+		}
+		else
+			CLabelUI::SetAttribute(pstrName, pstrValue);
 	}
 }

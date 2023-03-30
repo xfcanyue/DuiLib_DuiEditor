@@ -18,6 +18,7 @@ namespace DuiLib
 		virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 		virtual UINT GetControlFlags() const override;
 
+		virtual CDuiString GetText() const;
 		void SetText(LPCTSTR pstrText);
 		void SetMaxChar(UINT uMax);
 		UINT GetMaxChar();

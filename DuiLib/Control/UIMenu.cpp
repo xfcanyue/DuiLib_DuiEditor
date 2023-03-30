@@ -456,6 +456,7 @@ namespace DuiLib {
 		return dynamic_cast<CMenuUI*>(m_pm.GetRoot());
 	}
 
+	/*
 	void CMenuWnd::ResizeMenu()
 	{
 		CControlUI* pRoot = m_pm.GetRoot();
@@ -522,6 +523,62 @@ namespace DuiLib {
 		SetForegroundWindow(m_hWnd);
 		MoveWindow(m_hWnd, rc.left, rc.top, rc.GetWidth(), rc.GetHeight(), FALSE);
 		SetWindowPos(m_hWnd, HWND_TOPMOST, rc.left, rc.top, rc.GetWidth(), rc.GetHeight() + pMenuRoot->GetInset().bottom + pMenuRoot->GetInset().top, SWP_SHOWWINDOW);
+	}
+	*/
+	void CMenuWnd::ResizeMenu()
+	{
+		//优化版修复扩展屏幕存在时，菜单弹出位置不正确的问题 2023年3月26 段先生 QQ547453134  
+		//计算边界问题
+		CMenuUI* pMenuRoot = static_cast<CMenuUI*>(m_pm.GetRoot());
+		if (!pMenuRoot)
+		{
+			//获取菜单根节点失败
+			return;
+		}
+
+		const int nWidth = m_pm.GetInitSize().cx;
+		const int nHeight = m_pm.GetInitSize().cy;
+		const int nMenuInset = pMenuRoot->GetInset().bottom + pMenuRoot->GetInset().top;
+
+		RECT rcWorkArea;
+		SystemParametersInfo(SPI_GETWORKAREA, 0, &rcWorkArea, 0);
+
+		POINT ptBase = m_BasedPoint;
+		ptBase.y += GetSystemMetrics(SM_CYMENU); // 加上任务栏的高度
+
+		HMONITOR hMonitor = MonitorFromPoint(ptBase, MONITOR_DEFAULTTONEAREST);
+		MONITORINFO mi = { sizeof(mi) };
+		if (!GetMonitorInfo(hMonitor, &mi))
+		{
+			// 无法获取显示器信息
+			return;
+		}
+
+		RECT rcMenu = { 0 };
+		rcMenu.right = rcMenu.left + nWidth;
+		rcMenu.bottom = rcMenu.top + nHeight + nMenuInset;
+
+		if (ptBase.x < mi.rcWork.left)
+		{
+			ptBase.x = mi.rcWork.left;
+		}
+		else if (ptBase.x + nWidth > mi.rcWork.right)
+		{
+			ptBase.x = mi.rcWork.right - nWidth;
+		}
+
+		if (ptBase.y + nHeight > mi.rcWork.bottom)
+		{
+			ptBase.y = mi.rcWork.bottom - nHeight;
+		}
+
+		if (ptBase.y < mi.rcWork.top)
+		{
+			ptBase.y = mi.rcWork.top;
+		}
+
+		SetWindowPos(m_hWnd, HWND_TOPMOST, ptBase.x, ptBase.y, nWidth, nHeight + nMenuInset, SWP_SHOWWINDOW);
+		MoveWindow(m_hWnd, ptBase.x, ptBase.y, nWidth, nHeight, FALSE);
 	}
 
 	void CMenuWnd::ResizeSubMenu()

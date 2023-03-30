@@ -346,3 +346,21 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
 
 2022-11-30
 1，处理设计器bug，拖拽控件到视图，容器内部有隐藏控件时（如List,TreeView），崩溃的问题。
+
+
+2023-03-06
+1, CPaintManagerUI 新增2个接口，用于线程中操作控件。实际上就是SendMessage和PostMessage
+    static BOOL CPaintManagerUI::UIAction(HWND hWnd, LPCTSTR sControlName, enumUIAction action, WPARAM wparam, LPARAM lparam);
+    static BOOL CPaintManagerUI::UIActionAsync(HWND hWnd, LPCTSTR sControlName, enumUIAction action, WPARAM wparam, LPARAM lparam);
+    这个action....还有许多没有定义，慢慢增加吧。
+	可以修改这个函数增加定义，目前我只是为了操作进度条。
+	void CUIFrameWnd::UIAction(TUIAction *act)
+	异步操作记得要释放内存。
+2, duilib.xml 补全属性：disabledbkcolor。
+3, comboUI, 禁用状态时, 改为可以调用 SelectItem.
+4, CEditUI::GetText(), 不要尝试匹配语言包内容.
+5, CGridCellUI::GetText(), 固定行或固定列才需要匹配语言包内容，普通单元格不匹配。
+6, 修正多屏幕菜单弹出错误的屏幕位置. 段先生 QQ547453134, 2023年3月26.
+7, 修正CChildWndUI 可能超出容器的问题.
+8, CUIDialog按回车关闭窗口时, 当前焦点若是内部原生控件, 无法获取原生控件的内容. 比如 CEditUI
+

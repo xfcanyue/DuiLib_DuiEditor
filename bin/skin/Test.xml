@@ -1,24 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Window size="600,458" sizebox="0,0,4,4" caption="0,0,0,20" shadowsize="2" shadowposition="2,2" shadowcolor="0xFF4B4B4B" forcehsl="true">
-	<Font id="0" name="宋体" size="14" shared="true" default="true" />
+<Window size="800,500" sizebox="0,0,4,4" caption="0,0,0,20" showshadow="true" shadowsize="5" shadowposition="4,4" shadowcolor="0xFF4B4B4B">
+	<Include source="config.xml" />
 	<VerticalLayout inset="1,1,1,1" bkcolor="0xFFD1E8F5" bordercolor="0xFF969696" bordersize="1">
-		<Grid name="grid_main" columnwith="150" fitcolumnbytext="true" fitcolumns="false" ascendingimage="file='images\common\list\listhead_arrow.png' source='0,0,18,18' " descendingimage="file='images\common\list\listhead_arrow.png' source='18,0,36,18' " sorticonsize="18,18" fixedcell="normalimage=&quot;file='images\common\list\listhead_btn.png' source='14,0,27,32' &quot; hotimage=&quot;file='images\common\list\listhead_btn.png' source='28,0,41,32' &quot; childalign=&quot;center&quot; childvalign=&quot;vcenter&quot; bkcolor=&quot;0xFFF0F0F0&quot; " row="selectedbkcolor=&quot;0xFFA6CAF0&quot; hotbkcolor=&quot;0xFFE9E9FF&quot; " cell="selectedbkcolor=&quot;0xFFC0DCC0&quot; hotbkcolor=&quot;0xFFE9E9FF&quot; childalign=&quot;center&quot; childvalign=&quot;vcenter&quot; " edit="align=&quot;center&quot; valign=&quot;center&quot; " checkbox="width=&quot;18&quot; height=&quot;16&quot; selectedimage=&quot;images\check-select.png&quot; normalimage=&quot;images\check-unselect.png&quot; " combo="dropbuttonsize=&quot;21,21&quot; dropbuttonnormalimage=&quot;file='images\common\combobox\dropbtn.png' source='21,0,42,21' &quot; dropbuttonhotimage=&quot;file='images\common\combobox\dropbtn.png' source='21,0,42,21' &quot; dropbuttonpushedimage=&quot;file='images\common\combobox\dropbtn.png' source='42,0,63,21' &quot; " bkcolor="0xFFFFFFFF">
-			<GridHeader>
-				<GridRow>
-					<GridCell width="20" />
-					<GridCell celltype="check" width="50" text="單選框" />
-					<GridCell width="80" text="速度" />
-					<GridCell width="80" text="起始" />
-					<GridCell width="80" text="結束" />
-					<GridCell width="80" text="上次結束（s）" />
-					<GridCell width="80" text="理論時間（s）" />
-					<GridCell width="80" text="實際時間（s）" />
-					<GridCell width="80" text="誤差（%）" />
-					<GridCell width="80" text="限 值（%）" />
-					<GridCell width="80" text="損耗（Kw）" />
-					<GridCell width="80" text="結果" />
-				</GridRow>
-			</GridHeader>
-		</Grid>
+		<HorizontalLayout height="20" childpadding="5" childvalign="vcenter" bkcolor="0xFFC0DCC0">
+			<Control width="16" height="16" foreimage="images\ico.jpg" />
+			<Label text="配置文件范例" resourceid="7" />
+			<HorizontalLayout width="123">
+				<FadeButton name="windowmenubtn" width="26" height="17" normalimage="file='images\sys_dlg_menu.png' source='52,0,78,17'" hotimage="file='images\sys_dlg_menu.png' source='26,0,52,17'" pushedimage="file='images\sys_dlg_menu.png' source='0,0,26,17'" />
+				<FadeButton name="windowminbtn" width="26" height="17" normalimage="file='images\sys_dlg_min.png' source='52,0,78,17'" hotimage="file='images\sys_dlg_min.png' source='26,0,52,17'" pushedimage="file='images\sys_dlg_min.png' source='0,0,26,17'" />
+				<FadeButton name="windowmaxbtn" width="26" height="17" normalimage="file='images\sys_dlg_max.png' source='52,0,78,17'" hotimage="file='images\sys_dlg_max.png' source='26,0,52,18'" pushedimage="file='images\sys_dlg_max.png' source='0,0,26,17'" />
+				<FadeButton name="windowrestorebtn" width="26" height="17" normalimage="file='images\sys_dlg_restore.png' source='52,0,78,17'" hotimage="file='images\sys_dlg_restore.png' source='26,0,52,17'" pushedimage="file='images\sys_dlg_restore.png' source='0,0,26,17'" visible="false" />
+				<FadeButton name="windowclosebtn" width="45" height="17" normalimage="file='images\sys_dlg_close.png' source='90,0,135,17'" hotimage="file='images\sys_dlg_close.png' source='45,0,90,17'" pushedimage="file='images\sys_dlg_close.png' source='0,0,45,17'" />
+			</HorizontalLayout>
+		</HorizontalLayout>
+		<VerticalLayout>
+			<Edit name="edit_text" width="185" height="33" pos="115,60,300,93" float="true" style="style_edit" />
+			<RichEdit name="redit_text" width="185" height="33" pos="115,112,300,145" float="true" bkcolor="0xFFFFFFFF" style="style_edit" />
+			<Option name="opt_check" width="30" height="30" pos="118,171,148,201" float="true" style="style_checkbox" />
+			<ComboEx name="cb_recv_type" width="185" height="32" pos="120,213,305,245" float="true" style="style_comboex">
+				<ListLabelElement text="111111" />
+				<ListLabelElement text="222222" />
+			</ComboEx>
+		</VerticalLayout>
+		<VerticalLayout height="100" sepheight="-8" sepimm="true" inset="0,8,0,0">
+			<MsgWnd name="msgwnd_frame" bordercolor="0xFFC0C0C0" bordersize="1" />
+		</VerticalLayout>
+		<Control pos="601,69,701,146" width="100" height="77" float="true" bordercolor="0xFF000080" bordersize="1" />
+		<Label text="qdqqwd" width="163" height="46" pos="524,229,687,275" float="true" />
 	</VerticalLayout>
 </Window>

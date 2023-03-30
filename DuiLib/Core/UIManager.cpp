@@ -470,6 +470,30 @@ namespace DuiLib {
 		return &m_aPreMessages;
 	}
 
+	BOOL CPaintManagerUI::UIAction(HWND hWnd, LPCTSTR sControlName, UINT action, WPARAM wparam, LPARAM lparam)
+	{
+		if(!::IsWindow(hWnd)) return FALSE;
+
+		TUIAction act;
+		act.sControlName = sControlName;
+		act.action = action;
+		act.wParam = wparam;
+		act.lParam = lparam;
+		return ::SendMessage(hWnd, UIMSG_CONTROL_ACTION, (WPARAM)&act, 0);
+	}
+
+	BOOL CPaintManagerUI::UIActionAsync(HWND hWnd, LPCTSTR sControlName, UINT action, WPARAM wparam, LPARAM lparam)
+	{
+		if(!::IsWindow(hWnd)) return FALSE;
+
+		TUIAction *act = new TUIAction;
+		act->sControlName = sControlName;
+		act->action = action;
+		act->wParam = wparam;
+		act->lParam = lparam;
+		return ::PostMessage(hWnd, UIMSG_CONTROL_ACTION_ASYNC, (WPARAM)act, 0);
+	}
+
 	bool CPaintManagerUI::LoadPlugin(LPCTSTR pstrModuleName)
 	{
 		ASSERT( !::IsBadStringPtr(pstrModuleName,-1) || pstrModuleName == NULL );

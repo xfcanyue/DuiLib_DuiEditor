@@ -6,8 +6,8 @@ public:
 	CMainFrame(void);
 	virtual ~CMainFrame(void);
 	virtual LPCTSTR GetWindowClassName() const  { return _T("MainFrame"); }
-	virtual CDuiString GetSkinFile() 			{ return _T("TableLayoutDemo.xml"); }
-	virtual CDuiString GetSkinFolder()			{ return _T(""); }
+	virtual CDuiString GetSkinFile() 			{ return _T("Test.xml"); }
+	virtual CDuiString GetSkinFolder()			{ return _T("Test"); }
 	virtual void OnFinalMessage( HWND hWnd ) { __super::OnFinalMessage(hWnd); ::PostQuitMessage(0L); }
 
 	virtual void InitWindow();

@@ -37,6 +37,7 @@ public:
 
 protected:
 	virtual void __InitWindow();
+	virtual void UIAction(TUIAction *act, bool bAsync);
 public:
 	CUIApplication *m_pApplication;
 

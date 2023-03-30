@@ -136,6 +136,7 @@ void CDlgBuildLanguagePackageEx::OnBnClickedOk()
 void CDlgBuildLanguagePackageEx::_buildLangPackage(xml_node rootLang, xml_node nodeSkin)
 {
 	//只保存这3种类型
+	CString nodeName = XML2T(nodeSkin.name());
 	CString text = XML2T(nodeSkin.attribute(XTEXT("text")).as_string());
 	CString tooltip = XML2T(nodeSkin.attribute(XTEXT("tooltip")).as_string());
 	CString tipvalue = XML2T(nodeSkin.attribute(XTEXT("tipvalue")).as_string());

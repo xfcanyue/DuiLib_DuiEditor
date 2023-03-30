@@ -48,7 +48,7 @@ namespace DuiLib {
 		int GetLimitText();
 		void SetLimitText(int iChars);
 		long GetTextLength(DWORD dwFlags = GTL_DEFAULT) const;
-		CDuiString GetText() const;
+		virtual CDuiString GetText() const;
 		void SetText(LPCTSTR pstrText);
 		bool IsModify() const;
 		void SetModify(bool bModified = true) const;

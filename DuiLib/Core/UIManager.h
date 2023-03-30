@@ -61,7 +61,9 @@ namespace DuiLib {
 		UIMSG_MENUCLICK,					//用来接收按钮单击的消息
 		UIMSG_MENU_UPDATE_COMMAND_UI,		//更新菜单消息
 		UIMSG_CREATE_MENU,					//异步创建菜单
-		UIMSG_GRID_NOTIFY,			//异步调用CGridUI::EnsureVisible
+		UIMSG_GRID_NOTIFY,					//异步调用CGridUI::EnsureVisible
+		UIMSG_CONTROL_ACTION,
+		UIMSG_CONTROL_ACTION_ASYNC,
 
 		// 程序自定义消息
 		UIMSG_USER = WM_USER + 100,
@@ -224,6 +226,21 @@ namespace DuiLib {
 	typedef IScriptManager* (__stdcall *CREATE_SCRIPT_ENGINE_INSTANCE)();
 	typedef void (__stdcall *DELETE_SCRIPT_ENGINE_INSTANCE)(IScriptManager *pEngine);
 
+//跨线程操作控件
+#define UIACTION_BEGIN			0
+#define UIACTION_Close			1	//关闭窗口
+#define UIACTION_SetText		2	//设置文本
+#define UIACTION_SetValue		3	//设置进度条当前值
+#define UIACTION_SetMinValue	4	//设置进度条之最小值
+#define UIACTION_SetMaxValue	5	//设置进度条之最大值
+#define UIACTION_END			6	//库外部可以定义 #define UIACTION_END+xxx, 并重写 void CUIFrameWnd::UIAction(TUIAction *act, bool bAsync)
+	typedef struct UILIB_API tagUIAction
+	{
+		CDuiString sControlName;
+		UINT action;
+		WPARAM wParam;
+		LPARAM lParam;
+	} TUIAction;
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
 	typedef CControlUI* (*LPCREATECONTROL)(LPCTSTR pstrType);
@@ -324,6 +341,8 @@ namespace DuiLib {
 		static void ReloadSkin();
 		static CPaintManagerUI* GetPaintManager(LPCTSTR pstrName);
 		static CStdPtrArray* GetPaintManagers();
+		static BOOL UIAction(HWND hWnd, LPCTSTR sControlName, UINT action, WPARAM wparam, LPARAM lparam);
+		static BOOL UIActionAsync(HWND hWnd, LPCTSTR sControlName, UINT action, WPARAM wparam, LPARAM lparam);
 		static bool LoadPlugin(LPCTSTR pstrModuleName);
 		static CStdPtrArray* GetPlugins();
 

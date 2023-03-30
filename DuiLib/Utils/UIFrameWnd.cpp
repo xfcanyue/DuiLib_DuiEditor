@@ -140,6 +140,22 @@ LRESULT CUIFrameWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam
 		return 0;
 	}
 
+	if(uMsg == UIMSG_CONTROL_ACTION)
+	{
+		TUIAction *act = (TUIAction *)wParam;
+		ASSERT(act);
+		UIAction(act, false);
+		return 0;
+	}
+
+	if(uMsg == UIMSG_CONTROL_ACTION_ASYNC)
+	{
+		TUIAction *act = (TUIAction *)wParam;
+		ASSERT(act);
+		UIAction(act, true);
+		delete act;
+	}
+
 	//当你的窗口移动到DPI不同的显示器上时，会收到 WM_DPICHANGED 消息。
 	//直接修改当前显示设置改动dpi，不会收到此消息
 	if (uMsg == WM_DPICHANGED)
@@ -365,6 +381,54 @@ void CUIFrameWnd::__InitWindow()
 	}
 	
 	InitWindow();
+}
+
+void CUIFrameWnd::UIAction(TUIAction *act, bool bAsync)
+{
+	if(act->action == UIACTION_Close)
+	{
+		Close(act->wParam);
+		return;
+	}
+
+	CControlUI *pControl = GetManager()->FindControl(act->sControlName);
+	if(!pControl) return;
+
+	if (act->action == UIACTION_SetText)
+	{
+		pControl->SetText((LPCTSTR)act->wParam);
+		return;
+	}
+
+	if (act->action == UIACTION_SetValue)
+	{
+		CProgressUI *pProgress = dynamic_cast<CProgressUI *>(pControl);
+		if(pProgress)
+		{
+			pProgress->SetValue(act->wParam);
+		}
+		return;
+	}
+
+	if (act->action == UIACTION_SetMinValue)
+	{
+		CProgressUI *pProgress = dynamic_cast<CProgressUI *>(pControl);
+		if(pProgress)
+		{
+			pProgress->SetMinValue(act->wParam);
+		}
+		return;
+	}
+
+	if (act->action == UIACTION_SetMaxValue)
+	{
+		CProgressUI *pProgress = dynamic_cast<CProgressUI *>(pControl);
+		if(pProgress)
+		{
+			pProgress->SetMaxValue(act->wParam);
+		}
+		return;
+	}
 }
 
 } //namespace DuiLib{

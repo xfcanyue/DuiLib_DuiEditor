@@ -175,6 +175,11 @@ namespace DuiLib {
 			CDuiString s = pkg->GetText(GetResourceID());
 			if(!s.IsEmpty()) return s; 
 		}
+		else
+		{
+			CDuiString s = CLangManagerUI::LoadString(m_sText);
+			if(!s.IsEmpty()) return s;
+		}
 		return m_sText;
 	}
 
@@ -848,6 +853,11 @@ namespace DuiLib {
 			CDuiString s = pkg->GetToolTip(GetResourceID());
 			if(!s.IsEmpty()) return s; 
 		}
+		else
+		{
+			CDuiString s = CLangManagerUI::LoadString(m_sToolTip);
+			if(!s.IsEmpty()) return s;
+		}
 
 		return m_sToolTip;
 	}
@@ -1024,7 +1034,14 @@ namespace DuiLib {
 	{
 		if( (uFlags & UIFIND_VISIBLE) != 0 && !IsVisible() ) return NULL;
 		if( (uFlags & UIFIND_ENABLED) != 0 && !IsEnabled() ) return NULL;
-		if( (uFlags & UIFIND_HITTEST) != 0 && (!m_bMouseEnabled || !::PtInRect(&m_rcItem, * static_cast<LPPOINT>(pData))) ) return NULL;
+		if(CPaintManagerUI::UIDESIGNMODE)
+		{	//设计器中，鼠标点击无法选中控件，!m_bMouseEnabled时，应该也能通过坐标Find出来。
+			if( (uFlags & UIFIND_HITTEST) != 0 && (!::PtInRect(&m_rcItem, * static_cast<LPPOINT>(pData))) ) return NULL;
+		}
+		else
+		{
+			if( (uFlags & UIFIND_HITTEST) != 0 && (!m_bMouseEnabled || !::PtInRect(&m_rcItem, * static_cast<LPPOINT>(pData))) ) return NULL;
+		}
 		return Proc(this, pData);
 	}
 

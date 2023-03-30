@@ -42,6 +42,7 @@ LRESULT CUIDialog::ResponseDefaultKeyEvent(WPARAM wParam)
 		if(pFocus && !pFocus->OnEnableResponseDefaultKeyEvent(wParam))
 			return S_FALSE;
 
+		::SetFocus(GetManager()->GetPaintWindow()); //让主窗口获取焦点，使内部的子窗口隐藏，从而获取子窗口内容。
 		OnClickOK();
 		return S_OK;
 	}

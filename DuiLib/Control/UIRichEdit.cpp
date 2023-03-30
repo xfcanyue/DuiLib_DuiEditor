@@ -1406,6 +1406,11 @@ namespace DuiLib {
 			LPCTSTR s = pkg->GetTipValue(GetResourceID());
 			if(s && *s!='\0') return s; 
 		}
+		else
+		{
+			CDuiString s = CLangManagerUI::LoadString(m_sTipValue);
+			if(!s.IsEmpty()) return s;
+		}
 
 		return m_sTipValue.GetData();
 	}

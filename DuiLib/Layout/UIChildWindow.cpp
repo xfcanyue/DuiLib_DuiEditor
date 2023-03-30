@@ -75,6 +75,38 @@ public:
 		return lRes;
 	}
 
+	RECT CalPos()
+	{
+		CDuiRect rcPos = m_pOwner->GetPos();
+		RECT rcInset = m_pOwner->GetInset();
+		rcPos.left += rcInset.left;
+		rcPos.top += rcInset.top;
+		rcPos.right -= rcInset.right;
+		rcPos.bottom -= rcInset.bottom;
+
+		CContainerUI* pParent = m_pOwner;
+		RECT rcParent;
+		while( pParent = (CContainerUI*)pParent->GetParent() ) {
+			if( !pParent->IsVisible() ) {
+				rcPos.left = rcPos.top = rcPos.right = rcPos.bottom = 0;
+				break;
+			}
+			CDuiString s = pParent->GetName();
+			//rcParent = pParent->GetClientPos();
+			rcParent = pParent->GetPos(); //子窗口不可超出父窗口区域，所以不要计入滚动条
+			RECT rcInset = pParent->GetInset();
+			rcParent.left += rcInset.left;
+			rcParent.top += rcInset.top;
+			rcParent.right -= rcInset.right;
+			rcParent.bottom -= rcInset.bottom;
+			if( !::IntersectRect(&rcPos, &rcPos, &rcParent) ) {
+				rcPos.left = rcPos.top = rcPos.right = rcPos.bottom = 0;
+				break;
+			}
+		}
+
+		return rcPos;
+	}
 	CPaintManagerUI m_pm;
 private:
 	CChildWindowUI *m_pOwner;
@@ -92,7 +124,7 @@ CChildWindowUI::CChildWindowUI(void) : m_pWindow(NULL)
 
 CChildWindowUI::~CChildWindowUI(void)
 {	
-	//DestroyWnd();
+	DestroyWnd();
 }
 
 void CChildWindowUI::DoInit()
@@ -140,7 +172,11 @@ void CChildWindowUI::SetPos(RECT rc, bool bNeedInvalidate)
 
 	if(m_pWindow && ::IsWindow(m_pWindow->GetHWND()))
 	{
-		::MoveWindow(m_pWindow->GetHWND(), rc.left, rc.top, rc.right-rc.left, rc.bottom-rc.top, TRUE);
+		RECT rcPos = ((CChildWnd *)m_pWindow)->CalPos();
+		::SetWindowPos(m_pWindow->GetHWND(), NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
+			rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE);   
+// 		::SetWindowPos(m_pWindow->GetHWND(), NULL, rc.left, rc.top, rc.right - rc.left, 
+// 			rc.bottom - rc.top, SWP_NOZORDER | SWP_NOACTIVATE);  
 	}
 }
 
@@ -150,8 +186,9 @@ void CChildWindowUI::Move(SIZE szOffset, bool bNeedInvalidate)
 
 	if(m_pWindow && ::IsWindow(m_pWindow->GetHWND()))
 	{
-		RECT rc = GetPos();
-		::MoveWindow(m_pWindow->GetHWND(), rc.left, rc.top, rc.right-rc.left, rc.bottom-rc.top, TRUE);
+		RECT rcPos = ((CChildWnd *)m_pWindow)->CalPos();
+		::SetWindowPos(m_pWindow->GetHWND(), NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
+			rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE);  
 	}
 }
 
@@ -178,9 +215,9 @@ CWindowWnd *CChildWindowUI::CreateWnd()
 
 void CChildWindowUI::DestroyWnd()
 {
-	if(m_pWindow)
+	if(m_pWindow && ::IsWindow(m_pWindow->GetHWND()))
 	{
-		m_pWindow->Close();
+		::SendMessage(m_pWindow->GetHWND(), WM_CLOSE, 0, 0);
 		m_pWindow = NULL;
 	}
 }
