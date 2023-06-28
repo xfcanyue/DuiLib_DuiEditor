@@ -8,7 +8,7 @@ namespace DuiLib {
 	class UILIB_API IUIAnimation
 	{
 	public:
-		virtual ~IUIAnimation() { NULL; }
+		virtual ~IUIAnimation() { }
 
 		virtual BOOL StartAnimation(int nElapse, int nTotalFrame, int nAnimationID = 0, BOOL bLoop = FALSE) = 0;
 		virtual void StopAnimation(int nAnimationID = 0) = 0;

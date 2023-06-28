@@ -1,6 +1,6 @@
 
 
-//#include "stdafx.h"
+#include "StdAfx.h"
 #include "QREncode.h"
 
 // #ifdef _DEBUG
@@ -649,7 +649,7 @@ BOOL CQR_Encode::EncodeData(int nLevel, int nVersion, BOOL bAutoExtent, int nMas
 	}
 
 	m_ncAllCodeWord = QR_VersonInfo[m_nVersion].ncAllCodeWord;
-	ZeroMemory(m_byAllCodeWord, m_ncAllCodeWord);
+	memset(m_byAllCodeWord, 0, m_ncAllCodeWord);
 
 	int nDataCwIndex = 0; 
 	int ncBlock1 = QR_VersonInfo[m_nVersion].RS_BlockInfo1[nLevel].ncRSBlock;
@@ -696,7 +696,7 @@ BOOL CQR_Encode::EncodeData(int nLevel, int nVersion, BOOL bAutoExtent, int nMas
 
 	for (i = 0; i < ncBlock1; ++i)
 	{
-		ZeroMemory(m_byRSWork, sizeof(m_byRSWork));
+		memset(m_byRSWork, 0, sizeof(m_byRSWork));
 
 		memmove(m_byRSWork, m_byDataCodeWord + nDataCwIndex, ncDataCw1);
 
@@ -712,7 +712,7 @@ BOOL CQR_Encode::EncodeData(int nLevel, int nVersion, BOOL bAutoExtent, int nMas
 
 	for (i = 0; i < ncBlock2; ++i)
 	{
-		ZeroMemory(m_byRSWork, sizeof(m_byRSWork));
+		memset(m_byRSWork, 0, sizeof(m_byRSWork));
 
 		memmove(m_byRSWork, m_byDataCodeWord + nDataCwIndex, ncDataCw2);
 
@@ -782,7 +782,7 @@ int CQR_Encode::GetEncodeVersion(int nVersion, LPBYTE lpsSource, int ncLength)
 
 BOOL CQR_Encode::EncodeSourceData(LPBYTE lpsSource, int ncLength, int nVerGroup)
 {
-	ZeroMemory(m_nBlockLength, sizeof(m_nBlockLength));
+	memset(m_nBlockLength, 0, sizeof(m_nBlockLength));
 
 	int i, j;
 
@@ -1013,7 +1013,7 @@ BOOL CQR_Encode::EncodeSourceData(LPBYTE lpsSource, int ncLength, int nVerGroup)
 
 	m_ncDataCodeWordBit = 0; 
 
-	ZeroMemory(m_byDataCodeWord, MAX_DATACODEWORD);
+	memset(m_byDataCodeWord, 0, MAX_DATACODEWORD);
 
 	for (i = 0; i < m_ncDataBlock && m_ncDataCodeWordBit != -1; ++i)
 	{
@@ -1303,7 +1303,7 @@ void CQR_Encode::FormatModule()
 {
 	int i, j;
 
-	ZeroMemory(m_byModuleData, sizeof(m_byModuleData));
+	memset(m_byModuleData, 0, sizeof(m_byModuleData));
 	SetFunctionModule();
 	SetCodeWordPattern();
 

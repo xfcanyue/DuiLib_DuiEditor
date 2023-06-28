@@ -1,4 +1,6 @@
-#include "stdafx.h"
+#include "StdAfx.h"
+
+#ifdef DUILIB_WIN32
 #include "UIImageBoxEx.h"
 
 #include "mmsystem.h"
@@ -635,3 +637,4 @@ int CImageBoxExUI::GetLinearInterpolation(int x1, int x2, double delta)
 }
 
 } //namsespace
+#endif //#ifdef DUILIB_WIN32

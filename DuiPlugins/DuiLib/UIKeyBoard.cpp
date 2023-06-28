@@ -536,7 +536,7 @@ void CKeyBoardUI::OnKeyPress(CKeyButtonUI *pKey)
 		event.wParam = 0;
 		event.lParam = 0;
 		event.chKey = ch;
-		event.ptMouse = GetManager()->GetMousePos();
+		event.ptMouse = GetManager()->GetLastMousePos();
 		event.wKeyState = uState;
 		event.dwTimestamp = ::GetTickCount();
 		pFocus->Event(event);

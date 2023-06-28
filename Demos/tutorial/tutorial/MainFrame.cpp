@@ -78,7 +78,7 @@ void CMainFrame::InitWindow()
 	CDuiString str1 = CLangManagerUI::GetString(1);
 	CDuiString str2 = CLangManagerUI::GetStringExtra(1);
 
-	GetManager()->SetDPI(CDPI::GetMainMonitorDPI());
+	GetManager()->SetDPI(GetManager()->GetDPIObj()->GetMainMonitorDPI());
 }
 
 bool CMainFrame::OnCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -298,7 +298,7 @@ void CMainFrame::OnNotifyClick(TNotifyUI& msg)
 	{
 // 		CDialog1 dlg;
 // 		dlg.DoModal(this);
-		CPaintManagerUI::SetRenderEngineType(DuiLib_Render_Default);
+//		CPaintManagerUI::SetRenderEngineType(DuiLib_Render_Default);
 	}
 
 	if(IsControl(msg, _T("btn_show_dialog")))

@@ -4,6 +4,7 @@
 #pragma once
 #include "IRender.h"
 
+#ifdef DUILIB_WIN32
 namespace DuiLib { 
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
@@ -14,7 +15,10 @@ namespace DuiLib {
 
 		virtual void DeleteObject() override;
 
-		virtual HFONT GetHFont(CPaintManagerUI *pManager=NULL) override;
+		virtual BOOL CreateDefaultFont() override;
+
+		virtual HANDLE  GetHandle() override;
+		virtual HFONT GetHFONT(CPaintManagerUI *pManager=NULL) override;
 
 		virtual UIFont* Clone(CPaintManagerUI *pManager) override;
 
@@ -38,7 +42,7 @@ namespace DuiLib {
 
 		virtual void DeleteObject() override;
 
-		virtual HPEN GetHPen() const override;
+		virtual HPEN GetHPEN() const override;
 
 		virtual BOOL CreatePen(int nStyle, int nWidth, DWORD dwColor) override;
 
@@ -63,10 +67,16 @@ namespace DuiLib {
 
 		virtual BOOL CreateCompatibleBitmap(HDC hDC, int width, int height) override;
 
-		virtual HBITMAP GetBitmap() override;
+		virtual BOOL CreateFromData(LPBYTE pImage, int width, int height, DWORD mask) override;
+
+		virtual HANDLE  GetHandle()	override;
+		virtual HBITMAP GetHBITMAP() override;
 		virtual BYTE* GetBits() override;
 		virtual int	GetWidth() override;
 		virtual int GetHeight() override;
+		virtual BOOL IsAlpha() override;
+
+		virtual UIBitmap *Clone() override;
 
 		virtual void Clear() override;
 		virtual void ClearAlpha(const RECT &rc, int alpha = 0) override;
@@ -79,6 +89,7 @@ namespace DuiLib {
 		BYTE	*m_pBits;
 		int		m_nWidth;
 		int		m_nHeight;
+		BOOL	m_bAlphaChannel;
 	};
 
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -91,20 +102,6 @@ namespace DuiLib {
 		virtual void DeleteObject() override;
 
 		virtual BOOL CreateImage(HBITMAP hBitmap, bool bAlpha) override;
-
-		virtual BOOL LoadImage(const TDrawInfo *pDrawInfo, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL) override;
-		virtual BOOL LoadImage(STRINGorID bitmap, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL)  override;
-		virtual BOOL LoadImage(LPCTSTR pStrImage, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL)  override;
-		virtual BOOL LoadImage(UINT nID, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL)  override;
-
-		virtual BOOL LoadImageFromMemory(const LPBYTE pData, DWORD dwSize, DWORD mask=0, int width=0, int height=0, DWORD fillcolor=0, CPaintManagerUI* pManager=NULL) override;
-
-		virtual void AdjustHslImage(bool bHSL, short H, short S, short L) override;
-
-		virtual bool LoadGifImageFromFile(LPCTSTR fileName, CStdPtrArray &arrImageInfo) override;
-
-		virtual bool LoadGifImageFromMemory(const LPBYTE pData, DWORD dwSize, CStdPtrArray &arrImageInfo) override;
-
 	protected:
 		virtual ~UIImage_gdi();
 	};
@@ -159,4 +156,5 @@ namespace DuiLib {
 
 } // namespace DuiLib
 
+#endif //#ifdef DUILIB_WIN32
 #endif // __UIRENDER_H__

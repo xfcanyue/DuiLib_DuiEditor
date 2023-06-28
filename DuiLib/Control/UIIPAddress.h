@@ -3,6 +3,7 @@
 
 #pragma once
 
+#ifdef DUILIB_WIN32
 namespace DuiLib
 {
 	//class CIPAddressWnd;
@@ -49,4 +50,5 @@ namespace DuiLib
 		BOOL m_bStaicWindow;		//失去焦点时，不要隐藏内部窗口
 	};
 }
+#endif //#ifdef DUILIB_WIN32
 #endif // __UIIPADDRESS_H__

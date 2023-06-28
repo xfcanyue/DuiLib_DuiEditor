@@ -2,6 +2,50 @@
 #ifndef __DUISTRING_H__
 #define __DUISTRING_H__
 
+
+#ifdef __GNUC__
+//转大写
+inline char* strupr(char* src)
+{
+	while (*src != '\0')
+	{
+		if (*src > 'a' && *src <= 'z') {
+			//*src -= 32;
+			*src = static_cast<char>(*src - 32);
+		}
+		src++;
+	}
+	return src;
+}
+
+//转小写
+inline char* strlwr(char* src)
+{
+	while (*src != '\0')
+	{
+		if (*src > 'A' && *src <= 'Z') {
+			//*src += 32;
+			*src = static_cast<char>(*src + 32);
+		}
+		src++;
+	}
+	return src;
+}
+
+inline int MulDiv(int nNumber, int nNumerator, int nDenominator)
+{
+	long long x = nNumber;
+	x *= nNumerator;
+	x = (x + nDenominator - 1) / nDenominator;
+	return static_cast<int>(x);
+}
+
+inline LPTSTR CharNext(LPCTSTR lpsz)
+{
+	return (LPTSTR)lpsz + 1;
+}
+#endif
+
 namespace DuiLib
 {
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -14,6 +58,7 @@ namespace DuiLib
 		CDuiString(const TCHAR ch);
 		CDuiString(const CDuiString& src);
 		CDuiString(LPCTSTR lpsz, int nLen = -1);
+		CDuiString(int int_to_string);
 		~CDuiString();
 
 		//设置缓冲区长度
@@ -29,12 +74,12 @@ namespace DuiLib
 		void Empty();
 		int GetLength() const;
 		bool IsEmpty() const;
-		TCHAR GetAt(int nIndex) const;
 		void Append(LPCTSTR pstr);
 		void Assign(LPCTSTR pstr, int nLength = -1);
 		LPCTSTR GetData() const;
 
 		void SetAt(int nIndex, TCHAR ch);
+		TCHAR GetAt(int nIndex) const;
 		operator LPCTSTR() const;
 
 		TCHAR operator[] (int nIndex) const;
@@ -88,7 +133,7 @@ namespace DuiLib
 	protected:
 		LPTSTR m_pstr;
 	};
-	
+
 	class UILIB_API CBufferUI
 	{
 	public:
@@ -103,7 +148,7 @@ namespace DuiLib
 		int AddBuffer(const void *buffer, int len);
 
 	protected:
-		void Alloc(int size);
+		void Alloc(UINT size);
 	protected:
 		BYTE *_buffer;
 		int _bufferLen;
@@ -115,7 +160,9 @@ namespace DuiLib
 	{
 	public:
 		StringConverterUI();
+		#ifdef WIN32
 		StringConverterUI(UINT codepage);
+		#endif //#ifdef WIN32
 		~StringConverterUI();
 
 	public:
@@ -144,11 +191,16 @@ namespace DuiLib
 		LPCWSTR utf8_to_W(const void *buffer, int bufferlen = -1);
 
 	protected:
-		void Alloc(int size);
+		void Alloc(UINT size);
 		void Release();
 	private:
 		BYTE *_block;
+#ifdef WIN32
 		UINT m_cp;
+#else
+		CDuiString m_from;
+		CDuiString m_to;
+#endif // #ifdef WIN32
 	};
 
 

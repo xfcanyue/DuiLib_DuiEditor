@@ -6,6 +6,7 @@
 //struct IOleObject;
 
 
+#ifdef DUILIB_WIN32
 namespace DuiLib {
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
@@ -78,4 +79,6 @@ namespace DuiLib {
 
 } // namespace DuiLib
 
+#endif //#ifdef DUILIB_WIN32
 #endif // __UIACTIVEX_H__
+

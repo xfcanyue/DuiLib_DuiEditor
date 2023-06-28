@@ -29,7 +29,7 @@ class CDelegateStatic: public CDelegateBase
 {
     typedef bool (*Fn)(void*);
 public:
-    CDelegateStatic(Fn pFn) : CDelegateBase(NULL, pFn) { } 
+    CDelegateStatic(Fn pFn) : CDelegateBase(NULL, (void*)pFn) { }
     CDelegateStatic(const CDelegateStatic& rhs) : CDelegateBase(rhs) { } 
     virtual CDelegateBase* Copy() const { return new CDelegateStatic(*this); }
 

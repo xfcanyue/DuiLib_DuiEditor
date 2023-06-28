@@ -1,5 +1,7 @@
 #ifndef _VERSIONHELPERS_H_INCLUDED_
 #define _VERSIONHELPERS_H_INCLUDED_
+
+#ifdef DUILIB_WIN32
 #include <specstrings.h>
 
 namespace DuiLib 
@@ -102,4 +104,5 @@ namespace DuiLib
 		return !VerifyVersionInfoW(&osvi, VER_PRODUCT_TYPE, dwlConditionMask);
 	}
 }
+#endif //#ifdef DUILIB_WIN32
 #endif // _VERSIONHELPERS_H_INCLUDED_

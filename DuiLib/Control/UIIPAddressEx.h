@@ -5,6 +5,7 @@
 
 //给该控件添加一个属性dtstyle
 
+#ifdef DUILIB_WIN32
 namespace DuiLib
 {
 	
@@ -41,4 +42,5 @@ namespace DuiLib
         CDuiString m_strNum;
     };
 }
+#endif //#ifdef DUILIB_WIN32
 #endif // __UIIPADDRESSEX_H__

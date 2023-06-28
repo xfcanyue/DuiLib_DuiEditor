@@ -2,6 +2,7 @@
 #define __UIHOTKEY_H__
 #pragma once
 
+#ifdef DUILIB_WIN32
 namespace DuiLib{
 	class CHotKeyUI;
 
@@ -70,5 +71,5 @@ namespace DuiLib{
 	};
 }
 
-
-#endif
+#endif //#ifdef DUILIB_WIN32
+#endif //#ifndef __UIHOTKEY_H__

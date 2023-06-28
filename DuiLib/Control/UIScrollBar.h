@@ -114,7 +114,7 @@ namespace DuiLib
 		CDuiString m_sBkDisabledImage;
 
 		bool m_bShowButton1;
-		RECT m_rcButton1;
+		CDuiRect m_rcButton1;
 		UINT m_uButton1State;
 		CDuiString m_sButton1NormalImage;
 		CDuiString m_sButton1HotImage;
@@ -122,14 +122,14 @@ namespace DuiLib
 		CDuiString m_sButton1DisabledImage;
 
 		bool m_bShowButton2;
-		RECT m_rcButton2;
+		CDuiRect m_rcButton2;
 		UINT m_uButton2State;
 		CDuiString m_sButton2NormalImage;
 		CDuiString m_sButton2HotImage;
 		CDuiString m_sButton2PushedImage;
 		CDuiString m_sButton2DisabledImage;
 
-		RECT m_rcThumb;
+		CDuiRect m_rcThumb;
 		UINT m_uThumbState;
 		CDuiString m_sThumbNormalImage;
 		CDuiString m_sThumbHotImage;

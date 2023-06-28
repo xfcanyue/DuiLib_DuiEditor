@@ -149,7 +149,7 @@ namespace DuiLib
 		{
 			if( _tcsicmp(pstrName, _T("group")) == 0 ) SetGroup(pstrValue);
 			else if( _tcsicmp(pstrName, _T("selected")) == 0 ) Selected(_tcsicmp(pstrValue, _T("true")) == 0);
-			else __super::SetAttribute(pstrName, pstrValue);
+			else T::SetAttribute(pstrName, pstrValue);
 		}
 	protected:
 		bool			m_bSelected;

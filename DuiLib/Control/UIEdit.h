@@ -5,8 +5,6 @@
 
 namespace DuiLib
 {
-	class CEditWnd;
-
 	class UILIB_API CEditUI : public CLabelUI
 	{
 		DECLARE_DUICONTROL(CEditUI)
@@ -67,7 +65,7 @@ namespace DuiLib
 
 		virtual bool OnEnableResponseDefaultKeyEvent(WPARAM wParam) override;
 	protected:
-		CEditWnd* m_pWindow;
+		CWindowWnd* m_pWindow;
 
 		UINT m_uMaxChar;
 		bool m_bPasswordMode;

@@ -102,6 +102,7 @@ namespace DuiLib
 
 	void CGroupBoxUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
-		__super::SetAttribute(pstrName, pstrValue);
+		CVerticalLayoutUI::SetAttribute(pstrName, pstrValue);
 	}
 }
+

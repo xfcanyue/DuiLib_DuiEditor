@@ -61,7 +61,7 @@ namespace DuiLib {
 						rcDest.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
 						rcDest.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);    
 						rcDest.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);  
-						paintManager->GetDPIObj()->Scale(&rcDest);
+						paintManager->GetDPIObj()->ScaleRect(&rcDest);
 					}
 					else if( sItem == _T("source") ) {
 						rcSource.left = _tcstol(sValue.GetData(), &pstr, 10);  ASSERT(pstr);    
@@ -99,7 +99,7 @@ namespace DuiLib {
 						rcPadding.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
 						rcPadding.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);    
 						rcPadding.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);  
-						if(paintManager != NULL) paintManager->GetDPIObj()->Scale(&rcPadding);
+						if(paintManager != NULL) paintManager->GetDPIObj()->ScaleRect(&rcPadding);
 					}
 					else if( sItem == _T("align")){
 						if(_tcsicmp(sValue.GetData(), _T("left")) == 0){
@@ -131,11 +131,11 @@ namespace DuiLib {
 					}
 					else if( sItem == _T("width") ) {
 						width = _ttoi(sValue);
-						width = paintManager->GetDPIObj()->Scale(width);
+						width = paintManager->GetDPIObj()->ScaleInt(width);
 					}
 					else if( sItem == _T("height") ) {
 						height = _ttoi(sValue);
-						height = paintManager->GetDPIObj()->Scale(height);
+						height = paintManager->GetDPIObj()->ScaleInt(height);
 					}
 					else if( sItem == _T("fillcolor") ) {
 						if( sValue[0] == _T('#')) fillcolor = _tcstoul(sValue.GetData() + 1, &pstr, 16);
@@ -158,8 +158,8 @@ namespace DuiLib {
 			CUIFile file;
 			if(file.LoadFile(sImageNameTemp.GetData()))
 			{
-				paintManager->GetDPIObj()->Scale(&rcSource);
-				paintManager->GetDPIObj()->Scale(&rcCorner);
+				paintManager->GetDPIObj()->ScaleRect(&rcSource);
+				paintManager->GetDPIObj()->ScaleRect(&rcCorner);
 
 				sImageName = sImageNameTemp;
 			}
@@ -195,6 +195,7 @@ namespace DuiLib {
 	{
 		DeleteObject();
 
+#ifdef WIN32
 		LOGFONT lf = { 0 };
 		::GetObject(::GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
 
@@ -203,6 +204,14 @@ namespace DuiLib {
 		bBold = (lf.lfWeight >= FW_BOLD);
 		bUnderline = (lf.lfUnderline == TRUE);
 		bItalic = (lf.lfItalic == TRUE);
+#else
+		sFontName = _T("微软雅黑");
+		iSize = 14;
+		bBold = FALSE;
+		bUnderline = FALSE;
+		bItalic = FALSE;
+		return _buildFont(NULL);
+#endif
 
 		return _buildFont(NULL);
 	}
@@ -265,108 +274,752 @@ namespace DuiLib {
 	//////////////////////////////////////////////////////////////////////////
 	//
 	//
-	UIClip::UIClip()
+#ifdef WIN32
+#ifndef strtoll
+#define strtoll _strtoi64
+#endif
+#endif
+#define STB_IMAGE_IMPLEMENTATION
+#include "../Utils/stb_image.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "../Utils/stb_image_write.h"
+#define NANOSVG_IMPLEMENTATION
+#include "../Utils/nanosvg.h"
+#define NANOSVGRAST_IMPLEMENTATION
+#include "../Utils/nanosvgrast.h"
+	static LPBYTE svg_load_from_memory(const LPBYTE buffer, int &out_width, int &out_height, int hope_width, int hope_height, DWORD fillcolor, CPaintManagerUI* pManager)
 	{
-		m_hDC = NULL;
-		m_hRgn = NULL;
-		m_hOldRgn = NULL;
-	}
-
-	UIClip::~UIClip()
-	{
-		ASSERT(::GetObjectType(m_hDC)==OBJ_DC || ::GetObjectType(m_hDC)==OBJ_MEMDC);
-		ASSERT(::GetObjectType(m_hRgn)==OBJ_REGION);
-		ASSERT(::GetObjectType(m_hOldRgn)==OBJ_REGION);
-		::SelectClipRgn(m_hDC, m_hOldRgn);
-		::DeleteObject(m_hOldRgn);
-		::DeleteObject(m_hRgn);
-	}
-
-	void UIClip::GenerateClip(UIRender *pRender, RECT rc)
-	{
-		RECT rcClip = { 0 };
-		::GetClipBox(pRender->GetDC(), &rcClip);
-		m_hOldRgn = ::CreateRectRgnIndirect(&rcClip);
-		m_hRgn = ::CreateRectRgnIndirect(&rc);
-		::ExtSelectClipRgn(pRender->GetDC(), m_hRgn, RGN_AND);
-		m_hDC = pRender->GetDC();
-		m_rcItem = rc;
-		m_szRound.cx = 0;
-		m_szRound.cy = 0;
-	}
-
-	void UIClip::GenerateRoundClip(UIRender *pRender, RECT rc, RECT rcItem, int roundX, int roundY)
-	{
-		RECT rcClip = { 0 };
-		::GetClipBox(pRender->GetDC(), &rcClip);
-		m_hOldRgn = ::CreateRectRgnIndirect(&rcClip);
-		m_hRgn = ::CreateRectRgnIndirect(&rc);
-		HRGN hRgnItem = NULL;
-
-		if(CPaintManagerUI::GetRenderEngineType() == DuiLib_Render_GdiPlus)
+		LPBYTE pImage = NULL;
+		float dpi = 96.0f;
+		float scale = 1.0f;
+		if(pManager)
 		{
-			UIRender_gdiplus *pRenderPlus = dynamic_cast<UIRender_gdiplus *>(pRender);
+			scale = (pManager->GetDPIObj()->GetScale() * 1.0)/100;
+		}
+		//SVG
+		NSVGimage* svg = nsvgParse((LPSTR)(LPVOID)buffer, "px", (float)dpi);
+		if (svg == NULL) 
+		{
+			return NULL;
+		}
 
-			Gdiplus::GraphicsPath pPath;
-			int x = rcItem.left-1;
-			int y = rcItem.top-1;
-			int width = rcItem.right- rcItem.left + 1; //修正区域
-			int height = rcItem.bottom - rcItem.top + 1; //修正区域
+		if(fillcolor != 0)
+		{
+			NSVGshape *shapes = svg->shapes;
+			while (shapes)
+			{
+				if(shapes->fill.type == NSVG_PAINT_COLOR)
+					if(shapes->fill.color != 0)
+						shapes->fill.color = UIRGB(GetRValue(fillcolor), GetGValue(fillcolor), GetBValue(fillcolor));
+				shapes = shapes->next;
+			}
+		}
 
-			// 圆角矩形的宽和高，圆角等于宽或高就是圆形了。
-			if(roundX > width/2) roundX = width/2;
-			if(roundY > height/2) roundY = height/2;
+		out_width = (int)svg->width;
+		out_height = (int)svg->height;
+		if(out_width==0 || out_height==0) 
+		{
+			nsvgDelete(svg);
+			return NULL;
+		}
 
-			//左上圆角
-			pPath.AddArc(x, y, 2*roundX, 2*roundY, 180, 90); //圆角不乘以2就有锯齿？
-			//顶部横线
-			pPath.AddLine(x+roundX, y, x+width-roundX, y);
-			//右上圆角
-			pPath.AddArc(x+width-2*roundX, y, 2*roundX, 2*roundY, 270, 90);
-			//右侧竖线
-			pPath.AddLine(x+width, y+roundY, x+width, y+height-roundY);
-			//右下圆角
-			pPath.AddArc(x+width-2*roundX, y+height-2*roundY, 2*roundX, 2*roundY, 0, 90);
-			//底部横线
-			pPath.AddLine(x+width-roundX, y+height, x+roundX, y+height);
-			//左下圆角
-			pPath.AddArc(x, y+height-2*roundY, 2*roundX, 2*roundY, 90, 90);
-			//左侧横线
-			pPath.AddLine(x, y+height-roundY, x, y+roundY);
-			pPath.CloseFigure();
-
-			Gdiplus::Region rg(&pPath);
-			Gdiplus::Graphics g(pRenderPlus->GetDC());
-			hRgnItem = rg.GetHRGN(&g);
+		//如果指定长宽，则使用当前的长宽比例，否则使用dpi适配
+		if(hope_width > 0 && hope_height > 0)
+		{
+			out_width = hope_width;
+			scale = hope_width * 1.0 / svg->width;
+			out_height = svg->height * scale;
+			if (svg->height * scale > out_height)
+			{
+				scale = out_height * 1.0 / svg->height;
+				out_width = svg->width * scale;
+			}
 		}
 		else
 		{
-			hRgnItem = ::CreateRoundRectRgn(rcItem.left, rcItem.top, rcItem.right + 1, rcItem.bottom + 1, roundX, roundY);
+			if(pManager)
+			{
+				out_width = pManager->GetDPIObj()->ScaleInt(out_width);
+				out_height = pManager->GetDPIObj()->ScaleInt(out_height);
+			}
 		}
 
-		if(hRgnItem) ::CombineRgn(m_hRgn, m_hRgn, hRgnItem, RGN_AND);
-		::ExtSelectClipRgn(pRender->GetDC(), m_hRgn, RGN_AND);
-		
-		m_hDC = pRender->GetDC();
-		m_rcItem = rc;
-		m_szRound.cx = roundX;
-		m_szRound.cy = roundY;
-		if(hRgnItem) ::DeleteObject(hRgnItem);
+		NSVGrasterizer* rast = nsvgCreateRasterizer();
+		if (rast == NULL)
+		{
+			nsvgDelete(svg);
+			return NULL;
+		}
+
+		pImage = (LPBYTE)malloc((out_width + 1) * (out_height + 1) * 4);//由于使用了小数，防止被四舍五入舍去，因此都加1
+		if (!pImage)
+		{
+			nsvgDeleteRasterizer(rast);
+			nsvgDelete(svg);
+			return NULL;
+		}
+		nsvgRasterize(rast, svg, 0, 0, scale, pImage, out_width, out_height, out_width * 4);
+		nsvgDeleteRasterizer(rast);
+		nsvgDelete(svg);
+		return pImage;
 	}
 
-	void UIClip::UseOldClipBegin(UIRender *pRender)
+	BOOL UIImage::LoadImage(const TDrawInfo *pDrawInfo, CPaintManagerUI* pManager, HINSTANCE instance)
 	{
-		::SelectClipRgn(pRender->GetDC(), m_hOldRgn);
+		//是不是资源ID号
+		if( _ttoi(pDrawInfo->sResType) != 0 ) 
+		{
+			CUIFile f;
+			if(!f.LoadFile(pDrawInfo->sImageName.GetData(), pDrawInfo->sResType, instance)) 
+				return FALSE;
+
+			return LoadImageFromMemory(f.GetData(), f.GetSize(), pDrawInfo->dwMask, pDrawInfo->width, pDrawInfo->height, pDrawInfo->fillcolor, pManager);
+		}
+		else
+		{
+			//从Res.xml文件中读取，做资源替换。
+			CDuiString sStrPath = CResourceManager::GetInstance()->GetImagePath(pDrawInfo->sImageName);
+			if(sStrPath.IsEmpty())
+				sStrPath = pDrawInfo->sImageName;
+
+			CUIFile f;
+			if(!f.LoadFile(sStrPath.GetData(), NULL, instance)) 
+				return FALSE;
+
+			return LoadImageFromMemory(f.GetData(), f.GetSize(), pDrawInfo->dwMask, pDrawInfo->width, pDrawInfo->height, pDrawInfo->fillcolor, pManager);
+		}
+
+		return FALSE;
 	}
 
-	void UIClip::UseOldClipEnd(UIRender *pRender)
+	BOOL UIImage::LoadImage(STRINGorID bitmap, LPCTSTR type, DWORD mask, int width, int height, DWORD fillcolor, CPaintManagerUI* pManager, HINSTANCE instance)
 	{
-		::SelectClipRgn(pRender->GetDC(), m_hRgn);
+		CUIFile f;
+		if(!f.LoadFile(bitmap, type, instance)) 
+			return FALSE;
+
+		return LoadImageFromMemory(f.GetData(), f.GetSize(), mask, width, height, fillcolor, pManager);
+	}
+
+	BOOL UIImage::LoadImage(LPCTSTR pStrImage, LPCTSTR type, DWORD mask, int width, int height, DWORD fillcolor, CPaintManagerUI* pManager, HINSTANCE instance)
+	{
+		if(pStrImage == NULL) return FALSE;
+
+		CDuiString sStrPath = pStrImage;
+		if( type == NULL )  
+		{
+			//LoadImage需要重载3个函数，就是因为这里有资源替换。 -_-
+			sStrPath = CResourceManager::GetInstance()->GetImagePath(pStrImage);
+			if (sStrPath.IsEmpty()) sStrPath = pStrImage;
+		}
+		return LoadImage(STRINGorID(sStrPath.GetData()), type, mask, width, height, fillcolor, pManager, instance);
+	}
+
+	BOOL UIImage::LoadImage(UINT nID, LPCTSTR type, DWORD mask, int width, int height, DWORD fillcolor, CPaintManagerUI* pManager, HINSTANCE instance)
+	{
+		return LoadImage(STRINGorID(nID), type, mask, width, height, fillcolor, pManager, instance);
+	}
+
+	void UIImage::AdjustHslImage(bool bHSL, short H, short S, short L)
+	{
+		if( (bUseHSL == false && !CPaintManagerUI::IsForceHSL()) || bitmap == NULL || pBits == NULL || bitmap->GetHandle() == NULL) 
+			return;
+
+		if(pSrcBits == NULL)
+		{
+			pSrcBits = new BYTE[nWidth * nHeight * 4];
+			memcpy(pSrcBits, pBits, nWidth * nHeight * 4);
+		}
+
+		if( bHSL == false || (H == 180 && S == 100 && L == 100)) {
+			memcpy(pBits, pSrcBits, nWidth * nHeight * 4);
+			return;
+		}
+
+		float fH, fS, fL;
+		float S1 = S / 100.0f;
+		float L1 = L / 100.0f;
+		for( int i = 0; i < nWidth * nHeight; i++ ) {
+			UIGlobal::RGBtoHSL(*(DWORD*)(pSrcBits + i*4), &fH, &fS, &fL);
+			fH += (H - 180);
+			fH = fH > 0 ? fH : fH + 360; 
+			fS *= S1;
+			fL *= L1;
+			UIGlobal::HSLtoRGB((DWORD*)(pBits + i*4), fH, fS, fL);
+		}
+	}
+
+
+	BOOL UIImage::LoadImageFromMemory(const LPBYTE pData, DWORD dwSize, DWORD mask, int width, int height, DWORD fillcolor, CPaintManagerUI* pManager)
+	{
+		DeleteObject();
+
+		LPBYTE pImage = NULL;
+		int x,y,comp;
+		pImage = stbi_load_from_memory(pData, dwSize, &x, &y, &comp, 4);	
+		if( !pImage ) 
+		{
+			pImage = svg_load_from_memory(pData, x, y, width, height, fillcolor, pManager);		
+		}
+		if(!pImage) return FALSE;
+
+		bitmap->CreateFromData(pImage, x, y, mask);
+
+		pBits = bitmap->GetBits();
+		pSrcBits = NULL;
+		nWidth = x;
+		nHeight = y;
+		bAlpha = bitmap->IsAlpha() == TRUE;
+		delay = delay;
+
+		stbi_image_free(pImage);
+		return TRUE;
+	}
+
+	bool UIImage::LoadGifImageFromMemory(const LPBYTE pData, DWORD dwSize, CStdPtrArray &arrImageInfo)
+	{
+		LPBYTE pImage = NULL;
+		int x,y,comp;
+		int layers = 0;
+		int *delays = 0;
+		pImage = stbi_load_gif_from_memory(pData, dwSize, &delays, &x, &y, &layers, &comp, 4);
+		if(!pImage) return false;
+
+		for (int f=0; f<layers; f++)
+		{
+			LPBYTE pFrame = pImage + x * y * f * 4;
+			UIImage* data = UIGlobal::CreateImage();
+			data->bitmap->CreateFromData(pFrame, x, y, 0);
+			data->pBits = data->bitmap->GetBits();
+			data->pSrcBits = NULL;
+			data->nWidth = x;
+			data->nHeight = y;
+			data->bAlpha = data->bitmap->IsAlpha() == TRUE;
+			data->delay = delays[f];
+
+			if(!arrImageInfo.Add(data)) 
+			{
+				data->Release();
+				break;
+			}
+		}
+		stbi_image_free(delays);
+		stbi_image_free(pImage);
+		return true;
 	}
 
 	//////////////////////////////////////////////////////////////////////////
 	//
 	//
+
+	void UIRender::DrawBitmap(UIBitmap *pUiBitmap, const RECT& rc, const RECT& rcPaint, const RECT& rcBmpPart, const RECT& rcCorners, bool bAlpha, BYTE uFade, bool hole, bool xtiled, bool ytiled)
+	{
+// 		CStdRefPtr<UIRender> pRender = MakeRefPtr<UIRender>(UIGlobal::CreateRenderTarget());
+// 		pRender->CloneFrom(this);
+// 		pRender->SelectObject(pUiBitmap);
+
+		CDuiRect rcTemp;
+		CDuiRect rcDest;
+		if( bAlpha || uFade < 255 ) 
+		{
+			// middle
+			if( !hole ) {
+				rcDest.left = rc.left + rcCorners.left;
+				rcDest.top = rc.top + rcCorners.top;
+				rcDest.right = rc.right - rc.left - rcCorners.left - rcCorners.right;
+				rcDest.bottom = rc.bottom - rc.top - rcCorners.top - rcCorners.bottom;
+				rcDest.right += rcDest.left;
+				rcDest.bottom += rcDest.top;
+				if( rcTemp.Intersect(rcPaint, rcDest) ) {
+					if( !xtiled && !ytiled ) {
+						rcDest.right -= rcDest.left;
+						rcDest.bottom -= rcDest.top;
+// 						AlphaBlend(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pRender, \
+// 							rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, \
+// 							rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right, \
+// 							rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom, uFade);
+						DrawBitmapAlpha(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pUiBitmap, \
+							rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, \
+							rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right, \
+							rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom, uFade);
+					}
+					else if( xtiled && ytiled ) {
+						LONG lWidth = rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right;
+						LONG lHeight = rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom;
+						int iTimesX = (rcDest.right - rcDest.left + lWidth - 1) / lWidth;
+						int iTimesY = (rcDest.bottom - rcDest.top + lHeight - 1) / lHeight;
+						for( int j = 0; j < iTimesY; ++j ) {
+							LONG lDestTop = rcDest.top + lHeight * j;
+							LONG lDestBottom = rcDest.top + lHeight * (j + 1);
+							LONG lDrawHeight = lHeight;
+							if( lDestBottom > rcDest.bottom ) {
+								lDrawHeight -= lDestBottom - rcDest.bottom;
+								lDestBottom = rcDest.bottom;
+							}
+							for( int i = 0; i < iTimesX; ++i ) {
+								LONG lDestLeft = rcDest.left + lWidth * i;
+								LONG lDestRight = rcDest.left + lWidth * (i + 1);
+								LONG lDrawWidth = lWidth;
+								if( lDestRight > rcDest.right ) {
+									lDrawWidth -= lDestRight - rcDest.right;
+									lDestRight = rcDest.right;
+								}
+// 								AlphaBlend(rcDest.left + lWidth * i, rcDest.top + lHeight * j, 
+// 									lDestRight - lDestLeft, lDestBottom - lDestTop, pRender, 
+// 									rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, lDrawWidth, lDrawHeight, uFade);
+								DrawBitmapAlpha(rcDest.left + lWidth * i, rcDest.top + lHeight * j, 
+									lDestRight - lDestLeft, lDestBottom - lDestTop, pUiBitmap, 
+									rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, lDrawWidth, lDrawHeight, uFade);
+							}
+						}
+					}
+					else if( xtiled ) {
+						LONG lWidth = rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right;
+						int iTimes = (rcDest.right - rcDest.left + lWidth - 1) / lWidth;
+						for( int i = 0; i < iTimes; ++i ) {
+							LONG lDestLeft = rcDest.left + lWidth * i;
+							LONG lDestRight = rcDest.left + lWidth * (i + 1);
+							LONG lDrawWidth = lWidth;
+							if( lDestRight > rcDest.right ) {
+								lDrawWidth -= lDestRight - rcDest.right;
+								lDestRight = rcDest.right;
+							}
+// 							AlphaBlend(lDestLeft, rcDest.top, lDestRight - lDestLeft, rcDest.bottom, 
+// 								pRender, rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, \
+// 								lDrawWidth, rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom, uFade);
+							DrawBitmapAlpha(lDestLeft, rcDest.top, lDestRight - lDestLeft, rcDest.bottom, 
+								pUiBitmap, rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, \
+								lDrawWidth, rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom, uFade);
+						}
+					}
+					else { // ytiled
+						LONG lHeight = rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom;
+						int iTimes = (rcDest.bottom - rcDest.top + lHeight - 1) / lHeight;
+						for( int i = 0; i < iTimes; ++i ) {
+							LONG lDestTop = rcDest.top + lHeight * i;
+							LONG lDestBottom = rcDest.top + lHeight * (i + 1);
+							LONG lDrawHeight = lHeight;
+							if( lDestBottom > rcDest.bottom ) {
+								lDrawHeight -= lDestBottom - rcDest.bottom;
+								lDestBottom = rcDest.bottom;
+							}
+// 							AlphaBlend(rcDest.left, rcDest.top + lHeight * i, rcDest.right, lDestBottom - lDestTop, 
+// 								pRender, rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, \
+// 								rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right, lDrawHeight, uFade);         
+							DrawBitmapAlpha(rcDest.left, rcDest.top + lHeight * i, rcDest.right, lDestBottom - lDestTop, 
+								pUiBitmap, rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, \
+								rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right, lDrawHeight, uFade);  
+						}
+					}
+				}
+			}
+
+			// left-top
+			if( rcCorners.left > 0 && rcCorners.top > 0 ) {
+				rcDest.left = rc.left;
+				rcDest.top = rc.top;
+				rcDest.right = rcCorners.left;
+				rcDest.bottom = rcCorners.top;
+				rcDest.right += rcDest.left;
+				rcDest.bottom += rcDest.top;
+				if( rcTemp.Intersect(rcPaint, rcDest) ) {
+					rcDest.right -= rcDest.left;
+					rcDest.bottom -= rcDest.top;
+// 					AlphaBlend(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pRender, \
+// 						rcBmpPart.left, rcBmpPart.top, rcCorners.left, rcCorners.top, uFade);
+					DrawBitmapAlpha(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pUiBitmap, \
+						rcBmpPart.left, rcBmpPart.top, rcCorners.left, rcCorners.top, uFade);
+				}
+			}
+			// top
+			if( rcCorners.top > 0 ) {
+				rcDest.left = rc.left + rcCorners.left;
+				rcDest.top = rc.top;
+				rcDest.right = rc.right - rc.left - rcCorners.left - rcCorners.right;
+				rcDest.bottom = rcCorners.top;
+				rcDest.right += rcDest.left;
+				rcDest.bottom += rcDest.top;
+				if( rcTemp.Intersect(rcPaint, rcDest) ) {
+					rcDest.right -= rcDest.left;
+					rcDest.bottom -= rcDest.top;
+// 					AlphaBlend(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pRender, \
+// 						rcBmpPart.left + rcCorners.left, rcBmpPart.top, rcBmpPart.right - rcBmpPart.left - \
+// 						rcCorners.left - rcCorners.right, rcCorners.top, uFade);
+					DrawBitmapAlpha(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pUiBitmap, \
+						rcBmpPart.left + rcCorners.left, rcBmpPart.top, rcBmpPart.right - rcBmpPart.left - \
+						rcCorners.left - rcCorners.right, rcCorners.top, uFade);
+				}
+			}
+			// right-top
+			if( rcCorners.right > 0 && rcCorners.top > 0 ) {
+				rcDest.left = rc.right - rcCorners.right;
+				rcDest.top = rc.top;
+				rcDest.right = rcCorners.right;
+				rcDest.bottom = rcCorners.top;
+				rcDest.right += rcDest.left;
+				rcDest.bottom += rcDest.top;
+				if( rcTemp.Intersect(rcPaint, rcDest) ) {
+					rcDest.right -= rcDest.left;
+					rcDest.bottom -= rcDest.top;
+// 					AlphaBlend(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pRender, \
+// 						rcBmpPart.right - rcCorners.right, rcBmpPart.top, rcCorners.right, rcCorners.top, uFade);
+					DrawBitmapAlpha(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pUiBitmap, \
+						rcBmpPart.right - rcCorners.right, rcBmpPart.top, rcCorners.right, rcCorners.top, uFade);
+				}
+			}
+			// left
+			if( rcCorners.left > 0 ) {
+				rcDest.left = rc.left;
+				rcDest.top = rc.top + rcCorners.top;
+				rcDest.right = rcCorners.left;
+				rcDest.bottom = rc.bottom - rc.top - rcCorners.top - rcCorners.bottom;
+				rcDest.right += rcDest.left;
+				rcDest.bottom += rcDest.top;
+				if( rcTemp.Intersect(rcPaint, rcDest) ) {
+					rcDest.right -= rcDest.left;
+					rcDest.bottom -= rcDest.top;
+// 					AlphaBlend(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pRender, \
+// 						rcBmpPart.left, rcBmpPart.top + rcCorners.top, rcCorners.left, rcBmpPart.bottom - \
+// 						rcBmpPart.top - rcCorners.top - rcCorners.bottom, uFade);
+					DrawBitmapAlpha(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pUiBitmap, \
+						rcBmpPart.left, rcBmpPart.top + rcCorners.top, rcCorners.left, rcBmpPart.bottom - \
+						rcBmpPart.top - rcCorners.top - rcCorners.bottom, uFade);
+				}
+			}
+			// right
+			if( rcCorners.right > 0 ) {
+				rcDest.left = rc.right - rcCorners.right;
+				rcDest.top = rc.top + rcCorners.top;
+				rcDest.right = rcCorners.right;
+				rcDest.bottom = rc.bottom - rc.top - rcCorners.top - rcCorners.bottom;
+				rcDest.right += rcDest.left;
+				rcDest.bottom += rcDest.top;
+				if( rcTemp.Intersect(rcPaint, rcDest) ) {
+					rcDest.right -= rcDest.left;
+					rcDest.bottom -= rcDest.top;
+// 					AlphaBlend(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pRender, \
+// 						rcBmpPart.right - rcCorners.right, rcBmpPart.top + rcCorners.top, rcCorners.right, \
+// 						rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom, uFade);
+					DrawBitmapAlpha(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pUiBitmap, \
+						rcBmpPart.right - rcCorners.right, rcBmpPart.top + rcCorners.top, rcCorners.right, \
+						rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom, uFade);
+				}
+			}
+			// left-bottom
+			if( rcCorners.left > 0 && rcCorners.bottom > 0 ) {
+				rcDest.left = rc.left;
+				rcDest.top = rc.bottom - rcCorners.bottom;
+				rcDest.right = rcCorners.left;
+				rcDest.bottom = rcCorners.bottom;
+				rcDest.right += rcDest.left;
+				rcDest.bottom += rcDest.top;
+				if( rcTemp.Intersect(rcPaint, rcDest) ) {
+					rcDest.right -= rcDest.left;
+					rcDest.bottom -= rcDest.top;
+// 					AlphaBlend(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pRender, \
+// 						rcBmpPart.left, rcBmpPart.bottom - rcCorners.bottom, rcCorners.left, rcCorners.bottom, uFade);
+					DrawBitmapAlpha(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pUiBitmap, \
+						rcBmpPart.left, rcBmpPart.bottom - rcCorners.bottom, rcCorners.left, rcCorners.bottom, uFade);
+				}
+			}
+			// bottom
+			if( rcCorners.bottom > 0 ) {
+				rcDest.left = rc.left + rcCorners.left;
+				rcDest.top = rc.bottom - rcCorners.bottom;
+				rcDest.right = rc.right - rc.left - rcCorners.left - rcCorners.right;
+				rcDest.bottom = rcCorners.bottom;
+				rcDest.right += rcDest.left;
+				rcDest.bottom += rcDest.top;
+				if( rcTemp.Intersect(rcPaint, rcDest) ) {
+					rcDest.right -= rcDest.left;
+					rcDest.bottom -= rcDest.top;
+// 					AlphaBlend(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pRender, \
+// 						rcBmpPart.left + rcCorners.left, rcBmpPart.bottom - rcCorners.bottom, \
+// 						rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right, rcCorners.bottom, uFade);
+					DrawBitmapAlpha(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pUiBitmap, \
+						rcBmpPart.left + rcCorners.left, rcBmpPart.bottom - rcCorners.bottom, \
+						rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right, rcCorners.bottom, uFade);
+				}
+			}
+			// right-bottom
+			if( rcCorners.right > 0 && rcCorners.bottom > 0 ) {
+				rcDest.left = rc.right - rcCorners.right;
+				rcDest.top = rc.bottom - rcCorners.bottom;
+				rcDest.right = rcCorners.right;
+				rcDest.bottom = rcCorners.bottom;
+				rcDest.right += rcDest.left;
+				rcDest.bottom += rcDest.top;
+				if( rcTemp.Intersect(rcPaint, rcDest) ) {
+					rcDest.right -= rcDest.left;
+					rcDest.bottom -= rcDest.top;
+// 					AlphaBlend(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pRender, \
+// 						rcBmpPart.right - rcCorners.right, rcBmpPart.bottom - rcCorners.bottom, rcCorners.right, \
+// 						rcCorners.bottom, uFade);
+					DrawBitmapAlpha(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pUiBitmap, \
+						rcBmpPart.right - rcCorners.right, rcBmpPart.bottom - rcCorners.bottom, rcCorners.right, \
+						rcCorners.bottom, uFade);
+				}
+			}
+		}
+		else 
+		{
+			if (rc.right - rc.left == rcBmpPart.right - rcBmpPart.left \
+				&& rc.bottom - rc.top == rcBmpPart.bottom - rcBmpPart.top \
+				&& rcCorners.left == 0 && rcCorners.right == 0 && rcCorners.top == 0 && rcCorners.bottom == 0)
+			{
+				if( rcTemp.Intersect(rcPaint, rc) ) {
+// 					BitBlt(rcTemp.left, rcTemp.top, rcTemp.right - rcTemp.left, rcTemp.bottom - rcTemp.top, \
+// 						pRender, rcBmpPart.left + rcTemp.left - rc.left, rcBmpPart.top + rcTemp.top - rc.top, SRCCOPY);
+					DrawBitmapAlpha(rcTemp.left, rcTemp.top, rcTemp.right - rcTemp.left, rcTemp.bottom - rcTemp.top, \
+						pUiBitmap, rcBmpPart.left + rcTemp.left - rc.left, rcBmpPart.top + rcTemp.top - rc.top, \
+						rcTemp.GetWidth(), rcTemp.GetHeight(), uFade);
+				}
+			}
+			else
+			{
+				// middle
+				if( !hole ) {
+					rcDest.left = rc.left + rcCorners.left;
+					rcDest.top = rc.top + rcCorners.top;
+					rcDest.right = rc.right - rc.left - rcCorners.left - rcCorners.right;
+					rcDest.bottom = rc.bottom - rc.top - rcCorners.top - rcCorners.bottom;
+					rcDest.right += rcDest.left;
+					rcDest.bottom += rcDest.top;
+					if( rcTemp.Intersect(rcPaint, rcDest) ) {
+						if( !xtiled && !ytiled ) {
+							rcDest.right -= rcDest.left;
+							rcDest.bottom -= rcDest.top;
+// 							StretchBlt(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pRender, \
+// 								rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, \
+// 								rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right, \
+// 								rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom, SRCCOPY);
+							DrawBitmapAlpha(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pUiBitmap, \
+								rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, \
+								rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right, \
+								rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom, uFade);
+						}
+						else if( xtiled && ytiled ) {
+							LONG lWidth = rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right;
+							LONG lHeight = rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom;
+							int iTimesX = (rcDest.right - rcDest.left + lWidth - 1) / lWidth;
+							int iTimesY = (rcDest.bottom - rcDest.top + lHeight - 1) / lHeight;
+							for( int j = 0; j < iTimesY; ++j ) {
+								LONG lDestTop = rcDest.top + lHeight * j;
+								LONG lDestBottom = rcDest.top + lHeight * (j + 1);
+								LONG lDrawHeight = lHeight;
+								if( lDestBottom > rcDest.bottom ) {
+									lDrawHeight -= lDestBottom - rcDest.bottom;
+									lDestBottom = rcDest.bottom;
+								}
+								for( int i = 0; i < iTimesX; ++i ) {
+									LONG lDestLeft = rcDest.left + lWidth * i;
+									LONG lDestRight = rcDest.left + lWidth * (i + 1);
+									LONG lDrawWidth = lWidth;
+									if( lDestRight > rcDest.right ) {
+										lDrawWidth -= lDestRight - rcDest.right;
+										lDestRight = rcDest.right;
+									}
+// 									BitBlt(rcDest.left + lWidth * i, rcDest.top + lHeight * j, \
+// 										lDestRight - lDestLeft, lDestBottom - lDestTop, pRender, \
+// 										rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, SRCCOPY);
+									DrawBitmapAlpha(rcDest.left + lWidth * i, rcDest.top + lHeight * j, \
+										lDestRight - lDestLeft, lDestBottom - lDestTop, pUiBitmap, \
+										rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, \
+										rcTemp.GetWidth(), rcTemp.GetHeight(), uFade);
+								}
+							}
+						}
+						else if( xtiled ) {
+							LONG lWidth = rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right;
+							int iTimes = (rcDest.right - rcDest.left + lWidth - 1) / lWidth;
+							for( int i = 0; i < iTimes; ++i ) {
+								LONG lDestLeft = rcDest.left + lWidth * i;
+								LONG lDestRight = rcDest.left + lWidth * (i + 1);
+								LONG lDrawWidth = lWidth;
+								if( lDestRight > rcDest.right ) {
+									lDrawWidth -= lDestRight - rcDest.right;
+									lDestRight = rcDest.right;
+								}
+// 								StretchBlt(lDestLeft, rcDest.top, lDestRight - lDestLeft, rcDest.bottom, 
+// 									pRender, rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, \
+// 									lDrawWidth, rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom, SRCCOPY);
+								DrawBitmapAlpha(lDestLeft, rcDest.top, lDestRight - lDestLeft, rcDest.bottom, 
+									pUiBitmap, rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, \
+									lDrawWidth, rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom, uFade);
+							}
+						}
+						else { // ytiled
+							LONG lHeight = rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom;
+							int iTimes = (rcDest.bottom - rcDest.top + lHeight - 1) / lHeight;
+							for( int i = 0; i < iTimes; ++i ) {
+								LONG lDestTop = rcDest.top + lHeight * i;
+								LONG lDestBottom = rcDest.top + lHeight * (i + 1);
+								LONG lDrawHeight = lHeight;
+								if( lDestBottom > rcDest.bottom ) {
+									lDrawHeight -= lDestBottom - rcDest.bottom;
+									lDestBottom = rcDest.bottom;
+								}
+// 								StretchBlt(rcDest.left, rcDest.top + lHeight * i, rcDest.right, lDestBottom - lDestTop, 
+// 									pRender, rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, \
+// 									rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right, lDrawHeight, SRCCOPY);  
+								DrawBitmapAlpha(rcDest.left, rcDest.top + lHeight * i, rcDest.right, lDestBottom - lDestTop, 
+									pUiBitmap, rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, \
+									rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right, lDrawHeight, uFade);    
+							}
+						}
+					}
+				}
+
+				// left-top
+				if( rcCorners.left > 0 && rcCorners.top > 0 ) {
+					rcDest.left = rc.left;
+					rcDest.top = rc.top;
+					rcDest.right = rcCorners.left;
+					rcDest.bottom = rcCorners.top;
+					rcDest.right += rcDest.left;
+					rcDest.bottom += rcDest.top;
+					if( rcTemp.Intersect(rcPaint, rcDest) ) {
+						rcDest.right -= rcDest.left;
+						rcDest.bottom -= rcDest.top;
+// 						StretchBlt(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pRender, \
+// 							rcBmpPart.left, rcBmpPart.top, rcCorners.left, rcCorners.top, SRCCOPY);
+						DrawBitmapAlpha(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pUiBitmap, \
+							rcBmpPart.left, rcBmpPart.top, rcCorners.left, rcCorners.top, uFade);
+					}
+				}
+				// top
+				if( rcCorners.top > 0 ) {
+					rcDest.left = rc.left + rcCorners.left;
+					rcDest.top = rc.top;
+					rcDest.right = rc.right - rc.left - rcCorners.left - rcCorners.right;
+					rcDest.bottom = rcCorners.top;
+					rcDest.right += rcDest.left;
+					rcDest.bottom += rcDest.top;
+					if( rcTemp.Intersect(rcPaint, rcDest) ) {
+						rcDest.right -= rcDest.left;
+						rcDest.bottom -= rcDest.top;
+// 						StretchBlt(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pRender, \
+// 							rcBmpPart.left + rcCorners.left, rcBmpPart.top, rcBmpPart.right - rcBmpPart.left - \
+// 							rcCorners.left - rcCorners.right, rcCorners.top, SRCCOPY);
+						DrawBitmapAlpha(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pUiBitmap, \
+							rcBmpPart.left + rcCorners.left, rcBmpPart.top, rcBmpPart.right - rcBmpPart.left - \
+							rcCorners.left - rcCorners.right, rcCorners.top, uFade);
+					}
+				}
+				// right-top
+				if( rcCorners.right > 0 && rcCorners.top > 0 ) {
+					rcDest.left = rc.right - rcCorners.right;
+					rcDest.top = rc.top;
+					rcDest.right = rcCorners.right;
+					rcDest.bottom = rcCorners.top;
+					rcDest.right += rcDest.left;
+					rcDest.bottom += rcDest.top;
+					if( rcTemp.Intersect(rcPaint, rcDest) ) {
+						rcDest.right -= rcDest.left;
+						rcDest.bottom -= rcDest.top;
+// 						StretchBlt(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pRender, \
+// 							rcBmpPart.right - rcCorners.right, rcBmpPart.top, rcCorners.right, rcCorners.top, SRCCOPY);
+						DrawBitmapAlpha(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pUiBitmap, \
+							rcBmpPart.right - rcCorners.right, rcBmpPart.top, rcCorners.right, rcCorners.top, uFade);
+					}
+				}
+				// left
+				if( rcCorners.left > 0 ) {
+					rcDest.left = rc.left;
+					rcDest.top = rc.top + rcCorners.top;
+					rcDest.right = rcCorners.left;
+					rcDest.bottom = rc.bottom - rc.top - rcCorners.top - rcCorners.bottom;
+					rcDest.right += rcDest.left;
+					rcDest.bottom += rcDest.top;
+					if( rcTemp.Intersect(rcPaint, rcDest) ) {
+						rcDest.right -= rcDest.left;
+						rcDest.bottom -= rcDest.top;
+// 						StretchBlt(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pRender, \
+// 							rcBmpPart.left, rcBmpPart.top + rcCorners.top, rcCorners.left, rcBmpPart.bottom - \
+// 							rcBmpPart.top - rcCorners.top - rcCorners.bottom, SRCCOPY);
+						DrawBitmapAlpha(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pUiBitmap, \
+							rcBmpPart.left, rcBmpPart.top + rcCorners.top, rcCorners.left, rcBmpPart.bottom - \
+							rcBmpPart.top - rcCorners.top - rcCorners.bottom, uFade);
+					}
+				}
+				// right
+				if( rcCorners.right > 0 ) {
+					rcDest.left = rc.right - rcCorners.right;
+					rcDest.top = rc.top + rcCorners.top;
+					rcDest.right = rcCorners.right;
+					rcDest.bottom = rc.bottom - rc.top - rcCorners.top - rcCorners.bottom;
+					rcDest.right += rcDest.left;
+					rcDest.bottom += rcDest.top;
+					if( rcTemp.Intersect(rcPaint, rcDest) ) {
+						rcDest.right -= rcDest.left;
+						rcDest.bottom -= rcDest.top;
+// 						StretchBlt(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pRender, \
+// 							rcBmpPart.right - rcCorners.right, rcBmpPart.top + rcCorners.top, rcCorners.right, \
+// 							rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom, SRCCOPY);
+						DrawBitmapAlpha(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pUiBitmap, \
+							rcBmpPart.right - rcCorners.right, rcBmpPart.top + rcCorners.top, rcCorners.right, \
+							rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom, SRCCOPY);
+					}
+				}
+				// left-bottom
+				if( rcCorners.left > 0 && rcCorners.bottom > 0 ) {
+					rcDest.left = rc.left;
+					rcDest.top = rc.bottom - rcCorners.bottom;
+					rcDest.right = rcCorners.left;
+					rcDest.bottom = rcCorners.bottom;
+					rcDest.right += rcDest.left;
+					rcDest.bottom += rcDest.top;
+					if( rcTemp.Intersect(rcPaint, rcDest) ) {
+						rcDest.right -= rcDest.left;
+						rcDest.bottom -= rcDest.top;
+// 						StretchBlt(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pRender, \
+// 							rcBmpPart.left, rcBmpPart.bottom - rcCorners.bottom, rcCorners.left, rcCorners.bottom, SRCCOPY);
+						DrawBitmapAlpha(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pUiBitmap, \
+							rcBmpPart.left, rcBmpPart.bottom - rcCorners.bottom, rcCorners.left, rcCorners.bottom, uFade);
+					}
+				}
+				// bottom
+				if( rcCorners.bottom > 0 ) {
+					rcDest.left = rc.left + rcCorners.left;
+					rcDest.top = rc.bottom - rcCorners.bottom;
+					rcDest.right = rc.right - rc.left - rcCorners.left - rcCorners.right;
+					rcDest.bottom = rcCorners.bottom;
+					rcDest.right += rcDest.left;
+					rcDest.bottom += rcDest.top;
+					if( rcTemp.Intersect(rcPaint, rcDest) ) {
+						rcDest.right -= rcDest.left;
+						rcDest.bottom -= rcDest.top;
+// 						StretchBlt(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pRender, \
+// 							rcBmpPart.left + rcCorners.left, rcBmpPart.bottom - rcCorners.bottom, \
+// 							rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right, rcCorners.bottom, SRCCOPY);
+						DrawBitmapAlpha(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pUiBitmap, \
+							rcBmpPart.left + rcCorners.left, rcBmpPart.bottom - rcCorners.bottom, \
+							rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right, rcCorners.bottom, uFade);
+					}
+				}
+				// right-bottom
+				if( rcCorners.right > 0 && rcCorners.bottom > 0 ) {
+					rcDest.left = rc.right - rcCorners.right;
+					rcDest.top = rc.bottom - rcCorners.bottom;
+					rcDest.right = rcCorners.right;
+					rcDest.bottom = rcCorners.bottom;
+					rcDest.right += rcDest.left;
+					rcDest.bottom += rcDest.top;
+					if( rcTemp.Intersect(rcPaint, rcDest) ) {
+						rcDest.right -= rcDest.left;
+						rcDest.bottom -= rcDest.top;
+// 						StretchBlt(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pRender, \
+// 							rcBmpPart.right - rcCorners.right, rcBmpPart.bottom - rcCorners.bottom, rcCorners.right, \
+// 							rcCorners.bottom, SRCCOPY);
+						DrawBitmapAlpha(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, pUiBitmap, \
+							rcBmpPart.right - rcCorners.right, rcBmpPart.bottom - rcCorners.bottom, rcCorners.right, \
+							rcCorners.bottom, uFade);
+					}
+				}
+			}
+		}
+	}
+
 	void UIRender::DrawBackColor(const RECT& rcItem, const SIZE &round, DWORD dwBackColor, DWORD dwBackColor2, DWORD dwBackColor3, bool bVertical)
 	{
 		if( dwBackColor != 0 )
@@ -482,7 +1135,7 @@ namespace DuiLib {
 		//调整dest
 
 		//如果有定义pDrawInfo->rcDest，调整显示为控件位置的偏移
-		RECT rcDest = rcItem;
+		CDuiRect rcDest = rcItem;
 		if( pDrawInfo->rcDest.left != 0 || pDrawInfo->rcDest.top != 0 || pDrawInfo->rcDest.right != 0 || pDrawInfo->rcDest.bottom != 0 ) 
 		{
 			rcDest.left = rcItem.left + pDrawInfo->rcDest.left;
@@ -511,14 +1164,18 @@ namespace DuiLib {
 			rcDest.bottom = rcDest.top + (pDrawInfo->rcDest.bottom - pDrawInfo->rcDest.top);
 		}
 
-		::OffsetRect(&rcDest, pDrawInfo->rcPadding.left, pDrawInfo->rcPadding.top);		
-		::OffsetRect(&rcDest, -pDrawInfo->rcPadding.right, -pDrawInfo->rcPadding.bottom);
+// 		::OffsetRect(&rcDest, pDrawInfo->rcPadding.left, pDrawInfo->rcPadding.top);		
+// 		::OffsetRect(&rcDest, -pDrawInfo->rcPadding.right, -pDrawInfo->rcPadding.bottom);
+		rcDest.Offset(pDrawInfo->rcPadding.left, pDrawInfo->rcPadding.top);		
+		rcDest.Offset(-pDrawInfo->rcPadding.right, -pDrawInfo->rcPadding.bottom);
 		if( rcDest.right > rcItem.right ) rcDest.right = rcItem.right;
 		if( rcDest.bottom > rcItem.bottom ) rcDest.bottom = rcItem.bottom;
 
-		RECT rcTemp;
-		if( !::IntersectRect(&rcTemp, &rcDest, &rcItem) ) return true;
-		if( !::IntersectRect(&rcTemp, &rcDest, &rcPaint) ) return true;
+		CDuiRect rcTemp;
+		//if( !::IntersectRect(&rcTemp, &rcDest, &rcItem) ) return true;
+		if( !rcTemp.Intersect(rcDest, rcItem) ) return true;
+		//if( !::IntersectRect(&rcTemp, &rcDest, &rcPaint) ) return true;
+		if( !rcTemp.Intersect(rcDest, rcPaint) ) return true;
 
 		//////////////////////////////////////////////////////////////////////////
 		//调整source
@@ -535,7 +1192,7 @@ namespace DuiLib {
 		if (rcSource.right > data->nWidth) rcSource.right = data->nWidth;
 		if (rcSource.bottom > data->nHeight) rcSource.bottom = data->nHeight;
 
-		DrawBitmap(data->bitmap->GetBitmap(), rcDest, rcPaint, 
+		DrawBitmap(data->bitmap, rcDest, rcPaint, 
 			rcSource, pDrawInfo->rcCorner, pManager->IsLayered() ? true : data->bAlpha, 
 			pDrawInfo->uFade, pDrawInfo->bHole, pDrawInfo->bTiledX, pDrawInfo->bTiledY);
 
@@ -553,3 +1210,4 @@ namespace DuiLib {
 	}
 	
 } // namespace DuiLib
+

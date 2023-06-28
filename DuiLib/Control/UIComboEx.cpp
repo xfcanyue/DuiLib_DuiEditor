@@ -1,12 +1,13 @@
 #include "StdAfx.h"
 #include "UIComboEx.h"
-#include "UIComboEditWnd.h"
+#include "UIComboEditWndWin32.h"
+#include "UIComboEditWndGtk.h"
 
 namespace DuiLib
 {
 
 IMPLEMENT_DUICONTROL(CComboExUI)
-CComboExUI::CComboExUI(void) : m_pEditWindow(NULL), m_type(CBS_DROPDOWNLIST), m_dwTipValueColor(0xFFBAC0C5)
+CComboExUI::CComboExUI(void) : m_dwTipValueColor(0xFFBAC0C5), m_pEditWindow(NULL), m_type(CBS_DROPDOWNLIST)
 {
 	m_szDropButtonSize.cx = 16;
 	m_szDropButtonSize.cy = 16;
@@ -25,7 +26,7 @@ LPCTSTR CComboExUI::GetClass() const
 LPVOID CComboExUI::GetInterface(LPCTSTR pstrName)
 {
 	if( _tcscmp(pstrName, DUI_CTR_COMBOEX) == 0 ) return static_cast<CComboExUI*>(this);
-	return __super::GetInterface(pstrName);
+	return CComboUI::GetInterface(pstrName);
 }
 
 bool CComboExUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
@@ -133,7 +134,12 @@ bool CComboExUI::SelectString(LPCTSTR pstrText)
 
 bool CComboExUI::SetCurSel(int iIndex, bool bTakeFocus)
 {
-	return SelectItem(iIndex, bTakeFocus);
+	bool bRet = SelectItem(iIndex, bTakeFocus);
+	if(!bRet)
+	{
+		m_sText.Empty();
+	}
+	return bRet;
 }
 
 bool CComboExUI::SetCurSelFromItemData(UINT_PTR ptrItemData)
@@ -279,10 +285,13 @@ void CComboExUI::SetTipValue( LPCTSTR pStrTipValue )
 	m_sTipValue	= pStrTipValue;
 }
 
-LPCTSTR CComboExUI::GetTipValue()
+CDuiString CComboExUI::GetTipValue()
 {
 	if (IsResourceText()) 
-		return CResourceManager::GetInstance()->GetText(m_sTipValue);
+	{
+		CDuiString s = CResourceManager::GetInstance()->GetText(m_sTipValue);
+		if(!s.IsEmpty()) return s;
+	}
 
 	CLangPackageUI *pkg = GetLangPackage();
 	if(pkg && GetResourceID() > 0)
@@ -290,7 +299,7 @@ LPCTSTR CComboExUI::GetTipValue()
 		LPCTSTR s = pkg->GetTipValue(GetResourceID());
 		if(s && *s!='\0') return s; 
 	}
-	else
+	else if (IsResourceText())
 	{
 		CDuiString s = CLangManagerUI::LoadString(m_sTipValue);
 		if(!s.IsEmpty()) return s;
@@ -314,20 +323,20 @@ DWORD CComboExUI::GetTipValueColor()
 
 void CComboExUI::SetPos(RECT rc, bool bNeedInvalidate)
 {
-	__super::SetPos(rc, bNeedInvalidate);
+	CComboUI::SetPos(rc, bNeedInvalidate);
 	if( m_pEditWindow != NULL ) {
 		RECT rcPos = ((CComboEditWnd *)m_pEditWindow)->CalPos();
-		::SetWindowPos(m_pEditWindow->GetHWND(), NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
+		m_pEditWindow->SetWindowPos(NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
 			rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE);        
 	}
 }
 
 void CComboExUI::Move(SIZE szOffset, bool bNeedInvalidate)
 {
-	__super::Move(szOffset, bNeedInvalidate);
+	CComboUI::Move(szOffset, bNeedInvalidate);
 	if( m_pEditWindow != NULL ) {
 		RECT rcPos = ((CComboEditWnd *)m_pEditWindow)->CalPos();
-		::SetWindowPos(m_pEditWindow->GetHWND(), NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
+		m_pEditWindow->SetWindowPos(NULL, rcPos.left, rcPos.top, rcPos.right - rcPos.left, 
 			rcPos.bottom - rcPos.top, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);        
 	}
 }
@@ -335,7 +344,7 @@ void CComboExUI::Move(SIZE szOffset, bool bNeedInvalidate)
 
 void CComboExUI::SetVisible(bool bVisible)
 {
-	__super::SetVisible(bVisible);
+	CComboUI::SetVisible(bVisible);
 	if( !IsVisible() && m_pEditWindow != NULL ) m_pManager->SetFocus(NULL);
 }
 
@@ -355,9 +364,9 @@ void CComboExUI::DoEvent(TEventUI& event)
 	if( event.Type == UIEVENT_BUTTONDOWN )
 	{
 		if(GetDropType() == CBS_DROPDOWNLIST)
-			return __super::DoEvent(event);
+			return CComboUI::DoEvent(event);
 		if(!OnLbuttonDown(event))
-			return __super::DoEvent(event);
+			return CComboUI::DoEvent(event);
 
 		return;
 	}
@@ -365,13 +374,13 @@ void CComboExUI::DoEvent(TEventUI& event)
 	if( event.Type == UIEVENT_BUTTONUP )
 	{
 		if(GetDropType() == CBS_DROPDOWNLIST)
-			return __super::DoEvent(event);
+			return CComboUI::DoEvent(event);
 		if(!OnLbuttonUp(event))
-			return __super::DoEvent(event);
+			return CComboUI::DoEvent(event);
 		return;
 	}
 
-	return __super::DoEvent(event);
+	return CComboUI::DoEvent(event);
 }
 
 RECT CComboExUI::GetDropButtonRect()
@@ -394,10 +403,11 @@ RECT CComboExUI::GetDropButtonRect()
 
 bool CComboExUI::OnLbuttonDown(TEventUI& event)
 {
-	RECT rcButton = GetDropButtonRect();
+	CDuiRect rcButton = GetDropButtonRect();
 
 	//点击下拉按钮
-	if(::PtInRect(&rcButton, event.ptMouse))
+	//if(::PtInRect(&rcButton, event.ptMouse))
+	if(rcButton.PtInRect(event.ptMouse))
 		return false;
 
 	if(!IsEnabled())
@@ -410,11 +420,13 @@ bool CComboExUI::OnLbuttonDown(TEventUI& event)
 		ASSERT(m_pEditWindow);
 		((CComboEditWnd *)m_pEditWindow)->Init(this);
 
-		if( PtInRect(&m_rcItem, event.ptMouse) )
+		//if( PtInRect(&m_rcItem, event.ptMouse) )
+		if( m_rcItem.PtInRect(event.ptMouse) )
 		{
-			int nSize = GetWindowTextLength(*m_pEditWindow);
-			if( nSize == 0 ) nSize = 1;
-			Edit_SetSel(*m_pEditWindow, 0, nSize);
+			//int nSize = GetWindowTextLength(*m_pEditWindow);
+			//if( nSize == 0 ) nSize = 1;
+			//Edit_SetSel(*m_pEditWindow, 0, nSize);
+			((CComboEditWnd *)m_pEditWindow)->edit_SetSel(0,-1);
 		}
 	}
 	else if( m_pEditWindow != NULL )
@@ -422,8 +434,10 @@ bool CComboExUI::OnLbuttonDown(TEventUI& event)
 		POINT pt = event.ptMouse;
 		pt.x -= m_rcItem.left + m_rcTextPadding.left;
 		pt.y -= m_rcItem.top + m_rcTextPadding.top;
-		Edit_SetSel(*m_pEditWindow, 0, 0);
-		::SendMessage(*m_pEditWindow, WM_LBUTTONDOWN, event.wParam, MAKELPARAM(pt.x, pt.y));
+		//Edit_SetSel(*m_pEditWindow, 0, 0);
+		//::SendMessage(*m_pEditWindow, WM_LBUTTONDOWN, event.wParam, MAKELPARAM(pt.x, pt.y));
+		((CComboEditWnd*)m_pEditWindow)->edit_SetSel(0, 0);
+		m_pEditWindow->SendMessage(WM_LBUTTONDOWN, event.wParam, MAKELPARAM(pt.x, pt.y));
 	}
 
 	return true;
@@ -431,10 +445,11 @@ bool CComboExUI::OnLbuttonDown(TEventUI& event)
 
 bool CComboExUI::OnLbuttonUp(TEventUI& event)
 {
-	RECT rcButton = GetDropButtonRect();
+	CDuiRect rcButton = GetDropButtonRect();
 
 	//点击下拉按钮
-	if(::PtInRect(&rcButton, event.ptMouse))
+	//if(::PtInRect(&rcButton, event.ptMouse))
+	if(rcButton.PtInRect(event.ptMouse))
 		return false;
 
 	return true;
@@ -445,7 +460,7 @@ bool CComboExUI::Activate()
 	if( !CControlUI::Activate() ) return false;
 // 	if(GetDropType() == CBS_DROPDOWNLIST)
 // 	{
-		return __super::Activate();
+		return CComboUI::Activate();
 //	}
 	return true;
 }

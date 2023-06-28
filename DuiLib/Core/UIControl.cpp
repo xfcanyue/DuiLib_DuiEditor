@@ -44,8 +44,8 @@ namespace DuiLib {
 		m_cxyBorderRound.cx = m_cxyBorderRound.cy = 0;
 
 		::ZeroMemory(&m_rcPadding, sizeof(RECT));
-		::ZeroMemory(&m_rcItem, sizeof(RECT));
-		::ZeroMemory(&m_rcPaint, sizeof(RECT));
+		//::ZeroMemory(&m_rcItem, sizeof(RECT));
+		//::ZeroMemory(&m_rcPaint, sizeof(RECT));
 		::ZeroMemory(&m_rcBorderSize,sizeof(RECT));
 		m_piFloatPercent.left = m_piFloatPercent.top = m_piFloatPercent.right = m_piFloatPercent.bottom = 0.0f;
 
@@ -165,8 +165,11 @@ namespace DuiLib {
 
 	CDuiString CControlUI::GetText() const
 	{
-		if (IsResourceText())
-			return CResourceManager::GetInstance()->GetText(m_sText);
+		if (IsResourceText()) 
+		{
+			CDuiString s = CResourceManager::GetInstance()->GetText(m_sText);
+			if(!s.IsEmpty()) return s;
+		}
 
  		CControlUI* pThis = const_cast<CControlUI* >(this);
 		CLangPackageUI *pkg = pThis->GetLangPackage();
@@ -175,7 +178,7 @@ namespace DuiLib {
 			CDuiString s = pkg->GetText(GetResourceID());
 			if(!s.IsEmpty()) return s; 
 		}
-		else
+		else if (IsResourceText())
 		{
 			CDuiString s = CLangManagerUI::LoadString(m_sText);
 			if(!s.IsEmpty()) return s;
@@ -232,7 +235,7 @@ namespace DuiLib {
 
 	RECT CControlUI::GetTextPadding() const
 	{
-		if(m_pManager != NULL) return m_pManager->GetDPIObj()->Scale(m_rcTextPadding);
+		if(m_pManager != NULL) return m_pManager->GetDPIObj()->ScaleRect(m_rcTextPadding);
 		return m_rcTextPadding;
 	}
 
@@ -519,7 +522,7 @@ namespace DuiLib {
 
 	int CControlUI::GetBorderSize() const
 	{
-		if(m_pManager != NULL) return m_pManager->GetDPIObj()->Scale(m_nBorderSize);
+		if(m_pManager != NULL) return m_pManager->GetDPIObj()->ScaleInt(m_nBorderSize);
 		return m_nBorderSize;
 	}
 
@@ -539,13 +542,13 @@ namespace DuiLib {
 
 	RECT CControlUI::GetBorderRectSize() const
 	{
-		if(m_pManager != NULL) return m_pManager->GetDPIObj()->Scale(m_rcBorderSize);
+		if(m_pManager != NULL) return m_pManager->GetDPIObj()->ScaleRect(m_rcBorderSize);
 		return m_rcBorderSize;
 	}
 
 	SIZE CControlUI::GetBorderRound() const
 	{
-		if(m_pManager != NULL) return m_pManager->GetDPIObj()->Scale(m_cxyBorderRound);
+		if(m_pManager != NULL) return m_pManager->GetDPIObj()->ScaleSize(m_cxyBorderRound);
 		return m_cxyBorderRound;
 	}
 
@@ -560,7 +563,7 @@ namespace DuiLib {
 		return pRender->DrawImageString(m_rcItem, m_rcPaint, pStrImage, pStrModify, m_instance);
 	}
 
-	const RECT& CControlUI::GetPos() const
+	const CDuiRect& CControlUI::GetPos() const
 	{
 		return m_rcItem;
 	}
@@ -589,7 +592,7 @@ namespace DuiLib {
 		if( rc.bottom < rc.top ) rc.bottom = rc.top;
 
 		CDuiRect invalidateRc = m_rcItem;
-		if( ::IsRectEmpty(&invalidateRc) ) invalidateRc = rc;
+		if( invalidateRc.IsEmpty() ) invalidateRc = rc;
 
 		m_rcItem = rc;
 		if( m_pManager == NULL ) return;
@@ -614,7 +617,8 @@ namespace DuiLib {
 				if( !pParent->IsVisible() ) return;
 				rcTemp = invalidateRc;
 				rcParent = pParent->GetPos();
-				if( !::IntersectRect(&invalidateRc, &rcTemp, &rcParent) ) return;
+				//if( !::IntersectRect(&invalidateRc, &rcTemp, &rcParent) ) return;
+				if( !invalidateRc.Intersect(rcTemp, rcParent) ) return;
 			}
 			m_pManager->Invalidate(invalidateRc);
 		}
@@ -654,7 +658,7 @@ namespace DuiLib {
 
 	RECT CControlUI::GetPadding() const
 	{
-		if(m_pManager != NULL) return m_pManager->GetDPIObj()->Scale(m_rcPadding);
+		if(m_pManager != NULL) return m_pManager->GetDPIObj()->ScaleRect(m_rcPadding);
 		return m_rcPadding;
 	}
 
@@ -666,7 +670,7 @@ namespace DuiLib {
 
 	SIZE CControlUI::GetFixedXY() const
 	{
-		if(m_pManager != NULL) return m_pManager->GetDPIObj()->Scale(m_cXY);
+		if(m_pManager != NULL) return m_pManager->GetDPIObj()->ScaleSize(m_cXY);
 		return m_cXY;
 	}
 
@@ -680,7 +684,7 @@ namespace DuiLib {
 	int CControlUI::GetFixedWidth() const
 	{
 		if (m_pManager != NULL) {
-			return m_pManager->GetDPIObj()->Scale(m_cxyFixed.cx);
+			return m_pManager->GetDPIObj()->ScaleInt(m_cxyFixed.cx);
 		}
 
 		return m_cxyFixed.cx;
@@ -696,7 +700,7 @@ namespace DuiLib {
 	int CControlUI::GetFixedHeight() const
 	{
 		if (m_pManager != NULL) {
-			return m_pManager->GetDPIObj()->Scale(m_cxyFixed.cy);
+			return m_pManager->GetDPIObj()->ScaleInt(m_cxyFixed.cy);
 		}
 		
 		return m_cxyFixed.cy;
@@ -736,7 +740,7 @@ namespace DuiLib {
 	int CControlUI::GetMinWidth() const
 	{
 		if (m_pManager != NULL) {
-			return m_pManager->GetDPIObj()->Scale(m_cxyMin.cx);
+			return m_pManager->GetDPIObj()->ScaleInt(m_cxyMin.cx);
 		}
 		return m_cxyMin.cx;
 	}
@@ -753,7 +757,7 @@ namespace DuiLib {
 	int CControlUI::GetMaxWidth() const
 	{
 		if (m_pManager != NULL) {
-			return m_pManager->GetDPIObj()->Scale(m_cxyMax.cx);
+			return m_pManager->GetDPIObj()->ScaleInt(m_cxyMax.cx);
 		}
 		return m_cxyMax.cx;
 	}
@@ -770,7 +774,7 @@ namespace DuiLib {
 	int CControlUI::GetMinHeight() const
 	{
 		if (m_pManager != NULL) {
-			return m_pManager->GetDPIObj()->Scale(m_cxyMin.cy);
+			return m_pManager->GetDPIObj()->ScaleInt(m_cxyMin.cy);
 		}
 		
 		return m_cxyMin.cy;
@@ -788,7 +792,7 @@ namespace DuiLib {
 	int CControlUI::GetMaxHeight() const
 	{
 		if (m_pManager != NULL) {
-			return m_pManager->GetDPIObj()->Scale(m_cxyMax.cy);
+			return m_pManager->GetDPIObj()->ScaleInt(m_cxyMax.cy);
 		}
 
 		return m_cxyMax.cy;
@@ -844,7 +848,10 @@ namespace DuiLib {
 	CDuiString CControlUI::GetToolTip() const
 	{
 		if (IsResourceText()) 
-			return CResourceManager::GetInstance()->GetText(m_sToolTip);
+		{
+			CDuiString s = CResourceManager::GetInstance()->GetText(m_sToolTip);
+			if(!s.IsEmpty()) return s;
+		}
 
 		CControlUI* pThis = const_cast<CControlUI* >(this);
 		CLangPackageUI *pkg = pThis->GetLangPackage();
@@ -853,7 +860,7 @@ namespace DuiLib {
 			CDuiString s = pkg->GetToolTip(GetResourceID());
 			if(!s.IsEmpty()) return s; 
 		}
-		else
+		else if (IsResourceText())
 		{
 			CDuiString s = CLangManagerUI::LoadString(m_sToolTip);
 			if(!s.IsEmpty()) return s;
@@ -876,7 +883,7 @@ namespace DuiLib {
 
 	int CControlUI::GetToolTipWidth( void )
 	{
-		if(m_pManager != NULL) return m_pManager->GetDPIObj()->Scale(m_nTooltipWidth);
+		if(m_pManager != NULL) return m_pManager->GetDPIObj()->ScaleInt(m_nTooltipWidth);
 		return m_nTooltipWidth;
 	}
 	
@@ -1036,11 +1043,13 @@ namespace DuiLib {
 		if( (uFlags & UIFIND_ENABLED) != 0 && !IsEnabled() ) return NULL;
 		if(CPaintManagerUI::UIDESIGNMODE)
 		{	//设计器中，鼠标点击无法选中控件，!m_bMouseEnabled时，应该也能通过坐标Find出来。
-			if( (uFlags & UIFIND_HITTEST) != 0 && (!::PtInRect(&m_rcItem, * static_cast<LPPOINT>(pData))) ) return NULL;
+			//if( (uFlags & UIFIND_HITTEST) != 0 && (!::PtInRect(&m_rcItem, * static_cast<LPPOINT>(pData))) ) return NULL;
+			if( (uFlags & UIFIND_HITTEST) != 0 && (!m_rcItem.PtInRect(* static_cast<LPPOINT>(pData))) ) return NULL;
 		}
 		else
 		{
-			if( (uFlags & UIFIND_HITTEST) != 0 && (!m_bMouseEnabled || !::PtInRect(&m_rcItem, * static_cast<LPPOINT>(pData))) ) return NULL;
+			//if( (uFlags & UIFIND_HITTEST) != 0 && (!m_bMouseEnabled || !::PtInRect(&m_rcItem, * static_cast<LPPOINT>(pData))) ) return NULL;
+			if( (uFlags & UIFIND_HITTEST) != 0 && (!m_bMouseEnabled || !m_rcItem.PtInRect(* static_cast<LPPOINT>(pData))) ) return NULL;
 		}
 		return Proc(this, pData);
 	}
@@ -1049,7 +1058,7 @@ namespace DuiLib {
 	{
 		if( !IsVisible() ) return;
 
-		RECT invalidateRc = m_rcItem;
+		CDuiRect invalidateRc = m_rcItem;
 
 		CControlUI* pParent = this;
 		RECT rcTemp;
@@ -1058,7 +1067,8 @@ namespace DuiLib {
 		{
 			rcTemp = invalidateRc;
 			rcParent = pParent->GetPos();
-			if( !::IntersectRect(&invalidateRc, &rcTemp, &rcParent) ) 
+			//if( !::IntersectRect(&invalidateRc, &rcTemp, &rcParent) ) 
+			if( !invalidateRc.Intersect(rcTemp, rcParent) ) 
 			{
 				return;
 			}
@@ -1127,13 +1137,19 @@ namespace DuiLib {
 
 	void CControlUI::DoEvent(TEventUI& event)
 	{
-		if( event.Type == UIEVENT_SETCURSOR ) {
-			if( GetCursor() ) {
-				::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(GetCursor())));
+		if( event.Type == UIEVENT_SETCURSOR ) 
+		{
+			if( GetCursor() ) 
+			{
+				//::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(GetCursor())));
+				GetManager()->SetCursor(GetCursor());
 			}
-			else {
-				::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_ARROW)));
+			else 
+			{
+				//::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_ARROW)));
+				GetManager()->SetCursor(DUI_ARROW);
 			}
+			//DUITRACE(_T("UIEVENT_SETCURSOR: %s, dt=%d"), GetClass(), GetTickCount());
 			return;
 		}
 
@@ -1868,14 +1884,15 @@ namespace DuiLib {
 		}
 
 		if(m_pManager != NULL)
-			return m_pManager->GetDPIObj()->Scale(m_cxyFixed);
+			return m_pManager->GetDPIObj()->ScaleSize(m_cxyFixed);
 		return m_cxyFixed;
 	}
 
 	bool CControlUI::Paint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 	{
 		if (pStopControl == this) return false;
-		if( !::IntersectRect(&m_rcPaint, &rcPaint, &m_rcItem) ) return true;
+		//if( !::IntersectRect(&m_rcPaint, &rcPaint, &m_rcItem) ) return true;
+		if( !m_rcPaint.Intersect(rcPaint, m_rcItem) ) return true;
 		if(!m_asOnPaint.IsEmpty())
 		{
 			if(GetManager()->ExecuteScript(m_asOnPaint, this, pRender, rcPaint, pStopControl)) 
@@ -1894,8 +1911,8 @@ namespace DuiLib {
 		SIZE cxyBorderRound;
 		RECT rcBorderSize;
 		if (m_pManager) {
-			cxyBorderRound = GetManager()->GetDPIObj()->Scale(m_cxyBorderRound);
-			rcBorderSize = GetManager()->GetDPIObj()->Scale(m_rcBorderSize);
+			cxyBorderRound = GetManager()->GetDPIObj()->ScaleSize(m_cxyBorderRound);
+			rcBorderSize = GetManager()->GetDPIObj()->ScaleRect(m_rcBorderSize);
 		}
 		else {
 			cxyBorderRound = m_cxyBorderRound;
@@ -2131,7 +2148,7 @@ namespace DuiLib {
 
 	int CControlUI::GetLeftBorderSize() const
 	{
-		if(m_pManager != NULL) return m_pManager->GetDPIObj()->Scale(m_rcBorderSize.left);
+		if(m_pManager != NULL) return m_pManager->GetDPIObj()->ScaleInt(m_rcBorderSize.left);
 		return m_rcBorderSize.left;
 	}
 
@@ -2143,7 +2160,7 @@ namespace DuiLib {
 
 	int CControlUI::GetTopBorderSize() const
 	{
-		if(m_pManager != NULL) return m_pManager->GetDPIObj()->Scale(m_rcBorderSize.top);
+		if(m_pManager != NULL) return m_pManager->GetDPIObj()->ScaleInt(m_rcBorderSize.top);
 		return m_rcBorderSize.top;
 	}
 
@@ -2155,7 +2172,7 @@ namespace DuiLib {
 
 	int CControlUI::GetRightBorderSize() const
 	{
-		if(m_pManager != NULL) return m_pManager->GetDPIObj()->Scale(m_rcBorderSize.right);
+		if(m_pManager != NULL) return m_pManager->GetDPIObj()->ScaleInt(m_rcBorderSize.right);
 		return m_rcBorderSize.right;
 	}
 
@@ -2167,7 +2184,7 @@ namespace DuiLib {
 
 	int CControlUI::GetBottomBorderSize() const
 	{
-		if(m_pManager != NULL) return m_pManager->GetDPIObj()->Scale(m_rcBorderSize.bottom);
+		if(m_pManager != NULL) return m_pManager->GetDPIObj()->ScaleInt(m_rcBorderSize.bottom);
 		return m_rcBorderSize.bottom;
 	}
 
@@ -2351,3 +2368,4 @@ namespace DuiLib {
 		return m_pExtraParent;
 	}
 } // namespace DuiLib
+

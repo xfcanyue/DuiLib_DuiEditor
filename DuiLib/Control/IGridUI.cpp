@@ -4,13 +4,87 @@
 namespace DuiLib
 {
 
-//#pragma init_seg(lib)
+//////////////////////////////////////////////////////////////////////////
+//
+//
+TCellData::TCellData()
+{
+	m_state = 0;
+	m_tag = 0;
+	m_dwTextColor = 0;
+}
+
+void TCellData::Select(BOOL bSelected) 
+{   
+	if(bSelected) m_state |= 0x01;
+	else m_state &= static_cast<BYTE>(~0x01);
+}
+
+BOOL TCellData::IsSelected() const { return (m_state & 0x01) == 0x01; }
+
+void TCellData::SetCheckBoxCheck(BOOL bSelected) 
+{ 
+	if(bSelected) m_state |= 0x02;
+	else m_state &= static_cast<BYTE>(~0x02);
+}
+
+BOOL TCellData::IsCheckBoxCheck() const { return (m_state & 0x02) == 0x02; }
+
+void TCellData::SetMergedWidthOthers(bool bMerged) 
+{
+	if(bMerged) m_state |= 0x04;
+	else m_state &= static_cast<BYTE>(~0x04);
+}
+bool TCellData::IsMergedWithOthers() const { return (m_state & 0x04) == 0x04; }
+
+CDuiString TCellData::GetText() const { return m_sText; }
+int TCellData::GetTextN() const { return _ttoi(m_sText); }
+
+void TCellData::SetText(LPCTSTR pstrText) { m_sText = pstrText; }
+void TCellData::SetTextN(int n) { m_sText.Format(_T("%d"), n); }
+void TCellData::SetTextV(LPCTSTR lpszFormat, ...)
+{
+	va_list argList;
+	va_start(argList, lpszFormat);
+	CDuiString s;
+	s.InnerFormat(lpszFormat, argList);
+	SetText(s);
+	va_end(argList);
+}
+
+void TCellData::SetTag(UINT_PTR tag) { m_tag = tag; }
+UINT_PTR TCellData::GetTag() const { return m_tag; }
+
+void TCellData::SetTextColor(DWORD dwColor) { m_dwTextColor = dwColor; }
+DWORD TCellData::GetTextColor() const { return m_dwTextColor; }
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+TRowData::TRowData()
+{
+	m_nHeight = 0;
+	m_bSelected = FALSE;
+	m_tag = 0;
+}
+
+void TRowData::SetHeight(int n) { m_nHeight = static_cast<short>(n); }
+int  TRowData::GetHeight() const { return m_nHeight; }
+
+void TRowData::Selected(BOOL bSelected) { m_bSelected = bSelected; }
+BOOL TRowData::IsSelected() const { return m_bSelected; }
+
+void TRowData::SetTag(UINT_PTR tag) { m_tag = tag; }
+UINT_PTR TRowData::GetTag() const { return m_tag; }
+
+TCellData *TRowData::GetCell(int col) { return (TCellData *)m_cells.GetAt(col); }
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
 static CStdControlPool<TCellData> poolcell;
 static CStdControlPool<TRowData> poolrow;
 
-//static TRowData grid_row_null;
-//static TCellData grid_cell_null;
-//////////////////////////////////////////////////////////////////////////
 IGridUI::IGridUI(void)
 {
 	m_bVirtualGrid = FALSE;
@@ -251,7 +325,7 @@ BOOL IGridUI::IsSelectedCell(int row, int col)
 
 int IGridUI::GetSelectRowCount()
 {
-	return m_aSelectedRows.size();
+	return (int)m_aSelectedRows.size();
 }
 
 int IGridUI::GetSelectRow()
@@ -272,7 +346,7 @@ int IGridUI::GetNextSelectRow()
 
 int IGridUI::GetSelectCellCount()
 {
-	return m_aSelectedCells.size();
+	return (int)m_aSelectedCells.size();
 }
 
 TCellID IGridUI::GetSelectCell()

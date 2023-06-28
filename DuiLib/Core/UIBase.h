@@ -8,6 +8,8 @@ namespace DuiLib {
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
 
+#ifdef DUILIB_WIN32
+
 #define UI_WNDSTYLE_CONTAINER  (0)
 #define UI_WNDSTYLE_FRAME      (WS_VISIBLE | WS_OVERLAPPEDWINDOW)
 #define UI_WNDSTYLE_CHILD      (WS_VISIBLE | WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN)
@@ -20,6 +22,23 @@ namespace DuiLib {
 #define UI_CLASSSTYLE_FRAME      (CS_VREDRAW | CS_HREDRAW)
 #define UI_CLASSSTYLE_CHILD      (CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS | CS_SAVEBITS)
 #define UI_CLASSSTYLE_DIALOG     (CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS | CS_SAVEBITS)
+
+#else
+
+#define UI_WNDSTYLE_CONTAINER  (0)
+#define UI_WNDSTYLE_FRAME      (0)
+#define UI_WNDSTYLE_CHILD      (0)
+#define UI_WNDSTYLE_DIALOG     (0)
+
+#define UI_WNDSTYLE_EX_FRAME   (0)
+#define UI_WNDSTYLE_EX_DIALOG  (0)
+
+#define UI_CLASSSTYLE_CONTAINER  (0)
+#define UI_CLASSSTYLE_FRAME      (0)
+#define UI_CLASSSTYLE_CHILD      (0)
+#define UI_CLASSSTYLE_DIALOG     (0)
+
+#endif
 
 
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -58,49 +77,30 @@ namespace DuiLib {
 		CStdStringPtrMap m_VirtualWndMap;
 	};
 
-	class UILIB_API CWindowWnd
+	class UILIB_API CWindowBase
 	{
 	public:
-		CWindowWnd();
+		CWindowBase();
 
-		HWND GetHWND() const;
-		operator HWND() const;
+		UIWND GetHWND() const;
+		operator UIWND() const;
 
-		bool RegisterWindowClass();
-		bool RegisterSuperclass();
+		virtual LRESULT SendMessage(UINT uMsg, WPARAM wParam = 0, LPARAM lParam = 0L) { return 0; }
+		virtual LRESULT PostMessage(UINT uMsg, WPARAM wParam = 0, LPARAM lParam = 0L) { return 0; }
 
-		HWND Create(HWND hwndParent, LPCTSTR pstrName, DWORD dwStyle, DWORD dwExStyle, const RECT rc, HMENU hMenu = NULL);
-		HWND Create(HWND hwndParent, LPCTSTR pstrName, DWORD dwStyle, DWORD dwExStyle, int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int cx = CW_USEDEFAULT, int cy = CW_USEDEFAULT, HMENU hMenu = NULL);
-		HWND CreateDuiWindow(HWND hwndParent, LPCTSTR pstrWindowName,DWORD dwStyle =0, DWORD dwExStyle =0);
-		HWND Subclass(HWND hWnd);
-		void Unsubclass();
-		void ShowWindow(bool bShow = true, bool bTakeFocus = true);
-		UINT ShowModal();
-		void Close(UINT nRet = IDOK);
-		void CenterWindow();	// 居中，支持扩展屏幕
-		void SetIcon(UINT nRes);
+		virtual void Close(UINT nRet = IDOK) = 0;
 
-		LRESULT SendMessage(UINT uMsg, WPARAM wParam = 0, LPARAM lParam = 0L);
-		LRESULT PostMessage(UINT uMsg, WPARAM wParam = 0, LPARAM lParam = 0L);
-		void ResizeClient(int cx = -1, int cy = -1);
+		virtual void SetCursor(int nCursor) = 0;
+		virtual BOOL SetWindowPos(UIWND hWndInsertAfter,int x, int y, int cx, int cy, UINT uFlags) { return FALSE; }
 
+		virtual BOOL SetTimer(UINT uElapse, TIMERINFO *pTimer) = 0;
+		virtual BOOL KillTimer(TIMERINFO *pTimer) = 0;
 	protected:
-		virtual LPCTSTR GetWindowClassName() const = 0;
-		virtual LPCTSTR GetSuperClassName() const;
-		virtual UINT GetClassStyle() const;
-
-		virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
-		virtual void OnFinalMessage(HWND hWnd);
-
-		static LRESULT CALLBACK __WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-		static LRESULT CALLBACK __ControlProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-		static BOOL DoTouchInformation(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+		virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) { return 0;}
+		virtual void OnFinalMessage(UIWND hWnd) {}
 
 	public:
-		HWND m_hWnd;
-	protected:
-		WNDPROC m_OldWndProc;
-		bool m_bSubclassed;
+		UIWND m_hWnd;
 	};
 
 } // namespace DuiLib

@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include <math.h>
 
+#ifdef DUILIB_WIN32
 namespace DuiLib {
 #define HSLMAX   255	/* H,L, and S vary over 0-HSLMAX */
 #define RGBMAX   255    /* R,G, and B vary over 0-RGBMAX */
@@ -406,3 +407,4 @@ namespace DuiLib {
 	}
 
 }
+#endif //#ifdef DUILIB_WIN32

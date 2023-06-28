@@ -1,7 +1,12 @@
 #include "StdAfx.h"
 #include "UIFile.h"
 
+#include <stdarg.h>
+#include <stdio.h>
 
+#ifdef WIN32
+#include "../Utils/unzip.cpp"
+#endif
 ///////////////////////////////////////////////////////////////////////////////////////
 namespace DuiLib {
 
@@ -9,11 +14,14 @@ namespace DuiLib {
 	{
 		m_pData = NULL; 
 		m_dwSize = 0;
+		m_fp = NULL;
+		m_charset = CUIFile::FILE_ANSI;
 	}
 
 	CUIFile::~CUIFile()
 	{
 		Empty();
+		Close();
 	}
 
 	LPBYTE CUIFile::GetData() const
@@ -32,6 +40,288 @@ namespace DuiLib {
 		m_dwSize = 0U;
 	}
 
+	BOOL CUIFile::LoadFile(const STRINGorID &bitmap, LPCTSTR type, HINSTANCE instance)
+	{
+		Empty();
+
+		//读取顺序  zip文件 ==> skin文件夹 ==> 资源 ==> 文件绝对路径
+		if (type == NULL)
+		{
+			if (__LoadFromZip(bitmap, type, instance))
+				return TRUE;
+			if (__LoadFromSkinPath(bitmap, type, instance))
+				return TRUE;
+		}
+		else
+		{
+#ifdef DUILIB_WIN32
+			if (__LoadFromResource(bitmap, type, instance))
+				return TRUE;
+#endif
+		}
+
+		return __LoadFromDiskPath(bitmap.m_lpstr);
+	}
+
+
+	BOOL CUIFile::LoadFile(LPCTSTR pStrImage, LPCTSTR type, HINSTANCE instance)
+	{
+		return LoadFile(STRINGorID(pStrImage), type, instance);
+	}
+
+#ifdef WIN32
+	BOOL CUIFile::LoadFile(UINT nID, LPCTSTR type, HINSTANCE instance)
+	{
+		return LoadFile(STRINGorID(nID), type, instance);
+	}
+#endif
+
+	BOOL CUIFile::__LoadFromSkinPath(const STRINGorID& bitmap, LPCTSTR type, HINSTANCE instance)
+	{
+		CDuiString sFile = CPaintManagerUI::GetResourcePath();	
+		sFile += bitmap.m_lpstr;
+#ifndef DUILIB_WIN32
+		sFile.Replace(_T("\\"), _T("/"));
+#endif
+		return __LoadFromDiskPath(sFile);
+	}
+
+	BOOL CUIFile::__LoadFromZip(const STRINGorID& bitmap, LPCTSTR type, HINSTANCE instance)
+	{
+		if (CPaintManagerUI::GetResourceZip().IsEmpty())
+			return FALSE;
+
+#ifdef WIN32
+		HZIP hz = NULL;
+		do 
+		{
+			CDuiString sFile = CPaintManagerUI::GetResourcePath();
+			sFile += CPaintManagerUI::GetResourceZip();
+			if (CPaintManagerUI::IsCachedResourceZip())  //zip资源
+			{
+				hz = (HZIP)CPaintManagerUI::GetResourceZipHandle();
+			}
+			else //zip文件
+			{
+				CDuiString sFilePwd = CPaintManagerUI::GetResourceZipPwd();
+				UISTRING_CONVERSION;
+				hz = OpenZip(sFile.GetData(), UIT2A(sFilePwd.GetData()));
+			}
+			if (hz == NULL) break;
+			ZIPENTRY ze;
+			int i = 0;
+			CDuiString key = bitmap.m_lpstr;
+			key.Replace(_T("\\"), _T("/"));
+			if (FindZipItem(hz, key, true, &i, &ze) != 0) break;
+			m_dwSize = ze.unc_size;
+			if (m_dwSize == 0) break;
+			m_pData = new BYTE[m_dwSize + 1];
+			m_pData[m_dwSize] = '\0';
+			int res = UnzipItem(hz, i, m_pData, m_dwSize);
+			if (res != 0x00000000 && res != 0x00000600)
+			{
+				Empty();
+			}
+		} while (0);
+
+		if (!CPaintManagerUI::IsCachedResourceZip())
+			CloseZip(hz);
+#endif
+
+		return m_dwSize > 0;
+	}
+
+#ifdef WIN32
+	BOOL CUIFile::__LoadFromResource(const STRINGorID& bitmap, LPCTSTR type, HINSTANCE instance)
+	{
+		HINSTANCE dllinstance = NULL;
+		if (instance)
+		{
+			dllinstance = instance;
+		}
+		else
+		{
+			dllinstance = CPaintManagerUI::GetResourceDll();
+		}
+
+		HRSRC hResource = ::FindResource(dllinstance, bitmap.m_lpstr, type);
+		if (hResource == NULL) return FALSE;
+		HGLOBAL hGlobal = ::LoadResource(dllinstance, hResource);
+		if (hGlobal == NULL)
+		{
+			FreeResource(hResource);
+			return FALSE;
+		}
+
+		m_dwSize = ::SizeofResource(dllinstance, hResource);
+		if (m_dwSize == 0)
+		{
+			FreeResource(hResource);
+			return FALSE;
+		}
+		m_pData = new BYTE[m_dwSize + 1];
+		m_pData[m_dwSize] = '\0';
+		::CopyMemory(m_pData, (LPBYTE)::LockResource(hGlobal), m_dwSize);
+		::FreeResource(hResource);
+
+		return m_dwSize > 0;
+	}
+#endif
+
+	BOOL CUIFile::__LoadFromDiskPath(LPCTSTR sFilePath)
+	{
+		//直接去读取bitmap.m_lpstr指向的路径
+		FILE *file = _tfopen(sFilePath, _T("rb+"));
+		if(file==NULL) return FALSE;
+		if(feof(file)) return FALSE;
+
+		int pos = ftell(file);
+		fseek(file, 0, SEEK_END);
+		m_dwSize = ftell(file);
+		fseek(file, pos, SEEK_SET);
+
+		if (m_dwSize == 0)
+		{
+			fclose(file);
+			return FALSE;
+		}
+
+		m_pData = new BYTE[m_dwSize + 1];
+		memset(m_pData, 0, sizeof(BYTE)*(m_dwSize+1));
+		int nRead = fread(m_pData, 1, m_dwSize, file);
+		fclose(file);
+		return m_dwSize > 0;
+	}
+	/*
+	BOOL CUIFile::Open(LPCTSTR lpszFileName, UINT nOpenFlags)
+	{
+		Close();
+
+		CDuiString mode;
+		if((nOpenFlags & modeRead) ==  modeRead)
+		{
+			mode = _T("r");
+		}
+		else if((nOpenFlags & modeWrite) ==  modeWrite)
+		{
+			mode = _T("w");
+		}
+		else if((nOpenFlags & modeReadWrite) ==  modeReadWrite)
+		{
+			mode = _T("r");
+		}
+
+		m_fp = _tfopen(lpszFileName, mode);
+		return m_fp != NULL;
+	}
+	*/
+
+	BOOL CUIFile::Open(LPCTSTR lpszFileName, LPCTSTR mode)
+	{
+		m_fp = _tfopen(lpszFileName, mode);
+		return m_fp != NULL;
+	}
+
+	void CUIFile::Close()
+	{
+		if(m_fp) { fclose(m_fp); m_fp = NULL; }
+	}
+
+	UINT CUIFile::Read(void* lpBuf, UINT nCount)
+	{
+		return fread(lpBuf, 1, nCount, m_fp);
+	}
+
+	UINT CUIFile::Write(const void* lpBuf, UINT nCount)
+	{
+		return fwrite(lpBuf, 1, nCount, m_fp);
+	}
+
+	UINT CUIFile::WriteV(const char* lpszFormat, ...)
+	{
+		UINT nWrite = 0;
+		UISTRING_CONVERSION;
+		CDuiString sFormat = UIA2T(lpszFormat);
+
+		CDuiString strText;
+		va_list argList;
+		va_start(argList, lpszFormat);
+		strText.InnerFormat(sFormat, argList);
+		va_end(argList);
+
+		if(m_charset == CUIFile::FILE_UTF8)
+		{
+			const char* pText = UIT2UTF8(strText);
+			nWrite = Write(pText, strlen(pText));
+		}
+		else if(m_charset == CUIFile::FILE_ANSI)
+		{
+			const char* pText = UIT2A(strText);
+			nWrite = Write(pText, strlen(pText));
+		}
+		return nWrite;
+	}
+
+	UINT CUIFile::WriteV(const wchar_t* lpszFormat, ...)
+	{
+		UINT nWrite = 0;
+		UISTRING_CONVERSION;
+		CDuiString sFormat = UIW2T(lpszFormat);
+
+		CDuiString strText;
+		va_list argList;
+		va_start(argList, lpszFormat);
+		strText.InnerFormat(sFormat, argList);
+		va_end(argList);
+
+		if(m_charset == CUIFile::FILE_UTF8)
+		{
+			const char* pText = UIT2UTF8(strText);
+			nWrite = Write(pText, strlen(pText));
+		}
+		else if(m_charset == CUIFile::FILE_ANSI)
+		{
+			const char* pText = UIT2A(strText);
+			nWrite = Write(pText, strlen(pText));
+		}
+		return nWrite;
+	}
+
+	UINT CUIFile::GetFileLength() const
+	{
+		DWORD fsize;
+		int pos = ftell(m_fp);
+		fseek(m_fp, 0, SEEK_END);
+		fsize = ftell(m_fp);
+		fseek(m_fp, pos, SEEK_SET);
+		return fsize;
+	}
+
+	int CUIFile::SeekToEnd()
+	{
+		return fseek(m_fp, 0, SEEK_END);
+	}
+
+	void CUIFile::SeekToBegin()
+	{
+		fseek(m_fp, 0, SEEK_SET);
+	}
+
+	int CUIFile::Seek(UINT lOff, UINT nFrom)
+	{
+		return fseek(m_fp, lOff, nFrom);
+	}
+
+	BOOL CUIFile::IsEOF()
+	{
+		return feof(m_fp) == 1;
+	}
+
+	void CUIFile::SetCharSet(CUIFile::CharSet charset)
+	{
+		m_charset = charset;
+	}
+/*
 	BOOL CUIFile::LoadFile(const STRINGorID &bitmap, LPCTSTR type, HINSTANCE instance)
 	{
 		Empty();
@@ -152,7 +442,6 @@ namespace DuiLib {
 		return m_dwSize > 0;
 	}
 
-
 	BOOL CUIFile::LoadFile(LPCTSTR pStrImage, LPCTSTR type, HINSTANCE instance)
 	{
 		return LoadFile(STRINGorID(pStrImage), type, instance);
@@ -162,9 +451,9 @@ namespace DuiLib {
 	{
 		return LoadFile(STRINGorID(nID), type, instance);
 	}
-
+*/
 	//////////////////////////////////////////////////////////////////////////
-
+/*
 	CUIFileFind::CUIFileFind()
 	{
 		m_bFindInZip = FALSE;
@@ -417,4 +706,6 @@ namespace DuiLib {
 		}
 		return;
 	}
+	*/
 } // namespace DuiLib
+

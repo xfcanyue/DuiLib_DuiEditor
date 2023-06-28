@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "TrayIcon.h"
 
+#ifdef DUILIB_WIN32
 namespace DuiLib
 {
 	CTrayIcon::CTrayIcon(void)
@@ -118,3 +119,5 @@ namespace DuiLib
 		m_bEnabled = FALSE;
 	}
 }
+#endif //#ifdef DUILIB_WIN32
+

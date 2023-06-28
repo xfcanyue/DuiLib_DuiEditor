@@ -9,6 +9,7 @@ Author: Leon Finker  1/2001
 // IDataObjectImpl.cpp: implementation of the CIDataObjectImpl class.
 //////////////////////////////////////////////////////////////////////
 
+#ifdef DUILIB_WIN32
 #include <atlbase.h>
 #include "DragDropImpl.h"
 
@@ -605,3 +606,4 @@ namespace DuiLib {
 	// CIDragSourceHelper Class
 	//////////////////////////////////////////////////////////////////////
 }
+#endif //#ifdef DUILIB_WIN32

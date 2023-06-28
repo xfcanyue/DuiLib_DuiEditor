@@ -98,7 +98,7 @@ void CDlgCreateDuiDocument::OnSelchangeList1()
 		CRect rc(0,0,m_uiImage->nWidth, m_uiImage->nHeight);
 		CRect rcCorner;
 		m_pRender->Resize(rc);
-		m_pRender->DrawBitmap(m_uiImage->bitmap->GetBitmap(), rc, rc, rc, rcCorner, false);
+		m_pRender->DrawBitmap(m_uiImage->bitmap, rc, rc, rc, rcCorner, false);
 		//m_pRender->SelectObject(m_uiImage);
 		Invalidate();
 //		m_staPicture.SetPreviewImage(g_strAppPath + _T("template\\") + strFolder + _T("\\skin.jpg"));

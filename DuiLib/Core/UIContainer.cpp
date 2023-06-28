@@ -175,7 +175,7 @@ namespace DuiLib
 
 	RECT CContainerUI::GetInset() const
 	{
-		if(m_pManager) return m_pManager->GetDPIObj()->Scale(m_rcInset);
+		if(m_pManager) return m_pManager->GetDPIObj()->ScaleRect(m_rcInset);
 		return m_rcInset;
 	}
 
@@ -187,7 +187,7 @@ namespace DuiLib
 
 	int CContainerUI::GetChildPadding() const
 	{
-		if (m_pManager) return m_pManager->GetDPIObj()->Scale(m_iChildPadding);
+		if (m_pManager) return m_pManager->GetDPIObj()->ScaleInt(m_iChildPadding);
 		return m_iChildPadding;
 	}
 
@@ -434,7 +434,7 @@ namespace DuiLib
 
 	int CContainerUI::GetScrollStepSize() const
 	{
-		if(m_pManager )return m_pManager->GetDPIObj()->Scale(m_nScrollStepSize);
+		if(m_pManager )return m_pManager->GetDPIObj()->ScaleInt(m_nScrollStepSize);
 
 		return m_nScrollStepSize;
 	}
@@ -705,7 +705,7 @@ namespace DuiLib
 
 			return sz;
 		}
-		return __super::EstimateSize(szAvailable);
+		return CControlUI::EstimateSize(szAvailable);
 	}
 
 	void CContainerUI::SetPos(RECT rc, bool bNeedInvalidate)
@@ -870,7 +870,8 @@ namespace DuiLib
 	{
 		if( (uFlags & UIFIND_VISIBLE) != 0 && !IsVisible() ) return NULL;
 		if( (uFlags & UIFIND_ENABLED) != 0 && !IsEnabled() ) return NULL;
-		if( (uFlags & UIFIND_HITTEST) != 0 && !::PtInRect(&m_rcItem, *(static_cast<LPPOINT>(pData))) ) return NULL;
+		//if( (uFlags & UIFIND_HITTEST) != 0 && !::PtInRect(&m_rcItem, *(static_cast<LPPOINT>(pData))) ) return NULL;
+		if( (uFlags & UIFIND_HITTEST) != 0 && !m_rcItem.PtInRect(*(static_cast<LPPOINT>(pData))) ) return NULL;
 		if( (uFlags & UIFIND_UPDATETEST) != 0 && Proc(this, pData) != NULL ) return NULL;
 
 		CControlUI* pResult = NULL;
@@ -886,7 +887,7 @@ namespace DuiLib
 		if( pResult != NULL ) return pResult;
 
 		if( (uFlags & UIFIND_HITTEST) == 0 || IsMouseChildEnabled() ) {
-			RECT rc = m_rcItem;
+			CDuiRect rc = m_rcItem;
 			RECT rcInset = GetInset();
 			rc.left += rcInset.left;
 			rc.top += rcInset.top;
@@ -898,7 +899,8 @@ namespace DuiLib
 				for( int it = m_items.GetSize() - 1; it >= 0; it-- ) {
 					pResult = static_cast<CControlUI*>(m_items[it])->FindControl(Proc, pData, uFlags);
 					if( pResult != NULL ) {
-						if( (uFlags & UIFIND_HITTEST) != 0 && !pResult->IsFloat() && !::PtInRect(&rc, *(static_cast<LPPOINT>(pData))) )
+						//if( (uFlags & UIFIND_HITTEST) != 0 && !pResult->IsFloat() && !::PtInRect(&rc, *(static_cast<LPPOINT>(pData))) )
+						if( (uFlags & UIFIND_HITTEST) != 0 && !pResult->IsFloat() && !rc.PtInRect(*(static_cast<LPPOINT>(pData))) )
 							continue;
 						else 
 							return pResult;
@@ -909,7 +911,8 @@ namespace DuiLib
 				for( int it = 0; it < m_items.GetSize(); it++ ) {
 					pResult = static_cast<CControlUI*>(m_items[it])->FindControl(Proc, pData, uFlags);
 					if( pResult != NULL ) {
-						if( (uFlags & UIFIND_HITTEST) != 0 && !pResult->IsFloat() && !::PtInRect(&rc, *(static_cast<LPPOINT>(pData))) )
+						//if( (uFlags & UIFIND_HITTEST) != 0 && !pResult->IsFloat() && !::PtInRect(&rc, *(static_cast<LPPOINT>(pData))) )
+						if( (uFlags & UIFIND_HITTEST) != 0 && !pResult->IsFloat() && !rc.PtInRect(*(static_cast<LPPOINT>(pData))) )
 							continue;
 						else 
 							return pResult;
@@ -927,8 +930,9 @@ namespace DuiLib
 
 	bool CContainerUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 	{
-		RECT rcTemp = { 0 };
-		if( !::IntersectRect(&rcTemp, &rcPaint, &m_rcItem) ) return true;
+		CDuiRect rcTemp;
+		//if( !::IntersectRect(&rcTemp, &rcPaint, &m_rcItem) ) return true;
+		if( !rcTemp.Intersect(rcPaint, m_rcItem) ) return true;
 
 		UIClip clip;
 		clip.GenerateClip(pRender, rcTemp);
@@ -944,14 +948,17 @@ namespace DuiLib
 			if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) rc.right -= m_pVerticalScrollBar->GetFixedWidth();
 			if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) rc.bottom -= m_pHorizontalScrollBar->GetFixedHeight();
 
-			if( !::IntersectRect(&rcTemp, &rcPaint, &rc) ) {
+			//if( !::IntersectRect(&rcTemp, &rcPaint, &rc) ) {
+			if( !rcTemp.Intersect(rcPaint, rc) ) {
 				for( int it = 0; it < m_items.GetSize(); it++ ) {
 					CControlUI* pControl = static_cast<CControlUI*>(m_items[it]);
 					if( pControl == pStopControl ) return false;
 					if( !pControl->IsVisible() ) continue;
-					if( !::IntersectRect(&rcTemp, &rcPaint, &pControl->GetPos()) ) continue;
+					//if( !::IntersectRect(&rcTemp, &rcPaint, &pControl->GetPos()) ) continue;
+					if( !rcTemp.Intersect(rcPaint, pControl->GetPos()) ) continue;
 					if( pControl ->IsFloat() ) {
-						if( !::IntersectRect(&rcTemp, &m_rcItem, &pControl->GetPos()) ) continue;
+						//if( !::IntersectRect(&rcTemp, &m_rcItem, &pControl->GetPos()) ) continue;
+						if( !rcTemp.Intersect(m_rcItem, pControl->GetPos()) ) continue;
 						if( !pControl->Paint(pRender, rcPaint, pStopControl) ) return false;
 					}
 				}
@@ -963,15 +970,18 @@ namespace DuiLib
 					CControlUI* pControl = static_cast<CControlUI*>(m_items[it]);
 					if( pControl == pStopControl ) return false;
 					if( !pControl->IsVisible() ) continue;
-					if( !::IntersectRect(&rcTemp, &rcPaint, &pControl->GetPos()) ) continue;
+					//if( !::IntersectRect(&rcTemp, &rcPaint, &pControl->GetPos()) ) continue;
+					if( !rcTemp.Intersect(rcPaint, pControl->GetPos()) ) continue;
 					if( pControl->IsFloat() ) {
-						if( !::IntersectRect(&rcTemp, &m_rcItem, &pControl->GetPos()) ) continue;
+						//if( !::IntersectRect(&rcTemp, &m_rcItem, &pControl->GetPos()) ) continue;
+						if( !rcTemp.Intersect(m_rcItem, pControl->GetPos()) ) continue;
 						childClip.UseOldClipBegin(pRender);
                         if( !pControl->Paint(pRender, rcPaint, pStopControl) ) return false;
 						childClip.UseOldClipEnd(pRender);
 					}
 					else {
-						if( !::IntersectRect(&rcTemp, &rc, &pControl->GetPos()) ) continue;
+						//if( !::IntersectRect(&rcTemp, &rc, &pControl->GetPos()) ) continue;
+						if( !rcTemp.Intersect(rc, pControl->GetPos()) ) continue;
                         if( !pControl->Paint(pRender, rcPaint, pStopControl) ) return false;
 					}
 				}
@@ -980,14 +990,16 @@ namespace DuiLib
 
 		if( m_pVerticalScrollBar != NULL && m_pVerticalScrollBar->IsVisible() ) {
 			if( m_pVerticalScrollBar == pStopControl ) return false;
-			if( ::IntersectRect(&rcTemp, &rcPaint, &m_pVerticalScrollBar->GetPos()) ) {
+			//if( ::IntersectRect(&rcTemp, &rcPaint, &m_pVerticalScrollBar->GetPos()) ) {
+			if( rcTemp.Intersect(rcPaint, m_pVerticalScrollBar->GetPos()) ) {
 				if( !m_pVerticalScrollBar->Paint(pRender, rcPaint, pStopControl) ) return false;
 			}
 		}
 
 		if( m_pHorizontalScrollBar != NULL && m_pHorizontalScrollBar->IsVisible() ) {
 			if( m_pHorizontalScrollBar == pStopControl ) return false;
-			if( ::IntersectRect(&rcTemp, &rcPaint, &m_pHorizontalScrollBar->GetPos()) ) {
+			//if( ::IntersectRect(&rcTemp, &rcPaint, &m_pHorizontalScrollBar->GetPos()) ) {
+			if( rcTemp.Intersect(rcPaint, m_pHorizontalScrollBar->GetPos()) ) {
 				if( !m_pHorizontalScrollBar->Paint(pRender, rcPaint, pStopControl) ) return false;
 			}
 		}
@@ -1012,29 +1024,38 @@ namespace DuiLib
 
 		UINT uAlign = pControl->GetFloatAlign();
 		TPercentInfo rcPercent = pControl->GetFloatPercent();
-		if(uAlign != 0) {
-			RECT rcCtrl = {0, 0, sz.cx, sz.cy};
+		if(uAlign != 0) 
+		{
+			//RECT rcCtrl = {0, 0, sz.cx, sz.cy};
+			CDuiRect rcCtrl(0, 0, sz.cx, sz.cy);
 			if((uAlign & DT_CENTER) != 0) {
-				::OffsetRect(&rcCtrl, (nParentWidth - sz.cx) / 2, 0);
+				//::OffsetRect(&rcCtrl, (nParentWidth - sz.cx) / 2, 0);
+				rcCtrl.Offset((nParentWidth - sz.cx) / 2, 0);
 			}
 			else if((uAlign & DT_RIGHT) != 0) {
-				::OffsetRect(&rcCtrl, nParentWidth - sz.cx, 0);
+				//::OffsetRect(&rcCtrl, nParentWidth - sz.cx, 0);
+				rcCtrl.Offset(nParentWidth - sz.cx, 0);
 			}
 			else {
-				::OffsetRect(&rcCtrl, szXY.cx, 0);
+				//::OffsetRect(&rcCtrl, szXY.cx, 0);
+				rcCtrl.Offset(szXY.cx, 0);
 			}
 
 			if((uAlign & DT_VCENTER) != 0) {
-				::OffsetRect(&rcCtrl, 0, (nParentHeight - sz.cy) / 2);
+				//::OffsetRect(&rcCtrl, 0, (nParentHeight - sz.cy) / 2);
+				rcCtrl.Offset(0, (nParentHeight - sz.cy) / 2);
 			}
 			else if((uAlign & DT_BOTTOM) != 0) {
-				::OffsetRect(&rcCtrl, 0, nParentHeight - sz.cy);
+				//::OffsetRect(&rcCtrl, 0, nParentHeight - sz.cy);
+				rcCtrl.Offset(0, nParentHeight - sz.cy);
 			}
 			else {
-				::OffsetRect(&rcCtrl, 0, szXY.cy);
+				//::OffsetRect(&rcCtrl, 0, szXY.cy);
+				rcCtrl.Offset(0, szXY.cy);
 			}
 
-			::OffsetRect(&rcCtrl, m_rcItem.left, m_rcItem.top);
+			//::OffsetRect(&rcCtrl, m_rcItem.left, m_rcItem.top);
+			rcCtrl.Offset(m_rcItem.left, m_rcItem.top);
 			pControl->SetPos(rcCtrl, false);
 		}
 		else if(rcPercent.left !=0 || rcPercent.top != 0 || rcPercent.right != 0 || rcPercent.bottom != 0)
@@ -1270,3 +1291,4 @@ namespace DuiLib
 		return pSubControl;
 	}
 } // namespace DuiLib
+

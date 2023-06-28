@@ -3,6 +3,7 @@
 #include "TxtWinHost.h"
 
 
+#ifdef DUILIB_WIN32
 namespace DuiLib
 {
 
@@ -95,24 +96,24 @@ CMsgWndUI::~CMsgWndUI(void)
 LPCTSTR CMsgWndUI::GetClass() const
 {
 	return _T("MsgWndUI");
-	return __super::GetClass();
+	return CRichEditUI::GetClass();
 }
 
 LPVOID CMsgWndUI::GetInterface(LPCTSTR pstrName)
 {
 	if( _tcscmp(pstrName, DUI_CTR_MSGWND) == 0 ) return static_cast<CMsgWndUI*>(this);
-	return __super::GetInterface(pstrName);
+	return CRichEditUI::GetInterface(pstrName);
 }
 
 void CMsgWndUI::DoInit()
 {
 	OnNotify += MakeDelegate(this,&CMsgWndUI::OnInsertMsg);
-	__super::DoInit();
+	CRichEditUI::DoInit();
 }
 
 void CMsgWndUI::DoEvent(TEventUI& event)
 {
-	__super::DoEvent(event);
+	CRichEditUI::DoEvent(event);
 }
 
 bool CMsgWndUI::OnInsertMsg(void* param)
@@ -200,7 +201,8 @@ void CMsgWndUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 		ShowDate(_tcsicmp(pstrValue, _T("true")) == 0);
 	else if( _tcsicmp(pstrName, _T("showtime")) == 0 ) 
 		ShowDate(_tcsicmp(pstrValue, _T("true")) == 0);
-	else __super::SetAttribute(pstrName, pstrValue);
+	else CRichEditUI::SetAttribute(pstrName, pstrValue);
 }
 
 }
+#endif //#ifdef DUILIB_WIN32

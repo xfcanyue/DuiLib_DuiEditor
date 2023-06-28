@@ -1,16 +1,33 @@
 #ifndef __UTILS_H__
 #define __UTILS_H__
-
 #pragma once
+
+#ifdef DUILIB_WIN32
 #include "OAIdl.h"
+#endif
+
 #include <vector>
 #include <map>
+
+#ifndef WIN32
+#include <mutex>
+#endif
+
 
 #include "DuiString.h"
 namespace DuiLib
 {
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
+#ifndef MAKEINTRESOURCE
+	#define MAKEINTRESOURCEA(i) ((LPSTR)((ULONG_PTR)((WORD)(i))))
+	#define MAKEINTRESOURCEW(i) ((LPWSTR)((ULONG_PTR)((WORD)(i))))
+	#ifdef UNICODE
+		#define MAKEINTRESOURCE  MAKEINTRESOURCEW
+	#else
+		#define MAKEINTRESOURCE  MAKEINTRESOURCEA
+	#endif
+#endif
 
 	class UILIB_API STRINGorID
 	{
@@ -24,6 +41,40 @@ namespace DuiLib
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
+//#ifdef DUILIB_GTK
+#ifndef WIN32
+	typedef struct tagPOINT
+	{
+		int  x;
+		int  y;
+	} POINT, * PPOINT, * LPPOINT;
+
+	typedef struct tagSIZE
+	{
+		int        cx;
+		int        cy;
+	} SIZE, * PSIZE, * LPSIZE;
+
+	typedef struct tagRECT
+	{
+		int    left;
+		int    top;
+		int    right;
+		int    bottom;
+	} RECT, * PRECT, * LPRECT;
+	typedef const RECT * LPCRECT;
+	
+	typedef struct _SYSTEMTIME {
+		WORD wYear;
+		WORD wMonth;
+		WORD wDayOfWeek;
+		WORD wDay;
+		WORD wHour;
+		WORD wMinute;
+		WORD wSecond;
+		WORD wMilliseconds;
+	} SYSTEMTIME, * PSYSTEMTIME, * LPSYSTEMTIME;
+#endif
 
 	class UILIB_API CDuiPoint : public tagPOINT
 	{
@@ -67,22 +118,50 @@ namespace DuiLib
 		bool FromString(LPCTSTR pstrValue); //从"left,top,right,bottom"构造RECT
 		CDuiString ToString();				//输出字符串"left,top,right,bottom"
 
+		operator LPRECT() throw();
+		operator LPCRECT() const throw();
+
 		int GetWidth() const;
 		int GetHeight() const;
 		void Empty();
 		bool IsNull() const;
+		bool IsEmpty() const;
+
+		//把rc加入当前区域中，并集
 		void Join(const RECT& rc);
+
+		//重置偏移位置，结果为：left = 0, top = 0, left = {width}, right = {height}
 		void ResetOffset();
+
+		//使规范化，结果为: left <= right, top <= bottom
 		void Normalize();
+
+		//偏移，移动区域位置
 		void Offset(int cx, int cy);
+
+		//放大
 		void Inflate(int cx, int cy);
+
+		//缩小
 		void Deflate(int cx, int cy);
-		void Union(CDuiRect& rc);
-		BOOL IntersectRect(const RECT &rect1, const RECT &rect2);
+
+		//并集，合并矩形
+		void Union(const RECT& rc1, const RECT& rc2);
+
+		//交集，两个区域的交叉部分
+		BOOL Intersect(const RECT &rect1, const RECT &rect2);
+
+		//中心点
 		POINT CenterPoint() const;
+
+		//使区域相对于rc的位置对齐，不改变当前的大小
 		void AlignRect(const RECT &rc, UINT uAlign = DT_CENTER|DT_VCENTER);
+
+		//区域是否相等
 		BOOL EqualRect(const CDuiRect& rc) const;
-		
+
+		//pt是否在区域中
+		BOOL PtInRect(POINT pt) const;
 		//bool operator == (LPCRECT lpRect) const;
 	};
 
@@ -152,17 +231,22 @@ namespace DuiLib
 	//////////////////////////////////////////////////////////////////////////
 	//
 	//
+#ifdef WIN32
+#define _REF_NUMBER	LONG
+#else
+#define _REF_NUMBER	int
+#endif
 	struct IObjRef
 	{
-		virtual long AddRef() PURE;
+		virtual _REF_NUMBER AddRef() = 0;
 
-		virtual long Release() PURE;
+		virtual _REF_NUMBER Release() = 0;
 
-		virtual void OnFinalRelease() PURE;
+		virtual void OnFinalRelease() = 0;
 	};
 
 	//////////////////////////////////////////////////////////////////////////
-	//  
+	//
 	//
 	template<class T>
 	class TObjRefImpl :  public T
@@ -174,16 +258,24 @@ namespace DuiLib
 		virtual ~TObjRefImpl() {}
 
 		//添加引用
-		virtual long AddRef()
+		virtual _REF_NUMBER AddRef()
 		{
-			return InterlockedIncrement(&m_cRef);
+#ifdef WIN32
+			return ::InterlockedIncrement(&m_cRef);
+#else
+			return ++m_cRef;
+#endif
 		}
 
 		//!释放引用
-		virtual long Release()
+		virtual _REF_NUMBER Release()
 		{
-			long lRet = InterlockedDecrement(&m_cRef);
-			if(lRet==0)
+#ifdef WIN32
+			long lRet = ::InterlockedDecrement(&m_cRef);
+#else
+			int lRet = --m_cRef;
+#endif
+			if (lRet == 0)
 			{
 				OnFinalRelease();
 			}
@@ -196,7 +288,7 @@ namespace DuiLib
 			delete this;
 		}
 	protected:
-		volatile LONG m_cRef;
+		volatile _REF_NUMBER m_cRef;
 	};
 
 	template <class T>
@@ -208,12 +300,16 @@ namespace DuiLib
 	};
 
 	//////////////////////////////////////////////////////////////////////////
-	/*  注意：直接赋值指针会导致引用增加，如果真的是需要直接赋值，应该使用MakeRefPtr，类似于std::make_shared。 
-	  UIFont *pFont = ...CreateFont();							//引用 = 1
+	/*  注意：直接赋值指针会导致引用增加，如果真的是需要直接赋值，应该使用MakeRefPtr，类似于std::make_shared。
+	  UIFont *pFont = UIGlobal::CreateFont();					//引用 = 1
 	  1, CStdRefPtr<UIFont> font = pFont;						//引用 = 2;
-	  2, CStdRefPtr<UIFont> font = MakeRefPtr<UIFont>(pFont)	//引用 = 1;  
+	  2, CStdRefPtr<UIFont> font = MakeRefPtr<UIFont>(pFont)	//引用 = 1;
 	  3, *((UIFont**)&font) = pFont;							//引用 = 1;  获取CStdRefPtr内部指针直接赋值。
-	  4, 为了防止手误，禁止delete pFont; 只能pFont->Release();
+	  4, 为了防止手误，禁止delete pFont; 只能pFont->Release() 或 pFont = NULL;
+	  5, pFont->Relase() 和 pFont = NULL 的区别, 
+	     两者都会引用-1, 不可重复调用.
+		 Relase之后不能再给pFont赋值, 否则导致原来的pFont引用-1. 
+		 赋值NULL之后,可以继续给pFont赋值新的.
 	*/
 	template <class T>
 	class CStdRefPtr
@@ -340,7 +436,7 @@ namespace DuiLib
 					p->AddRef();
 				}
 			}
-			return *this;	
+			return *this;
 		}
 
 		// Release the interface and set to NULL
@@ -370,16 +466,16 @@ namespace DuiLib
 			p = NULL;
 			return pt;
 		}
-		HRESULT CopyTo(T** ppT) throw()
+		BOOL CopyTo(T** ppT) throw()
 		{
 			if (ppT == NULL)
-				return E_POINTER;
+				return FALSE
 			*ppT = p;
 			if (p)
 			{
 				p->AddRef();
 			}
-			return S_OK;
+			return TRUE;
 		}
 
 	protected:
@@ -458,17 +554,20 @@ namespace DuiLib
 		~CDuiWaitCursor();
 
 	protected:
+#ifdef DUILIB_WIN32
 		HCURSOR m_hOrigCursor;
+#endif
 	};
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
+#ifdef WIN32
 	class CDuiVariant : public VARIANT
 	{
 	public:
-		CDuiVariant() 
-		{ 
-			VariantInit(this); 
+		CDuiVariant()
+		{
+			VariantInit(this);
 		}
 		CDuiVariant(int i)
 		{
@@ -495,24 +594,34 @@ namespace DuiLib
 			this->pdispVal = disp;
 		}
 
-		~CDuiVariant() 
-		{ 
-			VariantClear(this); 
+		~CDuiVariant()
+		{
+			VariantClear(this);
 		}
 	};
-
+#endif //#ifdef DUILIB_WIN32
 	//////////////////////////////////////////////////////////////////////////
 	////
 	//lock类
 	class CDuiLock
 	{
+#ifdef WIN32
 	public:
-		CDuiLock(){ InitializeCriticalSectionAndSpinCount(&m_lock, 5000); }
-		~CDuiLock(){ DeleteCriticalSection(&m_lock); }
-		void Lock(){ EnterCriticalSection(&m_lock); }
-		void Unlock(){ LeaveCriticalSection(&m_lock); }
+		CDuiLock() { InitializeCriticalSectionAndSpinCount(&m_lock, 5000); }
+		~CDuiLock() { DeleteCriticalSection(&m_lock); }
+		void Lock() { EnterCriticalSection(&m_lock); }
+		void Unlock() { LeaveCriticalSection(&m_lock); }
 	private:
 		CRITICAL_SECTION m_lock;
+#else
+	public:
+		CDuiLock() {}
+		~CDuiLock() {}
+		void Lock() { m_lock.lock(); }
+		void Unlock() { m_lock.unlock(); }
+	private:
+		std::mutex m_lock;
+#endif
 	};
 
 	//////////////////////////////////////////////////////////////////////////
@@ -531,10 +640,10 @@ namespace DuiLib
 	//双向链表类接口
 	struct ILinkedList
 	{
-		ILinkedList() 
-		{ 
-			pLinkedPrev = NULL; 
-			pLinkedNext = NULL; 
+		ILinkedList()
+		{
+			pLinkedPrev = NULL;
+			pLinkedNext = NULL;
 		}
 
 		ILinkedList *prev() { return pLinkedPrev; }
@@ -760,13 +869,15 @@ namespace DuiLib
 		void Free(T *t)
 		{
 			t->~T();
-			memset(t, 0, sizeof(T));
+			//memset(t, 0, sizeof(T));
+			PBYTE pMem = reinterpret_cast<PBYTE>(t);
+			memset(pMem, 0, sizeof(T));
 			m_listControl.push_back(t);
 		}
 
 		//清理内存，如果调用这个函数之前，有内存没有归还，也会清理，对象变成野指针。
 		//要小心使用，可能导致无法判断运行时内存泄漏。
-		void ClearMemory() 
+		void ClearMemory()
 		{
 			//DWORD tk = GetTickCount();
 
@@ -807,155 +918,28 @@ namespace DuiLib
 		int _nMaxMemoryPageSize;
 		CStdPtrArray m_pListMemBlock;
 	};
-	
-	/*
-	template <class T>
-	class CStdControlPool
+
+	//跨平台的某些函数
+	class UILIB_API CPlatform
 	{
-		struct tagObject
-		{
-			tagObject *prev;
-			tagObject *next;
-		};
 	public:
-		CStdControlPool()
-		{
-			_blockcountnext = 32;
-			_nMaxMemoryPageSize = 1024 * 5;
-			m_pFirstNode = NULL;
-			m_pLastNode = NULL;
-#ifdef _DEBUG
-			OutputDebugStringA("construct pool\r\n");
-#endif
-		}
-
-		~CStdControlPool()
-		{
-			ClearMemory();
-#ifdef _DEBUG
-			OutputDebugStringA("destroy pool\r\n");
-#endif
-		}
-
-		//设定每次申请内存时，控件个数的上限。 多了浪费内存，少了影响效率，根据使用场景调整。
-		void SetMaxMemoryPageSize(int nSize)
-		{
-			_nMaxMemoryPageSize = nSize;
-		}
-
-		T* Alloc()
-		{
-			if(m_pFirstNode == NULL) MakePool();
-			if(m_pFirstNode == NULL) return NULL;
-
-			tagObject *p = m_pFirstNode;
-			pop(p); //从池中取出来
-			T *tt = (T*)(p+1);
-			new (tt)T; //使用tt这个内存地址new T()
-			return tt;
-		}
-
-		void Free(T *t)
-		{
-			t->~T();
-			memset(t, 0, sizeof(T));
-			tagObject *p = (tagObject *)t-1;
-			pushback(p); //放回池里
-			t = NULL;
-		}
-
-		//清理内存，如果调用这个函数之前，有内存没有归还，也会清理，对象变成野指针。
-		//要小心使用，可能导致无法判断运行时内存泄漏。
-		void ClearMemory() 
-		{
-			//DWORD tk = GetTickCount();
-
-			for (int i=0; i<m_pListMemBlock.GetSize(); i++)
-			{
-				free( (BYTE*)m_pListMemBlock[i] );
-			}
-
-// 			CDuiString s;
-// 			s.Format(_T("%d"), GetTickCount() - tk);
-// 			MessageBox(NULL, s, _T("释放时间"), MB_OK);
-		}
-
-	protected:
-		void MakePool()
-		{
-			//分配一个连续空间，因为如果每个object都new一次，new和delete都会耗费大量时间。
-			int tagSize = sizeof(tagObject) + sizeof(T);
-			BYTE *pBlock = (BYTE *)malloc(tagSize * _blockcountnext);
-			for (int i=0; i<_blockcountnext; i++)
-			{
-				tagObject *p = new (pBlock + i*tagSize)tagObject;
-				p->prev = NULL;
-				p->next = NULL;
-
-				T *tt = (T*)(p+1);
-				memset(tt, 0, sizeof(T));
-				pushback(p);
-			}
-			m_pListMemBlock.Add(pBlock);
-
-			//当下次分配内存时，不要简单粗暴的乘以2，设定一个上限
-			if(_blockcountnext < _nMaxMemoryPageSize)
-				_blockcountnext *= 2;
-			if(_blockcountnext > _nMaxMemoryPageSize)
-				_blockcountnext = _nMaxMemoryPageSize;
-		}
-
-		void pushback(tagObject *pBlock)
-		{
-			if(m_pFirstNode == NULL)	//无队列头
-			{
-				pBlock->prev = NULL;
-				pBlock->next = NULL;
-				m_pFirstNode = pBlock;
-				m_pLastNode = pBlock;
-			}
-			else	//在队列尾部插入
-			{
-				m_pLastNode->next = pBlock;
-				pBlock->prev = m_pLastNode;
-				pBlock->next = NULL;
-				m_pLastNode = pBlock;
-			}
-		}
-
-		void pop(tagObject *pBlock)
-		{
-			if(m_pFirstNode == m_pLastNode)
-			{
-				m_pFirstNode = NULL;
-				m_pLastNode = NULL;
-			}
-			else if(pBlock == m_pFirstNode)
-			{
-				m_pFirstNode = pBlock->next;
-				m_pFirstNode->prev = NULL;
-
-			}
-			else if(pBlock == m_pLastNode)
-			{
-				m_pLastNode = pBlock->prev;
-				m_pLastNode->next = NULL;
-			}
-			else
-			{
-				pBlock->prev->next = pBlock->next;
-				pBlock->next->prev = pBlock->prev;
-			}
-		}
-
-	private:
-		tagObject *m_pFirstNode;
-		tagObject *m_pLastNode;
-		int _blockcountnext;
-		int _nMaxMemoryPageSize;
-		CStdPtrArray m_pListMemBlock;
+		static BOOL IsWindow(UIWND hWnd);
+		static LRESULT SendMessage(UIWND hWnd, UINT uMsg, WPARAM wParam = 0, LPARAM lParam = 0);
+		static LRESULT PostMessage(UIWND hWnd, UINT uMsg, WPARAM wParam = 0, LPARAM lParam = 0);
+		static BOOL SetWindowPos(UIWND hWnd, UIWND hWndInsertAfter,int x, int y, int cx, int cy, UINT uFlags);
+		static UIWND GetFocus();
+		static UIWND SetFocus(UIWND hWnd);
+		static BOOL GetWindowRect(UIWND hWnd, LPRECT lpRect);
+		static BOOL GetClientRect(UIWND hWnd, LPRECT lpRect);
+		static BOOL GetCursorPos(LPPOINT pt);
+		static BOOL ScreenToClient(UIWND hWnd, LPPOINT lpPoint);
+		static BOOL IsKeyDown(UINT uKey);
+		static BOOL IsKeyUp(UINT uKey);
+		static UINT MapKeyState();
+		static DWORD GetTickCount();
+		static void GetLocalTime(SYSTEMTIME &st);
 	};
-	*/
+
 }// namespace DuiLib
 
 #endif // __UTILS_H__

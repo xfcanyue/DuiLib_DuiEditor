@@ -29,7 +29,7 @@ LPCTSTR CIconButtonUI::GetClass() const
 LPVOID CIconButtonUI::GetInterface(LPCTSTR pstrName)
 {
 	if( _tcscmp(pstrName, DUI_CTR_ICONBUTTON) == 0 ) return static_cast<CIconButtonUI*>(this);
-	return __super::GetInterface(pstrName);
+	return CButtonLayoutUI::GetInterface(pstrName);
 }
 
 void CIconButtonUI::DoInit()
@@ -64,10 +64,10 @@ SIZE CIconButtonUI::EstimateSize(SIZE szAvailable)
 			m_cxyFixed.cy = cy;
 		}
 
-		return CDuiSize(GetManager()->GetDPIObj()->Scale(m_cxyFixed.cx), GetManager()->GetDPIObj()->Scale(m_cxyFixed.cy));
+		return CDuiSize(GetManager()->GetDPIObj()->ScaleInt(m_cxyFixed.cx), GetManager()->GetDPIObj()->ScaleInt(m_cxyFixed.cy));
 	}
 
-	return __super::EstimateSize(szAvailable);
+	return CButtonLayoutUI::EstimateSize(szAvailable);
 }
 
 void CIconButtonUI::PaintText(UIRender *pRender)
@@ -150,7 +150,7 @@ void CIconButtonUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	else if( _tcsicmp(pstrName, _T("iconpushedimage")) == 0 ) SetIconPushedImage(pstrValue);
 	else if( _tcsicmp(pstrName, _T("iconfocusedimage")) == 0 ) SetIconFocusedImage(pstrValue);
 	else if( _tcsicmp(pstrName, _T("icondisabledimage")) == 0 ) SetIconDisabledImage(pstrValue);
-	else __super::SetAttribute(pstrName, pstrValue);
+	else CButtonLayoutUI::SetAttribute(pstrName, pstrValue);
 }
 
 LPCTSTR CIconButtonUI::GetIconNormalImage() const

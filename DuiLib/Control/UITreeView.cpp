@@ -92,7 +92,7 @@ namespace DuiLib
 
 	void CTreeNodeUI::SetManager(CPaintManagerUI* pManager, CControlUI* pParent, bool bInit)
 	{
-		__super::SetManager(pManager, pParent, bInit);
+		CListContainerElementUI::SetManager(pManager, pParent, bInit);
 	}
 
 	//************************************
@@ -174,8 +174,9 @@ namespace DuiLib
 				CScrollBarUI* pHorizontalScrollBar = pParentContainer->GetHorizontalScrollBar();
 				if( pHorizontalScrollBar && pHorizontalScrollBar->IsVisible() ) rc.bottom -= pHorizontalScrollBar->GetFixedHeight();
 
-				RECT invalidateRc = m_rcItem;
-				if( !::IntersectRect(&invalidateRc, &m_rcItem, &rc) ) 
+				CDuiRect invalidateRc = m_rcItem;
+				//if( !::IntersectRect(&invalidateRc, &m_rcItem, &rc) ) 
+				if( !invalidateRc.Intersect(m_rcItem, rc) )
 					return;
 
 				CControlUI* pParent = GetParent();
@@ -184,7 +185,8 @@ namespace DuiLib
 				while( pParent = pParent->GetParent() ) {
 					rcTemp = invalidateRc;
 					rcParent = pParent->GetPos();
-					if( !::IntersectRect(&invalidateRc, &rcTemp, &rcParent) ) 
+					//if( !::IntersectRect(&invalidateRc, &rcTemp, &rcParent) ) 
+					if( !invalidateRc.Intersect(rcTemp, rcParent) ) 
 						return;
 				}
 

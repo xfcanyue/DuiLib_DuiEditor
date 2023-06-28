@@ -8,6 +8,9 @@ Author: Leon Finker  1/2001
 **************************************************************************/
 #ifndef __DRAGDROPIMPL_H__
 #define __DRAGDROPIMPL_H__
+
+#ifdef DUILIB_WIN32
+
 #include <shlobj.h>
 #include <vector>
 
@@ -250,4 +253,5 @@ namespace DuiLib {
 		}
 	};
 }
+#endif //#ifdef DUILIB_WIN32
 #endif //__DRAGDROPIMPL_H__

@@ -29,6 +29,7 @@ namespace DuiLib {
 		}
 		else
 		{
+#ifdef WIN32
 			HRSRC hResource = ::FindResource(CPaintManagerUI::GetResourceDll(), xml.m_lpstr, type);
 			if( hResource == NULL ) return NULL;
 			HGLOBAL hGlobal = ::LoadResource(CPaintManagerUI::GetResourceDll(), hResource);
@@ -42,6 +43,7 @@ namespace DuiLib {
 				return NULL;
 			}
 			::FreeResource(hResource);
+#endif
 		}
 
 		return LoadResource(m_xml.root());
@@ -187,13 +189,26 @@ namespace DuiLib {
 	{
 		if(lpstrId == NULL) return _T("");
 
+// 		CDuiString *lpstrFind = static_cast<CDuiString *>(m_mTextResourceHashMap.Find(lpstrId));
+// 		if (lpstrFind == NULL && m_pQuerypInterface)
+// 		{
+// 			lpstrFind = new CDuiString(m_pQuerypInterface->QueryControlText(lpstrId, lpstrType));
+// 			m_mTextResourceHashMap.Insert(lpstrId, (LPVOID)lpstrFind);
+// 		}
+// 		return lpstrFind == NULL ? lpstrId : *lpstrFind;
+
 		CDuiString *lpstrFind = static_cast<CDuiString *>(m_mTextResourceHashMap.Find(lpstrId));
 		if (lpstrFind == NULL && m_pQuerypInterface)
 		{
-			lpstrFind = new CDuiString(m_pQuerypInterface->QueryControlText(lpstrId, lpstrType));
-			m_mTextResourceHashMap.Insert(lpstrId, (LPVOID)lpstrFind);
+			CDuiString s = m_pQuerypInterface->QueryControlText(lpstrId, lpstrType);
+			if(!s.IsEmpty())
+			{
+				*lpstrFind = s;
+				m_mTextResourceHashMap.Insert(lpstrId, (LPVOID)lpstrFind);
+			}
 		}
-		return lpstrFind == NULL ? lpstrId : *lpstrFind;
+		if(lpstrFind == NULL) return _T("");
+		return *lpstrFind;
 	}
 
 	void CResourceManager::ReloadText()

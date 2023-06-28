@@ -7,10 +7,10 @@ namespace DuiLib
 	CDynamicLayoutUI::CDynamicLayoutUI() : m_iSepWidth(0), m_iSepHeight(0), m_bImmMode(false)
 	{
 		m_ptLastMouse.x = m_ptLastMouse.y = 0;
-		::ZeroMemory(&m_rcNewPos, sizeof(m_rcNewPos));
+		memset(&m_rcNewPos, 0, sizeof(m_rcNewPos));
 
 		m_pCalcControl = NULL;
-		::ZeroMemory(&m_rcCalcChild, sizeof(RECT));
+		memset(&m_rcCalcChild, 0, sizeof(RECT));
 		m_bCalcResult = false;
 
 		m_eLayout = Layout_HorizontalLayout;
@@ -45,7 +45,7 @@ namespace DuiLib
 
 	SIZE CDynamicLayoutUI::EstimateSize(SIZE szAvailable)
 	{
-		return __super::EstimateSize(szAvailable);
+		return CContainerUI::EstimateSize(szAvailable);
 	}
 
 	void CDynamicLayoutUI::SetPos(RECT rc, bool bNeedInvalidate)
@@ -526,16 +526,21 @@ namespace DuiLib
 			if( event.Type == UIEVENT_SETCURSOR )
 			{
 				m_eSepAction = eSepWidth;
-				RECT rcSeparator = GetThumbRect(false);
-				if( IsEnabled() && ::PtInRect(&rcSeparator, event.ptMouse) ) {
-					::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZEWE)));
+				CDuiRect rcSeparator = GetThumbRect(false);
+				//if( IsEnabled() && ::PtInRect(&rcSeparator, event.ptMouse) ) {
+				if( IsEnabled() && rcSeparator.PtInRect(event.ptMouse) ) 
+				{
+					//::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZEWE)));
+					GetManager()->SetCursor(DUI_SIZEWE);
 					return;
 				}
 
 				m_eSepAction = eSepHeight;
 				rcSeparator = GetThumbRect(false);
-				if( IsEnabled() && ::PtInRect(&rcSeparator, event.ptMouse) ) {
-					::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZENS)));
+				//if( IsEnabled() && ::PtInRect(&rcSeparator, event.ptMouse) ) {
+				if( IsEnabled() && rcSeparator.PtInRect(event.ptMouse) ) {
+					//::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZENS)));
+					GetManager()->SetCursor(DUI_SIZENS);
 					return;
 				}
 
@@ -546,8 +551,9 @@ namespace DuiLib
 		if( m_eSepAction == eSepWidth ) {
 			if( event.Type == UIEVENT_BUTTONDOWN && IsEnabled() )
 			{
-				RECT rcSeparator = GetThumbRect(false);
-				if( ::PtInRect(&rcSeparator, event.ptMouse) ) 
+				CDuiRect rcSeparator = GetThumbRect(false);
+				//if( ::PtInRect(&rcSeparator, event.ptMouse) ) 
+				if( rcSeparator.PtInRect(event.ptMouse) ) 
 				{
 					SetCaptureState(true);
 					m_ptLastMouse = event.ptMouse;
@@ -620,8 +626,9 @@ namespace DuiLib
 		if( m_eSepAction == eSepHeight ) {
 			if( event.Type == UIEVENT_BUTTONDOWN && IsEnabled() )
 			{
-				RECT rcSeparator = GetThumbRect(false);
-				if( ::PtInRect(&rcSeparator, event.ptMouse) ) {
+				CDuiRect rcSeparator = GetThumbRect(false);
+				//if( ::PtInRect(&rcSeparator, event.ptMouse) ) {
+				if( rcSeparator.PtInRect(event.ptMouse) ) {
 					SetCaptureState(true);
 					m_ptLastMouse = event.ptMouse;
 					m_rcNewPos = m_rcItem;
@@ -674,7 +681,7 @@ namespace DuiLib
 
 					CDuiRect rcInvalidate = GetThumbRect(true);
 					m_rcNewPos = rc;
-					m_cxyFixed.cy = GetManager()->GetDPIObj()->Scale(m_rcNewPos.bottom - m_rcNewPos.top);
+					m_cxyFixed.cy = GetManager()->GetDPIObj()->ScaleInt(m_rcNewPos.bottom - m_rcNewPos.top);
 
 					if( m_bImmMode ) {
 						m_rcItem = m_rcNewPos;
@@ -691,9 +698,11 @@ namespace DuiLib
 			if( event.Type == UIEVENT_SETCURSOR )
 			{
 				m_eSepAction = eSepHeight;
-				RECT rcSeparator = GetThumbRect(false);
-				if( IsEnabled() && ::PtInRect(&rcSeparator, event.ptMouse) ) {
-					::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZENS)));
+				CDuiRect rcSeparator = GetThumbRect(false);
+				//if( IsEnabled() && ::PtInRect(&rcSeparator, event.ptMouse) ) {
+				if( IsEnabled() && rcSeparator.PtInRect(event.ptMouse) ) {
+					//::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZENS)));
+					GetManager()->SetCursor(DUI_SIZENS);
 					return;
 				}
 				m_eSepAction = eSepNull;
@@ -760,3 +769,4 @@ namespace DuiLib
 		return false;
 	}
 }
+

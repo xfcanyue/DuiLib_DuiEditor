@@ -3,6 +3,7 @@
 
 #include "../Render/UIRenderFactory_gdi.h"
 #include "../Render/UIRenderFactory_gdiplus.h"
+#include "../Render/UIRenderFactory_Cairo.h"
 ///////////////////////////////////////////////////////////////////////////////////////
 namespace DuiLib {
 
@@ -26,7 +27,6 @@ namespace DuiLib {
 	{
 		if(GetInstance()->GetRenderFactory())
 		{
-			//GetInstance()->GetRenderFactory()->Release();
 			GetInstance()->m_renderEngineFactory = NULL;
 		}
 	}
@@ -37,14 +37,22 @@ namespace DuiLib {
 		{
 			switch (CPaintManagerUI::GetRenderEngineType())
 			{
+#ifdef DUILIB_WIN32
 			case DuiLib_Render_Default:
 				m_renderEngineFactory = MakeRefPtr<UIRenderFactory>(new UIRenderFactory_gdi);
 				break;
 			case DuiLib_Render_GdiPlus:
 				m_renderEngineFactory = MakeRefPtr<UIRenderFactory>(new UIRenderFactory_gdiplus);
 				break;
-// 			case DuiLib_Render_Skia:
-// 				break;
+#endif
+#ifdef DUILIB_USE_RENDER_CAIRO
+			case DuiLib_Render_Cairo:
+				m_renderEngineFactory = MakeRefPtr<UIRenderFactory>(new UIRenderFactory_Cairo);
+				break;
+#endif
+			default:
+				ASSERT(FALSE);
+				break;
 			}
 		}
 		return m_renderEngineFactory;
@@ -78,79 +86,6 @@ namespace DuiLib {
 	UIImage *UIGlobal::CreateImage()
 	{
 		return GetInstance()->GetRenderFactory()->CreateImage();
-	}
-
-	UIBitmap* UIGlobal::CreateControlBitmap(CControlUI* pControl, DWORD dwFilterColor, CControlUI* pStopControl)
-	{
-		CPaintManagerUI *pManager = pControl->GetManager();
-		if(pManager == NULL) return FALSE;
-		if(pManager->GetRoot() == NULL) return FALSE;
-
-		RECT rcControl = pControl->GetPos();
-		int cx = rcControl.right - rcControl.left;
-		int cy = rcControl.bottom - rcControl.top;
-
-		//建立新的绘图
-		CStdRefPtr<UIRender> pRender = MakeRefPtr<UIRender>(UIGlobal::CreateRenderTarget());
-		pRender->Init(pManager);
-
-		//注意这里必须是root的rc，或者整个client的pos。 总之这个size必须包含了rcControl
-		pRender->Resize(pManager->GetRoot()->GetPos()); 
-
-		//在整个区域只绘制了pControl
-		pControl->Paint(pRender, rcControl, NULL);
-
-		//再建立一个新的绘图， 把绘制好的pControl的区域BitBlt过来
-		CStdRefPtr<UIRender> pRenderClone = MakeRefPtr<UIRender>(UIGlobal::CreateRenderTarget());
-		pRenderClone->Init(pManager);
-
-		UIBitmap *pBitmapClone = UIGlobal::CreateBitmap();
-		pBitmapClone->CreateARGB32Bitmap(pManager->GetPaintDC(), cx, cy, TRUE);
-		pRenderClone->SelectObject(pBitmapClone);
-
-		pRenderClone->BitBlt(0, 0, cx, cy, pRender, rcControl.left, rcControl.top, SRCCOPY);
-		if (dwFilterColor > 0x00FFFFFF) 
-			pRenderClone->DrawColor(CDuiRect(0,0,cx,cy), CDuiSize(0,0), dwFilterColor);
-
-		return pBitmapClone;
-	}
-
-	//原理是，整个窗口画一遍，除了pControl自己不画，然后rcWnd的位置截图下来，就是内部窗口的背景图了。
-	//这样就可以实现Edit的透明背景了
-	UIBitmap* UIGlobal::CreateControlBackBitmap(CControlUI* pControl, const RECT &rcWnd, DWORD dwFilterColor)
-	{
-		CPaintManagerUI *pManager = pControl->GetManager();
-		if(pManager == NULL) return FALSE;
-		if(pManager->GetRoot() == NULL) return FALSE;
-
-		CControlUI *pRoot = pManager->GetRoot();
-		RECT rcRoot = pRoot->GetPos();
-
-		int cx = rcWnd.right - rcWnd.left;
-		int cy = rcWnd.bottom - rcWnd.top;
-
-		//建立新的绘图
-		CStdRefPtr<UIRender> pRender = MakeRefPtr<UIRender>(UIGlobal::CreateRenderTarget());
-		pRender->Init(pManager);
-		pRender->Resize(rcRoot); 
-
-		//从root开始绘制，遇到pControl时，停止绘制
-		pRoot->Paint(pRender, rcWnd, pControl);
-
-		//再建立一个新的绘图， 把绘制好的rcWnd的区域BitBlt过来
-		CStdRefPtr<UIRender> pRenderClone = MakeRefPtr<UIRender>(UIGlobal::CreateRenderTarget());
-		pRenderClone->Init(pManager);
-
-		//创建返回的位图，调用方需要释放。
-		UIBitmap *pBitmapClone = UIGlobal::CreateBitmap();
-		pBitmapClone->CreateARGB32Bitmap(pManager->GetPaintDC(), cx, cy, TRUE);
-		pRenderClone->SelectObject(pBitmapClone);
-		pRenderClone->BitBlt(0, 0, cx, cy, pRender, rcWnd.left, rcWnd.top, SRCCOPY);
-
-		if (dwFilterColor > 0x00FFFFFF) 
-			pRenderClone->DrawColor(CDuiRect(0,0,cx,cy), CDuiSize(0,0), dwFilterColor);
-
-		return pBitmapClone;
 	}
 
 	//////////////////////////////////////////////////////////////////////////

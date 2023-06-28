@@ -4,8 +4,8 @@
 
 #include "StdAfx.h"
 
-
-#include "Utils/unzip.cpp"
-
+#ifdef DUILIB_WIN32
 #pragma comment( lib, "winmm.lib" )
 #pragma comment( lib, "comctl32.lib" )
+#endif //#ifdef DUILIB_WIN32
+

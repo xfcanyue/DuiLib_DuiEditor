@@ -1,0 +1,1487 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		10F0E49F2A491BB10013A3B1 /* StdAfx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E49B2A491BB00013A3B1 /* StdAfx.cpp */; };
+		10F0E4A02A491BB10013A3B1 /* UIlib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E49C2A491BB00013A3B1 /* UIlib.cpp */; };
+		10F0E4A12A491BB10013A3B1 /* StdAfx.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E49D2A491BB00013A3B1 /* StdAfx.h */; };
+		10F0E4A22A491BB10013A3B1 /* compat.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E49E2A491BB10013A3B1 /* compat.h */; };
+		10F0E4B62A491D4D0013A3B1 /* IGridUI.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4B42A491D4C0013A3B1 /* IGridUI.h */; };
+		10F0E4B72A491D4D0013A3B1 /* IGridUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4B52A491D4C0013A3B1 /* IGridUI.cpp */; };
+		10F0E5292A491D930013A3B1 /* UIDateTimeEx.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4B82A491D7E0013A3B1 /* UIDateTimeEx.h */; };
+		10F0E52A2A491D930013A3B1 /* UIScrollBar.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4B92A491D7E0013A3B1 /* UIScrollBar.h */; };
+		10F0E52B2A491D930013A3B1 /* UIDateTimeWndWin32.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4BA2A491D7E0013A3B1 /* UIDateTimeWndWin32.h */; };
+		10F0E52C2A491D930013A3B1 /* UIMenu.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4BB2A491D7E0013A3B1 /* UIMenu.h */; };
+		10F0E52D2A491D930013A3B1 /* UIGridCell.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4BC2A491D7E0013A3B1 /* UIGridCell.cpp */; };
+		10F0E52E2A491D930013A3B1 /* UIRollText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4BD2A491D7F0013A3B1 /* UIRollText.cpp */; };
+		10F0E52F2A491D930013A3B1 /* UIAnimation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4BE2A491D7F0013A3B1 /* UIAnimation.cpp */; };
+		10F0E5302A491D930013A3B1 /* UIDateTime.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4BF2A491D7F0013A3B1 /* UIDateTime.h */; };
+		10F0E5312A491D930013A3B1 /* UIGridRowUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4C02A491D7F0013A3B1 /* UIGridRowUI.cpp */; };
+		10F0E5322A491D930013A3B1 /* UIEditWndWin32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4C12A491D7F0013A3B1 /* UIEditWndWin32.cpp */; };
+		10F0E5332A491D930013A3B1 /* UILabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4C22A491D7F0013A3B1 /* UILabel.h */; };
+		10F0E5342A491D930013A3B1 /* UIComboEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4C32A491D800013A3B1 /* UIComboEx.cpp */; };
+		10F0E5352A491D930013A3B1 /* UIComboWndGtk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4C42A491D800013A3B1 /* UIComboWndGtk.cpp */; };
+		10F0E5362A491D930013A3B1 /* UIComboEx.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4C52A491D800013A3B1 /* UIComboEx.h */; };
+		10F0E5372A491D930013A3B1 /* UIGridHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4C62A491D800013A3B1 /* UIGridHeader.h */; };
+		10F0E5382A491D930013A3B1 /* UIList.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4C72A491D800013A3B1 /* UIList.h */; };
+		10F0E5392A491D930013A3B1 /* UIProgress.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4C82A491D800013A3B1 /* UIProgress.h */; };
+		10F0E53A2A491D930013A3B1 /* UIOption.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4C92A491D810013A3B1 /* UIOption.h */; };
+		10F0E53B2A491D930013A3B1 /* UIMenuWndWin32.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4CA2A491D810013A3B1 /* UIMenuWndWin32.h */; };
+		10F0E53C2A491D930013A3B1 /* UITabCtrl.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4CB2A491D810013A3B1 /* UITabCtrl.h */; };
+		10F0E53D2A491D930013A3B1 /* UIBarCode.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4CC2A491D810013A3B1 /* UIBarCode.h */; };
+		10F0E53E2A491D930013A3B1 /* UIComboEditWndGtk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4CD2A491D820013A3B1 /* UIComboEditWndGtk.cpp */; };
+		10F0E53F2A491D930013A3B1 /* UIGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4CE2A491D820013A3B1 /* UIGrid.cpp */; };
+		10F0E5402A491D930013A3B1 /* UIIconButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4CF2A491D820013A3B1 /* UIIconButton.h */; };
+		10F0E5412A491D930013A3B1 /* TxtWinHost.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4D02A491D820013A3B1 /* TxtWinHost.h */; };
+		10F0E5422A491D930013A3B1 /* UIRollTextEx.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4D12A491D820013A3B1 /* UIRollTextEx.h */; };
+		10F0E5432A491D930013A3B1 /* UIIPAddressEx.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4D22A491D830013A3B1 /* UIIPAddressEx.h */; };
+		10F0E5442A491D930013A3B1 /* UIComboWndWin32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4D32A491D830013A3B1 /* UIComboWndWin32.cpp */; };
+		10F0E5452A491D930013A3B1 /* UIColorPalette.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4D42A491D830013A3B1 /* UIColorPalette.cpp */; };
+		10F0E5462A491D930013A3B1 /* ITreeUI.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4D52A491D830013A3B1 /* ITreeUI.h */; };
+		10F0E5472A491D930013A3B1 /* UIDateTimeEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4D62A491D840013A3B1 /* UIDateTimeEx.cpp */; };
+		10F0E5482A491D930013A3B1 /* UISlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4D72A491D840013A3B1 /* UISlider.cpp */; };
+		10F0E5492A491D930013A3B1 /* UIPicture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4D82A491D840013A3B1 /* UIPicture.cpp */; };
+		10F0E54A2A491D930013A3B1 /* UIRollText.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4D92A491D840013A3B1 /* UIRollText.h */; };
+		10F0E54B2A491D930013A3B1 /* UIActiveX.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4DA2A491D850013A3B1 /* UIActiveX.h */; };
+		10F0E54C2A491D930013A3B1 /* UIRichEdit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4DB2A491D850013A3B1 /* UIRichEdit.cpp */; };
+		10F0E54D2A491D930013A3B1 /* UIScrollBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4DC2A491D850013A3B1 /* UIScrollBar.cpp */; };
+		10F0E54E2A491D940013A3B1 /* UIGroupBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4DD2A491D850013A3B1 /* UIGroupBox.cpp */; };
+		10F0E54F2A491D940013A3B1 /* UIFlash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4DE2A491D850013A3B1 /* UIFlash.cpp */; };
+		10F0E5502A491D940013A3B1 /* UIFlash.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4DF2A491D860013A3B1 /* UIFlash.h */; };
+		10F0E5512A491D940013A3B1 /* UIComboWndWin32.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4E02A491D860013A3B1 /* UIComboWndWin32.h */; };
+		10F0E5522A491D940013A3B1 /* UIMenuWndGtk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4E12A491D860013A3B1 /* UIMenuWndGtk.cpp */; };
+		10F0E5532A491D940013A3B1 /* UIDateTimeExWndWin32.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4E22A491D860013A3B1 /* UIDateTimeExWndWin32.h */; };
+		10F0E5542A491D940013A3B1 /* UIGridHeader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4E32A491D860013A3B1 /* UIGridHeader.cpp */; };
+		10F0E5552A491D940013A3B1 /* UIMenuWndGtk.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4E42A491D870013A3B1 /* UIMenuWndGtk.h */; };
+		10F0E5562A491D940013A3B1 /* UIComboWndGtk.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4E52A491D870013A3B1 /* UIComboWndGtk.h */; };
+		10F0E5572A491D940013A3B1 /* UIGridCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4E62A491D870013A3B1 /* UIGridCell.h */; };
+		10F0E5582A491D940013A3B1 /* UIGroupBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4E72A491D870013A3B1 /* UIGroupBox.h */; };
+		10F0E5592A491D940013A3B1 /* UIListEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4E82A491D870013A3B1 /* UIListEx.cpp */; };
+		10F0E55A2A491D940013A3B1 /* UIPictureBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4E92A491D880013A3B1 /* UIPictureBox.cpp */; };
+		10F0E55B2A491D940013A3B1 /* ITreeUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4EA2A491D880013A3B1 /* ITreeUI.cpp */; };
+		10F0E55C2A491D940013A3B1 /* UIRichEdit.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4EB2A491D880013A3B1 /* UIRichEdit.h */; };
+		10F0E55D2A491D940013A3B1 /* UIGridRowUI.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4EC2A491D880013A3B1 /* UIGridRowUI.h */; };
+		10F0E55E2A491D940013A3B1 /* UIGifAnim.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4ED2A491D880013A3B1 /* UIGifAnim.h */; };
+		10F0E55F2A491D940013A3B1 /* UIHotKey.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4EE2A491D890013A3B1 /* UIHotKey.h */; };
+		10F0E5602A491D940013A3B1 /* UIDateTimeWndGtk.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4EF2A491D890013A3B1 /* UIDateTimeWndGtk.h */; };
+		10F0E5612A491D940013A3B1 /* UIEdit.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4F02A491D890013A3B1 /* UIEdit.h */; };
+		10F0E5622A491D940013A3B1 /* UITabCtrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4F12A491D890013A3B1 /* UITabCtrl.cpp */; };
+		10F0E5632A491D940013A3B1 /* UIImageBoxEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4F22A491D8A0013A3B1 /* UIImageBoxEx.cpp */; };
+		10F0E5642A491D940013A3B1 /* UIRing.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4F32A491D8A0013A3B1 /* UIRing.h */; };
+		10F0E5652A491D940013A3B1 /* UIEditWndWin32.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4F42A491D8A0013A3B1 /* UIEditWndWin32.h */; };
+		10F0E5662A491D940013A3B1 /* UIGridBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4F52A491D8A0013A3B1 /* UIGridBody.cpp */; };
+		10F0E5672A491D940013A3B1 /* TxtWinHost.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4F62A491D8A0013A3B1 /* TxtWinHost.cpp */; };
+		10F0E5682A491D940013A3B1 /* UITree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4F72A491D8A0013A3B1 /* UITree.cpp */; };
+		10F0E5692A491D940013A3B1 /* UIDateTimeExWndWin32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4F82A491D8B0013A3B1 /* UIDateTimeExWndWin32.cpp */; };
+		10F0E56A2A491D940013A3B1 /* UIPicture.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4F92A491D8B0013A3B1 /* UIPicture.h */; };
+		10F0E56B2A491D940013A3B1 /* UIOption.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4FA2A491D8B0013A3B1 /* UIOption.cpp */; };
+		10F0E56C2A491D940013A3B1 /* UIDateTimeExWndGtk.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4FB2A491D8B0013A3B1 /* UIDateTimeExWndGtk.h */; };
+		10F0E56D2A491D940013A3B1 /* UIIconButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4FC2A491D8B0013A3B1 /* UIIconButton.cpp */; };
+		10F0E56E2A491D940013A3B1 /* UIProgress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4FD2A491D8B0013A3B1 /* UIProgress.cpp */; };
+		10F0E56F2A491D940013A3B1 /* UIFadeButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E4FE2A491D8C0013A3B1 /* UIFadeButton.cpp */; };
+		10F0E5702A491D940013A3B1 /* UIListEx.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E4FF2A491D8C0013A3B1 /* UIListEx.h */; };
+		10F0E5712A491D940013A3B1 /* UIHotKey.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5002A491D8C0013A3B1 /* UIHotKey.cpp */; };
+		10F0E5722A491D940013A3B1 /* UIEdit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5012A491D8C0013A3B1 /* UIEdit.cpp */; };
+		10F0E5732A491D940013A3B1 /* UIIPAddress.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5022A491D8C0013A3B1 /* UIIPAddress.h */; };
+		10F0E5742A491D940013A3B1 /* UIRing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5032A491D8C0013A3B1 /* UIRing.cpp */; };
+		10F0E5752A491D940013A3B1 /* UIBarCode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5042A491D8C0013A3B1 /* UIBarCode.cpp */; };
+		10F0E5762A491D940013A3B1 /* UIFadeButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5052A491D8D0013A3B1 /* UIFadeButton.h */; };
+		10F0E5772A491D940013A3B1 /* UIEditWndGtk.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5062A491D8D0013A3B1 /* UIEditWndGtk.h */; };
+		10F0E5782A491D940013A3B1 /* UIDateTimeExWndGtk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5072A491D8D0013A3B1 /* UIDateTimeExWndGtk.cpp */; };
+		10F0E5792A491D940013A3B1 /* UIMsgWnd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5082A491D8D0013A3B1 /* UIMsgWnd.cpp */; };
+		10F0E57A2A491D940013A3B1 /* UIText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5092A491D8D0013A3B1 /* UIText.cpp */; };
+		10F0E57B2A491D940013A3B1 /* UISlider.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E50A2A491D8E0013A3B1 /* UISlider.h */; };
+		10F0E57C2A491D940013A3B1 /* UIText.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E50B2A491D8E0013A3B1 /* UIText.h */; };
+		10F0E57D2A491D940013A3B1 /* UICombo.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E50C2A491D8E0013A3B1 /* UICombo.h */; };
+		10F0E57E2A491D940013A3B1 /* UIGrid.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E50D2A491D8E0013A3B1 /* UIGrid.h */; };
+		10F0E57F2A491D940013A3B1 /* UIEditWndGtk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E50E2A491D8E0013A3B1 /* UIEditWndGtk.cpp */; };
+		10F0E5802A491D940013A3B1 /* UIComboEditWndWin32.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E50F2A491D8E0013A3B1 /* UIComboEditWndWin32.h */; };
+		10F0E5812A491D940013A3B1 /* UIComboEditWndGtk.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5102A491D8E0013A3B1 /* UIComboEditWndGtk.h */; };
+		10F0E5822A491D940013A3B1 /* UIDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5112A491D8F0013A3B1 /* UIDateTime.cpp */; };
+		10F0E5832A491D940013A3B1 /* UIButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5122A491D8F0013A3B1 /* UIButton.cpp */; };
+		10F0E5842A491D940013A3B1 /* UIActiveX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5132A491D8F0013A3B1 /* UIActiveX.cpp */; };
+		10F0E5852A491D940013A3B1 /* UIAnimation.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5142A491D8F0013A3B1 /* UIAnimation.h */; };
+		10F0E5862A491D940013A3B1 /* UICombo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5152A491D900013A3B1 /* UICombo.cpp */; };
+		10F0E5872A491D940013A3B1 /* UIPictureBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5162A491D900013A3B1 /* UIPictureBox.h */; };
+		10F0E5882A491D940013A3B1 /* UIDateTimeWndWin32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5172A491D900013A3B1 /* UIDateTimeWndWin32.cpp */; };
+		10F0E5892A491D940013A3B1 /* UIMsgWnd.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5182A491D900013A3B1 /* UIMsgWnd.h */; };
+		10F0E58A2A491D940013A3B1 /* UIMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5192A491D900013A3B1 /* UIMenu.cpp */; };
+		10F0E58B2A491D940013A3B1 /* UIRollTextEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E51A2A491D900013A3B1 /* UIRollTextEx.cpp */; };
+		10F0E58C2A491D940013A3B1 /* UIIPAddressEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E51B2A491D910013A3B1 /* UIIPAddressEx.cpp */; };
+		10F0E58D2A491D940013A3B1 /* UILabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E51C2A491D910013A3B1 /* UILabel.cpp */; };
+		10F0E58E2A491D940013A3B1 /* UIGifAnim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E51D2A491D910013A3B1 /* UIGifAnim.cpp */; };
+		10F0E58F2A491D940013A3B1 /* UIButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E51E2A491D910013A3B1 /* UIButton.h */; };
+		10F0E5902A491D940013A3B1 /* UIMenuWndWin32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E51F2A491D910013A3B1 /* UIMenuWndWin32.cpp */; };
+		10F0E5912A491D940013A3B1 /* UIColorPalette.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5202A491D910013A3B1 /* UIColorPalette.h */; };
+		10F0E5922A491D940013A3B1 /* UIQRCode.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5212A491D920013A3B1 /* UIQRCode.h */; };
+		10F0E5932A491D940013A3B1 /* UIList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5222A491D920013A3B1 /* UIList.cpp */; };
+		10F0E5942A491D940013A3B1 /* UIQRCode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5232A491D920013A3B1 /* UIQRCode.cpp */; };
+		10F0E5952A491D940013A3B1 /* UIGridBody.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5242A491D920013A3B1 /* UIGridBody.h */; };
+		10F0E5962A491D940013A3B1 /* UIImageBoxEx.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5252A491D920013A3B1 /* UIImageBoxEx.h */; };
+		10F0E5972A491D940013A3B1 /* UIIPAddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5262A491D930013A3B1 /* UIIPAddress.cpp */; };
+		10F0E5982A491D940013A3B1 /* UIComboEditWndWin32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5272A491D930013A3B1 /* UIComboEditWndWin32.cpp */; };
+		10F0E5992A491D940013A3B1 /* UIDateTimeWndGtk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5282A491D930013A3B1 /* UIDateTimeWndGtk.cpp */; };
+		10F0E5AC2A491DB70013A3B1 /* UIAnimationTabLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E59A2A491DB20013A3B1 /* UIAnimationTabLayout.h */; };
+		10F0E5AD2A491DB70013A3B1 /* UIHorizontalLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E59B2A491DB30013A3B1 /* UIHorizontalLayout.cpp */; };
+		10F0E5AE2A491DB70013A3B1 /* UIVerticalLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E59C2A491DB30013A3B1 /* UIVerticalLayout.h */; };
+		10F0E5AF2A491DB70013A3B1 /* UIAnimationTabLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E59D2A491DB30013A3B1 /* UIAnimationTabLayout.cpp */; };
+		10F0E5B02A491DB70013A3B1 /* UITabLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E59E2A491DB40013A3B1 /* UITabLayout.h */; };
+		10F0E5B12A491DB70013A3B1 /* UIDynamicLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E59F2A491DB40013A3B1 /* UIDynamicLayout.cpp */; };
+		10F0E5B22A491DB70013A3B1 /* UIChildWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5A02A491DB40013A3B1 /* UIChildWindow.cpp */; };
+		10F0E5B32A491DB70013A3B1 /* UIDynamicLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5A12A491DB40013A3B1 /* UIDynamicLayout.h */; };
+		10F0E5B42A491DB70013A3B1 /* UIHorizontalLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5A22A491DB50013A3B1 /* UIHorizontalLayout.h */; };
+		10F0E5B52A491DB70013A3B1 /* UIChildLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5A32A491DB50013A3B1 /* UIChildLayout.cpp */; };
+		10F0E5B62A491DB70013A3B1 /* UIChildWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5A42A491DB50013A3B1 /* UIChildWindow.h */; };
+		10F0E5B72A491DB70013A3B1 /* UITabLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5A52A491DB50013A3B1 /* UITabLayout.cpp */; };
+		10F0E5B82A491DB70013A3B1 /* UITileLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5A62A491DB60013A3B1 /* UITileLayout.h */; };
+		10F0E5B92A491DB70013A3B1 /* UIChildLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5A72A491DB60013A3B1 /* UIChildLayout.h */; };
+		10F0E5BA2A491DB70013A3B1 /* UITableLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5A82A491DB60013A3B1 /* UITableLayout.h */; };
+		10F0E5BB2A491DB70013A3B1 /* UITableLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5A92A491DB60013A3B1 /* UITableLayout.cpp */; };
+		10F0E5BC2A491DB70013A3B1 /* UIVerticalLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5AA2A491DB60013A3B1 /* UIVerticalLayout.cpp */; };
+		10F0E5BD2A491DB70013A3B1 /* UITileLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5AB2A491DB70013A3B1 /* UITileLayout.cpp */; };
+		10F0E5E42A491E080013A3B1 /* UIApplicationWin32.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5BE2A491DFE0013A3B1 /* UIApplicationWin32.h */; };
+		10F0E5E52A491E080013A3B1 /* DuiString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5BF2A491DFF0013A3B1 /* DuiString.cpp */; };
+		10F0E5E72A491E080013A3B1 /* nanosvg.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5C12A491DFF0013A3B1 /* nanosvg.h */; };
+		10F0E5EA2A491E080013A3B1 /* DPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5C42A491E000013A3B1 /* DPI.h */; };
+		10F0E5EB2A491E080013A3B1 /* DuiString.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5C52A491E010013A3B1 /* DuiString.h */; };
+		10F0E5EE2A491E080013A3B1 /* DPI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5C82A491E010013A3B1 /* DPI.cpp */; };
+		10F0E5EF2A491E080013A3B1 /* TrayIcon.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5C92A491E010013A3B1 /* TrayIcon.h */; };
+		10F0E5F02A491E080013A3B1 /* UIApplicationGtk.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5CA2A491E010013A3B1 /* UIApplicationGtk.h */; };
+		10F0E5F12A491E080013A3B1 /* DpiGtk.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5CB2A491E020013A3B1 /* DpiGtk.h */; };
+		10F0E5F22A491E090013A3B1 /* UIForm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5CD2A491E020013A3B1 /* UIForm.cpp */; };
+		10F0E5F32A491E090013A3B1 /* stb_image_write.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5CE2A491E020013A3B1 /* stb_image_write.h */; };
+		10F0E5F42A491E090013A3B1 /* UIDelegate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5CF2A491E020013A3B1 /* UIDelegate.cpp */; };
+		10F0E5F52A491E090013A3B1 /* QREncode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5D02A491E030013A3B1 /* QREncode.cpp */; };
+		10F0E5F62A491E090013A3B1 /* DpiWin32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5D12A491E030013A3B1 /* DpiWin32.cpp */; };
+		10F0E5F72A491E090013A3B1 /* DpiWin32.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5D22A491E030013A3B1 /* DpiWin32.h */; };
+		10F0E5F82A491E090013A3B1 /* UIApplicationWin32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5D32A491E030013A3B1 /* UIApplicationWin32.cpp */; };
+		10F0E5F92A491E090013A3B1 /* UIDialog.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5D42A491E040013A3B1 /* UIDialog.h */; };
+		10F0E5FA2A491E090013A3B1 /* UIDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5D52A491E040013A3B1 /* UIDelegate.h */; };
+		10F0E5FB2A491E090013A3B1 /* UIApplicationGtk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5D72A491E050013A3B1 /* UIApplicationGtk.cpp */; };
+		10F0E5FC2A491E090013A3B1 /* DpiGtk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5D92A491E060013A3B1 /* DpiGtk.cpp */; };
+		10F0E5FE2A491E090013A3B1 /* observer_impl_base.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5DB2A491E060013A3B1 /* observer_impl_base.h */; };
+		10F0E5FF2A491E090013A3B1 /* nanosvgrast.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5DC2A491E070013A3B1 /* nanosvgrast.h */; };
+		10F0E6002A491E090013A3B1 /* TrayIcon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5DD2A491E070013A3B1 /* TrayIcon.cpp */; };
+		10F0E6012A491E090013A3B1 /* UIApplication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5DE2A491E070013A3B1 /* UIApplication.cpp */; };
+		10F0E6022A491E090013A3B1 /* QREncode.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5DF2A491E070013A3B1 /* QREncode.h */; };
+		10F0E6042A491E090013A3B1 /* UIApplication.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5E12A491E080013A3B1 /* UIApplication.h */; };
+		10F0E6052A491E090013A3B1 /* UIDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E5E22A491E080013A3B1 /* UIDialog.cpp */; };
+		10F0E6062A491E090013A3B1 /* stb_image.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E5E32A491E080013A3B1 /* stb_image.h */; };
+		10F0E6212A491E3B0013A3B1 /* UIObject_gdiplus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6072A491E340013A3B1 /* UIObject_gdiplus.cpp */; };
+		10F0E6222A491E3B0013A3B1 /* UIRenderFactory_gdiplus.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6082A491E340013A3B1 /* UIRenderFactory_gdiplus.h */; };
+		10F0E6232A491E3B0013A3B1 /* UIObject_gdiplus.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6092A491E340013A3B1 /* UIObject_gdiplus.h */; };
+		10F0E6242A491E3B0013A3B1 /* UIRenderFactory_gdi.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E60A2A491E350013A3B1 /* UIRenderFactory_gdi.h */; };
+		10F0E6252A491E3B0013A3B1 /* UIClipWin32.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E60B2A491E350013A3B1 /* UIClipWin32.h */; };
+		10F0E6262A491E3B0013A3B1 /* UIRender_CairoWin32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E60C2A491E350013A3B1 /* UIRender_CairoWin32.cpp */; };
+		10F0E6272A491E3B0013A3B1 /* UIRender_gdiplus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E60D2A491E360013A3B1 /* UIRender_gdiplus.cpp */; };
+		10F0E6282A491E3B0013A3B1 /* UIObject_gdi.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E60E2A491E360013A3B1 /* UIObject_gdi.h */; };
+		10F0E6292A491E3B0013A3B1 /* UIRender_gdi.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E60F2A491E360013A3B1 /* UIRender_gdi.h */; };
+		10F0E62A2A491E3B0013A3B1 /* UIRender_gdiplus.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6102A491E370013A3B1 /* UIRender_gdiplus.h */; };
+		10F0E62B2A491E3B0013A3B1 /* UIClipGtk.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6112A491E370013A3B1 /* UIClipGtk.h */; };
+		10F0E62C2A491E3B0013A3B1 /* UIClipWin32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6122A491E370013A3B1 /* UIClipWin32.cpp */; };
+		10F0E62D2A491E3B0013A3B1 /* UIRender_Cairo.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6132A491E370013A3B1 /* UIRender_Cairo.h */; };
+		10F0E62E2A491E3B0013A3B1 /* UIRender_Cairo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6142A491E370013A3B1 /* UIRender_Cairo.cpp */; };
+		10F0E62F2A491E3B0013A3B1 /* UIClipGtk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6152A491E380013A3B1 /* UIClipGtk.cpp */; };
+		10F0E6302A491E3B0013A3B1 /* UIRender_gdi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6162A491E380013A3B1 /* UIRender_gdi.cpp */; };
+		10F0E6312A491E3B0013A3B1 /* UIObject_Cairo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6172A491E380013A3B1 /* UIObject_Cairo.cpp */; };
+		10F0E6322A491E3B0013A3B1 /* UIRender_CairoWin32.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6182A491E390013A3B1 /* UIRender_CairoWin32.h */; };
+		10F0E6332A491E3B0013A3B1 /* UIRenderFactory_Cairo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6192A491E390013A3B1 /* UIRenderFactory_Cairo.cpp */; };
+		10F0E6342A491E3B0013A3B1 /* IRender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E61A2A491E390013A3B1 /* IRender.cpp */; };
+		10F0E6352A491E3B0013A3B1 /* UIRenderFactory_gdiplus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E61B2A491E3A0013A3B1 /* UIRenderFactory_gdiplus.cpp */; };
+		10F0E6362A491E3B0013A3B1 /* UIObject_gdi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E61C2A491E3A0013A3B1 /* UIObject_gdi.cpp */; };
+		10F0E6372A491E3B0013A3B1 /* UIRenderFactory_Cairo.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E61D2A491E3A0013A3B1 /* UIRenderFactory_Cairo.h */; };
+		10F0E6382A491E3B0013A3B1 /* UIObject_Cairo.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E61E2A491E3A0013A3B1 /* UIObject_Cairo.h */; };
+		10F0E6392A491E3B0013A3B1 /* IRender.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E61F2A491E3B0013A3B1 /* IRender.h */; };
+		10F0E63A2A491E3B0013A3B1 /* UIRenderFactory_gdi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6202A491E3B0013A3B1 /* UIRenderFactory_gdi.cpp */; };
+		10F0E6602A491E5F0013A3B1 /* UIControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E63B2A491E530013A3B1 /* UIControl.h */; };
+		10F0E6612A491E5F0013A3B1 /* UIDlgBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E63C2A491E540013A3B1 /* UIDlgBuilder.h */; };
+		10F0E6622A491E5F0013A3B1 /* UIXmlDocument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E63D2A491E540013A3B1 /* UIXmlDocument.cpp */; };
+		10F0E6632A491E5F0013A3B1 /* UIGlobal.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E63E2A491E540013A3B1 /* UIGlobal.h */; };
+		10F0E6642A491E5F0013A3B1 /* UIBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E63F2A491E550013A3B1 /* UIBase.cpp */; };
+		10F0E6652A491E5F0013A3B1 /* UILangManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6402A491E550013A3B1 /* UILangManager.h */; };
+		10F0E6662A491E5F0013A3B1 /* UIResourceManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6412A491E560013A3B1 /* UIResourceManager.h */; };
+		10F0E6672A491E5F0013A3B1 /* UIDlgBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6422A491E560013A3B1 /* UIDlgBuilder.cpp */; };
+		10F0E6682A491E5F0013A3B1 /* UIXmlAttribute.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6432A491E560013A3B1 /* UIXmlAttribute.cpp */; };
+		10F0E6692A491E5F0013A3B1 /* UIXmlNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6442A491E570013A3B1 /* UIXmlNode.cpp */; };
+		10F0E66A2A491E5F0013A3B1 /* UIManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6452A491E570013A3B1 /* UIManager.cpp */; };
+		10F0E66B2A491E5F0013A3B1 /* UIFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6462A491E570013A3B1 /* UIFile.h */; };
+		10F0E66C2A491E5F0013A3B1 /* UIDefine.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6472A491E570013A3B1 /* UIDefine.h */; };
+		10F0E66D2A491E5F0013A3B1 /* UIWindowWin32.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6482A491E580013A3B1 /* UIWindowWin32.h */; };
+		10F0E66E2A491E5F0013A3B1 /* UIScript.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6492A491E580013A3B1 /* UIScript.h */; };
+		10F0E66F2A491E5F0013A3B1 /* UIContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E64A2A491E580013A3B1 /* UIContainer.h */; };
+		10F0E6702A491E5F0013A3B1 /* UIGlobal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E64B2A491E580013A3B1 /* UIGlobal.cpp */; };
+		10F0E6712A491E5F0013A3B1 /* UIFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E64C2A491E590013A3B1 /* UIFile.cpp */; };
+		10F0E6722A491E5F0013A3B1 /* UIWindowGtk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E64D2A491E590013A3B1 /* UIWindowGtk.cpp */; };
+		10F0E6732A491E5F0013A3B1 /* UIManagerGtk.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E64E2A491E590013A3B1 /* UIManagerGtk.h */; };
+		10F0E6742A491E5F0013A3B1 /* UIControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E64F2A491E590013A3B1 /* UIControl.cpp */; };
+		10F0E6752A491E5F0013A3B1 /* UIManagerWin32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6502A491E5A0013A3B1 /* UIManagerWin32.cpp */; };
+		10F0E6762A491E5F0013A3B1 /* UIWindowWin32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6512A491E5A0013A3B1 /* UIWindowWin32.cpp */; };
+		10F0E6772A491E5F0013A3B1 /* UIManagerWin32.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6522A491E5A0013A3B1 /* UIManagerWin32.h */; };
+		10F0E6782A491E5F0013A3B1 /* UIScript.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6532A491E5A0013A3B1 /* UIScript.cpp */; };
+		10F0E6792A491E5F0013A3B1 /* UIXmlDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6542A491E5B0013A3B1 /* UIXmlDocument.h */; };
+		10F0E67A2A491E5F0013A3B1 /* UIContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6552A491E5B0013A3B1 /* UIContainer.cpp */; };
+		10F0E67B2A491E5F0013A3B1 /* UIResourceManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6562A491E5B0013A3B1 /* UIResourceManager.cpp */; };
+		10F0E67C2A491E5F0013A3B1 /* UIManagerGtk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6572A491E5B0013A3B1 /* UIManagerGtk.cpp */; };
+		10F0E67D2A491E5F0013A3B1 /* ControlFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6582A491E5C0013A3B1 /* ControlFactory.cpp */; };
+		10F0E67E2A491E5F0013A3B1 /* ControlFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6592A491E5C0013A3B1 /* ControlFactory.h */; };
+		10F0E67F2A491E5F0013A3B1 /* UIWindowGtk.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E65A2A491E5C0013A3B1 /* UIWindowGtk.h */; };
+		10F0E6802A491E5F0013A3B1 /* UIXmlNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E65B2A491E5D0013A3B1 /* UIXmlNode.h */; };
+		10F0E6812A491E5F0013A3B1 /* UIManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E65C2A491E5D0013A3B1 /* UIManager.h */; };
+		10F0E6822A491E5F0013A3B1 /* UIXmlAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E65D2A491E5D0013A3B1 /* UIXmlAttribute.h */; };
+		10F0E6832A491E5F0013A3B1 /* UIBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E65E2A491E5E0013A3B1 /* UIBase.h */; };
+		10F0E6842A491E5F0013A3B1 /* UILangManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E65F2A491E5E0013A3B1 /* UILangManager.cpp */; };
+		10F0E6A42A4972B00013A3B1 /* UIFrameWndGtk.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6862A4972A10013A3B1 /* UIFrameWndGtk.h */; };
+		10F0E6A52A4972B00013A3B1 /* UIShadowGtk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6872A4972A20013A3B1 /* UIShadowGtk.cpp */; };
+		10F0E6A62A4972B00013A3B1 /* WinImplBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6882A4972A30013A3B1 /* WinImplBase.h */; };
+		10F0E6A72A4972B00013A3B1 /* UIFrameBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6892A4972A40013A3B1 /* UIFrameBase.cpp */; };
+		10F0E6A82A4972B00013A3B1 /* UIFrameWndGtk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E68A2A4972A50013A3B1 /* UIFrameWndGtk.cpp */; };
+		10F0E6A92A4972B00013A3B1 /* UIShadowBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E68C2A4972A60013A3B1 /* UIShadowBase.cpp */; };
+		10F0E6AA2A4972B00013A3B1 /* UIFrameBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E68D2A4972A60013A3B1 /* UIFrameBase.h */; };
+		10F0E6AB2A4972B00013A3B1 /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E68E2A4972A70013A3B1 /* Utils.cpp */; };
+		10F0E6AC2A4972B00013A3B1 /* UIFrameWnd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E68F2A4972A80013A3B1 /* UIFrameWnd.cpp */; };
+		10F0E6AD2A4972B00013A3B1 /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6902A4972A80013A3B1 /* Utils.h */; };
+		10F0E6AF2A4972B00013A3B1 /* UIFrameWnd.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6922A4972A90013A3B1 /* UIFrameWnd.h */; };
+		10F0E6B12A4972B00013A3B1 /* UIFrameWndWin32.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6942A4972AA0013A3B1 /* UIFrameWndWin32.h */; };
+		10F0E6B22A4972B00013A3B1 /* UIShadowBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6952A4972AA0013A3B1 /* UIShadowBase.h */; };
+		10F0E6B52A4972B00013A3B1 /* UIShadowWin32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6982A4972AB0013A3B1 /* UIShadowWin32.cpp */; };
+		10F0E6B72A4972B00013A3B1 /* UIFrameWndWin32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E69B2A4972AD0013A3B1 /* UIFrameWndWin32.cpp */; };
+		10F0E6B92A4972B00013A3B1 /* VersionHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E69D2A4972AE0013A3B1 /* VersionHelpers.h */; };
+		10F0E6BA2A4972B00013A3B1 /* UIShadowWin32.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E69E2A4972AE0013A3B1 /* UIShadowWin32.h */; };
+		10F0E6BB2A4972B00013A3B1 /* WinImplBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E69F2A4972AF0013A3B1 /* WinImplBase.cpp */; };
+		10F0E6BC2A4972B00013A3B1 /* UIForm.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6A02A4972AF0013A3B1 /* UIForm.h */; };
+		10F0E6BD2A4972B00013A3B1 /* UIShadowGtk.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6A22A4972B00013A3B1 /* UIShadowGtk.h */; };
+		10F0E6C62A4975650013A3B1 /* UIWebBrowser.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6BF2A4975600013A3B1 /* UIWebBrowser.h */; };
+		10F0E6C72A4975650013A3B1 /* UIWebBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6C02A4975610013A3B1 /* UIWebBrowser.cpp */; };
+		10F0E6C82A4975650013A3B1 /* UITreeItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6C12A4975620013A3B1 /* UITreeItem.h */; };
+		10F0E6C92A4975650013A3B1 /* UITreeView.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6C22A4975620013A3B1 /* UITreeView.h */; };
+		10F0E6CA2A4975650013A3B1 /* UITree.h in Headers */ = {isa = PBXBuildFile; fileRef = 10F0E6C32A4975630013A3B1 /* UITree.h */; };
+		10F0E6CB2A4975650013A3B1 /* UITreeView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6C42A4975630013A3B1 /* UITreeView.cpp */; };
+		10F0E6CC2A4975650013A3B1 /* UITreeItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10F0E6C52A4975640013A3B1 /* UITreeItem.cpp */; };
+		10F0E6CF2A4977690013A3B1 /* libgtk-3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 10F0E6CE2A4977690013A3B1 /* libgtk-3.dylib */; };
+		10F0E6D32A4977B20013A3B1 /* libgobject-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 10F0E6D22A4977B20013A3B1 /* libgobject-2.0.dylib */; };
+		10F0E6D52A4977CF0013A3B1 /* libglib-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 10F0E6D42A4977CF0013A3B1 /* libglib-2.0.dylib */; };
+		10F0E6D72A4977DD0013A3B1 /* libgdk-3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 10F0E6D62A4977DD0013A3B1 /* libgdk-3.dylib */; };
+		10F0E6D92A4977FE0013A3B1 /* libgdk_pixbuf-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 10F0E6D82A4977FE0013A3B1 /* libgdk_pixbuf-2.0.dylib */; };
+		10F0E6DB2A49781A0013A3B1 /* libpango-1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 10F0E6DA2A49781A0013A3B1 /* libpango-1.0.dylib */; };
+		10F0E6DD2A49782D0013A3B1 /* libpangocairo-1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 10F0E6DC2A49782D0013A3B1 /* libpangocairo-1.0.dylib */; };
+		10F0E6DF2A4978710013A3B1 /* libcairo.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 10F0E6DE2A4978710013A3B1 /* libcairo.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		10F0E48D2A491AF80013A3B1 /* libDuiLib.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libDuiLib.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		10F0E49B2A491BB00013A3B1 /* StdAfx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StdAfx.cpp; path = ../../../DuiLib/StdAfx.cpp; sourceTree = "<group>"; };
+		10F0E49C2A491BB00013A3B1 /* UIlib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIlib.cpp; path = ../../../DuiLib/UIlib.cpp; sourceTree = "<group>"; };
+		10F0E49D2A491BB00013A3B1 /* StdAfx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StdAfx.h; path = ../../../DuiLib/StdAfx.h; sourceTree = "<group>"; };
+		10F0E49E2A491BB10013A3B1 /* compat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = compat.h; path = ../../../DuiLib/compat.h; sourceTree = "<group>"; };
+		10F0E4B42A491D4C0013A3B1 /* IGridUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IGridUI.h; path = ../../../DuiLib/Control/IGridUI.h; sourceTree = "<group>"; };
+		10F0E4B52A491D4C0013A3B1 /* IGridUI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IGridUI.cpp; path = ../../../DuiLib/Control/IGridUI.cpp; sourceTree = "<group>"; };
+		10F0E4B82A491D7E0013A3B1 /* UIDateTimeEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIDateTimeEx.h; path = ../../../DuiLib/Control/UIDateTimeEx.h; sourceTree = "<group>"; };
+		10F0E4B92A491D7E0013A3B1 /* UIScrollBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIScrollBar.h; path = ../../../DuiLib/Control/UIScrollBar.h; sourceTree = "<group>"; };
+		10F0E4BA2A491D7E0013A3B1 /* UIDateTimeWndWin32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIDateTimeWndWin32.h; path = ../../../DuiLib/Control/UIDateTimeWndWin32.h; sourceTree = "<group>"; };
+		10F0E4BB2A491D7E0013A3B1 /* UIMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIMenu.h; path = ../../../DuiLib/Control/UIMenu.h; sourceTree = "<group>"; };
+		10F0E4BC2A491D7E0013A3B1 /* UIGridCell.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIGridCell.cpp; path = ../../../DuiLib/Control/UIGridCell.cpp; sourceTree = "<group>"; };
+		10F0E4BD2A491D7F0013A3B1 /* UIRollText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIRollText.cpp; path = ../../../DuiLib/Control/UIRollText.cpp; sourceTree = "<group>"; };
+		10F0E4BE2A491D7F0013A3B1 /* UIAnimation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIAnimation.cpp; path = ../../../DuiLib/Control/UIAnimation.cpp; sourceTree = "<group>"; };
+		10F0E4BF2A491D7F0013A3B1 /* UIDateTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIDateTime.h; path = ../../../DuiLib/Control/UIDateTime.h; sourceTree = "<group>"; };
+		10F0E4C02A491D7F0013A3B1 /* UIGridRowUI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIGridRowUI.cpp; path = ../../../DuiLib/Control/UIGridRowUI.cpp; sourceTree = "<group>"; };
+		10F0E4C12A491D7F0013A3B1 /* UIEditWndWin32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIEditWndWin32.cpp; path = ../../../DuiLib/Control/UIEditWndWin32.cpp; sourceTree = "<group>"; };
+		10F0E4C22A491D7F0013A3B1 /* UILabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UILabel.h; path = ../../../DuiLib/Control/UILabel.h; sourceTree = "<group>"; };
+		10F0E4C32A491D800013A3B1 /* UIComboEx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIComboEx.cpp; path = ../../../DuiLib/Control/UIComboEx.cpp; sourceTree = "<group>"; };
+		10F0E4C42A491D800013A3B1 /* UIComboWndGtk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIComboWndGtk.cpp; path = ../../../DuiLib/Control/UIComboWndGtk.cpp; sourceTree = "<group>"; };
+		10F0E4C52A491D800013A3B1 /* UIComboEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIComboEx.h; path = ../../../DuiLib/Control/UIComboEx.h; sourceTree = "<group>"; };
+		10F0E4C62A491D800013A3B1 /* UIGridHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIGridHeader.h; path = ../../../DuiLib/Control/UIGridHeader.h; sourceTree = "<group>"; };
+		10F0E4C72A491D800013A3B1 /* UIList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIList.h; path = ../../../DuiLib/Control/UIList.h; sourceTree = "<group>"; };
+		10F0E4C82A491D800013A3B1 /* UIProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIProgress.h; path = ../../../DuiLib/Control/UIProgress.h; sourceTree = "<group>"; };
+		10F0E4C92A491D810013A3B1 /* UIOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIOption.h; path = ../../../DuiLib/Control/UIOption.h; sourceTree = "<group>"; };
+		10F0E4CA2A491D810013A3B1 /* UIMenuWndWin32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIMenuWndWin32.h; path = ../../../DuiLib/Control/UIMenuWndWin32.h; sourceTree = "<group>"; };
+		10F0E4CB2A491D810013A3B1 /* UITabCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UITabCtrl.h; path = ../../../DuiLib/Control/UITabCtrl.h; sourceTree = "<group>"; };
+		10F0E4CC2A491D810013A3B1 /* UIBarCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIBarCode.h; path = ../../../DuiLib/Control/UIBarCode.h; sourceTree = "<group>"; };
+		10F0E4CD2A491D820013A3B1 /* UIComboEditWndGtk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIComboEditWndGtk.cpp; path = ../../../DuiLib/Control/UIComboEditWndGtk.cpp; sourceTree = "<group>"; };
+		10F0E4CE2A491D820013A3B1 /* UIGrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIGrid.cpp; path = ../../../DuiLib/Control/UIGrid.cpp; sourceTree = "<group>"; };
+		10F0E4CF2A491D820013A3B1 /* UIIconButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIIconButton.h; path = ../../../DuiLib/Control/UIIconButton.h; sourceTree = "<group>"; };
+		10F0E4D02A491D820013A3B1 /* TxtWinHost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TxtWinHost.h; path = ../../../DuiLib/Control/TxtWinHost.h; sourceTree = "<group>"; };
+		10F0E4D12A491D820013A3B1 /* UIRollTextEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIRollTextEx.h; path = ../../../DuiLib/Control/UIRollTextEx.h; sourceTree = "<group>"; };
+		10F0E4D22A491D830013A3B1 /* UIIPAddressEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIIPAddressEx.h; path = ../../../DuiLib/Control/UIIPAddressEx.h; sourceTree = "<group>"; };
+		10F0E4D32A491D830013A3B1 /* UIComboWndWin32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIComboWndWin32.cpp; path = ../../../DuiLib/Control/UIComboWndWin32.cpp; sourceTree = "<group>"; };
+		10F0E4D42A491D830013A3B1 /* UIColorPalette.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIColorPalette.cpp; path = ../../../DuiLib/Control/UIColorPalette.cpp; sourceTree = "<group>"; };
+		10F0E4D52A491D830013A3B1 /* ITreeUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ITreeUI.h; path = ../../../DuiLib/Control/ITreeUI.h; sourceTree = "<group>"; };
+		10F0E4D62A491D840013A3B1 /* UIDateTimeEx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIDateTimeEx.cpp; path = ../../../DuiLib/Control/UIDateTimeEx.cpp; sourceTree = "<group>"; };
+		10F0E4D72A491D840013A3B1 /* UISlider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UISlider.cpp; path = ../../../DuiLib/Control/UISlider.cpp; sourceTree = "<group>"; };
+		10F0E4D82A491D840013A3B1 /* UIPicture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIPicture.cpp; path = ../../../DuiLib/Control/UIPicture.cpp; sourceTree = "<group>"; };
+		10F0E4D92A491D840013A3B1 /* UIRollText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIRollText.h; path = ../../../DuiLib/Control/UIRollText.h; sourceTree = "<group>"; };
+		10F0E4DA2A491D850013A3B1 /* UIActiveX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIActiveX.h; path = ../../../DuiLib/Control/UIActiveX.h; sourceTree = "<group>"; };
+		10F0E4DB2A491D850013A3B1 /* UIRichEdit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIRichEdit.cpp; path = ../../../DuiLib/Control/UIRichEdit.cpp; sourceTree = "<group>"; };
+		10F0E4DC2A491D850013A3B1 /* UIScrollBar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIScrollBar.cpp; path = ../../../DuiLib/Control/UIScrollBar.cpp; sourceTree = "<group>"; };
+		10F0E4DD2A491D850013A3B1 /* UIGroupBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIGroupBox.cpp; path = ../../../DuiLib/Control/UIGroupBox.cpp; sourceTree = "<group>"; };
+		10F0E4DE2A491D850013A3B1 /* UIFlash.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIFlash.cpp; path = ../../../DuiLib/Control/UIFlash.cpp; sourceTree = "<group>"; };
+		10F0E4DF2A491D860013A3B1 /* UIFlash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIFlash.h; path = ../../../DuiLib/Control/UIFlash.h; sourceTree = "<group>"; };
+		10F0E4E02A491D860013A3B1 /* UIComboWndWin32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIComboWndWin32.h; path = ../../../DuiLib/Control/UIComboWndWin32.h; sourceTree = "<group>"; };
+		10F0E4E12A491D860013A3B1 /* UIMenuWndGtk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIMenuWndGtk.cpp; path = ../../../DuiLib/Control/UIMenuWndGtk.cpp; sourceTree = "<group>"; };
+		10F0E4E22A491D860013A3B1 /* UIDateTimeExWndWin32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIDateTimeExWndWin32.h; path = ../../../DuiLib/Control/UIDateTimeExWndWin32.h; sourceTree = "<group>"; };
+		10F0E4E32A491D860013A3B1 /* UIGridHeader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIGridHeader.cpp; path = ../../../DuiLib/Control/UIGridHeader.cpp; sourceTree = "<group>"; };
+		10F0E4E42A491D870013A3B1 /* UIMenuWndGtk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIMenuWndGtk.h; path = ../../../DuiLib/Control/UIMenuWndGtk.h; sourceTree = "<group>"; };
+		10F0E4E52A491D870013A3B1 /* UIComboWndGtk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIComboWndGtk.h; path = ../../../DuiLib/Control/UIComboWndGtk.h; sourceTree = "<group>"; };
+		10F0E4E62A491D870013A3B1 /* UIGridCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIGridCell.h; path = ../../../DuiLib/Control/UIGridCell.h; sourceTree = "<group>"; };
+		10F0E4E72A491D870013A3B1 /* UIGroupBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIGroupBox.h; path = ../../../DuiLib/Control/UIGroupBox.h; sourceTree = "<group>"; };
+		10F0E4E82A491D870013A3B1 /* UIListEx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIListEx.cpp; path = ../../../DuiLib/Control/UIListEx.cpp; sourceTree = "<group>"; };
+		10F0E4E92A491D880013A3B1 /* UIPictureBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIPictureBox.cpp; path = ../../../DuiLib/Control/UIPictureBox.cpp; sourceTree = "<group>"; };
+		10F0E4EA2A491D880013A3B1 /* ITreeUI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ITreeUI.cpp; path = ../../../DuiLib/Control/ITreeUI.cpp; sourceTree = "<group>"; };
+		10F0E4EB2A491D880013A3B1 /* UIRichEdit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIRichEdit.h; path = ../../../DuiLib/Control/UIRichEdit.h; sourceTree = "<group>"; };
+		10F0E4EC2A491D880013A3B1 /* UIGridRowUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIGridRowUI.h; path = ../../../DuiLib/Control/UIGridRowUI.h; sourceTree = "<group>"; };
+		10F0E4ED2A491D880013A3B1 /* UIGifAnim.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIGifAnim.h; path = ../../../DuiLib/Control/UIGifAnim.h; sourceTree = "<group>"; };
+		10F0E4EE2A491D890013A3B1 /* UIHotKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIHotKey.h; path = ../../../DuiLib/Control/UIHotKey.h; sourceTree = "<group>"; };
+		10F0E4EF2A491D890013A3B1 /* UIDateTimeWndGtk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIDateTimeWndGtk.h; path = ../../../DuiLib/Control/UIDateTimeWndGtk.h; sourceTree = "<group>"; };
+		10F0E4F02A491D890013A3B1 /* UIEdit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIEdit.h; path = ../../../DuiLib/Control/UIEdit.h; sourceTree = "<group>"; };
+		10F0E4F12A491D890013A3B1 /* UITabCtrl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UITabCtrl.cpp; path = ../../../DuiLib/Control/UITabCtrl.cpp; sourceTree = "<group>"; };
+		10F0E4F22A491D8A0013A3B1 /* UIImageBoxEx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIImageBoxEx.cpp; path = ../../../DuiLib/Control/UIImageBoxEx.cpp; sourceTree = "<group>"; };
+		10F0E4F32A491D8A0013A3B1 /* UIRing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIRing.h; path = ../../../DuiLib/Control/UIRing.h; sourceTree = "<group>"; };
+		10F0E4F42A491D8A0013A3B1 /* UIEditWndWin32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIEditWndWin32.h; path = ../../../DuiLib/Control/UIEditWndWin32.h; sourceTree = "<group>"; };
+		10F0E4F52A491D8A0013A3B1 /* UIGridBody.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIGridBody.cpp; path = ../../../DuiLib/Control/UIGridBody.cpp; sourceTree = "<group>"; };
+		10F0E4F62A491D8A0013A3B1 /* TxtWinHost.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TxtWinHost.cpp; path = ../../../DuiLib/Control/TxtWinHost.cpp; sourceTree = "<group>"; };
+		10F0E4F72A491D8A0013A3B1 /* UITree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UITree.cpp; path = ../../../DuiLib/Control/UITree.cpp; sourceTree = "<group>"; };
+		10F0E4F82A491D8B0013A3B1 /* UIDateTimeExWndWin32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIDateTimeExWndWin32.cpp; path = ../../../DuiLib/Control/UIDateTimeExWndWin32.cpp; sourceTree = "<group>"; };
+		10F0E4F92A491D8B0013A3B1 /* UIPicture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIPicture.h; path = ../../../DuiLib/Control/UIPicture.h; sourceTree = "<group>"; };
+		10F0E4FA2A491D8B0013A3B1 /* UIOption.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIOption.cpp; path = ../../../DuiLib/Control/UIOption.cpp; sourceTree = "<group>"; };
+		10F0E4FB2A491D8B0013A3B1 /* UIDateTimeExWndGtk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIDateTimeExWndGtk.h; path = ../../../DuiLib/Control/UIDateTimeExWndGtk.h; sourceTree = "<group>"; };
+		10F0E4FC2A491D8B0013A3B1 /* UIIconButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIIconButton.cpp; path = ../../../DuiLib/Control/UIIconButton.cpp; sourceTree = "<group>"; };
+		10F0E4FD2A491D8B0013A3B1 /* UIProgress.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIProgress.cpp; path = ../../../DuiLib/Control/UIProgress.cpp; sourceTree = "<group>"; };
+		10F0E4FE2A491D8C0013A3B1 /* UIFadeButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIFadeButton.cpp; path = ../../../DuiLib/Control/UIFadeButton.cpp; sourceTree = "<group>"; };
+		10F0E4FF2A491D8C0013A3B1 /* UIListEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIListEx.h; path = ../../../DuiLib/Control/UIListEx.h; sourceTree = "<group>"; };
+		10F0E5002A491D8C0013A3B1 /* UIHotKey.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIHotKey.cpp; path = ../../../DuiLib/Control/UIHotKey.cpp; sourceTree = "<group>"; };
+		10F0E5012A491D8C0013A3B1 /* UIEdit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIEdit.cpp; path = ../../../DuiLib/Control/UIEdit.cpp; sourceTree = "<group>"; };
+		10F0E5022A491D8C0013A3B1 /* UIIPAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIIPAddress.h; path = ../../../DuiLib/Control/UIIPAddress.h; sourceTree = "<group>"; };
+		10F0E5032A491D8C0013A3B1 /* UIRing.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIRing.cpp; path = ../../../DuiLib/Control/UIRing.cpp; sourceTree = "<group>"; };
+		10F0E5042A491D8C0013A3B1 /* UIBarCode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIBarCode.cpp; path = ../../../DuiLib/Control/UIBarCode.cpp; sourceTree = "<group>"; };
+		10F0E5052A491D8D0013A3B1 /* UIFadeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIFadeButton.h; path = ../../../DuiLib/Control/UIFadeButton.h; sourceTree = "<group>"; };
+		10F0E5062A491D8D0013A3B1 /* UIEditWndGtk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIEditWndGtk.h; path = ../../../DuiLib/Control/UIEditWndGtk.h; sourceTree = "<group>"; };
+		10F0E5072A491D8D0013A3B1 /* UIDateTimeExWndGtk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIDateTimeExWndGtk.cpp; path = ../../../DuiLib/Control/UIDateTimeExWndGtk.cpp; sourceTree = "<group>"; };
+		10F0E5082A491D8D0013A3B1 /* UIMsgWnd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIMsgWnd.cpp; path = ../../../DuiLib/Control/UIMsgWnd.cpp; sourceTree = "<group>"; };
+		10F0E5092A491D8D0013A3B1 /* UIText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIText.cpp; path = ../../../DuiLib/Control/UIText.cpp; sourceTree = "<group>"; };
+		10F0E50A2A491D8E0013A3B1 /* UISlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UISlider.h; path = ../../../DuiLib/Control/UISlider.h; sourceTree = "<group>"; };
+		10F0E50B2A491D8E0013A3B1 /* UIText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIText.h; path = ../../../DuiLib/Control/UIText.h; sourceTree = "<group>"; };
+		10F0E50C2A491D8E0013A3B1 /* UICombo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UICombo.h; path = ../../../DuiLib/Control/UICombo.h; sourceTree = "<group>"; };
+		10F0E50D2A491D8E0013A3B1 /* UIGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIGrid.h; path = ../../../DuiLib/Control/UIGrid.h; sourceTree = "<group>"; };
+		10F0E50E2A491D8E0013A3B1 /* UIEditWndGtk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIEditWndGtk.cpp; path = ../../../DuiLib/Control/UIEditWndGtk.cpp; sourceTree = "<group>"; };
+		10F0E50F2A491D8E0013A3B1 /* UIComboEditWndWin32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIComboEditWndWin32.h; path = ../../../DuiLib/Control/UIComboEditWndWin32.h; sourceTree = "<group>"; };
+		10F0E5102A491D8E0013A3B1 /* UIComboEditWndGtk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIComboEditWndGtk.h; path = ../../../DuiLib/Control/UIComboEditWndGtk.h; sourceTree = "<group>"; };
+		10F0E5112A491D8F0013A3B1 /* UIDateTime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIDateTime.cpp; path = ../../../DuiLib/Control/UIDateTime.cpp; sourceTree = "<group>"; };
+		10F0E5122A491D8F0013A3B1 /* UIButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIButton.cpp; path = ../../../DuiLib/Control/UIButton.cpp; sourceTree = "<group>"; };
+		10F0E5132A491D8F0013A3B1 /* UIActiveX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIActiveX.cpp; path = ../../../DuiLib/Control/UIActiveX.cpp; sourceTree = "<group>"; };
+		10F0E5142A491D8F0013A3B1 /* UIAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIAnimation.h; path = ../../../DuiLib/Control/UIAnimation.h; sourceTree = "<group>"; };
+		10F0E5152A491D900013A3B1 /* UICombo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UICombo.cpp; path = ../../../DuiLib/Control/UICombo.cpp; sourceTree = "<group>"; };
+		10F0E5162A491D900013A3B1 /* UIPictureBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIPictureBox.h; path = ../../../DuiLib/Control/UIPictureBox.h; sourceTree = "<group>"; };
+		10F0E5172A491D900013A3B1 /* UIDateTimeWndWin32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIDateTimeWndWin32.cpp; path = ../../../DuiLib/Control/UIDateTimeWndWin32.cpp; sourceTree = "<group>"; };
+		10F0E5182A491D900013A3B1 /* UIMsgWnd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIMsgWnd.h; path = ../../../DuiLib/Control/UIMsgWnd.h; sourceTree = "<group>"; };
+		10F0E5192A491D900013A3B1 /* UIMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIMenu.cpp; path = ../../../DuiLib/Control/UIMenu.cpp; sourceTree = "<group>"; };
+		10F0E51A2A491D900013A3B1 /* UIRollTextEx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIRollTextEx.cpp; path = ../../../DuiLib/Control/UIRollTextEx.cpp; sourceTree = "<group>"; };
+		10F0E51B2A491D910013A3B1 /* UIIPAddressEx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIIPAddressEx.cpp; path = ../../../DuiLib/Control/UIIPAddressEx.cpp; sourceTree = "<group>"; };
+		10F0E51C2A491D910013A3B1 /* UILabel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UILabel.cpp; path = ../../../DuiLib/Control/UILabel.cpp; sourceTree = "<group>"; };
+		10F0E51D2A491D910013A3B1 /* UIGifAnim.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIGifAnim.cpp; path = ../../../DuiLib/Control/UIGifAnim.cpp; sourceTree = "<group>"; };
+		10F0E51E2A491D910013A3B1 /* UIButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIButton.h; path = ../../../DuiLib/Control/UIButton.h; sourceTree = "<group>"; };
+		10F0E51F2A491D910013A3B1 /* UIMenuWndWin32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIMenuWndWin32.cpp; path = ../../../DuiLib/Control/UIMenuWndWin32.cpp; sourceTree = "<group>"; };
+		10F0E5202A491D910013A3B1 /* UIColorPalette.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIColorPalette.h; path = ../../../DuiLib/Control/UIColorPalette.h; sourceTree = "<group>"; };
+		10F0E5212A491D920013A3B1 /* UIQRCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIQRCode.h; path = ../../../DuiLib/Control/UIQRCode.h; sourceTree = "<group>"; };
+		10F0E5222A491D920013A3B1 /* UIList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIList.cpp; path = ../../../DuiLib/Control/UIList.cpp; sourceTree = "<group>"; };
+		10F0E5232A491D920013A3B1 /* UIQRCode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIQRCode.cpp; path = ../../../DuiLib/Control/UIQRCode.cpp; sourceTree = "<group>"; };
+		10F0E5242A491D920013A3B1 /* UIGridBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIGridBody.h; path = ../../../DuiLib/Control/UIGridBody.h; sourceTree = "<group>"; };
+		10F0E5252A491D920013A3B1 /* UIImageBoxEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIImageBoxEx.h; path = ../../../DuiLib/Control/UIImageBoxEx.h; sourceTree = "<group>"; };
+		10F0E5262A491D930013A3B1 /* UIIPAddress.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIIPAddress.cpp; path = ../../../DuiLib/Control/UIIPAddress.cpp; sourceTree = "<group>"; };
+		10F0E5272A491D930013A3B1 /* UIComboEditWndWin32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIComboEditWndWin32.cpp; path = ../../../DuiLib/Control/UIComboEditWndWin32.cpp; sourceTree = "<group>"; };
+		10F0E5282A491D930013A3B1 /* UIDateTimeWndGtk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIDateTimeWndGtk.cpp; path = ../../../DuiLib/Control/UIDateTimeWndGtk.cpp; sourceTree = "<group>"; };
+		10F0E59A2A491DB20013A3B1 /* UIAnimationTabLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIAnimationTabLayout.h; path = ../../../DuiLib/Layout/UIAnimationTabLayout.h; sourceTree = "<group>"; };
+		10F0E59B2A491DB30013A3B1 /* UIHorizontalLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIHorizontalLayout.cpp; path = ../../../DuiLib/Layout/UIHorizontalLayout.cpp; sourceTree = "<group>"; };
+		10F0E59C2A491DB30013A3B1 /* UIVerticalLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIVerticalLayout.h; path = ../../../DuiLib/Layout/UIVerticalLayout.h; sourceTree = "<group>"; };
+		10F0E59D2A491DB30013A3B1 /* UIAnimationTabLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIAnimationTabLayout.cpp; path = ../../../DuiLib/Layout/UIAnimationTabLayout.cpp; sourceTree = "<group>"; };
+		10F0E59E2A491DB40013A3B1 /* UITabLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UITabLayout.h; path = ../../../DuiLib/Layout/UITabLayout.h; sourceTree = "<group>"; };
+		10F0E59F2A491DB40013A3B1 /* UIDynamicLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIDynamicLayout.cpp; path = ../../../DuiLib/Layout/UIDynamicLayout.cpp; sourceTree = "<group>"; };
+		10F0E5A02A491DB40013A3B1 /* UIChildWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIChildWindow.cpp; path = ../../../DuiLib/Layout/UIChildWindow.cpp; sourceTree = "<group>"; };
+		10F0E5A12A491DB40013A3B1 /* UIDynamicLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIDynamicLayout.h; path = ../../../DuiLib/Layout/UIDynamicLayout.h; sourceTree = "<group>"; };
+		10F0E5A22A491DB50013A3B1 /* UIHorizontalLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIHorizontalLayout.h; path = ../../../DuiLib/Layout/UIHorizontalLayout.h; sourceTree = "<group>"; };
+		10F0E5A32A491DB50013A3B1 /* UIChildLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIChildLayout.cpp; path = ../../../DuiLib/Layout/UIChildLayout.cpp; sourceTree = "<group>"; };
+		10F0E5A42A491DB50013A3B1 /* UIChildWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIChildWindow.h; path = ../../../DuiLib/Layout/UIChildWindow.h; sourceTree = "<group>"; };
+		10F0E5A52A491DB50013A3B1 /* UITabLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UITabLayout.cpp; path = ../../../DuiLib/Layout/UITabLayout.cpp; sourceTree = "<group>"; };
+		10F0E5A62A491DB60013A3B1 /* UITileLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UITileLayout.h; path = ../../../DuiLib/Layout/UITileLayout.h; sourceTree = "<group>"; };
+		10F0E5A72A491DB60013A3B1 /* UIChildLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIChildLayout.h; path = ../../../DuiLib/Layout/UIChildLayout.h; sourceTree = "<group>"; };
+		10F0E5A82A491DB60013A3B1 /* UITableLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UITableLayout.h; path = ../../../DuiLib/Layout/UITableLayout.h; sourceTree = "<group>"; };
+		10F0E5A92A491DB60013A3B1 /* UITableLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UITableLayout.cpp; path = ../../../DuiLib/Layout/UITableLayout.cpp; sourceTree = "<group>"; };
+		10F0E5AA2A491DB60013A3B1 /* UIVerticalLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIVerticalLayout.cpp; path = ../../../DuiLib/Layout/UIVerticalLayout.cpp; sourceTree = "<group>"; };
+		10F0E5AB2A491DB70013A3B1 /* UITileLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UITileLayout.cpp; path = ../../../DuiLib/Layout/UITileLayout.cpp; sourceTree = "<group>"; };
+		10F0E5BE2A491DFE0013A3B1 /* UIApplicationWin32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIApplicationWin32.h; path = ../../../DuiLib/Utils/UIApplicationWin32.h; sourceTree = "<group>"; };
+		10F0E5BF2A491DFF0013A3B1 /* DuiString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DuiString.cpp; path = ../../../DuiLib/Utils/DuiString.cpp; sourceTree = "<group>"; };
+		10F0E5C12A491DFF0013A3B1 /* nanosvg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nanosvg.h; path = ../../../DuiLib/Utils/nanosvg.h; sourceTree = "<group>"; };
+		10F0E5C42A491E000013A3B1 /* DPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DPI.h; path = ../../../DuiLib/Utils/DPI.h; sourceTree = "<group>"; };
+		10F0E5C52A491E010013A3B1 /* DuiString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DuiString.h; path = ../../../DuiLib/Utils/DuiString.h; sourceTree = "<group>"; };
+		10F0E5C82A491E010013A3B1 /* DPI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DPI.cpp; path = ../../../DuiLib/Utils/DPI.cpp; sourceTree = "<group>"; };
+		10F0E5C92A491E010013A3B1 /* TrayIcon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TrayIcon.h; path = ../../../DuiLib/Utils/TrayIcon.h; sourceTree = "<group>"; };
+		10F0E5CA2A491E010013A3B1 /* UIApplicationGtk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIApplicationGtk.h; path = ../../../DuiLib/Utils/UIApplicationGtk.h; sourceTree = "<group>"; };
+		10F0E5CB2A491E020013A3B1 /* DpiGtk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DpiGtk.h; path = ../../../DuiLib/Utils/DpiGtk.h; sourceTree = "<group>"; };
+		10F0E5CD2A491E020013A3B1 /* UIForm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIForm.cpp; path = ../../../DuiLib/Utils/UIForm.cpp; sourceTree = "<group>"; };
+		10F0E5CE2A491E020013A3B1 /* stb_image_write.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stb_image_write.h; path = ../../../DuiLib/Utils/stb_image_write.h; sourceTree = "<group>"; };
+		10F0E5CF2A491E020013A3B1 /* UIDelegate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIDelegate.cpp; path = ../../../DuiLib/Utils/UIDelegate.cpp; sourceTree = "<group>"; };
+		10F0E5D02A491E030013A3B1 /* QREncode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QREncode.cpp; path = ../../../DuiLib/Utils/QREncode.cpp; sourceTree = "<group>"; };
+		10F0E5D12A491E030013A3B1 /* DpiWin32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DpiWin32.cpp; path = ../../../DuiLib/Utils/DpiWin32.cpp; sourceTree = "<group>"; };
+		10F0E5D22A491E030013A3B1 /* DpiWin32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DpiWin32.h; path = ../../../DuiLib/Utils/DpiWin32.h; sourceTree = "<group>"; };
+		10F0E5D32A491E030013A3B1 /* UIApplicationWin32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIApplicationWin32.cpp; path = ../../../DuiLib/Utils/UIApplicationWin32.cpp; sourceTree = "<group>"; };
+		10F0E5D42A491E040013A3B1 /* UIDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIDialog.h; path = ../../../DuiLib/Utils/UIDialog.h; sourceTree = "<group>"; };
+		10F0E5D52A491E040013A3B1 /* UIDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIDelegate.h; path = ../../../DuiLib/Utils/UIDelegate.h; sourceTree = "<group>"; };
+		10F0E5D72A491E050013A3B1 /* UIApplicationGtk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIApplicationGtk.cpp; path = ../../../DuiLib/Utils/UIApplicationGtk.cpp; sourceTree = "<group>"; };
+		10F0E5D82A491E050013A3B1 /* pugixml */ = {isa = PBXFileReference; lastKnownFileType = folder; name = pugixml; path = ../../../DuiLib/Utils/pugixml; sourceTree = "<group>"; };
+		10F0E5D92A491E060013A3B1 /* DpiGtk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DpiGtk.cpp; path = ../../../DuiLib/Utils/DpiGtk.cpp; sourceTree = "<group>"; };
+		10F0E5DB2A491E060013A3B1 /* observer_impl_base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = observer_impl_base.h; path = ../../../DuiLib/Utils/observer_impl_base.h; sourceTree = "<group>"; };
+		10F0E5DC2A491E070013A3B1 /* nanosvgrast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nanosvgrast.h; path = ../../../DuiLib/Utils/nanosvgrast.h; sourceTree = "<group>"; };
+		10F0E5DD2A491E070013A3B1 /* TrayIcon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TrayIcon.cpp; path = ../../../DuiLib/Utils/TrayIcon.cpp; sourceTree = "<group>"; };
+		10F0E5DE2A491E070013A3B1 /* UIApplication.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIApplication.cpp; path = ../../../DuiLib/Utils/UIApplication.cpp; sourceTree = "<group>"; };
+		10F0E5DF2A491E070013A3B1 /* QREncode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QREncode.h; path = ../../../DuiLib/Utils/QREncode.h; sourceTree = "<group>"; };
+		10F0E5E12A491E080013A3B1 /* UIApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIApplication.h; path = ../../../DuiLib/Utils/UIApplication.h; sourceTree = "<group>"; };
+		10F0E5E22A491E080013A3B1 /* UIDialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIDialog.cpp; path = ../../../DuiLib/Utils/UIDialog.cpp; sourceTree = "<group>"; };
+		10F0E5E32A491E080013A3B1 /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stb_image.h; path = ../../../DuiLib/Utils/stb_image.h; sourceTree = "<group>"; };
+		10F0E6072A491E340013A3B1 /* UIObject_gdiplus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIObject_gdiplus.cpp; path = ../../../DuiLib/Render/UIObject_gdiplus.cpp; sourceTree = "<group>"; };
+		10F0E6082A491E340013A3B1 /* UIRenderFactory_gdiplus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIRenderFactory_gdiplus.h; path = ../../../DuiLib/Render/UIRenderFactory_gdiplus.h; sourceTree = "<group>"; };
+		10F0E6092A491E340013A3B1 /* UIObject_gdiplus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIObject_gdiplus.h; path = ../../../DuiLib/Render/UIObject_gdiplus.h; sourceTree = "<group>"; };
+		10F0E60A2A491E350013A3B1 /* UIRenderFactory_gdi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIRenderFactory_gdi.h; path = ../../../DuiLib/Render/UIRenderFactory_gdi.h; sourceTree = "<group>"; };
+		10F0E60B2A491E350013A3B1 /* UIClipWin32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIClipWin32.h; path = ../../../DuiLib/Render/UIClipWin32.h; sourceTree = "<group>"; };
+		10F0E60C2A491E350013A3B1 /* UIRender_CairoWin32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIRender_CairoWin32.cpp; path = ../../../DuiLib/Render/UIRender_CairoWin32.cpp; sourceTree = "<group>"; };
+		10F0E60D2A491E360013A3B1 /* UIRender_gdiplus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIRender_gdiplus.cpp; path = ../../../DuiLib/Render/UIRender_gdiplus.cpp; sourceTree = "<group>"; };
+		10F0E60E2A491E360013A3B1 /* UIObject_gdi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIObject_gdi.h; path = ../../../DuiLib/Render/UIObject_gdi.h; sourceTree = "<group>"; };
+		10F0E60F2A491E360013A3B1 /* UIRender_gdi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIRender_gdi.h; path = ../../../DuiLib/Render/UIRender_gdi.h; sourceTree = "<group>"; };
+		10F0E6102A491E370013A3B1 /* UIRender_gdiplus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIRender_gdiplus.h; path = ../../../DuiLib/Render/UIRender_gdiplus.h; sourceTree = "<group>"; };
+		10F0E6112A491E370013A3B1 /* UIClipGtk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIClipGtk.h; path = ../../../DuiLib/Render/UIClipGtk.h; sourceTree = "<group>"; };
+		10F0E6122A491E370013A3B1 /* UIClipWin32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIClipWin32.cpp; path = ../../../DuiLib/Render/UIClipWin32.cpp; sourceTree = "<group>"; };
+		10F0E6132A491E370013A3B1 /* UIRender_Cairo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIRender_Cairo.h; path = ../../../DuiLib/Render/UIRender_Cairo.h; sourceTree = "<group>"; };
+		10F0E6142A491E370013A3B1 /* UIRender_Cairo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIRender_Cairo.cpp; path = ../../../DuiLib/Render/UIRender_Cairo.cpp; sourceTree = "<group>"; };
+		10F0E6152A491E380013A3B1 /* UIClipGtk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIClipGtk.cpp; path = ../../../DuiLib/Render/UIClipGtk.cpp; sourceTree = "<group>"; };
+		10F0E6162A491E380013A3B1 /* UIRender_gdi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIRender_gdi.cpp; path = ../../../DuiLib/Render/UIRender_gdi.cpp; sourceTree = "<group>"; };
+		10F0E6172A491E380013A3B1 /* UIObject_Cairo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIObject_Cairo.cpp; path = ../../../DuiLib/Render/UIObject_Cairo.cpp; sourceTree = "<group>"; };
+		10F0E6182A491E390013A3B1 /* UIRender_CairoWin32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIRender_CairoWin32.h; path = ../../../DuiLib/Render/UIRender_CairoWin32.h; sourceTree = "<group>"; };
+		10F0E6192A491E390013A3B1 /* UIRenderFactory_Cairo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIRenderFactory_Cairo.cpp; path = ../../../DuiLib/Render/UIRenderFactory_Cairo.cpp; sourceTree = "<group>"; };
+		10F0E61A2A491E390013A3B1 /* IRender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IRender.cpp; path = ../../../DuiLib/Render/IRender.cpp; sourceTree = "<group>"; };
+		10F0E61B2A491E3A0013A3B1 /* UIRenderFactory_gdiplus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIRenderFactory_gdiplus.cpp; path = ../../../DuiLib/Render/UIRenderFactory_gdiplus.cpp; sourceTree = "<group>"; };
+		10F0E61C2A491E3A0013A3B1 /* UIObject_gdi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIObject_gdi.cpp; path = ../../../DuiLib/Render/UIObject_gdi.cpp; sourceTree = "<group>"; };
+		10F0E61D2A491E3A0013A3B1 /* UIRenderFactory_Cairo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIRenderFactory_Cairo.h; path = ../../../DuiLib/Render/UIRenderFactory_Cairo.h; sourceTree = "<group>"; };
+		10F0E61E2A491E3A0013A3B1 /* UIObject_Cairo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIObject_Cairo.h; path = ../../../DuiLib/Render/UIObject_Cairo.h; sourceTree = "<group>"; };
+		10F0E61F2A491E3B0013A3B1 /* IRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IRender.h; path = ../../../DuiLib/Render/IRender.h; sourceTree = "<group>"; };
+		10F0E6202A491E3B0013A3B1 /* UIRenderFactory_gdi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIRenderFactory_gdi.cpp; path = ../../../DuiLib/Render/UIRenderFactory_gdi.cpp; sourceTree = "<group>"; };
+		10F0E63B2A491E530013A3B1 /* UIControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIControl.h; path = ../../../DuiLib/Core/UIControl.h; sourceTree = "<group>"; };
+		10F0E63C2A491E540013A3B1 /* UIDlgBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIDlgBuilder.h; path = ../../../DuiLib/Core/UIDlgBuilder.h; sourceTree = "<group>"; };
+		10F0E63D2A491E540013A3B1 /* UIXmlDocument.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIXmlDocument.cpp; path = ../../../DuiLib/Core/UIXmlDocument.cpp; sourceTree = "<group>"; };
+		10F0E63E2A491E540013A3B1 /* UIGlobal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIGlobal.h; path = ../../../DuiLib/Core/UIGlobal.h; sourceTree = "<group>"; };
+		10F0E63F2A491E550013A3B1 /* UIBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIBase.cpp; path = ../../../DuiLib/Core/UIBase.cpp; sourceTree = "<group>"; };
+		10F0E6402A491E550013A3B1 /* UILangManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UILangManager.h; path = ../../../DuiLib/Core/UILangManager.h; sourceTree = "<group>"; };
+		10F0E6412A491E560013A3B1 /* UIResourceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIResourceManager.h; path = ../../../DuiLib/Core/UIResourceManager.h; sourceTree = "<group>"; };
+		10F0E6422A491E560013A3B1 /* UIDlgBuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIDlgBuilder.cpp; path = ../../../DuiLib/Core/UIDlgBuilder.cpp; sourceTree = "<group>"; };
+		10F0E6432A491E560013A3B1 /* UIXmlAttribute.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIXmlAttribute.cpp; path = ../../../DuiLib/Core/UIXmlAttribute.cpp; sourceTree = "<group>"; };
+		10F0E6442A491E570013A3B1 /* UIXmlNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIXmlNode.cpp; path = ../../../DuiLib/Core/UIXmlNode.cpp; sourceTree = "<group>"; };
+		10F0E6452A491E570013A3B1 /* UIManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIManager.cpp; path = ../../../DuiLib/Core/UIManager.cpp; sourceTree = "<group>"; };
+		10F0E6462A491E570013A3B1 /* UIFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIFile.h; path = ../../../DuiLib/Core/UIFile.h; sourceTree = "<group>"; };
+		10F0E6472A491E570013A3B1 /* UIDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIDefine.h; path = ../../../DuiLib/Core/UIDefine.h; sourceTree = "<group>"; };
+		10F0E6482A491E580013A3B1 /* UIWindowWin32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIWindowWin32.h; path = ../../../DuiLib/Core/UIWindowWin32.h; sourceTree = "<group>"; };
+		10F0E6492A491E580013A3B1 /* UIScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIScript.h; path = ../../../DuiLib/Core/UIScript.h; sourceTree = "<group>"; };
+		10F0E64A2A491E580013A3B1 /* UIContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIContainer.h; path = ../../../DuiLib/Core/UIContainer.h; sourceTree = "<group>"; };
+		10F0E64B2A491E580013A3B1 /* UIGlobal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIGlobal.cpp; path = ../../../DuiLib/Core/UIGlobal.cpp; sourceTree = "<group>"; };
+		10F0E64C2A491E590013A3B1 /* UIFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIFile.cpp; path = ../../../DuiLib/Core/UIFile.cpp; sourceTree = "<group>"; };
+		10F0E64D2A491E590013A3B1 /* UIWindowGtk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIWindowGtk.cpp; path = ../../../DuiLib/Core/UIWindowGtk.cpp; sourceTree = "<group>"; };
+		10F0E64E2A491E590013A3B1 /* UIManagerGtk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIManagerGtk.h; path = ../../../DuiLib/Core/UIManagerGtk.h; sourceTree = "<group>"; };
+		10F0E64F2A491E590013A3B1 /* UIControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIControl.cpp; path = ../../../DuiLib/Core/UIControl.cpp; sourceTree = "<group>"; };
+		10F0E6502A491E5A0013A3B1 /* UIManagerWin32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIManagerWin32.cpp; path = ../../../DuiLib/Core/UIManagerWin32.cpp; sourceTree = "<group>"; };
+		10F0E6512A491E5A0013A3B1 /* UIWindowWin32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIWindowWin32.cpp; path = ../../../DuiLib/Core/UIWindowWin32.cpp; sourceTree = "<group>"; };
+		10F0E6522A491E5A0013A3B1 /* UIManagerWin32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIManagerWin32.h; path = ../../../DuiLib/Core/UIManagerWin32.h; sourceTree = "<group>"; };
+		10F0E6532A491E5A0013A3B1 /* UIScript.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIScript.cpp; path = ../../../DuiLib/Core/UIScript.cpp; sourceTree = "<group>"; };
+		10F0E6542A491E5B0013A3B1 /* UIXmlDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIXmlDocument.h; path = ../../../DuiLib/Core/UIXmlDocument.h; sourceTree = "<group>"; };
+		10F0E6552A491E5B0013A3B1 /* UIContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIContainer.cpp; path = ../../../DuiLib/Core/UIContainer.cpp; sourceTree = "<group>"; };
+		10F0E6562A491E5B0013A3B1 /* UIResourceManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIResourceManager.cpp; path = ../../../DuiLib/Core/UIResourceManager.cpp; sourceTree = "<group>"; };
+		10F0E6572A491E5B0013A3B1 /* UIManagerGtk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIManagerGtk.cpp; path = ../../../DuiLib/Core/UIManagerGtk.cpp; sourceTree = "<group>"; };
+		10F0E6582A491E5C0013A3B1 /* ControlFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ControlFactory.cpp; path = ../../../DuiLib/Core/ControlFactory.cpp; sourceTree = "<group>"; };
+		10F0E6592A491E5C0013A3B1 /* ControlFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ControlFactory.h; path = ../../../DuiLib/Core/ControlFactory.h; sourceTree = "<group>"; };
+		10F0E65A2A491E5C0013A3B1 /* UIWindowGtk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIWindowGtk.h; path = ../../../DuiLib/Core/UIWindowGtk.h; sourceTree = "<group>"; };
+		10F0E65B2A491E5D0013A3B1 /* UIXmlNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIXmlNode.h; path = ../../../DuiLib/Core/UIXmlNode.h; sourceTree = "<group>"; };
+		10F0E65C2A491E5D0013A3B1 /* UIManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIManager.h; path = ../../../DuiLib/Core/UIManager.h; sourceTree = "<group>"; };
+		10F0E65D2A491E5D0013A3B1 /* UIXmlAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIXmlAttribute.h; path = ../../../DuiLib/Core/UIXmlAttribute.h; sourceTree = "<group>"; };
+		10F0E65E2A491E5E0013A3B1 /* UIBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIBase.h; path = ../../../DuiLib/Core/UIBase.h; sourceTree = "<group>"; };
+		10F0E65F2A491E5E0013A3B1 /* UILangManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UILangManager.cpp; path = ../../../DuiLib/Core/UILangManager.cpp; sourceTree = "<group>"; };
+		10F0E6852A492CA00013A3B1 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		10F0E6862A4972A10013A3B1 /* UIFrameWndGtk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIFrameWndGtk.h; path = ../../../DuiLib/Utils/UIFrameWndGtk.h; sourceTree = "<group>"; };
+		10F0E6872A4972A20013A3B1 /* UIShadowGtk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIShadowGtk.cpp; path = ../../../DuiLib/Utils/UIShadowGtk.cpp; sourceTree = "<group>"; };
+		10F0E6882A4972A30013A3B1 /* WinImplBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WinImplBase.h; path = ../../../DuiLib/Utils/WinImplBase.h; sourceTree = "<group>"; };
+		10F0E6892A4972A40013A3B1 /* UIFrameBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIFrameBase.cpp; path = ../../../DuiLib/Utils/UIFrameBase.cpp; sourceTree = "<group>"; };
+		10F0E68A2A4972A50013A3B1 /* UIFrameWndGtk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIFrameWndGtk.cpp; path = ../../../DuiLib/Utils/UIFrameWndGtk.cpp; sourceTree = "<group>"; };
+		10F0E68C2A4972A60013A3B1 /* UIShadowBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIShadowBase.cpp; path = ../../../DuiLib/Utils/UIShadowBase.cpp; sourceTree = "<group>"; };
+		10F0E68D2A4972A60013A3B1 /* UIFrameBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIFrameBase.h; path = ../../../DuiLib/Utils/UIFrameBase.h; sourceTree = "<group>"; };
+		10F0E68E2A4972A70013A3B1 /* Utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Utils.cpp; path = ../../../DuiLib/Utils/Utils.cpp; sourceTree = "<group>"; };
+		10F0E68F2A4972A80013A3B1 /* UIFrameWnd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIFrameWnd.cpp; path = ../../../DuiLib/Utils/UIFrameWnd.cpp; sourceTree = "<group>"; };
+		10F0E6902A4972A80013A3B1 /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Utils.h; path = ../../../DuiLib/Utils/Utils.h; sourceTree = "<group>"; };
+		10F0E6922A4972A90013A3B1 /* UIFrameWnd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIFrameWnd.h; path = ../../../DuiLib/Utils/UIFrameWnd.h; sourceTree = "<group>"; };
+		10F0E6942A4972AA0013A3B1 /* UIFrameWndWin32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIFrameWndWin32.h; path = ../../../DuiLib/Utils/UIFrameWndWin32.h; sourceTree = "<group>"; };
+		10F0E6952A4972AA0013A3B1 /* UIShadowBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIShadowBase.h; path = ../../../DuiLib/Utils/UIShadowBase.h; sourceTree = "<group>"; };
+		10F0E6982A4972AB0013A3B1 /* UIShadowWin32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIShadowWin32.cpp; path = ../../../DuiLib/Utils/UIShadowWin32.cpp; sourceTree = "<group>"; };
+		10F0E69B2A4972AD0013A3B1 /* UIFrameWndWin32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIFrameWndWin32.cpp; path = ../../../DuiLib/Utils/UIFrameWndWin32.cpp; sourceTree = "<group>"; };
+		10F0E69D2A4972AE0013A3B1 /* VersionHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VersionHelpers.h; path = ../../../DuiLib/Utils/VersionHelpers.h; sourceTree = "<group>"; };
+		10F0E69E2A4972AE0013A3B1 /* UIShadowWin32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIShadowWin32.h; path = ../../../DuiLib/Utils/UIShadowWin32.h; sourceTree = "<group>"; };
+		10F0E69F2A4972AF0013A3B1 /* WinImplBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = WinImplBase.cpp; path = ../../../DuiLib/Utils/WinImplBase.cpp; sourceTree = "<group>"; };
+		10F0E6A02A4972AF0013A3B1 /* UIForm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIForm.h; path = ../../../DuiLib/Utils/UIForm.h; sourceTree = "<group>"; };
+		10F0E6A12A4972AF0013A3B1 /* pugixml */ = {isa = PBXFileReference; lastKnownFileType = folder; name = pugixml; path = ../../../DuiLib/Utils/pugixml; sourceTree = "<group>"; };
+		10F0E6A22A4972B00013A3B1 /* UIShadowGtk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIShadowGtk.h; path = ../../../DuiLib/Utils/UIShadowGtk.h; sourceTree = "<group>"; };
+		10F0E6BF2A4975600013A3B1 /* UIWebBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIWebBrowser.h; path = ../../../DuiLib/Control/UIWebBrowser.h; sourceTree = "<group>"; };
+		10F0E6C02A4975610013A3B1 /* UIWebBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIWebBrowser.cpp; path = ../../../DuiLib/Control/UIWebBrowser.cpp; sourceTree = "<group>"; };
+		10F0E6C12A4975620013A3B1 /* UITreeItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UITreeItem.h; path = ../../../DuiLib/Control/UITreeItem.h; sourceTree = "<group>"; };
+		10F0E6C22A4975620013A3B1 /* UITreeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UITreeView.h; path = ../../../DuiLib/Control/UITreeView.h; sourceTree = "<group>"; };
+		10F0E6C32A4975630013A3B1 /* UITree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UITree.h; path = ../../../DuiLib/Control/UITree.h; sourceTree = "<group>"; };
+		10F0E6C42A4975630013A3B1 /* UITreeView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UITreeView.cpp; path = ../../../DuiLib/Control/UITreeView.cpp; sourceTree = "<group>"; };
+		10F0E6C52A4975640013A3B1 /* UITreeItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UITreeItem.cpp; path = ../../../DuiLib/Control/UITreeItem.cpp; sourceTree = "<group>"; };
+		10F0E6CE2A4977690013A3B1 /* libgtk-3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgtk-3.dylib"; path = "../../../../../../usr/local/lib/libgtk-3.dylib"; sourceTree = "<group>"; };
+		10F0E6D02A49779C0013A3B1 /* libgobject-2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgobject-2.0.0.dylib"; path = "../../../../../../usr/local/lib/libgobject-2.0.0.dylib"; sourceTree = "<group>"; };
+		10F0E6D22A4977B20013A3B1 /* libgobject-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgobject-2.0.dylib"; path = "../../../../../../usr/local/lib/libgobject-2.0.dylib"; sourceTree = "<group>"; };
+		10F0E6D42A4977CF0013A3B1 /* libglib-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libglib-2.0.dylib"; path = "../../../../../../usr/local/lib/libglib-2.0.dylib"; sourceTree = "<group>"; };
+		10F0E6D62A4977DD0013A3B1 /* libgdk-3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgdk-3.dylib"; path = "../../../../../../usr/local/lib/libgdk-3.dylib"; sourceTree = "<group>"; };
+		10F0E6D82A4977FE0013A3B1 /* libgdk_pixbuf-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgdk_pixbuf-2.0.dylib"; path = "../../../../../../usr/local/lib/libgdk_pixbuf-2.0.dylib"; sourceTree = "<group>"; };
+		10F0E6DA2A49781A0013A3B1 /* libpango-1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libpango-1.0.dylib"; path = "../../../../../../usr/local/lib/libpango-1.0.dylib"; sourceTree = "<group>"; };
+		10F0E6DC2A49782D0013A3B1 /* libpangocairo-1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libpangocairo-1.0.dylib"; path = "../../../../../../usr/local/lib/libpangocairo-1.0.dylib"; sourceTree = "<group>"; };
+		10F0E6DE2A4978710013A3B1 /* libcairo.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcairo.dylib; path = ../../../../../../usr/local/lib/libcairo.dylib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		10F0E48B2A491AF80013A3B1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				10F0E6DF2A4978710013A3B1 /* libcairo.dylib in Frameworks */,
+				10F0E6CF2A4977690013A3B1 /* libgtk-3.dylib in Frameworks */,
+				10F0E6D32A4977B20013A3B1 /* libgobject-2.0.dylib in Frameworks */,
+				10F0E6D72A4977DD0013A3B1 /* libgdk-3.dylib in Frameworks */,
+				10F0E6D92A4977FE0013A3B1 /* libgdk_pixbuf-2.0.dylib in Frameworks */,
+				10F0E6DB2A49781A0013A3B1 /* libpango-1.0.dylib in Frameworks */,
+				10F0E6DD2A49782D0013A3B1 /* libpangocairo-1.0.dylib in Frameworks */,
+				10F0E6D52A4977CF0013A3B1 /* libglib-2.0.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		10F0E4842A491AF80013A3B1 = {
+			isa = PBXGroup;
+			children = (
+				10F0E6852A492CA00013A3B1 /* PrefixHeader.pch */,
+				10F0E48F2A491AF80013A3B1 /* DuiLib */,
+				10F0E48E2A491AF80013A3B1 /* Products */,
+				10F0E6CD2A4977670013A3B1 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		10F0E48E2A491AF80013A3B1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				10F0E48D2A491AF80013A3B1 /* libDuiLib.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		10F0E48F2A491AF80013A3B1 /* DuiLib */ = {
+			isa = PBXGroup;
+			children = (
+				10F0E4AC2A491CC60013A3B1 /* Control */,
+				10F0E4B32A491D1E0013A3B1 /* Core */,
+				10F0E4AE2A491CDA0013A3B1 /* Layout */,
+				10F0E4B22A491D110013A3B1 /* Render */,
+				10F0E4B02A491CE70013A3B1 /* Utils */,
+				10F0E49E2A491BB10013A3B1 /* compat.h */,
+				10F0E49B2A491BB00013A3B1 /* StdAfx.cpp */,
+				10F0E49D2A491BB00013A3B1 /* StdAfx.h */,
+				10F0E49C2A491BB00013A3B1 /* UIlib.cpp */,
+			);
+			path = DuiLib;
+			sourceTree = "<group>";
+		};
+		10F0E4AC2A491CC60013A3B1 /* Control */ = {
+			isa = PBXGroup;
+			children = (
+				10F0E6C32A4975630013A3B1 /* UITree.h */,
+				10F0E6C52A4975640013A3B1 /* UITreeItem.cpp */,
+				10F0E6C12A4975620013A3B1 /* UITreeItem.h */,
+				10F0E6C42A4975630013A3B1 /* UITreeView.cpp */,
+				10F0E6C22A4975620013A3B1 /* UITreeView.h */,
+				10F0E6C02A4975610013A3B1 /* UIWebBrowser.cpp */,
+				10F0E6BF2A4975600013A3B1 /* UIWebBrowser.h */,
+				10F0E4EA2A491D880013A3B1 /* ITreeUI.cpp */,
+				10F0E4D52A491D830013A3B1 /* ITreeUI.h */,
+				10F0E4F62A491D8A0013A3B1 /* TxtWinHost.cpp */,
+				10F0E4D02A491D820013A3B1 /* TxtWinHost.h */,
+				10F0E5132A491D8F0013A3B1 /* UIActiveX.cpp */,
+				10F0E4DA2A491D850013A3B1 /* UIActiveX.h */,
+				10F0E4BE2A491D7F0013A3B1 /* UIAnimation.cpp */,
+				10F0E5142A491D8F0013A3B1 /* UIAnimation.h */,
+				10F0E5042A491D8C0013A3B1 /* UIBarCode.cpp */,
+				10F0E4CC2A491D810013A3B1 /* UIBarCode.h */,
+				10F0E5122A491D8F0013A3B1 /* UIButton.cpp */,
+				10F0E51E2A491D910013A3B1 /* UIButton.h */,
+				10F0E4D42A491D830013A3B1 /* UIColorPalette.cpp */,
+				10F0E5202A491D910013A3B1 /* UIColorPalette.h */,
+				10F0E5152A491D900013A3B1 /* UICombo.cpp */,
+				10F0E50C2A491D8E0013A3B1 /* UICombo.h */,
+				10F0E4CD2A491D820013A3B1 /* UIComboEditWndGtk.cpp */,
+				10F0E5102A491D8E0013A3B1 /* UIComboEditWndGtk.h */,
+				10F0E5272A491D930013A3B1 /* UIComboEditWndWin32.cpp */,
+				10F0E50F2A491D8E0013A3B1 /* UIComboEditWndWin32.h */,
+				10F0E4C32A491D800013A3B1 /* UIComboEx.cpp */,
+				10F0E4C52A491D800013A3B1 /* UIComboEx.h */,
+				10F0E4C42A491D800013A3B1 /* UIComboWndGtk.cpp */,
+				10F0E4E52A491D870013A3B1 /* UIComboWndGtk.h */,
+				10F0E4D32A491D830013A3B1 /* UIComboWndWin32.cpp */,
+				10F0E4E02A491D860013A3B1 /* UIComboWndWin32.h */,
+				10F0E5112A491D8F0013A3B1 /* UIDateTime.cpp */,
+				10F0E4BF2A491D7F0013A3B1 /* UIDateTime.h */,
+				10F0E4D62A491D840013A3B1 /* UIDateTimeEx.cpp */,
+				10F0E4B82A491D7E0013A3B1 /* UIDateTimeEx.h */,
+				10F0E5072A491D8D0013A3B1 /* UIDateTimeExWndGtk.cpp */,
+				10F0E4FB2A491D8B0013A3B1 /* UIDateTimeExWndGtk.h */,
+				10F0E4F82A491D8B0013A3B1 /* UIDateTimeExWndWin32.cpp */,
+				10F0E4E22A491D860013A3B1 /* UIDateTimeExWndWin32.h */,
+				10F0E5282A491D930013A3B1 /* UIDateTimeWndGtk.cpp */,
+				10F0E4EF2A491D890013A3B1 /* UIDateTimeWndGtk.h */,
+				10F0E5172A491D900013A3B1 /* UIDateTimeWndWin32.cpp */,
+				10F0E4BA2A491D7E0013A3B1 /* UIDateTimeWndWin32.h */,
+				10F0E5012A491D8C0013A3B1 /* UIEdit.cpp */,
+				10F0E4F02A491D890013A3B1 /* UIEdit.h */,
+				10F0E50E2A491D8E0013A3B1 /* UIEditWndGtk.cpp */,
+				10F0E5062A491D8D0013A3B1 /* UIEditWndGtk.h */,
+				10F0E4C12A491D7F0013A3B1 /* UIEditWndWin32.cpp */,
+				10F0E4F42A491D8A0013A3B1 /* UIEditWndWin32.h */,
+				10F0E4FE2A491D8C0013A3B1 /* UIFadeButton.cpp */,
+				10F0E5052A491D8D0013A3B1 /* UIFadeButton.h */,
+				10F0E4DE2A491D850013A3B1 /* UIFlash.cpp */,
+				10F0E4DF2A491D860013A3B1 /* UIFlash.h */,
+				10F0E51D2A491D910013A3B1 /* UIGifAnim.cpp */,
+				10F0E4ED2A491D880013A3B1 /* UIGifAnim.h */,
+				10F0E4CE2A491D820013A3B1 /* UIGrid.cpp */,
+				10F0E50D2A491D8E0013A3B1 /* UIGrid.h */,
+				10F0E4F52A491D8A0013A3B1 /* UIGridBody.cpp */,
+				10F0E5242A491D920013A3B1 /* UIGridBody.h */,
+				10F0E4BC2A491D7E0013A3B1 /* UIGridCell.cpp */,
+				10F0E4E62A491D870013A3B1 /* UIGridCell.h */,
+				10F0E4E32A491D860013A3B1 /* UIGridHeader.cpp */,
+				10F0E4C62A491D800013A3B1 /* UIGridHeader.h */,
+				10F0E4C02A491D7F0013A3B1 /* UIGridRowUI.cpp */,
+				10F0E4EC2A491D880013A3B1 /* UIGridRowUI.h */,
+				10F0E4DD2A491D850013A3B1 /* UIGroupBox.cpp */,
+				10F0E4E72A491D870013A3B1 /* UIGroupBox.h */,
+				10F0E5002A491D8C0013A3B1 /* UIHotKey.cpp */,
+				10F0E4EE2A491D890013A3B1 /* UIHotKey.h */,
+				10F0E4FC2A491D8B0013A3B1 /* UIIconButton.cpp */,
+				10F0E4CF2A491D820013A3B1 /* UIIconButton.h */,
+				10F0E4F22A491D8A0013A3B1 /* UIImageBoxEx.cpp */,
+				10F0E5252A491D920013A3B1 /* UIImageBoxEx.h */,
+				10F0E5262A491D930013A3B1 /* UIIPAddress.cpp */,
+				10F0E5022A491D8C0013A3B1 /* UIIPAddress.h */,
+				10F0E51B2A491D910013A3B1 /* UIIPAddressEx.cpp */,
+				10F0E4D22A491D830013A3B1 /* UIIPAddressEx.h */,
+				10F0E51C2A491D910013A3B1 /* UILabel.cpp */,
+				10F0E4C22A491D7F0013A3B1 /* UILabel.h */,
+				10F0E5222A491D920013A3B1 /* UIList.cpp */,
+				10F0E4C72A491D800013A3B1 /* UIList.h */,
+				10F0E4E82A491D870013A3B1 /* UIListEx.cpp */,
+				10F0E4FF2A491D8C0013A3B1 /* UIListEx.h */,
+				10F0E5192A491D900013A3B1 /* UIMenu.cpp */,
+				10F0E4BB2A491D7E0013A3B1 /* UIMenu.h */,
+				10F0E4E12A491D860013A3B1 /* UIMenuWndGtk.cpp */,
+				10F0E4E42A491D870013A3B1 /* UIMenuWndGtk.h */,
+				10F0E51F2A491D910013A3B1 /* UIMenuWndWin32.cpp */,
+				10F0E4CA2A491D810013A3B1 /* UIMenuWndWin32.h */,
+				10F0E5082A491D8D0013A3B1 /* UIMsgWnd.cpp */,
+				10F0E5182A491D900013A3B1 /* UIMsgWnd.h */,
+				10F0E4FA2A491D8B0013A3B1 /* UIOption.cpp */,
+				10F0E4C92A491D810013A3B1 /* UIOption.h */,
+				10F0E4D82A491D840013A3B1 /* UIPicture.cpp */,
+				10F0E4F92A491D8B0013A3B1 /* UIPicture.h */,
+				10F0E4E92A491D880013A3B1 /* UIPictureBox.cpp */,
+				10F0E5162A491D900013A3B1 /* UIPictureBox.h */,
+				10F0E4FD2A491D8B0013A3B1 /* UIProgress.cpp */,
+				10F0E4C82A491D800013A3B1 /* UIProgress.h */,
+				10F0E5232A491D920013A3B1 /* UIQRCode.cpp */,
+				10F0E5212A491D920013A3B1 /* UIQRCode.h */,
+				10F0E4DB2A491D850013A3B1 /* UIRichEdit.cpp */,
+				10F0E4EB2A491D880013A3B1 /* UIRichEdit.h */,
+				10F0E5032A491D8C0013A3B1 /* UIRing.cpp */,
+				10F0E4F32A491D8A0013A3B1 /* UIRing.h */,
+				10F0E4BD2A491D7F0013A3B1 /* UIRollText.cpp */,
+				10F0E4D92A491D840013A3B1 /* UIRollText.h */,
+				10F0E51A2A491D900013A3B1 /* UIRollTextEx.cpp */,
+				10F0E4D12A491D820013A3B1 /* UIRollTextEx.h */,
+				10F0E4DC2A491D850013A3B1 /* UIScrollBar.cpp */,
+				10F0E4B92A491D7E0013A3B1 /* UIScrollBar.h */,
+				10F0E4D72A491D840013A3B1 /* UISlider.cpp */,
+				10F0E50A2A491D8E0013A3B1 /* UISlider.h */,
+				10F0E4F12A491D890013A3B1 /* UITabCtrl.cpp */,
+				10F0E4CB2A491D810013A3B1 /* UITabCtrl.h */,
+				10F0E5092A491D8D0013A3B1 /* UIText.cpp */,
+				10F0E50B2A491D8E0013A3B1 /* UIText.h */,
+				10F0E4F72A491D8A0013A3B1 /* UITree.cpp */,
+				10F0E4B52A491D4C0013A3B1 /* IGridUI.cpp */,
+				10F0E4B42A491D4C0013A3B1 /* IGridUI.h */,
+			);
+			name = Control;
+			sourceTree = "<group>";
+		};
+		10F0E4AE2A491CDA0013A3B1 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				10F0E59D2A491DB30013A3B1 /* UIAnimationTabLayout.cpp */,
+				10F0E59A2A491DB20013A3B1 /* UIAnimationTabLayout.h */,
+				10F0E5A32A491DB50013A3B1 /* UIChildLayout.cpp */,
+				10F0E5A72A491DB60013A3B1 /* UIChildLayout.h */,
+				10F0E5A02A491DB40013A3B1 /* UIChildWindow.cpp */,
+				10F0E5A42A491DB50013A3B1 /* UIChildWindow.h */,
+				10F0E59F2A491DB40013A3B1 /* UIDynamicLayout.cpp */,
+				10F0E5A12A491DB40013A3B1 /* UIDynamicLayout.h */,
+				10F0E59B2A491DB30013A3B1 /* UIHorizontalLayout.cpp */,
+				10F0E5A22A491DB50013A3B1 /* UIHorizontalLayout.h */,
+				10F0E5A52A491DB50013A3B1 /* UITabLayout.cpp */,
+				10F0E59E2A491DB40013A3B1 /* UITabLayout.h */,
+				10F0E5A92A491DB60013A3B1 /* UITableLayout.cpp */,
+				10F0E5A82A491DB60013A3B1 /* UITableLayout.h */,
+				10F0E5AB2A491DB70013A3B1 /* UITileLayout.cpp */,
+				10F0E5A62A491DB60013A3B1 /* UITileLayout.h */,
+				10F0E5AA2A491DB60013A3B1 /* UIVerticalLayout.cpp */,
+				10F0E59C2A491DB30013A3B1 /* UIVerticalLayout.h */,
+			);
+			name = Layout;
+			sourceTree = "<group>";
+		};
+		10F0E4B02A491CE70013A3B1 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				10F0E6A12A4972AF0013A3B1 /* pugixml */,
+				10F0E6A02A4972AF0013A3B1 /* UIForm.h */,
+				10F0E6892A4972A40013A3B1 /* UIFrameBase.cpp */,
+				10F0E68D2A4972A60013A3B1 /* UIFrameBase.h */,
+				10F0E68F2A4972A80013A3B1 /* UIFrameWnd.cpp */,
+				10F0E6922A4972A90013A3B1 /* UIFrameWnd.h */,
+				10F0E68A2A4972A50013A3B1 /* UIFrameWndGtk.cpp */,
+				10F0E6862A4972A10013A3B1 /* UIFrameWndGtk.h */,
+				10F0E69B2A4972AD0013A3B1 /* UIFrameWndWin32.cpp */,
+				10F0E6942A4972AA0013A3B1 /* UIFrameWndWin32.h */,
+				10F0E68C2A4972A60013A3B1 /* UIShadowBase.cpp */,
+				10F0E6952A4972AA0013A3B1 /* UIShadowBase.h */,
+				10F0E6872A4972A20013A3B1 /* UIShadowGtk.cpp */,
+				10F0E6A22A4972B00013A3B1 /* UIShadowGtk.h */,
+				10F0E6982A4972AB0013A3B1 /* UIShadowWin32.cpp */,
+				10F0E69E2A4972AE0013A3B1 /* UIShadowWin32.h */,
+				10F0E68E2A4972A70013A3B1 /* Utils.cpp */,
+				10F0E6902A4972A80013A3B1 /* Utils.h */,
+				10F0E69D2A4972AE0013A3B1 /* VersionHelpers.h */,
+				10F0E69F2A4972AF0013A3B1 /* WinImplBase.cpp */,
+				10F0E6882A4972A30013A3B1 /* WinImplBase.h */,
+				10F0E5C82A491E010013A3B1 /* DPI.cpp */,
+				10F0E5C42A491E000013A3B1 /* DPI.h */,
+				10F0E5D92A491E060013A3B1 /* DpiGtk.cpp */,
+				10F0E5CB2A491E020013A3B1 /* DpiGtk.h */,
+				10F0E5D12A491E030013A3B1 /* DpiWin32.cpp */,
+				10F0E5D22A491E030013A3B1 /* DpiWin32.h */,
+				10F0E5BF2A491DFF0013A3B1 /* DuiString.cpp */,
+				10F0E5C52A491E010013A3B1 /* DuiString.h */,
+				10F0E5C12A491DFF0013A3B1 /* nanosvg.h */,
+				10F0E5DC2A491E070013A3B1 /* nanosvgrast.h */,
+				10F0E5DB2A491E060013A3B1 /* observer_impl_base.h */,
+				10F0E5D82A491E050013A3B1 /* pugixml */,
+				10F0E5D02A491E030013A3B1 /* QREncode.cpp */,
+				10F0E5DF2A491E070013A3B1 /* QREncode.h */,
+				10F0E5CE2A491E020013A3B1 /* stb_image_write.h */,
+				10F0E5E32A491E080013A3B1 /* stb_image.h */,
+				10F0E5DD2A491E070013A3B1 /* TrayIcon.cpp */,
+				10F0E5C92A491E010013A3B1 /* TrayIcon.h */,
+				10F0E5DE2A491E070013A3B1 /* UIApplication.cpp */,
+				10F0E5E12A491E080013A3B1 /* UIApplication.h */,
+				10F0E5D72A491E050013A3B1 /* UIApplicationGtk.cpp */,
+				10F0E5CA2A491E010013A3B1 /* UIApplicationGtk.h */,
+				10F0E5D32A491E030013A3B1 /* UIApplicationWin32.cpp */,
+				10F0E5BE2A491DFE0013A3B1 /* UIApplicationWin32.h */,
+				10F0E5CF2A491E020013A3B1 /* UIDelegate.cpp */,
+				10F0E5D52A491E040013A3B1 /* UIDelegate.h */,
+				10F0E5E22A491E080013A3B1 /* UIDialog.cpp */,
+				10F0E5D42A491E040013A3B1 /* UIDialog.h */,
+				10F0E5CD2A491E020013A3B1 /* UIForm.cpp */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
+		10F0E4B22A491D110013A3B1 /* Render */ = {
+			isa = PBXGroup;
+			children = (
+				10F0E61A2A491E390013A3B1 /* IRender.cpp */,
+				10F0E61F2A491E3B0013A3B1 /* IRender.h */,
+				10F0E6152A491E380013A3B1 /* UIClipGtk.cpp */,
+				10F0E6112A491E370013A3B1 /* UIClipGtk.h */,
+				10F0E6122A491E370013A3B1 /* UIClipWin32.cpp */,
+				10F0E60B2A491E350013A3B1 /* UIClipWin32.h */,
+				10F0E6172A491E380013A3B1 /* UIObject_Cairo.cpp */,
+				10F0E61E2A491E3A0013A3B1 /* UIObject_Cairo.h */,
+				10F0E61C2A491E3A0013A3B1 /* UIObject_gdi.cpp */,
+				10F0E60E2A491E360013A3B1 /* UIObject_gdi.h */,
+				10F0E6072A491E340013A3B1 /* UIObject_gdiplus.cpp */,
+				10F0E6092A491E340013A3B1 /* UIObject_gdiplus.h */,
+				10F0E6142A491E370013A3B1 /* UIRender_Cairo.cpp */,
+				10F0E6132A491E370013A3B1 /* UIRender_Cairo.h */,
+				10F0E60C2A491E350013A3B1 /* UIRender_CairoWin32.cpp */,
+				10F0E6182A491E390013A3B1 /* UIRender_CairoWin32.h */,
+				10F0E6162A491E380013A3B1 /* UIRender_gdi.cpp */,
+				10F0E60F2A491E360013A3B1 /* UIRender_gdi.h */,
+				10F0E60D2A491E360013A3B1 /* UIRender_gdiplus.cpp */,
+				10F0E6102A491E370013A3B1 /* UIRender_gdiplus.h */,
+				10F0E6192A491E390013A3B1 /* UIRenderFactory_Cairo.cpp */,
+				10F0E61D2A491E3A0013A3B1 /* UIRenderFactory_Cairo.h */,
+				10F0E6202A491E3B0013A3B1 /* UIRenderFactory_gdi.cpp */,
+				10F0E60A2A491E350013A3B1 /* UIRenderFactory_gdi.h */,
+				10F0E61B2A491E3A0013A3B1 /* UIRenderFactory_gdiplus.cpp */,
+				10F0E6082A491E340013A3B1 /* UIRenderFactory_gdiplus.h */,
+			);
+			name = Render;
+			sourceTree = "<group>";
+		};
+		10F0E4B32A491D1E0013A3B1 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				10F0E6582A491E5C0013A3B1 /* ControlFactory.cpp */,
+				10F0E6592A491E5C0013A3B1 /* ControlFactory.h */,
+				10F0E63F2A491E550013A3B1 /* UIBase.cpp */,
+				10F0E65E2A491E5E0013A3B1 /* UIBase.h */,
+				10F0E6552A491E5B0013A3B1 /* UIContainer.cpp */,
+				10F0E64A2A491E580013A3B1 /* UIContainer.h */,
+				10F0E64F2A491E590013A3B1 /* UIControl.cpp */,
+				10F0E63B2A491E530013A3B1 /* UIControl.h */,
+				10F0E6472A491E570013A3B1 /* UIDefine.h */,
+				10F0E6422A491E560013A3B1 /* UIDlgBuilder.cpp */,
+				10F0E63C2A491E540013A3B1 /* UIDlgBuilder.h */,
+				10F0E64C2A491E590013A3B1 /* UIFile.cpp */,
+				10F0E6462A491E570013A3B1 /* UIFile.h */,
+				10F0E64B2A491E580013A3B1 /* UIGlobal.cpp */,
+				10F0E63E2A491E540013A3B1 /* UIGlobal.h */,
+				10F0E65F2A491E5E0013A3B1 /* UILangManager.cpp */,
+				10F0E6402A491E550013A3B1 /* UILangManager.h */,
+				10F0E6452A491E570013A3B1 /* UIManager.cpp */,
+				10F0E65C2A491E5D0013A3B1 /* UIManager.h */,
+				10F0E6572A491E5B0013A3B1 /* UIManagerGtk.cpp */,
+				10F0E64E2A491E590013A3B1 /* UIManagerGtk.h */,
+				10F0E6502A491E5A0013A3B1 /* UIManagerWin32.cpp */,
+				10F0E6522A491E5A0013A3B1 /* UIManagerWin32.h */,
+				10F0E6562A491E5B0013A3B1 /* UIResourceManager.cpp */,
+				10F0E6412A491E560013A3B1 /* UIResourceManager.h */,
+				10F0E6532A491E5A0013A3B1 /* UIScript.cpp */,
+				10F0E6492A491E580013A3B1 /* UIScript.h */,
+				10F0E64D2A491E590013A3B1 /* UIWindowGtk.cpp */,
+				10F0E65A2A491E5C0013A3B1 /* UIWindowGtk.h */,
+				10F0E6512A491E5A0013A3B1 /* UIWindowWin32.cpp */,
+				10F0E6482A491E580013A3B1 /* UIWindowWin32.h */,
+				10F0E6432A491E560013A3B1 /* UIXmlAttribute.cpp */,
+				10F0E65D2A491E5D0013A3B1 /* UIXmlAttribute.h */,
+				10F0E63D2A491E540013A3B1 /* UIXmlDocument.cpp */,
+				10F0E6542A491E5B0013A3B1 /* UIXmlDocument.h */,
+				10F0E6442A491E570013A3B1 /* UIXmlNode.cpp */,
+				10F0E65B2A491E5D0013A3B1 /* UIXmlNode.h */,
+			);
+			name = Core;
+			sourceTree = "<group>";
+		};
+		10F0E6CD2A4977670013A3B1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				10F0E6DE2A4978710013A3B1 /* libcairo.dylib */,
+				10F0E6DC2A49782D0013A3B1 /* libpangocairo-1.0.dylib */,
+				10F0E6DA2A49781A0013A3B1 /* libpango-1.0.dylib */,
+				10F0E6D82A4977FE0013A3B1 /* libgdk_pixbuf-2.0.dylib */,
+				10F0E6D62A4977DD0013A3B1 /* libgdk-3.dylib */,
+				10F0E6D42A4977CF0013A3B1 /* libglib-2.0.dylib */,
+				10F0E6D22A4977B20013A3B1 /* libgobject-2.0.dylib */,
+				10F0E6D02A49779C0013A3B1 /* libgobject-2.0.0.dylib */,
+				10F0E6CE2A4977690013A3B1 /* libgtk-3.dylib */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		10F0E4892A491AF80013A3B1 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				10F0E5382A491D930013A3B1 /* UIList.h in Headers */,
+				10F0E5532A491D940013A3B1 /* UIDateTimeExWndWin32.h in Headers */,
+				10F0E5502A491D940013A3B1 /* UIFlash.h in Headers */,
+				10F0E56A2A491D940013A3B1 /* UIPicture.h in Headers */,
+				10F0E6AA2A4972B00013A3B1 /* UIFrameBase.h in Headers */,
+				10F0E6232A491E3B0013A3B1 /* UIObject_gdiplus.h in Headers */,
+				10F0E67F2A491E5F0013A3B1 /* UIWindowGtk.h in Headers */,
+				10F0E5582A491D940013A3B1 /* UIGroupBox.h in Headers */,
+				10F0E5702A491D940013A3B1 /* UIListEx.h in Headers */,
+				10F0E5B92A491DB70013A3B1 /* UIChildLayout.h in Headers */,
+				10F0E5372A491D930013A3B1 /* UIGridHeader.h in Headers */,
+				10F0E5652A491D940013A3B1 /* UIEditWndWin32.h in Headers */,
+				10F0E67E2A491E5F0013A3B1 /* ControlFactory.h in Headers */,
+				10F0E57E2A491D940013A3B1 /* UIGrid.h in Headers */,
+				10F0E6372A491E3B0013A3B1 /* UIRenderFactory_Cairo.h in Headers */,
+				10F0E5852A491D940013A3B1 /* UIAnimation.h in Headers */,
+				10F0E54A2A491D930013A3B1 /* UIRollText.h in Headers */,
+				10F0E6822A491E5F0013A3B1 /* UIXmlAttribute.h in Headers */,
+				10F0E5292A491D930013A3B1 /* UIDateTimeEx.h in Headers */,
+				10F0E5572A491D940013A3B1 /* UIGridCell.h in Headers */,
+				10F0E6772A491E5F0013A3B1 /* UIManagerWin32.h in Headers */,
+				10F0E6832A491E5F0013A3B1 /* UIBase.h in Headers */,
+				10F0E5F72A491E090013A3B1 /* DpiWin32.h in Headers */,
+				10F0E6252A491E3B0013A3B1 /* UIClipWin32.h in Headers */,
+				10F0E6AD2A4972B00013A3B1 /* Utils.h in Headers */,
+				10F0E5EA2A491E080013A3B1 /* DPI.h in Headers */,
+				10F0E6062A491E090013A3B1 /* stb_image.h in Headers */,
+				10F0E5812A491D940013A3B1 /* UIComboEditWndGtk.h in Headers */,
+				10F0E57C2A491D940013A3B1 /* UIText.h in Headers */,
+				10F0E5552A491D940013A3B1 /* UIMenuWndGtk.h in Headers */,
+				10F0E6282A491E3B0013A3B1 /* UIObject_gdi.h in Headers */,
+				10F0E6602A491E5F0013A3B1 /* UIControl.h in Headers */,
+				10F0E5F02A491E080013A3B1 /* UIApplicationGtk.h in Headers */,
+				10F0E4A22A491BB10013A3B1 /* compat.h in Headers */,
+				10F0E53D2A491D930013A3B1 /* UIBarCode.h in Headers */,
+				10F0E5332A491D930013A3B1 /* UILabel.h in Headers */,
+				10F0E62A2A491E3B0013A3B1 /* UIRender_gdiplus.h in Headers */,
+				10F0E55C2A491D940013A3B1 /* UIRichEdit.h in Headers */,
+				10F0E5EB2A491E080013A3B1 /* DuiString.h in Headers */,
+				10F0E6022A491E090013A3B1 /* QREncode.h in Headers */,
+				10F0E6382A491E3B0013A3B1 /* UIObject_Cairo.h in Headers */,
+				10F0E62B2A491E3B0013A3B1 /* UIClipGtk.h in Headers */,
+				10F0E6292A491E3B0013A3B1 /* UIRender_gdi.h in Headers */,
+				10F0E5732A491D940013A3B1 /* UIIPAddress.h in Headers */,
+				10F0E5962A491D940013A3B1 /* UIImageBoxEx.h in Headers */,
+				10F0E52A2A491D930013A3B1 /* UIScrollBar.h in Headers */,
+				10F0E5B62A491DB70013A3B1 /* UIChildWindow.h in Headers */,
+				10F0E6322A491E3B0013A3B1 /* UIRender_CairoWin32.h in Headers */,
+				10F0E5642A491D940013A3B1 /* UIRing.h in Headers */,
+				10F0E5FF2A491E090013A3B1 /* nanosvgrast.h in Headers */,
+				10F0E5E72A491E080013A3B1 /* nanosvg.h in Headers */,
+				10F0E5802A491D940013A3B1 /* UIComboEditWndWin32.h in Headers */,
+				10F0E52B2A491D930013A3B1 /* UIDateTimeWndWin32.h in Headers */,
+				10F0E53A2A491D930013A3B1 /* UIOption.h in Headers */,
+				10F0E5BA2A491DB70013A3B1 /* UITableLayout.h in Headers */,
+				10F0E4B62A491D4D0013A3B1 /* IGridUI.h in Headers */,
+				10F0E5AE2A491DB70013A3B1 /* UIVerticalLayout.h in Headers */,
+				10F0E5462A491D930013A3B1 /* ITreeUI.h in Headers */,
+				10F0E5412A491D930013A3B1 /* TxtWinHost.h in Headers */,
+				10F0E6C82A4975650013A3B1 /* UITreeItem.h in Headers */,
+				10F0E5B82A491DB70013A3B1 /* UITileLayout.h in Headers */,
+				10F0E5562A491D940013A3B1 /* UIComboWndGtk.h in Headers */,
+				10F0E5E42A491E080013A3B1 /* UIApplicationWin32.h in Headers */,
+				10F0E53B2A491D930013A3B1 /* UIMenuWndWin32.h in Headers */,
+				10F0E5762A491D940013A3B1 /* UIFadeButton.h in Headers */,
+				10F0E5892A491D940013A3B1 /* UIMsgWnd.h in Headers */,
+				10F0E6BA2A4972B00013A3B1 /* UIShadowWin32.h in Headers */,
+				10F0E5612A491D940013A3B1 /* UIEdit.h in Headers */,
+				10F0E6652A491E5F0013A3B1 /* UILangManager.h in Headers */,
+				10F0E6C62A4975650013A3B1 /* UIWebBrowser.h in Headers */,
+				10F0E5912A491D940013A3B1 /* UIColorPalette.h in Headers */,
+				10F0E62D2A491E3B0013A3B1 /* UIRender_Cairo.h in Headers */,
+				10F0E57D2A491D940013A3B1 /* UICombo.h in Headers */,
+				10F0E5302A491D930013A3B1 /* UIDateTime.h in Headers */,
+				10F0E66F2A491E5F0013A3B1 /* UIContainer.h in Headers */,
+				10F0E66B2A491E5F0013A3B1 /* UIFile.h in Headers */,
+				10F0E55E2A491D940013A3B1 /* UIGifAnim.h in Headers */,
+				10F0E66D2A491E5F0013A3B1 /* UIWindowWin32.h in Headers */,
+				10F0E6812A491E5F0013A3B1 /* UIManager.h in Headers */,
+				10F0E5872A491D940013A3B1 /* UIPictureBox.h in Headers */,
+				10F0E53C2A491D930013A3B1 /* UITabCtrl.h in Headers */,
+				10F0E4A12A491BB10013A3B1 /* StdAfx.h in Headers */,
+				10F0E5362A491D930013A3B1 /* UIComboEx.h in Headers */,
+				10F0E5512A491D940013A3B1 /* UIComboWndWin32.h in Headers */,
+				10F0E55F2A491D940013A3B1 /* UIHotKey.h in Headers */,
+				10F0E5B02A491DB70013A3B1 /* UITabLayout.h in Headers */,
+				10F0E6042A491E090013A3B1 /* UIApplication.h in Headers */,
+				10F0E6C92A4975650013A3B1 /* UITreeView.h in Headers */,
+				10F0E6662A491E5F0013A3B1 /* UIResourceManager.h in Headers */,
+				10F0E5392A491D930013A3B1 /* UIProgress.h in Headers */,
+				10F0E6632A491E5F0013A3B1 /* UIGlobal.h in Headers */,
+				10F0E5B42A491DB70013A3B1 /* UIHorizontalLayout.h in Headers */,
+				10F0E5FA2A491E090013A3B1 /* UIDelegate.h in Headers */,
+				10F0E55D2A491D940013A3B1 /* UIGridRowUI.h in Headers */,
+				10F0E5F12A491E080013A3B1 /* DpiGtk.h in Headers */,
+				10F0E6CA2A4975650013A3B1 /* UITree.h in Headers */,
+				10F0E6A62A4972B00013A3B1 /* WinImplBase.h in Headers */,
+				10F0E6BC2A4972B00013A3B1 /* UIForm.h in Headers */,
+				10F0E5EF2A491E080013A3B1 /* TrayIcon.h in Headers */,
+				10F0E54B2A491D930013A3B1 /* UIActiveX.h in Headers */,
+				10F0E6732A491E5F0013A3B1 /* UIManagerGtk.h in Headers */,
+				10F0E66E2A491E5F0013A3B1 /* UIScript.h in Headers */,
+				10F0E5422A491D930013A3B1 /* UIRollTextEx.h in Headers */,
+				10F0E6222A491E3B0013A3B1 /* UIRenderFactory_gdiplus.h in Headers */,
+				10F0E5922A491D940013A3B1 /* UIQRCode.h in Headers */,
+				10F0E52C2A491D930013A3B1 /* UIMenu.h in Headers */,
+				10F0E5F92A491E090013A3B1 /* UIDialog.h in Headers */,
+				10F0E6392A491E3B0013A3B1 /* IRender.h in Headers */,
+				10F0E5B32A491DB70013A3B1 /* UIDynamicLayout.h in Headers */,
+				10F0E6B12A4972B00013A3B1 /* UIFrameWndWin32.h in Headers */,
+				10F0E5402A491D930013A3B1 /* UIIconButton.h in Headers */,
+				10F0E57B2A491D940013A3B1 /* UISlider.h in Headers */,
+				10F0E6AF2A4972B00013A3B1 /* UIFrameWnd.h in Headers */,
+				10F0E5952A491D940013A3B1 /* UIGridBody.h in Headers */,
+				10F0E6B92A4972B00013A3B1 /* VersionHelpers.h in Headers */,
+				10F0E5602A491D940013A3B1 /* UIDateTimeWndGtk.h in Headers */,
+				10F0E6792A491E5F0013A3B1 /* UIXmlDocument.h in Headers */,
+				10F0E5FE2A491E090013A3B1 /* observer_impl_base.h in Headers */,
+				10F0E6BD2A4972B00013A3B1 /* UIShadowGtk.h in Headers */,
+				10F0E6612A491E5F0013A3B1 /* UIDlgBuilder.h in Headers */,
+				10F0E56C2A491D940013A3B1 /* UIDateTimeExWndGtk.h in Headers */,
+				10F0E66C2A491E5F0013A3B1 /* UIDefine.h in Headers */,
+				10F0E5432A491D930013A3B1 /* UIIPAddressEx.h in Headers */,
+				10F0E5F32A491E090013A3B1 /* stb_image_write.h in Headers */,
+				10F0E6242A491E3B0013A3B1 /* UIRenderFactory_gdi.h in Headers */,
+				10F0E6A42A4972B00013A3B1 /* UIFrameWndGtk.h in Headers */,
+				10F0E6B22A4972B00013A3B1 /* UIShadowBase.h in Headers */,
+				10F0E58F2A491D940013A3B1 /* UIButton.h in Headers */,
+				10F0E5772A491D940013A3B1 /* UIEditWndGtk.h in Headers */,
+				10F0E6802A491E5F0013A3B1 /* UIXmlNode.h in Headers */,
+				10F0E5AC2A491DB70013A3B1 /* UIAnimationTabLayout.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		10F0E48C2A491AF80013A3B1 /* DuiLib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 10F0E4982A491AF80013A3B1 /* Build configuration list for PBXNativeTarget "DuiLib" */;
+			buildPhases = (
+				10F0E4892A491AF80013A3B1 /* Headers */,
+				10F0E48A2A491AF80013A3B1 /* Sources */,
+				10F0E48B2A491AF80013A3B1 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DuiLib;
+			productName = DuiLib;
+			productReference = 10F0E48D2A491AF80013A3B1 /* libDuiLib.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		10F0E4852A491AF80013A3B1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1140;
+				ORGANIZATIONNAME = liqs99;
+				TargetAttributes = {
+					10F0E48C2A491AF80013A3B1 = {
+						CreatedOnToolsVersion = 11.4;
+					};
+				};
+			};
+			buildConfigurationList = 10F0E4882A491AF80013A3B1 /* Build configuration list for PBXProject "DuiLib" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 10F0E4842A491AF80013A3B1;
+			productRefGroup = 10F0E48E2A491AF80013A3B1 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				10F0E48C2A491AF80013A3B1 /* DuiLib */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		10F0E48A2A491AF80013A3B1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				10F0E6672A491E5F0013A3B1 /* UIDlgBuilder.cpp in Sources */,
+				10F0E56B2A491D940013A3B1 /* UIOption.cpp in Sources */,
+				10F0E6A82A4972B00013A3B1 /* UIFrameWndGtk.cpp in Sources */,
+				10F0E5982A491D940013A3B1 /* UIComboEditWndWin32.cpp in Sources */,
+				10F0E5472A491D930013A3B1 /* UIDateTimeEx.cpp in Sources */,
+				10F0E58A2A491D940013A3B1 /* UIMenu.cpp in Sources */,
+				10F0E6012A491E090013A3B1 /* UIApplication.cpp in Sources */,
+				10F0E5F82A491E090013A3B1 /* UIApplicationWin32.cpp in Sources */,
+				10F0E5622A491D940013A3B1 /* UITabCtrl.cpp in Sources */,
+				10F0E56F2A491D940013A3B1 /* UIFadeButton.cpp in Sources */,
+				10F0E5822A491D940013A3B1 /* UIDateTime.cpp in Sources */,
+				10F0E49F2A491BB10013A3B1 /* StdAfx.cpp in Sources */,
+				10F0E5902A491D940013A3B1 /* UIMenuWndWin32.cpp in Sources */,
+				10F0E56D2A491D940013A3B1 /* UIIconButton.cpp in Sources */,
+				10F0E6692A491E5F0013A3B1 /* UIXmlNode.cpp in Sources */,
+				10F0E5672A491D940013A3B1 /* TxtWinHost.cpp in Sources */,
+				10F0E62C2A491E3B0013A3B1 /* UIClipWin32.cpp in Sources */,
+				10F0E6352A491E3B0013A3B1 /* UIRenderFactory_gdiplus.cpp in Sources */,
+				10F0E4B72A491D4D0013A3B1 /* IGridUI.cpp in Sources */,
+				10F0E52E2A491D930013A3B1 /* UIRollText.cpp in Sources */,
+				10F0E6782A491E5F0013A3B1 /* UIScript.cpp in Sources */,
+				10F0E5862A491D940013A3B1 /* UICombo.cpp in Sources */,
+				10F0E58D2A491D940013A3B1 /* UILabel.cpp in Sources */,
+				10F0E5592A491D940013A3B1 /* UIListEx.cpp in Sources */,
+				10F0E5782A491D940013A3B1 /* UIDateTimeExWndGtk.cpp in Sources */,
+				10F0E58E2A491D940013A3B1 /* UIGifAnim.cpp in Sources */,
+				10F0E5972A491D940013A3B1 /* UIIPAddress.cpp in Sources */,
+				10F0E5942A491D940013A3B1 /* UIQRCode.cpp in Sources */,
+				10F0E55A2A491D940013A3B1 /* UIPictureBox.cpp in Sources */,
+				10F0E5832A491D940013A3B1 /* UIButton.cpp in Sources */,
+				10F0E6BB2A4972B00013A3B1 /* WinImplBase.cpp in Sources */,
+				10F0E5542A491D940013A3B1 /* UIGridHeader.cpp in Sources */,
+				10F0E6AC2A4972B00013A3B1 /* UIFrameWnd.cpp in Sources */,
+				10F0E5742A491D940013A3B1 /* UIRing.cpp in Sources */,
+				10F0E6A92A4972B00013A3B1 /* UIShadowBase.cpp in Sources */,
+				10F0E67D2A491E5F0013A3B1 /* ControlFactory.cpp in Sources */,
+				10F0E5662A491D940013A3B1 /* UIGridBody.cpp in Sources */,
+				10F0E6272A491E3B0013A3B1 /* UIRender_gdiplus.cpp in Sources */,
+				10F0E6722A491E5F0013A3B1 /* UIWindowGtk.cpp in Sources */,
+				10F0E5F62A491E090013A3B1 /* DpiWin32.cpp in Sources */,
+				10F0E67B2A491E5F0013A3B1 /* UIResourceManager.cpp in Sources */,
+				10F0E56E2A491D940013A3B1 /* UIProgress.cpp in Sources */,
+				10F0E6682A491E5F0013A3B1 /* UIXmlAttribute.cpp in Sources */,
+				10F0E5342A491D930013A3B1 /* UIComboEx.cpp in Sources */,
+				10F0E57A2A491D940013A3B1 /* UIText.cpp in Sources */,
+				10F0E6762A491E5F0013A3B1 /* UIWindowWin32.cpp in Sources */,
+				10F0E5682A491D940013A3B1 /* UITree.cpp in Sources */,
+				10F0E5FC2A491E090013A3B1 /* DpiGtk.cpp in Sources */,
+				10F0E6B52A4972B00013A3B1 /* UIShadowWin32.cpp in Sources */,
+				10F0E6302A491E3B0013A3B1 /* UIRender_gdi.cpp in Sources */,
+				10F0E6712A491E5F0013A3B1 /* UIFile.cpp in Sources */,
+				10F0E6002A491E090013A3B1 /* TrayIcon.cpp in Sources */,
+				10F0E5322A491D930013A3B1 /* UIEditWndWin32.cpp in Sources */,
+				10F0E67C2A491E5F0013A3B1 /* UIManagerGtk.cpp in Sources */,
+				10F0E5BB2A491DB70013A3B1 /* UITableLayout.cpp in Sources */,
+				10F0E5AF2A491DB70013A3B1 /* UIAnimationTabLayout.cpp in Sources */,
+				10F0E6332A491E3B0013A3B1 /* UIRenderFactory_Cairo.cpp in Sources */,
+				10F0E6052A491E090013A3B1 /* UIDialog.cpp in Sources */,
+				10F0E5AD2A491DB70013A3B1 /* UIHorizontalLayout.cpp in Sources */,
+				10F0E6702A491E5F0013A3B1 /* UIGlobal.cpp in Sources */,
+				10F0E58B2A491D940013A3B1 /* UIRollTextEx.cpp in Sources */,
+				10F0E6622A491E5F0013A3B1 /* UIXmlDocument.cpp in Sources */,
+				10F0E57F2A491D940013A3B1 /* UIEditWndGtk.cpp in Sources */,
+				10F0E6C72A4975650013A3B1 /* UIWebBrowser.cpp in Sources */,
+				10F0E5692A491D940013A3B1 /* UIDateTimeExWndWin32.cpp in Sources */,
+				10F0E6842A491E5F0013A3B1 /* UILangManager.cpp in Sources */,
+				10F0E6B72A4972B00013A3B1 /* UIFrameWndWin32.cpp in Sources */,
+				10F0E62E2A491E3B0013A3B1 /* UIRender_Cairo.cpp in Sources */,
+				10F0E6362A491E3B0013A3B1 /* UIObject_gdi.cpp in Sources */,
+				10F0E5F22A491E090013A3B1 /* UIForm.cpp in Sources */,
+				10F0E5352A491D930013A3B1 /* UIComboWndGtk.cpp in Sources */,
+				10F0E5712A491D940013A3B1 /* UIHotKey.cpp in Sources */,
+				10F0E5992A491D940013A3B1 /* UIDateTimeWndGtk.cpp in Sources */,
+				10F0E5BC2A491DB70013A3B1 /* UIVerticalLayout.cpp in Sources */,
+				10F0E5522A491D940013A3B1 /* UIMenuWndGtk.cpp in Sources */,
+				10F0E4A02A491BB10013A3B1 /* UIlib.cpp in Sources */,
+				10F0E54F2A491D940013A3B1 /* UIFlash.cpp in Sources */,
+				10F0E58C2A491D940013A3B1 /* UIIPAddressEx.cpp in Sources */,
+				10F0E5EE2A491E080013A3B1 /* DPI.cpp in Sources */,
+				10F0E6AB2A4972B00013A3B1 /* Utils.cpp in Sources */,
+				10F0E53F2A491D930013A3B1 /* UIGrid.cpp in Sources */,
+				10F0E5442A491D930013A3B1 /* UIComboWndWin32.cpp in Sources */,
+				10F0E5722A491D940013A3B1 /* UIEdit.cpp in Sources */,
+				10F0E5842A491D940013A3B1 /* UIActiveX.cpp in Sources */,
+				10F0E6CC2A4975650013A3B1 /* UITreeItem.cpp in Sources */,
+				10F0E66A2A491E5F0013A3B1 /* UIManager.cpp in Sources */,
+				10F0E5FB2A491E090013A3B1 /* UIApplicationGtk.cpp in Sources */,
+				10F0E5F52A491E090013A3B1 /* QREncode.cpp in Sources */,
+				10F0E6752A491E5F0013A3B1 /* UIManagerWin32.cpp in Sources */,
+				10F0E6642A491E5F0013A3B1 /* UIBase.cpp in Sources */,
+				10F0E6A52A4972B00013A3B1 /* UIShadowGtk.cpp in Sources */,
+				10F0E5B52A491DB70013A3B1 /* UIChildLayout.cpp in Sources */,
+				10F0E6262A491E3B0013A3B1 /* UIRender_CairoWin32.cpp in Sources */,
+				10F0E6CB2A4975650013A3B1 /* UITreeView.cpp in Sources */,
+				10F0E5F42A491E090013A3B1 /* UIDelegate.cpp in Sources */,
+				10F0E5312A491D930013A3B1 /* UIGridRowUI.cpp in Sources */,
+				10F0E54E2A491D940013A3B1 /* UIGroupBox.cpp in Sources */,
+				10F0E54C2A491D930013A3B1 /* UIRichEdit.cpp in Sources */,
+				10F0E67A2A491E5F0013A3B1 /* UIContainer.cpp in Sources */,
+				10F0E5BD2A491DB70013A3B1 /* UITileLayout.cpp in Sources */,
+				10F0E53E2A491D930013A3B1 /* UIComboEditWndGtk.cpp in Sources */,
+				10F0E5632A491D940013A3B1 /* UIImageBoxEx.cpp in Sources */,
+				10F0E5B12A491DB70013A3B1 /* UIDynamicLayout.cpp in Sources */,
+				10F0E6212A491E3B0013A3B1 /* UIObject_gdiplus.cpp in Sources */,
+				10F0E5932A491D940013A3B1 /* UIList.cpp in Sources */,
+				10F0E5452A491D930013A3B1 /* UIColorPalette.cpp in Sources */,
+				10F0E6312A491E3B0013A3B1 /* UIObject_Cairo.cpp in Sources */,
+				10F0E63A2A491E3B0013A3B1 /* UIRenderFactory_gdi.cpp in Sources */,
+				10F0E6342A491E3B0013A3B1 /* IRender.cpp in Sources */,
+				10F0E54D2A491D930013A3B1 /* UIScrollBar.cpp in Sources */,
+				10F0E55B2A491D940013A3B1 /* ITreeUI.cpp in Sources */,
+				10F0E62F2A491E3B0013A3B1 /* UIClipGtk.cpp in Sources */,
+				10F0E52F2A491D930013A3B1 /* UIAnimation.cpp in Sources */,
+				10F0E6A72A4972B00013A3B1 /* UIFrameBase.cpp in Sources */,
+				10F0E5792A491D940013A3B1 /* UIMsgWnd.cpp in Sources */,
+				10F0E5752A491D940013A3B1 /* UIBarCode.cpp in Sources */,
+				10F0E5882A491D940013A3B1 /* UIDateTimeWndWin32.cpp in Sources */,
+				10F0E6742A491E5F0013A3B1 /* UIControl.cpp in Sources */,
+				10F0E5B22A491DB70013A3B1 /* UIChildWindow.cpp in Sources */,
+				10F0E5492A491D930013A3B1 /* UIPicture.cpp in Sources */,
+				10F0E5B72A491DB70013A3B1 /* UITabLayout.cpp in Sources */,
+				10F0E5482A491D930013A3B1 /* UISlider.cpp in Sources */,
+				10F0E52D2A491D930013A3B1 /* UIGridCell.cpp in Sources */,
+				10F0E5E52A491E080013A3B1 /* DuiString.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		10F0E4962A491AF80013A3B1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DUILIB_GTK=1",
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.16;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SYSTEM_HEADER_SEARCH_PATHS = "";
+				USER_HEADER_SEARCH_PATHS = (
+					"/opt/homebrew/include/gtk-3.0",
+					/opt/homebrew/include/cairo,
+					/opt/homebrew/include/harfbuzz,
+					"/opt/homebrew/include/gdk-pixbuf-2.0",
+					"/opt/homebrew/lib/glib-2.0/include",
+					"/opt/homebrew/lib/glib-2.0/include",
+					"/opt/homebrew/include/glib-2.0/glib",
+					"/opt/homebrew/include/glib-2.0",
+					"/opt/homebrew/include/pango-1.0",
+					"/opt/homebrew/include/atk-1.0",
+					"/usr/local/include/gtk-3.0",
+					/usr/local/include/cairo,
+					/usr/local/include/harfbuzz,
+					"/usr/local/include/gdk-pixbuf-2.0",
+					"/usr/local/lib/glib-2.0/include",
+					"/usr/local/lib/glib-2.0/include",
+					"/usr/local/include/glib-2.0/glib",
+					"/usr/local/include/glib-2.0",
+					"/usr/local/include/pango-1.0",
+					"/usr/local/include/atk-1.0",
+				);
+			};
+			name = Debug;
+		};
+		10F0E4972A491AF80013A3B1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = "DUILIB_GTK=1";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.16;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SYSTEM_HEADER_SEARCH_PATHS = "";
+				USER_HEADER_SEARCH_PATHS = (
+					"/opt/homebrew/include/gtk-3.0",
+					/opt/homebrew/include/cairo,
+					/opt/homebrew/include/harfbuzz,
+					"/opt/homebrew/include/gdk-pixbuf-2.0",
+					"/opt/homebrew/lib/glib-2.0/include",
+					"/opt/homebrew/lib/glib-2.0/include",
+					"/opt/homebrew/include/glib-2.0/glib",
+					"/opt/homebrew/include/glib-2.0",
+					"/opt/homebrew/include/pango-1.0",
+					"/opt/homebrew/include/atk-1.0",
+					"/usr/local/include/gtk-3.0",
+					/usr/local/include/cairo,
+					/usr/local/include/harfbuzz,
+					"/usr/local/include/gdk-pixbuf-2.0",
+					"/usr/local/lib/glib-2.0/include",
+					"/usr/local/lib/glib-2.0/include",
+					"/usr/local/include/glib-2.0/glib",
+					"/usr/local/include/glib-2.0",
+					"/usr/local/include/pango-1.0",
+					"/usr/local/include/atk-1.0",
+				);
+			};
+			name = Release;
+		};
+		10F0E4992A491AF80013A3B1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = NO;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				HEADER_SEARCH_PATHS = ../../DuiLib/;
+				LIBRARY_SEARCH_PATHS = (
+					/opt/homebrew/lib,
+					/usr/local/lib,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				USER_HEADER_SEARCH_PATHS = (
+					"/opt/homebrew/include/gtk-3.0",
+					/opt/homebrew/include/cairo,
+					/opt/homebrew/include/harfbuzz,
+					"/opt/homebrew/include/gdk-pixbuf-2.0",
+					"/opt/homebrew/lib/glib-2.0/include",
+					"/opt/homebrew/lib/glib-2.0/include",
+					"/opt/homebrew/include/glib-2.0/glib",
+					"/opt/homebrew/include/glib-2.0",
+					"/opt/homebrew/include/pango-1.0",
+					"/opt/homebrew/include/atk-1.0",
+				);
+			};
+			name = Debug;
+		};
+		10F0E49A2A491AF80013A3B1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = NO;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				HEADER_SEARCH_PATHS = ../../DuiLib/;
+				LIBRARY_SEARCH_PATHS = (
+					/opt/homebrew/lib,
+					/usr/local/lib,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				USER_HEADER_SEARCH_PATHS = (
+					"/opt/homebrew/include/gtk-3.0",
+					/opt/homebrew/include/cairo,
+					/opt/homebrew/include/harfbuzz,
+					"/opt/homebrew/include/gdk-pixbuf-2.0",
+					"/opt/homebrew/lib/glib-2.0/include",
+					"/opt/homebrew/lib/glib-2.0/include",
+					"/opt/homebrew/include/glib-2.0/glib",
+					"/opt/homebrew/include/glib-2.0",
+					"/opt/homebrew/include/pango-1.0",
+					"/opt/homebrew/include/atk-1.0",
+				);
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		10F0E4882A491AF80013A3B1 /* Build configuration list for PBXProject "DuiLib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				10F0E4962A491AF80013A3B1 /* Debug */,
+				10F0E4972A491AF80013A3B1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		10F0E4982A491AF80013A3B1 /* Build configuration list for PBXNativeTarget "DuiLib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				10F0E4992A491AF80013A3B1 /* Debug */,
+				10F0E49A2A491AF80013A3B1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 10F0E4852A491AF80013A3B1 /* Project object */;
+}

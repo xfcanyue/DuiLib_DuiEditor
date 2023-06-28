@@ -37,7 +37,7 @@ namespace DuiLib
 		{
 			if( !T::IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
 				if(T::GetParent() != NULL ) T::GetParent()->DoEvent(event);
-				else __super::DoEvent(event);
+				else T::DoEvent(event);
 				return;
 			}
 
@@ -52,7 +52,8 @@ namespace DuiLib
 			}		
 			if( event.Type == UIEVENT_BUTTONDOWN || event.Type == UIEVENT_DBLCLICK)
 			{
-				if( ::PtInRect(&T::GetPos(), event.ptMouse) && T::IsEnabled() )
+				//if( ::PtInRect(&T::GetPos(), event.ptMouse) && T::IsEnabled() )
+				if( T::GetPos().PtInRect(event.ptMouse) && T::IsEnabled() )
 				{
 					T::SetCaptureState(true);
 					T::SetPushedState(true);
@@ -64,7 +65,8 @@ namespace DuiLib
 			{
 				if(T::IsCaptureState() )
 				{
-					if( ::PtInRect(&T::GetPos(), event.ptMouse) )
+					//if( ::PtInRect(&T::GetPos(), event.ptMouse) )
+					if( T::GetPos().PtInRect(event.ptMouse) )
 						T::SetPushedState(true);
 					else 
 						T::SetPushedState(false);
@@ -79,7 +81,8 @@ namespace DuiLib
 					T::SetCaptureState(false);
 					T::SetPushedState(false);
 					T::Invalidate();
-					if( ::PtInRect(&T::GetPos(), event.ptMouse) ) Activate();				
+					//if( ::PtInRect(&T::GetPos(), event.ptMouse) ) Activate();	
+					if( T::GetPos().PtInRect(event.ptMouse) ) Activate();			
 				}
 				return;
 			}
@@ -104,7 +107,7 @@ namespace DuiLib
 					T::Invalidate();
 				}
 			}
-			__super::DoEvent(event);
+			T::DoEvent(event);
 		}
 
 		virtual void SwitchPaneVisible()
@@ -151,9 +154,9 @@ namespace DuiLib
 			}
 			else if(!m_sBindTabIndexName.IsEmpty())
 			{
-				CTabLayoutUI* pTabLayout = dynamic_cast<CTabLayoutUI*>(GetManager()->FindControl(pstrName));
+				CTabLayoutUI* pTabLayout = dynamic_cast<CTabLayoutUI*>(T::GetManager()->FindControl(pstrName));
 				if(!pTabLayout) return;
-				CControlUI *pControl = static_cast<CControlUI*>(GetManager()->FindControl(m_sBindTabIndexName));
+				CControlUI *pControl = static_cast<CControlUI*>(T::GetManager()->FindControl(m_sBindTabIndexName));
 				if(pControl)
 					pTabLayout->SelectItem(pControl);
 			}
@@ -186,7 +189,7 @@ namespace DuiLib
 			else if( _tcsicmp(pstrName, _T("bindtabindex")) == 0 ) BindTabIndex(_ttoi(pstrValue));
 			else if( _tcsicmp(pstrName, _T("bindtabindexname")) == 0 ) BindTabIndexName(pstrValue);
 			else if( _tcsicmp(pstrName, _T("bindtablayoutname")) == 0 ) BindTabLayoutName(pstrValue);	
-			else __super::SetAttribute(pstrName, pstrValue);
+			else T::SetAttribute(pstrName, pstrValue);
 		}
 
 	protected:

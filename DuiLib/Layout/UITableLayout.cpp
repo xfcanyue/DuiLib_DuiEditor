@@ -27,7 +27,7 @@ namespace DuiLib
 	LPVOID CTableLayoutUI::GetInterface(LPCTSTR pstrName)
 	{
 		if( _tcsicmp(pstrName, DUI_CTR_TABLELAYOUT) == 0 ) return static_cast<CTableLayoutUI*>(this);
-		return __super::GetInterface(pstrName);
+		return CVerticalLayoutUI::GetInterface(pstrName);
 	}
 
 	void CTableLayoutUI::SetColWidth(int col, int nWidth)
@@ -109,7 +109,7 @@ namespace DuiLib
 
 	void CTableLayoutUI::DoEvent(TEventUI& event)
 	{
-		__super::DoEvent(event);
+		CVerticalLayoutUI::DoEvent(event);
 	}
 
 	void CTableLayoutUI::SetPos(RECT rc, bool bNeedInvalidate)
@@ -290,7 +290,7 @@ namespace DuiLib
 			SetDefRowHeight(_ttoi(pstrValue));
 		}
 		else
-			__super::SetAttribute(pstrName, pstrValue);
+			CVerticalLayoutUI::SetAttribute(pstrName, pstrValue);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -307,7 +307,7 @@ namespace DuiLib
 	LPVOID CTRUI::GetInterface(LPCTSTR pstrName)
 	{
 		if( _tcsicmp(pstrName, DUI_CTR_TABLEROW) == 0 ) return static_cast<CTRUI*>(this);
-		return __super::GetInterface(pstrName);
+		return COptionLayoutUI::GetInterface(pstrName);
 	}
 
 	UINT CTRUI::GetControlFlags() const
@@ -337,7 +337,7 @@ namespace DuiLib
 		if(!pControl->GetInterface(DUI_CTR_TABLECOL))
 			return false;
 
-		return __super::Add(pControl);
+		return COptionLayoutUI::Add(pControl);
 	}
 
 	bool CTRUI::AddAt(CControlUI* pControl, int iIndex)
@@ -345,7 +345,7 @@ namespace DuiLib
 		if(!pControl->GetInterface(DUI_CTR_TABLECOL))
 			return false;
 
-		return __super::AddAt(pControl, iIndex);
+		return COptionLayoutUI::AddAt(pControl, iIndex);
 	}
 
 	void CTRUI::DoInit()
@@ -376,12 +376,12 @@ namespace DuiLib
 
 			return sz;
 		}
-		return __super::EstimateSize(szAvailable);
+		return COptionLayoutUI::EstimateSize(szAvailable);
 	}
 
 	void CTRUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
-		__super::SetAttribute(pstrName, pstrValue);
+		COptionLayoutUI::SetAttribute(pstrName, pstrValue);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -399,7 +399,7 @@ namespace DuiLib
 	LPVOID CTDUI::GetInterface(LPCTSTR pstrName)
 	{
 		if( _tcsicmp(pstrName, DUI_CTR_TABLECOL) == 0 ) return static_cast<CTDUI*>(this);
-		return __super::GetInterface(pstrName);
+		return COptionLayoutUI::GetInterface(pstrName);
 	}
 
 	UINT CTDUI::GetControlFlags() const
@@ -571,7 +571,7 @@ namespace DuiLib
 
 	SIZE CTDUI::EstimateSize(SIZE szAvailable)
 	{
-		//return __super::EstimateSize(szAvailable);
+		//return COptionLayoutUI::EstimateSize(szAvailable);
 		if(IsAutoCalcWidth())
 		{
 			int needWidth = 0;
@@ -594,7 +594,7 @@ namespace DuiLib
 				RECT rcText = {0, 0, szAvailable.cx, szAvailable.cy};
 				int nLinks = 0;
 				GetManager()->Render()->DrawText(rcText, GetTextPadding(), sText, m_dwTextColor, m_iFont, DT_CALCRECT | m_uTextStyle);
-				needWidth = MulDiv(rcText.right - rcText.left + GetManager()->GetDPIObj()->Scale(rcTextPadding.left) + GetManager()->GetDPIObj()->Scale(rcTextPadding.right), 100, GetManager()->GetDPIObj()->GetScale());
+				needWidth = MulDiv(rcText.right - rcText.left + GetManager()->GetDPIObj()->ScaleInt(rcTextPadding.left) + GetManager()->GetDPIObj()->ScaleInt(rcTextPadding.right), 100, GetManager()->GetDPIObj()->GetScale());
 			}
 
 			RECT rcInset = GetInset();
@@ -608,7 +608,7 @@ namespace DuiLib
 		SIZE sz;
 		sz.cx = GetFixedWidth();
 		sz.cy = szAvailable.cy;
-		return m_pManager->GetDPIObj()->Scale(sz);	
+		return m_pManager->GetDPIObj()->ScaleSize(sz);	
 	}
 
 	void CTDUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
@@ -616,6 +616,6 @@ namespace DuiLib
 		if( _tcsicmp(pstrName, _T("width")) == 0 ) SetFixedWidth(_ttoi(pstrValue));
 		else if( _tcsicmp(pstrName, _T("minwidth")) == 0 ) SetMinWidth(_ttoi(pstrValue));
 		else if( _tcsicmp(pstrName, _T("maxwidth")) == 0 ) SetMaxWidth(_ttoi(pstrValue));
-		else __super::SetAttribute(pstrName, pstrValue);
+		else COptionLayoutUI::SetAttribute(pstrName, pstrValue);
 	}
 }

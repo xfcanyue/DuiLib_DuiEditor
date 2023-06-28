@@ -17,7 +17,8 @@ static void CControlUI_SetText(const CDuiString &str, CPaintManagerUI &obj)
 class regCPaintManagerUI
 {
 protected:
-	DECL_FACTORY(CPaintManagerUI);
+	//DECL_FACTORY(CPaintManagerUI);
+	static CPaintManagerUI *CPaintManagerUI_Ref_Factory() { return new DuiLibPaintManagerUI(); }
 public:
 	static bool Register_Prepare(asIScriptEngine *engine)
 	{

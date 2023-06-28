@@ -231,7 +231,7 @@ void CImageEditorListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 			
 			RECT rcCorner = {0};
 			m_pRender->AttachDC(NULL, pDC->m_hDC);
-			m_pRender->DrawBitmap(pImageInfo->bitmap->GetBitmap(), rcImage, rcPaint, rcSource, rcCorner, pImageInfo->bAlpha, 255, false, false, false);
+			m_pRender->DrawBitmap(pImageInfo->bitmap, rcImage, rcPaint, rcSource, rcCorner, pImageInfo->bAlpha, 255, false, false, false);
 		}
 		else
 		{

@@ -1,4 +1,6 @@
 #pragma once
+
+#ifdef DUILIB_WIN32
 #include "atlimage.h"
 namespace DuiLib
 {
@@ -158,3 +160,4 @@ private:
 
 
 }
+#endif //#ifdef DUILIB_WIN32

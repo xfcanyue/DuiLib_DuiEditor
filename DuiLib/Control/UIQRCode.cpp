@@ -1,10 +1,9 @@
 #include "StdAfx.h"
 #include "UIQRCode.h"
-#include "atlimage.h"
+//#include "atlimage.h"
 
 #include "../Render/UIRender_gdi.h"
 #include "../Utils/QREncode.h"
-#include "../Utils/QREncode.cpp"
 
 namespace DuiLib
 {
@@ -34,7 +33,7 @@ LPCTSTR CQRCodeUI::GetClass() const
 LPVOID	CQRCodeUI::GetInterface(LPCTSTR pstrName)
 {
 	if( _tcscmp(pstrName, DUI_CTR_QRCODE) == 0 ) return static_cast<CQRCodeUI*>(this);
-	return __super::GetInterface(pstrName);
+	return CDynamicLayoutUI::GetInterface(pstrName);
 }
 
 void CQRCodeUI::SetQrLevel(int nValue)
@@ -111,7 +110,7 @@ void CQRCodeUI::SetQrCodeEncoding(LPCTSTR sEncoding)
 
 void CQRCodeUI::SetPos(RECT rc, bool bNeedInvalidate)
 {
-	__super::SetPos(rc, bNeedInvalidate);
+	CDynamicLayoutUI::SetPos(rc, bNeedInvalidate);
 }
 
 void CQRCodeUI::PaintText(UIRender *pRender)
@@ -155,14 +154,14 @@ void CQRCodeUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 		SetQrCodeEncoding(pstrValue);
 	}
 	else
-		__super::SetAttribute(pstrName, pstrValue);
+		CDynamicLayoutUI::SetAttribute(pstrName, pstrValue);
 }
 
 void CQRCodeUI::MakeQrImage()
 {
 	if(!m_qrRender)
 	{
-		m_qrRender = MakeRefPtr<UIRender>(new UIRender_gdi);
+		m_qrRender = MakeRefPtr<UIRender>(UIGlobal::CreateRenderTarget());
 		m_qrRender->Init(NULL,NULL);
 	}
 
@@ -207,7 +206,7 @@ void CQRCodeUI::MakeQrImage()
 			{
 				if (qr.m_byModuleData[i][j])
 				{
-					::SetPixel(m_qrRender->GetDC(), i + m_qrMargin, j + m_qrMargin, RGB(0, 0, 0));
+					m_qrRender->SetPixel(i + m_qrMargin, j + m_qrMargin, RGB(0, 0, 0));
 				}
 			}
 		}

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Test" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../../../bin/Test" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="./" />
+				<Option object_output="obj/Debug/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DDUILIB_GTK=1" />
+					<Add directory="include" />
+					<Add directory="../../../DuiLib" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add option="-Wl,--hash-style=sysv,-Bsymbolic,-rpath=./ -no-pie" />
+				</ResourceCompiler>
+				<Linker>
+					<Add option="-Wl,--hash-style=sysv,-Bsymbolic,-rpath=./ -no-pie" />
+					<Add library="gtk-3" />
+					<Add library="gobject-2.0" />
+					<Add library="glib-2.0" />
+					<Add library="gdk-3" />
+					<Add library="cairo" />
+					<Add library="gdk_pixbuf-2.0" />
+					<Add library="pangocairo-1.0" />
+					<Add library="pango-1.0" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/Test" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add directory="include" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="`pkg-config gtk+-2.0 --cflags`" />
+		</Compiler>
+		<Linker>
+			<Add option="`pkg-config gtk+-2.0 --libs`" />
+			<Add library="../../../bin/libDuiLib.a" />
+		</Linker>
+		<Unit filename="App.cpp" />
+		<Unit filename="App.h" />
+		<Unit filename="MainFrame.cpp" />
+		<Unit filename="MainFrame.h" />
+		<Unit filename="main.cpp" />
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>

@@ -32,6 +32,9 @@ bool CXmlDocumentUI::load_string(LPCTSTR pstrXML)
 
 bool CXmlDocumentUI::load_buffer(const void* contents, size_t size)
 {
+	if(contents == nullptr || size <= 0)
+		return false;
+
 	UISTRING_CONVERSION;
 #ifdef _UNICODE
 	ui_pugi::xml_parse_result ret = impxmldoc(_xml_document)->load_buffer(contents, size, ui_pugi::parse_full);

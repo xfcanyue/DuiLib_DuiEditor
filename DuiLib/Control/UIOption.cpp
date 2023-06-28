@@ -14,7 +14,7 @@ namespace DuiLib
 	LPVOID COptionHLayoutUI::GetInterface(LPCTSTR pstrName)
 	{
 		if( _tcsicmp(pstrName, DUI_CTR_OPTION_HLAYOUT) == 0 ) return static_cast<COptionHLayoutUI*>(this);
-		return __super::GetInterface(pstrName);
+		return CHorizontalLayoutUI::GetInterface(pstrName);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -28,7 +28,7 @@ namespace DuiLib
 	LPVOID COptionVLayoutUI::GetInterface(LPCTSTR pstrName)
 	{
 		if( _tcsicmp(pstrName, DUI_CTR_OPTION_VLAYOUT) == 0 ) return static_cast<COptionVLayoutUI*>(this);
-		return __super::GetInterface(pstrName);
+		return CVerticalLayoutUI::GetInterface(pstrName);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -42,7 +42,7 @@ namespace DuiLib
 	LPVOID COptionLayoutUI::GetInterface(LPCTSTR pstrName)
 	{
 		if( _tcsicmp(pstrName, DUI_CTR_OPTION_LAYOUT) == 0 ) return static_cast<COptionLayoutUI*>(this);
-		return __super::GetInterface(pstrName);
+		return CDynamicLayoutUI::GetInterface(pstrName);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -193,7 +193,7 @@ namespace DuiLib
 	{
 		if( _tcsicmp(pstrName, _T("group")) == 0 ) SetGroup(pstrValue);
 		else if( _tcsicmp(pstrName, _T("selected")) == 0 ) Selected(_tcsicmp(pstrValue, _T("true")) == 0);
-		else __super::SetAttribute(pstrName, pstrValue);
+		else CButtonUI::SetAttribute(pstrName, pstrValue);
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -244,7 +244,8 @@ namespace DuiLib
 		}
 		if( m_bAutoCheck && (event.Type == UIEVENT_BUTTONDOWN || event.Type == UIEVENT_DBLCLICK))
 		{
-			if( ::PtInRect(&m_rcItem, event.ptMouse) && IsEnabled() )
+			//if( ::PtInRect(&m_rcItem, event.ptMouse) && IsEnabled() )
+			if( m_rcItem.PtInRect(event.ptMouse) && IsEnabled() )
 			{
 				SetCheck(!GetCheck()); 
 				m_pManager->SendNotify(this, DUI_MSGTYPE_CHECKCLICK, 0, 0);

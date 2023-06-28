@@ -3,6 +3,7 @@
 
 #pragma once
 
+#ifdef DUILIB_WIN32
 namespace DuiLib
 {
 	class UILIB_API CGifAnimUI : public CControlUI
@@ -52,4 +53,5 @@ namespace DuiLib
 	};
 }
 
+#endif //#ifdef DUILIB_WIN32
 #endif // GifAnimUI_h__

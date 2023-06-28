@@ -1,7 +1,7 @@
-#pragma once
 #include "StdAfx.h"
 #include "UIFrameWnd.h"
 
+#ifdef DUILIB_WIN32
 namespace DuiLib{
 
 CUIDialog::CUIDialog(void)
@@ -23,7 +23,7 @@ void CUIDialog::OnFinalMessage( HWND hWnd )
 	{
 		SetForegroundWindow(::GetParent(hWnd));
 	}
-	__super::OnFinalMessage(hWnd);
+	CUIFrameWnd::OnFinalMessage(hWnd);
 
 	if(!_bModal)
 	{
@@ -145,7 +145,7 @@ void CUIDialog::Notify(TNotifyUI& msg)
 			OnClickCancel();
 		}
 	}
-	__super::Notify(msg);
+	CUIFrameWnd::Notify(msg);
 }
 
 void CUIDialog::OnClickOK()
@@ -207,3 +207,4 @@ bool CUIDialog::on_tmd_delete()
 }
 
 } // namespace DuiLib{
+#endif //#ifdef DUILIB_WIN32

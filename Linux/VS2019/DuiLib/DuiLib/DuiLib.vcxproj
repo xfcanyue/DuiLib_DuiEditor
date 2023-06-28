@@ -1,0 +1,434 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x86">
+      <Configuration>Debug</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x86">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="xsDebug|ARM">
+      <Configuration>xsDebug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="xsDebug|ARM64">
+      <Configuration>xsDebug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="xsDebug|x64">
+      <Configuration>xsDebug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="xsDebug|x86">
+      <Configuration>xsDebug</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="xsRelease|ARM">
+      <Configuration>xsRelease</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="xsRelease|ARM64">
+      <Configuration>xsRelease</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="xsRelease|x64">
+      <Configuration>xsRelease</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="xsRelease|x86">
+      <Configuration>xsRelease</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\DuiLib\compat.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\IGridUI.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\ITreeUI.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\TxtWinHost.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIActiveX.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIAnimation.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIBarCode.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIButton.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIColorPalette.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UICombo.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIComboEditWndGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIComboEditWndWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIComboEx.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIComboWndGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIComboWndWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIDateTime.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIDateTimeEx.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIDateTimeExWndGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIDateTimeExWndWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIDateTimeWndGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIDateTimeWndWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIEdit.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIEditWndGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIEditWndWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIFadeButton.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIFlash.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIGifAnim.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIGrid.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIGridBody.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIGridCell.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIGridHeader.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIGridRowUI.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIGroupBox.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIHotKey.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIIconButton.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIImageBoxEx.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIIPAddress.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIIPAddressEx.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UILabel.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIList.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIListEx.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIMenu.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIMenuWndGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIMenuWndWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIMsgWnd.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIOption.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIPicture.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIPictureBox.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIProgress.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIQRCode.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIRichEdit.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIRing.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIRollText.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIRollTextEx.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIScrollBar.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UISlider.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UITabCtrl.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIText.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UITree.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UITreeItem.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UITreeView.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIWebBrowser.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Core\ControlFactory.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIBase.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIContainer.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIControl.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIDefine.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIDlgBuilder.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIFile.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIGlobal.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UILangManager.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIManager.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIManagerGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIManagerWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIResourceManager.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIScript.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIWindowGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIWindowWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIXmlAttribute.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIXmlDocument.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIXmlNode.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Layout\UIAnimationTabLayout.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Layout\UIChildLayout.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Layout\UIChildWindow.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Layout\UIDynamicLayout.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Layout\UIHorizontalLayout.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Layout\UITabLayout.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Layout\UITableLayout.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Layout\UITileLayout.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Layout\UIVerticalLayout.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Render\IRender.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIClipGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIClipWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIObject_Cairo.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIObject_gdi.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIObject_gdiplus.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIRenderFactory_Cairo.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIRenderFactory_gdi.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIRenderFactory_gdiplus.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIRender_Cairo.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIRender_CairoWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIRender_gdi.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIRender_gdiplus.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\StdAfx.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\UIlib.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\downloadmgr.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\DPI.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\DpiGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\DpiWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\DragDropImpl.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\DuiString.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\FlashEventHandler.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\nanosvg.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\nanosvgrast.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\observer_impl_base.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\pugixml\pugiconfig.hpp" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\pugixml\pugixml.hpp" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\QREncode.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\stb_image.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\stb_image_write.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\TrayIcon.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIApplication.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIApplicationGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIApplicationWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIDelegate.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIDialog.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIForm.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIFrameBase.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIFrameWnd.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIFrameWndGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIFrameWndWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIShadowBase.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIShadowGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIShadowWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\Utils.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\VersionHelpers.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\WebBrowserEventHandler.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\WinImplBase.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\IGridUI.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\ITreeUI.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\TxtWinHost.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIActiveX.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIAnimation.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIBarCode.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIButton.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIColorPalette.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UICombo.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIComboEditWndGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIComboEditWndWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIComboEx.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIComboWndGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIComboWndWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIDateTime.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIDateTimeEx.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIDateTimeExWndGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIDateTimeExWndWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIDateTimeWndGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIDateTimeWndWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIEdit.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIEditWndGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIEditWndWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIFadeButton.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIFlash.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIGifAnim.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIGrid.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIGridBody.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIGridCell.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIGridHeader.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIGridRowUI.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIGroupBox.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIHotKey.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIIconButton.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIImageBoxEx.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIIPAddress.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIIPAddressEx.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UILabel.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIList.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIListEx.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIMenu.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIMenuWndGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIMenuWndWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIMsgWnd.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIOption.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIPicture.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIPictureBox.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIProgress.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIQRCode.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIRichEdit.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIRing.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIRollText.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIRollTextEx.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIScrollBar.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UISlider.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UITabCtrl.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIText.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UITree.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UITreeItem.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UITreeView.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIWebBrowser.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Core\ControlFactory.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIBase.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIContainer.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIControl.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIDlgBuilder.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIFile.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIGlobal.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UILangManager.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIManager.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIManagerGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIManagerWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIResourceManager.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIScript.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIWindowGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIWindowWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIXmlAttribute.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIXmlDocument.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIXmlNode.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Layout\UIAnimationTabLayout.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Layout\UIChildLayout.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Layout\UIChildWindow.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Layout\UIDynamicLayout.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Layout\UIHorizontalLayout.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Layout\UITabLayout.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Layout\UITableLayout.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Layout\UITileLayout.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Layout\UIVerticalLayout.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Render\IRender.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIClipGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIClipWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIObject_Cairo.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIObject_gdi.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIObject_gdiplus.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIRenderFactory_Cairo.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIRenderFactory_gdi.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIRenderFactory_gdiplus.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIRender_Cairo.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIRender_CairoWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIRender_gdi.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIRender_gdiplus.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\StdAfx.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\UIlib.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\DPI.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\DpiGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\DpiWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\DragDropImpl.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\DuiString.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\pugixml\pugixml.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\QREncode.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\TrayIcon.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIApplication.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIApplicationGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIApplicationWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIDelegate.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIDialog.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIForm.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIFrameBase.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIFrameWnd.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIFrameWndGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIFrameWndWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIShadowBase.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIShadowGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIShadowWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\Utils.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\WinImplBase.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{8aaf12b9-a34c-4b3a-a6f8-7eca5d946265}</ProjectGuid>
+    <Keyword>Linux</Keyword>
+    <RootNamespace>DuiLib</RootNamespace>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <ApplicationType>Linux</ApplicationType>
+    <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
+    <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
+    <LinuxProjectType>{D51BCBC9-82E9-4017-911E-C93873C4EA2B}</LinuxProjectType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsDebug|ARM'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsRelease|ARM'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsDebug|x86'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsRelease|x86'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsDebug|x64'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsRelease|x64'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsRelease|ARM64'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsDebug|ARM64'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetExt>.so</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='xsDebug|x64'">
+    <TargetExt>.a</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>_DEBUG;DUILIB_GTK</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>/home/test/projects/DuiLib/DuiLib;/usr/include/gtk-3.0;/usr/include/cairo;/usr/include/harfbuzz;/usr/include/gdk-pixbuf-2.0;/usr/lib/x86_64-linux-gnu/glib-2.0/include;/usr/include/glib-2.0/glib;/usr/include/glib-2.0;/usr/include/pango-1.0;/usr/include/atk-1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>gtk-3; gobject-2.0; glib-2.0;gdk-3;cairo;gdk_pixbuf-2.0;pango-1.0;pangocairo-1.0;</LibraryDependencies>
+      <OutputFile>/home/test/Desktop/DuiLib/bin/libDuiLib.so</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='xsDebug|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>_DEBUG;DUILIB_GTK</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>/home/test/projects/DuiLib/DuiLib;/usr/include/gtk-3.0;/usr/include/cairo;/usr/include/harfbuzz;/usr/include/gdk-pixbuf-2.0;/usr/lib/x86_64-linux-gnu/glib-2.0/include;/usr/include/glib-2.0/glib;/usr/include/glib-2.0;/usr/include/pango-1.0;/usr/include/atk-1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>gtk-3; gobject-2.0; glib-2.0;gdk-3;cairo;gdk_pixbuf-2.0;pango-1.0;pangocairo-1.0;</LibraryDependencies>
+      <OutputFile>/home/test/Desktop/DuiLib/Linux/bin/libDuiLib.so</OutputFile>
+    </Link>
+    <Lib>
+      <OutputFile>/home/test/Desktop/DuiLib/bin/libDuiLib.a</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

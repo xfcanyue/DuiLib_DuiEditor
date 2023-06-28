@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "UIRing.h"
 
+#ifdef DUILIB_WIN32
 namespace DuiLib
 {
 	IMPLEMENT_DUICONTROL(CRingUI)
@@ -112,3 +113,6 @@ namespace DuiLib
 		return pImg;
 	}
 }
+#endif //#ifdef DUILIB_WIN32
+
+

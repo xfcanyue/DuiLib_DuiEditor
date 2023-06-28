@@ -1,5 +1,4 @@
 #include "StdAfx.h"
-#include "Utils.h"
 
 namespace DuiLib
 {
@@ -38,7 +37,7 @@ namespace DuiLib
 
 	bool CDuiPoint::FromString(LPCTSTR pstrValue) //从"x,y"构造POINT
 	{
-		x = y = 0; 
+		x = y = 0;
 		if (pstrValue == NULL || *pstrValue == _T('\0')) return false;
 		LPTSTR pstr = NULL;
 		x = _tcstol(pstrValue, &pstr, 10); if(!pstr) return false;
@@ -101,10 +100,13 @@ namespace DuiLib
 		sSize.SmallFormat(_T("%ld,%ld"), cx, cy);
 		return sSize;
 	}
-	/////////////////////////////////////////////////////////////////////////////////////
-	//
-	//
 
+/////////////////////////////////////////////////////////////////////////////////////
+//
+//
+#ifdef DUILIB_WIN32
+#define WIN32_RECT_API
+#endif
 	CDuiRect::CDuiRect()
 	{
 		left = top = right = bottom = 0;
@@ -150,6 +152,16 @@ namespace DuiLib
 		return sRect;
 	}
 
+	CDuiRect::operator LPRECT() throw()
+	{
+		return this;
+	}
+
+	CDuiRect::operator LPCRECT() const throw()
+	{
+		return this;
+	}
+
 	int CDuiRect::GetWidth() const
 	{
 		return right - left;
@@ -167,7 +179,16 @@ namespace DuiLib
 
 	bool CDuiRect::IsNull() const
 	{
-		return (left == 0 && right == 0 && top == 0 && bottom == 0); 
+		return (left == 0 && right == 0 && top == 0 && bottom == 0);
+	}
+
+	bool CDuiRect::IsEmpty() const
+	{
+#ifdef WIN32_RECT_API
+		return ::IsRectEmpty(this) == TRUE;
+#else
+		return (right <= left) || (bottom <= top);
+#endif
 	}
 
 	void CDuiRect::Join(const RECT& rc)
@@ -180,7 +201,14 @@ namespace DuiLib
 
 	void CDuiRect::ResetOffset()
 	{
+#ifdef WIN32_RECT_API
 		::OffsetRect(this, -left, -top);
+#else
+		right -= left;
+		bottom -= top;
+		left = 0;
+		top = 0;
+#endif
 	}
 
 	void CDuiRect::Normalize()
@@ -191,27 +219,58 @@ namespace DuiLib
 
 	void CDuiRect::Offset(int cx, int cy)
 	{
+#ifdef WIN32_RECT_API
 		::OffsetRect(this, cx, cy);
+#else
+		left += cx;
+		top += cy;
+		right += cx;
+		bottom += cy;
+#endif
 	}
 
 	void CDuiRect::Inflate(int cx, int cy)
 	{
+#ifdef WIN32_RECT_API
 		::InflateRect(this, cx, cy);
+#else
+		left -= cx;
+		top -= cy;
+		right += cx;
+		bottom += cy;
+#endif
 	}
 
 	void CDuiRect::Deflate(int cx, int cy)
 	{
-		::InflateRect(this, -cx, -cy);
+		Inflate(-cx, -cy);
 	}
 
-	void CDuiRect::Union(CDuiRect& rc)
+	void CDuiRect::Union(const RECT& rc1, const RECT& rc2)
 	{
-		::UnionRect(this, this, &rc);
+#ifdef WIN32_RECT_API
+		::UnionRect(this, &rc1, &rc2);
+#else
+		left	= MIN(rc1.left,		rc2.left);
+		top		= MIN(rc1.top,		rc2.top);
+		right	= MAX(rc1.right,	rc2.right);
+		bottom	= MAX(rc1.bottom,	rc2.bottom);
+#endif
 	}
 
-	BOOL CDuiRect::IntersectRect(const RECT &rect1, const RECT &rect2)
+	BOOL CDuiRect::Intersect(const RECT &rect1, const RECT &rect2)
 	{
+#ifdef WIN32_RECT_API
 		return ::IntersectRect(this, (LPRECT)&rect1, (LPRECT)&rect2);
+#else
+		CDuiRect rcUnion = rect1;
+		rcUnion.Join(rect2);
+		left = (rect1.left == rcUnion.left) ? rect2.left : rect1.left;
+		top = (rect1.top == rcUnion.top) ? rect2.top : rect1.top;
+		right = (rect1.right == rcUnion.right) ? rect2.right : rect1.right;
+		bottom = (rect1.bottom == rcUnion.bottom) ? rect2.bottom : rect1.bottom;
+		return !IsEmpty();
+#endif
 	}
 
 	POINT CDuiRect::CenterPoint() const
@@ -263,6 +322,15 @@ namespace DuiLib
 		return left == rc.left && right == rc.right && top == rc.top && bottom == rc.bottom;
 	}
 
+	BOOL CDuiRect::PtInRect(POINT pt) const
+	{
+#ifdef WIN32_RECT_API
+		return ::PtInRect(this, pt);
+#else
+		return pt.x >= left && pt.x <= right && pt.y >= top && pt.y <= bottom;
+#endif
+	}
+
 	//bool CDuiRect::operator == (LPCRECT lpRect) const { return EqualRect(lpRect); };
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
@@ -297,7 +365,7 @@ namespace DuiLib
 	{
 		Empty();
 		m_ppVoid = static_cast<LPVOID*>(malloc(iSize * sizeof(LPVOID)));
-		::ZeroMemory(m_ppVoid, iSize * sizeof(LPVOID));
+		memset(m_ppVoid, 0, iSize * sizeof(LPVOID));
 		m_nAllocated = iSize;
 		m_nCount = iSize;
 	}
@@ -364,7 +432,7 @@ namespace DuiLib
 
 		if(m_bSaveIndexMap)
 		{
-			if(m_ppVoid[iIndex] != NULL) 
+			if(m_ppVoid[iIndex] != NULL)
 			{
 				std::map<LPVOID, int>::iterator it = m_mapIndex.find(m_ppVoid[iIndex]);
 				if(it != m_mapIndex.end()) m_mapIndex.erase(it);
@@ -382,14 +450,14 @@ namespace DuiLib
 
 		if(m_bSaveIndexMap)
 		{
-			if(m_ppVoid[iIndex] != NULL) 
+			if(m_ppVoid[iIndex] != NULL)
 			{
 				std::map<LPVOID, int>::iterator it = m_mapIndex.find(m_ppVoid[iIndex]);
 				if(it != m_mapIndex.end()) m_mapIndex.erase(it);
 			}
 		}
 
-		if( iIndex < --m_nCount ) ::CopyMemory(m_ppVoid + iIndex, m_ppVoid + iIndex + 1, (m_nCount - iIndex) * sizeof(LPVOID));
+		if( iIndex < --m_nCount ) ::memcpy(m_ppVoid + iIndex, m_ppVoid + iIndex + 1, (m_nCount - iIndex) * sizeof(LPVOID));
 
 		if(m_bSaveIndexMap)
 		{
@@ -455,10 +523,10 @@ namespace DuiLib
 	//
 	//
 
-	CStdValArray::CStdValArray(int iElementSize, int iPreallocSize /*= 0*/) : 
-	m_pVoid(NULL), 
-		m_nCount(0), 
-		m_iElementSize(iElementSize), 
+	CStdValArray::CStdValArray(int iElementSize, int iPreallocSize /*= 0*/) :
+	m_pVoid(NULL),
+		m_iElementSize(iElementSize),
+		m_nCount(0),
 		m_nAllocated(iPreallocSize)
 	{
 		ASSERT(iElementSize>0);
@@ -472,7 +540,7 @@ namespace DuiLib
 	}
 
 	void CStdValArray::Empty()
-	{   
+	{
 		m_nCount = 0;  // NOTE: We keep the memory in place
 	}
 
@@ -496,14 +564,14 @@ namespace DuiLib
 				return false;
 			}
 		}
-		::CopyMemory(m_pVoid + ((m_nCount - 1) * m_iElementSize), pData, m_iElementSize);
+		::memcpy(m_pVoid + ((m_nCount - 1) * m_iElementSize), pData, m_iElementSize);
 		return true;
 	}
 
 	bool CStdValArray::Remove(int iIndex)
 	{
 		if( iIndex < 0 || iIndex >= m_nCount ) return false;
-		if( iIndex < --m_nCount ) ::CopyMemory(m_pVoid + (iIndex * m_iElementSize), m_pVoid + ((iIndex + 1) * m_iElementSize), (m_nCount - iIndex) * m_iElementSize);
+		if( iIndex < --m_nCount ) ::memcpy(m_pVoid + (iIndex * m_iElementSize), m_pVoid + ((iIndex + 1) * m_iElementSize), (m_nCount - iIndex) * m_iElementSize);
 		return true;
 	}
 
@@ -537,16 +605,16 @@ namespace DuiLib
 	static UINT HashKey(LPCTSTR Key)
 	{
 		UINT i = 0;
-		SIZE_T len = _tcslen(Key);
+		size_t len = _tcslen(Key);
 		while( len-- > 0 ) i = (i << 5) + i + Key[len];
 		return i;
 	}
-
+	/*
 	static UINT HashKey(const CDuiString& Key)
 	{
 		return HashKey((LPCTSTR)Key);
-	};
-
+	}
+	*/
 	CStdStringPtrMap::CStdStringPtrMap(int nSize) : m_nCount(0)
 	{
 		if( nSize < 16 ) nSize = 16;
@@ -597,7 +665,7 @@ namespace DuiLib
 		if( nSize > 0 ) {
 			m_aT = new TITEM*[nSize];
 			memset(m_aT, 0, nSize * sizeof(TITEM*));
-		} 
+		}
 		m_nBuckets = nSize;
 		m_nCount = 0;
 	}
@@ -621,7 +689,7 @@ namespace DuiLib
 					m_aT[slot] = pItem;
 				}
 				return pItem->Data;
-			}        
+			}
 		}
 
 		return NULL;
@@ -703,7 +771,7 @@ namespace DuiLib
 
 	LPCTSTR CStdStringPtrMap::GetAt(int iIndex) const
 	{
-		if( m_nBuckets == 0 || GetSize() == 0 ) return false;
+		if( m_nBuckets == 0 || GetSize() == 0 ) return NULL;
 
 		int pos = 0;
 		int len = m_nBuckets;
@@ -762,7 +830,7 @@ namespace DuiLib
 			if(LPCTSTR key = m_map.GetAt(i))
 			{
 				pstr = static_cast<CDuiString *>(m_map.Find(key));
-				delete pstr; 
+				delete pstr;
 			}
 		}
 		m_map.RemoveAll();
@@ -855,12 +923,185 @@ namespace DuiLib
 
 	CDuiWaitCursor::CDuiWaitCursor()
 	{
+	    #ifdef DUILIB_WIN32
 		m_hOrigCursor = ::SetCursor(::LoadCursor(NULL, IDC_WAIT));
+		#endif
 	}
 
 	CDuiWaitCursor::~CDuiWaitCursor()
 	{
+	    #ifdef DUILIB_WIN32
 		::SetCursor(m_hOrigCursor);
+		#endif
 	}
 
+	//////////////////////////////////////////////////////////////////////////
+	//
+	BOOL CPlatform::IsWindow(UIWND hWnd)
+	{
+#ifdef DUILIB_WIN32
+		return ::IsWindow(hWnd);
+#else
+		return TRUE;
+#endif
+	}
+
+	LRESULT CPlatform::SendMessage(UIWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+#ifdef DUILIB_WIN32
+		return ::SendMessage(hWnd, uMsg, wParam, lParam);
+#else
+		return 0;
+#endif
+	}
+
+	LRESULT CPlatform::PostMessage(UIWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+#ifdef DUILIB_WIN32
+		return ::PostMessage(hWnd, uMsg, wParam, lParam);
+#else
+		return 0;
+#endif
+	}
+
+	BOOL CPlatform::SetWindowPos(UIWND hWnd, UIWND hWndInsertAfter,int x, int y, int cx, int cy, UINT uFlags)
+	{
+#ifdef DUILIB_WIN32
+		return ::SetWindowPos(hWnd, hWndInsertAfter, x, y, cx, cy, uFlags);
+#else
+		gtk_window_set_default_size(GTK_WINDOW(hWnd), cx, cy);
+		return TRUE;
+#endif
+	}
+
+	UIWND CPlatform::GetFocus()
+	{
+#ifdef DUILIB_WIN32
+		return ::GetFocus();
+#else
+		return NULL;
+#endif
+	}
+
+	UIWND CPlatform::SetFocus(UIWND hWnd)
+	{
+#ifdef DUILIB_WIN32
+		return ::SetFocus(hWnd);
+#else
+		return NULL;
+#endif
+	}
+
+	BOOL CPlatform::GetWindowRect(UIWND hWnd, LPRECT lpRect)
+	{
+#ifdef DUILIB_WIN32
+		return ::GetWindowRect(hWnd, lpRect);
+#else
+		GtkAllocation Allocation;
+		gtk_widget_get_allocation(GTK_WIDGET(hWnd), &Allocation);
+		lpRect->left = Allocation.x;
+		lpRect->top = Allocation.y;
+		lpRect->right = Allocation.x + Allocation.width;
+		lpRect->bottom = Allocation.y + Allocation.height;
+		
+		//gtk_window_get_size
+		return TRUE;
+#endif
+	}
+
+	BOOL CPlatform::GetClientRect(UIWND hWnd, LPRECT lpRect)
+	{
+#ifdef DUILIB_WIN32
+		return ::GetClientRect(hWnd, lpRect);
+#else
+		return CPlatform::GetWindowRect(hWnd, lpRect);
+#endif
+	}
+
+	BOOL CPlatform::GetCursorPos(LPPOINT pt)
+	{
+#ifdef DUILIB_WIN32
+		return ::GetCursorPos(pt);
+#else
+		GdkDisplay* ddpy = gdk_display_get_default();   //获取默认的GdkDisplay
+		GdkDeviceManager* device_manager = gdk_display_get_device_manager(ddpy);//获取gdk设备管理器
+		GdkDevice* pointer = gdk_device_manager_get_client_pointer(device_manager);//获取gdk表示的鼠标设备
+		gint x, y;
+		gdk_device_get_position(pointer, NULL, &x, &y);//获取鼠标设备的全局坐标
+		pt->x = x;
+		pt->y = y;
+		return TRUE;
+#endif
+	}
+
+	BOOL CPlatform::ScreenToClient(UIWND hWnd, LPPOINT lpPoint)
+	{
+#ifdef DUILIB_WIN32
+		return ::ScreenToClient(hWnd, lpPoint);
+#else
+		return TRUE;
+#endif
+	}
+
+	BOOL CPlatform::IsKeyDown(UINT uKey)
+	{
+#ifdef DUILIB_WIN32
+		return ::GetKeyState(uKey) < 0;
+#else
+		return FALSE;
+#endif
+	}
+
+	BOOL CPlatform::IsKeyUp(UINT uKey)
+	{
+#ifdef DUILIB_WIN32
+		return ::GetKeyState(uKey) >= 0;
+#else
+		return FALSE;
+#endif
+	}
+
+	UINT CPlatform::MapKeyState()
+	{
+		UINT uState = 0;
+		if( IsKeyDown(VK_CONTROL) ) uState |= MK_CONTROL;
+		if( IsKeyDown(VK_LBUTTON) ) uState |= MK_LBUTTON;
+		if( IsKeyDown(VK_RBUTTON) ) uState |= MK_RBUTTON;
+		if( IsKeyDown(VK_SHIFT) ) uState |= MK_SHIFT;
+		if( IsKeyDown(VK_MENU) ) uState |= MK_ALT;
+		return uState;
+	}
+
+	DWORD CPlatform::GetTickCount()
+	{
+#ifdef WIN32
+		return ::GetTickCount();
+#else
+#include <time.h>
+		struct timespec ts;
+		clock_gettime(CLOCK_MONOTONIC, &ts);
+		return (ts.tv_sec * 1000 + ts.tv_nsec / 1000000);
+#endif
+	}
+
+	void CPlatform::GetLocalTime(SYSTEMTIME &st)
+	{
+#ifdef WIN32
+		return ::GetLocalTime(&st);
+#else
+#include <time.h>
+		time_t tmp = ::time(&tmp);
+		struct tm *ptm;
+		ptm = localtime(&tmp);
+		st.wYear = ptm->tm_year;
+		st.wMonth = ptm->tm_mon;
+		st.wDay = ptm->tm_mday;
+		st.wHour = ptm->tm_hour;
+		st.wMinute = ptm->tm_min;
+		st.wSecond = ptm->tm_sec;
+		st.wDayOfWeek = ptm->tm_wday;
+#endif
+	}
+	
 } // namespace DuiLib
+

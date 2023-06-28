@@ -1,4 +1,6 @@
 #include "StdAfx.h"
+
+#ifdef DUILIB_WIN32
 #include "UIWebBrowser.h"
 #include <atlconv.h>
 #include <atlcomcli.h>
@@ -752,3 +754,4 @@ namespace DuiLib
 		return (hr);
 	}
 }
+#endif //#ifdef DUILIB_WIN32

@@ -1,5 +1,7 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "UIHotKey.h"
+
+#ifdef DUILIB_WIN32
 namespace DuiLib{
 	CHotKeyWnd::CHotKeyWnd(void) : m_pOwner(NULL), m_hBkBrush(NULL), m_bInit(false)
 	{
@@ -21,7 +23,7 @@ namespace DuiLib{
 				break;
 			}
 			m_font = MakeRefPtr<UIFont>(m_pOwner->GetManager()->CloneFont(m_pOwner->GetFont()));
-			::SendMessage(m_hWnd, WM_SETFONT, (WPARAM)m_font->GetHFont(m_pOwner->GetManager()), (LPARAM)TRUE);
+			::SendMessage(m_hWnd, WM_SETFONT, (WPARAM)m_font->GetHFONT(m_pOwner->GetManager()), (LPARAM)TRUE);
 			SetHotKey(m_pOwner->m_wVirtualKeyCode, m_pOwner->m_wModifiers);
 			m_pOwner->m_sText = GetHotKeyName();
 			::EnableWindow(m_hWnd, m_pOwner->IsEnabled() == true);
@@ -278,7 +280,8 @@ namespace DuiLib{
 
 		if( event.Type == UIEVENT_SETCURSOR && IsEnabled() )
 		{
-			::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_IBEAM)));
+			//::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_IBEAM)));
+			GetManager()->SetCursor(DUI_IBEAM);
 			return;
 		}
 		if( event.Type == UIEVENT_WINDOWSIZE )
@@ -424,3 +427,4 @@ namespace DuiLib{
 	}
 
 }// Duilib
+#endif //#ifdef DUILIB_WIN32

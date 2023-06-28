@@ -18,7 +18,7 @@ public:
 
 public:
 	CPaintManagerUI *GetManager() { return &m_PaintManager; }
-	CPaintManagerUI m_PaintManager;
+	DuiLibPaintManagerUI m_PaintManager;
 public:
 	BOOL CreateControl(LPCTSTR pstrClassName);
 	void SetControlAttribute();

@@ -2,6 +2,7 @@
 #include "UIRichEdit.h"
 #include "TxtWinHost.h"
 
+#ifdef DUILIB_WIN32
 namespace DuiLib {
 
 #define ID_RICH_UNDO			101
@@ -190,7 +191,7 @@ namespace DuiLib {
 			UIFont *pFont = GetManager()->GetFont(m_iFont);
 			if(pFont)
 			{
-				m_pTwh->SetFont(pFont->GetHFont(GetManager()));
+				m_pTwh->SetFont(pFont->GetHFONT(GetManager()));
 			}
 		}
 	}
@@ -225,7 +226,7 @@ namespace DuiLib {
 
 	void CRichEditUI::SetTextColor(DWORD dwTextColor)
 	{
-		__super::SetTextColor(dwTextColor);
+		CContainerUI::SetTextColor(dwTextColor);
 		if( m_pTwh ) {
 			m_pTwh->SetColor(dwTextColor);
 		}
@@ -967,16 +968,18 @@ namespace DuiLib {
 					m_bDrawCaret = !m_bDrawCaret;
 					POINT ptCaret;
 					::GetCaretPos(&ptCaret);
-					RECT rcCaret = { ptCaret.x, ptCaret.y, ptCaret.x + m_pTwh->GetCaretWidth(), 
-						ptCaret.y + m_pTwh->GetCaretHeight() };
-					RECT rcTemp = rcCaret;
-					if( !::IntersectRect(&rcCaret, &rcTemp, &m_rcItem) ) return;
+					CDuiRect rcCaret(ptCaret.x, ptCaret.y, ptCaret.x + m_pTwh->GetCaretWidth(), 
+						ptCaret.y + m_pTwh->GetCaretHeight() );
+					CDuiRect rcTemp = rcCaret;
+					//if( !::IntersectRect(&rcCaret, &rcTemp, &m_rcItem) ) return;
+					if( !rcCaret.Intersect(rcTemp, m_rcItem) ) return;
 					CControlUI* pParent = this;
 					RECT rcParent;
 					while( pParent = pParent->GetParent() ) {
 						rcTemp = rcCaret;
 						rcParent = pParent->GetPos();
-						if( !::IntersectRect(&rcCaret, &rcTemp, &rcParent) ) {
+						//if( !::IntersectRect(&rcCaret, &rcTemp, &rcParent) ) {
+						if( !rcCaret.Intersect(rcTemp, rcParent) ) {
 							return;
 						}
 					}                    
@@ -1112,7 +1115,7 @@ namespace DuiLib {
 			}
 
 			szNeed.cy += 5;
-			return CDuiSize(GetManager()->GetDPIObj()->Scale(szNeed.cx), GetManager()->GetDPIObj()->Scale(szNeed.cy));
+			return CDuiSize(GetManager()->GetDPIObj()->ScaleInt(szNeed.cx), GetManager()->GetDPIObj()->ScaleInt(szNeed.cy));
 		}
 		//return CDuiSize(m_rcItem); // 这种方式在第一次设置大小之后就大小不变了
 		return CContainerUI::EstimateSize(szAvailable);
@@ -1258,8 +1261,9 @@ namespace DuiLib {
 
 	bool CRichEditUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 	{
-		RECT rcTemp = { 0 };
-		if( !::IntersectRect(&rcTemp, &rcPaint, &m_rcItem) ) return true;
+		CDuiRect rcTemp;
+		//if( !::IntersectRect(&rcTemp, &rcPaint, &m_rcItem) ) return true;
+		if( !rcTemp.Intersect(rcPaint, m_rcItem) ) return true;
 
 		UIClip clip;
 		clip.GenerateClip(pRender, rcTemp);
@@ -1312,14 +1316,17 @@ namespace DuiLib {
 			if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) rc.right -= m_pVerticalScrollBar->GetFixedWidth();
 			if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) rc.bottom -= m_pHorizontalScrollBar->GetFixedHeight();
 
-			if( !::IntersectRect(&rcTemp, &rcPaint, &rc) ) {
+			//if( !::IntersectRect(&rcTemp, &rcPaint, &rc) ) {
+			if( !rcTemp.Intersect(rcPaint, rc) ) {
 				for( int it = 0; it < m_items.GetSize(); it++ ) {
 					CControlUI* pControl = static_cast<CControlUI*>(m_items[it]);
 					if( pControl == pStopControl ) return false;
 					if( !pControl->IsVisible() ) continue;
-					if( !::IntersectRect(&rcTemp, &rcPaint, &pControl->GetPos()) ) continue;
+					//if( !::IntersectRect(&rcTemp, &rcPaint, &pControl->GetPos()) ) continue;
+					if( !rcTemp.Intersect(rcPaint, pControl->GetPos()) ) continue;
 					if( pControl->IsFloat() ) {
-						if( !::IntersectRect(&rcTemp, &m_rcItem, &pControl->GetPos()) ) continue;
+						//if( !::IntersectRect(&rcTemp, &m_rcItem, &pControl->GetPos()) ) continue;
+						if( !rcTemp.Intersect(m_rcItem, pControl->GetPos()) ) continue;
 						if( !pControl->Paint(pRender, rcPaint, pStopControl) ) return false;
 					}
 				}
@@ -1331,15 +1338,18 @@ namespace DuiLib {
 					CControlUI* pControl = static_cast<CControlUI*>(m_items[it]);
 					if( pControl == pStopControl ) return false;
 					if( !pControl->IsVisible() ) continue;
-					if( !::IntersectRect(&rcTemp, &rcPaint, &pControl->GetPos()) ) continue;
+					//if( !::IntersectRect(&rcTemp, &rcPaint, &pControl->GetPos()) ) continue;
+					if( !rcTemp.Intersect(rcPaint, pControl->GetPos()) ) continue;
 					if( pControl->IsFloat() ) {
-						if( !::IntersectRect(&rcTemp, &m_rcItem, &pControl->GetPos()) ) continue;
+						//if( !::IntersectRect(&rcTemp, &m_rcItem, &pControl->GetPos()) ) continue;
+						if( !rcTemp.Intersect(m_rcItem, pControl->GetPos()) ) continue;
 						childClip.UseOldClipBegin(pRender);
 						if( !pControl->Paint(pRender, rcPaint, pStopControl) ) return false;
 						childClip.UseOldClipEnd(pRender);
 					}
 					else {
-						if( !::IntersectRect(&rcTemp, &rc, &pControl->GetPos()) ) continue;
+						//if( !::IntersectRect(&rcTemp, &rc, &pControl->GetPos()) ) continue;
+						if( !rcTemp.Intersect(rc, pControl->GetPos()) ) continue;
 						if( !pControl->Paint(pRender, rcPaint, pStopControl) ) return false;
 					}
 				}
@@ -1349,7 +1359,8 @@ namespace DuiLib {
 		if( m_pTwh && m_pTwh->IsShowCaret() && m_pManager->IsLayered() && IsFocused() && m_bDrawCaret ) {
 			POINT ptCaret;
 			::GetCaretPos(&ptCaret);
-			if( ::PtInRect(&m_rcItem, ptCaret) ) {
+			//if( ::PtInRect(&m_rcItem, ptCaret) ) {
+			if( m_rcItem.PtInRect(ptCaret) ) {
 				RECT rcCaret = { ptCaret.x, ptCaret.y, ptCaret.x, ptCaret.y + m_pTwh->GetCaretHeight() };
 				pRender->DrawLine(rcCaret, m_pTwh->GetCaretWidth(), 0xFF000000);
 			}
@@ -1358,7 +1369,8 @@ namespace DuiLib {
 		if( m_pVerticalScrollBar != NULL ) {
 			if( m_pVerticalScrollBar == pStopControl ) return false;
 			if (m_pVerticalScrollBar->IsVisible()) {
-				if( ::IntersectRect(&rcTemp, &rcPaint, &m_pVerticalScrollBar->GetPos()) ) {
+				//if( ::IntersectRect(&rcTemp, &rcPaint, &m_pVerticalScrollBar->GetPos()) ) {
+				if( rcTemp.Intersect(rcPaint, m_pVerticalScrollBar->GetPos()) ) {
 					if( !m_pVerticalScrollBar->Paint(pRender, rcPaint, pStopControl) ) return false;
 				}
 			}
@@ -1367,7 +1379,8 @@ namespace DuiLib {
 		if( m_pHorizontalScrollBar != NULL ) {
 			if( m_pHorizontalScrollBar == pStopControl ) return false;
 			if (m_pHorizontalScrollBar->IsVisible()) {
-				if( ::IntersectRect(&rcTemp, &rcPaint, &m_pHorizontalScrollBar->GetPos()) ) {
+				//if( ::IntersectRect(&rcTemp, &rcPaint, &m_pHorizontalScrollBar->GetPos()) ) {
+				if( rcTemp.Intersect(rcPaint, m_pHorizontalScrollBar->GetPos()) ) {
 					if( !m_pHorizontalScrollBar->Paint(pRender, rcPaint, pStopControl) ) return false;
 				}
 			}
@@ -1398,7 +1411,10 @@ namespace DuiLib {
 	CDuiString CRichEditUI::GetTipValue()
 	{
 		if (IsResourceText()) 
-			return CResourceManager::GetInstance()->GetText(m_sTipValue);
+		{
+			CDuiString s = CResourceManager::GetInstance()->GetText(m_sTipValue);
+			if(!s.IsEmpty()) return s;
+		}
 
 		CLangPackageUI *pkg = GetLangPackage();
 		if(pkg && GetResourceID() > 0)
@@ -1406,7 +1422,7 @@ namespace DuiLib {
 			LPCTSTR s = pkg->GetTipValue(GetResourceID());
 			if(s && *s!='\0') return s; 
 		}
-		else
+		else if (IsResourceText())
 		{
 			CDuiString s = CLangManagerUI::LoadString(m_sTipValue);
 			if(!s.IsEmpty()) return s;
@@ -1545,7 +1561,7 @@ namespace DuiLib {
 			// Mouse message only go when captured or inside rect
 			DWORD dwHitResult = m_pTwh->IsCaptured() ? HITRESULT_HIT : HITRESULT_OUTSIDE;
 			if( dwHitResult == HITRESULT_OUTSIDE ) {
-				RECT rc;
+				CDuiRect rc;
 				m_pTwh->GetControlRect(&rc);
 				POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
 				if( uMsg == WM_SETCURSOR ) {
@@ -1553,7 +1569,8 @@ namespace DuiLib {
 					::ScreenToClient(GetManager()->GetPaintWindow(), &pt);
 				}
 				else if( uMsg == WM_MOUSEWHEEL ) ::ScreenToClient(GetManager()->GetPaintWindow(), &pt);
-				if( ::PtInRect(&rc, pt) && !GetManager()->IsCaptured() ) dwHitResult = HITRESULT_HIT;
+				//if( ::PtInRect(&rc, pt) && !GetManager()->IsCaptured() ) dwHitResult = HITRESULT_HIT;
+				if( rc.PtInRect(pt) && !GetManager()->IsCaptured() ) dwHitResult = HITRESULT_HIT;
 			}
 			if( dwHitResult != HITRESULT_HIT ) return 0;
 			if( uMsg == WM_SETCURSOR ) bWasHandled = false;
@@ -1695,7 +1712,7 @@ namespace DuiLib {
 			// check if we are waiting for 2 consecutive WM_CHAR messages
 			if ( IsAccumulateDBCMode() )
 			{
-				if ( (GetKeyState(VK_KANA) & 0x1) )
+				if ( (::GetKeyState(VK_KANA) & 0x1) )
 				{
 					// turn off accumulate mode
 					SetAccumulateDBCMode ( false );
@@ -1751,5 +1768,7 @@ namespace DuiLib {
 	}
 
 } // namespace DuiLib
+#endif //#ifdef DUILIB_WIN32
+
 
 	

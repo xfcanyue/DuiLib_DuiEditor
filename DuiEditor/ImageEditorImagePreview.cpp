@@ -231,7 +231,7 @@ void CImageEditorImagePreview::OnDraw(CDC* pDC)
 				rcSource.right = m_rcImage.Width();
 				rcSource.bottom = m_rcImage.Height();
 			}
-			m_pRender->DrawBitmap(pImageInfo->bitmap->GetBitmap(), m_rcImage, m_rcImage, rcSource, CDuiRect(0,0,0,0), pImageInfo->bAlpha);	
+			m_pRender->DrawBitmap(pImageInfo->bitmap, m_rcImage, m_rcImage, rcSource, CDuiRect(0,0,0,0), pImageInfo->bAlpha);	
 		}
 	}
 	else
@@ -239,7 +239,7 @@ void CImageEditorImagePreview::OnDraw(CDC* pDC)
 		UIImage *pImageInfo = (UIImage *)g_pEditorImage->m_imageFrames.GetAt(0);
 		if(pImageInfo)
 		{
-			m_pRender->DrawBitmap(pImageInfo->bitmap->GetBitmap(), m_rcImage, m_rcImage, m_rcSource, CDuiRect(0,0,0,0), pImageInfo->bAlpha);
+			m_pRender->DrawBitmap(pImageInfo->bitmap, m_rcImage, m_rcImage, m_rcSource, CDuiRect(0,0,0,0), pImageInfo->bAlpha);
 		}
 	}
 	

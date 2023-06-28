@@ -200,7 +200,7 @@ public:
 		// Œª÷√œ‡πÿ
 		REG_CONTROL_FUNPR(RECT,			  GetRelativePos,	() const				); 
 		REG_CONTROL_FUNPR(RECT,			  GetClientPos,		() const				); 
-		REG_CONTROL_FUNPR(const RECT&,	  GetPos,			() const				);
+		REG_CONTROL_FUNPR(const CDuiRect&,	  GetPos,			() const				);
 		REG_CONTROL_FUNPR(void,			  SetPos,			(RECT rc, bool bNeedInvalidate)				);
 		//REG_CONTROL_FUN(bool,			  CalcPos,			(CControlUI *pChildControl, RECT &rcChild)	); 
 		REG_CONTROL_FUNPR(void,			  Move,				(SIZE szOffset, bool bNeedInvalidate)		);

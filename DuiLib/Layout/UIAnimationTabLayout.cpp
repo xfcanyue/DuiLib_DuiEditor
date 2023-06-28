@@ -90,7 +90,7 @@ namespace DuiLib {
 		{
 			OnTimer(  event.wParam );
 		}
-		__super::DoEvent( event );
+		CTabLayoutUI::DoEvent( event );
 	}
 
 	void CAnimationTabLayoutUI::OnTimer( int nTimerID )
@@ -191,6 +191,6 @@ namespace DuiLib {
 
 	void CAnimationTabLayoutUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
-		__super::SetAttribute(pstrName, pstrValue);
+		CTabLayoutUI::SetAttribute(pstrName, pstrValue);
 	}
 } // namespace DuiLib

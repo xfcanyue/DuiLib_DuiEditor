@@ -3,7 +3,9 @@
 namespace DuiLib {
 
 
-class UILIB_API CUIFrmBase : public CNotifyPump
+class UILIB_API CUIFrmBase 
+	: public CNotifyPump
+	, public INotifyUI
 {
 
 public:
@@ -18,9 +20,11 @@ public:
 	BOOL IsMenuCommand(const MenuCmd *cmd, LPCTSTR name) { return _tcsicmp(cmd->szName, name) == 0; }
 	BOOL IsMenuCommand(CMenuCmdUI *cmdUI, LPCTSTR name) { return _tcsicmp(cmdUI->GetName(), name) == 0; }
 
-	virtual CPaintManagerUI *GetManager()	= 0;
-	virtual CControlUI *GetRoot()			= 0;
-	CMenuWnd *CreateMenu(STRINGorID xml);
+	CMenuWnd* CreateMenu(STRINGorID xml);
+
+
+	virtual CPaintManagerUI* GetManager() = 0;
+	virtual CControlUI* GetRoot() = 0;
 
 	virtual void Notify(TNotifyUI& msg);
 

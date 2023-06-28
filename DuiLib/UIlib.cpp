@@ -50,6 +50,7 @@
 #include "StdAfx.h"
 #include "UIlib.h"
 
+#ifdef WIN32
 BOOL APIENTRY DllMain(HANDLE hModule, DWORD  dwReason, LPVOID /*lpReserved*/)
 {
 	switch( dwReason ) {
@@ -62,4 +63,4 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD  dwReason, LPVOID /*lpReserved*/)
     }
     return TRUE;
 }
-
+#endif

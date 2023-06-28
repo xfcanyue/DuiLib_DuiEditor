@@ -400,7 +400,7 @@ BOOL CUIManager::UpdateControlUI(xml_node node, xml_attribute attr)
 
 		if( id >= 0 ) {
 			GetManager()->AddFont(id, FontName, size, bold, underline, italic, shared);
-			if( defaultfont ) GetManager()->SetDefaultFont(FontName, GetManager()->GetDPIObj()->Scale(size), bold, underline, italic, shared);
+			if( defaultfont ) GetManager()->SetDefaultFont(FontName, GetManager()->GetDPIObj()->ScaleInt(size), bold, underline, italic, shared);
 		}
 	}
 

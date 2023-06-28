@@ -13,7 +13,7 @@ public:
 		m_bSelected = false;
 		m_bCheckBoxCheck = false;
 		m_bExpand = true;
-		m_tag = NULL;
+		m_tag = 0;
 		m_pParent = NULL;
 		m_childs.SetSaveIndexMap(true);
 	}

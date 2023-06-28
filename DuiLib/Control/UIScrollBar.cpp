@@ -10,9 +10,9 @@ namespace DuiLib
 		m_uButton2State(0), m_uThumbState(0), m_bShowButton1(true), m_bShowButton2(true)
 	{
 		m_cxyFixed.cx = DEFAULT_SCROLLBAR_SIZE;
-		::ZeroMemory(&m_rcThumb, sizeof(m_rcThumb));
-		::ZeroMemory(&m_rcButton1, sizeof(m_rcButton1));
-		::ZeroMemory(&m_rcButton2, sizeof(m_rcButton2));
+		//::ZeroMemory(&m_rcThumb, sizeof(m_rcThumb));
+		//::ZeroMemory(&m_rcButton1, sizeof(m_rcButton1));
+		//::ZeroMemory(&m_rcButton2, sizeof(m_rcButton2));
 	}
 
 	LPCTSTR CScrollBarUI::GetClass() const
@@ -376,7 +376,7 @@ namespace DuiLib
 		CControlUI::SetPos(rc, bNeedInvalidate);
 		SIZE m_cxyFixed = CScrollBarUI::m_cxyFixed;
 		if (m_pManager != NULL) {
-			GetManager()->GetDPIObj()->Scale(&m_cxyFixed);
+			GetManager()->GetDPIObj()->ScaleSize(&m_cxyFixed);
 		}
 		rc = m_rcItem;
 		if( m_bHorizontal ) {
@@ -449,7 +449,8 @@ namespace DuiLib
 					m_rcButton2.bottom = m_rcButton2.top;
 				}
 
-				::ZeroMemory(&m_rcThumb, sizeof(m_rcThumb));
+				//::ZeroMemory(&m_rcThumb, sizeof(m_rcThumb));
+				m_rcThumb.Empty();
 			}
 		}
 		else {
@@ -522,7 +523,8 @@ namespace DuiLib
 					m_rcButton2.right = m_rcButton2.left;
 				}
 
-				::ZeroMemory(&m_rcThumb, sizeof(m_rcThumb));
+				//::ZeroMemory(&m_rcThumb, sizeof(m_rcThumb));
+				m_rcThumb.Empty();
 			}
 		}
 	}
@@ -551,7 +553,8 @@ namespace DuiLib
 			m_nScrollRepeatDelay = 0;
 			m_pManager->SetTimer(this, DEFAULT_TIMERID, 50U);
 
-			if( ::PtInRect(&m_rcButton1, event.ptMouse) ) {
+			//if( ::PtInRect(&m_rcButton1, event.ptMouse) ) {
+			if( m_rcButton1.PtInRect(event.ptMouse) ) {
 				m_uButton1State |= UISTATE_PUSHED;
 				if( !m_bHorizontal ) {
 					if( m_pOwner != NULL ) m_pOwner->LineUp(); 
@@ -562,7 +565,8 @@ namespace DuiLib
 					else SetScrollPos(m_nScrollPos - m_nLineSize);
 				}
 			}
-			else if( ::PtInRect(&m_rcButton2, event.ptMouse) ) {
+			//else if( ::PtInRect(&m_rcButton2, event.ptMouse) ) {
+			else if( m_rcButton2.PtInRect(event.ptMouse) ) {
 				m_uButton2State |= UISTATE_PUSHED;
 				if( !m_bHorizontal ) {
 					if( m_pOwner != NULL ) m_pOwner->LineDown(); 
@@ -573,7 +577,8 @@ namespace DuiLib
 					else SetScrollPos(m_nScrollPos + m_nLineSize);
 				}
 			}
-			else if( ::PtInRect(&m_rcThumb, event.ptMouse) ) {
+			//else if( ::PtInRect(&m_rcThumb, event.ptMouse) ) {
+			else if( m_rcThumb.PtInRect(event.ptMouse) ) {
 				m_uThumbState |= UISTATE_CAPTURED | UISTATE_PUSHED;
 				m_ptLastMouse = event.ptMouse;
 				m_nLastScrollPos = m_nScrollPos;
@@ -637,14 +642,16 @@ namespace DuiLib
 			}
 			else {
 				if( (m_uThumbState & UISTATE_HOT) != 0 ) {
-					if( !::PtInRect(&m_rcThumb, event.ptMouse) ) {
+					//if( !::PtInRect(&m_rcThumb, event.ptMouse) ) {
+					if( !m_rcThumb.PtInRect(event.ptMouse) ) {
 						m_uThumbState &= ~UISTATE_HOT;
 						Invalidate();
 					}
 				}
 				else {
 					if( !IsEnabled() ) return;
-					if( ::PtInRect(&m_rcThumb, event.ptMouse) ) {
+					//if( ::PtInRect(&m_rcThumb, event.ptMouse) ) {
+					if( m_rcThumb.PtInRect(event.ptMouse) ) {
 						m_uThumbState |= UISTATE_HOT;
 						Invalidate();
 					}
@@ -697,8 +704,8 @@ namespace DuiLib
 			else {
 				if( m_nScrollRepeatDelay <= 5 ) return;
 				POINT pt = { 0 };
-				::GetCursorPos(&pt);
-				::ScreenToClient(m_pManager->GetPaintWindow(), &pt);
+				CPlatform::GetCursorPos(&pt);
+				CPlatform::ScreenToClient(m_pManager->GetPaintWindow(), &pt);
 				if( !m_bHorizontal ) {
 					if( pt.y < m_rcThumb.top ) {
 						if( m_pOwner != NULL ) m_pOwner->PageUp(); 
@@ -728,7 +735,8 @@ namespace DuiLib
 			if( IsEnabled() ) {
 				m_uButton1State |= UISTATE_HOT;
 				m_uButton2State |= UISTATE_HOT;
-				if( ::PtInRect(&m_rcThumb, event.ptMouse) ) m_uThumbState |= UISTATE_HOT;
+				//if( ::PtInRect(&m_rcThumb, event.ptMouse) ) m_uThumbState |= UISTATE_HOT;
+				if( m_rcThumb.PtInRect(event.ptMouse) ) m_uThumbState |= UISTATE_HOT;
 				Invalidate();
 			}
 			return;
@@ -994,3 +1002,4 @@ namespace DuiLib
 		}
 	}
 }
+

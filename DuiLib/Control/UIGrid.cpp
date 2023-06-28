@@ -56,7 +56,7 @@ UINT CGridUI::GetControlFlags() const
 LPVOID CGridUI::GetInterface(LPCTSTR pstrName)
 {
 	if( _tcsicmp(pstrName, DUI_CTR_GRID) == 0 ) return static_cast<CGridUI*>(this);
-	return __super::GetInterface(pstrName);
+	return CVerticalLayoutUI::GetInterface(pstrName);
 }
 
 void CGridUI::SendGridNotify(LPCTSTR pstrMessage, WPARAM wParam, LPARAM lParam, bool bAsync)
@@ -76,23 +76,23 @@ bool CGridUI::Add(CControlUI* pControl)
 	{
 		if(m_pHeader != pControl && m_pHeader->GetCount() == 0)
 		{
-			__super::Remove(m_pHeader);
+			CVerticalLayoutUI::Remove(m_pHeader);
 		}
 		m_pHeader = static_cast<CGridHeaderUI*>(pControl);
 		m_pHeader->SetOwner(this);
 		m_pHeader->SetAutoCalcHeight(true);
-		return __super::AddAt(pControl, 0);
+		return CVerticalLayoutUI::AddAt(pControl, 0);
 	}
 
 	if(pControl->GetInterface(DUI_CTR_GRIDBODY))
 	{
 		if(m_pBody != pControl && m_pBody->GetCount() == 0)
 		{
-			__super::Remove(m_pBody);
+			CVerticalLayoutUI::Remove(m_pBody);
 		}
 		m_pBody = static_cast<CGridBodyUI*>(pControl);
 		m_pBody->SetOwner(this);
-		return __super::AddAt(pControl, 1);
+		return CVerticalLayoutUI::AddAt(pControl, 1);
 	}
 
 	if(pControl->GetInterface(DUI_CTR_GRIDROW))
@@ -117,7 +117,7 @@ bool CGridUI::Add(CControlUI* pControl)
 	}
  	
 	return false;
-// 	return __super::Add(pControl);
+// 	return CVerticalLayoutUI::Add(pControl);
 }
 
 bool CGridUI::AddAt(CControlUI* pControl, int iIndex)
@@ -126,23 +126,23 @@ bool CGridUI::AddAt(CControlUI* pControl, int iIndex)
 	{
 		if(m_pHeader != pControl && m_pHeader->GetCount() == 0)
 		{
-			__super::Remove(m_pHeader);
+			CVerticalLayoutUI::Remove(m_pHeader);
 		}
 		m_pHeader = static_cast<CGridHeaderUI*>(pControl);
 		m_pHeader->SetOwner(this);
 		m_pHeader->SetAutoCalcHeight(true);
-		return __super::AddAt(pControl, 0);
+		return CVerticalLayoutUI::AddAt(pControl, 0);
 	}
 
 	if(pControl->GetInterface(DUI_CTR_GRIDBODY))
 	{
 		if(m_pBody != pControl && m_pBody->GetCount() == 0)
 		{
-			__super::Remove(m_pBody);
+			CVerticalLayoutUI::Remove(m_pBody);
 		}
 		m_pBody = static_cast<CGridBodyUI*>(pControl);
 		m_pBody->SetOwner(this);
-		return __super::AddAt(pControl, 1);
+		return CVerticalLayoutUI::AddAt(pControl, 1);
 	}
 	return false;
 // 	if(pControl->GetInterface(DUI_CTR_GRIDROW))
@@ -151,7 +151,7 @@ bool CGridUI::AddAt(CControlUI* pControl, int iIndex)
 // 		return m_pBody->AddAt(pControl, iIndex);
 // 	}
 // 
-// 	return __super::AddAt(pControl, iIndex);
+// 	return CVerticalLayoutUI::AddAt(pControl, iIndex);
 }
 
 int CGridUI::InsertRow(int nIndex)
@@ -325,7 +325,7 @@ void CGridUI::EnsureVisible(int row, int col)
 	pNotify->sNotifyName = _T("CGridUI::EnsureVisible");
 	pNotify->wparam = row;
 	pNotify->lparam = col;
-	::PostMessage(GetManager()->GetPaintWindow(), UIMSG_GRID_NOTIFY, (WPARAM)this, (LPARAM)pNotify);
+	CPlatform::PostMessage(GetManager()->GetPaintWindow(), UIMSG_GRID_NOTIFY, (WPARAM)this, (LPARAM)pNotify);
 
 	/*
 	if (IsVirtualGrid()) return;
@@ -585,7 +585,7 @@ UINT_PTR CGridUI::GetRowTag(int row)
 	{
 		return pRowData->GetTag();
 	}
-	return NULL;
+	return 0;
 }
 
 int CGridUI::FindRowFromRowTag(UINT_PTR tag)
@@ -753,12 +753,14 @@ CGridCellUI *CGridUI::GetCellUIFromPoint(const POINT &pt)
 	for (int i=0; i<m_pHeader->GetCount(); i++)
 	{
 		CGridRowUI *pRow = (CGridRowUI *)m_pHeader->GetItemAt(i);
-		if(::PtInRect(&pRow->GetPos(), pt))
+		//if(::PtInRect(&pRow->GetPos(), pt))
+		if(pRow->GetPos().PtInRect(pt))
 		{
 			for (int j=0; j<pRow->GetCount(); j++)
 			{
 				CGridCellUI *pCell = (CGridCellUI *)pRow->GetItemAt(j);
-				if(::PtInRect(&pCell->GetPos(), pt)) 
+				//if(::PtInRect(&pCell->GetPos(), pt)) 
+				if(pCell->GetPos().PtInRect(pt)) 
 				{
 					pCellUI = pCell;
 					goto OUT_FOR;
@@ -770,12 +772,14 @@ CGridCellUI *CGridUI::GetCellUIFromPoint(const POINT &pt)
 	for (int i=0; i<m_pBody->GetCount(); i++)
 	{
 		CGridRowUI *pRow = (CGridRowUI *)m_pBody->GetItemAt(i);
-		if(::PtInRect(&pRow->GetPos(), pt))
+		//if(::PtInRect(&pRow->GetPos(), pt))
+		if(pRow->GetPos().PtInRect(pt))
 		{
 			for (int j=0; j<pRow->GetCount(); j++)
 			{
 				CGridCellUI *pCell = (CGridCellUI *)pRow->GetItemAt(j);
-				if(::PtInRect(&pCell->GetPos(), pt)) 
+				//if(::PtInRect(&pCell->GetPos(), pt)) 
+				if(pCell->GetPos().PtInRect(pt))
 				{
 					pCellUI = pCell;
 					goto OUT_FOR;
@@ -905,8 +909,8 @@ void CGridUI::SortItems(int col)
 	BOOL bAscending = !m_bSortAscending;
 	if(!IsVirtualGrid())
 	{
-		int lo = GetFixedRowCount();
-		int hi = -1;
+		//int lo = GetFixedRowCount();
+		//int hi = -1;
 		if(m_nSortCol != col) bAscending = TRUE;
 		SortItems(m_pfnCompare, col, bAscending, 0, GetFixedRowCount(), -1);
 	}
@@ -927,8 +931,8 @@ void CGridUI::SortItems(int col, BOOL bSortAscending)
 	BOOL bAscending = bSortAscending;
 	if (!IsVirtualGrid())
 	{
-		int lo = GetFixedRowCount();
-		int hi = -1;
+		//int lo = GetFixedRowCount();
+		//int hi = -1;
 		SortItems(m_pfnCompare, col, bAscending, 0, GetFixedRowCount(), -1);
 	}
 	m_nSortCol = col;
@@ -1016,7 +1020,7 @@ int CALLBACK CGridUI::pfnCellTextCompare(LPARAM lParam1, LPARAM lParam2, LPARAM 
 	TCellData* pCell2 = (TCellData*) lParam2;
 	if (!pCell1 || !pCell2) return 0;
 
-	BOOL bAscending = (BOOL)lParamSort;
+	//BOOL bAscending = (BOOL)lParamSort;
 	CDuiString text1 = pCell1->GetText();
 	CDuiString text2 = pCell2->GetText();
 	return _tcscmp(pCell1->GetText(), pCell2->GetText());
@@ -1034,8 +1038,8 @@ bool CGridUI::OnGridNotify(void* param)
 	{
 		if (IsVirtualGrid()) goto LABEL_END;
 
-		int row = pNotify->wparam;
-		int col = pNotify->lparam;
+		int row = static_cast<int>(pNotify->wparam);
+		int col = static_cast<int>(pNotify->lparam);
 
 		TCellData* pCell = GetCellData(row, col);
 		CDuiString s = pCell->GetText();
@@ -1051,7 +1055,7 @@ bool CGridUI::OnGridNotify(void* param)
 		CDuiRect rcBody = m_pBody->GetPos();
 		if (GetVerticalScrollBar())
 		{
-			int range = GetVerticalScrollBar()->GetScrollRange();
+			//int range = GetVerticalScrollBar()->GetScrollRange();
 			int pos = ypos - rcBody.GetHeight();
 			//尝试居中显示
 			if (ypos > rcBody.top)
@@ -1185,7 +1189,7 @@ void CGridUI::DoEvent(TEventUI& event)
 				else
 				{
 					//Ctrl键按下
-					if(::GetKeyState(VK_CONTROL) < 0)
+					if(CPlatform::IsKeyDown(VK_CONTROL))
 					{
 						//当多行选中时，若是按住Ctrl键，点击已选中行时，取消选择
 						if(IsSelectedRow(row))
@@ -1213,7 +1217,7 @@ void CGridUI::DoEvent(TEventUI& event)
 			{
 				if(IsFixedCol(col) && !IsFixedRow(row)) //点击左边固定列时，选中整行
 				{
-					if(::GetKeyState(VK_CONTROL) >= 0) //Ctrl键没有按下，先清理选择
+					if(CPlatform::IsKeyUp(VK_CONTROL)) //Ctrl键没有按下，先清理选择
 						ClearSelectedCells();
 
 					//选中整行，不包含固定列
@@ -1230,7 +1234,7 @@ void CGridUI::DoEvent(TEventUI& event)
 				else
 				{
 					//Ctrl键按下
-					if(::GetKeyState(VK_CONTROL) < 0)
+					if(CPlatform::IsKeyDown(VK_CONTROL))
 					{
 						//当多行选中时，若是按住Ctrl键，点击已选中单元格时，取消选择之
 						if(IsSelectedCell(row, col))
@@ -1268,7 +1272,7 @@ void CGridUI::DoEvent(TEventUI& event)
 			CGridCellUI *pCell2 = GetCellUIFromPoint(CDuiPoint(m_rcTracker.right, m_rcTracker.bottom));
 			if(pCell1 && pCell2 && pCell1 != pCell2)
 			{
-				if(::GetKeyState(VK_CONTROL) >= 0) {
+				if(CPlatform::IsKeyUp(VK_CONTROL)) {
 					ClearSelectedRows();
 					ClearSelectedCells();
 				}
@@ -1280,7 +1284,7 @@ void CGridUI::DoEvent(TEventUI& event)
 				CGridRowUI *pRowUI = (CGridRowUI *)m_pBody->GetItemAt(i);
 				if(IsListMode())
 				{
-					if (rcIntersect.IntersectRect(m_rcTracker, pRowUI->GetPos()))
+					if (rcIntersect.Intersect(m_rcTracker, pRowUI->GetPos()))
 						SelectRow(pRowUI->GetRow());
 				}
 				else
@@ -1288,7 +1292,7 @@ void CGridUI::DoEvent(TEventUI& event)
 					for (int j=GetFixedColumnCount(); j<pRowUI->GetCount(); j++)
 					{
 						CGridCellUI *pCellUI = (CGridCellUI *)pRowUI->GetItemAt(j);
-						if(rcIntersect.IntersectRect(m_rcTracker, pCellUI->GetPos()))
+						if(rcIntersect.Intersect(m_rcTracker, pCellUI->GetPos()))
 							SelectCell(pRowUI->GetRow(), j);
 					}
 				}
@@ -1311,7 +1315,8 @@ void CGridUI::DoEvent(TEventUI& event)
 			}
 		}
 
-		if( ::PtInRect(&m_rcItem, event.ptMouse) ) 
+		//if( ::PtInRect(&m_rcItem, event.ptMouse) ) 
+		if( m_rcItem.PtInRect(event.ptMouse) ) 
 		{
 			SendGridNotify(DUI_MSGTYPE_CLICK);
 		}
@@ -1432,10 +1437,10 @@ void CGridUI::DoEvent(TEventUI& event)
 		CGridCellUI *pCellUI = GetCellUIFromPoint(event.ptMouse);
 		if(pCellUI)
 		{
-			RECT rcSeparatorWidth = pCellUI->GetCellPos();
+			CDuiRect rcSeparatorWidth = pCellUI->GetCellPos();
 			rcSeparatorWidth.left = rcSeparatorWidth.right - 8;
 
-			RECT rcSeparatorHeight = pCellUI->GetCellPos();
+			CDuiRect rcSeparatorHeight = pCellUI->GetCellPos();
 			rcSeparatorHeight.top = rcSeparatorHeight.bottom - 4;
 
 // 			RECT rc = pCellUI->GetCellPos();
@@ -1443,14 +1448,18 @@ void CGridUI::DoEvent(TEventUI& event)
 // 				event.ptMouse.x, event.ptMouse.y,
 // 				rc.left, rc.top, rc.right, rc.bottom);
 
-			if(IsEnableSizeColumn() && IsFixedRow(pCellUI->GetRow()) && ::PtInRect(&rcSeparatorWidth, event.ptMouse))
+			//if(IsEnableSizeColumn() && IsFixedRow(pCellUI->GetRow()) && ::PtInRect(&rcSeparatorWidth, event.ptMouse))
+			if(IsEnableSizeColumn() && IsFixedRow(pCellUI->GetRow()) && rcSeparatorWidth.PtInRect(event.ptMouse))
 			{
-				::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZEWE)));
+				//::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZEWE)));
+				GetManager()->SetCursor(DUI_SIZEWE);
 				return;
 			}
-			else if(IsEnableSizeRow() && (IsFixedCol(pCellUI->GetCol()) || IsFixedRow(pCellUI->GetRow())) && ::PtInRect(&rcSeparatorHeight, event.ptMouse))
+			//else if(IsEnableSizeRow() && (IsFixedCol(pCellUI->GetCol()) || IsFixedRow(pCellUI->GetRow())) && ::PtInRect(&rcSeparatorHeight, event.ptMouse))
+			else if(IsEnableSizeRow() && (IsFixedCol(pCellUI->GetCol()) || IsFixedRow(pCellUI->GetRow())) && rcSeparatorHeight.PtInRect(event.ptMouse))
 			{
-				::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZENS)));
+				//::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZENS)));
+				GetManager()->SetCursor(DUI_SIZENS);
 				return;
 			}
 		}
@@ -1458,7 +1467,8 @@ void CGridUI::DoEvent(TEventUI& event)
 
 	else if(event.Type == UIEVENT_DBLCLICK)
 	{
-		if( ::PtInRect(&m_rcItem, event.ptMouse) ) 
+		//if( ::PtInRect(&m_rcItem, event.ptMouse) ) 
+		if( m_rcItem.PtInRect(event.ptMouse) ) 
 		{
 			//InsertMsgUI(_T("grid dbclick"));
 			SendGridNotify(DUI_MSGTYPE_DBCLICK, 0, 0, true);
@@ -1466,26 +1476,28 @@ void CGridUI::DoEvent(TEventUI& event)
 		return;
 	}
 
-	__super::DoEvent(event);
+	CVerticalLayoutUI::DoEvent(event);
 }
 
 bool CGridUI::OnSizeColumnOrRow(TEventUI& event)
 {
 	if(m_pCellLButtonDown == NULL) return false;
 
-	RECT rcSeparatorWidth = m_pCellLButtonDown->GetCellPos();
+	CDuiRect rcSeparatorWidth = m_pCellLButtonDown->GetCellPos();
 	rcSeparatorWidth.left = rcSeparatorWidth.right - 8;
 
-	RECT rcSeparatorHeight = m_pCellLButtonDown->GetCellPos();
+	CDuiRect rcSeparatorHeight = m_pCellLButtonDown->GetCellPos();
 	rcSeparatorHeight.top = rcSeparatorHeight.bottom - 4;
 
-	if( ::PtInRect(&rcSeparatorWidth, event.ptMouse) && IsFixedRow(m_pCellLButtonDown->GetRow()) && IsEnableSizeColumn()) 
+	//if( ::PtInRect(&rcSeparatorWidth, event.ptMouse) && IsFixedRow(m_pCellLButtonDown->GetRow()) && IsEnableSizeColumn()) 
+	if( rcSeparatorWidth.PtInRect(event.ptMouse) && IsFixedRow(m_pCellLButtonDown->GetRow()) && IsEnableSizeColumn()) 
 	{
 		m_nSeparatorType = 1;
 		m_ptLastMouse = event.ptMouse;
 		return true;
 	}
-	else if( IsEnabled() && IsEnableSizeRow() && (IsFixedCol(m_pCellLButtonDown->GetCol()) || IsFixedRow(m_pCellLButtonDown->GetRow())) && ::PtInRect(&rcSeparatorHeight, event.ptMouse) ) 
+	//else if( IsEnabled() && IsEnableSizeRow() && (IsFixedCol(m_pCellLButtonDown->GetCol()) || IsFixedRow(m_pCellLButtonDown->GetRow())) && ::PtInRect(&rcSeparatorHeight, event.ptMouse) ) 
+	else if( IsEnabled() && IsEnableSizeRow() && (IsFixedCol(m_pCellLButtonDown->GetCol()) || IsFixedRow(m_pCellLButtonDown->GetRow())) && rcSeparatorHeight.PtInRect(event.ptMouse) ) 
 	{
 		m_nSeparatorType = 2;
 		m_ptLastMouse = event.ptMouse;
@@ -1593,12 +1605,12 @@ void CGridUI::SetPos(RECT rc, bool bNeedInvalidate)
 	m_pHeader->SetPos(rcCtrl);
 
 	szAvailable.cy -= szHeader.cy;
-	SIZE szBody = m_pBody->EstimateSize(szAvailable);
+	//SIZE szBody = m_pBody->EstimateSize(szAvailable);
 	RECT rcCtrl2 = {iPosX, rc.top+szHeader.cy, iPosX + nGridWidth, rc.bottom};
 	m_pBody->SetPos(rcCtrl2);
 
 	int cxNeeded = nGridWidth;
-	int cyNeeded = m_pBody->GetCyNeeded();
+	//int cyNeeded = m_pBody->GetCyNeeded();
 	ProcessScrollBar(rc, cxNeeded, m_pBody->GetCyNeeded());
 }
 
@@ -1869,7 +1881,7 @@ void CGridUI::ProcessScrollBar(RECT rc, int cxRequired, int cyRequired)
 
 bool CGridUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 {
-	bool bPaint = __super::DoPaint(pRender, rcPaint, pStopControl);
+	bool bPaint = CVerticalLayoutUI::DoPaint(pRender, rcPaint, pStopControl);
 	if(!bPaint) return false;
 
 	//paint merge cells here
@@ -1945,10 +1957,11 @@ bool CGridUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopC
 		pRender->DrawRect(rcRect, 1, GetAdjustColor(GetLineColor()), PS_SOLID);
 	}
 
-	RECT rcTemp = { 0 };
+	CDuiRect rcTemp;
 	if( m_pVerticalScrollBar != NULL && m_pVerticalScrollBar->IsVisible() ) {
 		if( m_pVerticalScrollBar == pStopControl ) return false;
-		if( ::IntersectRect(&rcTemp, &rcPaint, &m_pVerticalScrollBar->GetPos()) ) {
+		//if( ::IntersectRect(&rcTemp, &rcPaint, &m_pVerticalScrollBar->GetPos()) ) {
+		if( rcTemp.Intersect(rcPaint, m_pVerticalScrollBar->GetPos()) ) {
 			if( !m_pVerticalScrollBar->Paint(pRender, rcPaint, pStopControl) ) return false;
 		}
 	}
@@ -2090,7 +2103,7 @@ void CGridUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 		SetStylePicture(pstrValue);
 	}
 	else 
-		__super::SetAttribute(pstrName, pstrValue);
+		CVerticalLayoutUI::SetAttribute(pstrName, pstrValue);
 }
 
 }

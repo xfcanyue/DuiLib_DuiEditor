@@ -2,12 +2,15 @@
 #define __UIFLASH_H__
 #pragma once
 
-// \Utils\Flash11.tlb 为Flash11接口文件，部分方法在低版本不存在，使用需注意
-// #import "PROGID:ShockwaveFlash.ShockwaveFlash"  \
-//      raw_interfaces_only,       /* Don't add raw_ to method names */ \
-//  	named_guids,           /* Named guids and declspecs */    \
-//  	rename("IDispatchEx","IMyDispatchEx")	/* fix conflicting with IDispatchEx ant dispex.h */  
+#ifdef DUILIB_WIN32
+
+// /Utils/Flash11.tlb 为Flash11接口文件，部分方法在低版本不存在，使用需注意
+// #import "PROGID:ShockwaveFlash.ShockwaveFlash"  
+//      raw_interfaces_only,   //Don't add raw_ to method names
+//  	named_guids,           //Named guids and declspecs 
+//  	rename("IDispatchEx","IMyDispatchEx")	//fix conflicting with IDispatchEx ant dispex.h  
 // using namespace ShockwaveFlashObjects;
+
 #include "Utils/FlashEventHandler.h"
 #include "Utils/flash11.tlh"
 
@@ -62,4 +65,5 @@ namespace DuiLib
 	};
 }
 
+#endif //#ifdef DUILIB_WIN32
 #endif // __UIFLASH_H__

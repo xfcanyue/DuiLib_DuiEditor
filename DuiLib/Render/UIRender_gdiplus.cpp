@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "UIRender_gdiplus.h"
 
+#ifdef DUILIB_WIN32
 namespace DuiLib {
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
@@ -267,7 +268,7 @@ namespace DuiLib {
 
 		CStdRefPtr<UIObject> pOldFont = SelectObject(pManager->GetFont(iFont));
 
-		Gdiplus::Font font(hDC, (HFONT)pManager->GetFont(iFont)->GetHFont(GetManager()));
+		Gdiplus::Font font(hDC, (HFONT)pManager->GetFont(iFont)->GetHFONT(GetManager()));
 
 		Gdiplus::Graphics graphics( hDC );
 		Gdiplus::TextRenderingHint trh = Gdiplus::TextRenderingHintSystemDefault;
@@ -392,3 +393,4 @@ namespace DuiLib {
 		return graphics.FillPath(&brush, ((UIPath_gdiplus *)path)->Getpath()) == Gdiplus::Ok;
 	}
 } // namespace DuiLib
+#endif // #ifdef DUILIB_WIN32

@@ -9,138 +9,30 @@ namespace DuiLib
 	//168 DPI = 175% scaling
 	//192 DPI = 200% scaling
 
-	typedef HRESULT (WINAPI *LPSetProcessDpiAwareness)(
-		_In_ PROCESS_DPI_AWARENESS value
-		);
-
-	typedef HRESULT (WINAPI *LPGetProcessDpiAwareness)(
-		_In_  HANDLE                hprocess,
-		_Out_ PROCESS_DPI_AWARENESS *value
-		);
-
-
-	typedef HRESULT (WINAPI *LPGetDpiForMonitor)(
-		_In_  HMONITOR         hmonitor,
-		_In_  MONITOR_DPI_TYPE dpiType,
-		_Out_ UINT             *dpiX,
-		_Out_ UINT             *dpiY
-		);
-
-
-	CDPI::CDPI()
+	CDpiBase::CDpiBase()
 	{
 		m_nScaleFactor = 0;
 		m_nScaleFactorSDA = 0;
-		m_Awareness = PROCESS_PER_MONITOR_DPI_AWARE;
-
 		SetScale(96);
-
 	}
 
-	int CDPI::GetDPIOfMonitor(HMONITOR hMonitor)
+	int CDpiBase::GetMainMonitorDPI()
 	{
-		UINT dpix = 96, dpiy = 96;
-		//if (IsWindows8Point1OrGreater()) //由于这个函数不支持win8.1 or greater，假设win8就是8.1 or greater。
-		if (IsWindows8OrGreater())
-		{
-			HRESULT  hr = E_FAIL;
-			HMODULE hModule =::LoadLibrary(_T("Shcore.dll"));
-			if(hModule != NULL) {
-				LPGetDpiForMonitor GetDpiForMonitor = (LPGetDpiForMonitor)GetProcAddress(hModule, "GetDpiForMonitor");
-				if (GetDpiForMonitor != NULL && GetDpiForMonitor(hMonitor,MDT_EFFECTIVE_DPI, &dpix, &dpiy) != S_OK) {
-					MessageBox(NULL, _T("GetDpiForMonitor failed"), _T("Notification"), MB_OK);
-					return 96;
-				}
-			}
-		}
-		else {
-			HDC screen = GetDC(0);
-			dpix = GetDeviceCaps(screen, LOGPIXELSX);
-			ReleaseDC(0, screen);
-		}
-		return dpix;
+		return 96;
 	}
 
-	int CDPI::GetDPIOfMonitorNearestToPoint(POINT pt)
+	UINT DuiLib::CDpiBase::GetDPI()
 	{
-		HMONITOR hMonitor;
-		hMonitor = MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST);
-		return GetDPIOfMonitor(hMonitor);
-	}
-
-	int CDPI::GetMainMonitorDPI()
-	{
-		POINT    pt;
-		// Get the DPI for the main monitor
-		pt.x = 1;
-		pt.y = 1;
-		return GetDPIOfMonitorNearestToPoint(pt);
-	}
-
-	PROCESS_DPI_AWARENESS CDPI::GetDPIAwareness()
-	{
-		//if (IsWindows8Point1OrGreater()) //由于这个函数不支持win8.1 or greater，假设win8就是8.1 or greater。
-		if (IsWindows8OrGreater()) {
-			HMODULE hModule =::LoadLibrary(_T("Shcore.dll"));
-			if(hModule != NULL) {
-				LPGetProcessDpiAwareness GetProcessDpiAwareness = (LPGetProcessDpiAwareness)GetProcAddress(hModule, "GetProcessDpiAwareness");
-				if(GetProcessDpiAwareness != NULL) {
-					HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, false, GetCurrentProcessId());
-					if(GetProcessDpiAwareness(hProcess, &m_Awareness) == S_OK) {
-					}
-				}
-			}
-		}
-
-		return m_Awareness;
-	}
-
-	BOOL CDPI::SetDPIAwareness(PROCESS_DPI_AWARENESS Awareness)
-	{
-		BOOL bRet = FALSE;
-		//if (IsWindows8Point1OrGreater()) //由于这个函数不支持win8.1 or greater，假设win8就是8.1 or greater。
-		if (IsWindows8OrGreater()) {
-			HMODULE hModule =::LoadLibrary(_T("Shcore.dll"));
-			if(hModule != NULL) {
-				LPSetProcessDpiAwareness SetProcessDpiAwareness = (LPSetProcessDpiAwareness)GetProcAddress(hModule, "SetProcessDpiAwareness");
-				if (SetProcessDpiAwareness != NULL && SetProcessDpiAwareness(Awareness) == S_OK) {
-					m_Awareness = Awareness;
-					bRet = TRUE;
-				}
-			}
-		}
-		else {
-			m_Awareness = Awareness;
-		}
-		return bRet;
-	}
-
-	UINT DuiLib::CDPI::GetDPI()
-	{
-		if (m_Awareness == PROCESS_DPI_UNAWARE) {
-			return 96;
-		}
-
-		if (m_Awareness == PROCESS_SYSTEM_DPI_AWARE) {
-			return MulDiv(m_nScaleFactorSDA, 96, 100);
-		}
-
 		return MulDiv(m_nScaleFactor, 96, 100);
 	}
 
-	UINT CDPI::GetScale()
+	UINT CDpiBase::GetScale()
 	{
-		if (m_Awareness == PROCESS_DPI_UNAWARE) {
-			return 100;
-		}
-		if (m_Awareness == PROCESS_SYSTEM_DPI_AWARE) {
-			return m_nScaleFactorSDA;
-		}
 		return m_nScaleFactor;
 	}
 
 
-	void CDPI::SetScale(UINT uDPI)
+	void CDpiBase::SetScale(UINT uDPI)
 	{
 		m_nScaleFactor = MulDiv(uDPI, 100, 96);
 		if (m_nScaleFactorSDA == 0) {
@@ -148,85 +40,73 @@ namespace DuiLib
 		}
 	}
 
-	int  CDPI::Scale(int iValue)
+	int  CDpiBase::ScaleInt(int iValue)
 	{
-		if (m_Awareness == PROCESS_DPI_UNAWARE) {
-			return iValue;
-		}
-		if (m_Awareness == PROCESS_SYSTEM_DPI_AWARE) {
-			return MulDiv(iValue, m_nScaleFactorSDA, 100);
-		}
 		return MulDiv(iValue, m_nScaleFactor, 100);
 	}
 
-	int  CDPI::ScaleBack(int iValue) {
-
-		if (m_Awareness == PROCESS_DPI_UNAWARE) {
-			return iValue;
-		}
-		if (m_Awareness == PROCESS_SYSTEM_DPI_AWARE) {
-			return MulDiv(iValue,  100, m_nScaleFactorSDA);
-		}
+	int  CDpiBase::ScaleIntBack(int iValue) 
+	{
 		return MulDiv(iValue, 100, m_nScaleFactor);
 	}
 
-	RECT CDPI::Scale(RECT rcRect)
+	RECT CDpiBase::ScaleRect(RECT rcRect)
 	{
 		RECT rcScale = rcRect;
-		int sw = Scale(rcRect.right - rcRect.left);
-		int sh = Scale(rcRect.bottom - rcRect.top);
-		rcScale.left = Scale(rcRect.left);
-		rcScale.top = Scale(rcRect.top);
+		int sw = ScaleInt(rcRect.right - rcRect.left);
+		int sh = ScaleInt(rcRect.bottom - rcRect.top);
+		rcScale.left = ScaleInt(rcRect.left);
+		rcScale.top = ScaleInt(rcRect.top);
 		rcScale.right = rcScale.left + sw;
 		rcScale.bottom = rcScale.top + sh;
 		return rcScale;
 	}
 
-	void CDPI::Scale(RECT *pRect)
+	void CDpiBase::ScaleRect(RECT *pRect)
 	{
-		int sw = Scale(pRect->right - pRect->left);
-		int sh = Scale(pRect->bottom - pRect->top);
-		pRect->left = Scale(pRect->left);
-		pRect->top = Scale(pRect->top);
+		int sw = ScaleInt(pRect->right - pRect->left);
+		int sh = ScaleInt(pRect->bottom - pRect->top);
+		pRect->left = ScaleInt(pRect->left);
+		pRect->top = ScaleInt(pRect->top);
 		pRect->right = pRect->left + sw;
 		pRect->bottom = pRect->top + sh;
 	}
 
-	void CDPI::ScaleBack(RECT *pRect)
+	void CDpiBase::ScaleRectBack(RECT *pRect)
 	{
-		int sw = ScaleBack(pRect->right - pRect->left);
-		int sh = ScaleBack(pRect->bottom - pRect->top);
-		pRect->left = ScaleBack(pRect->left);
-		pRect->top = ScaleBack(pRect->top);
+		int sw = ScaleIntBack(pRect->right - pRect->left);
+		int sh = ScaleIntBack(pRect->bottom - pRect->top);
+		pRect->left = ScaleIntBack(pRect->left);
+		pRect->top = ScaleIntBack(pRect->top);
 		pRect->right = pRect->left + sw;
 		pRect->bottom = pRect->top + sh;
 	}
 
-	void CDPI::Scale(POINT *pPoint)
+	void CDpiBase::ScalePoint(POINT *pPoint)
 	{
-		pPoint->x = Scale(pPoint->x);
-		pPoint->y = Scale(pPoint->y);
+		pPoint->x = ScaleInt(pPoint->x);
+		pPoint->y = ScaleInt(pPoint->y);
 	}
 
-	POINT CDPI::Scale(POINT ptPoint)
+	POINT CDpiBase::ScalePoint(POINT ptPoint)
 	{
 		POINT ptScale = ptPoint;
-		ptScale.x = Scale(ptPoint.x);
-		ptScale.y = Scale(ptPoint.y);
+		ptScale.x = ScaleInt(ptPoint.x);
+		ptScale.y = ScaleInt(ptPoint.y);
 		return ptScale;
 	}
 
-	void CDPI::Scale(SIZE *pSize)
+	void CDpiBase::ScaleSize(SIZE *pSize)
 	{
-		pSize->cx = Scale(pSize->cx);
-		pSize->cy = Scale(pSize->cy);
+		pSize->cx = ScaleInt(pSize->cx);
+		pSize->cy = ScaleInt(pSize->cy);
 	}
 
-	SIZE CDPI::Scale(SIZE szSize)
+	SIZE CDpiBase::ScaleSize(SIZE szSize)
 	{
 		SIZE szScale = szSize;
-		szScale.cx = Scale(szSize.cx);
-		szScale.cy = Scale(szSize.cy);
+		szScale.cx = ScaleInt(szSize.cx);
+		szScale.cy = ScaleInt(szSize.cy);
 		return szScale;
 	}
 }

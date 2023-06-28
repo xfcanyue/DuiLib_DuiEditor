@@ -224,3 +224,4 @@ PVOID CXmlAttributeUI::internal_object() const
 }
 
 } // namespace DuiLib
+

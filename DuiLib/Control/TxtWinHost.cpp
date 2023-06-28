@@ -5,6 +5,7 @@
 // These constants are for backward compatibility. They are the 
 // sizes used for initialization and reset in RichEdit 1.0
 
+#ifdef DUILIB_WIN32
 namespace DuiLib {
 
 	EXTERN_C const IID IID_ITextServices = { // 8d33f740-cf58-11ce-a89d-00aa006cadc5
@@ -43,7 +44,7 @@ namespace DuiLib {
 			if(re->GetManager()) 
 			{
 				UIFont *pFont = re->GetManager()->GetFont(re->GetFont());
-				hfont = pFont->GetHFont(re->GetManager());
+				hfont = pFont->GetHFONT(re->GetManager());
 			}
 		}
 		LOGFONT lf;
@@ -815,13 +816,14 @@ err:
 
 	BOOL CTxtWinHost::DoSetCursor(RECT *prc, POINT *pt)
 	{
-		RECT rc = prc ? *prc : rcClient;
+		CDuiRect rc = prc ? *prc : rcClient;
 
 		// Is this in our rectangle?
-		if (PtInRect(&rc, *pt))
+		//if (PtInRect(&rc, *pt))
+		if (rc.PtInRect(*pt))
 		{
 			RECT *prcClient = (!fInplaceActive || prc) ? &rc : NULL;
-			pserv->OnTxSetCursor(DVASPECT_CONTENT,	-1, NULL, NULL,  m_re->GetManager()->GetPaintDC(),
+			HRESULT hRet = pserv->OnTxSetCursor(DVASPECT_CONTENT,	-1, NULL, NULL,  m_re->GetManager()->GetPaintDC(),
 				NULL, prcClient, pt->x, pt->y);
 
 			return TRUE;
@@ -927,3 +929,5 @@ err:
 	}
 
 } // namespace DuiLib
+#endif //#ifdef DUILIB_WIN32
+

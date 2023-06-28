@@ -36,10 +36,10 @@ namespace DuiLib
 	protected:
 		bool m_bShowText;
 		bool m_bHorizontal;
-		bool m_bStretchForeImage;
-		int m_nMax;
 		int m_nMin;
+		int m_nMax;
 		int m_nValue;
+		bool m_bStretchForeImage;
 
 		CDuiString m_sForeImageModify;
 	};

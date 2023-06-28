@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "UIRender_gdi.h"
 
+#ifdef DUILIB_WIN32
 namespace DuiLib {
 	//////////////////////////////////////////////////////////////////////////
 	//
@@ -133,6 +134,7 @@ namespace DuiLib {
 	{
 		m_pManager	= NULL;
 		m_iSaveDC = 0;
+		m_hDC = NULL;
 		m_bAttachHDC = FALSE;
 	}
 
@@ -186,14 +188,34 @@ namespace DuiLib {
 		m_hDC = hDC;
 	}
 
-	CPaintManagerUI *UIRender_gdi::GetManager()
-	{
-		return m_pManager;
-	}
-
 	HDC UIRender_gdi::GetDC()
 	{
 		return m_hDC;
+	}
+
+
+	bool UIRender_gdi::CloneFrom(UIRender *pSrcRender)
+	{
+		m_pManager = pSrcRender->GetManager();
+		m_hDC = ::CreateCompatibleDC(pSrcRender->GetDC());
+
+		m_defBmp = MakeRefPtr<UIBitmap>(UIGlobal::CreateBitmap());
+		m_defBmp->CreateARGB32Bitmap(m_hDC, 1, 1, TRUE);
+
+		m_defBrush = MakeRefPtr<UIBrush>(UIGlobal::CreateBrush());
+		m_defBrush->CreateFromHBrush((HBRUSH)::GetStockObject(NULL_BRUSH));
+
+		m_defFont = MakeRefPtr<UIFont>(UIGlobal::CreateFont());
+		m_defFont->CreateDefaultFont();
+
+		m_defPen = MakeRefPtr<UIPen>(UIGlobal::CreatePen());
+		m_defPen->CreatePen(PS_SOLID, 1, RGB(0,0,0));
+
+		SelectObject(m_defBmp);
+		SelectObject(m_defBrush);
+		SelectObject(m_defFont);
+		SelectObject(m_defPen);	
+		return m_hDC != NULL;
 	}
 
 	UIBitmap *UIRender_gdi::GetBitmap()
@@ -256,14 +278,14 @@ namespace DuiLib {
 		emUIOBJTYPE eType = pObject->ObjectType();
 		if(eType == OT_FONT)
 		{
-			::SelectObject(m_hDC, ((UIFont *)pObject)->GetHFont(GetManager()));
+			::SelectObject(m_hDC, ((UIFont *)pObject)->GetHFONT(GetManager()));
 			m_lastFont = m_curFont ? m_curFont : m_defFont;
 			m_curFont = (UIFont_gdi *)pObject;
 			return *(UIFont**)&m_lastFont;
 		}
 		else if(eType == OT_PEN)
 		{
-			::SelectObject(m_hDC, ((UIPen *)pObject)->GetHPen());
+			::SelectObject(m_hDC, ((UIPen *)pObject)->GetHPEN());
 			m_lastPen = m_curPen ? m_curPen : m_defPen;
 			m_curPen = (UIPen_gdi *)pObject;
 			return *(UIPen**)&m_lastPen;
@@ -277,7 +299,7 @@ namespace DuiLib {
 		}
 		else if(eType == OT_BITMAP)
 		{
-			::SelectObject(m_hDC, ((UIBitmap *)pObject)->GetBitmap());
+			::SelectObject(m_hDC, ((UIBitmap *)pObject)->GetHBITMAP());
 			m_lastBmp = m_curBmp ? m_curBmp : m_defBmp;
 			m_curBmp = (UIBitmap_gdi *)pObject;
 			return *(UIBitmap**)&m_lastBmp;
@@ -298,13 +320,13 @@ namespace DuiLib {
 			if(m_curFont != m_lastFont)
 			{
 				m_curFont = m_lastFont;
-				::SelectObject(m_hDC, m_curFont->GetHFont(GetManager()));
+				::SelectObject(m_hDC, m_curFont->GetHFONT(GetManager()));
 			}
 
 			if(m_curPen != m_lastPen)
 			{
 				m_curPen = m_lastPen;
-				::SelectObject(m_hDC, m_curPen->GetHPen());
+				::SelectObject(m_hDC, m_curPen->GetHPEN());
 			}
 
 			if(m_curBrush != m_lastBrush)
@@ -316,7 +338,7 @@ namespace DuiLib {
 			if(m_curBmp != m_lastBmp)
 			{
 				m_curBmp = m_lastBmp;
-				::SelectObject(m_hDC, m_curBmp->GetBitmap());
+				::SelectObject(m_hDC, m_curBmp->GetHBITMAP());
 			}
 		}
 		else
@@ -339,13 +361,13 @@ namespace DuiLib {
 		if(m_curFont != m_defFont)
 		{
 			m_curFont = m_defFont;
-			::SelectObject(m_hDC, m_curFont->GetHFont(GetManager()));
+			::SelectObject(m_hDC, m_curFont->GetHFONT(GetManager()));
 		}
 
 		if(m_curPen != m_defPen)
 		{
 			m_curPen = m_defPen;
-			::SelectObject(m_hDC, m_curPen->GetHPen());
+			::SelectObject(m_hDC, m_curPen->GetHPEN());
 		}
 
 		if(m_curBrush != m_defBrush)
@@ -357,8 +379,13 @@ namespace DuiLib {
 		if(m_curBmp != m_defBmp)
 		{
 			m_curBmp = m_defBmp;
-			::SelectObject(m_hDC, m_curBmp->GetBitmap());
+			::SelectObject(m_hDC, m_curBmp->GetHBITMAP());
 		}
+	}
+
+	DWORD UIRender_gdi::SetPixel(int x, int y, DWORD dwColor)
+	{
+		return ::SetPixel(GetDC(), x, y, dwColor);
 	}
 
 	BOOL UIRender_gdi::BitBlt(int x, int y, int nWidth, int nHeight, UIRender *pSrcRender, int xSrc, int ySrc, DWORD dwRop)
@@ -368,459 +395,39 @@ namespace DuiLib {
 
 	BOOL UIRender_gdi::StretchBlt(int x, int y, int nWidth, int nHeight, UIRender *pSrcRender, int xSrc, int ySrc, int nWidthSrc, int nHeightSrc, DWORD dwRop)
 	{
+		::SetStretchBltMode(GetDC(), HALFTONE);
 		return ::StretchBlt(m_hDC, x, y, nWidth, nHeight, pSrcRender->GetDC(), xSrc, ySrc, nWidthSrc, nHeightSrc, dwRop);
 	}
 
-	void UIRender_gdi::DrawBitmap(HBITMAP hBitmap, const RECT& rc, const RECT& rcPaint,
-		const RECT& rcBmpPart, const RECT& rcCorners, bool bAlpha, 
-		BYTE uFade, bool hole, bool xtiled, bool ytiled)
+	BOOL UIRender_gdi::AlphaBlend(int x, int y, int nWidth, int nHeight, UIRender *pSrcRender, int xSrc, int ySrc, int nWidthSrc, int nHeightSrc, int alpha )
 	{
-		CPaintManagerUI *pManager = GetManager();
-		HDC hDC = GetDC();
-
-		ASSERT(::GetObjectType(hDC)==OBJ_DC || ::GetObjectType(hDC)==OBJ_MEMDC);
-
 		typedef BOOL (WINAPI *LPALPHABLEND)(HDC, int, int, int, int,HDC, int, int, int, int, BLENDFUNCTION);
 		static LPALPHABLEND lpAlphaBlend = (LPALPHABLEND) ::GetProcAddress(::GetModuleHandle(_T("msimg32.dll")), "AlphaBlend");
-
 		if( lpAlphaBlend == NULL ) lpAlphaBlend = AlphaBitBlt;
-		if( hBitmap == NULL ) return;
 
-		HDC hCloneDC = ::CreateCompatibleDC(hDC);
-		HBITMAP hOldBitmap = (HBITMAP) ::SelectObject(hCloneDC, hBitmap);
-		::SetStretchBltMode(hDC, HALFTONE);
+		BLENDFUNCTION bf = { AC_SRC_OVER, 0, alpha, AC_SRC_ALPHA };
+		return lpAlphaBlend(m_hDC, x, y, nWidth, nHeight, pSrcRender->GetDC(), xSrc, ySrc, nWidthSrc, nHeightSrc, bf);
+	}
 
-		RECT rcTemp = {0};
-		RECT rcDest = {0};
-		if( lpAlphaBlend && (bAlpha || uFade < 255) ) {
-			BLENDFUNCTION bf = { AC_SRC_OVER, 0, uFade, AC_SRC_ALPHA };
-			// middle
-			if( !hole ) {
-				rcDest.left = rc.left + rcCorners.left;
-				rcDest.top = rc.top + rcCorners.top;
-				rcDest.right = rc.right - rc.left - rcCorners.left - rcCorners.right;
-				rcDest.bottom = rc.bottom - rc.top - rcCorners.top - rcCorners.bottom;
-				rcDest.right += rcDest.left;
-				rcDest.bottom += rcDest.top;
-				if( ::IntersectRect(&rcTemp, &rcPaint, &rcDest) ) {
-					if( !xtiled && !ytiled ) {
-						rcDest.right -= rcDest.left;
-						rcDest.bottom -= rcDest.top;
-						lpAlphaBlend(hDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, hCloneDC, \
-							rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, \
-							rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right, \
-							rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom, bf);
-					}
-					else if( xtiled && ytiled ) {
-						LONG lWidth = rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right;
-						LONG lHeight = rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom;
-						int iTimesX = (rcDest.right - rcDest.left + lWidth - 1) / lWidth;
-						int iTimesY = (rcDest.bottom - rcDest.top + lHeight - 1) / lHeight;
-						for( int j = 0; j < iTimesY; ++j ) {
-							LONG lDestTop = rcDest.top + lHeight * j;
-							LONG lDestBottom = rcDest.top + lHeight * (j + 1);
-							LONG lDrawHeight = lHeight;
-							if( lDestBottom > rcDest.bottom ) {
-								lDrawHeight -= lDestBottom - rcDest.bottom;
-								lDestBottom = rcDest.bottom;
-							}
-							for( int i = 0; i < iTimesX; ++i ) {
-								LONG lDestLeft = rcDest.left + lWidth * i;
-								LONG lDestRight = rcDest.left + lWidth * (i + 1);
-								LONG lDrawWidth = lWidth;
-								if( lDestRight > rcDest.right ) {
-									lDrawWidth -= lDestRight - rcDest.right;
-									lDestRight = rcDest.right;
-								}
-								lpAlphaBlend(hDC, rcDest.left + lWidth * i, rcDest.top + lHeight * j, 
-									lDestRight - lDestLeft, lDestBottom - lDestTop, hCloneDC, 
-									rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, lDrawWidth, lDrawHeight, bf);
-							}
-						}
-					}
-					else if( xtiled ) {
-						LONG lWidth = rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right;
-						int iTimes = (rcDest.right - rcDest.left + lWidth - 1) / lWidth;
-						for( int i = 0; i < iTimes; ++i ) {
-							LONG lDestLeft = rcDest.left + lWidth * i;
-							LONG lDestRight = rcDest.left + lWidth * (i + 1);
-							LONG lDrawWidth = lWidth;
-							if( lDestRight > rcDest.right ) {
-								lDrawWidth -= lDestRight - rcDest.right;
-								lDestRight = rcDest.right;
-							}
-							lpAlphaBlend(hDC, lDestLeft, rcDest.top, lDestRight - lDestLeft, rcDest.bottom, 
-								hCloneDC, rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, \
-								lDrawWidth, rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom, bf);
-						}
-					}
-					else { // ytiled
-						LONG lHeight = rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom;
-						int iTimes = (rcDest.bottom - rcDest.top + lHeight - 1) / lHeight;
-						for( int i = 0; i < iTimes; ++i ) {
-							LONG lDestTop = rcDest.top + lHeight * i;
-							LONG lDestBottom = rcDest.top + lHeight * (i + 1);
-							LONG lDrawHeight = lHeight;
-							if( lDestBottom > rcDest.bottom ) {
-								lDrawHeight -= lDestBottom - rcDest.bottom;
-								lDestBottom = rcDest.bottom;
-							}
-							lpAlphaBlend(hDC, rcDest.left, rcDest.top + lHeight * i, rcDest.right, lDestBottom - lDestTop, 
-								hCloneDC, rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, \
-								rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right, lDrawHeight, bf);                    
-						}
-					}
-				}
-			}
-
-			// left-top
-			if( rcCorners.left > 0 && rcCorners.top > 0 ) {
-				rcDest.left = rc.left;
-				rcDest.top = rc.top;
-				rcDest.right = rcCorners.left;
-				rcDest.bottom = rcCorners.top;
-				rcDest.right += rcDest.left;
-				rcDest.bottom += rcDest.top;
-				if( ::IntersectRect(&rcTemp, &rcPaint, &rcDest) ) {
-					rcDest.right -= rcDest.left;
-					rcDest.bottom -= rcDest.top;
-					lpAlphaBlend(hDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, hCloneDC, \
-						rcBmpPart.left, rcBmpPart.top, rcCorners.left, rcCorners.top, bf);
-				}
-			}
-			// top
-			if( rcCorners.top > 0 ) {
-				rcDest.left = rc.left + rcCorners.left;
-				rcDest.top = rc.top;
-				rcDest.right = rc.right - rc.left - rcCorners.left - rcCorners.right;
-				rcDest.bottom = rcCorners.top;
-				rcDest.right += rcDest.left;
-				rcDest.bottom += rcDest.top;
-				if( ::IntersectRect(&rcTemp, &rcPaint, &rcDest) ) {
-					rcDest.right -= rcDest.left;
-					rcDest.bottom -= rcDest.top;
-					lpAlphaBlend(hDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, hCloneDC, \
-						rcBmpPart.left + rcCorners.left, rcBmpPart.top, rcBmpPart.right - rcBmpPart.left - \
-						rcCorners.left - rcCorners.right, rcCorners.top, bf);
-				}
-			}
-			// right-top
-			if( rcCorners.right > 0 && rcCorners.top > 0 ) {
-				rcDest.left = rc.right - rcCorners.right;
-				rcDest.top = rc.top;
-				rcDest.right = rcCorners.right;
-				rcDest.bottom = rcCorners.top;
-				rcDest.right += rcDest.left;
-				rcDest.bottom += rcDest.top;
-				if( ::IntersectRect(&rcTemp, &rcPaint, &rcDest) ) {
-					rcDest.right -= rcDest.left;
-					rcDest.bottom -= rcDest.top;
-					lpAlphaBlend(hDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, hCloneDC, \
-						rcBmpPart.right - rcCorners.right, rcBmpPart.top, rcCorners.right, rcCorners.top, bf);
-				}
-			}
-			// left
-			if( rcCorners.left > 0 ) {
-				rcDest.left = rc.left;
-				rcDest.top = rc.top + rcCorners.top;
-				rcDest.right = rcCorners.left;
-				rcDest.bottom = rc.bottom - rc.top - rcCorners.top - rcCorners.bottom;
-				rcDest.right += rcDest.left;
-				rcDest.bottom += rcDest.top;
-				if( ::IntersectRect(&rcTemp, &rcPaint, &rcDest) ) {
-					rcDest.right -= rcDest.left;
-					rcDest.bottom -= rcDest.top;
-					lpAlphaBlend(hDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, hCloneDC, \
-						rcBmpPart.left, rcBmpPart.top + rcCorners.top, rcCorners.left, rcBmpPart.bottom - \
-						rcBmpPart.top - rcCorners.top - rcCorners.bottom, bf);
-				}
-			}
-			// right
-			if( rcCorners.right > 0 ) {
-				rcDest.left = rc.right - rcCorners.right;
-				rcDest.top = rc.top + rcCorners.top;
-				rcDest.right = rcCorners.right;
-				rcDest.bottom = rc.bottom - rc.top - rcCorners.top - rcCorners.bottom;
-				rcDest.right += rcDest.left;
-				rcDest.bottom += rcDest.top;
-				if( ::IntersectRect(&rcTemp, &rcPaint, &rcDest) ) {
-					rcDest.right -= rcDest.left;
-					rcDest.bottom -= rcDest.top;
-					lpAlphaBlend(hDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, hCloneDC, \
-						rcBmpPart.right - rcCorners.right, rcBmpPart.top + rcCorners.top, rcCorners.right, \
-						rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom, bf);
-				}
-			}
-			// left-bottom
-			if( rcCorners.left > 0 && rcCorners.bottom > 0 ) {
-				rcDest.left = rc.left;
-				rcDest.top = rc.bottom - rcCorners.bottom;
-				rcDest.right = rcCorners.left;
-				rcDest.bottom = rcCorners.bottom;
-				rcDest.right += rcDest.left;
-				rcDest.bottom += rcDest.top;
-				if( ::IntersectRect(&rcTemp, &rcPaint, &rcDest) ) {
-					rcDest.right -= rcDest.left;
-					rcDest.bottom -= rcDest.top;
-					lpAlphaBlend(hDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, hCloneDC, \
-						rcBmpPart.left, rcBmpPart.bottom - rcCorners.bottom, rcCorners.left, rcCorners.bottom, bf);
-				}
-			}
-			// bottom
-			if( rcCorners.bottom > 0 ) {
-				rcDest.left = rc.left + rcCorners.left;
-				rcDest.top = rc.bottom - rcCorners.bottom;
-				rcDest.right = rc.right - rc.left - rcCorners.left - rcCorners.right;
-				rcDest.bottom = rcCorners.bottom;
-				rcDest.right += rcDest.left;
-				rcDest.bottom += rcDest.top;
-				if( ::IntersectRect(&rcTemp, &rcPaint, &rcDest) ) {
-					rcDest.right -= rcDest.left;
-					rcDest.bottom -= rcDest.top;
-					lpAlphaBlend(hDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, hCloneDC, \
-						rcBmpPart.left + rcCorners.left, rcBmpPart.bottom - rcCorners.bottom, \
-						rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right, rcCorners.bottom, bf);
-				}
-			}
-			// right-bottom
-			if( rcCorners.right > 0 && rcCorners.bottom > 0 ) {
-				rcDest.left = rc.right - rcCorners.right;
-				rcDest.top = rc.bottom - rcCorners.bottom;
-				rcDest.right = rcCorners.right;
-				rcDest.bottom = rcCorners.bottom;
-				rcDest.right += rcDest.left;
-				rcDest.bottom += rcDest.top;
-				if( ::IntersectRect(&rcTemp, &rcPaint, &rcDest) ) {
-					rcDest.right -= rcDest.left;
-					rcDest.bottom -= rcDest.top;
-					lpAlphaBlend(hDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, hCloneDC, \
-						rcBmpPart.right - rcCorners.right, rcBmpPart.bottom - rcCorners.bottom, rcCorners.right, \
-						rcCorners.bottom, bf);
-				}
-			}
-		}
-		else 
+	void UIRender_gdi::DrawBitmapAlpha(int x, int y, int nWidth, int nHeight, UIBitmap *pUiBitmap, int xSrc, int ySrc, int nWidthSrc, int nHeightSrc, int alpha)
+	{
+		UIRender_gdi *pRender = (UIRender_gdi *)UIGlobal::CreateRenderTarget();
+		pRender->Init(GetManager(), GetDC());
+		HBITMAP hOldBitmap = (HBITMAP)::SelectObject(pRender->GetDC(), pUiBitmap->GetHBITMAP());
+		if(pUiBitmap->IsAlpha() || alpha < 255)
 		{
-			if (rc.right - rc.left == rcBmpPart.right - rcBmpPart.left \
-				&& rc.bottom - rc.top == rcBmpPart.bottom - rcBmpPart.top \
-				&& rcCorners.left == 0 && rcCorners.right == 0 && rcCorners.top == 0 && rcCorners.bottom == 0)
-			{
-				if( ::IntersectRect(&rcTemp, &rcPaint, &rc) ) {
-					::BitBlt(hDC, rcTemp.left, rcTemp.top, rcTemp.right - rcTemp.left, rcTemp.bottom - rcTemp.top, \
-						hCloneDC, rcBmpPart.left + rcTemp.left - rc.left, rcBmpPart.top + rcTemp.top - rc.top, SRCCOPY);
-				}
-			}
-			else
-			{
-				// middle
-				if( !hole ) {
-					rcDest.left = rc.left + rcCorners.left;
-					rcDest.top = rc.top + rcCorners.top;
-					rcDest.right = rc.right - rc.left - rcCorners.left - rcCorners.right;
-					rcDest.bottom = rc.bottom - rc.top - rcCorners.top - rcCorners.bottom;
-					rcDest.right += rcDest.left;
-					rcDest.bottom += rcDest.top;
-					if( ::IntersectRect(&rcTemp, &rcPaint, &rcDest) ) {
-						if( !xtiled && !ytiled ) {
-							rcDest.right -= rcDest.left;
-							rcDest.bottom -= rcDest.top;
-							::StretchBlt(hDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, hCloneDC, \
-								rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, \
-								rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right, \
-								rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom, SRCCOPY);
-						}
-						else if( xtiled && ytiled ) {
-							LONG lWidth = rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right;
-							LONG lHeight = rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom;
-							int iTimesX = (rcDest.right - rcDest.left + lWidth - 1) / lWidth;
-							int iTimesY = (rcDest.bottom - rcDest.top + lHeight - 1) / lHeight;
-							for( int j = 0; j < iTimesY; ++j ) {
-								LONG lDestTop = rcDest.top + lHeight * j;
-								LONG lDestBottom = rcDest.top + lHeight * (j + 1);
-								LONG lDrawHeight = lHeight;
-								if( lDestBottom > rcDest.bottom ) {
-									lDrawHeight -= lDestBottom - rcDest.bottom;
-									lDestBottom = rcDest.bottom;
-								}
-								for( int i = 0; i < iTimesX; ++i ) {
-									LONG lDestLeft = rcDest.left + lWidth * i;
-									LONG lDestRight = rcDest.left + lWidth * (i + 1);
-									LONG lDrawWidth = lWidth;
-									if( lDestRight > rcDest.right ) {
-										lDrawWidth -= lDestRight - rcDest.right;
-										lDestRight = rcDest.right;
-									}
-									::BitBlt(hDC, rcDest.left + lWidth * i, rcDest.top + lHeight * j, \
-										lDestRight - lDestLeft, lDestBottom - lDestTop, hCloneDC, \
-										rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, SRCCOPY);
-								}
-							}
-						}
-						else if( xtiled ) {
-							LONG lWidth = rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right;
-							int iTimes = (rcDest.right - rcDest.left + lWidth - 1) / lWidth;
-							for( int i = 0; i < iTimes; ++i ) {
-								LONG lDestLeft = rcDest.left + lWidth * i;
-								LONG lDestRight = rcDest.left + lWidth * (i + 1);
-								LONG lDrawWidth = lWidth;
-								if( lDestRight > rcDest.right ) {
-									lDrawWidth -= lDestRight - rcDest.right;
-									lDestRight = rcDest.right;
-								}
-								::StretchBlt(hDC, lDestLeft, rcDest.top, lDestRight - lDestLeft, rcDest.bottom, 
-									hCloneDC, rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, \
-									lDrawWidth, rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom, SRCCOPY);
-							}
-						}
-						else { // ytiled
-							LONG lHeight = rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom;
-							int iTimes = (rcDest.bottom - rcDest.top + lHeight - 1) / lHeight;
-							for( int i = 0; i < iTimes; ++i ) {
-								LONG lDestTop = rcDest.top + lHeight * i;
-								LONG lDestBottom = rcDest.top + lHeight * (i + 1);
-								LONG lDrawHeight = lHeight;
-								if( lDestBottom > rcDest.bottom ) {
-									lDrawHeight -= lDestBottom - rcDest.bottom;
-									lDestBottom = rcDest.bottom;
-								}
-								::StretchBlt(hDC, rcDest.left, rcDest.top + lHeight * i, rcDest.right, lDestBottom - lDestTop, 
-									hCloneDC, rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, \
-									rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right, lDrawHeight, SRCCOPY);                    
-							}
-						}
-					}
-				}
-
-				// left-top
-				if( rcCorners.left > 0 && rcCorners.top > 0 ) {
-					rcDest.left = rc.left;
-					rcDest.top = rc.top;
-					rcDest.right = rcCorners.left;
-					rcDest.bottom = rcCorners.top;
-					rcDest.right += rcDest.left;
-					rcDest.bottom += rcDest.top;
-					if( ::IntersectRect(&rcTemp, &rcPaint, &rcDest) ) {
-						rcDest.right -= rcDest.left;
-						rcDest.bottom -= rcDest.top;
-						::StretchBlt(hDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, hCloneDC, \
-							rcBmpPart.left, rcBmpPart.top, rcCorners.left, rcCorners.top, SRCCOPY);
-					}
-				}
-				// top
-				if( rcCorners.top > 0 ) {
-					rcDest.left = rc.left + rcCorners.left;
-					rcDest.top = rc.top;
-					rcDest.right = rc.right - rc.left - rcCorners.left - rcCorners.right;
-					rcDest.bottom = rcCorners.top;
-					rcDest.right += rcDest.left;
-					rcDest.bottom += rcDest.top;
-					if( ::IntersectRect(&rcTemp, &rcPaint, &rcDest) ) {
-						rcDest.right -= rcDest.left;
-						rcDest.bottom -= rcDest.top;
-						::StretchBlt(hDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, hCloneDC, \
-							rcBmpPart.left + rcCorners.left, rcBmpPart.top, rcBmpPart.right - rcBmpPart.left - \
-							rcCorners.left - rcCorners.right, rcCorners.top, SRCCOPY);
-					}
-				}
-				// right-top
-				if( rcCorners.right > 0 && rcCorners.top > 0 ) {
-					rcDest.left = rc.right - rcCorners.right;
-					rcDest.top = rc.top;
-					rcDest.right = rcCorners.right;
-					rcDest.bottom = rcCorners.top;
-					rcDest.right += rcDest.left;
-					rcDest.bottom += rcDest.top;
-					if( ::IntersectRect(&rcTemp, &rcPaint, &rcDest) ) {
-						rcDest.right -= rcDest.left;
-						rcDest.bottom -= rcDest.top;
-						::StretchBlt(hDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, hCloneDC, \
-							rcBmpPart.right - rcCorners.right, rcBmpPart.top, rcCorners.right, rcCorners.top, SRCCOPY);
-					}
-				}
-				// left
-				if( rcCorners.left > 0 ) {
-					rcDest.left = rc.left;
-					rcDest.top = rc.top + rcCorners.top;
-					rcDest.right = rcCorners.left;
-					rcDest.bottom = rc.bottom - rc.top - rcCorners.top - rcCorners.bottom;
-					rcDest.right += rcDest.left;
-					rcDest.bottom += rcDest.top;
-					if( ::IntersectRect(&rcTemp, &rcPaint, &rcDest) ) {
-						rcDest.right -= rcDest.left;
-						rcDest.bottom -= rcDest.top;
-						::StretchBlt(hDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, hCloneDC, \
-							rcBmpPart.left, rcBmpPart.top + rcCorners.top, rcCorners.left, rcBmpPart.bottom - \
-							rcBmpPart.top - rcCorners.top - rcCorners.bottom, SRCCOPY);
-					}
-				}
-				// right
-				if( rcCorners.right > 0 ) {
-					rcDest.left = rc.right - rcCorners.right;
-					rcDest.top = rc.top + rcCorners.top;
-					rcDest.right = rcCorners.right;
-					rcDest.bottom = rc.bottom - rc.top - rcCorners.top - rcCorners.bottom;
-					rcDest.right += rcDest.left;
-					rcDest.bottom += rcDest.top;
-					if( ::IntersectRect(&rcTemp, &rcPaint, &rcDest) ) {
-						rcDest.right -= rcDest.left;
-						rcDest.bottom -= rcDest.top;
-						::StretchBlt(hDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, hCloneDC, \
-							rcBmpPart.right - rcCorners.right, rcBmpPart.top + rcCorners.top, rcCorners.right, \
-							rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom, SRCCOPY);
-					}
-				}
-				// left-bottom
-				if( rcCorners.left > 0 && rcCorners.bottom > 0 ) {
-					rcDest.left = rc.left;
-					rcDest.top = rc.bottom - rcCorners.bottom;
-					rcDest.right = rcCorners.left;
-					rcDest.bottom = rcCorners.bottom;
-					rcDest.right += rcDest.left;
-					rcDest.bottom += rcDest.top;
-					if( ::IntersectRect(&rcTemp, &rcPaint, &rcDest) ) {
-						rcDest.right -= rcDest.left;
-						rcDest.bottom -= rcDest.top;
-						::StretchBlt(hDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, hCloneDC, \
-							rcBmpPart.left, rcBmpPart.bottom - rcCorners.bottom, rcCorners.left, rcCorners.bottom, SRCCOPY);
-					}
-				}
-				// bottom
-				if( rcCorners.bottom > 0 ) {
-					rcDest.left = rc.left + rcCorners.left;
-					rcDest.top = rc.bottom - rcCorners.bottom;
-					rcDest.right = rc.right - rc.left - rcCorners.left - rcCorners.right;
-					rcDest.bottom = rcCorners.bottom;
-					rcDest.right += rcDest.left;
-					rcDest.bottom += rcDest.top;
-					if( ::IntersectRect(&rcTemp, &rcPaint, &rcDest) ) {
-						rcDest.right -= rcDest.left;
-						rcDest.bottom -= rcDest.top;
-						::StretchBlt(hDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, hCloneDC, \
-							rcBmpPart.left + rcCorners.left, rcBmpPart.bottom - rcCorners.bottom, \
-							rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right, rcCorners.bottom, SRCCOPY);
-					}
-				}
-				// right-bottom
-				if( rcCorners.right > 0 && rcCorners.bottom > 0 ) {
-					rcDest.left = rc.right - rcCorners.right;
-					rcDest.top = rc.bottom - rcCorners.bottom;
-					rcDest.right = rcCorners.right;
-					rcDest.bottom = rcCorners.bottom;
-					rcDest.right += rcDest.left;
-					rcDest.bottom += rcDest.top;
-					if( ::IntersectRect(&rcTemp, &rcPaint, &rcDest) ) {
-						rcDest.right -= rcDest.left;
-						rcDest.bottom -= rcDest.top;
-						::StretchBlt(hDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, hCloneDC, \
-							rcBmpPart.right - rcCorners.right, rcBmpPart.bottom - rcCorners.bottom, rcCorners.right, \
-							rcCorners.bottom, SRCCOPY);
-					}
-				}
-			}
+			AlphaBlend(x, y, nWidth, nHeight, pRender, xSrc, ySrc, nWidthSrc, nHeightSrc, alpha);
 		}
-
-		::SelectObject(hCloneDC, hOldBitmap);
-		::DeleteDC(hCloneDC);
+		else if(nWidth == nWidthSrc && nHeight == nHeightSrc)
+		{
+			BitBlt(x, y, nWidth, nHeight, pRender, xSrc, ySrc, SRCCOPY);
+		}
+		else
+		{
+			StretchBlt(x, y, nWidth, nHeight, pRender, xSrc, ySrc, nWidthSrc, nHeightSrc, SRCCOPY);
+		}
+		::SelectObject(pRender->GetDC(), hOldBitmap);
+		pRender->Release();
 	}
 
 	void UIRender_gdi::DrawColor(const RECT& rc, const SIZE &round, DWORD color)
@@ -1015,7 +622,7 @@ namespace DuiLib {
 		if ( pManager->IsLayered() || pManager->IsUseGdiplusText())
 		{
 			Gdiplus::Graphics graphics( hDC );
-			Gdiplus::Font font(hDC, (HFONT)pManager->GetFont(iFont)->GetHFont(GetManager()));
+			Gdiplus::Font font(hDC, (HFONT)pManager->GetFont(iFont)->GetHFONT(GetManager()));
 			Gdiplus::TextRenderingHint trh = Gdiplus::TextRenderingHintSystemDefault;
 			switch(pManager->GetGdiplusTextRenderingHint()) 
 			{
@@ -1160,3 +767,4 @@ namespace DuiLib {
 	}
 
 } // namespace DuiLib
+#endif //#ifdef DUILIB_WIN32

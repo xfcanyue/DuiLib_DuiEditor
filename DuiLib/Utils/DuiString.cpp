@@ -1,6 +1,4 @@
 #include "StdAfx.h"
-#include "DuiString.h"
-#include "Utils.h"
 
 namespace DuiLib
 {
@@ -12,7 +10,7 @@ namespace DuiLib
 	{
 		int nRefs;				//引用次数
 		UINT nAllocLength;		//分配的长度, 可能大于字符串实际长度。
-		TCHAR* data()			// TCHAR* to managed data 
+		TCHAR* data()			// TCHAR* to managed data
 		{ return (TCHAR*)(this+1); }
 	};
 
@@ -45,7 +43,7 @@ namespace DuiLib
 
 		 //分配字符串内存，申请时strlength = 字符串长度 + 1
 		duistringdata *Alloc(int strlength)
-		{		
+		{
 			CDuiInnerLock lock(&m_lock);
 			duistringdata *s = NULL;
 			if(strlength <= 16)
@@ -68,13 +66,13 @@ namespace DuiLib
 			{
 				int memsize = sizeof(duistringdata) + strlength;
 				s = (duistringdata *)malloc(memsize);
-				memset(s, 0, memsize);
+				memset(static_cast<void*>(s), 0, memsize);
 				s->nAllocLength = strlength;
 				s->nRefs = 0;
 			}
 
 			if(s) s->nRefs++;
-			return s;	
+			return s;
 		}
 
 		void Free(duistringdata *s)
@@ -117,7 +115,7 @@ namespace DuiLib
 		{
 			int memsize = sizeof(duistringdata) + sizeof(TCHAR);
 			m_pEmptyString = (duistringdata *)malloc(memsize);
-			memset(m_pEmptyString, 0, memsize);
+			memset(static_cast<void*>(m_pEmptyString), 0, memsize);
 			m_pEmptyString->nAllocLength = sizeof(TCHAR);
 			m_pEmptyString->nRefs = 0;
 			m_pEmptyString->data()[0] = _T('\0');
@@ -177,7 +175,7 @@ namespace DuiLib
 	protected:
 		CDuiLock m_lock;
 		duistringdata *m_pEmptyString;				//空字符串
-		CStdPtrArray m_listMem;						//已申请的内存块列表	  
+		CStdPtrArray m_listMem;						//已申请的内存块列表
 		CStdLinkList<duistringdata> m_list16;		//空闲的长度为16的字符串列表
 		int m_nextCount16;
 		CStdLinkList<duistringdata> m_list32;		//空闲的长度为32的字符串列表
@@ -215,9 +213,11 @@ namespace DuiLib
 	}
 
 	CDuiString::CDuiString(LPCTSTR lpsz, int nLen)
-	{      
+	{
 		m_pstr = DuiStringMgr::GetInstance()->GetEmptyString();
+		#ifdef DUILIB_WIN32
 		ASSERT(!::IsBadStringPtr(lpsz,-1) || lpsz==NULL);
+		#endif
 		Assign(lpsz, nLen);
 	}
 
@@ -235,6 +235,22 @@ namespace DuiLib
 		//Assign(src.m_pstr);
 	}
 
+	CDuiString::CDuiString(int int_to_string)
+	{
+		m_pstr = DuiStringMgr::GetInstance()->GetEmptyString();
+#ifdef DUILIB_WIN32
+		TCHAR str[64];
+		memset(str, 0, sizeof(str));
+		_itot(int_to_string, str, 10);
+		Assign(str);
+#else
+		TCHAR str[64];
+		memset(str, 0, sizeof(str));
+		_stprintf(str, _T("%d"), int_to_string);
+		Assign(str);
+#endif
+	}
+
 	CDuiString::~CDuiString()
 	{
 		FreeString();
@@ -245,7 +261,7 @@ namespace DuiLib
 		UINT nNeedAlloc = (strlength + 1) * sizeof(TCHAR);
 		duistringdata *data = ((duistringdata *)m_pstr)-1;
 
-		// 长度不够申请新的, 
+		// 长度不够申请新的,
 		// 引用大于1，也要申请新的. 引用大于1时任何修改字符串都要自己建新的，不要把别人的改了。
 		if(data->nAllocLength < nNeedAlloc || data->nRefs > 1)
 		{
@@ -286,12 +302,12 @@ namespace DuiLib
 
 	int CDuiString::GetLength() const
 	{
-		return (int) _tcslen(m_pstr); 
+		return (int) _tcslen(m_pstr);
 	}
 
-	CDuiString::operator LPCTSTR() const 
-	{ 
-		return m_pstr; 
+	CDuiString::operator LPCTSTR() const
+	{
+		return m_pstr;
 	}
 
 	void CDuiString::Append(LPCTSTR pstr)
@@ -305,7 +321,7 @@ namespace DuiLib
 
 	void CDuiString::Assign(LPCTSTR pstr, int cchMax)
 	{
-		if( pstr == NULL || *pstr == _T('\0')) 
+		if( pstr == NULL || *pstr == _T('\0'))
 		{
 			FreeString();
 			m_pstr = DuiStringMgr::GetInstance()->GetEmptyString();
@@ -317,13 +333,13 @@ namespace DuiLib
 		m_pstr[cchMax] = '\0';
 	}
 
-	bool CDuiString::IsEmpty() const 
+	bool CDuiString::IsEmpty() const
 	{
-		return m_pstr[0] == '\0'; 
+		return m_pstr[0] == '\0';
 	}
 
-	void CDuiString::Empty() 
-	{ 
+	void CDuiString::Empty()
+	{
 		if(GetLength() > 0)
 		{
 			duistringdata *s = ((duistringdata *)m_pstr)-1;
@@ -344,19 +360,13 @@ namespace DuiLib
 		return m_pstr;
 	}
 
-	TCHAR CDuiString::GetAt(int nIndex) const
+	TCHAR CDuiString::operator[] (int nIndex) const
 	{
-		if(nIndex < 0 || nIndex >= GetLength())	return _T('\0');
-		return m_pstr[nIndex];
+		return GetAt(nIndex);
 	}
 
-	TCHAR CDuiString::operator[] (int nIndex) const
-	{ 
-		return GetAt(nIndex);
-	}   
-
 	const CDuiString& CDuiString::operator=(const CDuiString& src)
-	{      
+	{
 		FreeString();
 		m_pstr = src.m_pstr;
 		duistringdata *data = ((duistringdata *)m_pstr)-1;
@@ -367,10 +377,12 @@ namespace DuiLib
 	}
 
 	const CDuiString& CDuiString::operator=(LPCTSTR lpStr)
-	{      
+	{
 		if ( lpStr )
 		{
+            #ifdef DUILIB_WIN32
 			ASSERT(!::IsBadStringPtr(lpStr,-1));
+			#endif
 			Assign(lpStr);
 		}
 		else
@@ -413,17 +425,19 @@ namespace DuiLib
 			UISTRING_CONVERSION;
 			Append(UIA2T(lpStr));
 		}
-		
+
 		return *this;
 	}
 
 #else
 
 	const CDuiString& CDuiString::operator=(LPCWSTR lpwStr)
-	{      
+	{
 		if ( lpwStr )
 		{
+            #ifdef DUILIB_WIN32
 			ASSERT(!::IsBadStringPtrW(lpwStr,-1));
+			#endif
 // 			int cchStr = ((int) wcslen(lpwStr) * 2) + 1;
 // 			LPSTR pstr = (LPSTR) _alloca(cchStr);
 // 			if( pstr != NULL ) ::WideCharToMultiByte(::GetACP(), 0, lpwStr, -1, pstr, cchStr, NULL, NULL);
@@ -435,7 +449,7 @@ namespace DuiLib
 		{
 			Empty();
 		}
-		
+
 		return *this;
 	}
 
@@ -443,7 +457,9 @@ namespace DuiLib
 	{
 		if ( lpwStr )
 		{
+            #ifdef DUILIB_WIN32
 			ASSERT(!::IsBadStringPtrW(lpwStr,-1));
+			#endif
 // 			int cchStr = ((int) wcslen(lpwStr) * 2) + 1;
 // 			LPSTR pstr = (LPSTR) _alloca(cchStr);
 // 			if( pstr != NULL ) ::WideCharToMultiByte(::GetACP(), 0, lpwStr, -1, pstr, cchStr, NULL, NULL);
@@ -451,7 +467,7 @@ namespace DuiLib
 			UISTRING_CONVERSION;
 			Append(UIW2T(lpwStr));
 		}
-		
+
 		return *this;
 	}
 
@@ -474,7 +490,9 @@ namespace DuiLib
 	{
 		if ( lpStr )
 		{
+            #ifdef DUILIB_WIN32
 			ASSERT(!::IsBadStringPtr(lpStr,-1));
+			#endif
 			CDuiString sTemp = *this;
 			sTemp.Append(lpStr);
 			return sTemp;
@@ -484,24 +502,26 @@ namespace DuiLib
 	}
 
 	const CDuiString& CDuiString::operator+=(const CDuiString& src)
-	{      
+	{
 		Append(src);
 		return *this;
 	}
 
 	const CDuiString& CDuiString::operator+=(LPCTSTR lpStr)
-	{      
+	{
 		if ( lpStr )
 		{
+            #ifdef DUILIB_WIN32
 			ASSERT(!::IsBadStringPtr(lpStr,-1));
+			#endif
 			Append(lpStr);
 		}
-		
+
 		return *this;
 	}
 
 	const CDuiString& CDuiString::operator+=(const TCHAR ch)
-	{      
+	{
 		TCHAR str[] = { ch, '\0' };
 		Append(str);
 		return *this;
@@ -527,24 +547,34 @@ namespace DuiLib
 		m_pstr[nIndex] = ch;
 	}
 
-	int CDuiString::Compare(LPCTSTR lpsz) const 
-	{ 
-		return _tcscmp(m_pstr, lpsz); 
+	TCHAR CDuiString::GetAt(int nIndex) const
+	{
+		if(nIndex < 0 || nIndex >= GetLength())	return _T('\0');
+		return m_pstr[nIndex];
 	}
 
-	int CDuiString::CompareNoCase(LPCTSTR lpsz) const 
-	{ 
-		return _tcsicmp(m_pstr, lpsz); 
+	int CDuiString::Compare(LPCTSTR lpsz) const
+	{
+		if(!lpsz && IsEmpty())
+			return 0;
+		return _tcscmp(m_pstr, lpsz);
 	}
 
-	void CDuiString::MakeUpper() 
-	{ 
-		_tcsupr(m_pstr); 
+	int CDuiString::CompareNoCase(LPCTSTR lpsz) const
+	{
+		if(!lpsz && IsEmpty())
+			return 0;
+		return _tcsicmp(m_pstr, lpsz);
 	}
 
-	void CDuiString::MakeLower() 
-	{ 
-		_tcslwr(m_pstr); 
+	void CDuiString::MakeUpper()
+	{
+		_tcsupr(m_pstr);
+	}
+
+	void CDuiString::MakeLower()
+	{
+		_tcslwr(m_pstr);
 	}
 
 	CDuiString CDuiString::Left(int iLength) const
@@ -583,7 +613,9 @@ namespace DuiLib
 
 	int CDuiString::Find(LPCTSTR pstrSub, int iPos /*= 0*/) const
 	{
+	    #ifdef DUILIB_WIN32
 		ASSERT(!::IsBadStringPtr(pstrSub,-1));
+		#endif
 		ASSERT(iPos>=0 && iPos<=GetLength());
 		if( iPos != 0 && (iPos < 0 || iPos > GetLength()) ) return -1;
 		LPCTSTR p = _tcsstr(m_pstr + iPos, pstrSub);
@@ -654,14 +686,14 @@ namespace DuiLib
 		Assign(szBuffer);
 		return iRet;
 	}
-	
+
     int CDuiString::InnerFormat(LPCTSTR pstrFormat, va_list Args)
     {
 #if _MSC_VER <= 1400
         TCHAR *szBuffer = NULL;
         int size = 512, nLen, counts;
         szBuffer = (TCHAR*)malloc(size);
-        ZeroMemory(szBuffer, size);
+		memset(szBuffer, 0, size);
         while (TRUE){
             counts = size / sizeof(TCHAR);
             nLen = _vsntprintf (szBuffer, counts, pstrFormat, Args);
@@ -675,7 +707,7 @@ namespace DuiLib
             }
 
             if ((szBuffer = (TCHAR*)realloc(szBuffer, size)) != NULL){
-                ZeroMemory(szBuffer, size);
+				memset(szBuffer, 0, size);
             }else{
                 break;
             }
@@ -709,11 +741,11 @@ namespace DuiLib
 
 	void CBufferUI::Reset()
 	{
-		if(_buffer != NULL) 
-		{ 
+		if(_buffer != NULL)
+		{
 			duistringdata *data = ((duistringdata *)_buffer)-1;
 			DuiStringMgr::GetInstance()->Free(data);
-			_buffer = NULL; 
+			_buffer = NULL;
 			_bufferLen = 0;
 		}
 	}
@@ -740,7 +772,7 @@ namespace DuiLib
 		return _bufferLen;
 	}
 
-	void CBufferUI::Alloc(int size)
+	void CBufferUI::Alloc(UINT size)
 	{
 		if(_buffer == NULL)
 		{
@@ -761,23 +793,31 @@ namespace DuiLib
 	//////////////////////////////////////////////////////////////////////////
 	//
 	//
-	StringConverterUI::StringConverterUI() 
-	{ 
+	StringConverterUI::StringConverterUI()
+	{
 		DuiStringMgr::GetInstance()->GetEmptyString();
-		m_cp = CP_ACP; 
-		_block = NULL; 
+
+		#ifdef WIN32
+		m_cp = CP_ACP;
+		#else
+		m_from = _T("GBK");
+		#endif // #ifdef WIN32
+
+		_block = NULL;
 	}
 
-	StringConverterUI::StringConverterUI(UINT codepage) 
-	{ 
+    #ifdef WIN32
+	StringConverterUI::StringConverterUI(UINT codepage)
+	{
 		DuiStringMgr::GetInstance()->GetEmptyString();
-		m_cp = codepage; 
-		_block = NULL; 
+		m_cp = codepage;
+		_block = NULL;
 	}
+	#endif //#ifdef WIN32
 
-	StringConverterUI::~StringConverterUI() 
-	{ 
-		Release(); 
+	StringConverterUI::~StringConverterUI()
+	{
+		Release();
 	}
 
 	LPCTSTR StringConverterUI::A_to_T(const void *buffer, int bufferlen)
@@ -820,6 +860,8 @@ namespace DuiLib
 	{
 #ifdef _UNICODE
 		return utf8_to_W(buffer, bufferlen);
+#elif defined _UTF8CODE
+		return (LPCSTR)buffer;
 #else
 		return utf8_to_A(buffer, bufferlen);
 #endif
@@ -829,6 +871,8 @@ namespace DuiLib
 	{
 #ifdef _UNICODE
 		return W_to_utf8(buffer, bufferlen);
+#elif defined _UTF8CODE
+		return (LPCSTR)buffer;
 #else
 		return A_to_utf8(buffer, bufferlen);
 #endif
@@ -836,19 +880,26 @@ namespace DuiLib
 
 	LPCWSTR StringConverterUI::A_to_W(const void *buffer, int bufferlen)
 	{
-		int len = MultiByteToWideChar(m_cp, 0, (const char *)buffer, bufferlen, NULL, 0);
+        #ifdef WIN32
+			int len = ::MultiByteToWideChar(m_cp, 0, (const char *)buffer, bufferlen, NULL, 0);
+			Alloc((len+1) * sizeof(wchar_t));
+			::MultiByteToWideChar(m_cp, 0, (const char *)buffer, bufferlen, (wchar_t *)_block, len);
+		#else
+			//iconv_t icd = iconv_open(m_from,"UNICODE");
+			//iconv_close(icd);
+		#endif //WIN32
 
-		Alloc((len+1) * sizeof(wchar_t));
-		MultiByteToWideChar(m_cp, 0, (const char *)buffer, bufferlen, (wchar_t *)_block, len);
 		return (LPCWSTR)_block;
 	}
 
 	LPCSTR StringConverterUI::W_to_A(const void *buffer, int bufferlen)
 	{
-		int len = WideCharToMultiByte(m_cp, 0, (const wchar_t *)buffer, bufferlen, NULL, 0, NULL, NULL);
-
-		Alloc((len + 1) * sizeof(char));
-		WideCharToMultiByte(m_cp, 0, (const wchar_t *)buffer, bufferlen, (LPSTR)_block, len, NULL, NULL);
+        #ifdef WIN32
+			int len = WideCharToMultiByte(m_cp, 0, (const wchar_t *)buffer, bufferlen, NULL, 0, NULL, NULL);
+			Alloc((len + 1) * sizeof(char));
+			WideCharToMultiByte(m_cp, 0, (const wchar_t *)buffer, bufferlen, (LPSTR)_block, len, NULL, NULL);
+		#else
+		#endif //#ifdef WIN32
 		return (LPCSTR)_block;
 	}
 
@@ -868,23 +919,29 @@ namespace DuiLib
 
 	LPCSTR StringConverterUI::W_to_utf8(const void *buffer, int bufferlen)
 	{
+    #ifdef WIN32
 		int len = WideCharToMultiByte(CP_UTF8, 0, (const wchar_t *)buffer, bufferlen, NULL, 0, NULL, NULL);
-
 		Alloc((len + 1) * sizeof(char));
 		WideCharToMultiByte(CP_UTF8, 0, (const wchar_t *)buffer, bufferlen, (LPSTR)_block, len, NULL, NULL);
+	#else
+	#endif // #ifdef WIN32
+
 		return (LPCSTR)_block;
 	}
 
 	LPCWSTR StringConverterUI::utf8_to_W(const void *buffer, int bufferlen)
 	{
-		int len = ::MultiByteToWideChar(CP_UTF8, NULL, (const char *)buffer, bufferlen, NULL, 0);
+        #ifdef WIN32
+			int len = ::MultiByteToWideChar(CP_UTF8, NULL, (const char *)buffer, bufferlen, NULL, 0);
+			Alloc((len + 1) * sizeof(wchar_t));
+			::MultiByteToWideChar(CP_UTF8, NULL, (const char *)buffer, bufferlen, (wchar_t *)_block, len);
+		#else
+		#endif //  #ifdef WIN32
 
-		Alloc((len + 1) * sizeof(wchar_t));
-		::MultiByteToWideChar(CP_UTF8, NULL, (const char *)buffer, bufferlen, (wchar_t *)_block, len);
 		return (LPWSTR)_block;
 	}
 
-	void StringConverterUI::Alloc(int size)
+	void StringConverterUI::Alloc(UINT size)
 	{
 		if(_block)
 		{
@@ -909,14 +966,15 @@ namespace DuiLib
 
 	void StringConverterUI::Release()
 	{
-		if(_block != NULL) 
-		{ 
+		if(_block != NULL)
+		{
 			duistringdata *data = ((duistringdata *)_block)-1;
 			DuiStringMgr::GetInstance()->Free(data);
-			_block = NULL; 
+			_block = NULL;
 		}
 
 		//if(_block != NULL) { delete []_block; _block = NULL; }
 	}
 
 } // namespace DuiLib
+

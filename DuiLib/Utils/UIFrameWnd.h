@@ -6,56 +6,42 @@ namespace DuiLib {
 typedef MenuCmd MENUCOMMAND;
 
 class CUIForm;
-class UILIB_API CUIFrameWnd : public WindowImplBase, public CUIFrmBase
+class UILIB_API CUIFrameWndBase 
+	: public IDialogBuilderCallback
+	, public IQueryControlText
+	, public CUIFrmBase
 {
 public:
-	CUIFrameWnd(void);
-	virtual ~CUIFrameWnd(void);
+	CUIFrameWndBase(void);
+	virtual ~CUIFrameWndBase(void);
 
-	virtual LPCTSTR GetWindowClassName() const = 0;
 	virtual CDuiString GetSkinFile() = 0;
-	virtual void OnFinalMessage( HWND hWnd );
+	virtual CDuiString GetSkinType() { return _T(""); }
+	virtual LPCTSTR GetManagerName() { return NULL; }
 
-	virtual CPaintManagerUI *GetManager() { return &m_pm; }
-	virtual CControlUI *GetRoot() { return m_pm.GetRoot(); }
-	void AttachVirtualForm(CUIForm *pForm);
-	void DetachVirtualForm(CUIForm *pForm);
+	virtual CControlUI* CreateControl(LPCTSTR pstrClass) override { return NULL; }
 
-	void ShowFullScreen(); //»´∆¡œ‘ æ
+	virtual CDuiString QueryControlText(LPCTSTR lpstrId, LPCTSTR lpstrType) { return _T(""); }
+
+	CControlUI *GetRoot(); 
+	void AttachVirtualForm(CUIFrmBase *pForm);
+	void DetachVirtualForm(CUIFrmBase *pForm);
+
 public:
 	virtual void InitWindow(){}
-	virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
-	virtual LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-	virtual LRESULT HandleMenuCommandMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-
-	virtual void Notify(TNotifyUI& msg);
-
-	virtual LRESULT OnRButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-	virtual LRESULT OnRButtonUp(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-
-	virtual LRESULT OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
 protected:
 	virtual void __InitWindow();
 	virtual void UIAction(TUIAction *act, bool bAsync);
+	virtual BOOL IsInStaticControl(CControlUI *pControl);
+	virtual LRESULT ResponseDefaultKeyEvent(WPARAM wParam);
+
 public:
 	CUIApplication *m_pApplication;
 
 protected:
+	std::vector<CDuiString> m_vctStaticName;
 	CStdPtrArray	m_listForm;
 };
-
-inline CMenuWnd *DuiCreateMenu(LPCTSTR xmlFile, CPaintManagerUI *pManager)
-{
-	CDuiPoint pt;
-	::GetCursorPos(&pt);
-	CMenuWnd *pMenuWnd = CMenuWnd::CreateMenu(NULL, xmlFile, pt, pManager);
-	pMenuWnd->m_bAutoDestroy = true;
-	if(pMenuWnd)
-	{
-		pMenuWnd->ResizeMenu();
-	}
-	return pMenuWnd;
-}
 
 } //namespace DuiLib {

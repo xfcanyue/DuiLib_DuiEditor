@@ -31,7 +31,7 @@ UINT CGridBodyUI::GetControlFlags() const
 LPVOID CGridBodyUI::GetInterface(LPCTSTR pstrName)
 {
 	if( _tcsicmp(pstrName, DUI_CTR_GRIDBODY) == 0 ) return static_cast<CGridBodyUI*>(this);
-	return __super::GetInterface(pstrName);
+	return CContainerUI::GetInterface(pstrName);
 }
 
 bool CGridBodyUI::Add(CControlUI* pControl)
@@ -42,7 +42,7 @@ bool CGridBodyUI::Add(CControlUI* pControl)
 	CGridRowUI *pRowUI = static_cast<CGridRowUI *>(pControl);
 	pRowUI->SetOwner(GetOwner());
 
-	return __super::Add(pControl);
+	return CContainerUI::Add(pControl);
 }
 
 bool CGridBodyUI::AddAt(CControlUI* pControl, int iIndex)
@@ -53,7 +53,7 @@ bool CGridBodyUI::AddAt(CControlUI* pControl, int iIndex)
 	CGridRowUI *pRowUI = static_cast<CGridRowUI *>(pControl);
 	pRowUI->SetOwner(GetOwner());
 
-	return __super::AddAt(pControl, iIndex);
+	return CContainerUI::AddAt(pControl, iIndex);
 }
 
 void CGridBodyUI::DoInit()
@@ -62,7 +62,7 @@ void CGridBodyUI::DoInit()
 
 void CGridBodyUI::SetPos(RECT rc, bool bNeedInvalidate)
 {
-	//return __super::SetPos(rc, bNeedInvalidate);
+	//return CContainerUI::SetPos(rc, bNeedInvalidate);
 	CControlUI::SetPos(rc, bNeedInvalidate);
 	if(!GetOwner()) return;
 
@@ -198,52 +198,52 @@ void CGridBodyUI::SetPos(RECT rc, bool bNeedInvalidate)
 
 SIZE CGridBodyUI::EstimateSize(SIZE szAvailable)
 {
-	return __super::EstimateSize(szAvailable);
+	return CContainerUI::EstimateSize(szAvailable);
 }
 
 bool CGridBodyUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 {
-	return __super::DoPaint(pRender, rcPaint, pStopControl);
+	return CContainerUI::DoPaint(pRender, rcPaint, pStopControl);
 }
 
 void CGridBodyUI::LineUp()
 {
-	if(!GetOwner()) return __super::LineUp();
+	if(!GetOwner()) return CContainerUI::LineUp();
 	CGridUI *pGrid = (CGridUI *)GetOwner();
 	pGrid->LineUp();
 }
 
 void CGridBodyUI::LineDown()
 {
-	if(!GetOwner()) return __super::LineDown();
+	if(!GetOwner()) return CContainerUI::LineDown();
 	CGridUI *pGrid = (CGridUI *)GetOwner();
 	pGrid->LineDown();
 }
 
 void CGridBodyUI::PageUp()
 {
-	if(!GetOwner()) return __super::PageUp();
+	if(!GetOwner()) return CContainerUI::PageUp();
 	CGridUI *pGrid = (CGridUI *)GetOwner();
 	pGrid->PageUp();
 }
 
 void CGridBodyUI::PageDown()
 {
-	if(!GetOwner()) return __super::PageDown();
+	if(!GetOwner()) return CContainerUI::PageDown();
 	CGridUI *pGrid = (CGridUI *)GetOwner();
 	pGrid->PageDown();
 }
 
 void CGridBodyUI::HomeUp()
 {
-	if(!GetOwner()) return __super::HomeUp();
+	if(!GetOwner()) return CContainerUI::HomeUp();
 	CGridUI *pGrid = (CGridUI *)GetOwner();
 	pGrid->HomeUp();
 }
 
 void CGridBodyUI::EndDown()
 {
-	if(!GetOwner()) return __super::EndDown();
+	if(!GetOwner()) return CContainerUI::EndDown();
 	CGridUI *pGrid = (CGridUI *)GetOwner();
 	pGrid->EndDown();
 }

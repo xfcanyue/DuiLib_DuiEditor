@@ -318,8 +318,9 @@ namespace DuiLib
 		if( m_iSepWidth != 0 ) {
 			if( event.Type == UIEVENT_BUTTONDOWN && IsEnabled() )
 			{
-				RECT rcSeparator = GetThumbRect(false);
-				if( ::PtInRect(&rcSeparator, event.ptMouse) ) {
+				CDuiRect rcSeparator = GetThumbRect(false);
+				//if( ::PtInRect(&rcSeparator, event.ptMouse) ) {
+				if( rcSeparator.PtInRect(event.ptMouse) ) {
 					SetCaptureState(true);
 					m_ptLastMouse = event.ptMouse;
 					m_rcNewPos = m_rcItem;
@@ -388,9 +389,12 @@ namespace DuiLib
 			}
 			if( event.Type == UIEVENT_SETCURSOR )
 			{
-				RECT rcSeparator = GetThumbRect(false);
-				if( IsEnabled() && ::PtInRect(&rcSeparator, event.ptMouse) ) {
-					::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZEWE)));
+				CDuiRect rcSeparator = GetThumbRect(false);
+				//if( IsEnabled() && ::PtInRect(&rcSeparator, event.ptMouse) ) {
+				if( IsEnabled() && rcSeparator.PtInRect(event.ptMouse) ) 
+				{
+					//::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZEWE)));
+					GetManager()->SetCursor(DUI_SIZEWE);
 					return;
 				}
 			}

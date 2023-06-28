@@ -35,8 +35,11 @@ public:
 	DWORD GetTrackColor() const { return m_dwTrackColor; }
 	CDuiRect GetTrackRect();
 
+#ifdef DUILIB_WIN32
 	virtual HBITMAP GetHBitmap();
 	virtual bool LoadHBitmap(HBITMAP hBitmap);
+#endif
+
 	virtual bool LoadImageFromMemory(LPBYTE pData, DWORD dwSize);
 	virtual bool LoadFile(LPCTSTR pstrImage);
 	virtual void RemoveAllImages();
@@ -46,7 +49,9 @@ public:
 	void OnTimer(UINT_PTR idEvent);
 
 protected:
+#ifdef DUILIB_WIN32
 	bool __SetHBitmap(HBITMAP hBitmap);
+#endif
 	bool __LoadImageFromMemory(LPBYTE pData, DWORD dwSize);
 	bool __LoadFile(LPCTSTR pstrImage);
 

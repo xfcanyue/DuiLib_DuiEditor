@@ -3,6 +3,7 @@
 
 #pragma once
 
+#ifdef DUILIB_WIN32
 #include <MsHTML.h>
 #include "Utils/WebBrowserEventHandler.h"
 #include <ExDisp.h>
@@ -172,4 +173,5 @@ namespace DuiLib
 		virtual LRESULT TranslateAccelerator( MSG *pMsg );
 	};
 } // namespace DuiLib
+#endif //#ifdef DUILIB_WIN32
 #endif // __UIWEBBROWSER_H__

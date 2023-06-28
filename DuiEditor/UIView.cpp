@@ -166,7 +166,7 @@ void CUIFormView::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 		pManager->SetGdiplusTextRenderingHint(_ttoi(pstrValue));
 	} 
 	else if( _tcsicmp(pstrName, _T("tooltiphovertime")) == 0 ) {
-		pManager->SetHoverTime(_ttoi(pstrValue));
+		pManager->SetTooltipHoverTime(_ttoi(pstrValue));
 	} 
 }
 

@@ -7,7 +7,7 @@ namespace DuiLib {
 	class UILIB_API IQueryControlText
 	{
 	public:
-		virtual LPCTSTR QueryControlText(LPCTSTR lpstrId, LPCTSTR lpstrType) = 0;
+		virtual CDuiString QueryControlText(LPCTSTR lpstrId, LPCTSTR lpstrType) = 0;
 	};
 
 	class UILIB_API CResourceManager

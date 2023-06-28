@@ -165,7 +165,7 @@ void CDuiProject::LoadConfig(CPaintManagerUI* pManager)
 			}
 			if( id >= 0 ) {
 				pManager->AddFont(id, pFontName, size, bold, underline, italic, shared);
-				if( defaultfont ) pManager->SetDefaultFont(pFontName, pManager->GetDPIObj()->Scale(size), bold, underline, italic, shared);
+				if( defaultfont ) pManager->SetDefaultFont(pFontName, pManager->GetDPIObj()->ScaleInt(size), bold, underline, italic, shared);
 
 			}
 		}

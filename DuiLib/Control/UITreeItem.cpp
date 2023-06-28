@@ -74,7 +74,7 @@ namespace DuiLib
 		case BTN_ICON:
 			if(bSelected)
 			{
-				if(!pTree->IsMultiSelect() || ::GetKeyState(VK_CONTROL)>=0) pTree->ClearSeletedNodes();
+				if(!pTree->IsMultiSelect() || !CPlatform::IsKeyDown(VK_CONTROL)) pTree->ClearSeletedNodes();
 
 				pTree->SelectNode(pItemUI->GetNodeData(), bSelected);
 				pTree->SetFocusNode(pItemUI->GetNodeData());
@@ -91,7 +91,7 @@ namespace DuiLib
 		case BTN_TEXT:
 			if(bSelected)
 			{
-				if(!pTree->IsMultiSelect() || ::GetKeyState(VK_CONTROL)>=0) pTree->ClearSeletedNodes();
+				if(!pTree->IsMultiSelect() || !CPlatform::IsKeyDown(VK_CONTROL)) pTree->ClearSeletedNodes();
 
 				pTree->SelectNode(pItemUI->GetNodeData(), bSelected);
 				pTree->SetFocusNode(pItemUI->GetNodeData());
@@ -154,7 +154,8 @@ namespace DuiLib
 
 		if( event.Type == UIEVENT_DBLCLICK )
 		{
-			if( ::PtInRect(&m_rcItem, event.ptMouse) && IsEnabled() )
+			//if( ::PtInRect(&m_rcItem, event.ptMouse) && IsEnabled() )
+			if( m_rcItem.PtInRect(event.ptMouse) && IsEnabled() )
 			{
 				pItemUI->GetNodeData()->Expand(!pItemUI->GetNodeData()->IsExpand());
 				pTree->NeedUpdate();
@@ -189,7 +190,7 @@ namespace DuiLib
 	{
 		if( _tcsicmp(pstrName, DUI_CTR_TREEITEM) == 0 )
 			return static_cast<CTreeItemUI*>(this);
-		return __super::GetInterface(pstrName);
+		return CHorizontalLayoutUI::GetInterface(pstrName);
 	}
 
 	UINT CTreeItemUI::GetControlFlags() const
@@ -274,18 +275,18 @@ namespace DuiLib
 	{
 		if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
 			if( m_pParent != NULL ) m_pParent->DoEvent(event);
-			else __super::DoEvent(event);
+			else CHorizontalLayoutUI::DoEvent(event);
 			return;
 		}
 
 		CTreeUI *pTree = (CTreeUI *)GetOwner();
-		if(!pTree || !m_pNodeData) return __super::DoEvent(event);
+		if(!pTree || !m_pNodeData) return CHorizontalLayoutUI::DoEvent(event);
 
 		if( event.Type == UIEVENT_BUTTONDOWN ) 
 		{
 			if( IsEnabled() ) 
 			{
-				if(!pTree->IsMultiSelect() || ::GetKeyState(VK_CONTROL)>=0) pTree->ClearSeletedNodes();
+				if(!pTree->IsMultiSelect() || !CPlatform::IsKeyDown(VK_CONTROL)) pTree->ClearSeletedNodes();
 				GetOwner()->SelectNode(m_pNodeData);
 				GetOwner()->SetFocusNode(m_pNodeData);
 				GetOwner()->Refresh(false);
@@ -323,6 +324,6 @@ namespace DuiLib
 			return;
 		}
 
-		__super::DoEvent(event);
+		CHorizontalLayoutUI::DoEvent(event);
 	}
 }

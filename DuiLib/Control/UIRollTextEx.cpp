@@ -1,18 +1,18 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "UIRollTextEx.h"
 
 namespace DuiLib
 {
-	static std::map<UINT_PTR, CControlUI *> g_MapTimerID_TO_CRollTextExUI;
-	static void CALLBACK TimerProc(HWND hWnd, UINT nMsg, UINT_PTR idEvent, DWORD dwTime)  
-	{
-		std::map<UINT_PTR, CControlUI *>::iterator it = g_MapTimerID_TO_CRollTextExUI.find(idEvent);
-		if(it != g_MapTimerID_TO_CRollTextExUI.end())
-		{
-			CRollTextExUI *pObject = (CRollTextExUI *)it->second;
-			pObject->OnTimer(idEvent);
-		}
-	}
+// 	static std::map<UINT_PTR, CControlUI *> g_MapTimerID_TO_CRollTextExUI;
+// 	static void CALLBACK TimerProc(HWND hWnd, UINT nMsg, UINT_PTR idEvent, DWORD dwTime)  
+// 	{
+// 		std::map<UINT_PTR, CControlUI *>::iterator it = g_MapTimerID_TO_CRollTextExUI.find(idEvent);
+// 		if(it != g_MapTimerID_TO_CRollTextExUI.end())
+// 		{
+// 			CRollTextExUI *pObject = (CRollTextExUI *)it->second;
+// 			pObject->OnTimer(idEvent);
+// 		}
+// 	}
 
 	IMPLEMENT_DUICONTROL(CRollTextExUI)
 
@@ -60,8 +60,10 @@ namespace DuiLib
 		{
 			m_nScrollPos = 0;
 			m_nText_W_H = 0;
-			m_idEventTimer = ::SetTimer(NULL, NULL, m_nRollSpeed, TimerProc);
-			g_MapTimerID_TO_CRollTextExUI[m_idEventTimer] = this;
+// 			m_idEventTimer = ::SetTimer(NULL, NULL, m_nRollSpeed, TimerProc);
+// 			g_MapTimerID_TO_CRollTextExUI[m_idEventTimer] = this;
+			m_idEventTimer = 100;
+			GetManager()->SetTimer(this, m_idEventTimer, m_nRollSpeed);
 		}
 	}
 
@@ -69,10 +71,11 @@ namespace DuiLib
 	{
 		if(m_idEventTimer != 0)
 		{
-			::KillTimer(NULL, m_idEventTimer);
-			std::map<UINT_PTR, CControlUI *>::iterator it = g_MapTimerID_TO_CRollTextExUI.find(m_idEventTimer);
-			if(it != g_MapTimerID_TO_CRollTextExUI.end())
-				g_MapTimerID_TO_CRollTextExUI.erase(it);
+// 			::KillTimer(NULL, m_idEventTimer);
+// 			std::map<UINT_PTR, CControlUI *>::iterator it = g_MapTimerID_TO_CRollTextExUI.find(m_idEventTimer);
+// 			if(it != g_MapTimerID_TO_CRollTextExUI.end())
+// 				g_MapTimerID_TO_CRollTextExUI.erase(it);
+			GetManager()->KillTimer(this,m_idEventTimer);
 			m_idEventTimer = 0;
 		}
 	}
@@ -133,7 +136,10 @@ namespace DuiLib
 		else if(event.Type == UIEVENT_MOUSEMOVE)
 			Invalidate();
 
-		__super::DoEvent(event);
+		if( event.Type == UIEVENT_TIMER )
+			OnTimer( (UINT_PTR)event.wParam );
+
+		CLabelUI::DoEvent(event);
 	}
 
 	void CRollTextExUI::OnTimer(UINT_PTR idEvent)
@@ -261,6 +267,6 @@ namespace DuiLib
 			SetRollStep(_ttoi(pstrValue));
 		}
 		else
-			__super::SetAttribute(pstrName, pstrValue);
+			CLabelUI::SetAttribute(pstrName, pstrValue);
 	}
 }

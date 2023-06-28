@@ -3,6 +3,7 @@
 
 #pragma once
 
+#ifdef DUILIB_WIN32
 namespace DuiLib {
 
 	class CTxtWinHost;
@@ -182,4 +183,6 @@ namespace DuiLib {
 
 } // namespace DuiLib
 
+#endif //#ifdef DUILIB_WIN32
 #endif // __UIRICHEDIT_H__
+

@@ -3,6 +3,7 @@
 #ifndef WIN_IMPL_BASE_HPP
 #define WIN_IMPL_BASE_HPP
 
+#ifdef DUILIB_WIN32
 namespace DuiLib
 {
 	class UILIB_API WindowImplBase
@@ -35,12 +36,12 @@ namespace DuiLib
 		virtual LPCTSTR GetWindowClassName(void) const = 0 ;
 		virtual LPCTSTR GetManagerName() { return NULL; }
 		virtual LRESULT ResponseDefaultKeyEvent(WPARAM wParam);
-		CPaintManagerUI m_pm;
+		DuiLibPaintManagerUI m_pm;
 
 	public:
 		virtual UINT GetClassStyle() const;
 		virtual CControlUI* CreateControl(LPCTSTR pstrClass);
-		virtual LPCTSTR QueryControlText(LPCTSTR lpstrId, LPCTSTR lpstrType);
+		virtual CDuiString QueryControlText(LPCTSTR lpstrId, LPCTSTR lpstrType);
 
 		virtual LRESULT MessageHandler(UINT uMsg, WPARAM wParam, LPARAM /*lParam*/, bool& /*bHandled*/);
 		virtual LRESULT OnClose(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled);
@@ -71,4 +72,5 @@ namespace DuiLib
 	};
 }
 
+#endif //#ifdef DUILIB_WIN32
 #endif // WIN_IMPL_BASE_HPP

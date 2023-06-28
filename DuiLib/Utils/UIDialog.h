@@ -1,5 +1,6 @@
 #pragma once
 
+#ifdef DUILIB_WIN32
 namespace DuiLib {
 
 #define TMD_ADD		1
@@ -52,3 +53,4 @@ private:
 };
 
 } //namespace DuiLib {
+#endif //#ifdef DUILIB_WIN32

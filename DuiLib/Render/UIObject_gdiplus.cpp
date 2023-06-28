@@ -2,6 +2,7 @@
 #include "UIObject_gdiplus.h"
 #include "UIRender_gdiplus.h"
 
+#ifdef DUILIB_WIN32
 namespace DuiLib {
 	//////////////////////////////////////////////////////////////////////////
 	//
@@ -208,3 +209,5 @@ namespace DuiLib {
 		
 	}
 } // namespace DuiLib
+#endif // #ifdef DUILIB_WIN32
+

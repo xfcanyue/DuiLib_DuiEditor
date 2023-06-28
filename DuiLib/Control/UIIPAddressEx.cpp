@@ -1,5 +1,7 @@
 #include "StdAfx.h"
 #include <string>
+
+#ifdef DUILIB_WIN32
 #include <Shlwapi.h>
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "shlwapi.lib")
@@ -507,3 +509,5 @@ namespace DuiLib
         UpdateText();
     }
 }
+
+#endif //#ifdef DUILIB_WIN32

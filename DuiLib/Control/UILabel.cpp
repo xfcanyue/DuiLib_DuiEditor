@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "UILabel.h"
 
-#include <atlconv.h>
+//#include <atlconv.h>
 namespace DuiLib
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -15,7 +15,7 @@ namespace DuiLib
 	LPVOID CLabelHLayoutUI::GetInterface(LPCTSTR pstrName)
 	{
 		if( _tcsicmp(pstrName, DUI_CTR_LABEL_HLAYOUT) == 0 ) return static_cast<CLabelHLayoutUI*>(this);
-		return __super::GetInterface(pstrName);
+		return CHorizontalLayoutUI::GetInterface(pstrName);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,7 @@ namespace DuiLib
 	LPVOID CLabelVLayoutUI::GetInterface(LPCTSTR pstrName)
 	{
 		if( _tcsicmp(pstrName, DUI_CTR_LABEL_VLAYOUT) == 0 ) return static_cast<CLabelVLayoutUI*>(this);
-		return __super::GetInterface(pstrName);
+		return CVerticalLayoutUI::GetInterface(pstrName);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -43,7 +43,7 @@ namespace DuiLib
 	LPVOID CLabelLayoutUI::GetInterface(LPCTSTR pstrName)
 	{
 		if( _tcsicmp(pstrName, DUI_CTR_LABEL_LAYOUT) == 0 ) return static_cast<CLabelLayoutUI*>(this);
-		return __super::GetInterface(pstrName);
+		return CDynamicLayoutUI::GetInterface(pstrName);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -94,7 +94,7 @@ namespace DuiLib
 			}
 			
 			if(m_pManager)
-				return GetManager()->GetDPIObj()->Scale(m_cxyFixed);
+				return GetManager()->GetDPIObj()->ScaleSize(m_cxyFixed);
 			return m_cxyFixed;
 		}
 
@@ -120,7 +120,7 @@ namespace DuiLib
 
 	void CLabelUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
-		__super::SetAttribute(pstrName, pstrValue);
+		CControlUI::SetAttribute(pstrName, pstrValue);
 	}
 
 	void CLabelUI::PaintText(UIRender *pRender)

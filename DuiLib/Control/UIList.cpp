@@ -472,11 +472,13 @@ namespace DuiLib {
 	{
 		if (m_aSelItems.GetSize() <= 0)
 			return -1;
-		int min = (int)m_aSelItems.GetAt(0);
+		//int min = (int)m_aSelItems.GetAt(0);
+		int min = *(int *)(m_aSelItems.GetAt(0));
 		int index;
 		for (int i = 0; i < m_aSelItems.GetSize(); ++i)
 		{
-			index = (int)m_aSelItems.GetAt(i);
+			//index = (int)m_aSelItems.GetAt(i);
+			index = *(int*)(m_aSelItems.GetAt(i));
 			if (min > index)
 				min = index;
 		}
@@ -487,11 +489,13 @@ namespace DuiLib {
 	{
 		if (m_aSelItems.GetSize() <= 0)
 			return -1;
-		int max = (int)m_aSelItems.GetAt(0);
+		//int max = (int)m_aSelItems.GetAt(0);
+		int max = *(int*)(m_aSelItems.GetAt(0));
 		int index;
 		for (int i = 0; i < m_aSelItems.GetSize(); ++i)
 		{
-			index = (int)m_aSelItems.GetAt(i);
+			//index = (int)m_aSelItems.GetAt(i);
+			index = *(int*)(m_aSelItems.GetAt(i));
 			if (max < index)
 				max = index;
 		}
@@ -555,7 +559,7 @@ namespace DuiLib {
 				return;
 			case 0x41:// Ctrl+A
 				{
-					if (IsMultiSelect() && (GetKeyState(VK_CONTROL) & 0x8000)) {
+					if (IsMultiSelect() && CPlatform::IsKeyDown(VK_CONTROL)) {
 						SelectAllItems();
 					}
 					return;
@@ -617,7 +621,8 @@ namespace DuiLib {
 			return -1;
 		}
 		else {
-			return (int)m_aSelItems.GetAt(0);
+			//return (int)m_aSelItems.GetAt(0);
+			return *(int*)(m_aSelItems.GetAt(0));
 		}
 
 		return -1;
@@ -643,7 +648,7 @@ namespace DuiLib {
 		}
 		int iLastSel = m_iCurSel;
 		m_iCurSel = iIndex;
-		m_aSelItems.Add((LPVOID)iIndex);
+		m_aSelItems.Add(reinterpret_cast<LPVOID>(iIndex));
 		EnsureVisible(iIndex);
 		if( bTakeFocus ) pControl->SetFocus();
 		if( m_pManager != NULL && iLastSel != m_iCurSel) {
@@ -662,11 +667,11 @@ namespace DuiLib {
 		if( pControl == NULL ) return false;
 		IListItemUI* pListItem = static_cast<IListItemUI*>(pControl->GetInterface(_T("ListItem")));
 		if( pListItem == NULL ) return false;
-		if(m_aSelItems.Find((LPVOID)iIndex) >= 0) return false;
+		if(m_aSelItems.Find(reinterpret_cast<LPVOID>(iIndex)) >= 0) return false;
 		if(!pListItem->SelectMulti(true)) return false;
 
 		m_iCurSel = iIndex;
-		m_aSelItems.Add((LPVOID)iIndex);
+		m_aSelItems.Add(reinterpret_cast<LPVOID>(iIndex));
 		EnsureVisible(iIndex);
 		if( bTakeFocus ) pControl->SetFocus();
 		if( m_pManager != NULL ) {
@@ -691,7 +696,8 @@ namespace DuiLib {
 		if(!IsMultiSelect()) return false;
 		if(bOthers) {
 			for (int i = m_aSelItems.GetSize() - 1; i >= 0; --i) {
-				int iSelIndex = (int)m_aSelItems.GetAt(i);
+				//int iSelIndex = (int)m_aSelItems.GetAt(i);
+				int iSelIndex = *(int*)(m_aSelItems.GetAt(i));
 				if(iSelIndex == iIndex) continue;
 				CControlUI* pControl = GetItemAt(iSelIndex);
 				if(pControl == NULL) continue;
@@ -709,7 +715,7 @@ namespace DuiLib {
 			if( !pControl->IsEnabled() ) return false;
 			IListItemUI* pListItem = static_cast<IListItemUI*>(pControl->GetInterface(_T("ListItem")));
 			if( pListItem == NULL ) return false;
-			int aIndex = m_aSelItems.Find((LPVOID)iIndex);
+			int aIndex = m_aSelItems.Find(reinterpret_cast<LPVOID>(iIndex));
 			if (aIndex < 0) return false;
 			if( !pListItem->SelectMulti(false) ) return false;
 			if(m_iCurSel == iIndex) m_iCurSel = -1;
@@ -729,7 +735,7 @@ namespace DuiLib {
 			if(pListItem == NULL) continue;
 			if(!pListItem->SelectMulti(true)) continue;
 
-			m_aSelItems.Add((LPVOID)i);
+			m_aSelItems.Add(reinterpret_cast<LPVOID>(i));
 			m_iCurSel = i;
 		}
 	}
@@ -737,7 +743,8 @@ namespace DuiLib {
 	void CListUI::UnSelectAllItems()
 	{
 		for (int i = 0; i < m_aSelItems.GetSize(); ++i) {
-			int iSelIndex = (int)m_aSelItems.GetAt(i);
+			//int iSelIndex = (int)m_aSelItems.GetAt(i);
+			int iSelIndex = *(int*)(m_aSelItems.GetAt(i));
 			CControlUI* pControl = GetItemAt(iSelIndex);
 			if(pControl == NULL) continue;
 			if(!pControl->IsEnabled()) continue;
@@ -760,13 +767,15 @@ namespace DuiLib {
 			return -1;
 
 		if (nItem < 0) {
-			return (int)m_aSelItems.GetAt(0);
+			//return (int)m_aSelItems.GetAt(0);
+			return *(int*)(m_aSelItems.GetAt(0));
 		}
-		int aIndex = m_aSelItems.Find((LPVOID)nItem);
+		int aIndex = m_aSelItems.Find(reinterpret_cast<LPVOID>(nItem));
 		if (aIndex < 0) return -1;
 		if (aIndex + 1 > m_aSelItems.GetSize() - 1)
 			return -1;
-		return (int)m_aSelItems.GetAt(aIndex + 1);
+		//return (int)m_aSelItems.GetAt(aIndex + 1);
+		return *(int*)(m_aSelItems.GetAt(aIndex + 1));
 	}
 
 	UINT CListUI::GetListType()
@@ -845,7 +854,7 @@ namespace DuiLib {
 		CScrollBarUI* pHorizontalScrollBar = m_pList->GetHorizontalScrollBar();
 		if( pHorizontalScrollBar && pHorizontalScrollBar->IsVisible() ) rcList.bottom -= pHorizontalScrollBar->GetFixedHeight();
 
-		int iPos = m_pList->GetScrollPos().cy;
+		//int iPos = m_pList->GetScrollPos().cy;
 		if( rcItem.top >= rcList.top && rcItem.bottom < rcList.bottom ) return;
 		int dx = 0;
 		if( rcItem.top < rcList.top ) dx = rcItem.top - rcList.top;
@@ -991,6 +1000,7 @@ namespace DuiLib {
 	{
 		if (!pfnCompare)
 			return FALSE;
+#ifdef WIN32
 		m_pCompareFunc = pfnCompare;
 		m_compareData = dwData;
 		CControlUI **pData = (CControlUI **)m_items.GetData();
@@ -998,7 +1008,7 @@ namespace DuiLib {
 		IListItemUI *pItem = NULL;
 		for (int i = 0; i < m_items.GetSize(); ++i)
 		{
-			pItem = (IListItemUI*)(static_cast<CControlUI*>(m_items[i])->GetInterface(TEXT("ListItem")));
+			pItem = (IListItemUI*)(static_cast<CControlUI*>(m_items[i])->GetInterface(_T("ListItem")));
 			if (pItem)
 			{
 				pItem->SetIndex(i);
@@ -1011,7 +1021,7 @@ namespace DuiLib {
 			SetPos(GetPos());
 			Invalidate();
 		}
-
+#endif
 		return TRUE;
 	}
 
@@ -1136,7 +1146,7 @@ namespace DuiLib {
 			}
 			cyFixed += sz.cy + pControl->GetPadding().top + pControl->GetPadding().bottom;
 
-			RECT rcPadding = pControl->GetPadding();
+			//RECT rcPadding = pControl->GetPadding();
 			sz.cx = MAX(sz.cx, 0);
 			if( sz.cx < pControl->GetMinWidth() ) sz.cx = pControl->GetMinWidth();
 			if( sz.cx > pControl->GetMaxWidth() ) sz.cx = pControl->GetMaxWidth();
@@ -1381,7 +1391,7 @@ namespace DuiLib {
 			if (m_bIsScaleHeader)
 			{
 				CListHeaderItemUI* pHeaderItem = static_cast<CListHeaderItemUI*>(pControl);
-				sz.cx = int(nHeaderWidth * (float)pHeaderItem->GetScale() / 100);
+				sz.cx = static_cast<int>(nHeaderWidth * (float)pHeaderItem->GetScale() / 100);
 			}
 			else
 			{
@@ -1539,12 +1549,13 @@ namespace DuiLib {
 		if( event.Type == UIEVENT_BUTTONDOWN || event.Type == UIEVENT_DBLCLICK )
 		{
 			if( !IsEnabled() ) return;
-			RECT rcSeparator = GetThumbRect();
+			CDuiRect rcSeparator = GetThumbRect();
 			if (m_iSepWidth>=0)
 				rcSeparator.left-=4;
 			else
 				rcSeparator.right+=4;
-			if( ::PtInRect(&rcSeparator, event.ptMouse) ) 
+			//if( ::PtInRect(&rcSeparator, event.ptMouse) ) 
+			if( rcSeparator.PtInRect(event.ptMouse) ) 
 			{
 				if( IsHeaderDragEnable() ) 
 				{
@@ -1596,13 +1607,16 @@ namespace DuiLib {
 		}
 		if( event.Type == UIEVENT_SETCURSOR )
 		{
-			RECT rcSeparator = GetThumbRect();
+			CDuiRect rcSeparator = GetThumbRect();
 			if (m_iSepWidth>=0)//111024 by cddjr, 增加分隔符区域，方便用户拖动
 				rcSeparator.left-=4;
 			else
 				rcSeparator.right+=4;
-			if( IsEnabled() && IsHeaderDragEnable() && ::PtInRect(&rcSeparator, event.ptMouse) ) {
-				::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZEWE)));
+			//if( IsEnabled() && IsHeaderDragEnable() && ::PtInRect(&rcSeparator, event.ptMouse) ) {
+			if( IsEnabled() && IsHeaderDragEnable() && rcSeparator.PtInRect(event.ptMouse) ) 
+			{
+				//::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(DUI_SIZEWE)));
+				GetManager()->SetCursor(DUI_SIZEWE);
 				return;
 			}
 		}
@@ -1639,7 +1653,7 @@ namespace DuiLib {
 
 	void CListHeaderItemUI::PaintStatusImage(UIRender *pRender)
 	{
-		__super::PaintStatusImage(pRender);
+		CContainerUI::PaintStatusImage(pRender);
 		
 		if( !m_sSepImage.IsEmpty() ) {
 			RECT rcThumb = GetThumbRect();
@@ -1670,9 +1684,9 @@ namespace DuiLib {
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
 	//
-		CListElementUI::CListElementUI() : m_iIndex(-1),
-		m_pOwner(NULL), 
-		m_bSelected(false)
+	CListElementUI::CListElementUI() : m_iIndex(-1),
+		m_bSelected(false),
+		m_pOwner(NULL)
 	{
 	}
 
@@ -1741,8 +1755,9 @@ namespace DuiLib {
 				CScrollBarUI* pHorizontalScrollBar = pParentContainer->GetHorizontalScrollBar();
 				if( pHorizontalScrollBar && pHorizontalScrollBar->IsVisible() ) rc.bottom -= pHorizontalScrollBar->GetFixedHeight();
 
-				RECT invalidateRc = m_rcItem;
-				if( !::IntersectRect(&invalidateRc, &m_rcItem, &rc) ) 
+				CDuiRect invalidateRc = m_rcItem;
+				//if( !::IntersectRect(&invalidateRc, &m_rcItem, &rc) ) 
+				if( !invalidateRc.Intersect(m_rcItem, rc) ) 
 				{
 					return;
 				}
@@ -1754,7 +1769,8 @@ namespace DuiLib {
 				{
 					rcTemp = invalidateRc;
 					rcParent = pParent->GetPos();
-					if( !::IntersectRect(&invalidateRc, &rcTemp, &rcParent) ) 
+					//if( !::IntersectRect(&invalidateRc, &rcTemp, &rcParent) ) 
+					if( !invalidateRc.Intersect(rcTemp, rcParent) ) 
 					{
 						return;
 					}
@@ -1953,7 +1969,7 @@ namespace DuiLib {
 			if( m_pOwner->GetListInfo()->bRSelected && event.Type == UIEVENT_RBUTTONDOWN )
 			{
 				if( IsEnabled() ){
-					if((GetKeyState(VK_CONTROL) & 0x8000)) {
+					if(CPlatform::IsKeyDown(VK_CONTROL)) {
 						SelectMulti(!IsSelected());
 					}
 					else Select();
@@ -1965,7 +1981,7 @@ namespace DuiLib {
 		if( event.Type == UIEVENT_BUTTONDOWN )
 		{
 			if( IsEnabled() ){
-				if((GetKeyState(VK_CONTROL) & 0x8000)) {
+				if(CPlatform::IsKeyDown(VK_CONTROL)) {
 					SelectMulti(!IsSelected());
 				}
 				else {
@@ -2032,7 +2048,7 @@ namespace DuiLib {
 		if( IsAutoCalcWidth() && cXY.cx == 0 && m_pManager != NULL ) {
 			RECT rcText = { 0, 0, 9999, cXY.cy };
 			
-				GetManager()->Render()->DrawText(rcText, CDuiRect(0,0,0,0), sText, 0, pInfo->nFont, DT_SINGLELINE | DT_CALCRECT | pInfo->uTextStyle & ~DT_RIGHT & ~DT_CENTER);
+				GetManager()->Render()->DrawText(rcText, CDuiRect(0,0,0,0), sText, 0, pInfo->nFont, DT_SINGLELINE | DT_CALCRECT | (pInfo->uTextStyle & ~DT_RIGHT & ~DT_CENTER));
 			
 			cXY.cx = rcText.right - rcText.left + pInfo->rcTextPadding.left + pInfo->rcTextPadding.right;        
 		}
@@ -2064,7 +2080,7 @@ namespace DuiLib {
 		if( !IsEnabled() ) {
 			iTextColor = pInfo->dwDisabledTextColor;
 		}
-		int nLinks = 0;
+		//int nLinks = 0;
 		RECT rcText = rcItem;
 		rcText.left += pInfo->rcTextPadding.left;
 		rcText.right -= pInfo->rcTextPadding.right;
@@ -2173,15 +2189,19 @@ namespace DuiLib {
 		// When you hover over a link
 		if( event.Type == UIEVENT_SETCURSOR ) {
 			for( int i = 0; i < m_nLinks; i++ ) {
-				if( ::PtInRect(&m_rcLinks[i], event.ptMouse) ) {
-					::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_HAND)));
+				//if( ::PtInRect(&m_rcLinks[i], event.ptMouse) ) {
+				if( m_rcLinks[i].PtInRect(event.ptMouse) ) 
+				{
+					//::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_HAND)));
+					GetManager()->SetCursor(DUI_HAND);
 					return;
 				}
 			}      
 		}
 		if( event.Type == UIEVENT_BUTTONUP && IsEnabled() ) {
 			for( int i = 0; i < m_nLinks; i++ ) {
-				if( ::PtInRect(&m_rcLinks[i], event.ptMouse) ) {
+				//if( ::PtInRect(&m_rcLinks[i], event.ptMouse) ) {
+				if( m_rcLinks[i].PtInRect(event.ptMouse) ) {
 					m_pManager->SendNotify(this, DUI_MSGTYPE_LINK, i);
 					return;
 				}
@@ -2190,7 +2210,8 @@ namespace DuiLib {
 		if( m_nLinks > 0 && event.Type == UIEVENT_MOUSEMOVE ) {
 			int nHoverLink = -1;
 			for( int i = 0; i < m_nLinks; i++ ) {
-				if( ::PtInRect(&m_rcLinks[i], event.ptMouse) ) {
+				//if( ::PtInRect(&m_rcLinks[i], event.ptMouse) ) {
+				if( m_rcLinks[i].PtInRect(event.ptMouse) ) {
 					nHoverLink = i;
 					break;
 				}
@@ -2260,7 +2281,7 @@ namespace DuiLib {
 				pInfo->nFont, pInfo->uTextStyle);
 
 			m_nLinks += nLinks;
-			nLinks = lengthof(m_rcLinks) - m_nLinks; 
+			nLinks = static_cast<int>(lengthof(m_rcLinks)) - m_nLinks; 
 		}
 		for( int i = m_nLinks; i < lengthof(m_rcLinks); i++ ) {
 			::ZeroMemory(m_rcLinks + i, sizeof(RECT));
@@ -2275,8 +2296,8 @@ namespace DuiLib {
 
 	CListContainerElementUI::CListContainerElementUI() : 
 		m_iIndex(-1),
-		m_pOwner(NULL), 
-		m_bSelected(false)
+		m_bSelected(false),
+		m_pOwner(NULL)
 	{
 	}
 
@@ -2345,8 +2366,9 @@ namespace DuiLib {
 				CScrollBarUI* pHorizontalScrollBar = pParentContainer->GetHorizontalScrollBar();
 				if( pHorizontalScrollBar && pHorizontalScrollBar->IsVisible() ) rc.bottom -= pHorizontalScrollBar->GetFixedHeight();
 
-				RECT invalidateRc = m_rcItem;
-				if( !::IntersectRect(&invalidateRc, &m_rcItem, &rc) ) 
+				CDuiRect invalidateRc = m_rcItem;
+				//if( !::IntersectRect(&invalidateRc, &m_rcItem, &rc) ) 
+				if( !invalidateRc.Intersect(m_rcItem, rc) ) 
 				{
 					return;
 				}
@@ -2358,7 +2380,8 @@ namespace DuiLib {
 				{
 					rcTemp = invalidateRc;
 					rcParent = pParent->GetPos();
-					if( !::IntersectRect(&invalidateRc, &rcTemp, &rcParent) ) 
+					//if( !::IntersectRect(&invalidateRc, &rcTemp, &rcParent) ) 
+					if( !invalidateRc.Intersect(rcTemp, rcParent) ) 
 					{
 						return;
 					}
@@ -2447,7 +2470,7 @@ namespace DuiLib {
 		if( event.Type == UIEVENT_BUTTONDOWN )
 		{
 			if( IsEnabled() ){
-				if((GetKeyState(VK_CONTROL) & 0x8000)) {
+				if(CPlatform::IsKeyDown(VK_CONTROL)) {
 					SelectMulti(!IsSelected());
 				}
 				else Select();
@@ -2460,7 +2483,7 @@ namespace DuiLib {
 			if( m_pOwner->GetListInfo()->bRSelected && event.Type == UIEVENT_RBUTTONDOWN )
 			{
 				if( IsEnabled() ){
-					if((GetKeyState(VK_CONTROL) & 0x8000)) {
+					if(CPlatform::IsKeyDown(VK_CONTROL)) {
 						SelectMulti(!IsSelected());
 					}
 					else Select();
@@ -2662,3 +2685,4 @@ namespace DuiLib {
 	}
 
 } // namespace DuiLib
+

@@ -238,7 +238,7 @@ void CSciEditUI::SetPos(RECT rc, bool bNeedInvalidate /* = true */)
 
 	// Adjust for inset
 	RECT rcInset = GetInset();
-	GetManager()->GetDPIObj()->Scale(&rcInset);
+	GetManager()->GetDPIObj()->ScaleRect(&rcInset);
 	rcItem.left += rcInset.left;
 	rcItem.top += rcInset.top;
 	rcItem.right -= rcInset.right;

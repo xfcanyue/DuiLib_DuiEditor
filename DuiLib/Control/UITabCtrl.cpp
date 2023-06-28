@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "UITabCtrl.h"
 
 namespace DuiLib
@@ -45,7 +45,8 @@ namespace DuiLib
 
 		if(event.Type == UIEVENT_MOUSEENTER)
 		{
-			if( IsActiveMouseOn() && ::PtInRect(&m_rcItem, event.ptMouse) && IsEnabled() ) 
+			//if( IsActiveMouseOn() && ::PtInRect(&m_rcItem, event.ptMouse) && IsEnabled() ) 
+			if( IsActiveMouseOn() && m_rcItem.PtInRect(event.ptMouse) && IsEnabled() ) 
 			{
 				SetCaptureState(true);
 				SetPushedState(true);
@@ -65,7 +66,7 @@ namespace DuiLib
 				return;	
 			}
 		}
-		__super::DoEvent(event);
+		COptionUI::DoEvent(event);
 	}
 
 	bool CTabCtrlUI::IsSelected() const
@@ -73,11 +74,11 @@ namespace DuiLib
 		LPCTSTR pstrName = m_sBindTabLayoutName;
 		if(pstrName == NULL || (m_iBindTabIndex < 0 && m_sBindTabIndexName.IsEmpty()))
 		{
-			return __super::IsSelected();
+			return COptionUI::IsSelected();
 		}
 
 		CTabLayoutUI* pTabLayout = static_cast<CTabLayoutUI*>(GetManager()->FindControl(pstrName));
-		if(!pTabLayout) return __super::IsSelected();
+		if(!pTabLayout) return COptionUI::IsSelected();
 
 		if(m_iBindTabIndex >= 0 && pTabLayout->GetCurSel() == m_iBindTabIndex)
 			return true;
@@ -128,6 +129,6 @@ namespace DuiLib
 		if( _tcsicmp(pstrName, _T("activemouseon")) == 0 ) 
 			SetActiveMouseOn(_tcsicmp(pstrValue, _T("true")) == 0);
 		else 
-			__super::SetAttribute(pstrName, pstrValue);
+			COptionUI::SetAttribute(pstrName, pstrValue);
 	}
 }

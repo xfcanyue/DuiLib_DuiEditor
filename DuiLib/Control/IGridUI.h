@@ -36,58 +36,36 @@ struct TGridMergeRange
 };
 
 //单元格数据, 扩展这个类，注意综合考虑 内存占用 和 运行速度。
-class TCellData : public ILinkedList
+class UILIB_API TCellData : public ILinkedList
 {
 	friend class IGridUI;
 public:
-	TCellData()
-	{
-		m_state = 0;
-		m_tag = NULL;
-		m_dwTextColor = 0;
-	}
+	TCellData();
 
 protected:
-	void Select(BOOL bSelected=TRUE) {   
-		if(bSelected) m_state |= 0x01;
-		else m_state &= ~0x01;
-	}
+	void Select(BOOL bSelected=TRUE);
 
 public:
-	BOOL IsSelected() const { return (m_state & 0x01) == 0x01; }
+	BOOL IsSelected() const;
 
-	void SetCheckBoxCheck(BOOL bSelected=TRUE) { 
-		if(bSelected) m_state |= 0x02;
-		else m_state &= ~0x02;
-	}
-	BOOL IsCheckBoxCheck() const { return (m_state & 0x02) == 0x02; }
+	void SetCheckBoxCheck(BOOL bSelected=TRUE);
+	BOOL IsCheckBoxCheck() const;
 
-	void SetMergedWidthOthers(bool bMerged) {
-		if(bMerged) m_state |= 0x04;
-		else m_state &= ~0x04;
-	}
-	bool IsMergedWithOthers() const { return (m_state & 0x04) == 0x04; }
+	void SetMergedWidthOthers(bool bMerged);
+	bool IsMergedWithOthers() const;
 
-	CDuiString GetText() const { return m_sText; }
-	int GetTextN() const { return _ttoi(m_sText); }
+	CDuiString GetText() const;
+	int GetTextN() const;
 
-	void SetText(LPCTSTR pstrText) { m_sText = pstrText; }
-	void SetTextN(int n) { m_sText.Format(_T("%d"), n); }
-	void SetTextV(LPCTSTR lpszFormat, ...)
-	{
-		va_list argList;
-		va_start(argList, lpszFormat);
-		CDuiString s;
-		s.InnerFormat(lpszFormat, argList);
-		SetText(s);
-		va_end(argList);
-	}
+	void SetText(LPCTSTR pstrText);
+	void SetTextN(int n);
+	void SetTextV(LPCTSTR lpszFormat, ...);
 
-	void SetTag(UINT_PTR tag) { m_tag = tag; }
-	UINT_PTR GetTag() const { return m_tag; }
+	void SetTag(UINT_PTR tag);
+	UINT_PTR GetTag() const;
 
-	void SetTextColor(DWORD dwColor) { m_dwTextColor = dwColor; }
-	DWORD GetTextColor() const { return m_dwTextColor; }
+	void SetTextColor(DWORD dwColor);
+	DWORD GetTextColor() const;
 protected:
 	CDuiString m_sText;
 	UINT_PTR m_tag;
@@ -101,25 +79,20 @@ protected:
 };
 
 //表格行数据
-struct TRowData : public ILinkedList
+struct UILIB_API TRowData : public ILinkedList
 {
-	TRowData()
-	{
-		m_nHeight = 0;
-		m_bSelected = FALSE;
-		m_tag = 0;
-	}
+	TRowData();
 
-	void SetHeight(int n) { m_nHeight = n; }
-	int  GetHeight() const { return m_nHeight; }
+	void SetHeight(int n);
+	int  GetHeight() const;
 
-	void Selected(BOOL bSelected=TRUE) { m_bSelected = bSelected; }
-	BOOL IsSelected() const { return m_bSelected; }
+	void Selected(BOOL bSelected=TRUE);
+	BOOL IsSelected() const;
 
-	void SetTag(UINT_PTR tag) { m_tag = tag; }
-	UINT_PTR GetTag() const { return m_tag; }
+	void SetTag(UINT_PTR tag);
+	UINT_PTR GetTag() const;
 
-	TCellData *GetCell(int col) { return (TCellData *)m_cells.GetAt(col); }
+	TCellData *GetCell(int col);
 
 	short m_nHeight;
 	BOOL m_bSelected;

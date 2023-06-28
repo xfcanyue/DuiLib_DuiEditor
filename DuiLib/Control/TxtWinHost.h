@@ -2,6 +2,8 @@
 #define __TXTWINHOST_H__
 
 #pragma once
+#ifdef DUILIB_WIN32
+
 #ifdef _USEIMM
 #include <imm.h>
 #pragma comment(lib, "imm32.lib")
@@ -181,4 +183,6 @@ namespace DuiLib {
 
 } // namespace DuiLib
 
+#endif //#ifdef DUILIB_WIN32
 #endif // __TXTWINHOST_H__
+

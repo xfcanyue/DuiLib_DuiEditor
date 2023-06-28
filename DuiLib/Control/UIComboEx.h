@@ -3,6 +3,10 @@
 
 namespace DuiLib
 {
+#ifndef WIN32
+#define CBS_DROPDOWN          0x0002L
+#define CBS_DROPDOWNLIST      0x0003L
+#endif
 
 //class CComboEditWnd;
 //下拉按钮单独定义
@@ -52,7 +56,7 @@ public:
 	void SetDropType(int type);
 
 	void SetTipValue(LPCTSTR pStrTipValue);
-	LPCTSTR GetTipValue();
+	CDuiString GetTipValue();
 	void SetTipValueColor(LPCTSTR pStrColor);
 	DWORD GetTipValueColor();
 

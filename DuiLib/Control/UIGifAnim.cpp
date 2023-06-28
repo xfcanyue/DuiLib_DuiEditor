@@ -2,6 +2,8 @@
 #include "UIGifAnim.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef DUILIB_WIN32
 namespace DuiLib
 {
 	IMPLEMENT_DUICONTROL(CGifAnimUI)
@@ -44,7 +46,8 @@ namespace DuiLib
 
 	bool CGifAnimUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 	{
-		if( !::IntersectRect( &m_rcPaint, &rcPaint, &m_rcItem ) ) return true;
+		//if( !::IntersectRect( &m_rcPaint, &rcPaint, &m_rcItem ) ) return true;
+		if( !m_rcPaint.Intersect(rcPaint, m_rcItem ) ) return true;
 		if ( NULL == m_pGifImage )
 		{		
 			InitGifImage();
@@ -243,3 +246,4 @@ namespace DuiLib
 		return pImg;
 	}
 }
+#endif //#ifdef DUILIB_WIN32

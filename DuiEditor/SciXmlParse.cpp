@@ -426,7 +426,7 @@ void CSciXmlParse::AddUIFont(xml_node node, xml_node nodeSample)
 	}
 
 	GetUIManager()->GetManager()->AddFont(id, FontName, size, bold, underline, italic, shared);
-	if( defaultfont ) GetUIManager()->GetManager()->SetDefaultFont(FontName, GetUIManager()->GetManager()->GetDPIObj()->Scale(size), bold, underline, italic, shared);
+	if( defaultfont ) GetUIManager()->GetManager()->SetDefaultFont(FontName, GetUIManager()->GetManager()->GetDPIObj()->ScaleInt(size), bold, underline, italic, shared);
 
 	//Ä¿µÄÊÇºöÂÔ×¢ÊÍ
 	xml_node nodeprev = node.previous_sibling();
@@ -486,7 +486,7 @@ void CSciXmlParse::ParseUIFontAttribute(xml_node node, xml_node nodeSample)
 		bool shared		= nodeSample.attribute(XTEXT("shared")).as_bool();
 
 		GetUIManager()->GetManager()->AddFont(id, FontName, size, bold, underline, italic, shared);
-		if( defaultfont ) GetUIManager()->GetManager()->SetDefaultFont(FontName, GetUIManager()->GetManager()->GetDPIObj()->Scale(size), bold, underline, italic, shared);
+		if( defaultfont ) GetUIManager()->GetManager()->SetDefaultFont(FontName, GetUIManager()->GetManager()->GetDPIObj()->ScaleInt(size), bold, underline, italic, shared);
 		GetUIManager()->GetTreeView()->UpdateXmlNode(node);
 	}
 }

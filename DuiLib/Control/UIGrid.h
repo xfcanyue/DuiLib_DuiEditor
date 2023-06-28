@@ -7,6 +7,10 @@
 namespace DuiLib
 {
 
+#ifndef WIN32
+	typedef int (CALLBACK* PFNLVCOMPARE)(LPARAM, LPARAM, LPARAM);
+#endif
+
 class UILIB_API CGridUI : public CVerticalLayoutUI, public IGridUI
 {
 	DECLARE_DUICONTROL(CGridUI)

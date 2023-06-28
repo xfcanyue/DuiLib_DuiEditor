@@ -28,7 +28,7 @@ LPCTSTR CTreeBodyUI::GetClass() const
 LPVOID CTreeBodyUI::GetInterface(LPCTSTR pstrName)
 {
 	if( _tcsicmp(pstrName, DUI_CTR_TREEBODY) == 0 ) return static_cast<CTreeBodyUI*>(this);
-	return __super::GetInterface(pstrName);
+	return CVerticalLayoutUI::GetInterface(pstrName);
 }
 
 void CTreeBodyUI::SetPos(RECT rc, bool bNeedInvalidate)
@@ -42,42 +42,42 @@ void CTreeBodyUI::SetPos(RECT rc, bool bNeedInvalidate)
 
 void CTreeBodyUI::LineUp()
 {
-	if(!GetOwner()) return __super::LineUp();
+	if(!GetOwner()) return CVerticalLayoutUI::LineUp();
 	CTreeUI *pTree = (CTreeUI *)GetOwner();
 	pTree->LineUp();
 }
 
 void CTreeBodyUI::LineDown()
 {
-	if(!GetOwner()) return __super::LineDown();
+	if(!GetOwner()) return CVerticalLayoutUI::LineDown();
 	CTreeUI *pTree = (CTreeUI *)GetOwner();
 	pTree->LineDown();
 }
 
 void CTreeBodyUI::PageUp()
 {
-	if(!GetOwner()) return __super::PageUp();
+	if(!GetOwner()) return CVerticalLayoutUI::PageUp();
 	CTreeUI *pTree = (CTreeUI *)GetOwner();
 	pTree->PageUp();
 }
 
 void CTreeBodyUI::PageDown()
 {
-	if(!GetOwner()) return __super::PageDown();
+	if(!GetOwner()) return CVerticalLayoutUI::PageDown();
 	CTreeUI *pTree = (CTreeUI *)GetOwner();
 	pTree->PageDown();
 }
 
 void CTreeBodyUI::HomeUp()
 {
-	if(!GetOwner()) return __super::HomeUp();
+	if(!GetOwner()) return CVerticalLayoutUI::HomeUp();
 	CTreeUI *pTree = (CTreeUI *)GetOwner();
 	pTree->HomeUp();
 }
 
 void CTreeBodyUI::EndDown()
 {
-	if(!GetOwner()) return __super::EndDown();
+	if(!GetOwner()) return CVerticalLayoutUI::EndDown();
 	CTreeUI *pTree = (CTreeUI *)GetOwner();
 	pTree->EndDown();
 }
@@ -106,7 +106,7 @@ LPCTSTR CTreeUI::GetClass() const
 LPVOID CTreeUI::GetInterface( LPCTSTR pstrName )
 {
 	if( _tcsicmp(pstrName, DUI_CTR_TREE) == 0 ) return static_cast<CTreeUI*>(this);
-	return __super::GetInterface(pstrName);
+	return CContainerUI::GetInterface(pstrName);
 }
 
 UINT CTreeUI::GetControlFlags() const
@@ -137,7 +137,7 @@ void CTreeUI::DoEvent(TEventUI& event)
 {
 	if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
 		if( m_pParent != NULL ) m_pParent->DoEvent(event);
-		else __super::DoEvent(event);
+		else CContainerUI::DoEvent(event);
 		return;
 	}
 
@@ -150,12 +150,12 @@ void CTreeUI::DoEvent(TEventUI& event)
 		return;
 	}
 
-	__super::DoEvent(event);
+	CContainerUI::DoEvent(event);
 }
 
 void CTreeUI::SetPos(RECT rc, bool bNeedInvalidate)
 {
-	//return __super::SetPos(rc, bNeedInvalidate);
+	//return CContainerUI::SetPos(rc, bNeedInvalidate);
 	CControlUI::SetPos(rc, bNeedInvalidate);
 	rc = m_rcItem;
 
@@ -461,7 +461,7 @@ void CTreeUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 		SetStyleTextBtn(pstrValue);
 	}
 	else
-		__super::SetAttribute(pstrName, pstrValue);
+		CContainerUI::SetAttribute(pstrName, pstrValue);
 }
 
 

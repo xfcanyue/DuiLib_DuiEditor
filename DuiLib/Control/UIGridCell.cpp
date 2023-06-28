@@ -109,12 +109,12 @@ UINT CGridCellUI::GetControlFlags() const
 LPVOID CGridCellUI::GetInterface(LPCTSTR pstrName)
 {
 	if( _tcsicmp(pstrName, DUI_CTR_GRIDCELL) == 0 ) return static_cast<CGridCellUI*>(this);
-	return __super::GetInterface(pstrName);
+	return COptionLayoutUI::GetInterface(pstrName);
 }
 
 CDuiString CGridCellUI::GetText() const
 {
-	if(!GetOwner()) return __super::GetText();
+	if(!GetOwner()) return COptionLayoutUI::GetText();
 
 	TCellData *pCellData = GetOwner()->GetCellData(m_row, m_col);
 	if(pCellData)
@@ -130,7 +130,7 @@ CDuiString CGridCellUI::GetText() const
 				CDuiString s = pkg->GetText(GetResourceID());
 				if (!s.IsEmpty()) return s;
 			}
-			else
+			else if (IsResourceText())
 			{
 				CDuiString s = CLangManagerUI::LoadString(sText);
 				if(!s.IsEmpty()) return s;
@@ -138,12 +138,12 @@ CDuiString CGridCellUI::GetText() const
 		}
 		return sText;
 	}
-	return __super::GetText();
+	return COptionLayoutUI::GetText();
 }
 
 void CGridCellUI::SetText(LPCTSTR pstrText)
 {
-	if(!GetOwner()) return __super::SetText(pstrText);
+	if(!GetOwner()) return COptionLayoutUI::SetText(pstrText);
 
 	CGridUI *pGrid = (CGridUI *)GetOwner();
 	TCellData *pCellData = pGrid->GetCellData(m_row, m_col);
@@ -153,12 +153,12 @@ void CGridCellUI::SetText(LPCTSTR pstrText)
 		return;
 	}
 
-	__super::SetText(pstrText);
+	COptionLayoutUI::SetText(pstrText);
 }
 
 DWORD CGridCellUI::GetTextColor() const
 {
-	if(!GetOwner()) return __super::GetTextColor();
+	if(!GetOwner()) return COptionLayoutUI::GetTextColor();
 
 	CGridUI *pGrid = (CGridUI *)GetOwner();
 	TCellData *pCellData = pGrid->GetCellData(m_row, m_col);
@@ -167,12 +167,12 @@ DWORD CGridCellUI::GetTextColor() const
 		return pCellData->GetTextColor();
 	}
 
-	return __super::GetTextColor();
+	return COptionLayoutUI::GetTextColor();
 }
 
 void CGridCellUI::SetTextColor(DWORD dwColor)
 {
-	if(!GetOwner()) return __super::SetTextColor(dwColor);
+	if(!GetOwner()) return COptionLayoutUI::SetTextColor(dwColor);
 
 	CGridUI *pGrid = (CGridUI *)GetOwner();
 	TCellData *pCellData = pGrid->GetCellData(m_row, m_col);
@@ -182,7 +182,7 @@ void CGridCellUI::SetTextColor(DWORD dwColor)
 		return;
 	}
 
-	__super::SetTextColor(dwColor);
+	COptionLayoutUI::SetTextColor(dwColor);
 }
 
 bool CGridCellUI::IsMergedWithOthers()
@@ -270,7 +270,7 @@ void CGridCellUI::SetFixedWidth(int cx)
 			}
 		}	
 	}
-	__super::SetFixedWidth(cx);
+	COptionLayoutUI::SetFixedWidth(cx);
 }
 
 bool CGridCellUI::IsSelected() const
@@ -332,7 +332,7 @@ RECT CGridCellUI::GetCellPos()
 	{
 		return CDuiRect(0,0,0,0);
 	}
-	return __super::GetPos();
+	return COptionLayoutUI::GetPos();
 }
 
 void CGridCellUI::CreateInnerControl()
@@ -372,6 +372,7 @@ void CGridCellUI::CreateInnerControl()
 		break;
 	case celltypeEdit:
 		{
+#ifdef DUILIB_WIN32
 			CRichEditUI *pControl = new CRichEditUI;
 			pControl->OnEvent += MakeDelegate(this, &CGridCellUI::OnEventInnerControl);
 			pControl->OnNotify += MakeDelegate(this, &CGridCellUI::OnNotifyInnerControl);
@@ -386,6 +387,7 @@ void CGridCellUI::CreateInnerControl()
 				CGridUI *pGrid = (CGridUI *)GetOwner();
 				if(GetManager()) GetManager()->SendNotify(pGrid, DUI_MSGTYPE_STARTEDIT, m_row, m_col);
 			}
+#endif //#ifdef DUILIB_WIN32
 		}
 		break;
 	case celltypeCheckBox:
@@ -554,13 +556,13 @@ void CGridCellUI::DoInit()
 
 void CGridCellUI::SetPos(RECT rc, bool bNeedInvalidate)
 {
-	return __super::SetPos(rc, bNeedInvalidate);
+	return COptionLayoutUI::SetPos(rc, bNeedInvalidate);
 }
 
 SIZE CGridCellUI::EstimateSize(SIZE szAvailable)
 {
 	if(!GetOwner())
-		return __super::EstimateSize(szAvailable);
+		return COptionLayoutUI::EstimateSize(szAvailable);
 
 	SIZE sz = {0,0};
 	sz.cx = GetOwner()->GetColumnWidth(m_col);
@@ -576,17 +578,17 @@ void CGridCellUI::DoEvent(TEventUI& event)
 		return;
 	}
 
-	if(!GetOwner()) return __super::DoEvent(event);
+	if(!GetOwner()) return COptionLayoutUI::DoEvent(event);
 	CGridUI *pGrid = (CGridUI *)GetOwner();
 	return pGrid->DoEvent(event);
 
-	__super::DoEvent(event);
+	COptionLayoutUI::DoEvent(event);
 }
 
 bool CGridCellUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 {
 	if(!GetOwner()) 
-		return __super::DoPaint(pRender, rcPaint, pStopControl);
+		return COptionLayoutUI::DoPaint(pRender, rcPaint, pStopControl);
 	CGridUI *pGrid = (CGridUI *)GetOwner();
 	TCellData *pCellData = pGrid->GetCellData(m_row, m_col);
 	m_rcPaint2  = GetCellPos();
@@ -596,7 +598,7 @@ bool CGridCellUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pS
 		if(pGrid->IsMergedCell(m_row, m_col) || pCellData->IsMergedWithOthers())
 			return true;
 	}
-	return __super::DoPaint(pRender, rcPaint, pStopControl);
+	return COptionLayoutUI::DoPaint(pRender, rcPaint, pStopControl);
 }
 
 void CGridCellUI::PaintBkColor(UIRender *pRender)
@@ -671,7 +673,7 @@ void CGridCellUI::PaintForeImage(UIRender *pRender)
 
 void CGridCellUI::PaintText(UIRender *pRender)
 {
-	if(!GetOwner()) return __super::PaintText(pRender);
+	if(!GetOwner()) return COptionLayoutUI::PaintText(pRender);
 	CGridUI *pGrid = (CGridUI *)GetOwner();
 
 	GridCellType cellType = pGrid->GetCellType(m_row, m_col);
@@ -684,7 +686,7 @@ void CGridCellUI::PaintText(UIRender *pRender)
 	CDuiString sText = GetText();
 
 	RECT rcTextPadding = GetTextPadding();
-	GetManager()->GetDPIObj()->Scale(&rcTextPadding);
+	GetManager()->GetDPIObj()->ScaleRect(&rcTextPadding);
 	int nLinks = 0;
 	RECT rc = m_rcPaint2;
 	rc.left += rcTextPadding.left;
@@ -790,7 +792,7 @@ void CGridCellUI::PaintText(UIRender *pRender)
 
 void CGridCellUI::PaintBorder(UIRender *pRender)
 {
-	if(!GetOwner()) return __super::PaintBorder(pRender);
+	if(!GetOwner()) return COptionLayoutUI::PaintBorder(pRender);
 	CGridUI *pGrid = (CGridUI *)GetOwner();
 
 	DWORD dwColor = 0;
@@ -864,7 +866,7 @@ void CGridCellUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 		m_bMergeWithOther = _tcsicmp(pstrValue, _T("true")) == 0;
 	}
 	else 
-		__super::SetAttribute(pstrName, pstrValue);
+		COptionLayoutUI::SetAttribute(pstrName, pstrValue);
 }
 
 }

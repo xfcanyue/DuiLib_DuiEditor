@@ -10,6 +10,19 @@ namespace DuiLib {
 	class UILIB_API CUIFile
 	{
 	public:
+// 		enum OpenFlags {
+// 			modeRead =         (int) 0x00000,
+// 			modeWrite =        (int) 0x00001,
+// 			modeReadWrite =    (int) 0x00002,
+// 			modeCreate =       (int) 0x01000,
+// 			modeNoTruncate =   (int) 0x02000,	//如果文件存在，追加内容；如果文件不存在创建新文件。
+// 			typeBinary =       (int) 0x08000,
+// 		};
+		enum CharSet {
+			FILE_ANSI =  (int) 0x00000,
+			FILE_UTF8 =  (int) 0x00001,
+		};
+	public:
 		CUIFile();
 		~CUIFile();
 
@@ -19,13 +32,38 @@ namespace DuiLib {
 
 		BOOL LoadFile(const STRINGorID &bitmap, LPCTSTR type=NULL, HINSTANCE instance=NULL);
 		BOOL LoadFile(LPCTSTR pStrImage, LPCTSTR type=NULL, HINSTANCE instance=NULL);
+#ifdef WIN32
 		BOOL LoadFile(UINT nID, LPCTSTR type=NULL, HINSTANCE instance=NULL);
+#endif
 
+		//BOOL Open(LPCTSTR lpszFileName, UINT nOpenFlags);
+		BOOL Open(LPCTSTR lpszFileName, LPCTSTR mode);
+		void Close();
+		UINT Read(void* lpBuf, UINT nCount);
+		UINT Write(const void* lpBuf, UINT nCount);
+		UINT WriteV(const char* lpszFormat, ...);
+		UINT WriteV(const wchar_t* lpszFormat, ...);
+		UINT GetFileLength() const;
+		int SeekToEnd();
+		void SeekToBegin();
+		int Seek(UINT lOff, UINT nFrom);
+		BOOL IsEOF();
+		void SetCharSet(CUIFile::CharSet charset);
+	protected:
+		BOOL __LoadFromSkinPath(const STRINGorID& bitmap, LPCTSTR type, HINSTANCE instance);
+		BOOL __LoadFromZip(const STRINGorID& bitmap, LPCTSTR type, HINSTANCE instance);
+#ifdef WIN32
+		BOOL __LoadFromResource(const STRINGorID& bitmap, LPCTSTR type, HINSTANCE instance);
+#endif
+		BOOL __LoadFromDiskPath(LPCTSTR sFilePath);
 	private:
 		LPBYTE m_pData; 
 		DWORD m_dwSize;
-	};
 
+		FILE *m_fp;
+		UINT m_charset;
+	};
+	/*
 	class UILIB_API CUIFileFind
 	{
 	public:
@@ -69,7 +107,7 @@ namespace DuiLib {
 		ZIPENTRY m_zipEntryNext;
 		int m_nZipIndex;
 	};
-
+	*/
 } // namespace DuiLib
 
 #endif // __UIFILE_H__

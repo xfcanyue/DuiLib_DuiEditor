@@ -1,6 +1,7 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "UIChildWindow.h"
 
+#ifdef DUILIB_WIN32
 namespace DuiLib
 {
 
@@ -27,7 +28,7 @@ public:
 	void OnFinalMessage(HWND hWnd)
 	{
 		m_pOwner->m_pWindow = NULL;
-		__super::OnFinalMessage(hWnd);
+		CWindowWnd::OnFinalMessage(hWnd);
 		delete this;
 	}
 
@@ -38,7 +39,7 @@ public:
 
 		if( uMsg == WM_CREATE )
 		{
-			m_pm.Init(GetHWND());
+			m_pm.Init(GetHWND(), NULL, this);
 		}
 		else if( uMsg == WM_PAINT)
 		{
@@ -94,12 +95,13 @@ public:
 			CDuiString s = pParent->GetName();
 			//rcParent = pParent->GetClientPos();
 			rcParent = pParent->GetPos(); //子窗口不可超出父窗口区域，所以不要计入滚动条
-			RECT rcInset = pParent->GetInset();
+			CDuiRect rcInset = pParent->GetInset();
 			rcParent.left += rcInset.left;
 			rcParent.top += rcInset.top;
 			rcParent.right -= rcInset.right;
 			rcParent.bottom -= rcInset.bottom;
-			if( !::IntersectRect(&rcPos, &rcPos, &rcParent) ) {
+			//if( !::IntersectRect(&rcPos, &rcPos, &rcParent) ) {
+			if( !rcPos.Intersect(rcPos, rcParent) ) {
 				rcPos.left = rcPos.top = rcPos.right = rcPos.bottom = 0;
 				break;
 			}
@@ -107,7 +109,7 @@ public:
 
 		return rcPos;
 	}
-	CPaintManagerUI m_pm;
+	DuiLibPaintManagerUI m_pm;
 private:
 	CChildWindowUI *m_pOwner;
 };
@@ -163,12 +165,12 @@ LPVOID CChildWindowUI::GetInterface(LPCTSTR pstrName)
 
 void CChildWindowUI::DoEvent(TEventUI& event)
 {
-	__super::DoEvent(event);
+	CContainerUI::DoEvent(event);
 }
 
 void CChildWindowUI::SetPos(RECT rc, bool bNeedInvalidate)
 {
-	__super::SetPos(rc, bNeedInvalidate);
+	CContainerUI::SetPos(rc, bNeedInvalidate);
 
 	if(m_pWindow && ::IsWindow(m_pWindow->GetHWND()))
 	{
@@ -182,7 +184,7 @@ void CChildWindowUI::SetPos(RECT rc, bool bNeedInvalidate)
 
 void CChildWindowUI::Move(SIZE szOffset, bool bNeedInvalidate)
 {
-	__super::Move(szOffset, bNeedInvalidate);
+	CContainerUI::Move(szOffset, bNeedInvalidate);
 
 	if(m_pWindow && ::IsWindow(m_pWindow->GetHWND()))
 	{
@@ -199,7 +201,7 @@ void CChildWindowUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 // 		m_strURL = pstrValue;
 // 	}
 // 	else 
-		__super::SetAttribute(pstrName,pstrValue);
+		CContainerUI::SetAttribute(pstrName,pstrValue);
 }
 
 
@@ -234,3 +236,4 @@ void CChildWindowUI::RefreshWindow()
 }
 
 }
+#endif //#ifdef DUILIB_WIN32

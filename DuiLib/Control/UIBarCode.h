@@ -1,5 +1,6 @@
 #pragma once
 
+#ifdef DUILIB_WIN32
 namespace DuiLib
 {
 
@@ -15,7 +16,7 @@ public:
 	virtual LPVOID GetInterface(LPCTSTR pstrName) override;
 
 	void SetBarCodeType(LPCTSTR sValue);
-	CString GetBarCodeType() const;
+	CDuiString GetBarCodeType() const;
 
 	void SetBarCodeSize(int nValue);
 	int GetBarCodeSize() const;
@@ -31,10 +32,11 @@ protected:
 	CDuiRect m_rcCode;
 	CStdRefPtr<UIRender> m_qrRender;
 
-	CString m_sBarCodeType; //条码类型, code39, code93, code128
+	CDuiString m_sBarCodeType; //条码类型, code39, code93, code128
 	int m_nBarCodeSize;
 protected:
 	Imp *m_pImpl;
 };
 
 }
+#endif // #ifdef DUILIB_WIN32

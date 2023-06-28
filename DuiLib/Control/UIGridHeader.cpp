@@ -30,7 +30,7 @@ UINT CGridHeaderUI::GetControlFlags() const
 LPVOID CGridHeaderUI::GetInterface(LPCTSTR pstrName)
 {
 	if( _tcsicmp(pstrName, DUI_CTR_GRIDHEADER) == 0 ) return static_cast<CGridHeaderUI*>(this);
-	return __super::GetInterface(pstrName);
+	return CVerticalLayoutUI::GetInterface(pstrName);
 }
 
 bool CGridHeaderUI::Add(CControlUI* pControl)
@@ -41,7 +41,7 @@ bool CGridHeaderUI::Add(CControlUI* pControl)
 	CGridRowUI *pRow = static_cast<CGridRowUI *>(pControl);
 	pRow->SetOwner(GetOwner());
 
-	return __super::Add(pControl);
+	return CVerticalLayoutUI::Add(pControl);
 }
 
 bool CGridHeaderUI::AddAt(CControlUI* pControl, int iIndex)
@@ -52,7 +52,7 @@ bool CGridHeaderUI::AddAt(CControlUI* pControl, int iIndex)
 	CGridRowUI *pRow = static_cast<CGridRowUI *>(pControl);
 	pRow->SetOwner(GetOwner());
 
-	return __super::AddAt(pControl, iIndex);
+	return CVerticalLayoutUI::AddAt(pControl, iIndex);
 }
 
 void CGridHeaderUI::DoInit()
@@ -61,12 +61,12 @@ void CGridHeaderUI::DoInit()
 
 void CGridHeaderUI::SetPos(RECT rc, bool bNeedInvalidate)
 {
-	__super::SetPos(rc, bNeedInvalidate);
+	CVerticalLayoutUI::SetPos(rc, bNeedInvalidate);
 }
 
 SIZE CGridHeaderUI::EstimateSize(SIZE szAvailable)
 {
-	return __super::EstimateSize(szAvailable);
+	return CVerticalLayoutUI::EstimateSize(szAvailable);
 }
 
 }

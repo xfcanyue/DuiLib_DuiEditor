@@ -1,19 +1,8 @@
 #include "StdAfx.h"
 #include "UIObject_gdi.h"
 
-#ifndef strtoll
-#define strtoll _strtoi64
-#endif
-#define STB_IMAGE_IMPLEMENTATION
-#include "..\Utils\stb_image.h"
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "..\Utils\stb_image_write.h"
-#define NANOSVG_IMPLEMENTATION
-#include "..\Utils\nanosvg.h"
-#define NANOSVGRAST_IMPLEMENTATION
-#include "..\Utils\nanosvgrast.h"
- 
 ///////////////////////////////////////////////////////////////////////////////////////
+#ifdef DUILIB_WIN32
 namespace DuiLib {
 	//////////////////////////////////////////////////////////////////////////
 	//
@@ -36,7 +25,28 @@ namespace DuiLib {
 		memset(&tm, 0, sizeof(tm));
 	}
 
-	HFONT UIFont_gdi::GetHFont(CPaintManagerUI *pManager)
+	BOOL UIFont_gdi::CreateDefaultFont()
+	{
+		DeleteObject();
+
+		LOGFONT lf = { 0 };
+		::GetObject(::GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
+
+		sFontName = lf.lfFaceName;
+		iSize = -lf.lfHeight;
+		bBold = (lf.lfWeight >= FW_BOLD);
+		bUnderline = (lf.lfUnderline == TRUE);
+		bItalic = (lf.lfItalic == TRUE);
+
+		return _buildFont(NULL);
+	}
+
+	HANDLE UIFont_gdi::GetHandle()
+	{
+		return m_hFont;
+	}
+
+	HFONT UIFont_gdi::GetHFONT(CPaintManagerUI *pManager)
 	{
 		return m_hFont;
 	}
@@ -83,7 +93,7 @@ namespace DuiLib {
 			_tcsncpy(lf.lfFaceName, sFontName, LF_FACESIZE);
 		}
 		lf.lfCharSet = DEFAULT_CHARSET;
-		lf.lfHeight = pManager ? -pManager->GetDPIObj()->Scale(iSize) : iSize;
+		lf.lfHeight = pManager ? -pManager->GetDPIObj()->ScaleInt(iSize) : iSize;
 		if( bBold ) lf.lfWeight = FW_BOLD;
 		if( bUnderline ) lf.lfUnderline = TRUE;
 		if( bItalic ) lf.lfItalic = TRUE;
@@ -112,7 +122,7 @@ namespace DuiLib {
 		if(m_hPen) { ::DeleteObject(m_hPen); m_hPen = NULL; }
 	}
 
-	HPEN UIPen_gdi::GetHPen() const
+	HPEN UIPen_gdi::GetHPEN() const
 	{
 		return m_hPen;
 	}
@@ -173,7 +183,7 @@ namespace DuiLib {
 	BOOL UIBrush_gdi::CreateBitmapBrush(UIBitmap *bitmap)
 	{
 		DeleteObject();
-		m_hBrush = ::CreatePatternBrush(bitmap->GetBitmap());
+		m_hBrush = ::CreatePatternBrush(bitmap->GetHBITMAP());
 		return m_hBrush != NULL;
 	}
 
@@ -257,6 +267,7 @@ namespace DuiLib {
 		m_pBits = NULL;
 		m_nWidth = 0;
 		m_nHeight = 0;
+		m_bAlphaChannel = FALSE;
 	}
 
 	UIBitmap_gdi::~UIBitmap_gdi()
@@ -324,7 +335,55 @@ namespace DuiLib {
 		return m_hBitmap != NULL;
 	}
 
-	HBITMAP UIBitmap_gdi::GetBitmap()
+	BOOL UIBitmap_gdi::CreateFromData(LPBYTE pImage, int width, int height, DWORD mask)
+	{
+		if(!CreateARGB32Bitmap(NULL, width, height, TRUE))
+			return FALSE;
+
+		m_bAlphaChannel = FALSE;
+
+		//stbi的图像
+		//pImage[0], R
+		//pImage[1], G
+		//pImage[2], B
+		//pImage[3], alpha
+
+		//RGBA 转 BGRA
+		LPBYTE pDest = m_pBits;
+		for( int i = 0; i < width * height; i++ ) 
+		{
+			pDest[i*4 + 3] = pImage[i*4 + 3];
+			if( pDest[i*4 + 3] < 255 )
+			{
+				pDest[i*4] = (BYTE)(DWORD(pImage[i*4 + 2])*pImage[i*4 + 3]/255);
+				pDest[i*4 + 1] = (BYTE)(DWORD(pImage[i*4 + 1])*pImage[i*4 + 3]/255);
+				pDest[i*4 + 2] = (BYTE)(DWORD(pImage[i*4])*pImage[i*4 + 3]/255); 
+				m_bAlphaChannel = TRUE;
+			}
+			else
+			{
+				pDest[i*4] = pImage[i*4 + 2];
+				pDest[i*4 + 1] = pImage[i*4 + 1];
+				pDest[i*4 + 2] = pImage[i*4]; 
+			}
+
+			if( *(DWORD*)(&pDest[i*4]) == mask ) {
+				pDest[i*4] = (BYTE)0;
+				pDest[i*4 + 1] = (BYTE)0;
+				pDest[i*4 + 2] = (BYTE)0; 
+				pDest[i*4 + 3] = (BYTE)0;
+				m_bAlphaChannel = TRUE;
+			}
+		}
+		return TRUE;
+	}
+
+	HANDLE UIBitmap_gdi::GetHandle()
+	{
+		return m_hBitmap;
+	}
+
+	HBITMAP UIBitmap_gdi::GetHBITMAP()
 	{
 		return m_hBitmap;
 	}
@@ -342,6 +401,18 @@ namespace DuiLib {
 	int UIBitmap_gdi::GetHeight()
 	{
 		return m_nHeight;
+	}
+
+	BOOL UIBitmap_gdi::IsAlpha()
+	{
+		return m_bAlphaChannel;
+	}
+
+	UIBitmap *UIBitmap_gdi::Clone()
+	{
+		UIBitmap_gdi *bmp = new UIBitmap_gdi;
+		bmp->CreateFromHBitmap(m_hBitmap);
+		return bmp;
 	}
 
 	void UIBitmap_gdi::Clear()
@@ -476,134 +547,6 @@ namespace DuiLib {
 	//////////////////////////////////////////////////////////////////////////
 	//
 	//
-	//
-	static LPBYTE WINAPI svg_load_from_memory(const LPBYTE buffer, int &out_width, int &out_height, int hope_width, int hope_height, DWORD fillcolor, CPaintManagerUI* pManager)
-	{
-		LPBYTE pImage = NULL;
-		float dpi = 96.0f;
-		float scale = 1.0f;
-		if(pManager)
-		{
-			scale = (pManager->GetDPIObj()->GetScale() * 1.0)/100;
-		}
-		//SVG
-		NSVGimage* svg = nsvgParse((LPSTR)(LPVOID)buffer, "px", (float)dpi);
-		if (svg == NULL) 
-		{
-			return NULL;
-		}
-
-		if(fillcolor != 0)
-		{
-			NSVGshape *shapes = svg->shapes;
-			while (shapes)
-			{
-				if(shapes->fill.type == NSVG_PAINT_COLOR)
-					if(shapes->fill.color != 0)
-						shapes->fill.color = UIRGB(GetRValue(fillcolor), GetGValue(fillcolor), GetBValue(fillcolor));
-				shapes = shapes->next;
-			}
-		}
-
-		out_width = (int)svg->width;
-		out_height = (int)svg->height;
-		if(out_width==0 || out_height==0) 
-		{
-			nsvgDelete(svg);
-			return NULL;
-		}
-
-		//如果指定长宽，则使用当前的长宽比例，否则使用dpi适配
-		if(hope_width > 0 && hope_height > 0)
-		{
-			out_width = hope_width;
-			scale = hope_width * 1.0 / svg->width;
-			out_height = svg->height * scale;
-			if (svg->height * scale > out_height)
-			{
-				scale = out_height * 1.0 / svg->height;
-				out_width = svg->width * scale;
-			}
-		}
-		else
-		{
-			if(pManager)
-			{
-				out_width = pManager->GetDPIObj()->Scale(out_width);
-				out_height = pManager->GetDPIObj()->Scale(out_height);
-			}
-		}
-
-		NSVGrasterizer* rast = nsvgCreateRasterizer();
-		if (rast == NULL)
-		{
-			nsvgDelete(svg);
-			return NULL;
-		}
-
-		pImage = (LPBYTE)malloc((out_width + 1) * (out_height + 1) * 4);//由于使用了小数，防止被四舍五入舍去，因此都加1
-		if (!pImage)
-		{
-			nsvgDeleteRasterizer(rast);
-			nsvgDelete(svg);
-			return NULL;
-		}
-		nsvgRasterize(rast, svg, 0, 0, scale, pImage, out_width, out_height, out_width * 4);
-		nsvgDeleteRasterizer(rast);
-		nsvgDelete(svg);
-		return pImage;
-	}
-
-	static UIImage *make_imageinfo_from_stbi_memory(LPBYTE pImage, int x, int y, DWORD mask, int delay=0)
-	{
-		UIImage* data = UIGlobal::CreateImage(); //new UIImage_gdi;
-		if(!data->bitmap->CreateARGB32Bitmap(NULL, x, y, TRUE))
-		{
-			data->Release();
-			return NULL;
-		}
-
-		bool bAlphaChannel = false;
-		LPBYTE pDest = data->bitmap->GetBits();
-
-		for( int i = 0; i < x * y; i++ ) 
-		{
-			pDest[i*4 + 3] = pImage[i*4 + 3];
-			if( pDest[i*4 + 3] < 255 )
-			{
-				pDest[i*4] = (BYTE)(DWORD(pImage[i*4 + 2])*pImage[i*4 + 3]/255);
-				pDest[i*4 + 1] = (BYTE)(DWORD(pImage[i*4 + 1])*pImage[i*4 + 3]/255);
-				pDest[i*4 + 2] = (BYTE)(DWORD(pImage[i*4])*pImage[i*4 + 3]/255); 
-				bAlphaChannel = true;
-			}
-			else
-			{
-				pDest[i*4] = pImage[i*4 + 2];
-				pDest[i*4 + 1] = pImage[i*4 + 1];
-				pDest[i*4 + 2] = pImage[i*4]; 
-			}
-
-			if( *(DWORD*)(&pDest[i*4]) == mask ) {
-				pDest[i*4] = (BYTE)0;
-				pDest[i*4 + 1] = (BYTE)0;
-				pDest[i*4 + 2] = (BYTE)0; 
-				pDest[i*4 + 3] = (BYTE)0;
-				bAlphaChannel = true;
-			}
-		}
-
-		data->pBits = pDest;
-		data->pSrcBits = NULL;
-		data->nWidth = x;
-		data->nHeight = y;
-		data->bAlpha = bAlphaChannel;
-		data->delay = delay;
-		return data;
-	}
-
-	//////////////////////////////////////////////////////////////////////////
-	//
-	//
 	UIImage_gdi::UIImage_gdi()
 	{
 		bitmap = new UIBitmap_gdi;
@@ -640,183 +583,6 @@ namespace DuiLib {
 		UIImage_gdi::bAlpha = bAlpha;
 		return TRUE;
 	}
-
-	BOOL UIImage_gdi::LoadImage(const TDrawInfo *pDrawInfo, CPaintManagerUI* pManager, HINSTANCE instance)
-	{
-		//是不是资源ID号
-		if( _ttoi(pDrawInfo->sResType) != 0 ) 
-		{
-			CUIFile f;
-			if(!f.LoadFile(pDrawInfo->sImageName.GetData(), pDrawInfo->sResType, instance)) 
-				return FALSE;
-
-			return LoadImageFromMemory(f.GetData(), f.GetSize(), pDrawInfo->dwMask, pDrawInfo->width, pDrawInfo->height, pDrawInfo->fillcolor, pManager);
-		}
-		else
-		{
-			//从Res.xml文件中读取，做资源替换。
-			CDuiString sStrPath = CResourceManager::GetInstance()->GetImagePath(pDrawInfo->sImageName);
-			if(sStrPath.IsEmpty())
-				sStrPath = pDrawInfo->sImageName;
-
-			CUIFile f;
-			if(!f.LoadFile(sStrPath.GetData(), NULL, instance)) 
-				return FALSE;
-
-			return LoadImageFromMemory(f.GetData(), f.GetSize(), pDrawInfo->dwMask, pDrawInfo->width, pDrawInfo->height, pDrawInfo->fillcolor, pManager);
-		}
-
-		return FALSE;
-	}
-
-	BOOL UIImage_gdi::LoadImage(STRINGorID bitmap, LPCTSTR type, DWORD mask, int width, int height, DWORD fillcolor, CPaintManagerUI* pManager, HINSTANCE instance)
-	{
-		CUIFile f;
-		if(!f.LoadFile(bitmap, type, instance)) 
-			return FALSE;
-
-		return LoadImageFromMemory(f.GetData(), f.GetSize(), mask, width, height, fillcolor, pManager);
-	}
-
-	BOOL UIImage_gdi::LoadImage(LPCTSTR pStrImage, LPCTSTR type, DWORD mask, int width, int height, DWORD fillcolor, CPaintManagerUI* pManager, HINSTANCE instance)
-	{
-		if(pStrImage == NULL) return FALSE;
-
-		CDuiString sStrPath = pStrImage;
-		if( type == NULL )  
-		{
-			//LoadImage需要重载3个函数，就是因为这里有资源替换。 -_-
-			sStrPath = CResourceManager::GetInstance()->GetImagePath(pStrImage);
-			if (sStrPath.IsEmpty()) sStrPath = pStrImage;
-		}
-		return LoadImage(STRINGorID(sStrPath.GetData()), type, mask, width, height, fillcolor, pManager, instance);
-	}
-
-	BOOL UIImage_gdi::LoadImage(UINT nID, LPCTSTR type, DWORD mask, int width, int height, DWORD fillcolor, CPaintManagerUI* pManager, HINSTANCE instance)
-	{
-		return LoadImage(STRINGorID(nID), type, mask, width, height, fillcolor, pManager, instance);
-	}
-
-	BOOL UIImage_gdi::LoadImageFromMemory(const LPBYTE pData, DWORD dwSize, DWORD mask, int width, int height, DWORD fillcolor, CPaintManagerUI* pManager)
-	{
-		DeleteObject();
-
-		LPBYTE pImage = NULL;
-		int x,y,comp;
-		pImage = stbi_load_from_memory(pData, dwSize, &x, &y, &comp, 4);	
-		if( !pImage ) 
-		{
-			pImage = svg_load_from_memory(pData, x, y, width, height, fillcolor, pManager);		
-		}
-		if(!pImage) return FALSE;
-
-
-		bool bAlphaChannel = false;
-		if(!bitmap->CreateARGB32Bitmap(NULL, x, y, TRUE))
-		{
-			stbi_image_free(pImage);
-			return FALSE;
-		}
-
-		LPBYTE pDest = bitmap->GetBits();
-		for( int i = 0; i < x * y; i++ ) 
-		{
-			pDest[i*4 + 3] = pImage[i*4 + 3];
-			if( pDest[i*4 + 3] < 255 )
-			{
-				pDest[i*4] = (BYTE)(DWORD(pImage[i*4 + 2])*pImage[i*4 + 3]/255);
-				pDest[i*4 + 1] = (BYTE)(DWORD(pImage[i*4 + 1])*pImage[i*4 + 3]/255);
-				pDest[i*4 + 2] = (BYTE)(DWORD(pImage[i*4])*pImage[i*4 + 3]/255); 
-				bAlphaChannel = true;
-			}
-			else
-			{
-				pDest[i*4] = pImage[i*4 + 2];
-				pDest[i*4 + 1] = pImage[i*4 + 1];
-				pDest[i*4 + 2] = pImage[i*4]; 
-			}
-
-			if( *(DWORD*)(&pDest[i*4]) == mask ) {
-				pDest[i*4] = (BYTE)0;
-				pDest[i*4 + 1] = (BYTE)0;
-				pDest[i*4 + 2] = (BYTE)0; 
-				pDest[i*4 + 3] = (BYTE)0;
-				bAlphaChannel = true;
-			}
-		}
-
-		pBits = pDest;
-		pSrcBits = NULL;
-		nWidth = x;
-		nHeight = y;
-		bAlpha = bAlphaChannel;
-		delay = delay;
-
-		stbi_image_free(pImage);
-		return TRUE;
-	}
-
-	void UIImage_gdi::AdjustHslImage(bool bHSL, short H, short S, short L)
-	{
-// 		if( (bUseHSL == false && !CPaintManagerUI::IsForceHSL()) || bitmap == NULL || pBits == NULL || pSrcBits == NULL ) 
-// 			return;
-
-		if( (bUseHSL == false && !CPaintManagerUI::IsForceHSL()) || bitmap == NULL || pBits == NULL || bitmap->GetBitmap() == NULL) 
-			return;
-
-		if(pSrcBits == NULL)
-		{
-			pSrcBits = new BYTE[nWidth * nHeight * 4];
-			::CopyMemory(pSrcBits, pBits, nWidth * nHeight * 4);
-		}
-
-		if( bHSL == false || (H == 180 && S == 100 && L == 100)) {
-			::CopyMemory(pBits, pSrcBits, nWidth * nHeight * 4);
-			return;
-		}
-
-		float fH, fS, fL;
-		float S1 = S / 100.0f;
-		float L1 = L / 100.0f;
-		for( int i = 0; i < nWidth * nHeight; i++ ) {
-			UIGlobal::RGBtoHSL(*(DWORD*)(pSrcBits + i*4), &fH, &fS, &fL);
-			fH += (H - 180);
-			fH = fH > 0 ? fH : fH + 360; 
-			fS *= S1;
-			fL *= L1;
-			UIGlobal::HSLtoRGB((DWORD*)(pBits + i*4), fH, fS, fL);
-		}
-	}
-
-	bool UIImage_gdi::LoadGifImageFromFile(LPCTSTR fileName, CStdPtrArray &arrImageInfo)
-	{
-		CUIFile f;
-		if(!f.LoadFile(fileName))
-			return false;
-		return LoadGifImageFromMemory(f.GetData(), f.GetSize(), arrImageInfo);
-	}
-
-	bool UIImage_gdi::LoadGifImageFromMemory(const LPBYTE pData, DWORD dwSize, CStdPtrArray &arrImageInfo)
-	{
-		LPBYTE pImage = NULL;
-		int x,y,comp;
-		int layers = 0;
-		int *delays = 0;
-		pImage = stbi_load_gif_from_memory(pData, dwSize, &delays, &x, &y, &layers, &comp, 4);
-		if(!pImage) return false;
-
-		for (int f=0; f<layers; f++)
-		{
-			LPBYTE pFrame = pImage + x * y * f * 4;
-			UIImage *data = make_imageinfo_from_stbi_memory(pFrame, x, y, 0, delays[f]);
-			if(!arrImageInfo.Add(data)) 
-			{
-				data->Release();
-				break;
-			}
-		}
-		stbi_image_free(delays);
-		stbi_image_free(pImage);
-		return true;
-	}
 } // namespace DuiLib
+#endif //#ifdef DUILIB_WIN32
+

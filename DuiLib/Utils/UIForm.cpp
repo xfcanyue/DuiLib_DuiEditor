@@ -1,18 +1,20 @@
-#pragma once
 #include "StdAfx.h"
-#include "UIFrameWnd.h"
 
 namespace DuiLib{
 
 CUIForm::CUIForm(void)
 {
-	
+	m_pManager = NULL;
+	m_pManager = NULL;
+	m_pFrame = NULL;
 }
 
 CUIForm::~CUIForm(void)
 {
 	
 }
+
+CControlUI *CUIForm::GetRoot() { ASSERT(m_pRoot); return m_pRoot; }
 
 void CUIForm::__InitWindow()
 {

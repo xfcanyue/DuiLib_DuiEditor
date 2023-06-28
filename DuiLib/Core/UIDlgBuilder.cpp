@@ -98,7 +98,7 @@ namespace DuiLib {
 					if( id >= 0 ) 
 					{
 						pManager->AddFont(id, pFontName, size, bold, underline, italic, shared);
-						if( defaultfont ) pManager->SetDefaultFont(pFontName, pManager->GetDPIObj()->Scale(size), bold, underline, italic, shared);
+						if( defaultfont ) pManager->SetDefaultFont(pFontName, pManager->GetDPIObj()->ScaleInt(size), bold, underline, italic, shared);
 					}
 				}
 				else if( _tcsicmp(pstrClass, _T("Default")) == 0 ) 
@@ -167,7 +167,7 @@ namespace DuiLib {
 						if( _tcsicmp(pstrName, _T("size")) == 0 ) 
 						{
 							SIZE sz = attr.as_size();
-							pManager->SetInitSize(pManager->GetDPIObj()->Scale(sz.cx), pManager->GetDPIObj()->Scale(sz.cy));
+							pManager->SetInitSize(pManager->GetDPIObj()->ScaleInt(sz.cx), pManager->GetDPIObj()->ScaleInt(sz.cy));
 						} 
 						else if( _tcsicmp(pstrName, _T("sizebox")) == 0 ) 
 						{
@@ -288,6 +288,8 @@ namespace DuiLib {
 								pManager->SetRenderEngineType(DuiLib_Render_Default);
 							else if( _tcsicmp(attr.as_string(), _T("gdiplus")) == 0 )
 								pManager->SetRenderEngineType(DuiLib_Render_GdiPlus);
+							else if( _tcsicmp(attr.as_string(), _T("cairo")) == 0 )
+								pManager->SetRenderEngineType(DuiLib_Render_Cairo);
 						} 
 						else if( _tcsicmp(pstrName, _T("textrenderinghint")) == 0 ) 
 						{
@@ -295,7 +297,7 @@ namespace DuiLib {
 						} 
 						else if( _tcsicmp(pstrName, _T("tooltiphovertime")) == 0 ) 
 						{
-							pManager->SetHoverTime(attr.as_int());
+							pManager->SetTooltipHoverTime(attr.as_int());
 						} 
 						else if( _tcsicmp(pstrName, _T("forcehsl")) == 0 ) 
 						{
@@ -353,7 +355,7 @@ namespace DuiLib {
 						pControl = builder.Create((UINT)id, m_pstrtype, m_pCallback, pManager, pParent);
 					}
 					else {
-						pControl = builder.Create(attrSource.as_string(), (UINT)0, m_pCallback, pManager, pParent);
+						pControl = builder.Create(attrSource.as_string(), NULL, m_pCallback, pManager, pParent);
 					}
 				}
 				continue;
@@ -400,7 +402,8 @@ namespace DuiLib {
 			if( pControl == NULL ) {
 				CDuiString sMsg;
 				sMsg.Format(_T("CDialogBuilder::_Parse Error\r\nFile: %s\r\nControl: %s"), pkg ? pkg->GetSkinFile() : _T("res"), pstrClass);
-				MessageBox(NULL, sMsg, _T("Create Control Failed"), MB_OK);
+				//MessageBox(NULL, sMsg, _T("Create Control Failed"), MB_OK);
+				DUI__Trace(sMsg);
 				continue;
 			}
 
@@ -472,3 +475,4 @@ namespace DuiLib {
 	}
 
 } // namespace DuiLib
+

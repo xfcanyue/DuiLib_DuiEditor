@@ -39,6 +39,7 @@ namespace DuiLib {
 		}
 		else
 		{
+#ifdef WIN32
 			HRSRC hResource = ::FindResource(CPaintManagerUI::GetResourceDll(), xml.m_lpstr, type);
 			if( hResource == NULL ) return NULL;
 			HGLOBAL hGlobal = ::LoadResource(CPaintManagerUI::GetResourceDll(), hResource);
@@ -52,6 +53,7 @@ namespace DuiLib {
 				return NULL;
 			}
 			::FreeResource(hResource);
+#endif
 		}
 
 		return LoadResource(xmlMarkup.root());
@@ -321,6 +323,7 @@ namespace DuiLib {
 		}
 		else
 		{
+#ifdef WIN32
 			HRSRC hResource = ::FindResource(CPaintManagerUI::GetResourceDll(), xml.m_lpstr, type);
 			if( hResource == NULL ) return NULL;
 			HGLOBAL hGlobal = ::LoadResource(CPaintManagerUI::GetResourceDll(), hResource);
@@ -334,6 +337,7 @@ namespace DuiLib {
 				return NULL;
 			}
 			::FreeResource(hResource);
+#endif
 		}
 
 		return LoadStringTableResource(xmlMarkup.root());

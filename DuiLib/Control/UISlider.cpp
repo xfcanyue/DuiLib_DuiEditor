@@ -47,7 +47,7 @@ namespace DuiLib
 		RECT rcThumb = {0};
 		SIZE m_szThumb = CSliderUI::m_szThumb;
 		if (GetManager() != NULL) {
-			GetManager()->GetDPIObj()->Scale(&m_szThumb);
+			GetManager()->GetDPIObj()->ScaleSize(&m_szThumb);
 		}
 		if( m_bHorizontal ) {
 			int left = m_rcItem.left + (m_rcItem.right - m_rcItem.left - m_szThumb.cx) * (m_nValue - m_nMin) / (m_nMax - m_nMin);
@@ -200,8 +200,9 @@ namespace DuiLib
 			}
 
 			POINT pt = event.ptMouse;
-			RECT rcThumb = GetThumbRect();
-			if( IsEnabled() && ::PtInRect(&rcThumb, event.ptMouse) ) 
+			CDuiRect rcThumb = GetThumbRect();
+			//if( IsEnabled() && ::PtInRect(&rcThumb, event.ptMouse) ) 
+			if( IsEnabled() && rcThumb.PtInRect(event.ptMouse) ) 
 			{
 				SetHotState(true);
 				Invalidate();
@@ -217,7 +218,8 @@ namespace DuiLib
 		{
 			RECT rcThumb = GetThumbRect();
 			if( IsEnabled()) {
-				::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_HAND)));
+				//::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_HAND)));
+				GetManager()->SetCursor(DUI_HAND);
 				return;
 			}
 		}
@@ -272,7 +274,7 @@ namespace DuiLib
 		rcThumb.right -= m_rcItem.left;
 		rcThumb.bottom -= m_rcItem.top;
 
-		GetManager()->GetDPIObj()->ScaleBack(&rcThumb);
+		GetManager()->GetDPIObj()->ScaleRectBack(&rcThumb);
 
 		if( IsCaptureState() ) {
 			if( !m_sThumbPushedImage.IsEmpty() ) {
@@ -299,3 +301,4 @@ namespace DuiLib
 		}
 	}
 }
+

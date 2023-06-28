@@ -4,6 +4,7 @@
 #pragma once
 #include "UIObject_gdi.h"
 
+#ifdef DUILIB_WIN32
 namespace DuiLib {
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
@@ -17,8 +18,10 @@ namespace DuiLib {
 		virtual void Init(CPaintManagerUI *pManager, HDC hDC = NULL) override;
 		virtual void AttachDC(CPaintManagerUI *pManager, HDC hDC) override;
 
-		virtual CPaintManagerUI *GetManager() override;
 		virtual HDC GetDC() override;
+
+		virtual bool CloneFrom(UIRender *pSrcRender) override;
+
 		virtual UIBitmap *GetBitmap() override;
 
 		virtual bool Resize(int width, int height) override;
@@ -34,10 +37,12 @@ namespace DuiLib {
 		virtual void RestoreObject(UIObject *pObject = NULL) override;
 		virtual void RestoreDefaultObject() override;
 
+		virtual DWORD SetPixel(int x, int y, DWORD dwColor) override;
+
 		virtual BOOL BitBlt(int x, int y, int nWidth, int nHeight, UIRender *pSrcRender, int xSrc, int ySrc, DWORD dwRop = SRCCOPY ) override;
 		virtual BOOL StretchBlt(int x, int y, int nWidth, int nHeight, UIRender *pSrcRender, int xSrc, int ySrc, int nWidthSrc, int nHeightSrc, DWORD dwRop = SRCCOPY) override;
-
-		virtual void DrawBitmap(HBITMAP hBitmap, const RECT& rc, const RECT& rcPaint, const RECT& rcBmpPart, const RECT& rcCorners, bool bAlpha, BYTE uFade = 255, bool hole = false, bool xtiled = false, bool ytiled = false);
+		virtual BOOL AlphaBlend(int x, int y, int nWidth, int nHeight, UIRender *pSrcRender, int xSrc, int ySrc, int nWidthSrc, int nHeightSrc, int alpha ) override;
+		virtual void DrawBitmapAlpha(int x, int y, int nWidth, int nHeight, UIBitmap *pUiBitmap, int xSrc, int ySrc, int nWidthSrc, int nHeightSrc, int alpha) override;
 
 		virtual void DrawColor(const RECT& rc, const SIZE &round, DWORD color) override;
 		virtual void DrawGradient(const RECT& rc, DWORD dwFirst, DWORD dwSecond, bool bVertical, int nSteps) override;
@@ -78,4 +83,5 @@ namespace DuiLib {
 
 } // namespace DuiLib
 
+#endif //#ifdef DUILIB_WIN32
 #endif // __UIRENDER_H__

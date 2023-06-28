@@ -19,7 +19,7 @@ namespace DuiLib
 	LPVOID CProgressUI::GetInterface(LPCTSTR pstrName)
 	{
 		if( _tcsicmp(pstrName, DUI_CTR_PROGRESS) == 0 ) return static_cast<CProgressUI*>(this);
-		return __super::GetInterface(pstrName);
+		return CLabelLayoutUI::GetInterface(pstrName);
 	}
 	
 	bool CProgressUI::IsShowText()
@@ -91,7 +91,7 @@ namespace DuiLib
 		else if( _tcsicmp(pstrName, _T("max")) == 0 ) SetMaxValue(_ttoi(pstrValue));
 		else if( _tcsicmp(pstrName, _T("value")) == 0 ) SetValue(_ttoi(pstrValue));
 		else if( _tcsicmp(pstrName, _T("isstretchfore"))==0) SetStretchForeImage(_tcsicmp(pstrValue, _T("true")) == 0? true : false);
-		else __super::SetAttribute(pstrName, pstrValue);
+		else CLabelLayoutUI::SetAttribute(pstrName, pstrValue);
 	}
 
 	void CProgressUI::PaintForeColor(UIRender *pRender)
@@ -172,3 +172,4 @@ namespace DuiLib
 		}
 	}
 }
+

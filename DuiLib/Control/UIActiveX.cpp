@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 
+#ifdef DUILIB_WIN32
 namespace DuiLib {
 
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -767,7 +768,7 @@ namespace DuiLib {
 	{
 		m_pOwner = pOwner;
 		UINT uStyle = WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
-		Create(hWndParent, _T("UIActiveX"), uStyle, 0L, 0,0,0,0, NULL);
+		Create(hWndParent, _T("UIActiveX"), uStyle, 0L, 0,0,0,0);
 		return m_hWnd;
 	}
 
@@ -893,7 +894,7 @@ namespace DuiLib {
 		m_pOwner->m_pViewObject->Draw(DVASPECT_CONTENT, -1, NULL, NULL, NULL, (HDC)wParam, (RECTL*) &rcClient, NULL, NULL, NULL); 
 
 		if (m_bDrawCaret ) {
-			RECT rcPos = m_pOwner->m_pOwner->GetPos();
+			CDuiRect rcPos = m_pOwner->m_pOwner->GetPos();
 			GUITHREADINFO guiThreadInfo;
 			guiThreadInfo.cbSize = sizeof(GUITHREADINFO);
 			::GetGUIThreadInfo(NULL, &guiThreadInfo);
@@ -903,7 +904,8 @@ namespace DuiLib {
 				ptCaret.y = guiThreadInfo.rcCaret.top;
 				::ClientToScreen(guiThreadInfo.hwndCaret, &ptCaret);
 				::ScreenToClient(m_pOwner->m_pOwner->GetManager()->GetPaintWindow(), &ptCaret);
-				if( ::PtInRect(&rcPos, ptCaret) ) {
+				//if( ::PtInRect(&rcPos, ptCaret) ) {
+				if( rcPos.PtInRect(ptCaret) ) {
 					RECT rcCaret;
 					rcCaret = guiThreadInfo.rcCaret;
 					rcCaret.right = rcCaret.left;
@@ -1250,3 +1252,4 @@ namespace DuiLib {
 	}
 
 } // namespace DuiLib
+#endif //#ifdef DUILIB_WIN32

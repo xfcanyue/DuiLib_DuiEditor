@@ -41,6 +41,7 @@ namespace DuiLib {
 	{
 		DuiLib_Render_Default,	//默认的，就是原来的模式。
 		DuiLib_Render_GdiPlus,	//统一使用Gdiplus绘制
+		DuiLib_Render_Cairo,	//使用cairo图像库
 		//DuiLib_Render_Skia,	//使用skia图像库
 	};
 	
@@ -54,6 +55,8 @@ namespace DuiLib {
 		OT_BRUSH,
 		OT_PATH,
 		OT_BITMAP,
+		OT_BITMAP_CAIRO,
+		OT_BITMAP_PIXBUF,
 		OT_IMAGE,
 	};
 	
@@ -82,10 +85,13 @@ namespace DuiLib {
 	public:
 		const emUIOBJTYPE ObjectType() const override {  return OT_FONT;  }
 
-		virtual HFONT GetHFont(CPaintManagerUI *pManager) = 0;
+		virtual HANDLE  GetHandle()		= 0;
+#ifdef WIN32
+		virtual HFONT GetHFONT(CPaintManagerUI *pManager) = 0;
+#endif
 
 		//构造默认字体
-		BOOL CreateDefaultFont();
+		virtual BOOL CreateDefaultFont() = 0;
 
 		//从参数构造字体
 		BOOL CreateFont(CPaintManagerUI *pManager, int id, LPCTSTR sFontName, int iSize, 
@@ -132,8 +138,10 @@ namespace DuiLib {
 		virtual ~UIPen() {}
 
 	public:
-		const emUIOBJTYPE ObjectType() const override {  return OT_PEN;  }
-		virtual HPEN GetHPen() const = 0;
+		const emUIOBJTYPE ObjectType() const override { return OT_PEN; }
+#ifdef WIN32
+		virtual HPEN GetHPEN() const = 0;
+#endif
 
 		virtual BOOL CreatePen(int nStyle, int nWidth, DWORD dwColor) = 0;
 
@@ -157,16 +165,26 @@ namespace DuiLib {
 		const emUIOBJTYPE ObjectType() const override {  return OT_BITMAP;  }
 
 		//hBitmap由内部释放
+#ifdef WIN32
 		virtual BOOL CreateFromHBitmap(HBITMAP hBitmap) = 0;
 
 		virtual BOOL CreateARGB32Bitmap(HDC hDC, int width, int height, BOOL bFlip) = 0;
 
 		virtual BOOL CreateCompatibleBitmap(HDC hDC, int width, int height) = 0;
+#endif
 
-		virtual HBITMAP GetBitmap()		= 0;
+		virtual BOOL CreateFromData(LPBYTE pImage, int width, int height, DWORD mask) = 0;
+
+		virtual HANDLE  GetHandle() = 0;
+#ifdef WIN32
+		virtual HBITMAP GetHBITMAP()	= 0;
+#endif
 		virtual BYTE* GetBits()			= 0;
 		virtual int	GetWidth()			= 0;
 		virtual int GetHeight()			= 0;
+		virtual BOOL IsAlpha()			= 0;
+
+		virtual UIBitmap *Clone()		= 0;
 
 		virtual void Clear() = 0;
 
@@ -183,24 +201,24 @@ namespace DuiLib {
 	public:
 		const emUIOBJTYPE ObjectType() const override {  return OT_IMAGE;  }
 
+#ifdef WIN32
 		virtual BOOL CreateImage(HBITMAP hBitmap, bool bAlpha) = 0;
+#endif
 
-		virtual BOOL LoadImage(const TDrawInfo *pDrawInfo, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL) = 0;
-		virtual BOOL LoadImage(STRINGorID bitmap, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL) = 0;
-		virtual BOOL LoadImage(LPCTSTR pStrImage, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL) = 0;
-		virtual BOOL LoadImage(UINT nID, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL) = 0;
-		
-		//从内存中载入图像，支持图像格式：bmp, jpg, png, svg
-		virtual BOOL LoadImageFromMemory(const LPBYTE pData, DWORD dwSize, DWORD mask=0, int width=0, int height=0, DWORD fillcolor=0, CPaintManagerUI* pManager=NULL) = 0;
+		//载入图像
+		BOOL LoadImage(const TDrawInfo *pDrawInfo, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL);
+		BOOL LoadImage(STRINGorID bitmap, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL);
+		BOOL LoadImage(LPCTSTR pStrImage, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL);
+		BOOL LoadImage(UINT nID, LPCTSTR type = NULL, DWORD mask = 0, int width=0, int height=0, DWORD fillcolor=0, CPaintManagerUI* pManager=NULL, HINSTANCE instance = NULL);
 
 		//图像HSL转换
-		virtual void AdjustHslImage(bool bUseHSL, short H, short S, short L) = 0;
+		void AdjustHslImage(bool bUseHSL, short H, short S, short L);
 
-		//从文件中载入gif图像, arrImageInfo返回每帧图像， 使用完记得释放arrImageInfo
-		virtual bool LoadGifImageFromFile(LPCTSTR fileName, CStdPtrArray &arrImageInfo) = 0;
+		//从内存中载入图像，支持图像格式：bmp, jpg, png, svg
+		virtual BOOL LoadImageFromMemory(const LPBYTE pData, DWORD dwSize, DWORD mask=0, int width=0, int height=0, DWORD fillcolor=0, CPaintManagerUI* pManager=NULL);
 
 		//从内存中载入gif图像, arrImageInfo返回每帧图像， 使用完记得释放arrImageInfo
-		virtual bool LoadGifImageFromMemory(const LPBYTE pData, DWORD dwSize, CStdPtrArray &arrImageInfo) = 0;
+		virtual bool LoadGifImageFromMemory(const LPBYTE pData, DWORD dwSize, CStdPtrArray &arrImageInfo);
 
 		int GetWidth() const { return nWidth; }
 		int GetHeight() const { return nHeight; }
@@ -223,11 +241,15 @@ namespace DuiLib {
 		virtual ~UIBrush() {}
 
 	public:
-		const emUIOBJTYPE ObjectType() const override {  return OT_BRUSH;  }
+		const emUIOBJTYPE ObjectType() const override { return OT_BRUSH; }
+#ifdef WIN32
 		virtual HBRUSH GetHBrush() const = 0;
+#endif
 
 		//hBrush由内部释放
+#ifdef WIN32
 		virtual BOOL CreateFromHBrush(HBRUSH hBrush) = 0;
+#endif
 
 		//用指定的实线初始化画刷
 		virtual BOOL CreateSolidBrush(DWORD clr) = 0;
@@ -269,11 +291,19 @@ namespace DuiLib {
 		virtual ~UIRender() {}
 
 	public:
+#ifdef DUILIB_WIN32
 		virtual void Init(CPaintManagerUI *pManager, HDC hDC = NULL) = 0;
 		virtual void AttachDC(CPaintManagerUI *pManager, HDC hDC) = 0;
-
-		virtual CPaintManagerUI *GetManager()	= 0;
 		virtual HDC GetDC() = 0;
+#else
+		virtual void Init(CPaintManagerUI* pManager, PVOID pParam) = 0;
+#endif
+
+		virtual void BeginPaint() {}
+		virtual void EndPaint() {}
+
+		virtual bool CloneFrom(UIRender *pSrcRender) = 0;
+
 		virtual UIBitmap *GetBitmap() = 0;
 
 		virtual bool Resize(int width, int height) = 0;
@@ -292,14 +322,19 @@ namespace DuiLib {
 		virtual void RestoreObject(UIObject *pObject = NULL) = 0;
 		virtual void RestoreDefaultObject() = 0;
 
+		virtual DWORD SetPixel(int x, int y, DWORD dwColor) = 0;
+
 		//BitBlt (bit block transfer)
 		virtual BOOL BitBlt(int x, int y, int nWidth, int nHeight, UIRender *pSrcRender, int xSrc, int ySrc, DWORD dwRop = SRCCOPY ) = 0;
 		
 		//stretch BitBlt
 		virtual BOOL StretchBlt(int x, int y, int nWidth, int nHeight, UIRender *pSrcRender, int xSrc, int ySrc, int nWidthSrc, int nHeightSrc, DWORD dwRop = SRCCOPY) = 0;
 
+		//显示具有透明或半透明像素的位图
+		virtual BOOL AlphaBlend(int x, int y, int nWidth, int nHeight, UIRender *pSrcRender, int xSrc, int ySrc, int nWidthSrc, int nHeightSrc, int alpha ) = 0;
+		
 		//绘制位图
-		virtual void DrawBitmap(HBITMAP hBitmap, const RECT& rc, const RECT& rcPaint, const RECT& rcBmpPart, const RECT& rcCorners, bool bAlpha, BYTE uFade = 255, bool hole = false, bool xtiled = false, bool ytiled = false) = 0;
+		virtual void DrawBitmapAlpha(int x, int y, int nWidth, int nHeight, UIBitmap *pUiBitmap, int xSrc, int ySrc, int nWidthSrc, int nHeightSrc, int alpha) = 0;
 
 		//画颜色(填充颜色)
 		virtual void DrawColor(const RECT& rc, const SIZE &round, DWORD color) = 0;
@@ -338,6 +373,10 @@ namespace DuiLib {
 		virtual SIZE GetTextSize(LPCTSTR pstrText, int iFont, UINT uStyle) = 0;
 
 		//////////////////////////////////////////////////////////////////////////
+		CPaintManagerUI *GetManager() { return m_pManager; }
+
+		//绘制位图
+		void DrawBitmap(UIBitmap *pUiBitmap, const RECT& rc, const RECT& rcPaint, const RECT& rcBmpPart, const RECT& rcCorners, bool bAlpha, BYTE uFade = 255, bool hole = false, bool xtiled = false, bool ytiled = false);
 
 		//画背景色
 		void DrawBackColor(const RECT& rc, const SIZE &round, DWORD dwBackColor, DWORD dwBackColor2=0, DWORD dwBackColor3=0, bool bVertical=true);
@@ -367,23 +406,13 @@ namespace DuiLib {
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
 	//
-	class UILIB_API UIClip
+	class UILIB_API UIClipBase
 	{
 	public:
-		UIClip();
-		virtual ~UIClip();
-	public:
-		void GenerateClip(UIRender *pRender, RECT rc);
-		void GenerateRoundClip(UIRender *pRender, RECT rc, RECT rcItem, int roundX, int roundY);
-		void UseOldClipBegin(UIRender *pRender);
-		void UseOldClipEnd(UIRender *pRender);
-
-	protected:
-		RECT m_rcItem;
-		SIZE m_szRound;
-		HDC m_hDC;
-		HRGN m_hRgn;
-		HRGN m_hOldRgn;
+		virtual void GenerateClip(UIRender *pRender, RECT rc) = 0;
+		virtual void GenerateRoundClip(UIRender *pRender, RECT rc, RECT rcItem, int roundX, int roundY) = 0;
+		virtual void UseOldClipBegin(UIRender *pRender) = 0;
+		virtual void UseOldClipEnd(UIRender *pRender) = 0;
 	};
 
 	class UILIB_API UIRenderFactory : public IObjRef

@@ -3,6 +3,7 @@
 
 #pragma once
 
+#ifdef DUILIB_WIN32
 namespace DuiLib
 {
 	class CRingUI : public CLabelUI
@@ -34,4 +35,5 @@ namespace DuiLib
 	};
 }
 
+#endif //#ifdef DUILIB_WIN32
 #endif // __UIROTATE_H__

@@ -36,9 +36,10 @@ namespace DuiLib
 	{
 		if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
 			if( m_pParent != NULL ) m_pParent->DoEvent(event);
-			else __super::DoEvent(event);
+			else CLabelUI::DoEvent(event);
 			return;
 		}
-		__super::DoEvent(event);
+		CLabelUI::DoEvent(event);
 	}
 }
+

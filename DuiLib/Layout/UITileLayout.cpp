@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "UITileLayout.h"
 
 namespace DuiLib
@@ -126,8 +126,8 @@ namespace DuiLib
 				if(m_szItem.cx <= 0)
 					m_nColumns = 1;
 				else
-					m_nColumns = (rc.right - rc.left)/m_szItem.cx;
-				//m_nColumns = (rc.right - rc.left)/m_szItem.cx; //modify by liqs99
+					//m_nColumns = (rc.right - rc.left) / m_szItem.cx;
+					m_nColumns = (rc.right - rc.left - m_szItem.cx) / (iChildPadding + m_szItem.cx) + 1;
 				cxNeeded = rc.right - rc.left;
 				if (m_nColumns > 1) {
 					if (iChildPadding <= 0) {

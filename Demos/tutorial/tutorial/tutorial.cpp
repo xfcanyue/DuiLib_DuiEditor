@@ -31,6 +31,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	uiApp.SetResType_ZipResource(_T("skin"), _T(""), IDR_ZIPRES1, _T("ZIPRES"));	//从程序资源文件中载入xml文件
 #endif
 
+	//CPaintManagerUI::SetRenderEngineType(DuiLib_Render_Default);
+	//CPaintManagerUI::SetRenderEngineType(DuiLib_Render_GdiPlus);
+	//CPaintManagerUI::SetRenderEngineType(DuiLib_Render_Cairo);
+
 	//初始化duilib, 注册插件，创建主窗口
 	if(!uiApp.InitInstance(hInstance)) 
 		return 0;

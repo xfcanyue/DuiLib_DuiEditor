@@ -1,5 +1,6 @@
 #pragma once
 
+#ifdef DUILIB_WIN32
 namespace DuiLib
 {
 
@@ -30,5 +31,5 @@ public:
 	CWindowWnd *m_pWindow;
 };
 
-
 }
+#endif //#ifdef DUILIB_WIN32

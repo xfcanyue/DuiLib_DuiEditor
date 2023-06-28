@@ -4,17 +4,16 @@
 namespace DuiLib
 {
 
-
-static std::map<UINT_PTR, CControlUI *> g_MapTimerID_TO_CPictureUI;
-static void CALLBACK TimerProc(HWND hWnd, UINT nMsg, UINT_PTR idEvent, DWORD dwTime)  
-{
-	std::map<UINT_PTR, CControlUI *>::iterator it = g_MapTimerID_TO_CPictureUI.find(idEvent);
-	if(it != g_MapTimerID_TO_CPictureUI.end())
-	{
-		CPictureUI *pObject = (CPictureUI *)it->second;
-		pObject->OnTimer(idEvent);
-	}
-}
+// static std::map<UINT_PTR, CControlUI *> g_MapTimerID_TO_CPictureUI;
+// static void CALLBACK TimerProc(HWND hWnd, UINT nMsg, UINT_PTR idEvent, DWORD dwTime)  
+// {
+// 	std::map<UINT_PTR, CControlUI *>::iterator it = g_MapTimerID_TO_CPictureUI.find(idEvent);
+// 	if(it != g_MapTimerID_TO_CPictureUI.end())
+// 	{
+// 		CPictureUI *pObject = (CPictureUI *)it->second;
+// 		pObject->OnTimer(idEvent);
+// 	}
+// }
 
 IMPLEMENT_DUICONTROL(CPictureUI)
 //////////////////////////////////////////////////////////////////////////
@@ -46,7 +45,7 @@ LPCTSTR CPictureUI::GetClass() const
 LPVOID	CPictureUI::GetInterface(LPCTSTR pstrName)
 {
 	if( _tcscmp(pstrName, DUI_CTR_PICTURE) == 0 ) return static_cast<CPictureUI*>(this);
-	return __super::GetInterface(pstrName);
+	return CContainerUI::GetInterface(pstrName);
 }
 
 void CPictureUI::DoInit()
@@ -56,7 +55,7 @@ void CPictureUI::DoInit()
 
 bool CPictureUI::Activate()
 {
-	if( !__super::Activate() ) return false;
+	if( !CContainerUI::Activate() ) return false;
 	if( m_pManager != NULL )
 	{
 		m_pManager->SendNotify(this, DUI_MSGTYPE_CLICK);
@@ -84,7 +83,7 @@ void CPictureUI::DoEvent(TEventUI& event)
 
 	if( event.Type == UIEVENT_BUTTONDOWN )
 	{
-		if(::PtInRect(&m_rcItem, event.ptMouse))
+		if(m_rcItem.PtInRect(event.ptMouse))
 		{
 			SetCaptureState(true);
 			if(IsEnableTrackRect())
@@ -102,7 +101,7 @@ void CPictureUI::DoEvent(TEventUI& event)
 	{
 		if( IsCaptureState() ) 
 		{
-			if(::PtInRect(&m_rcItem, event.ptMouse) && !m_rcTracker.IsNull())
+			if(m_rcItem.PtInRect(event.ptMouse) && !m_rcTracker.IsNull())
 			{
 				m_rcTracker.right = event.ptMouse.x;
 				m_rcTracker.bottom = event.ptMouse.y;
@@ -117,16 +116,19 @@ void CPictureUI::DoEvent(TEventUI& event)
 		if( IsCaptureState() ) 
 		{
 			SetCaptureState(false);
-			if( ::PtInRect(&m_rcItem, event.ptMouse) ) Activate();		
+			if( m_rcItem.PtInRect(event.ptMouse) ) Activate();		
 		}
 	}
-	
-	__super::DoEvent(event);
+
+	if( event.Type == UIEVENT_TIMER )
+		OnTimer( (UINT_PTR)event.wParam );
+
+	CContainerUI::DoEvent(event);
 }
 
 void CPictureUI::PaintBkImage(UIRender *pRender)
 {
-	__super::PaintBkImage(pRender);
+	CContainerUI::PaintBkImage(pRender);
 
 	if(m_nFramePosition >= m_frames.GetSize())
 		m_nFramePosition = 0;
@@ -162,7 +164,7 @@ void CPictureUI::PaintBkImage(UIRender *pRender)
 	if (rcSource.bottom > pImageInfo->nHeight) rcSource.bottom = pImageInfo->nHeight;
 
 	RECT rcCorner = {0};
-	pRender->DrawBitmap(pImageInfo->bitmap->GetBitmap(), rcDest, m_rcPaint, rcSource, rcCorner, GetManager()->IsLayered() ? true : pImageInfo->bAlpha, pDrawInfo->uFade, pDrawInfo->bHole, pDrawInfo->bTiledX, pDrawInfo->bTiledY);
+	pRender->DrawBitmap(pImageInfo->bitmap, rcDest, m_rcPaint, rcSource, rcCorner, GetManager()->IsLayered() ? true : pImageInfo->bAlpha, pDrawInfo->uFade, pDrawInfo->bHole, pDrawInfo->bTiledX, pDrawInfo->bTiledY);
 
 	if(IsAutoPlay() && m_idEventTimer == 0 && m_frames.GetSize() > 1)
 	{
@@ -210,8 +212,10 @@ void CPictureUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 		EnableTrackRect(_tcsicmp(pstrValue, _T("true")) == 0);
 	}
 	else
-		__super::SetAttribute(pstrName, pstrValue);
+		CContainerUI::SetAttribute(pstrName, pstrValue);
 }
+
+#ifdef DUILIB_WIN32
 
 HBITMAP CPictureUI::GetHBitmap()
 {
@@ -219,7 +223,7 @@ HBITMAP CPictureUI::GetHBitmap()
 		m_nFramePosition = 0;
 	UIImage *pImageInfo = (UIImage *)m_frames.GetAt(m_nFramePosition);
 	if(!pImageInfo) return NULL;
-	return pImageInfo->bitmap->GetBitmap();
+	return pImageInfo->bitmap->GetHBITMAP();
 }
 
 bool CPictureUI::LoadHBitmap(HBITMAP hBitmap)
@@ -227,6 +231,8 @@ bool CPictureUI::LoadHBitmap(HBITMAP hBitmap)
 	RemoveAllImages();
 	return __SetHBitmap(hBitmap);
 }
+
+#endif //#ifdef DUILIB_WIN32
 
 bool CPictureUI::LoadImageFromMemory(LPBYTE pData, DWORD dwSize)
 {
@@ -322,8 +328,10 @@ void CPictureUI::StartAnim()
 		}
 		if(nDelay > 0)
 		{
-			m_idEventTimer = ::SetTimer(NULL, NULL, m_nDelay, TimerProc);
-			g_MapTimerID_TO_CPictureUI[m_idEventTimer] = this;
+// 			m_idEventTimer = ::SetTimer(NULL, NULL, m_nDelay, TimerProc);		
+// 			g_MapTimerID_TO_CPictureUI[m_idEventTimer] = this;
+			m_idEventTimer = 100;
+			GetManager()->SetTimer(this, m_idEventTimer, m_nDelay);
 		}
 	}
 }
@@ -332,10 +340,11 @@ void CPictureUI::StopAnim()
 {
 	if(m_idEventTimer != 0)
 	{
-		::KillTimer(NULL, m_idEventTimer);
-		std::map<UINT_PTR, CControlUI *>::iterator it = g_MapTimerID_TO_CPictureUI.find(m_idEventTimer);
-		if(it != g_MapTimerID_TO_CPictureUI.end())
-			g_MapTimerID_TO_CPictureUI.erase(it);
+// 		::KillTimer(NULL, m_idEventTimer);
+// 		std::map<UINT_PTR, CControlUI *>::iterator it = g_MapTimerID_TO_CPictureUI.find(m_idEventTimer);
+// 		if(it != g_MapTimerID_TO_CPictureUI.end())
+// 			g_MapTimerID_TO_CPictureUI.erase(it);
+		GetManager()->KillTimer(this, m_idEventTimer);
 		m_idEventTimer = 0;
 	}
 }
@@ -354,6 +363,7 @@ void CPictureUI::OnTimer(UINT_PTR idEvent)
 
 //////////////////////////////////////////////////////////////////////////
 
+#ifdef DUILIB_WIN32
 bool CPictureUI::__SetHBitmap(HBITMAP hBitmap)
 {
 //	BITMAP bm;
@@ -370,6 +380,7 @@ bool CPictureUI::__SetHBitmap(HBITMAP hBitmap)
 	SetAutoSize(IsAutoSize());
 	return true;
 }
+#endif
 
 bool CPictureUI::__LoadImageFromMemory(LPBYTE pData, DWORD dwSize)
 {

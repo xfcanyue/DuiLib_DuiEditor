@@ -3,6 +3,7 @@
 
 #pragma once
 
+#ifdef DUILIB_WIN32
 namespace DuiLib {
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
@@ -19,5 +20,5 @@ namespace DuiLib {
 	};
 
 } // namespace DuiLib
-
+#endif // #ifdef DUILIB_WIN32
 #endif // __UIRENDER_H__

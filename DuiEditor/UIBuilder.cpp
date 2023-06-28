@@ -156,7 +156,7 @@ CControlUI* CUIBuilder::Create(pugi::xml_node xmldoc, IDialogBuilderCallback* pC
 				}
 				if( id >= 0 ) {
 					pManager->AddFont(id, pFontName, size, bold, underline, italic, shared);
-					if( defaultfont ) pManager->SetDefaultFont(pFontName, pManager->GetDPIObj()->Scale(size), bold, underline, italic, shared);
+					if( defaultfont ) pManager->SetDefaultFont(pFontName, pManager->GetDPIObj()->ScaleInt(size), bold, underline, italic, shared);
 				}
 			}
 			else if( _tcsicmp(pstrClass, _T("Default")) == 0 ) {
@@ -243,7 +243,7 @@ void CUIBuilder::SetWindowAttribute(CPaintManagerUI *pManager, xml_node node)
 			LPTSTR pstr = NULL;
 			int cx = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
 			int cy = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr); 
-			pManager->SetInitSize(pManager->GetDPIObj()->Scale(cx), pManager->GetDPIObj()->Scale(cy));
+			pManager->SetInitSize(pManager->GetDPIObj()->ScaleInt(cx), pManager->GetDPIObj()->ScaleInt(cy));
 		} 
 		else if( _tcsicmp(pstrName, _T("sizebox")) == 0 ) {
 			RECT rcSizeBox = { 0 };
@@ -380,7 +380,7 @@ void CUIBuilder::SetWindowAttribute(CPaintManagerUI *pManager, xml_node node)
 			pManager->SetGdiplusTextRenderingHint(_ttoi(pstrValue));
 		} 
 		else if( _tcsicmp(pstrName, _T("tooltiphovertime")) == 0 ) {
-			pManager->SetHoverTime(_ttoi(pstrValue));
+			pManager->SetTooltipHoverTime(_ttoi(pstrValue));
 		} 
 		else if( _tcsicmp(pstrName, _T("forcehsl")) == 0 ) 
 		{

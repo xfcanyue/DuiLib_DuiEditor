@@ -1,4 +1,6 @@
 #include "StdAfx.h"
+
+#ifdef DUILIB_WIN32
 #pragma comment( lib, "ws2_32.lib" )
 
 DWORD GetLocalIpAddress()   
@@ -70,7 +72,7 @@ namespace DuiLib
 			//不知何故，窗口关闭时，这个字体会被卸载掉。 有人知道请告诉我哈。
 			//SetWindowFont(m_hWnd, m_pOwner->GetManager()->GetFontInfo(m_pOwner->GetFont())->hFont, TRUE);
 			m_font = MakeRefPtr<UIFont>(m_pOwner->GetManager()->CloneFont(m_pOwner->GetFont()));
-			::SendMessage(m_hWnd, WM_SETFONT, (WPARAM)m_font->GetHFont(m_pOwner->GetManager()), (LPARAM)TRUE);
+			::SendMessage(m_hWnd, WM_SETFONT, (WPARAM)m_font->GetHFONT(m_pOwner->GetManager()), (LPARAM)TRUE);
 		}
 
 		if (m_pOwner->GetText().IsEmpty())
@@ -310,7 +312,8 @@ namespace DuiLib
 
 		if( event.Type == UIEVENT_SETCURSOR && IsEnabled() )
 		{
-			::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_IBEAM)));
+			//::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_IBEAM)));
+			GetManager()->SetCursor(DUI_IBEAM);
 			return;
 		}
 		if( event.Type == UIEVENT_WINDOWSIZE )
@@ -387,3 +390,6 @@ namespace DuiLib
 			CLabelUI::SetAttribute(pstrName, pstrValue);
 	}
 }
+#endif //#ifdef DUILIB_WIN32
+
+

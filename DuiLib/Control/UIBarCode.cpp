@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "UIBarCode.h"
 
+#ifdef DUILIB_WIN32
 #include "../Render/UIRender_gdi.h"
 #include "../Utils/barcode.h"
 namespace DuiLib
@@ -68,7 +69,7 @@ LPCTSTR CBarCodeUI::GetClass() const
 LPVOID	CBarCodeUI::GetInterface(LPCTSTR pstrName)
 {
 	if( _tcscmp(pstrName, DUI_CTR_BARCODE) == 0 ) return static_cast<CBarCodeUI*>(this);
-	return __super::GetInterface(pstrName);
+	return CDynamicLayoutUI::GetInterface(pstrName);
 }
 
 void CBarCodeUI::SetBarCodeType(LPCTSTR sValue)
@@ -81,7 +82,7 @@ void CBarCodeUI::SetBarCodeType(LPCTSTR sValue)
 	Invalidate();
 }
 
-CString CBarCodeUI::GetBarCodeType() const
+CDuiString CBarCodeUI::GetBarCodeType() const
 {
 	return m_sBarCodeType;
 }
@@ -102,7 +103,7 @@ int CBarCodeUI::GetBarCodeSize() const
 
 void CBarCodeUI::SetPos(RECT rc, bool bNeedInvalidate)
 {
-	__super::SetPos(rc, bNeedInvalidate);
+	CDynamicLayoutUI::SetPos(rc, bNeedInvalidate);
 	MakeBarcodeImage();
 }
 
@@ -130,7 +131,7 @@ void CBarCodeUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 		SetBarCodeSize(_ttoi(pstrValue));
 	}
 	else
-		__super::SetAttribute(pstrName, pstrValue);
+		CDynamicLayoutUI::SetAttribute(pstrName, pstrValue);
 }
 
 void CBarCodeUI::MakeBarcodeImage()
@@ -186,3 +187,4 @@ void CBarCodeUI::MakeBarcodeImage()
 }
 
 }
+#endif // #ifdef DUILIB_WIN32

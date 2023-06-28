@@ -31,7 +31,7 @@ UINT CGridRowUI::GetControlFlags() const
 LPVOID CGridRowUI::GetInterface(LPCTSTR pstrName)
 {
 	if( _tcsicmp(pstrName, DUI_CTR_GRIDROW) == 0 ) return static_cast<CGridRowUI*>(this);
-	return __super::GetInterface(pstrName);
+	return COptionLayoutUI::GetInterface(pstrName);
 }
 
 void CGridRowUI::SetRowIndex(int nIndex)
@@ -73,7 +73,7 @@ bool CGridRowUI::Add(CControlUI* pControl)
 	CGridCellUI *pCell = static_cast<CGridCellUI *>(pControl);
 	pCell->SetOwner(GetOwner());
 
-	return __super::Add(pControl); 
+	return COptionLayoutUI::Add(pControl); 
 }
 
 bool CGridRowUI::AddAt(CControlUI* pControl, int iIndex)
@@ -84,7 +84,7 @@ bool CGridRowUI::AddAt(CControlUI* pControl, int iIndex)
 	CGridCellUI *pCell = static_cast<CGridCellUI *>(pControl);
 	pCell->SetOwner(GetOwner());
 
-	return __super::AddAt(pControl, iIndex);
+	return COptionLayoutUI::AddAt(pControl, iIndex);
 }
 
 void CGridRowUI::DoInit()
@@ -94,7 +94,7 @@ void CGridRowUI::DoInit()
 
 void CGridRowUI::SetPos(RECT rc, bool bNeedInvalidate)
 {
-	__super::SetPos(rc, bNeedInvalidate);
+	COptionLayoutUI::SetPos(rc, bNeedInvalidate);
 }
 
 SIZE CGridRowUI::EstimateSize(SIZE szAvailable)
@@ -106,18 +106,18 @@ SIZE CGridRowUI::EstimateSize(SIZE szAvailable)
 		sz.cy = pGrid->GetRowHeight(m_row);
 		return sz;
 	}
-	return __super::EstimateSize(szAvailable);
+	return COptionLayoutUI::EstimateSize(szAvailable);
 }
 
 void CGridRowUI::DoEvent(TEventUI& event)
 {
 	if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
 		if( m_pParent != NULL ) m_pParent->DoEvent(event);
-		else __super::DoEvent(event);
+		else COptionLayoutUI::DoEvent(event);
 		return;
 	}
 
-	__super::DoEvent(event);
+	COptionLayoutUI::DoEvent(event);
 }
 
 void CGridRowUI::PaintBkColor(UIRender *pRender)

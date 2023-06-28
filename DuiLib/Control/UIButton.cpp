@@ -15,7 +15,7 @@ namespace DuiLib
 	LPVOID CButtonHLayoutUI::GetInterface(LPCTSTR pstrName)
 	{
 		if( _tcsicmp(pstrName, DUI_CTR_BUTTON_HLAYOUT) == 0 ) return static_cast<CButtonHLayoutUI*>(this);
-		return __super::GetInterface(pstrName);
+		return CHorizontalLayoutUI::GetInterface(pstrName);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,7 @@ namespace DuiLib
 	LPVOID CButtonVLayoutUI::GetInterface(LPCTSTR pstrName)
 	{
 		if( _tcsicmp(pstrName, DUI_CTR_BUTTON_VLAYOUT) == 0 ) return static_cast<CButtonVLayoutUI*>(this);
-		return __super::GetInterface(pstrName);
+		return CVerticalLayoutUI::GetInterface(pstrName);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -43,7 +43,7 @@ namespace DuiLib
 	LPVOID CButtonLayoutUI::GetInterface(LPCTSTR pstrName)
 	{
 		if( _tcsicmp(pstrName, DUI_CTR_BUTTON_LAYOUT) == 0 ) return static_cast<CButtonLayoutUI*>(this);
-		return __super::GetInterface(pstrName);
+		return CDynamicLayoutUI::GetInterface(pstrName);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -98,7 +98,8 @@ namespace DuiLib
 		}		
 		if( event.Type == UIEVENT_BUTTONDOWN || event.Type == UIEVENT_DBLCLICK)
 		{
-			if( ::PtInRect(&m_rcItem, event.ptMouse) && IsEnabled() ) 
+			//if( ::PtInRect(&m_rcItem, event.ptMouse) && IsEnabled() ) 
+			if( m_rcItem.PtInRect(event.ptMouse) && IsEnabled() ) 
 			{
 				SetCaptureState(true);
 				SetPushedState(true);
@@ -110,7 +111,8 @@ namespace DuiLib
 		{
 			if( IsCaptureState() ) 
 			{
-				if( ::PtInRect(&m_rcItem, event.ptMouse) ) 
+				//if( ::PtInRect(&m_rcItem, event.ptMouse) ) 
+				if( m_rcItem.PtInRect(event.ptMouse) ) 
 					SetPushedState(true);
 				else 
 					SetPushedState(false);
@@ -125,7 +127,8 @@ namespace DuiLib
 				SetCaptureState(false);
 				SetPushedState(false);
 				Invalidate();
-				if( ::PtInRect(&m_rcItem, event.ptMouse) ) Activate();				
+				//if( ::PtInRect(&m_rcItem, event.ptMouse) ) Activate();	
+				if( m_rcItem.PtInRect(event.ptMouse) ) Activate();				
 			}
 			return;
 		}
@@ -247,13 +250,13 @@ namespace DuiLib
 		else if( _tcsicmp(pstrName, _T("bindtabindex")) == 0 ) BindTabIndex(_ttoi(pstrValue));
 		else if( _tcsicmp(pstrName, _T("bindtabindexname")) == 0 ) BindTabIndexName(pstrValue);
 		else if( _tcsicmp(pstrName, _T("bindtablayoutname")) == 0 ) BindTabLayoutName(pstrValue);	
-		else __super::SetAttribute(pstrName, pstrValue);
+		else CLabelUI::SetAttribute(pstrName, pstrValue);
 	}
 
 
 
 // 	void CButtonUI::PaintText(UIRender *pRender)
 // 	{
-// 		return __super::PaintText(pRender);
+// 		return CLabelUI::PaintText(pRender);
 // 	}
 }

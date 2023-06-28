@@ -40,6 +40,33 @@ namespace DuiLib
 
 	// 核心控件
 	class CControlUI;
+	class CPaintManagerUI;
+
+	//定时器
+	typedef struct tagTIMERINFO
+	{
+		CControlUI* pSender;
+		UINT nLocalID;
+		UIWND hWnd;
+		PVOID pWindow;
+		UINT uWinTimer;
+		bool bKilled;
+	} TIMERINFO;
+
+	//菜单命令
+	struct MenuCmd
+	{
+		CDuiString GetName()	const { return szName; }
+		CDuiString GetUserData() const { return szUserData; }
+		CDuiString GetText()	const { return szText; }
+		UINT_PTR   GetTag()		const { return tag; }
+
+		CDuiString szName;
+		CDuiString szUserData;
+		CDuiString szText;
+		BOOL bChecked;
+		UINT_PTR tag;
+	};
 
 	// Structure for notifications to the outside world
 	typedef struct tagTNotifyUI

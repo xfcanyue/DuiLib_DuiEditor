@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "UIPicture.h"
 
+#ifdef DUILIB_WIN32
 namespace DuiLib
 {
 
@@ -25,7 +26,7 @@ LPCTSTR	CPictureBoxUI::GetClass() const
 LPVOID	CPictureBoxUI::GetInterface(LPCTSTR pstrName)
 {
 	if( _tcscmp(pstrName, DUI_CTR_PICTUREBOX) == 0 ) return static_cast<CPictureBoxUI*>(this);
-	return __super::GetInterface(pstrName);
+	return CPictureUI::GetInterface(pstrName);
 }
 
 void CPictureBoxUI::DoInit()
@@ -74,7 +75,7 @@ void CPictureBoxUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 		}
 	}
 	else
-		__super::SetAttribute(pstrName, pstrValue);
+		CPictureUI::SetAttribute(pstrName, pstrValue);
 }
 
 
@@ -95,3 +96,4 @@ bool CPictureBoxUI::LoadFile(LPCTSTR pstrImage)
 
 
 }
+#endif //#ifdef DUILIB_WIN32

@@ -1,4 +1,6 @@
 #include "StdAfx.h"
+
+#ifdef DUILIB_WIN32
 #include <algorithm>
 namespace DuiLib
 {
@@ -54,7 +56,7 @@ namespace DuiLib
 		return NULL;
 	}
 
-	LPCTSTR WindowImplBase::QueryControlText(LPCTSTR lpstrId, LPCTSTR lpstrType)
+	CDuiString WindowImplBase::QueryControlText(LPCTSTR lpstrId, LPCTSTR lpstrType)
 	{
 		return NULL;
 	}
@@ -175,7 +177,7 @@ namespace DuiLib
 		}
 
 		RECT rcCaption = m_pm.GetCaptionRect();
-		rcCaption = m_pm.GetDPIObj()->Scale(rcCaption);
+		rcCaption = m_pm.GetDPIObj()->ScaleRect(rcCaption);
 		if (-1 == rcCaption.bottom)
 		{
 			rcCaption.bottom = rcClient.bottom;
@@ -199,9 +201,11 @@ namespace DuiLib
 		MONITORINFO Monitor = {};
 		Monitor.cbSize = sizeof(Monitor);
 		::GetMonitorInfo(::MonitorFromWindow(m_hWnd, MONITOR_DEFAULTTOPRIMARY), &Monitor);
-		RECT rcWork = Monitor.rcWork;
+		//RECT rcWork = Monitor.rcWork;
+		CDuiRect rcWork = Monitor.rcWork;
 		if( Monitor.dwFlags != MONITORINFOF_PRIMARY ) {
-			::OffsetRect(&rcWork, -rcWork.left, -rcWork.top);
+			//::OffsetRect(&rcWork, -rcWork.left, -rcWork.top);
+			rcWork.Offset(-rcWork.left, -rcWork.top);
 		}
 
 		LPMINMAXINFO lpMMI = (LPMINMAXINFO) lParam;
@@ -294,7 +298,7 @@ namespace DuiLib
 		::SetWindowLong(*this, GWL_STYLE, styleValue | WS_CLIPSIBLINGS | WS_CLIPCHILDREN);
 
 		// 关联UI管理器
-		m_pm.Init(m_hWnd, GetManagerName());
+		m_pm.Init(m_hWnd, GetManagerName(), this);
 		// 注册PreMessage回调
 		m_pm.AddPreMessageFilter(this);
 
@@ -445,3 +449,5 @@ namespace DuiLib
 		return CNotifyPump::NotifyPump(msg);
 	}
 }
+#endif //#ifdef DUILIB_WIN32
+

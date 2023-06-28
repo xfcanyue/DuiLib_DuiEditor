@@ -1,7 +1,8 @@
 #include "StdAfx.h"
 #include "UIDateTimeEx.h"
-#include "UIDateTimeExWnd.h"
-#include "atlconv.h"
+#include "UIDateTimeExWndWin32.h"
+#include "UIDateTimeExWndGtk.h"
+//#include "atlconv.h"
 
 namespace DuiLib
 {
@@ -42,7 +43,7 @@ namespace DuiLib
 	, m_pWindowDate(NULL)
 	, m_pWindowTime(NULL)
 	{
-		::GetLocalTime(&m_sysTime);
+		CPlatform::GetLocalTime(m_sysTime);
 
 		m_pLabelDate = new CDateTimeLabelUI(this, UIDTS_DATE);
 		m_pLabelDate->SetTextPadding(CDuiRect(5,0,5,0));
@@ -64,7 +65,7 @@ namespace DuiLib
 	LPVOID CDateTimeExUI::GetInterface(LPCTSTR pstrName)
 	{
 		if( _tcscmp(pstrName, DUI_CTR_DATETIMEEX) == 0 ) return static_cast<CDateTimeExUI*>(this);
-		return __super::GetInterface(pstrName);
+		return CHorizontalLayoutUI::GetInterface(pstrName);
 	}
 
 	void CDateTimeExUI::DoInit()
@@ -78,7 +79,8 @@ namespace DuiLib
 
 		if( pEvent->Type == UIEVENT_SETCURSOR && IsEnabled() )
 		{
-			::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_IBEAM)));
+			//::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_IBEAM)));
+			GetManager()->SetCursor(DUI_IBEAM);
 			return false;
 		}
 		if( pEvent->Type == UIEVENT_WINDOWSIZE )
@@ -128,7 +130,8 @@ namespace DuiLib
 
 		if( pEvent->Type == UIEVENT_SETCURSOR && IsEnabled() )
 		{
-			::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_IBEAM)));
+			//::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_IBEAM)));
+			GetManager()->SetCursor(DUI_IBEAM);
 			return false;
 		}
 		if( pEvent->Type == UIEVENT_WINDOWSIZE )
@@ -211,6 +214,7 @@ namespace DuiLib
 
 	void CDateTimeExUI::SetText(LPCTSTR lpszDate)
 	{
+#ifdef DUILIB_WIN32
 		DATE dt;
 		USES_CONVERSION_EX;
 		LPCTSTR pszDate = ( lpszDate == NULL ) ? _T("") : lpszDate;
@@ -250,6 +254,7 @@ namespace DuiLib
 			}
 		}
 		::VariantTimeToSystemTime(dt, &m_sysTime);
+#endif
 	}
 
 	CDuiString CDateTimeExUI::GetText() const
@@ -268,48 +273,48 @@ namespace DuiLib
 
 	void CDateTimeExUI::SetPos(RECT rc, bool bNeedInvalidate)
 	{
-		__super::SetPos(rc, bNeedInvalidate);
+		CHorizontalLayoutUI::SetPos(rc, bNeedInvalidate);
 		if(m_pWindowDate != NULL)
 		{
 			RECT rcPos = ((CDateTimeExWnd *)m_pWindowDate)->CalPos();
-			::SetWindowPos(m_pWindowDate->GetHWND(), NULL, rcPos.left, rcPos.top, 
+			m_pWindowDate->SetWindowPos(NULL, rcPos.left, rcPos.top, 
 				rcPos.right - rcPos.left, rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE);        
 		}
 		if(m_pWindowTime != NULL)
 		{
 			RECT rcPos = ((CDateTimeExWnd *)m_pWindowTime)->CalPos();
-			::SetWindowPos(m_pWindowTime->GetHWND(), NULL, rcPos.left, rcPos.top, 
+			m_pWindowTime->SetWindowPos(NULL, rcPos.left, rcPos.top,
 				rcPos.right - rcPos.left, rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE);   
 		}	
 	}
 
 	void CDateTimeExUI::Move(SIZE szOffset, bool bNeedInvalidate)
 	{
-		__super::Move(szOffset, bNeedInvalidate);
+		CHorizontalLayoutUI::Move(szOffset, bNeedInvalidate);
 		if(m_pWindowDate != NULL)
 		{
 			RECT rcPos = ((CDateTimeExWnd *)m_pWindowDate)->CalPos();
-			::SetWindowPos(m_pWindowDate->GetHWND(), NULL, rcPos.left, rcPos.top, 
+			m_pWindowDate->SetWindowPos(NULL, rcPos.left, rcPos.top,
 				rcPos.right - rcPos.left, rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE);        
 		}
 		if(m_pWindowTime != NULL)
 		{
 			RECT rcPos = ((CDateTimeExWnd *)m_pWindowTime)->CalPos();
-			::SetWindowPos(m_pWindowTime->GetHWND(), NULL, rcPos.left, rcPos.top, 
+			m_pWindowTime->SetWindowPos(NULL, rcPos.left, rcPos.top,
 				rcPos.right - rcPos.left, rcPos.bottom - rcPos.top, SWP_NOZORDER | SWP_NOACTIVATE);   
 		}
 	}
 
 	void CDateTimeExUI::SetVisible(bool bVisible)
 	{
-		__super::SetVisible(bVisible);
+		CHorizontalLayoutUI::SetVisible(bVisible);
 		if(!IsVisible() && (m_pWindowDate != NULL || m_pWindowTime != NULL))
 			m_pManager->SetFocus(NULL);
 	}
 
 	void CDateTimeExUI::SetInternVisible(bool bVisible)
 	{
-		__super::SetInternVisible(bVisible);
+		CHorizontalLayoutUI::SetInternVisible(bVisible);
 		if(!IsVisible() && (m_pWindowDate != NULL || m_pWindowTime != NULL))
 			m_pManager->SetFocus(NULL);
 	}
@@ -318,10 +323,10 @@ namespace DuiLib
 	{
 		if( !IsMouseEnabled() && event.Type > UIEVENT__MOUSEBEGIN && event.Type < UIEVENT__MOUSEEND ) {
 			if( m_pParent != NULL ) m_pParent->DoEvent(event);
-			else __super::DoEvent(event);
+			else CHorizontalLayoutUI::DoEvent(event);
 			return;
 		}
-		__super::DoEvent(event);
+		CHorizontalLayoutUI::DoEvent(event);
 	}
 
 	CLabelUI *CDateTimeExUI::GetDateLabel() const
@@ -372,6 +377,7 @@ namespace DuiLib
 		{
 			if(m_pLabelTime) m_pLabelTime->ApplyAttributeList(pstrValue);
 		}
-		else __super::SetAttribute(pstrName, pstrValue);
+		else CHorizontalLayoutUI::SetAttribute(pstrName, pstrValue);
 	}
 }
+

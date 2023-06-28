@@ -203,7 +203,7 @@ namespace DuiLib {
 	protected:
 		enum { MAX_LINK = 8 };
 		int m_nLinks;
-		RECT m_rcLinks[MAX_LINK];
+		CDuiRect m_rcLinks[MAX_LINK];
 		CDuiString m_sLinks[MAX_LINK];
 		int m_nHoverLink;
 		CListUI* m_pOwner;

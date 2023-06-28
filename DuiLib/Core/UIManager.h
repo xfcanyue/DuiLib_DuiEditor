@@ -6,7 +6,7 @@ namespace DuiLib {
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
 
-	class CControlUI;
+	//class CControlUI;
 	//class CIDropTarget;
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
@@ -104,8 +104,10 @@ namespace DuiLib {
 			if (bEnable)
 				m_uState &= ~UISTATE_DISABLED;
 			else
+			{
 				m_uState |= UISTATE_DISABLED;
 				m_uState &= ~(UISTATE_FOCUSED | UISTATE_HOT | UISTATE_CAPTURED | UISTATE_PUSHED);
+			}
 		}
 
 		bool IsFocused() const					{ return (m_uState & UISTATE_FOCUSED) == UISTATE_FOCUSED;					}
@@ -188,12 +190,27 @@ namespace DuiLib {
 		virtual LRESULT MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, bool& bHandled) = 0;
 	};
 
+#ifdef DUILIB_WIN32
 	class ITranslateAccelerator
 	{
 	public:
 		virtual LRESULT TranslateAccelerator(MSG *pMsg) = 0;
 	};
+#endif
 
+	typedef struct tagFINDTABINFO
+	{
+		CControlUI* pFocus;
+		CControlUI* pLast;
+		bool bForward;
+		bool bNextIsIt;
+	} FINDTABINFO;
+
+	typedef struct tagFINDSHORTCUT
+	{
+		TCHAR ch;
+		bool bPickNext;
+	} FINDSHORTCUT;
 
 	//duilib script interface  add by liqs99
 	class UILIB_API IScriptManager
@@ -230,10 +247,11 @@ namespace DuiLib {
 #define UIACTION_BEGIN			0
 #define UIACTION_Close			1	//关闭窗口
 #define UIACTION_SetText		2	//设置文本
-#define UIACTION_SetValue		3	//设置进度条当前值
-#define UIACTION_SetMinValue	4	//设置进度条之最小值
-#define UIACTION_SetMaxValue	5	//设置进度条之最大值
-#define UIACTION_END			6	//库外部可以定义 #define UIACTION_END+xxx, 并重写 void CUIFrameWnd::UIAction(TUIAction *act, bool bAsync)
+#define UIACTION_SetTextColor	3	//设置文本颜色
+#define UIACTION_SetValue		4	//设置进度条当前值
+#define UIACTION_SetMinValue	5	//设置进度条之最小值
+#define UIACTION_SetMaxValue	6	//设置进度条之最大值
+#define UIACTION_END			7	//库外部可以定义 #define UIACTION_END+xxx, 并重写 void CUIFrameWnd::UIAction(TUIAction *act, bool bAsync)
 	typedef struct UILIB_API tagUIAction
 	{
 		CDuiString sControlName;
@@ -245,31 +263,35 @@ namespace DuiLib {
 	//
 	typedef CControlUI* (*LPCREATECONTROL)(LPCTSTR pstrType);
 
-	class UILIB_API CPaintManagerUI : public CIDropTarget
+	class UILIB_API CPaintManagerUI
 	{
-	public:
+	protected:
 		CPaintManagerUI();
-		~CPaintManagerUI();
+		virtual ~CPaintManagerUI();
 
 	public:
-		void Init(HWND hWnd, LPCTSTR pstrName = NULL);
-		UIRender *Render();
+		virtual void Init(UIWND hWnd, LPCTSTR pstrName = NULL, CWindowWnd *pWindow=NULL);
+		virtual UIRender *Render() = 0;
 		bool IsUpdateNeeded() const;
 		void NeedUpdate();
 		void LockUpdate(bool bLock);
 		bool IsLockUpdate();
 		void Invalidate();
 		void Invalidate(RECT& rcItem);
+		virtual BOOL InvalidateRect(UIWND hWnd, const RECT *lpRect, BOOL bErase) = 0;
 
-		LPCTSTR GetName() const;
-		HDC GetPaintDC() const;
-		HWND GetPaintWindow() const;
-		HWND GetTooltipWindow() const;
-		int GetHoverTime() const;
-		void SetHoverTime(int iTime);
+		CDuiString GetName() const;
+#ifdef DUILIB_WIN32
+		virtual HDC GetPaintDC() const = 0;
+#endif
+		UIWND GetPaintWindow() const;
+		CWindowWnd *GetWindow() const;
+		UIWND GetTooltipWindow() const;
+		int GetTooltipHoverTime() const;
+		void SetTooltipHoverTime(int iTime);
 
-		POINT GetMousePos() const;
-		SIZE GetClientSize() const;
+		POINT GetLastMousePos() const;
+
 		SIZE GetInitSize();
 		void SetInitSize(int cx, int cy);
 		RECT& GetSizeBox();
@@ -291,7 +313,7 @@ namespace DuiLib {
 		void SetOpacity(BYTE nOpacity);
 
 		bool IsLayered();
-		void SetLayered(bool bLayered);
+		virtual void SetLayered(bool bLayered) {}
 		RECT& GetLayeredInset();
 		void SetLayeredInset(RECT& rcLayeredInset);
 		BYTE GetLayeredOpacity();
@@ -314,6 +336,7 @@ namespace DuiLib {
 		static emRenderEngine GetRenderEngineType();
 		static HINSTANCE GetInstance();
 		static CDuiString GetInstancePath();
+		static void SetInstancePath(LPCTSTR sInstancePath);
 		static CDuiString GetCurrentPath();
 		static HINSTANCE GetResourceDll();
 		static const CDuiString& GetResourcePath();
@@ -341,15 +364,13 @@ namespace DuiLib {
 		static void ReloadSkin();
 		static CPaintManagerUI* GetPaintManager(LPCTSTR pstrName);
 		static CStdPtrArray* GetPaintManagers();
-		static BOOL UIAction(HWND hWnd, LPCTSTR sControlName, UINT action, WPARAM wparam, LPARAM lparam);
-		static BOOL UIActionAsync(HWND hWnd, LPCTSTR sControlName, UINT action, WPARAM wparam, LPARAM lparam);
+		static BOOL UIAction(UIWND hWnd, LPCTSTR sControlName, UINT action, WPARAM wparam, LPARAM lparam);
+		static BOOL UIActionAsync(UIWND hWnd, LPCTSTR sControlName, UINT action, WPARAM wparam, LPARAM lparam);
 		static bool LoadPlugin(LPCTSTR pstrModuleName);
 		static CStdPtrArray* GetPlugins();
 
 		bool IsForceUseSharedRes() const;
 		void SetForceUseSharedRes(bool bForce);
-
-		void DeletePtr(void* ptr);
 
 		DWORD GetDefaultDisabledColor() const;
 		void SetDefaultDisabledColor(DWORD dwColor, bool bShared = false);
@@ -413,7 +434,9 @@ namespace DuiLib {
 		const UIImage* AddImageX(const TDrawInfo *pDrawInfo, bool bShared = false, HINSTANCE instance = NULL);
 
 		//增加自定义图片, 若bitmap重复，插入失败。
+#ifdef DUILIB_WIN32
 		const UIImage* AddImage(LPCTSTR bitmap, HBITMAP hBitmap, bool bAlpha, bool bShared = false);
+#endif
 
 		//删除指定名称的bitmap的图片，
 		void RemoveImage(LPCTSTR bitmap, bool bShared = false);
@@ -451,11 +474,6 @@ namespace DuiLib {
 
 		const UIImage* GetImageString(LPCTSTR pStrImage, LPCTSTR pStrModify = NULL);
 
-		// 初始化拖拽
-		bool InitDragDrop();
-		virtual bool OnDropOver(DWORD grfKeyState, LPDWORD pdwEffect) override;
-		virtual bool OnDrop(FORMATETC* pFmtEtc, STGMEDIUM& medium,DWORD *pdwEffect) override;
-
 		bool AttachDialog(CControlUI* pControl);
 		bool InitControls(CControlUI* pControl, CControlUI* pParent = NULL);
 		void ReapObjects(CControlUI* pControl);
@@ -470,16 +488,17 @@ namespace DuiLib {
 		void SetFocus(CControlUI* pControl);
 		void SetFocusNeeded(CControlUI* pControl);
 
+		virtual void SetCursor(int nCursor) = 0;
+
 		bool SetNextTabControl(bool bForward = true);
 
 		bool SetTimer(CControlUI* pControl, UINT nTimerID, UINT uElapse);
-		bool KillTimer(CControlUI* pControl, UINT nTimerID);
-		void KillTimer(CControlUI* pControl);
+		bool KillTimer(CControlUI* pControl, UINT nTimerID); //uTimeID < 0 时，删除pControl所有定时器
 		void RemoveAllTimers();
 
-		void SetCapture();
-		void ReleaseCapture();
-		bool IsCaptured();
+		virtual void SetCapture() = 0;
+		virtual void ReleaseCapture() = 0;
+		virtual bool IsCaptured() = 0;
 
 		bool IsPainting();
 		void SetPainting(bool bIsPainting);
@@ -500,19 +519,22 @@ namespace DuiLib {
 		bool AddPostPaint(CControlUI* pControl);
 		bool RemovePostPaint(CControlUI* pControl);
 		bool SetPostPaintIndex(CControlUI* pControl, int iIndex);
-
+#ifdef DUILIB_WIN32
 		int GetNativeWindowCount() const;
 		RECT GetNativeWindowRect(HWND hChildWnd);
 		bool AddNativeWindow(CControlUI* pControl, HWND hChildWnd);
 		bool RemoveNativeWindow(HWND hChildWnd);
+#endif
 
 		void AddDelayedCleanup(CControlUI* pControl);
 		void AddMouseLeaveNeeded(CControlUI* pControl);
 		bool RemoveMouseLeaveNeeded(CControlUI* pControl);
 
+#ifdef DUILIB_WIN32
 		bool AddTranslateAccelerator(ITranslateAccelerator *pTranslateAccelerator);
 		bool RemoveTranslateAccelerator(ITranslateAccelerator *pTranslateAccelerator);
 		bool TranslateAccelerator(LPMSG pMsg);
+#endif
 
 		CControlUI* GetRoot() const;
 		CControlUI* FindControl(POINT pt) const;
@@ -525,7 +547,9 @@ namespace DuiLib {
 		CStdPtrArray* FindSubControlsByInterface(CControlUI* pParent, LPCTSTR pstrClass);
 
 		static void MessageLoop();
+#ifdef DUILIB_WIN32
 		static bool TranslateMessage(const LPMSG pMsg);
+#endif
 		static void Term();
 
 		CDPI* GetDPIObj();
@@ -533,11 +557,42 @@ namespace DuiLib {
 		void SetDPI(int iDPI);
 		static void SetAllDPI(int iDPI);
 
-		bool MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& lRes);
-		bool PreMessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& lRes);
-		void UsedVirtualWnd(bool bUsed);
+		virtual bool PreMessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& lRes);
+		virtual bool OnApp1(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnClose(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnPaint(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnEraseBkgnd(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnPrintClient(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnGetMaxMinInfo(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnSize(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnTimer(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnLButtonDown(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnLButtonUp(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnLButtonDbClick(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnRButtonDown(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnRButtonUp(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnRButtonDbClick(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnMButtonDown(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnMButtonUp(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnMouseOver(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnMouseLeave(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnMouseMove(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnMouseWheel(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnContextMenu(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnChar(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnKeyDown(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnKeyUp(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnSetCursor(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnSetFocus(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnKillFocus(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnNotify(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnCommand(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnCtlColorEdit(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
+		virtual bool OnCtlColorStatic(WPARAM wParam, LPARAM lParam, LRESULT& lRes) { return false; }
 
-	private:
+		void UsedVirtualWnd(bool bUsed);
+	protected:
 		CStdPtrArray* GetFoundControls();
 		static CControlUI* CALLBACK __FindControlFromNameHash(CControlUI* pThis, LPVOID pData);
 		static CControlUI* CALLBACK __FindControlFromCount(CControlUI* pThis, LPVOID pData);
@@ -554,17 +609,22 @@ namespace DuiLib {
 		void AdjustImagesHSL();
 		void PostAsyncNotify();
 
-	private:
+	public:
+		//创建控件的图标，比如拖拽时的图片
+		virtual UIBitmap* CreateControlBitmap(CControlUI* pControl, DWORD dwFilterColor = 0, CControlUI* pStopControl = NULL) { return NULL; }
+
+		//构造内部窗口的背景画刷
+		virtual UIBitmap* CreateControlBackBitmap(CControlUI* pControl, const RECT &rcWnd, DWORD dwFilterColor) { return NULL; }
+	protected:
 		static emRenderEngine m_emRenderEngine;
 		CStdRefPtr<UIRender> m_pRenderEngine;
 		CDuiString m_sName;
-		HWND m_hWndPaint;	//所附加的窗体的句柄
-		HDC m_hDcPaint;
+		UIWND m_hWndPaint;	//所附加的窗体的句柄
+		CWindowWnd *m_pWindow;	//附加的窗口类指针，好无奈。。。
 
 		// 提示信息
-		HWND m_hwndTooltip;
-		TOOLINFO m_ToolTip;
-		int m_iHoverTime;
+		UIWND m_hwndTooltip;
+		int m_iTooltipHoverTime;
 		bool m_bNoActivate;
 		bool m_bShowUpdateRect;
 
@@ -595,7 +655,8 @@ namespace DuiLib {
 		bool m_bLayered;
 		RECT m_rcLayeredInset;
 		bool m_bLayeredChanged;
-		RECT m_rcLayeredUpdate;
+		//RECT m_rcLayeredUpdate;
+		CDuiRect m_rcLayeredUpdate;
 		TDrawInfo m_diLayered;
 
 		bool m_bMouseTracking;
@@ -611,8 +672,10 @@ namespace DuiLib {
 		CStdPtrArray m_aPreMessageFilters;
 		CStdPtrArray m_aMessageFilters;
 		CStdPtrArray m_aPostPaintControls;
+#ifdef DUILIB_WIN32
 		CStdPtrArray m_aNativeWindow;
 		CStdPtrArray m_aNativeWindowControl;
+#endif
 		CStdPtrArray m_aDelayedCleanup;
 		CStdPtrArray m_aAsyncNotify; //CDuiLock m_lockAsyncNotify; //add by liq99
 		CStdPtrArray m_aFoundControls;
@@ -636,12 +699,12 @@ namespace DuiLib {
 
 		// 拖拽
 		bool m_bDragMode;
-		HBITMAP m_hDragBitmap;
 		CStdRefPtr<UIBitmap> m_dragBitmap;
 
 		
 		//
 		static HINSTANCE m_hInstance;
+		static CDuiString m_sInstancePath;
 		static HINSTANCE m_hResourceInstance;
 		static CDuiString m_pStrResourcePath;
 		static CDuiString m_pStrResourceZip;
@@ -662,7 +725,7 @@ namespace DuiLib {
 		CLangManagerUI *GetLangManager() { return m_pLangManager; }
 		bool IsInitWindowParameter() { return m_bInitWindowParameter; }
 		void SetInitWindowParameter(bool bInit) { m_bInitWindowParameter = bInit; }
-	private:
+	protected:
 		bool m_bInitWindowParameter; //是否已经初始化了Window属性, window属性只能初始化一次,用来过滤Include文件中的window属性 Modify by liqs99
 		CLangManagerUI *m_pLangManager;		//多语言管理器, add by liqs99
 
@@ -692,15 +755,6 @@ namespace DuiLib {
 		static BOOL UIDESIGNPREVIEW;
 	};
 
-	//先锁定窗口更新，然后强制刷新整个窗口
-	class UILIB_API CLockWindowUpdateUI
-	{
-	public:
-		CLockWindowUpdateUI(CPaintManagerUI *pManager);
-		~CLockWindowUpdateUI();
-	private:
-		CPaintManagerUI *m_pManager;
-	};
 } // namespace DuiLib
 
 #endif // __UIMANAGER_H__

@@ -81,7 +81,7 @@ public:
 		REG_METHOD_FUNPR(UIRender, BOOL, StretchBlt, (int x, int y, int nWidth, int nHeight, UIRender *pSrcRender, int xSrc, int ySrc, int nWidthSrc, int nHeightSrc, DWORD dwRop) );
 
 		//绘制位图
-		REG_METHOD_FUNPR(UIRender, void, DrawBitmap, (HBITMAP hBitmap, const RECT& rc, const RECT& rcPaint, const RECT& rcBmpPart, const RECT& rcCorners, bool bAlpha, BYTE uFade, bool hole, bool xtiled, bool ytiled) );
+		//REG_METHOD_FUNPR(UIRender, void, DrawBitmap, (HBITMAP hBitmap, const RECT& rc, const RECT& rcPaint, const RECT& rcBmpPart, const RECT& rcCorners, bool bAlpha, BYTE uFade, bool hole, bool xtiled, bool ytiled) );
 
 		//画颜色(填充颜色)
 		REG_METHOD_FUNPR(UIRender, void, DrawColor, (const RECT& rc, const SIZE &round, DWORD color) );

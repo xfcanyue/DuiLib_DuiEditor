@@ -1,0 +1,755 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{a4fdfbc5-26d4-4898-95ff-471f04b5214f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{a33dc93b-cd72-40de-9e57-c32546432b80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Control">
+      <UniqueIdentifier>{16e19555-af36-437c-ab88-d4527414c309}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Core">
+      <UniqueIdentifier>{779681ce-61b9-44f7-9cff-a8692ad994f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Layout">
+      <UniqueIdentifier>{3f31448a-db20-4015-acc7-3d9b569e0f63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render">
+      <UniqueIdentifier>{fb443f7a-4002-4239-9fc6-96c2d39425f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{f10201d4-2638-451c-b07f-58cfbed52cac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Control">
+      <UniqueIdentifier>{2c1ce011-d85e-4991-ab7d-cace1e350538}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{0a5082c6-4622-4ca0-966a-3bc8432d8bc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Layout">
+      <UniqueIdentifier>{f80da5a3-9e33-4ad2-ae9d-0cb24f71a4c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render">
+      <UniqueIdentifier>{7be47037-795a-4f27-812b-dd2ba872b748}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{7f03cec3-0767-475c-9c54-1671ecd9c192}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utils\pugixml">
+      <UniqueIdentifier>{db137d52-2436-4bc3-a8d5-613ff588c8bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils\pugixml">
+      <UniqueIdentifier>{7e12292e-48fb-44e9-9286-ed766848ab4c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\IGridUI.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\ITreeUI.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\TxtWinHost.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIActiveX.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIAnimation.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIBarCode.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIButton.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIColorPalette.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UICombo.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIComboEx.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIDateTime.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIDateTimeEx.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIEdit.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIFadeButton.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIGifAnim.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIGrid.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIGridBody.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIGridCell.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIGridHeader.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIGridRowUI.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIGroupBox.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIHotKey.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIIconButton.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIImageBoxEx.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIIPAddress.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIIPAddressEx.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UILabel.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIList.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIListEx.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIMenu.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIMsgWnd.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIOption.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIPicture.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIPictureBox.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIProgress.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIQRCode.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIRichEdit.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIRing.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIRollText.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIRollTextEx.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIScrollBar.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UISlider.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UITabCtrl.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIText.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UITree.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UITreeItem.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UITreeView.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIWebBrowser.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Core\ControlFactory.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIBase.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIContainer.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIControl.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIDefine.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIDlgBuilder.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIFile.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIGlobal.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UILangManager.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIManager.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIResourceManager.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIScript.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIXmlAttribute.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIXmlDocument.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIXmlNode.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Layout\UIAnimationTabLayout.h">
+      <Filter>Header Files\Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Layout\UIChildLayout.h">
+      <Filter>Header Files\Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Layout\UIChildWindow.h">
+      <Filter>Header Files\Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Layout\UIDynamicLayout.h">
+      <Filter>Header Files\Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Layout\UIHorizontalLayout.h">
+      <Filter>Header Files\Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Layout\UITabLayout.h">
+      <Filter>Header Files\Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Layout\UITableLayout.h">
+      <Filter>Header Files\Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Layout\UITileLayout.h">
+      <Filter>Header Files\Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Layout\UIVerticalLayout.h">
+      <Filter>Header Files\Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Render\IRender.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIObject_Cairo.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIObject_gdi.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIObject_gdiplus.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIRender_Cairo.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIRender_gdi.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIRender_gdiplus.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIRenderFactory_Cairo.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIRenderFactory_gdi.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIRenderFactory_gdiplus.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\downloadmgr.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\DPI.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\DragDropImpl.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\DuiString.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\FlashEventHandler.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\nanosvg.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\nanosvgrast.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\observer_impl_base.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\QREncode.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\stb_image.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\stb_image_write.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\TrayIcon.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIApplication.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIDelegate.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIDialog.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIForm.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIFrameBase.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIFrameWnd.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIFlash.h">
+      <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\compat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\StdAfx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\UIlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\VersionHelpers.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\Utils.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\WebBrowserEventHandler.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\WinImplBase.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\pugixml\pugiconfig.hpp">
+      <Filter>Header Files\Utils\pugixml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\pugixml\pugixml.hpp">
+      <Filter>Header Files\Utils\pugixml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIShadowGtk.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIShadowBase.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIShadowWin32.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\DpiWin32.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\DpiGtk.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIWindowGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIWindowWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIClipWin32.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIClipGtk.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIManagerGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Core\UIManagerWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIApplicationGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIApplicationWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIFrameWndGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\UIFrameWndWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIComboWndGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIComboWndWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIDateTimeWndGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIDateTimeWndWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIEditWndGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIEditWndWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIMenuWndGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIMenuWndWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIDateTimeExWndGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIDateTimeExWndWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIComboEditWndGtk.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UIComboEditWndWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Render\UIRender_CairoWin32.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\IGridUI.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\ITreeUI.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\TxtWinHost.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIActiveX.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIAnimation.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIBarCode.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIButton.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIColorPalette.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UICombo.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIComboEx.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIDateTime.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIDateTimeEx.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIEdit.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIFadeButton.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIGifAnim.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIGrid.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIGridBody.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIGridCell.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIGridHeader.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIGridRowUI.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIGroupBox.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIHotKey.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIIconButton.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIImageBoxEx.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIIPAddress.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIIPAddressEx.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UILabel.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIList.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIListEx.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIMenu.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIMsgWnd.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIOption.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIPicture.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIPictureBox.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIProgress.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIQRCode.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIRichEdit.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIRing.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIRollText.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIRollTextEx.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIScrollBar.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UISlider.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UITabCtrl.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIText.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UITree.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UITreeItem.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UITreeView.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIWebBrowser.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Core\ControlFactory.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIBase.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIContainer.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIControl.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIDlgBuilder.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIFile.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIGlobal.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UILangManager.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIManager.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIResourceManager.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIScript.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIXmlAttribute.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIXmlDocument.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIXmlNode.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Layout\UIAnimationTabLayout.cpp">
+      <Filter>Source Files\Layout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Layout\UIChildLayout.cpp">
+      <Filter>Source Files\Layout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Layout\UIChildWindow.cpp">
+      <Filter>Source Files\Layout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Layout\UIDynamicLayout.cpp">
+      <Filter>Source Files\Layout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Layout\UIHorizontalLayout.cpp">
+      <Filter>Source Files\Layout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Layout\UITabLayout.cpp">
+      <Filter>Source Files\Layout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Layout\UITableLayout.cpp">
+      <Filter>Source Files\Layout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Layout\UITileLayout.cpp">
+      <Filter>Source Files\Layout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Layout\UIVerticalLayout.cpp">
+      <Filter>Source Files\Layout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Render\IRender.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIObject_Cairo.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIObject_gdi.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIObject_gdiplus.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIRender_Cairo.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIRender_gdi.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIRender_gdiplus.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIRenderFactory_Cairo.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIRenderFactory_gdi.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIRenderFactory_gdiplus.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\DPI.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\DragDropImpl.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\DuiString.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\QREncode.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\TrayIcon.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIApplication.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIDelegate.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIDialog.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIForm.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIFrameBase.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIFrameWnd.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\Utils.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\WinImplBase.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIFlash.cpp">
+      <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\StdAfx.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\UIlib.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\pugixml\pugixml.cpp">
+      <Filter>Source Files\Utils\pugixml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIShadowGtk.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIShadowBase.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIShadowWin32.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\DpiGtk.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\DpiWin32.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIWindowGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIWindowWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIClipGtk.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIClipWin32.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIManagerGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Core\UIManagerWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIApplicationGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIApplicationWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIFrameWndGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\UIFrameWndWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIComboWndGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIComboWndWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIDateTimeWndGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIDateTimeWndWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIEditWndGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIEditWndWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIMenuWndGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIMenuWndWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIDateTimeExWndGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIDateTimeExWndWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIComboEditWndGtk.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UIComboEditWndWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Render\UIRender_CairoWin32.cpp" />
+  </ItemGroup>
+</Project>

@@ -284,7 +284,7 @@ bool ITreeUI::IsSelectedNode(TNodeData *pNode)
 
 int ITreeUI::GetSelectNodeCount()
 {
-	return m_mapSelectedNodes.size();
+	return static_cast<int>(m_mapSelectedNodes.size());
 }
 
 TNodeData *ITreeUI::GetSelectNode()

@@ -1,4 +1,6 @@
 #include "StdAfx.h"
+
+#ifdef DUILIB_WIN32
 #include "UIFlash.h"
 #include <atlcomcli.h>
 
@@ -268,3 +270,4 @@ namespace DuiLib
 	}
 
 };
+#endif //#ifdef DUILIB_WIN32

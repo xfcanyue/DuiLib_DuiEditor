@@ -40,7 +40,7 @@ namespace DuiLib
 					szFact.cy = T::m_rcTextPadding.top + T::m_rcTextPadding.bottom + h + 4;
 				}
 
-				return T::GetManager()->GetDPIObj()->Scale(szFact);
+				return T::GetManager()->GetDPIObj()->ScaleSize(szFact);
 			}
 
 			return CControlUI::EstimateSize(szAvailable);
@@ -63,7 +63,7 @@ namespace DuiLib
 
 		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override
 		{
-			__super::SetAttribute(pstrName, pstrValue);
+			T::SetAttribute(pstrName, pstrValue);
 		}
 
 		virtual void PaintText(UIRender *pRender) override
