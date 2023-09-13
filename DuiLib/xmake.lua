@@ -5,17 +5,19 @@ set_version("1.0.0")
 -- Add target
 target("DuiLib")
 	set_languages("cxx14")
+	
+	local target_file_name = "DuiLib"
+	
     -- Set the kind of target through configuration
     set_kind("$(kind)")
 
     if is_kind("static") then
+		target_file_name = target_file_name .. "_s"
         add_defines("UILIB_EXPORTS", "UILIB_STATIC")
-    elseif is_kind("binary") then
+    elseif is_kind("shared") then
         add_defines("UILIB_EXPORTS")
     end
-    -- Set the target kind (executable, shared library, or static library)
-    -- set_kind("binary")
-    set_kind("static")
+    
     -- Add source files
     add_files("*.cpp")
     
@@ -27,25 +29,37 @@ target("DuiLib")
 
     -- Add preprocessor definitions
     add_defines("UNICODE", "_UNICODE")
-	add_defines("WIN32","WINDOWS")
+	
+	--  Compile architecture configuration
+	if is_arch("x86_64") then
+		-- x64
+		
+	elseif is_arch("i386") then
+		-- x86
+	end
+	
+	-- Platform configuration
     if is_plat("windows") then
         add_defines("WIN32","WINDOWS")
 	else
 	
     end
-	add_rules("mode.debug", "mode.release")
+	
     -- Set the build modes (debug and release)
     if is_mode("debug") then
         -- Handle debug configuration
+		-- Prohibit optimization
+		set_optimize("none")
+		target_file_name = target_file_name .. "d"
         add_defines("DEBUG","_DEBUG")
         set_symbols("debug")
 		set_targetdir("$(buildir)/lib/$(kind)/$(mode)")
-		set_basename("DuiLibd")
+
     elseif is_mode("release") then
         -- Handle release configuration
         set_optimize("fastest")
         set_strip("all")
         add_defines("NDEBUG")
 		set_targetdir("$(buildir)/lib/$(kind)/$(mode)")
-		set_basename("DuiLib")
     end
+	set_basename(target_file_name)
