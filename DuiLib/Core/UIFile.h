@@ -43,6 +43,8 @@ namespace DuiLib {
 		UINT Write(const void* lpBuf, UINT nCount);
 		UINT WriteV(const char* lpszFormat, ...);
 		UINT WriteV(const wchar_t* lpszFormat, ...);
+		UINT WriteLine(const char* lpszFormat, ...);
+		UINT WriteLine(const wchar_t* lpszFormat, ...);
 		UINT GetFileLength() const;
 		int SeekToEnd();
 		void SeekToBegin();
@@ -62,8 +64,18 @@ namespace DuiLib {
 
 		FILE *m_fp;
 		UINT m_charset;
+
+	// --- static functions --
+	public:
+		static BOOL CopyFile(LPCTSTR sSourceFilePathName, LPCTSTR sDestFilePathName, BOOL bFailIfExists); //拷贝文件
+		static BOOL DeleteFile(LPCTSTR sFilePathName); //删除文件
+		static BOOL IsFileExist(LPCTSTR sFilePathName);	//文件是否存在
+		
+		static BOOL CreateDirectory(LPCTSTR sPathName, BOOL bCreateMultiLevelDirectory = FALSE); //创建目录
+		static BOOL RemoveDirectory(LPCTSTR sPathName, BOOL bDeleteNonEmptyDirectory = FALSE); //删除目录
+		static BOOL IsDirectoryExist(LPCTSTR sPathName); //目录是否存在
 	};
-	/*
+	
 	class UILIB_API CUIFileFind
 	{
 	public:
@@ -98,16 +110,29 @@ namespace DuiLib {
 		CDuiString m_strRoot;
 		BOOL m_bFindInZip;
 
+#ifdef WIN32
 		HANDLE m_hFind;
 		void* m_pFoundInfo;
 		void* m_pNextInfo;
+#elif defined __linux__
+		DIR* m_dir;
+		struct dirent* m_dirFoundInfo;
+		struct dirent* m_dirNextInfo;
 
-		HANDLE m_hZip;
-		ZIPENTRY m_zipEntry;
-		ZIPENTRY m_zipEntryNext;
-		int m_nZipIndex;
+		struct dirent** m_scandirList;
+		int m_scandirCount;
+		int m_scandirIterator;
+#elif defined __APPLE__
+        DIR* m_dir;
+        struct dirent* m_dirFoundInfo;
+        struct dirent* m_dirNextInfo;
+
+        struct dirent** m_scandirList;
+        int m_scandirCount;
+        int m_scandirIterator;
+#endif
 	};
-	*/
+	
 } // namespace DuiLib
 
 #endif // __UIFILE_H__

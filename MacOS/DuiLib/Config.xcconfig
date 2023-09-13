@@ -1,0 +1,12 @@
+//
+//  Config.xcconfig
+//  DuiLib
+//
+//  Created by cst on 2023/8/15.
+//  Copyright © 2023 liqs99. All rights reserved.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+CONFIGURATION_BUILD_DIR = $(BUILD_DIR)

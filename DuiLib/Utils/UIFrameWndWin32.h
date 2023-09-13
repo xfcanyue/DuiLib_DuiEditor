@@ -19,6 +19,8 @@ public:
 	virtual CPaintManagerUI *GetManager() override;
 	virtual void OnFinalMessage( HWND hWnd ) override;
 
+	virtual UIWND Create(UIWND hwndParent, LPCTSTR pstrName, DWORD dwStyle, DWORD dwExStyle, int x = 0, int y = 0, int cx = 0, int cy = 0) override;
+
 public:
 	virtual UINT GetClassStyle() const;
 

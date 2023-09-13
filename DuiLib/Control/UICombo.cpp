@@ -16,7 +16,6 @@ namespace DuiLib {
 	{
 		m_uTextStyle = DT_VCENTER | DT_SINGLELINE;
 		m_szDropBox = CDuiSize(0, 150);
-		::ZeroMemory(&m_rcTextPadding, sizeof(m_rcTextPadding));
 		m_rcTextPadding.left = 5;
 		m_rcTextPadding.right = 5;
 	}

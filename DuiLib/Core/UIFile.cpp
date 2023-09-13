@@ -171,7 +171,7 @@ namespace DuiLib {
 	BOOL CUIFile::__LoadFromDiskPath(LPCTSTR sFilePath)
 	{
 		//直接去读取bitmap.m_lpstr指向的路径
-		FILE *file = _tfopen(sFilePath, _T("rb+"));
+		FILE *file = _tfopen(sFilePath, _T("rb"));
 		if(file==NULL) return FALSE;
 		if(feof(file)) return FALSE;
 
@@ -287,6 +287,58 @@ namespace DuiLib {
 		return nWrite;
 	}
 
+	UINT CUIFile::WriteLine(const char* lpszFormat, ...)
+	{
+		UINT nWrite = 0;
+		UISTRING_CONVERSION;
+		CDuiString sFormat = UIA2T(lpszFormat);
+
+		CDuiString strText;
+		va_list argList;
+		va_start(argList, lpszFormat);
+		strText.InnerFormat(sFormat, argList);
+		va_end(argList);
+
+		if (m_charset == CUIFile::FILE_UTF8)
+		{
+			const char* pText = UIT2UTF8(strText);
+			nWrite = Write(pText, strlen(pText));
+		}
+		else if (m_charset == CUIFile::FILE_ANSI)
+		{
+			const char* pText = UIT2A(strText);
+			nWrite = Write(pText, strlen(pText));
+		}
+		Write("\n", 1);
+		return nWrite;
+	}
+
+	UINT CUIFile::WriteLine(const wchar_t* lpszFormat, ...)
+	{
+		UINT nWrite = 0;
+		UISTRING_CONVERSION;
+		CDuiString sFormat = UIW2T(lpszFormat);
+
+		CDuiString strText;
+		va_list argList;
+		va_start(argList, lpszFormat);
+		strText.InnerFormat(sFormat, argList);
+		va_end(argList);
+
+		if (m_charset == CUIFile::FILE_UTF8)
+		{
+			const char* pText = UIT2UTF8(strText);
+			nWrite = Write(pText, strlen(pText));
+		}
+		else if (m_charset == CUIFile::FILE_ANSI)
+		{
+			const char* pText = UIT2A(strText);
+			nWrite = Write(pText, strlen(pText));
+		}
+		Write("\n", 1);
+		return nWrite;
+	}
+
 	UINT CUIFile::GetFileLength() const
 	{
 		DWORD fsize;
@@ -321,148 +373,158 @@ namespace DuiLib {
 	{
 		m_charset = charset;
 	}
-/*
-	BOOL CUIFile::LoadFile(const STRINGorID &bitmap, LPCTSTR type, HINSTANCE instance)
-	{
-		Empty();
 
-		//读取顺序  skin文件夹 ==> zip文件 ==> 资源 ==> 文件绝对路径
-		do 
-		{
-			if( type == NULL )
-			{
-				CDuiString sFile = CPaintManagerUI::GetResourcePath();
-				if( CPaintManagerUI::GetResourceZip().IsEmpty() ) //直接读文件夹
-				{
-					sFile += bitmap.m_lpstr;
-					HANDLE hFile = ::CreateFile(sFile.GetData(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, \
-						FILE_ATTRIBUTE_NORMAL, NULL);
-					if( hFile == INVALID_HANDLE_VALUE ) break;
-					m_dwSize = ::GetFileSize(hFile, NULL);
-					if( m_dwSize == 0 ) break;
-
-					DWORD dwRead = 0;
-					m_pData = new BYTE[ m_dwSize + 1 ];
-					m_pData[m_dwSize] = '\0';
-					::ReadFile( hFile, m_pData, m_dwSize, &dwRead, NULL );
-					::CloseHandle( hFile );
-
-					if( dwRead != m_dwSize ) 
-					{
-						Empty();
-						break;
-					}
-				}
-				else //读zip
-				{
-					sFile += CPaintManagerUI::GetResourceZip();
-					HZIP hz = NULL;
-					if (CPaintManagerUI::IsCachedResourceZip())  //zip资源
-					{
-						hz = (HZIP)CPaintManagerUI::GetResourceZipHandle();
-					}
-					else //zip文件
-					{
-						CDuiString sFilePwd = CPaintManagerUI::GetResourceZipPwd();
-						UISTRING_CONVERSION;
-						hz = OpenZip(sFile.GetData(), UIT2A(sFilePwd.GetData()));
-					}
-					if( hz == NULL ) break;
-					ZIPENTRY ze; 
-					int i = 0; 
-					CDuiString key = bitmap.m_lpstr;
-					key.Replace(_T("\\"), _T("/")); 
-					if( FindZipItem(hz, key, true, &i, &ze) != 0 ) break;
-					m_dwSize = ze.unc_size;
-					if( m_dwSize == 0 ) break;
-					m_pData = new BYTE[ m_dwSize + 1];
-					m_pData[m_dwSize] = '\0';
-					int res = UnzipItem(hz, i, m_pData, m_dwSize);
-					if( res != 0x00000000 && res != 0x00000600)
-					{
-						Empty();
-						if( !CPaintManagerUI::IsCachedResourceZip() )
-							CloseZip(hz);
-						break;
-					}
-					if( !CPaintManagerUI::IsCachedResourceZip() )
-						CloseZip(hz);
-				}
-			}
-			else //读取资源id
-			{
-				HINSTANCE dllinstance = NULL;
-				if (instance)
-				{
-					dllinstance = instance;
-				}
-				else
-				{
-					dllinstance = CPaintManagerUI::GetResourceDll();
-				}
-				HRSRC hResource = ::FindResource(dllinstance, bitmap.m_lpstr, type);
-				if( hResource == NULL ) break;
-				HGLOBAL hGlobal = ::LoadResource(dllinstance, hResource);
-				if( hGlobal == NULL ) 
-				{
-					FreeResource(hResource);
-					break;
-				}
-
-				m_dwSize = ::SizeofResource(dllinstance, hResource);
-				if( m_dwSize == 0 ) break;
-				m_pData = new BYTE[ m_dwSize + 1];
-				m_pData[m_dwSize] = '\0';
-				::CopyMemory(m_pData, (LPBYTE)::LockResource(hGlobal), m_dwSize);
-				::FreeResource(hResource);
-			}
-		} while (0);
-
-		while (!m_pData)
-		{
-			//读不到图片, 则直接去读取bitmap.m_lpstr指向的路径
-			HANDLE hFile = ::CreateFile(bitmap.m_lpstr, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, \
-				FILE_ATTRIBUTE_NORMAL, NULL);
-			if( hFile == INVALID_HANDLE_VALUE ) break;
-			m_dwSize = ::GetFileSize(hFile, NULL);
-			if( m_dwSize == 0 ) break;
-
-			DWORD dwRead = 0;
-			m_pData = new BYTE[ m_dwSize + 1];
-			m_pData[m_dwSize] = '\0';
-			::ReadFile( hFile, m_pData, m_dwSize, &dwRead, NULL );
-			::CloseHandle( hFile );
-
-			if( dwRead != m_dwSize ) 
-			{
-				Empty();
-			}
-			break;
-		}
-		return m_dwSize > 0;
-	}
-
-	BOOL CUIFile::LoadFile(LPCTSTR pStrImage, LPCTSTR type, HINSTANCE instance)
-	{
-		return LoadFile(STRINGorID(pStrImage), type, instance);
-	}
-
-	BOOL CUIFile::LoadFile(UINT nID, LPCTSTR type, HINSTANCE instance)
-	{
-		return LoadFile(STRINGorID(nID), type, instance);
-	}
-*/
 	//////////////////////////////////////////////////////////////////////////
-/*
+	BOOL CUIFile::CopyFile(LPCTSTR sSourceFilePathName, LPCTSTR sDestFilePathName, BOOL bFailIfExists)
+	{
+#ifdef WIN32
+		return ::CopyFile(sSourceFilePathName, sDestFilePathName, bFailIfExists);
+#elif defined __linux__
+		CDuiString s;
+		s.Format(_T("cp \"%s\" \"%s\""), sSourceFilePathName, sDestFilePathName);
+		system(s.GetData());
+#elif defined __APPLE__
+        CDuiString s;
+        s.Format(_T("cp \"%s\" \"%s\""), sSourceFilePathName, sDestFilePathName);
+        system(s.GetData());
+#endif
+		return FALSE;
+	}
+
+	BOOL CUIFile::DeleteFile(LPCTSTR sFilePathName)
+	{
+#ifdef WIN32
+		return ::DeleteFile(sFilePathName);
+#elif defined __linux__
+		CDuiString s;
+		s.Format(_T("rm \"%s\""), sFilePathName);
+		system(s.GetData());
+#elif defined __APPLE__
+        CDuiString s;
+        s.Format(_T("rm \"%s\""), sFilePathName);
+        system(s.GetData());
+#endif
+		return FALSE;
+	}
+
+	BOOL CUIFile::IsFileExist(LPCTSTR sFilePathName)
+	{
+#ifdef WIN32
+		DWORD dwAttrib = GetFileAttributes(sFilePathName);
+		if( dwAttrib == INVALID_FILE_ATTRIBUTES) return FALSE;
+		return (dwAttrib & FILE_ATTRIBUTE_DIRECTORY) != FILE_ATTRIBUTE_DIRECTORY;
+#elif defined __linux__
+		//return access(sPathName, F_OK) == 0;
+		struct stat buff;
+		return stat(sFilePathName, &buff) == 0 && S_ISREG(buff.st_mode);
+#elif defined __APPLE__
+        struct stat buff;
+        return stat(sFilePathName, &buff) == 0 && S_ISREG(buff.st_mode);
+#endif
+		return FALSE;
+	}
+
+	BOOL CUIFile::CreateDirectory(LPCTSTR sPathName, BOOL bCreateMultiLevelDirectory)
+	{
+		if (IsDirectoryExist(sPathName))
+			return TRUE;
+
+		if(bCreateMultiLevelDirectory)
+		{
+			CDuiString sPath = sPathName;
+			CDuiString temp;
+			int len = sPath.GetLength();
+			for (int i=0; i<sPath.GetLength(); i++)
+			{
+				TCHAR ch = sPath[i];
+				temp += sPath[i];
+				if (sPath[i] == _T('/') || sPath[i] == _T('\\') || i == sPath.GetLength()-1)
+				{
+					if (!temp.IsEmpty() && !IsDirectoryExist(temp))
+					{
+						if (!CreateDirectory(temp.GetData(), FALSE))
+							return FALSE;
+					}
+				}
+			}
+		}
+		else
+		{
+#ifdef WIN32
+			return ::CreateDirectory(sPathName, NULL);
+#elif defined __linux__
+#ifdef _DEBUG
+			int n = ::mkdir(sPathName, S_IRWXU | S_IRWXG | S_IRWXO);
+			int err = errno;
+			return n == 0;
+#else
+			return ::mkdir(sPathName, S_IRWXU | S_IRWXG | S_IRWXO) == 0;
+#endif
+#elif defined __APPLE__
+            return ::mkdir(sPathName, S_IRWXU | S_IRWXG | S_IRWXO) == 0;
+#endif
+		}
+		return TRUE;
+	}
+
+	BOOL CUIFile::RemoveDirectory(LPCTSTR sPathName, BOOL bDeleteNoEmptyDirectory)
+	{
+#ifdef WIN32
+		::RemoveDirectory(sPathName);
+#elif defined __linux__
+		::rmdir(sPathName) == 0;
+#elif defined __APPLE__
+        ::rmdir(sPathName) == 0;
+#endif
+		return FALSE;
+	}
+
+	BOOL CUIFile::IsDirectoryExist(LPCTSTR sPathName)
+	{
+#ifdef WIN32
+		DWORD dwAttrib = GetFileAttributes(sPathName);
+		if( dwAttrib == INVALID_FILE_ATTRIBUTES) return FALSE;
+		return (dwAttrib & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY;
+#elif defined __linux__
+		//return access(sPathName, F_OK) == 0;
+		struct stat buff;
+#ifdef _DEBUG
+		int n = stat(sPathName, &buff);
+		BOOL b = S_ISDIR(buff.st_mode);
+		int error = errno;
+		return n == 0 && b == TRUE;
+#else
+		return stat(sPathName, &buff) == 0 && S_ISDIR(buff.st_mode);
+#endif
+#elif defined __APPLE__
+        struct stat buff;
+        return stat(sPathName, &buff) == 0 && S_ISDIR(buff.st_mode);
+#endif
+		return FALSE;
+	}
+
+	//////////////////////////////////////////////////////////////////////////
 	CUIFileFind::CUIFileFind()
 	{
-		m_bFindInZip = FALSE;
+#ifdef WIN32
 		m_hFind = INVALID_HANDLE_VALUE;
 		m_pFoundInfo = NULL;
 		m_pNextInfo = NULL;
-
-		m_hZip = NULL;
-		m_nZipIndex = 0;
+#elif defined __linux__
+		m_dir = NULL;
+		m_dirFoundInfo = NULL;
+		m_dirNextInfo = NULL;
+		m_scandirList = NULL;
+		m_scandirCount = 0;
+		m_scandirIterator = 0;
+#elif defined __APPLE__
+        m_dir = NULL;
+        m_dirFoundInfo = NULL;
+        m_dirNextInfo = NULL;
+        m_scandirList = NULL;
+        m_scandirCount = 0;
+        m_scandirIterator = 0;
+#endif
 	}
 
 	CUIFileFind::~CUIFileFind()
@@ -474,46 +536,14 @@ namespace DuiLib {
 	{
 		FindClose();
 
+		if (lpFileName == NULL) 
+			return FALSE;
+
+#ifdef DUILIB_WIN32
 		//是否相对路径
 		BOOL bRelativePath = PathIsRelative(lpFileName);
 		if (bRelativePath)
-		{
-			int resType = CPaintManagerUI::GetResourceType();		
-			if (resType == UILIB_FILE) //皮肤文件在磁盘文件
-			{
-				m_pNextInfo = new WIN32_FIND_DATA;
-
-				m_strRoot = CPaintManagerUI::GetResourcePath() + lpFileName;
-				TCHAR strDrive[_MAX_DRIVE], strDir[_MAX_DIR];
-				_tsplitpath_s(m_strRoot, strDrive, _MAX_DRIVE, strDir, _MAX_DIR, NULL, 0, NULL, 0);
-				_tmakepath_s(m_strRoot.GetBuffer(_MAX_PATH), _MAX_PATH, strDrive, strDir, NULL, NULL);
-
-				m_hFind = ::FindFirstFile(CPaintManagerUI::GetResourcePath() + lpFileName, (LPWIN32_FIND_DATA)m_pNextInfo);
-				if (m_hFind != INVALID_HANDLE_VALUE)
-					return TRUE;
-				delete m_pNextInfo;
-				m_pNextInfo = NULL;
-			}
-			else if (resType == UILIB_ZIP) //ZIP文件
-			{
-
-			}
-			else if (resType == UILIB_ZIPRESOURCE) //ZIP资源方式
-			{
-				m_strRoot = lpFileName;
-				MakeFullPath(m_strRoot);
-				m_strRoot.Replace(_T("\\"), _T("/"));
-
-				m_hZip = CPaintManagerUI::GetResourceZipHandle();
-				int i = 0;
-				ZRESULT zRet = FindZipItem((HZIP)m_hZip, m_strRoot, true, &i, &m_zipEntry);
-				if (zRet == ZR_OK)
-				{
-					m_bFindInZip = TRUE;
-					return TRUE;
-				}
-			}
-
+		{		
 			//在程序目录下搜索
 			m_pNextInfo = new WIN32_FIND_DATA; 
 			m_strRoot = CPaintManagerUI::GetInstancePath() + lpFileName;
@@ -531,41 +561,83 @@ namespace DuiLib {
 			{
 				m_pNextInfo = new WIN32_FIND_DATA;
 				m_hFind = ::FindFirstFile(lpFileName, (LPWIN32_FIND_DATA)m_pNextInfo);
-				return m_hFind != INVALID_HANDLE_VALUE;
+				if (m_hFind != INVALID_HANDLE_VALUE)
+					return TRUE;
 				delete m_pNextInfo;
 				m_pNextInfo = NULL;
 			}
 		}
+#elif defined __linux__
+		m_strRoot = lpFileName;
+		if (!CUIFile::IsDirectoryExist(lpFileName))
+			return FALSE;
+		
+// 		m_dir = opendir(lpFileName);
+// 		if (NULL == m_dir)
+// 		{
+// 			return FALSE;
+// 		}
+// 		m_dirFoundInfo = readdir(m_dir);
+// 		m_dirNextInfo = m_dirFoundInfo;
+// 		return m_dirFoundInfo != NULL;
+
+		m_scandirCount = scandir(lpFileName, &m_scandirList, 0, alphasort);
+		if (m_scandirCount <= 0) return FALSE;
+		m_dirFoundInfo = m_scandirList[0];
+		m_dirNextInfo = m_dirFoundInfo;
+		m_scandirIterator = 0;
+		return TRUE;
+#elif defined __APPLE__
+        m_strRoot = lpFileName;
+        if (!CUIFile::IsDirectoryExist(lpFileName))
+            return FALSE;
+        
+        m_scandirCount = scandir(lpFileName, &m_scandirList, 0, alphasort);
+        if (m_scandirCount <= 0) return FALSE;
+        m_dirFoundInfo = m_scandirList[0];
+        m_dirNextInfo = m_dirFoundInfo;
+        m_scandirIterator = 0;
+        return TRUE;
+#endif
 		return FALSE;
 	}
 
 	BOOL CUIFileFind::FindNextFile()
 	{
-		if (m_bFindInZip)
-		{
-			ZRESULT zRet = GetZipItem((HZIP)m_hZip, m_nZipIndex, &m_zipEntryNext);
-			m_nZipIndex++;
-			return zRet == ZR_OK;
-		}
-		else
-		{
-			if (m_hFind == INVALID_HANDLE_VALUE)
-				return FALSE;
+#ifdef WIN32
+		if (m_hFind == INVALID_HANDLE_VALUE)
+			return FALSE;
 
-			if (m_pFoundInfo == NULL)
-				m_pFoundInfo = new WIN32_FIND_DATA;
+		if (m_pFoundInfo == NULL)
+			m_pFoundInfo = new WIN32_FIND_DATA;
 
-			void* pTemp = m_pFoundInfo;
-			m_pFoundInfo = m_pNextInfo;
-			m_pNextInfo = pTemp;
-			return ::FindNextFile(m_hFind, (LPWIN32_FIND_DATA)m_pNextInfo);
-		}
+		void* pTemp = m_pFoundInfo;
+		m_pFoundInfo = m_pNextInfo;
+		m_pNextInfo = pTemp;
+		return ::FindNextFile(m_hFind, (LPWIN32_FIND_DATA)m_pNextInfo);
+#elif defined __linux__
+// 		m_dirFoundInfo = m_dirNextInfo;
+// 		m_dirNextInfo = readdir(m_dir);
+// 		return m_dirNextInfo != NULL;
+		m_dirFoundInfo = m_dirNextInfo;
+		m_scandirIterator++;
+		if (m_scandirIterator >= m_scandirCount)
+			return FALSE;
+		m_dirNextInfo = m_scandirList[m_scandirIterator];
+		return TRUE;
+#elif defined __APPLE__
+        m_dirFoundInfo = m_dirNextInfo;
+        m_scandirIterator++;
+        if (m_scandirIterator >= m_scandirCount)
+            return FALSE;
+        m_dirNextInfo = m_scandirList[m_scandirIterator];
+        return TRUE;
+#endif
 	}
 
 	void CUIFileFind::FindClose()
 	{
-		m_bFindInZip = FALSE;
-
+#ifdef WIN32
 		if (m_pFoundInfo != NULL)
 		{
 			delete m_pFoundInfo;
@@ -582,45 +654,77 @@ namespace DuiLib {
 			::FindClose(m_hFind); 
 			m_hFind = INVALID_HANDLE_VALUE; 
 		}
-
-		if (m_hZip != NULL && !CPaintManagerUI::IsCachedResourceZip()) { 
-			CloseZip((HZIP)m_hZip); 
-			m_hZip = NULL; 
+#elif defined __linux__
+		if (m_dir != NULL)
+		{
+			closedir(m_dir);
+			m_dir = NULL;
 		}
-
-		m_nZipIndex = 0;
+		m_dirFoundInfo = NULL;
+		m_dirNextInfo = NULL;
+		if (m_scandirList != NULL)
+		{
+			free(m_scandirList);
+			m_scandirCount = 0;
+			m_scandirIterator = 0;
+		}
+#elif defined __APPLE__
+        if (m_dir != NULL)
+        {
+            closedir(m_dir);
+            m_dir = NULL;
+        }
+        m_dirFoundInfo = NULL;
+        m_dirNextInfo = NULL;
+        if (m_scandirList != NULL)
+        {
+            free(m_scandirList);
+            m_scandirCount = 0;
+            m_scandirIterator = 0;
+        }
+#endif
 	}
 
 	CDuiString CUIFileFind::GetFileName()
 	{
 		CDuiString sFile;
-		if (m_bFindInZip)
-		{
-			sFile = m_zipEntryNext.name;
-		}
-		else
-		{
-			if (m_pFoundInfo != NULL)
-				sFile = ((LPWIN32_FIND_DATA)m_pFoundInfo)->cFileName;
-		}
+#ifdef WIN32
+		if (m_pFoundInfo != NULL)
+			sFile = ((LPWIN32_FIND_DATA)m_pFoundInfo)->cFileName;
+#elif defined __linux__
+		if(m_dirFoundInfo)
+			sFile = m_dirFoundInfo->d_name;
+#elif defined __APPLE__
+        if(m_dirFoundInfo)
+            sFile = m_dirFoundInfo->d_name;
+#endif
 		return sFile;
 	}
 
 	CDuiString CUIFileFind::GetFilePath()
 	{
 		CDuiString sFile;
-		if (m_bFindInZip)
+
+#ifdef WIN32
+		if (m_pFoundInfo != NULL)
 		{
-			sFile = m_zipEntryNext.name;
+			sFile = m_strRoot;
+			sFile += ((LPWIN32_FIND_DATA)m_pFoundInfo)->cFileName;
 		}
-		else
+#elif defined __linux__
+		if (m_dirFoundInfo)
 		{
-			if (m_pFoundInfo != NULL)
-			{
-				sFile = m_strRoot;
-				sFile += ((LPWIN32_FIND_DATA)m_pFoundInfo)->cFileName;
-			}
+			sFile = m_strRoot;
+			sFile += m_dirFoundInfo->d_name;
 		}
+#elif defined __APPLE__
+        if (m_dirFoundInfo)
+        {
+            sFile = m_strRoot;
+            sFile += m_dirFoundInfo->d_name;
+        }
+#endif
+
 		return sFile;
 	}
 
@@ -657,41 +761,68 @@ namespace DuiLib {
 	BOOL CUIFileFind::IsDots()
 	{
 		BOOL bResult = FALSE;
-		if (m_bFindInZip)
+
+#ifdef WIN32
+		if (m_pFoundInfo != NULL && IsDirectory())
 		{
-			
-		}
-		else
-		{
-			if (m_pFoundInfo != NULL && IsDirectory())
+			LPWIN32_FIND_DATA pFindData = (LPWIN32_FIND_DATA)m_pFoundInfo;
+			if (pFindData->cFileName[0] == '.')
 			{
-				LPWIN32_FIND_DATA pFindData = (LPWIN32_FIND_DATA)m_pFoundInfo;
-				if (pFindData->cFileName[0] == '.')
+				if (pFindData->cFileName[1] == '\0' ||
+					(pFindData->cFileName[1] == '.' && pFindData->cFileName[2] == '\0'))
 				{
-					if (pFindData->cFileName[1] == '\0' ||
-						(pFindData->cFileName[1] == '.' &&
-							pFindData->cFileName[2] == '\0'))
-					{
-						bResult = TRUE;
-					}
+					bResult = TRUE;
 				}
 			}
 		}
+#elif defined __linux__
+		if (m_dirFoundInfo != NULL && IsDirectory())
+		{
+			if (m_dirFoundInfo->d_name[0] == '.')
+			{
+				if (m_dirFoundInfo->d_name[1] == '\0' ||
+					(m_dirFoundInfo->d_name[1] == '.' && m_dirFoundInfo->d_name[2] == '\0'))
+				{
+					bResult = TRUE;
+				}
+			}
+		}
+#elif defined __APPLE__
+        if (m_dirFoundInfo != NULL && IsDirectory())
+        {
+            if (m_dirFoundInfo->d_name[0] == '.')
+            {
+                if (m_dirFoundInfo->d_name[1] == '\0' ||
+                    (m_dirFoundInfo->d_name[1] == '.' && m_dirFoundInfo->d_name[2] == '\0'))
+                {
+                    bResult = TRUE;
+                }
+            }
+        }
+#endif
+
 		return bResult;
 	}
 
 	BOOL CUIFileFind::IsDirectory()
 	{
 		BOOL bResult = FALSE;
-		if (m_bFindInZip)
+
+#ifdef WIN32
+		if (m_pFoundInfo != NULL)
+			bResult = (((LPWIN32_FIND_DATA)m_pFoundInfo)->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY;
+#elif defined __linux__
+		if (m_dirFoundInfo)
 		{
-			bResult = (m_zipEntryNext.attr & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY;
+			bResult = m_dirFoundInfo->d_type == DT_DIR;
 		}
-		else
-		{
-			if (m_pFoundInfo != NULL)
-				bResult = (((LPWIN32_FIND_DATA)m_pFoundInfo)->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY;
-		}
+#elif defined __APPLE__
+        if (m_dirFoundInfo)
+        {
+            bResult = m_dirFoundInfo->d_type == DT_DIR;
+        }
+#endif
+
 		return bResult;
 	}
 
@@ -706,6 +837,6 @@ namespace DuiLib {
 		}
 		return;
 	}
-	*/
+	
 } // namespace DuiLib
 

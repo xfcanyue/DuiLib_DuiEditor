@@ -82,7 +82,7 @@ namespace DuiLib
 			if(IsAutoCalcWidth())
 			{
 				RECT rcText = {0, 0, szAvailable.cx, szAvailable.cy};
-				GetManager()->Render()->DrawText(rcText, m_rcTextPadding, GetText(), m_dwTextColor, m_iFont, DT_CALCRECT | m_uTextStyle);
+				GetManager()->Render()->DrawText(rcText, GetTextPadding(), GetText(), m_dwTextColor, m_iFont, DT_CALCRECT | m_uTextStyle);
 				m_cxyFixed.cx = rcText.right - rcText.left;
 			}
 		
@@ -90,11 +90,12 @@ namespace DuiLib
 			{
 				UIFont *pFont = GetManager()->GetFont(GetFont());
 				int h = pFont->GetHeight(GetManager());
-				m_cxyFixed.cy = m_rcTextPadding.top + m_rcTextPadding.bottom + h + 4;		
+				RECT rcTextPadding = GetTextPadding();
+				m_cxyFixed.cy = rcTextPadding.top + rcTextPadding.bottom + h + 4;		
 			}
 			
-			if(m_pManager)
-				return GetManager()->GetDPIObj()->ScaleSize(m_cxyFixed);
+// 			if(m_pManager)
+// 				return GetManager()->GetDPIObj()->ScaleSize(m_cxyFixed);
 			return m_cxyFixed;
 		}
 
@@ -131,6 +132,13 @@ namespace DuiLib
 		RECT rcText = m_rcItem;
 		DWORD dwColor = 0;
 		int iFont = -1;
+		CDuiRect rcTextPadding = GetTextPadding();
+
+		if(IsPushedState())
+		{
+			CDuiRect rc = GetPushedTextPadding();
+			if(!rc.IsNull()) rcTextPadding = rc;
+		}
 
 		//////////////////////////////////////////////////////////////////////////
 		if( !IsEnabled() )
@@ -173,7 +181,7 @@ namespace DuiLib
 		if(dwColor == 0 && m_pManager)
 			dwColor = m_pManager->GetDefaultFontColor();
 
-		pRender->DrawText(rcText, GetTextPadding(), sText, dwColor, iFont, GetTextStyle());
+		pRender->DrawText(rcText, rcTextPadding, sText, dwColor, iFont, GetTextStyle());
 		return;
 	}
 }

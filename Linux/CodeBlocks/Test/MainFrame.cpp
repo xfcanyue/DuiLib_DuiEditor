@@ -14,7 +14,8 @@ CMainFrame::~CMainFrame(void)
 
 void CMainFrame::InitWindow()
 {
-	
+    CFadeButtonUI *p = static_cast<CFadeButtonUI *>(GetManager()->FindControl(_T("windowmenubtn")));
+    CDuiString s = p->GetText();
 }
 
 bool CMainFrame::OnCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)

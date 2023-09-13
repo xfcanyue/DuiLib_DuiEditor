@@ -154,11 +154,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndToolBar.ReplaceButton(ID_FILE_NEW, CMFCToolBarMenuButton(-1, menuNew.GetSubMenu(0)->GetSafeHmenu(), GetCmdMgr()->GetCmdImage (ID_FILE_NEW)));
 
 	int npos = m_wndToolBar.CommandToIndex(ID_EDIT_DPI);
-	m_wndToolBar.RemoveButton(npos+1);
-	m_wndToolBar.RemoveButton(npos+1);
-	m_wndToolBar.RemoveButton(npos+1);
-	m_wndToolBar.RemoveButton(npos+1);
-	m_wndToolBar.RemoveButton(npos+1);	
 
 	CMenu menuNew2, menuOpen2;
 	menuNew2.LoadMenu(IDR_MENU_DPI);

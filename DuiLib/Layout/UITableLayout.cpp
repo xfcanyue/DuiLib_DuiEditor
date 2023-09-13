@@ -102,6 +102,20 @@ namespace DuiLib
 		m_aColTextPadding[col] = rc;
 	}
 
+	void CTableLayoutUI::SetDefRowHeight(int height)			
+	{ 
+		m_nDefRowHeight = height; 
+	}
+
+	int CTableLayoutUI::GetDefRowHeight() const					
+	{ 
+		if(GetManager())
+		{
+			return GetManager()->GetDPIObj()->ScaleInt(m_nDefRowHeight);
+		}
+		return m_nDefRowHeight; 
+	}
+
 	void CTableLayoutUI::DoInit()
 	{
 

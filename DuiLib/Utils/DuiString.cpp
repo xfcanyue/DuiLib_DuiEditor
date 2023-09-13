@@ -8,12 +8,37 @@ namespace DuiLib
 	//
 	struct duistringdata : public ILinkedList
 	{
+		//friend class duistringmem;
+	protected:
 		int nRefs;				//引用次数
+		int nDataLength;
 		UINT nAllocLength;		//分配的长度, 可能大于字符串实际长度。
-		TCHAR* data()			// TCHAR* to managed data
-		{ return (TCHAR*)(this+1); }
+	public:
+		void AddRef() 
+		{ 
+			if(IsLock()) 
+				return;
+			nRefs++; 
+		}
+		void ReleaseRef() 
+		{ 
+			if(IsLock()) 
+				return;
+			nRefs--; 
+		}
+		BOOL IsNeedFree() { return nRefs == 0; }
+		BOOL IsShared() { return nRefs > 1; }
+		BOOL IsLock() { return nRefs < 0; }
+		void Lock() { nRefs = -1; }
+		void SetAllocLength(int nAlloc) { nAllocLength = nAlloc;}
+		int GetAllocLength() { return nAllocLength; }
+		int GetDataLength() const	{ return nDataLength; }
+		void SetDataLength(int n)	{ nDataLength = n; }
+		LPBYTE data()			// TCHAR* to managed data
+		{ return LPBYTE(this+1); }
 	};
 
+	//////////////////////////////////////////////////////////////////////////
 	class duistringmem
 	{
 	public:
@@ -67,65 +92,71 @@ namespace DuiLib
 				int memsize = sizeof(duistringdata) + strlength;
 				s = (duistringdata *)malloc(memsize);
 				memset(static_cast<void*>(s), 0, memsize);
-				s->nAllocLength = strlength;
-				s->nRefs = 0;
+				s->SetAllocLength(strlength);				
 			}
 
-			if(s) s->nRefs++;
+			ASSERT(s);
+			if(s)
+			{
+				s->SetDataLength(strlength);
+				s->AddRef();
+			}
 			return s;
 		}
 
 		void Free(duistringdata *s)
 		{
+			if(s->IsLock())
+				return;
+
 			if(s == m_pEmptyString)
 			{
 				//空字符串不处理
 			}
-			else if(s->nAllocLength <= 16)
+			else if(s->GetAllocLength() <= 16)
 			{
 				RecoverStringData(m_list16, 16, s);
 			}
-			else if(s->nAllocLength <= 32)
+			else if(s->GetAllocLength() <= 32)
 			{
 				RecoverStringData(m_list32, 32, s);
 			}
-			else if(s->nAllocLength <= 64)
+			else if(s->GetAllocLength() <= 64)
 			{
 				RecoverStringData(m_list64, 64, s);
 			}
-			else if(s->nAllocLength <= 128)
+			else if(s->GetAllocLength() <= 128)
 			{
 				RecoverStringData(m_list128, 128, s);
 			}
 			else
 			{
 				CDuiInnerLock lock(&m_lock);
-				s->nRefs--;
-				if(s->nRefs == 0)
+				s->ReleaseRef();
+				if(s->IsNeedFree())
 					free((BYTE *)s);
 			}
 		}
 
-		LPTSTR GetEmptyString()
+		LPBYTE GetEmptyString()
 		{
 			return m_pEmptyString->data();
 		}
 	protected:
 		void MakeEmptyString()
 		{
-			int memsize = sizeof(duistringdata) + sizeof(TCHAR);
+			int memsize = sizeof(duistringdata) + 16;
 			m_pEmptyString = (duistringdata *)malloc(memsize);
 			memset(static_cast<void*>(m_pEmptyString), 0, memsize);
-			m_pEmptyString->nAllocLength = sizeof(TCHAR);
-			m_pEmptyString->nRefs = 0;
-			m_pEmptyString->data()[0] = _T('\0');
+			m_pEmptyString->SetAllocLength(16);
+			m_pEmptyString->Lock();
 		}
 
-		duistringdata *MakeStringData(CStdLinkList<duistringdata> &listdata, int strlength, int &nMakeCount)
+		duistringdata *MakeStringData(CStdLinkList<duistringdata> &listdata, int nAllocLength, int &nMakeCount)
 		{
 			if(listdata.empty())
 			{
-				int memsize = sizeof(duistringdata) + strlength;
+				int memsize = sizeof(duistringdata) + nAllocLength;
 				BYTE *pBlock = (BYTE *)malloc(memsize * nMakeCount); //每次申请 nMakeCount 个字符串
 				memset(pBlock, 0, memsize * nMakeCount);
 				m_listMem.Add(pBlock);
@@ -133,8 +164,7 @@ namespace DuiLib
 				for (int i=0; i<nMakeCount; i++)
 				{
 					duistringdata *s = (duistringdata *)(pBlock + (i * memsize));
-					s->nAllocLength = strlength;
-					s->nRefs = 0;
+					s->SetAllocLength(nAllocLength);
 					listdata.push_back(s);
 				}
 
@@ -160,10 +190,11 @@ namespace DuiLib
 		void RecoverStringData(CStdLinkList<duistringdata> &listdata, int strlength, duistringdata *s)
 		{
 			CDuiInnerLock lock(&m_lock);
-			s->nRefs--;
-			if(s->nRefs == 0)
+			s->ReleaseRef();
+			if(s->IsNeedFree())
 			{
-				memset(s->data(), 0, s->nAllocLength);
+				memset(s->data(), 0, s->GetAllocLength());
+				s->SetDataLength(0);
 				listdata.push_back(s);
 #ifdef _DEBUG
 // 				CString ss;
@@ -186,6 +217,7 @@ namespace DuiLib
 		int m_nextCount128;
 	};
 
+	//////////////////////////////////////////////////////////////////////////
 	class DuiStringMgr
 	{
 	public:
@@ -195,534 +227,670 @@ namespace DuiLib
 			static duistringmem smem;
 			return &smem;
 		}
+
+		static duistringdata *GetStringData(const void *pstr)
+		{
+			return ((duistringdata *)pstr)-1;
+		}
 	};
 
 	//////////////////////////////////////////////////////////////////////////
 	//
 	//
-	CDuiString::CDuiString()
+	size_t DuiStringTraitsA::ui_strlen(const char *pstr)							{ return pstr ? ::strlen(pstr) : 0; }
+	char *DuiStringTraitsA::ui_strchr(char *string, int ch)							{ return ::strchr(string, ch); }
+	char *DuiStringTraitsA::ui_strrchr(char *string, int ch)						{ return ::strrchr(string, ch); }
+	char *DuiStringTraitsA::ui_strstr(char *_Str, const char *_SubStr)				{ return ::strstr(_Str, _SubStr); }
+	char *DuiStringTraitsA::ui_strcat(char *dst, const char *src)					{ return ::strcat(dst, src); }
+	char *DuiStringTraitsA::ui_strcpy(char *dest,const char *source)				{ return ::strcpy(dest, source); }
+	char *DuiStringTraitsA::ui_strncpy(char *dest,const char *source, size_t count) { return ::strncpy(dest, source, count); }
+	int DuiStringTraitsA::ui_strcmp (const char *src, const char *dst)				{ return ::strcmp(src, dst); }
+
+	int DuiStringTraitsA::ui_stricmp (const char *src, const char *dst) 
 	{
-		//确保构造string之前构造DuiStringMgr，否则全局string和DuiStringMgr的析构顺序变的很不可靠，下同。
-		m_pstr = DuiStringMgr::GetInstance()->GetEmptyString();
-	}
-
-	CDuiString::CDuiString(const TCHAR ch)
-	{
-		m_pstr = DuiStringMgr::GetInstance()->GetEmptyString();
-		Assign(&ch, 1);
-	}
-
-	CDuiString::CDuiString(LPCTSTR lpsz, int nLen)
-	{
-		m_pstr = DuiStringMgr::GetInstance()->GetEmptyString();
-		#ifdef DUILIB_WIN32
-		ASSERT(!::IsBadStringPtr(lpsz,-1) || lpsz==NULL);
-		#endif
-		Assign(lpsz, nLen);
-	}
-
-	CDuiString::CDuiString(const CDuiString& src)
-	{
-		DuiStringMgr::GetInstance()->GetEmptyString();
-		//m_pstr = DuiStringMgr::GetInstance()->GetEmptyString();
-		//FreeString();
-
-		//拷贝构造时复用地址，引用+1
-		m_pstr = src.m_pstr;
-		duistringdata *data = ((duistringdata *)m_pstr)-1;
-		data->nRefs++;
-
-		//Assign(src.m_pstr);
-	}
-
-	CDuiString::CDuiString(int int_to_string)
-	{
-		m_pstr = DuiStringMgr::GetInstance()->GetEmptyString();
-#ifdef DUILIB_WIN32
-		TCHAR str[64];
-		memset(str, 0, sizeof(str));
-		_itot(int_to_string, str, 10);
-		Assign(str);
+#ifdef WIN32
+		return ::stricmp(src, dst); 
 #else
-		TCHAR str[64];
-		memset(str, 0, sizeof(str));
-		_stprintf(str, _T("%d"), int_to_string);
-		Assign(str);
+		return ::strcasecmp(src, dst);
 #endif
 	}
 
-	CDuiString::~CDuiString()
+	char *DuiStringTraitsA::ui_strupr(char *str)		
 	{
-		FreeString();
+#ifdef WIN32
+		return ::strupr(str); 
+#else
+		while (*str != '\0')
+		{
+			if (*str >= 'a' && *str <= 'z') {
+				//*src -= 32;
+				*str = static_cast<char>(*str - 32);
+			}
+			str++;
+		}
+		return str;
+#endif
 	}
 
-	void CDuiString::AllocString(int strlength)
+	char *DuiStringTraitsA::ui_strlwr(char *str)		
 	{
-		UINT nNeedAlloc = (strlength + 1) * sizeof(TCHAR);
-		duistringdata *data = ((duistringdata *)m_pstr)-1;
+#ifdef WIN32
+		return ::strlwr(str);
+#else
+		while (*str != '\0')
+		{
+			if (*str >= 'A' && *str <= 'Z') {
+				*str = static_cast<char>(*str + 32);
+			}
+			str++;
+		}
+		return str;
+#endif
+	}
+
+	int DuiStringTraitsA::ui_atoi(const char *str)		{ return ::atoi(str); }
+	float DuiStringTraitsA::ui_atof(const char *str)	{ return static_cast<float>(::atof(str)); }
+	double DuiStringTraitsA::ui_strtod (const char *nptr) { return ::strtod(nptr, 0); }
+
+	int __cdecl DuiStringTraitsA::formatV(char *&pstr, const char *pstrFormat, va_list Args)
+	{
+#if _MSC_VER <= 1400
+		int nLen = 0;
+		while (TRUE)
+		{
+			int buffLen = GetBufferLength(pstr);
+			va_list cpArgs;
+			va_copy(cpArgs, Args);
+			nLen = format(pstr, buffLen, pstrFormat, cpArgs);
+			va_end(cpArgs);
+			if (nLen != -1 && nLen < buffLen)
+				break;
+			if (nLen == -1)
+				break;
+			AllocString(pstr, nLen+1, sizeof(char));
+		}
+		return nLen;
+#else
+		int nLen = format(NULL, 0, pstrFormat, Args);
+		AllocString(pstr, nLen, sizeof(char));
+		nLen = format(pstr, GetBufferLength(pstr), pstrFormat, Args);
+		return nLen;
+#endif
+	}
+
+	int __cdecl DuiStringTraitsA::format(char *string, size_t count, const char *format, va_list ap) 
+	{ 
+#ifdef WIN32
+		return ::_vsnprintf(string, count, format, ap);
+#else
+		return ::vsnprintf(string, count, format, ap);
+#endif
+	}
+
+	void DuiStringTraitsA::bool_to_string(char *string, bool b) 
+	{ 
+		ui_strcpy(string, b ? "true" : "false");
+	}
+
+	void DuiStringTraitsA::int_to_string(char *str, int n)
+	{
+		sprintf(str, "%d", n);
+	}
+
+	void DuiStringTraitsA::double_to_string(char *str, double s, int base)
+	{ 
+		if(base >= 0) 
+		{ 
+			char sFormat[32]; 
+			sprintf(sFormat, "%%.%df", base); 
+			sprintf(str, sFormat, s); 
+		}
+		else 
+		{ 
+			sprintf(str, "%f", s); 
+		}
+	}
+
+	void DuiStringTraitsA::float_to_string(char *str, float s, int base)
+	{ 
+		if(base >= 0) 
+		{ 
+			char sFormat[32]; 
+			sprintf(sFormat, "%%.%df", base); 
+			sprintf(str, sFormat, s); 
+		}
+		else 
+		{ 
+			sprintf(str, "%f", s); 
+		}
+	}
+
+	char *DuiStringTraitsA::GetNullString() { return (char *)DuiStringMgr::GetInstance()->GetEmptyString(); }
+
+	void DuiStringTraitsA::AllocString(char *&pstr, int nStrLength, int nSizeOfChar)
+	{
+		duistringdata *mem = DuiStringMgr::GetStringData(pstr);
+		UINT nNeedAlloc = (nStrLength + 1) * nSizeOfChar;
 
 		// 长度不够申请新的,
 		// 引用大于1，也要申请新的. 引用大于1时任何修改字符串都要自己建新的，不要把别人的改了。
-		if(data->nAllocLength < nNeedAlloc || data->nRefs > 1)
+		if(mem->GetAllocLength() < nNeedAlloc || mem->IsShared() || mem->IsLock())
 		{
 			duistringdata *newdata = DuiStringMgr::GetInstance()->Alloc(nNeedAlloc);
-			_tcscat(newdata->data(), m_pstr);
-			DuiStringMgr::GetInstance()->Free(data);
-			m_pstr = newdata->data();
+			ui_strcpy((char *)newdata->data(), pstr);
+			DuiStringMgr::GetInstance()->Free(mem);
+			pstr = (char *)newdata->data();
+		}
+		else
+		{
+			mem->SetDataLength(nNeedAlloc);
 		}
 	}
 
-	void CDuiString::FreeString()
+	void DuiStringTraitsA::FreeString(char *&pstr)
 	{
-		if(m_pstr)
+		if(pstr)
 		{
-			duistringdata *data = ((duistringdata *)m_pstr)-1;
-			DuiStringMgr::GetInstance()->Free(data);
-			m_pstr = NULL;
+			duistringdata *data = DuiStringMgr::GetStringData(pstr);
+			if(!data->IsLock())
+			{
+				DuiStringMgr::GetInstance()->Free(data);
+				pstr = GetNullString();
+			}
 		}
 	}
 
-	void CDuiString::SetBufferLength(int iLength)
+	int DuiStringTraitsA::GetBufferLength(char *pstr)
 	{
-		AllocString(iLength);
+		duistringdata *data = DuiStringMgr::GetStringData(pstr);
+		return data->GetDataLength() / sizeof(char);
 	}
 
-	int CDuiString::GetBufferLength()
+	void DuiStringTraitsA::Empty(char *&pstr)
 	{
-		duistringdata *data = ((duistringdata *)m_pstr)-1;
-		return data->nAllocLength;
-	}
-
-	LPTSTR CDuiString::GetBuffer(int nMinBufferLength)
-	{
-		if (GetBufferLength() < nMinBufferLength)
-			AllocString(nMinBufferLength);
-		return m_pstr;
-	}
-
-	int CDuiString::GetLength() const
-	{
-		return (int) _tcslen(m_pstr);
-	}
-
-	CDuiString::operator LPCTSTR() const
-	{
-		return m_pstr;
-	}
-
-	void CDuiString::Append(LPCTSTR pstr)
-	{
-		if( pstr == NULL || *pstr == _T('\0')) return;
-		int nNewLength = GetLength() + (int) _tcslen(pstr);
-
-		AllocString(nNewLength);
-		_tcscat(m_pstr, pstr);
-	}
-
-	void CDuiString::Assign(LPCTSTR pstr, int cchMax)
-	{
-		if( pstr == NULL || *pstr == _T('\0'))
+		if(ui_strlen(pstr) > 0)
 		{
-			FreeString();
-			m_pstr = DuiStringMgr::GetInstance()->GetEmptyString();
+			duistringdata *data = DuiStringMgr::GetStringData(pstr);
+			if(data->IsShared())
+				FreeString(pstr);
+			else
+				memset(data->data(), 0, data->GetDataLength());
+		}
+	}
+
+	void DuiStringTraitsA::SetAt(char *&pstr, int nIndex, char ch)
+	{
+		if(nIndex < 0 || nIndex >= ui_strlen(pstr))
+			return;
+
+		duistringdata *data = DuiStringMgr::GetStringData(pstr);
+		if(data->IsShared())
+		{
+			AllocString(pstr, ui_strlen(pstr), sizeof(char));
+		}
+		pstr[nIndex] = ch;
+	}
+
+	void DuiStringTraitsA::assign_string(char *&pstr, DuiStringEncoding dst_encoding, const void *src_string, int src_strlength, DuiStringEncoding src_encoding, BOOL bMemString)
+	{
+		if(src_strlength == 0)
+		{
+			FreeString(pstr);
 			return;
 		}
-		cchMax = (cchMax < 0 ? (int) _tcslen(pstr) : cchMax);
-		AllocString(cchMax);
-		_tcsncpy(m_pstr, pstr, cchMax);
-		m_pstr[cchMax] = '\0';
-	}
 
-	bool CDuiString::IsEmpty() const
-	{
-		return m_pstr[0] == '\0';
-	}
-
-	void CDuiString::Empty()
-	{
-		if(GetLength() > 0)
+		if(dst_encoding == src_encoding)
 		{
-			duistringdata *s = ((duistringdata *)m_pstr)-1;
-			if(s->nRefs > 1)
+			if(bMemString)
 			{
-				FreeString();
-				m_pstr = DuiStringMgr::GetInstance()->GetEmptyString();
+				duistringdata *src = DuiStringMgr::GetStringData(src_string);
+				FreeString(pstr);
+				pstr = (char *)src->data();
+				src->AddRef();
+				return;
 			}
+
+			AllocString(pstr, src_strlength, sizeof(char));
+			ui_strncpy(pstr, (char *)src_string, src_strlength);
+			pstr[src_strlength] = '\0';
+			return;
+		}
+
+		StringConverterUI conv;
+		const char *pNewString = NULL;
+		if(dst_encoding == duistring_encoding_ansi)
+		{
+			if(src_encoding == duistring_encoding_ansi)
+			{
+
+			}
+			else if(src_encoding == duistring_encoding_utf8)
+			{
+				pNewString = conv.utf8_to_A(src_string, src_strlength);
+				assign_string(pstr, dst_encoding, pNewString, ui_strlen(pNewString), duistring_encoding_ansi, FALSE);
+			}
+			else if(src_encoding == duistring_encoding_unicode)
+			{
+				pNewString = conv.W_to_A(src_string, src_strlength);
+				assign_string(pstr, dst_encoding, pNewString, ui_strlen(pNewString), duistring_encoding_ansi, FALSE);
+			}
+		}
+		else if(dst_encoding == duistring_encoding_utf8)
+		{
+			if(src_encoding == duistring_encoding_ansi)
+			{
+				pNewString = conv.A_to_utf8(src_string, src_strlength);
+				assign_string(pstr, dst_encoding, pNewString, ui_strlen(pNewString), duistring_encoding_utf8, FALSE);
+			}
+			else if(src_encoding == duistring_encoding_utf8)
+			{
+
+			}
+			else if(src_encoding == duistring_encoding_unicode)
+			{
+				pNewString = conv.W_to_utf8(src_string, src_strlength);
+				assign_string(pstr, dst_encoding, pNewString, ui_strlen(pNewString), duistring_encoding_utf8, FALSE);
+			}
+		}		
+	}
+
+	void DuiStringTraitsA::append_string(char *&pstr, DuiStringEncoding dst_encoding, const void *src_string, int src_strlength, DuiStringEncoding src_encoding)
+	{
+		if(src_strlength == 0) return;
+
+		if(dst_encoding == src_encoding)
+		{
+			int oldLen = ui_strlen(pstr);
+			AllocString(pstr, oldLen + src_strlength,  sizeof(char));
+			ui_strcat(pstr, (char *)src_string);
+			pstr[oldLen + src_strlength] = '\0';
+			return;
+		}
+
+		StringConverterUI conv;
+		if(dst_encoding == duistring_encoding_ansi)
+		{
+			if(src_encoding == duistring_encoding_ansi)
+			{
+
+			}
+			else if(src_encoding == duistring_encoding_utf8)
+			{
+				const char *pNewString = conv.utf8_to_A(src_string, src_strlength);
+				int newLen = ui_strlen(pNewString);
+				int oldLen = ui_strlen(pstr);
+				AllocString(pstr, oldLen + newLen, sizeof(char));
+				ui_strcat((char *)pstr, pNewString);
+				pstr[oldLen + newLen] = '\0';
+			}
+			else if(src_encoding == duistring_encoding_unicode)
+			{
+				const char *pNewString = conv.W_to_A(src_string, src_strlength);
+				int newLen = ui_strlen(pNewString);
+				int oldLen = ui_strlen(pstr);
+				AllocString(pstr, oldLen + newLen, sizeof(char));
+				ui_strcat((char *)pstr, pNewString);
+				pstr[oldLen + newLen] = '\0';
+			}
+		}
+		else if(dst_encoding == duistring_encoding_utf8)
+		{
+			if(src_encoding == duistring_encoding_ansi)
+			{
+				const char *pNewString = conv.A_to_utf8(src_string, src_strlength);
+				int newLen = ui_strlen(pNewString);
+				int oldLen = ui_strlen(pstr);
+				AllocString(pstr, oldLen + newLen, sizeof(char));
+				ui_strcat((char *)pstr, pNewString);
+				pstr[oldLen + newLen] = '\0';
+			}
+			else if(src_encoding == duistring_encoding_utf8)
+			{
+
+			}
+			else if(src_encoding == duistring_encoding_unicode)
+			{
+				const char *pNewString = conv.W_to_utf8(src_string, src_strlength);
+				int newLen = ui_strlen(pNewString);
+				int oldLen = ui_strlen(pstr);
+				AllocString(pstr, oldLen + newLen, sizeof(char));
+				ui_strcat((char *)pstr, pNewString);
+				pstr[oldLen + newLen] = '\0';
+			}
+		}
+	}
+
+	void DuiStringTraitsA::TrimLeft(char *&pstr)
+	{
+		const char *lpsz = pstr;
+		while (isspace(*lpsz))
+			lpsz++;
+
+		int nNewLen = strlen(lpsz);
+		char *pNewString = GetNullString();
+		AllocString(pNewString, nNewLen, sizeof(char));
+		ui_strcpy(pNewString, lpsz);
+		ui_strcpy(pstr, pNewString);
+		FreeString(pNewString);
+	}
+
+	void DuiStringTraitsA::TrimRight(char *&pstr)
+	{
+		int nStrLen = strlen(pstr);
+		for (int i=nStrLen-1; i>=0; i--)
+		{
+			if(isspace(pstr[i]))
+				pstr[i] = '\0';
 			else
+				break;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	//
+	//
+	size_t DuiStringTraitsW::ui_strlen(const wchar_t *pstr)						{ return pstr ? ::wcslen(pstr) : 0; }
+	wchar_t *DuiStringTraitsW::ui_strchr(wchar_t *string, int ch)				{ return ::wcschr(string, ch); }
+	wchar_t *DuiStringTraitsW::ui_strrchr(wchar_t *string, int ch)				{ return ::wcsrchr(string, ch); }
+	wchar_t *DuiStringTraitsW::ui_strstr(wchar_t *_Str, const wchar_t *_SubStr) { return ::wcsstr(_Str, _SubStr); }
+	wchar_t *DuiStringTraitsW::ui_strcat(wchar_t *dst, const wchar_t *src)		{ return ::wcscat(dst, src); }
+	wchar_t *DuiStringTraitsW::ui_strcpy(wchar_t *dest, const wchar_t *source)	{ return ::wcscpy(dest, source); }
+	wchar_t *DuiStringTraitsW::ui_strncpy(wchar_t *dest, const wchar_t *source, size_t count) { return ::wcsncpy(dest, source, count); }
+	int DuiStringTraitsW::ui_strcmp(const wchar_t *src, const wchar_t *dst)		{ return ::wcscmp(src, dst); }
+	int DuiStringTraitsW::ui_stricmp(const wchar_t *src, const wchar_t *dst) 
+	{  
+#ifdef WIN32
+		return ::wcsicmp(src, dst); 
+#else
+		int f, l;
+		do
+		{
+			if (((f = (wchar_t)(*(dst++))) >= 'A') && (f <= 'Z'))
+				f -= L'A' - L'a';
+			if (((l = (wchar_t)(*(src++))) >= L'A') && (l <= L'Z'))
+				l -= 'A' - 'a';
+		} while (f && (f == l));
+		return(f - l);
+#endif
+	}
+
+	wchar_t *DuiStringTraitsW::ui_strupr(wchar_t *str) 
+	{ 
+#ifdef WIN32
+		return ::wcsupr(str); 
+#else
+		while (*str != '\0')
+		{
+			if (*str >= 'a' && *str <= 'z') {
+				*str = static_cast<wchar_t>(*str - 32);
+			}
+			str++;
+		}
+		return str;
+#endif
+	}
+
+	wchar_t *DuiStringTraitsW::ui_strlwr(wchar_t *str) 
+	{
+#ifdef WIN32
+		return ::wcslwr(str);
+#else
+		while (*str != '\0')
+		{
+			if (*str >= 'A' && *str <= 'Z') {
+				*str = static_cast<wchar_t>(*str + 32);
+			}
+			str++;
+		}
+		return str;
+#endif
+	}
+
+	int DuiStringTraitsW::ui_atoi(const wchar_t *str) 
+	{ 
+		return (int)wcstol(str, NULL, 10);
+	}
+
+	float DuiStringTraitsW::ui_atof(const wchar_t *str) 
+	{ 
+		return static_cast<float>(::wcstod(str, 0));
+	}
+
+	double DuiStringTraitsW::ui_strtod (const wchar_t *nptr) 
+	{ 
+		return ::wcstod(nptr, 0); 
+	}
+
+	int __cdecl DuiStringTraitsW::formatV(wchar_t *&pstr, const wchar_t *pstrFormat, va_list Args)
+	{
+#if _MSC_VER <= 1400
+		int nLen = 0;
+		while (TRUE)
+		{
+			int buffLen = GetBufferLength(pstr);
+			va_list cpArgs;
+			va_copy(cpArgs, Args);
+			nLen = format(pstr, buffLen, pstrFormat, cpArgs);
+			va_end(cpArgs);
+			if (nLen != -1 && nLen < buffLen)
+				break;
+			if (nLen == -1)
+				break;
+			AllocString(pstr, nLen+1, sizeof(wchar_t));
+		}
+		return nLen;
+#else
+		int nLen = format(NULL, 0, pstrFormat, Args);
+		AllocString(pstr, nLen, sizeof(wchar_t));
+		nLen = format(pstr, GetBufferLength(pstr), pstrFormat, Args);
+		return nLen;
+#endif
+	}
+
+	int __cdecl DuiStringTraitsW::format(wchar_t *string, size_t count, const wchar_t *format, va_list ap) 
+	{ 
+#ifdef WIN32
+		return ::_vsnwprintf(string, count, format, ap); 
+#else
+		return ::vswprintf(string, count, format, ap); 
+#endif
+	}
+
+	void DuiStringTraitsW::bool_to_string(wchar_t *string, bool b) 
+	{ 
+		ui_strcpy(string, b ? L"true" : L"false");
+	}
+
+	void DuiStringTraitsW::int_to_string(wchar_t *str, int n)
+	{
+		swprintf(str, 64, L"%d", n);
+	}
+
+	void DuiStringTraitsW::double_to_string(wchar_t *str, double s, int base)
+	{ 
+		if(base >= 0) 
+		{ 
+			wchar_t sFormat[32]; 
+			swprintf(sFormat, 32, L"%%.%df", base); 
+			swprintf(str, 64, sFormat, s); 
+		}
+		else 
+		{ 
+			swprintf(str, 64, L"%f", s); 
+		}
+	}
+
+	void DuiStringTraitsW::float_to_string(wchar_t *str, float s, int base)
+	{ 
+		if(base >= 0) 
+		{ 
+			wchar_t sFormat[32]; 
+			swprintf(sFormat, 32, L"%%.%df", base); 
+			swprintf(str, 64, sFormat, s); 
+		}
+		else 
+		{ 
+			swprintf(str, 64, L"%f", s); 
+		}
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	wchar_t *DuiStringTraitsW::GetNullString() { return (wchar_t *)DuiStringMgr::GetInstance()->GetEmptyString(); }
+
+	void DuiStringTraitsW::AllocString(wchar_t *&pstr, int nStrLength, int nSizeOfChar)
+	{
+		duistringdata *mem = DuiStringMgr::GetStringData(pstr);
+		UINT nNeedAlloc = (nStrLength + 1) * nSizeOfChar;
+
+		// 长度不够申请新的,
+		// 引用大于1，也要申请新的. 引用大于1时任何修改字符串都要自己建新的，不要把别人的改了。
+		if(mem->GetAllocLength() < nNeedAlloc || mem->IsShared() || mem->IsLock())
+		{
+			duistringdata *newdata = DuiStringMgr::GetInstance()->Alloc(nNeedAlloc);
+			DuiStringTraitsW::ui_strcpy((wchar_t *)newdata->data(), pstr);
+			DuiStringMgr::GetInstance()->Free(mem);
+			pstr = (wchar_t *)newdata->data();
+		}
+		else
+		{
+			mem->SetDataLength(nNeedAlloc);
+		}
+	}
+
+	void DuiStringTraitsW::FreeString(wchar_t *&pstr)
+	{
+		if(pstr)
+		{
+			duistringdata *data = DuiStringMgr::GetStringData(pstr);
+			if(!data->IsLock())
 			{
-				memset(s->data(), 0, s->nAllocLength);
+				DuiStringMgr::GetInstance()->Free(data);
+				pstr = GetNullString();
 			}
 		}
 	}
 
-	LPCTSTR CDuiString::GetData() const
+	int DuiStringTraitsW::GetBufferLength(wchar_t *pstr)
 	{
-		return m_pstr;
+		duistringdata *data = DuiStringMgr::GetStringData(pstr);
+		return data->GetDataLength() / sizeof(wchar_t);
 	}
 
-	TCHAR CDuiString::operator[] (int nIndex) const
+	void DuiStringTraitsW::Empty(wchar_t *&pstr)
 	{
-		return GetAt(nIndex);
-	}
-
-	const CDuiString& CDuiString::operator=(const CDuiString& src)
-	{
-		FreeString();
-		m_pstr = src.m_pstr;
-		duistringdata *data = ((duistringdata *)m_pstr)-1;
-		data->nRefs++;
-
-		//Assign(src);
-		return *this;
-	}
-
-	const CDuiString& CDuiString::operator=(LPCTSTR lpStr)
-	{
-		if ( lpStr )
+		if(ui_strlen(pstr) > 0)
 		{
-            #ifdef DUILIB_WIN32
-			ASSERT(!::IsBadStringPtr(lpStr,-1));
-			#endif
-			Assign(lpStr);
+			duistringdata *data = DuiStringMgr::GetStringData(pstr);
+			if(data->IsShared())
+				FreeString(pstr);
+			else
+				memset(data->data(), 0, data->GetDataLength());
 		}
-		else
+	}
+
+	void DuiStringTraitsW::SetAt(wchar_t *&pstr, int nIndex, wchar_t ch)
+	{
+		if(nIndex < 0 || nIndex >= ui_strlen(pstr))
+			return;
+
+		duistringdata *data = DuiStringMgr::GetStringData(pstr);
+		if(data->IsShared())
 		{
-			Empty();
+			AllocString(pstr, ui_strlen(pstr), sizeof(wchar_t));
 		}
-		return *this;
+		pstr[nIndex] = ch;
 	}
 
-#ifdef _UNICODE
-
-	const CDuiString& CDuiString::operator=(LPCSTR lpStr)
+	void DuiStringTraitsW::assign_string(wchar_t *&pstr, DuiStringEncoding dst_encoding, const void *src_string, int src_strlength, DuiStringEncoding src_encoding, BOOL bMemString)
 	{
-		if ( lpStr )
+		if(src_strlength == 0)
 		{
-			ASSERT(!::IsBadStringPtrA(lpStr,-1));
-// 			int cchStr = (int) strlen(lpStr) + 1;
-// 			LPWSTR pwstr = (LPWSTR) _alloca(cchStr);
-// 			if( pwstr != NULL ) ::MultiByteToWideChar(::GetACP(), 0, lpStr, -1, pwstr, cchStr) ;
-//			Assign(pwstr);
-			UISTRING_CONVERSION;
-			Assign(UIA2T(lpStr));
+			FreeString(pstr);
+			return;
 		}
-		else
+
+		if(src_encoding == duistring_encoding_ansi)
 		{
-			Empty();
+			StringConverterUI conv;
+			const wchar_t *pNewString = conv.A_to_W(src_string, src_strlength);
+			assign_string(pstr, dst_encoding, pNewString, ui_strlen(pNewString), duistring_encoding_unicode, FALSE);
 		}
-		return *this;
-	}
-
-	const CDuiString& CDuiString::operator+=(LPCSTR lpStr)
-	{
-		if ( lpStr )
+		else if(src_encoding == duistring_encoding_utf8)
 		{
-			ASSERT(!::IsBadStringPtrA(lpStr,-1));
-// 			int cchStr = (int) strlen(lpStr) + 1;
-// 			LPWSTR pwstr = (LPWSTR) _alloca(cchStr);
-// 			if( pwstr != NULL ) ::MultiByteToWideChar(::GetACP(), 0, lpStr, -1, pwstr, cchStr) ;
-// 			Append(pwstr);
-			UISTRING_CONVERSION;
-			Append(UIA2T(lpStr));
+			StringConverterUI conv;
+			const wchar_t *pNewString = conv.utf8_to_W(src_string, src_strlength);
+			assign_string(pstr, dst_encoding, pNewString, ui_strlen(pNewString), duistring_encoding_unicode, FALSE);
 		}
-
-		return *this;
-	}
-
-#else
-
-	const CDuiString& CDuiString::operator=(LPCWSTR lpwStr)
-	{
-		if ( lpwStr )
+		else if(src_encoding == duistring_encoding_unicode)
 		{
-            #ifdef DUILIB_WIN32
-			ASSERT(!::IsBadStringPtrW(lpwStr,-1));
-			#endif
-// 			int cchStr = ((int) wcslen(lpwStr) * 2) + 1;
-// 			LPSTR pstr = (LPSTR) _alloca(cchStr);
-// 			if( pstr != NULL ) ::WideCharToMultiByte(::GetACP(), 0, lpwStr, -1, pstr, cchStr, NULL, NULL);
-// 			Assign(pstr);
-			UISTRING_CONVERSION;
-			Assign(UIW2T(lpwStr));
+			if(bMemString)
+			{
+				duistringdata *src = DuiStringMgr::GetStringData(src_string);
+				FreeString(pstr);
+				pstr = (wchar_t *)src->data();
+				src->AddRef();
+				return;
+			}
+
+			AllocString(pstr, src_strlength, sizeof(wchar_t));
+			DuiStringTraitsW::ui_strncpy(pstr, (wchar_t *)src_string, src_strlength);
+			pstr[src_strlength] = L'\0';
 		}
-		else
+	}
+
+	void DuiStringTraitsW::append_string(wchar_t *&pstr, DuiStringEncoding dst_encoding, const void *src_string, int src_strlength, DuiStringEncoding src_encoding)
+	{
+		if(src_strlength == 0) return;
+
+		StringConverterUI conv;
+		const wchar_t *pNewString = NULL;
+		if(src_encoding == duistring_encoding_ansi)
 		{
-			Empty();
+			pNewString = conv.A_to_W(src_string, src_strlength);
 		}
-
-		return *this;
-	}
-
-	const CDuiString& CDuiString::operator+=(LPCWSTR lpwStr)
-	{
-		if ( lpwStr )
+		else if(src_encoding == duistring_encoding_utf8)
 		{
-            #ifdef DUILIB_WIN32
-			ASSERT(!::IsBadStringPtrW(lpwStr,-1));
-			#endif
-// 			int cchStr = ((int) wcslen(lpwStr) * 2) + 1;
-// 			LPSTR pstr = (LPSTR) _alloca(cchStr);
-// 			if( pstr != NULL ) ::WideCharToMultiByte(::GetACP(), 0, lpwStr, -1, pstr, cchStr, NULL, NULL);
-// 			Append(pstr);
-			UISTRING_CONVERSION;
-			Append(UIW2T(lpwStr));
+			pNewString = conv.utf8_to_W(src_string, src_strlength);
 		}
-
-		return *this;
-	}
-
-#endif // _UNICODE
-
-	const CDuiString& CDuiString::operator=(const TCHAR ch)
-	{
-		Assign(&ch, 1);
-		return *this;
-	}
-
-	CDuiString CDuiString::operator+(const CDuiString& src) const
-	{
-		CDuiString sTemp = *this;
-		sTemp.Append(src);
-		return sTemp;
-	}
-
-	CDuiString CDuiString::operator+(LPCTSTR lpStr) const
-	{
-		if ( lpStr )
+		else if(src_encoding == duistring_encoding_unicode)
 		{
-            #ifdef DUILIB_WIN32
-			ASSERT(!::IsBadStringPtr(lpStr,-1));
-			#endif
-			CDuiString sTemp = *this;
-			sTemp.Append(lpStr);
-			return sTemp;
-		}
+			pNewString = (const wchar_t *)src_string;
+		}	
 
-		return *this;
-	}
-
-	const CDuiString& CDuiString::operator+=(const CDuiString& src)
-	{
-		Append(src);
-		return *this;
-	}
-
-	const CDuiString& CDuiString::operator+=(LPCTSTR lpStr)
-	{
-		if ( lpStr )
+		if(pNewString)
 		{
-            #ifdef DUILIB_WIN32
-			ASSERT(!::IsBadStringPtr(lpStr,-1));
-			#endif
-			Append(lpStr);
+			int newLen = ui_strlen(pNewString);
+			int oldLen = ui_strlen(pstr);
+			AllocString(pstr, oldLen + newLen, sizeof(wchar_t));
+			ui_strcat((wchar_t *)pstr, pNewString);
+			pstr[oldLen + newLen] = L'\0';
 		}
-
-		return *this;
 	}
 
-	const CDuiString& CDuiString::operator+=(const TCHAR ch)
+	void DuiStringTraitsW::TrimLeft(wchar_t *&pstr)
 	{
-		TCHAR str[] = { ch, '\0' };
-		Append(str);
-		return *this;
+		const wchar_t *lpsz = pstr;
+		while (iswspace(*lpsz))
+			lpsz++;
+
+		int nNewLen = wcslen(lpsz);
+		wchar_t *pNewString = GetNullString();
+		AllocString(pNewString, nNewLen, sizeof(wchar_t));
+		ui_strcpy(pNewString, lpsz);
+		ui_strcpy(pstr, pNewString);
+		FreeString(pNewString);
 	}
 
-	bool CDuiString::operator == (LPCTSTR str) const { return (Compare(str) == 0); };
-	bool CDuiString::operator != (LPCTSTR str) const { return (Compare(str) != 0); };
-	bool CDuiString::operator <= (LPCTSTR str) const { return (Compare(str) <= 0); };
-	bool CDuiString::operator <  (LPCTSTR str) const { return (Compare(str) <  0); };
-	bool CDuiString::operator >= (LPCTSTR str) const { return (Compare(str) >= 0); };
-	bool CDuiString::operator >  (LPCTSTR str) const { return (Compare(str) >  0); };
-
-	void CDuiString::SetAt(int nIndex, TCHAR ch)
+	void DuiStringTraitsW::TrimRight(wchar_t *&pstr)
 	{
-		ASSERT(nIndex>=0 && nIndex<GetLength());
-
-		duistringdata *s = ((duistringdata *)m_pstr)-1;
-		if(s->nRefs > 1)
+		int nStrLen = wcslen(pstr);
+		for (int i=nStrLen-1; i>=0; i--)
 		{
-			AllocString(GetLength());
+			if(iswspace(pstr[i]))
+				pstr[i] = L'\0';
+			else
+				break;
 		}
-
-		m_pstr[nIndex] = ch;
 	}
-
-	TCHAR CDuiString::GetAt(int nIndex) const
-	{
-		if(nIndex < 0 || nIndex >= GetLength())	return _T('\0');
-		return m_pstr[nIndex];
-	}
-
-	int CDuiString::Compare(LPCTSTR lpsz) const
-	{
-		if(!lpsz && IsEmpty())
-			return 0;
-		return _tcscmp(m_pstr, lpsz);
-	}
-
-	int CDuiString::CompareNoCase(LPCTSTR lpsz) const
-	{
-		if(!lpsz && IsEmpty())
-			return 0;
-		return _tcsicmp(m_pstr, lpsz);
-	}
-
-	void CDuiString::MakeUpper()
-	{
-		_tcsupr(m_pstr);
-	}
-
-	void CDuiString::MakeLower()
-	{
-		_tcslwr(m_pstr);
-	}
-
-	CDuiString CDuiString::Left(int iLength) const
-	{
-		if( iLength < 0 ) iLength = 0;
-		if( iLength > GetLength() ) iLength = GetLength();
-		return CDuiString(m_pstr, iLength);
-	}
-
-	CDuiString CDuiString::Mid(int iPos, int iLength) const
-	{
-		if( iLength < 0 ) iLength = GetLength() - iPos;
-		if( iPos + iLength > GetLength() ) iLength = GetLength() - iPos;
-		if( iLength <= 0 ) return CDuiString();
-		return CDuiString(m_pstr + iPos, iLength);
-	}
-
-	CDuiString CDuiString::Right(int iLength) const
-	{
-		int iPos = GetLength() - iLength;
-		if( iPos < 0 ) {
-			iPos = 0;
-			iLength = GetLength();
-		}
-		return CDuiString(m_pstr + iPos, iLength);
-	}
-
-	int CDuiString::Find(TCHAR ch, int iPos /*= 0*/) const
-	{
-		ASSERT(iPos>=0 && iPos<=GetLength());
-		if( iPos != 0 && (iPos < 0 || iPos >= GetLength()) ) return -1;
-		LPCTSTR p = _tcschr(m_pstr + iPos, ch);
-		if( p == NULL ) return -1;
-		return (int)(p - m_pstr);
-	}
-
-	int CDuiString::Find(LPCTSTR pstrSub, int iPos /*= 0*/) const
-	{
-	    #ifdef DUILIB_WIN32
-		ASSERT(!::IsBadStringPtr(pstrSub,-1));
-		#endif
-		ASSERT(iPos>=0 && iPos<=GetLength());
-		if( iPos != 0 && (iPos < 0 || iPos > GetLength()) ) return -1;
-		LPCTSTR p = _tcsstr(m_pstr + iPos, pstrSub);
-		if( p == NULL ) return -1;
-		return (int)(p - m_pstr);
-	}
-
-	int CDuiString::ReverseFind(TCHAR ch) const
-	{
-		LPCTSTR p = _tcsrchr(m_pstr, ch);
-		if( p == NULL ) return -1;
-		return (int)(p - m_pstr);
-	}
-
-	int CDuiString::Replace(LPCTSTR pstrFrom, LPCTSTR pstrTo)
-	{
-		CDuiString sTemp;
-		int nCount = 0;
-		int iPos = Find(pstrFrom);
-		if( iPos < 0 ) return 0;
-		int cchFrom = (int) _tcslen(pstrFrom);
-		int cchTo = (int) _tcslen(pstrTo);
-		while( iPos >= 0 ) {
-			sTemp = Left(iPos);
-			sTemp += pstrTo;
-			sTemp += Mid(iPos + cchFrom);
-			Assign(sTemp);
-			iPos = Find(pstrFrom, iPos + cchTo);
-			nCount++;
-		}
-		return nCount;
-	}
-
-	int CDuiString::AppendFormat(LPCTSTR pstrFormat, ...)
-	{
-		CDuiString s;
-
-		va_list Args;
-		va_start(Args, pstrFormat);
-		s.InnerFormat(pstrFormat, Args);
-		va_end(Args);
-
-		Append(s);
-		return GetLength();
-	}
-
-    int CDuiString::Format(LPCTSTR pstrFormat, ...)
-    {
-        int nRet;
-        va_list Args;
-
-        va_start(Args, pstrFormat);
-        nRet = InnerFormat(pstrFormat, Args);
-        va_end(Args);
-
-        return nRet;
-
-    }
-
-	int CDuiString::SmallFormat(LPCTSTR pstrFormat, ...)
-	{
-		CDuiString sFormat = pstrFormat;
-		TCHAR szBuffer[64] = { 0 };
-		va_list argList;
-		va_start(argList, pstrFormat);
-		int iRet = ::_vsntprintf(szBuffer, sizeof(szBuffer), sFormat, argList);
-		va_end(argList);
-		Assign(szBuffer);
-		return iRet;
-	}
-
-    int CDuiString::InnerFormat(LPCTSTR pstrFormat, va_list Args)
-    {
-#if _MSC_VER <= 1400
-        TCHAR *szBuffer = NULL;
-        int size = 512, nLen, counts;
-        szBuffer = (TCHAR*)malloc(size);
-		memset(szBuffer, 0, size);
-        while (TRUE){
-            counts = size / sizeof(TCHAR);
-            nLen = _vsntprintf (szBuffer, counts, pstrFormat, Args);
-            if (nLen != -1 && nLen < counts){
-                break;
-            }
-            if (nLen == -1){
-                size *= 2;
-            }else{
-                size += 1 * sizeof(TCHAR);
-            }
-
-            if ((szBuffer = (TCHAR*)realloc(szBuffer, size)) != NULL){
-				memset(szBuffer, 0, size);
-            }else{
-                break;
-            }
-        }
-
-        Assign(szBuffer);
-        free(szBuffer);
-        return nLen;
-#else
-        int nLen = _vsntprintf(NULL, 0, pstrFormat, Args);
-		AllocString(nLen);
-        nLen = _vsntprintf(m_pstr, GetBufferLength(), pstrFormat, Args);
-        return nLen;
-#endif
-    }
 
 	//////////////////////////////////////////////////////////////////////////
 	//
@@ -782,7 +950,7 @@ namespace DuiLib
 		else
 		{
 			duistringdata *data = ((duistringdata *)_buffer)-1;
-			if(data->nAllocLength < size)
+			if(data->GetAllocLength() < size)
 			{
 				duistringdata *newdata = DuiStringMgr::GetInstance()->Alloc(size);
 				LPVOID pNewBuffer = newdata->data();
@@ -946,7 +1114,7 @@ namespace DuiLib
 		if(_block)
 		{
 			duistringdata *data = ((duistringdata *)_block)-1;
-			if(data->nAllocLength < size)
+			if(data->GetAllocLength() < size)
 			{
 				DuiStringMgr::GetInstance()->Free(data);
 				duistringdata *newdata = DuiStringMgr::GetInstance()->Alloc(size);

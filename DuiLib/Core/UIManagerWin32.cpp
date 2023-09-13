@@ -676,7 +676,7 @@ namespace DuiLib {
 
 		Render()->Resize(dwWidth, dwHeight);
 
-		//Render()->GetBitmap()->ClearAlpha(rcPaint);
+		Render()->ClearAlpha(rcPaint);
 
 		Render()->SaveDC();
 

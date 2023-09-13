@@ -144,8 +144,8 @@ namespace DuiLib {
 // 		cairo_paint_with_alpha(m_cairo, 1.0);
 	}
 
-//	void UIRender_CairoWin32::ClearAlpha(const RECT &rc)
-//	{
+	void UIRender_CairoWin32::ClearAlpha(const RECT &rc, int alpha)
+	{
 // 		int width = GetWidth();
 // 		int height = GetHeight();
 // 		cairo_set_source_rgba(m_cairo, 1, 1, 1, 1);
@@ -153,7 +153,7 @@ namespace DuiLib {
 // 		cairo_rectangle(m_cairo, rc.left, rc.top, rc.right-rc.left, rc.bottom-rc.top);
 // 		//cairo_paint_with_alpha(m_cairo, 1.0);
 // 		cairo_fill(m_cairo);
-//	}
+	}
 
 	void UIRender_CairoWin32::SaveDC()
 	{

@@ -14,7 +14,7 @@ CMainFrame::~CMainFrame(void)
 
 void CMainFrame::InitWindow()
 {
-	
+	return;
 }
 
 bool CMainFrame::OnCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)

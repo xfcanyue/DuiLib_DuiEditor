@@ -108,6 +108,7 @@ IGridUI::IGridUI(void)
 
 	m_bListMode = TRUE;
 	m_bSingleRowSelection = TRUE;
+	m_bCheckBoxSelection = FALSE;
 
 	m_bHeaderSort = TRUE;
 	m_szSortIconSize.cx = 16;

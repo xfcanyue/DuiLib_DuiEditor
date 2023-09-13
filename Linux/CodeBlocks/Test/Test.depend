@@ -4038,11 +4038,11 @@
 1687444608 /home/test/projects/DuiLib/DuiLib/Utils/UIFrameWnd.h
 	<list>
 
-1687448140 source:/home/test/Desktop/DuiLib/Linux/CodeBlocks/Test/main.cpp
+1692675061 source:/home/test/Desktop/DuiLib/Linux/CodeBlocks/Test/main.cpp
 	<stdlib.h>
 	"App.h"
 
-1687336273 source:/home/test/Desktop/DuiLib/Linux/CodeBlocks/Test/MainFrame.cpp
+1692672327 source:/home/test/Desktop/DuiLib/Linux/CodeBlocks/Test/MainFrame.cpp
 	"MainFrame.h"
 
 1687336273 source:/home/test/Desktop/DuiLib/Linux/CodeBlocks/TestCodeBlocks/App.cpp
@@ -4054,7 +4054,7 @@
 1687336273 /home/test/Desktop/DuiLib/Linux/CodeBlocks/TestCodeBlocks/MainFrame.h
 	"UIlib.h"
 
-1687333054 /home/test/Desktop/DuiLib/DuiLib/UIlib.h
+1688302806 /home/test/Desktop/DuiLib/DuiLib/UIlib.h
 	"compat.h"
 	<windows.h>
 	<windowsx.h>
@@ -4168,18 +4168,25 @@
 	"Utils/UIDialog.h"
 	"Core/UIGlobal.h"
 
-1687835001 /home/test/Desktop/DuiLib/DuiLib/compat.h
+1692347098 /home/test/Desktop/DuiLib/DuiLib/compat.h
 	<wchar.h>
 	<cstring>
 	<string>
 	<syslog.h>
 	<stdarg.h>
 	<assert.h>
+	<unistd.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<dirent.h>
 	<stdlib.h>
+	<mach-o/dyld.h>
+	<sys/stat.h>
+	<dirent.h>
 
-1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/DuiString.h
+1693535358 /home/test/Desktop/DuiLib/DuiLib/Utils/DuiString.h
 
-1687835001 /home/test/Desktop/DuiLib/DuiLib/Utils/Utils.h
+1693535358 /home/test/Desktop/DuiLib/DuiLib/Utils/Utils.h
 	"OAIdl.h"
 	<vector>
 	<map>
@@ -4191,7 +4198,7 @@
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/VersionHelpers.h
 	<specstrings.h>
 
-1687156353 /home/test/Desktop/DuiLib/DuiLib/Core/UIFile.h
+1692347097 /home/test/Desktop/DuiLib/DuiLib/Core/UIFile.h
 
 1687156353 /home/test/Desktop/DuiLib/DuiLib/Core/UIXmlAttribute.h
 
@@ -4223,14 +4230,14 @@
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/UIShadowBase.h
 	<map>
 
-1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/UIShadowWin32.h
+1691132476 /home/test/Desktop/DuiLib/DuiLib/Utils/UIShadowWin32.h
 	<map>
 
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/UIShadowGtk.h
 
 1687835001 /home/test/Desktop/DuiLib/DuiLib/Core/UIBase.h
 
-1687835001 /home/test/Desktop/DuiLib/DuiLib/Core/UIWindowWin32.h
+1691132476 /home/test/Desktop/DuiLib/DuiLib/Core/UIWindowWin32.h
 
 1687835001 /home/test/Desktop/DuiLib/DuiLib/Core/UIWindowGtk.h
 
@@ -4238,7 +4245,7 @@
 
 1687156353 /home/test/Desktop/DuiLib/DuiLib/Core/UILangManager.h
 
-1687576758 /home/test/Desktop/DuiLib/DuiLib/Render/IRender.h
+1689046515 /home/test/Desktop/DuiLib/DuiLib/Render/IRender.h
 
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Render/UIClipWin32.h
 
@@ -4246,7 +4253,7 @@
 
 1687156353 /home/test/Desktop/DuiLib/DuiLib/Core/UIScript.h
 
-1687835001 /home/test/Desktop/DuiLib/DuiLib/Core/UIManager.h
+1688302806 /home/test/Desktop/DuiLib/DuiLib/Core/UIManager.h
 
 1687835001 /home/test/Desktop/DuiLib/DuiLib/Core/UIManagerWin32.h
 
@@ -4380,7 +4387,7 @@
 
 1687156353 /home/test/Desktop/DuiLib/DuiLib/Control/UIBarCode.h
 
-1687156353 /home/test/Desktop/DuiLib/DuiLib/Control/UIGrid.h
+1691132476 /home/test/Desktop/DuiLib/DuiLib/Control/UIGrid.h
 	"UIGridHeader.h"
 	"UIGridBody.h"
 	"UIGridRowUI.h"
@@ -4389,7 +4396,7 @@
 1687156353 /home/test/Desktop/DuiLib/DuiLib/Control/UIGridHeader.h
 	"IGridUI.h"
 
-1687156353 /home/test/Desktop/DuiLib/DuiLib/Control/IGridUI.h
+1691132476 /home/test/Desktop/DuiLib/DuiLib/Control/IGridUI.h
 
 1687156353 /home/test/Desktop/DuiLib/DuiLib/Control/UIGridBody.h
 	"IGridUI.h"
@@ -4406,7 +4413,7 @@
 
 1687156353 /home/test/Desktop/DuiLib/DuiLib/Control/UITreeItem.h
 
-1687156354 /home/test/Desktop/DuiLib/DuiLib/Layout/UITableLayout.h
+1691132476 /home/test/Desktop/DuiLib/DuiLib/Layout/UITableLayout.h
 
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Layout/UIChildWindow.h
 
@@ -4421,7 +4428,7 @@
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/UIFrameWnd.h
 	<list>
 
-1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/UIFrameWndWin32.h
+1691132476 /home/test/Desktop/DuiLib/DuiLib/Utils/UIFrameWndWin32.h
 	<list>
 
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/UIFrameWndGtk.h
@@ -4439,4 +4446,10 @@
 
 1687336273 source:/home/test/Desktop/DuiLib/Linux/CodeBlocks/TestCodeBlocks/MainFrame.cpp
 	"MainFrame.h"
+
+1692347098 /home/test/Desktop/DuiLib/DuiLib/Utils/Utils2.h
+	<vector>
+	<map>
+	"OAIdl.h"
+	<mutex>
 

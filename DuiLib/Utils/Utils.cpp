@@ -814,71 +814,61 @@ namespace DuiLib
 
 	int CDuiStringArray::GetSize() const
 	{
-		return m_map.GetSize();
+		return m_arrString.size();
 	}
 
 	bool CDuiStringArray::IsEmpty() const
 	{
-		return m_map.GetSize() <= 0;
+		return GetSize() <= 0;
 	}
 
 	void CDuiStringArray::RemoveAll()
 	{
-		CDuiString *pstr;
-		for( int i = 0; i< m_map.GetSize(); i++ )
-		{
-			if(LPCTSTR key = m_map.GetAt(i))
-			{
-				pstr = static_cast<CDuiString *>(m_map.Find(key));
-				delete pstr;
-			}
-		}
-		m_map.RemoveAll();
+		m_arrString.clear();
 	}
 
 	bool CDuiStringArray::Add(LPCTSTR newElement, bool bNoRepeat)
 	{
 		if(newElement == NULL || *newElement == _T('\0')) return false;
-		if(bNoRepeat && Find(newElement) != NULL) return false;
-
-		CDuiString *pstr = new CDuiString(newElement);
-		if(!m_map.Insert(newElement, pstr))
-		{
-			delete pstr;
-			return false;
-		}
+		if(bNoRepeat && Find(newElement))  return false;
+		m_arrString.push_back(newElement);
 		return true;
 	}
 
 	bool CDuiStringArray::Remove(LPCTSTR element)
 	{
-		CDuiString *pstr = static_cast<CDuiString *>(m_map.Find(element));
-		if(!pstr) return false;
-		delete pstr;
-		m_map.Remove(element);
-		return true;
+		std::vector<CDuiString>::iterator it;
+		for (it=m_arrString.begin(); it!=m_arrString.end(); it++)
+		{	
+			if(*it == element)
+			{
+				m_arrString.erase(it);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	bool CDuiStringArray::Find(LPCTSTR element)
 	{
-		return m_map.Find(element) != NULL;
+		for (UINT i=0; i<m_arrString.size(); i++)
+		{
+			if(m_arrString[i] == element)
+				return true;
+		}
+		return false;
 	}
 
 	CDuiString CDuiStringArray::GetAt(int iIndex) const
 	{
-		LPCTSTR key = m_map.GetAt(iIndex);
-		if(key == NULL) return _T("");
-		CDuiString *pstr = static_cast<CDuiString *>(m_map.Find(key));
-		return *pstr;
+		if(iIndex < 0 || iIndex>=GetSize())
+			return CDuiString();
+		return m_arrString[iIndex];
 	}
 
-	CDuiString& CDuiStringArray::operator[] (int nIndex) const
+	CDuiString& CDuiStringArray::operator[] (int nIndex)
 	{
-		//数组方式返回引用.
-		LPCTSTR key = m_map.GetAt(nIndex);
-		ASSERT(key);
-		CDuiString *pstr = static_cast<CDuiString *>(m_map.Find(key));
-		return *pstr;
+		return m_arrString[nIndex];
 	}
 
 	void CDuiStringArray::SplitString(LPCTSTR src, LPCTSTR sp)
@@ -910,13 +900,16 @@ namespace DuiLib
 			while (pos >= 0)
 			{
 				CDuiString t = text.Left(pos);
+				t.TrimLeft(); t.TrimRight();
 				if(!t.IsEmpty()) Add(t);
 				text = text.Right(text.GetLength() - pos - _tcslen(sp));
 				pos = text.Find(sp);
 			}
+			text.TrimLeft(); text.TrimRight();
 			if(!text.IsEmpty()) Add(text);
 		}
 	}
+
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
 	//

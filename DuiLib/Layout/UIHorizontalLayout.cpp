@@ -132,6 +132,8 @@ namespace DuiLib
 				sz.cx = szAvailable.cx * pControl->GetFixedWidthPercent() / 100;
 			}
 
+
+			//if( sz.cx == 0 && (pControl->GetAnimation() != DuiAnim_ScaleVertical) && (pControl->GetAnimation() != DuiAnim_ScaleHorizontal))
 			if( sz.cx == 0 ) //控件的宽度为0，需要自动布局
 			{ 
 				nAdjustables++;			
@@ -207,6 +209,7 @@ namespace DuiLib
 				sz.cx = szAvailable.cx * pControl->GetFixedWidthPercent() / 100;
 			}
 
+			//if( sz.cx == 0 && (pControl->GetAnimation() != DuiAnim_ScaleVertical) && (pControl->GetAnimation() != DuiAnim_ScaleHorizontal)) {
 			if( sz.cx == 0 ) {
 				iAdjustable++;
 				sz.cx = cxExpand;
@@ -373,7 +376,7 @@ namespace DuiLib
 
 					CDuiRect rcInvalidate = GetThumbRect(true);
 					m_rcNewPos = rc;
-					m_cxyFixed.cx = m_rcNewPos.right - m_rcNewPos.left;
+					m_cxyFixed.cx = GetManager()->GetDPIObj()->ScaleIntBack(m_rcNewPos.right - m_rcNewPos.left);
 
 					if( m_bImmMode ) {
 						m_rcItem = m_rcNewPos;

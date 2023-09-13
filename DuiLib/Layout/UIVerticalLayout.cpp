@@ -128,7 +128,9 @@ namespace DuiLib
 				sz.cy = szAvailable.cy * pControl->GetFixedHeightPercent() / 100;
 			}
 
-			if( sz.cy == 0 ) {
+
+			//if( sz.cy == 0 && (pControl->GetAnimation() != DuiAnim_ScaleVertical) && (pControl->GetAnimation() != DuiAnim_ScaleHorizontal)) {
+			if( sz.cy == 0) {
 				nAdjustables++;
 			}
 			else {
@@ -198,6 +200,8 @@ namespace DuiLib
 				sz.cy = szAvailable.cy * pControl->GetFixedHeightPercent() / 100;
 			}
 
+
+			//if( sz.cy == 0 && (pControl->GetAnimation() != DuiAnim_ScaleVertical) && (pControl->GetAnimation() != DuiAnim_ScaleHorizontal)) {
 			if( sz.cy == 0 ) {
 				iAdjustable++;
 				sz.cy = cyExpand;
@@ -361,7 +365,7 @@ namespace DuiLib
 
 					CDuiRect rcInvalidate = GetThumbRect(true);
 					m_rcNewPos = rc;
-					m_cxyFixed.cy = GetManager()->GetDPIObj()->ScaleInt(m_rcNewPos.bottom - m_rcNewPos.top);
+					m_cxyFixed.cy = GetManager()->GetDPIObj()->ScaleIntBack(m_rcNewPos.bottom - m_rcNewPos.top);
 
 					if( m_bImmMode ) {
 						m_rcItem = m_rcNewPos;

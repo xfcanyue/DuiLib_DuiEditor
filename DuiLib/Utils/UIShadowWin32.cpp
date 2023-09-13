@@ -27,11 +27,12 @@ CShadowWin32UI::CShadowWin32UI(void)
 		, m_bIsDisableShadow(false)
 {
 	::ZeroMemory(&m_rcShadowCorner, sizeof(RECT));
+	m_ppm = NULL;
 }
 
 CShadowWin32UI::~CShadowWin32UI(void)
 {
-
+	delete (CPaintManagerWin32UI *)m_ppm;
 }
 
 
@@ -105,6 +106,8 @@ void CShadowWin32UI::Create(CPaintManagerUI* pPaintManager)
 	SetWindowLongPtr(hParentWnd, GWLP_WNDPROC, (LONG_PTR)ParentProc);
 #pragma warning(default: 4311)
 
+	m_ppm = new CPaintManagerWin32UI;
+//	m_ppm->Init(m_hWnd);
 }
 
 std::map<HWND, CShadowUI *>& CShadowWin32UI::GetShadowMap()
@@ -299,14 +302,18 @@ void CShadowWin32UI::Update(HWND hParent)
 	}
 	if (m_bIsImageMode)
 	{
-		RECT rcPaint = {0, 0, nShadWndWid, nShadWndHei};
+		CDuiRect rcPaint(0, 0, nShadWndWid, nShadWndHei);
 		const UIImage* data = m_pManager->GetImageEx((LPCTSTR)m_sShadowImage, NULL, 0);
 		if( !data ) return;    
 		RECT rcBmpPart = {0};
 		rcBmpPart.right = data->nWidth;
 		rcBmpPart.bottom = data->nHeight;
 		RECT corner = m_rcShadowCorner;
-		m_pManager->Render()->DrawBitmap(data->bitmap, rcPaint, rcPaint, rcBmpPart, corner, data->bAlpha, 0xFF, true, false, false);
+		m_ppm->Render()->Init(m_ppm, hMemDC);
+		m_ppm->Render()->Resize(rcPaint);
+		m_ppm->Render()->DrawBitmap(data->bitmap, rcPaint, rcPaint, rcBmpPart, corner, data->bAlpha, 0xFF, true, false, false);
+		::BitBlt(hMemDC, 0, 0, rcPaint.GetWidth(), rcPaint.GetHeight(),
+			m_ppm->Render()->GetDC(), 0, 0, SRCCOPY);
 	}
 	else
 	{

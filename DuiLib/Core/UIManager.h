@@ -336,7 +336,6 @@ namespace DuiLib {
 		static emRenderEngine GetRenderEngineType();
 		static HINSTANCE GetInstance();
 		static CDuiString GetInstancePath();
-		static void SetInstancePath(LPCTSTR sInstancePath);
 		static CDuiString GetCurrentPath();
 		static HINSTANCE GetResourceDll();
 		static const CDuiString& GetResourcePath();
@@ -704,7 +703,6 @@ namespace DuiLib {
 		
 		//
 		static HINSTANCE m_hInstance;
-		static CDuiString m_sInstancePath;
 		static HINSTANCE m_hResourceInstance;
 		static CDuiString m_pStrResourcePath;
 		static CDuiString m_pStrResourceZip;

@@ -75,6 +75,9 @@ implfun bool CUIDataExchange::_UpdateText(_ddx_data *pData, bool bSaveAndValidat
 		case _value_duistring:
 			*((CDuiString *)(pData->pValue)) = pData->pControl->GetText();
 			break;
+		case _value_cstdstring:
+			*((cstdstring *)(pData->pValue)) = pData->pControl->GetText();
+			break;
 #ifdef _AFX
 		case _value_cstring:
 			*((CString *)(pData->pValue)) = pData->pControl->GetText();
@@ -135,6 +138,26 @@ implfun bool CUIDataExchange::_UpdateText(_ddx_data *pData, bool bSaveAndValidat
 				}
 				else
 					pData->pControl->SetText(*((CDuiString *)(pData->pValue)));
+			}
+			break;
+		case _value_cstdstring:
+			{
+				//针对ComboUI和ComboExUI，UpdateData(false)需要特殊处理
+				CComboUI *pCombo = static_cast<CComboUI *>(pData->pControl->GetInterface(DUI_CTR_COMBO));
+				CComboExUI *pComboEx = static_cast<CComboExUI *>(pData->pControl->GetInterface(DUI_CTR_COMBOEX));
+				if(pComboEx)
+				{
+					if(pComboEx->GetDropType() == CBS_DROPDOWNLIST)
+						pCombo->SelectItem(((cstdstring *)(pData->pValue))->c_str());
+					else
+						pData->pControl->SetText(((cstdstring *)(pData->pValue))->c_str());
+				}
+				else if(pCombo)
+				{
+					pCombo->SelectItem(((cstdstring *)(pData->pValue))->c_str());
+				}
+				else
+					pData->pControl->SetText(((cstdstring *)(pData->pValue))->c_str());
 			}
 			break;
 #ifdef _AFX
@@ -331,6 +354,27 @@ implfun bool CUIDataExchange::ddxText(CControlUI *pControl, int &va)
 }
 
 implfun bool CUIDataExchange::ddxText(LPCTSTR pControlName, int &va)
+{
+	CControlUI *pControl = NULL;
+	if(m_pRoot)
+	{
+		pControl = m_pRoot->FindSubControl(pControlName);
+	}
+	if(!pControl)
+	{
+		ASSERT(m_pManager);
+		pControl = m_pManager->FindControl(pControlName);
+	}
+	return ddxText(pControl, va);
+}
+
+implfun bool CUIDataExchange::ddxText(CControlUI *pControl, cstdstring &va)
+{
+	ASSERT(pControl);
+	return ddxText(pControl, (PVOID)&va, _value_cstdstring);
+}
+
+implfun bool CUIDataExchange::ddxText(LPCTSTR pControlName, cstdstring &va)
 {
 	CControlUI *pControl = NULL;
 	if(m_pRoot)

@@ -14,10 +14,13 @@
 #endif
 
 #ifdef __linux__
-	#include <syslog.h>
-	#include <stdarg.h>
-	#include <assert.h>
-
+#include <syslog.h>
+#include <stdarg.h>
+#include <assert.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
 	#ifndef _UNICODE
 		#define _UTF8CODE //linux没有定义_UNICODE, 默认为utf8
 	#endif
@@ -25,9 +28,11 @@
 
 #ifdef __APPLE__
 #include <stdlib.h>
-
+#include <mach-o/dyld.h>
+#include <sys/stat.h>
+#include <dirent.h>
     #ifndef _UNICODE
-        #define _UTF8CODE //linux没有定义_UNICODE, 默认为utf8
+        #define _UTF8CODE //macos没有定义_UNICODE, 默认为utf8
     #endif
 #endif
 
@@ -207,7 +212,7 @@ typedef int INT;
 typedef unsigned char BYTE;
 typedef unsigned long long    INT64;
 
-#if (defined _M_X64 || defined __amd64 || defined __x86_64__ || defined __arm64)
+#if (defined _M_X64 || defined __amd64 || defined __x86_64__ || defined __arm64 || defined __aarch64__)
 typedef long long UINT_PTR;
 typedef long long LONG_PTR;
 typedef unsigned long long    ULONG_PTR;
@@ -329,7 +334,7 @@ typedef BYTE * LPBYTE;
 #define LPTSTR		wchar_t *
 #define _T(x)		L##x
 #define _tfopen     _wfopen
-#define _vsntprintf vsnwprintf
+#define _vsntprintf vswprintf
 #define _tcslen		wcslen
 #define _tcscat		wcscat
 #define _tcscpy		wcscpy
@@ -347,8 +352,9 @@ typedef BYTE * LPBYTE;
 #define _tcslwr		_wcslwr
 #define _istdigit	iswdigit
 #define _ttoi		_wtoi
+#define _tstof      _wtof
 #define _tcstod     wcstod
-#define _stprintf	wprintf
+#define _stprintf	swprintf
 #else
 #define TCHAR char
 #define LPCTSTR const char *
@@ -373,6 +379,7 @@ typedef BYTE * LPBYTE;
 #define _tcslwr		strlwr
 #define _istdigit	isdigit
 #define _ttoi		atoi
+#define _tstof      atof
 #define _tcstod     strtod
 #define _stprintf	sprintf
 #endif

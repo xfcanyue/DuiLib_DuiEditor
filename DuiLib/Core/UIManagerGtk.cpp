@@ -194,6 +194,7 @@ namespace DuiLib {
 		}
 
 		Render()->Resize(rcClient);
+		Render()->ClearAlpha(rcPaint);
 
 		cairo_t * cr = (cairo_t *)wParam;
 		Render()->Init(this, cr);

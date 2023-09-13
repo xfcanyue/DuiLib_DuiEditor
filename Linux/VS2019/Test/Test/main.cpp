@@ -12,7 +12,6 @@ int main(int argc, char* argv[])
 	//设置xml资源载入方式，选择一种就行
 	uiApp.SetResType_File(_T("skin"));								//从文件夹中载入xml文件
 
-
 	CPaintManagerUI::SetRenderEngineType(DuiLib_Render_Cairo);
 
 	//初始化duilib, 注册插件，创建主窗口

@@ -1,6 +1,11 @@
 
 //#define UILIB_STATIC //静态库使用请在IDE添加预处理 UILIB_STATIC
 
+#ifdef __linux__
+#define DUILIB_GTK
+#elif defined __APPLE__
+#define DUILIB_GTK
+#endif
 
 #ifndef DUILIB_GTK
 #define DUILIB_WIN32 //默认的

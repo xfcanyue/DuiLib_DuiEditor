@@ -21,7 +21,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	uiApp.SetAppName(_T("Test"));
 
 	CPaintManagerUI::SetInstance(hInstance);
-	CPaintManagerUI::SetInstancePath(CPaintManagerUI::GetInstancePath());
+	//CPaintManagerUI::SetInstancePath(CPaintManagerUI::GetInstancePath());
 
 	//设置程序为单一执行实例，允许多实例的话，就不需要这行了。
 //	uiApp.SetSingleApplication(true, _T("CBD4DD1F-3B18-4DA4-A043-0EA9AEC8D570"));

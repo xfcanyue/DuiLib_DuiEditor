@@ -1,7 +1,7 @@
 # depslib dependency file v1.0
 1687564108 source:/home/test/Desktop/DuiLib/Linux/CodeBlocks/DuiLib/main.cpp
 
-1687333054 source:/home/test/Desktop/DuiLib/DuiLib/Control/IGridUI.cpp
+1691132476 source:/home/test/Desktop/DuiLib/DuiLib/Control/IGridUI.cpp
 	"StdAfx.h"
 	"IGridUI.h"
 
@@ -16,7 +16,7 @@
 	"gdk-pixbuf/gdk-pixbuf.h"
 	"gdk/gdk.h"
 
-1687333054 /home/test/Desktop/DuiLib/DuiLib/UIlib.h
+1688302806 /home/test/Desktop/DuiLib/DuiLib/UIlib.h
 	"compat.h"
 	<windows.h>
 	<windowsx.h>
@@ -130,18 +130,25 @@
 	"Utils/UIDialog.h"
 	"Core/UIGlobal.h"
 
-1687835001 /home/test/Desktop/DuiLib/DuiLib/compat.h
+1692347098 /home/test/Desktop/DuiLib/DuiLib/compat.h
 	<wchar.h>
 	<cstring>
 	<string>
 	<syslog.h>
 	<stdarg.h>
 	<assert.h>
+	<unistd.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<dirent.h>
 	<stdlib.h>
+	<mach-o/dyld.h>
+	<sys/stat.h>
+	<dirent.h>
 
-1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/DuiString.h
+1693535358 /home/test/Desktop/DuiLib/DuiLib/Utils/DuiString.h
 
-1687835001 /home/test/Desktop/DuiLib/DuiLib/Utils/Utils.h
+1693535358 /home/test/Desktop/DuiLib/DuiLib/Utils/Utils.h
 	"OAIdl.h"
 	<vector>
 	<map>
@@ -153,7 +160,7 @@
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/VersionHelpers.h
 	<specstrings.h>
 
-1687156353 /home/test/Desktop/DuiLib/DuiLib/Core/UIFile.h
+1692347097 /home/test/Desktop/DuiLib/DuiLib/Core/UIFile.h
 
 1687156353 /home/test/Desktop/DuiLib/DuiLib/Core/UIXmlAttribute.h
 
@@ -185,14 +192,14 @@
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/UIShadowBase.h
 	<map>
 
-1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/UIShadowWin32.h
+1691132476 /home/test/Desktop/DuiLib/DuiLib/Utils/UIShadowWin32.h
 	<map>
 
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/UIShadowGtk.h
 
 1687835001 /home/test/Desktop/DuiLib/DuiLib/Core/UIBase.h
 
-1687835001 /home/test/Desktop/DuiLib/DuiLib/Core/UIWindowWin32.h
+1691132476 /home/test/Desktop/DuiLib/DuiLib/Core/UIWindowWin32.h
 
 1687835001 /home/test/Desktop/DuiLib/DuiLib/Core/UIWindowGtk.h
 
@@ -200,7 +207,7 @@
 
 1687156353 /home/test/Desktop/DuiLib/DuiLib/Core/UILangManager.h
 
-1687576758 /home/test/Desktop/DuiLib/DuiLib/Render/IRender.h
+1689046515 /home/test/Desktop/DuiLib/DuiLib/Render/IRender.h
 
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Render/UIClipWin32.h
 
@@ -208,7 +215,7 @@
 
 1687156353 /home/test/Desktop/DuiLib/DuiLib/Core/UIScript.h
 
-1687835001 /home/test/Desktop/DuiLib/DuiLib/Core/UIManager.h
+1688302806 /home/test/Desktop/DuiLib/DuiLib/Core/UIManager.h
 
 1687835001 /home/test/Desktop/DuiLib/DuiLib/Core/UIManagerWin32.h
 
@@ -342,7 +349,7 @@
 
 1687156353 /home/test/Desktop/DuiLib/DuiLib/Control/UIBarCode.h
 
-1687156353 /home/test/Desktop/DuiLib/DuiLib/Control/UIGrid.h
+1691132476 /home/test/Desktop/DuiLib/DuiLib/Control/UIGrid.h
 	"UIGridHeader.h"
 	"UIGridBody.h"
 	"UIGridRowUI.h"
@@ -351,7 +358,7 @@
 1687156353 /home/test/Desktop/DuiLib/DuiLib/Control/UIGridHeader.h
 	"IGridUI.h"
 
-1687156353 /home/test/Desktop/DuiLib/DuiLib/Control/IGridUI.h
+1691132476 /home/test/Desktop/DuiLib/DuiLib/Control/IGridUI.h
 
 1687156353 /home/test/Desktop/DuiLib/DuiLib/Control/UIGridBody.h
 	"IGridUI.h"
@@ -368,7 +375,7 @@
 
 1687156353 /home/test/Desktop/DuiLib/DuiLib/Control/UITreeItem.h
 
-1687156354 /home/test/Desktop/DuiLib/DuiLib/Layout/UITableLayout.h
+1691132476 /home/test/Desktop/DuiLib/DuiLib/Layout/UITableLayout.h
 
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Layout/UIChildWindow.h
 
@@ -383,7 +390,7 @@
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/UIFrameWnd.h
 	<list>
 
-1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/UIFrameWndWin32.h
+1691132476 /home/test/Desktop/DuiLib/DuiLib/Utils/UIFrameWndWin32.h
 	<list>
 
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/UIFrameWndGtk.h
@@ -3396,7 +3403,7 @@
 	"../Render/UIRender_gdi.h"
 	"../Utils/barcode.h"
 
-1687156354 /home/test/Desktop/DuiLib/DuiLib/Render/UIRender_gdi.h
+1689046515 /home/test/Desktop/DuiLib/DuiLib/Render/UIRender_gdi.h
 	"UIObject_gdi.h"
 
 1687333054 /home/test/Desktop/DuiLib/DuiLib/Render/UIObject_gdi.h
@@ -3514,7 +3521,7 @@
 	"StdAfx.h"
 	"UIGifAnim.h"
 
-1687333054 source:/home/test/Desktop/DuiLib/DuiLib/Control/UIGrid.cpp
+1691132476 source:/home/test/Desktop/DuiLib/DuiLib/Control/UIGrid.cpp
 	"StdAfx.h"
 	"UIGrid.h"
 
@@ -3533,7 +3540,7 @@
 	"StdAfx.h"
 	"UIGridHeader.h"
 
-1687156353 source:/home/test/Desktop/DuiLib/DuiLib/Control/UIGridRowUI.cpp
+1691132476 source:/home/test/Desktop/DuiLib/DuiLib/Control/UIGridRowUI.cpp
 	"StdAfx.h"
 	"UIGridRowUI.h"
 
@@ -3562,7 +3569,7 @@
 	<string>
 	<Shlwapi.h>
 
-1687156353 source:/home/test/Desktop/DuiLib/DuiLib/Control/UILabel.cpp
+1691132476 source:/home/test/Desktop/DuiLib/DuiLib/Control/UILabel.cpp
 	"StdAfx.h"
 	"UILabel.h"
 
@@ -3691,7 +3698,7 @@
 1687835001 source:/home/test/Desktop/DuiLib/DuiLib/Core/UIDlgBuilder.cpp
 	"StdAfx.h"
 
-1687577502 source:/home/test/Desktop/DuiLib/DuiLib/Core/UIFile.cpp
+1692347097 source:/home/test/Desktop/DuiLib/DuiLib/Core/UIFile.cpp
 	"StdAfx.h"
 	"UIFile.h"
 	<stdarg.h>
@@ -3719,18 +3726,18 @@
 
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Render/UIRenderFactory_Cairo.h
 
-1687156353 source:/home/test/Desktop/DuiLib/DuiLib/Core/UILangManager.cpp
+1692347097 source:/home/test/Desktop/DuiLib/DuiLib/Core/UILangManager.cpp
 	"StdAfx.h"
 	"UILangManager.h"
 
-1687835001 source:/home/test/Desktop/DuiLib/DuiLib/Core/UIManager.cpp
+1693535358 source:/home/test/Desktop/DuiLib/DuiLib/Core/UIManager.cpp
 	"StdAfx.h"
 	<zmouse.h>
 
-1687835001 source:/home/test/Desktop/DuiLib/DuiLib/Core/UIManagerGtk.cpp
+1689046515 source:/home/test/Desktop/DuiLib/DuiLib/Core/UIManagerGtk.cpp
 	"StdAfx.h"
 
-1687835001 source:/home/test/Desktop/DuiLib/DuiLib/Core/UIManagerWin32.cpp
+1689046515 source:/home/test/Desktop/DuiLib/DuiLib/Core/UIManagerWin32.cpp
 	"StdAfx.h"
 	<zmouse.h>
 
@@ -3762,7 +3769,7 @@
 	"StdAfx.h"
 	"UIAnimationTabLayout.h"
 
-1687156354 source:/home/test/Desktop/DuiLib/DuiLib/Layout/UIChildLayout.cpp
+1687940988 source:/home/test/Desktop/DuiLib/DuiLib/Layout/UIChildLayout.cpp
 	"StdAfx.h"
 	"UIChildLayout.h"
 
@@ -3770,11 +3777,11 @@
 	"StdAfx.h"
 	"UIChildWindow.h"
 
-1687333054 source:/home/test/Desktop/DuiLib/DuiLib/Layout/UIDynamicLayout.cpp
+1693535358 source:/home/test/Desktop/DuiLib/DuiLib/Layout/UIDynamicLayout.cpp
 	"StdAfx.h"
 	"UIDynamicLayout.h"
 
-1687156354 source:/home/test/Desktop/DuiLib/DuiLib/Layout/UIHorizontalLayout.cpp
+1693535358 source:/home/test/Desktop/DuiLib/DuiLib/Layout/UIHorizontalLayout.cpp
 	"StdAfx.h"
 	"UIHorizontalLayout.h"
 
@@ -3782,15 +3789,15 @@
 	"StdAfx.h"
 	"UITabLayout.h"
 
-1687156354 source:/home/test/Desktop/DuiLib/DuiLib/Layout/UITableLayout.cpp
+1691132476 source:/home/test/Desktop/DuiLib/DuiLib/Layout/UITableLayout.cpp
 	"StdAfx.h"
 	"UITableLayout.h"
 
-1687333054 source:/home/test/Desktop/DuiLib/DuiLib/Layout/UITileLayout.cpp
+1691132476 source:/home/test/Desktop/DuiLib/DuiLib/Layout/UITileLayout.cpp
 	"StdAfx.h"
 	"UITileLayout.h"
 
-1687156354 source:/home/test/Desktop/DuiLib/DuiLib/Layout/UIVerticalLayout.cpp
+1693535358 source:/home/test/Desktop/DuiLib/DuiLib/Layout/UIVerticalLayout.cpp
 	"StdAfx.h"
 	"UIVerticalLayout.h"
 
@@ -3870,14 +3877,14 @@
 	"UIObject_gdiplus.h"
 	"UIRender_gdiplus.h"
 
-1687835001 source:/home/test/Desktop/DuiLib/DuiLib/Render/UIRender_Cairo.cpp
+1689046515 source:/home/test/Desktop/DuiLib/DuiLib/Render/UIRender_Cairo.cpp
 	"StdAfx.h"
 	"../Render/UIRender_Cairo.h"
 
-1687576758 /home/test/Desktop/DuiLib/DuiLib/Render/UIRender_Cairo.h
+1689046515 /home/test/Desktop/DuiLib/DuiLib/Render/UIRender_Cairo.h
 	"UIObject_Cairo.h"
 
-1687333054 source:/home/test/Desktop/DuiLib/DuiLib/Render/UIRender_gdi.cpp
+1689046515 source:/home/test/Desktop/DuiLib/DuiLib/Render/UIRender_gdi.cpp
 	"StdAfx.h"
 	"UIRender_gdi.h"
 
@@ -3927,8 +3934,10 @@
 	<atlbase.h>
 	"DragDropImpl.h"
 
-1687333054 source:/home/test/Desktop/DuiLib/DuiLib/Utils/DuiString.cpp
+1693535358 source:/home/test/Desktop/DuiLib/DuiLib/Utils/DuiString.cpp
 	"StdAfx.h"
+	"DuiString.h"
+	"string.h"
 
 1687156354 source:/home/test/Desktop/DuiLib/DuiLib/Utils/pugixml/pugixml.cpp
 	"pugixml.hpp"
@@ -3957,7 +3966,7 @@
 1687156354 source:/home/test/Desktop/DuiLib/DuiLib/Utils/UIApplication.cpp
 	"StdAfx.h"
 
-1687333054 source:/home/test/Desktop/DuiLib/DuiLib/Utils/UIApplicationGtk.cpp
+1688302806 source:/home/test/Desktop/DuiLib/DuiLib/Utils/UIApplicationGtk.cpp
 	"StdAfx.h"
 
 1687156354 source:/home/test/Desktop/DuiLib/DuiLib/Utils/UIApplicationWin32.cpp
@@ -3980,10 +3989,10 @@
 	"StdAfx.h"
 	<algorithm>
 
-1687835001 source:/home/test/Desktop/DuiLib/DuiLib/Utils/UIFrameWndGtk.cpp
+1687940988 source:/home/test/Desktop/DuiLib/DuiLib/Utils/UIFrameWndGtk.cpp
 	"StdAfx.h"
 
-1687835001 source:/home/test/Desktop/DuiLib/DuiLib/Utils/UIFrameWndWin32.cpp
+1691132476 source:/home/test/Desktop/DuiLib/DuiLib/Utils/UIFrameWndWin32.cpp
 	"StdAfx.h"
 
 1687156354 source:/home/test/Desktop/DuiLib/DuiLib/Utils/UIShadowBase.cpp
@@ -3995,20 +4004,29 @@
 	"StdAfx.h"
 	"math.h"
 
-1687156354 source:/home/test/Desktop/DuiLib/DuiLib/Utils/UIShadowWin32.cpp
+1691132476 source:/home/test/Desktop/DuiLib/DuiLib/Utils/UIShadowWin32.cpp
 	"StdAfx.h"
 	"math.h"
 	"crtdbg.h"
 
-1687835001 source:/home/test/Desktop/DuiLib/DuiLib/Utils/Utils.cpp
+1692347098 source:/home/test/Desktop/DuiLib/DuiLib/Utils/Utils.cpp
 	"StdAfx.h"
 	<time.h>
 	<time.h>
 
-1687835001 source:/home/test/Desktop/DuiLib/DuiLib/Utils/WinImplBase.cpp
+1692347098 source:/home/test/Desktop/DuiLib/DuiLib/Utils/WinImplBase.cpp
 	"StdAfx.h"
 	<algorithm>
 
-1687576694 /home/test/Desktop/DuiLib/DuiLib/Render/UIRender_CairoWin32.h
+1689052349 /home/test/Desktop/DuiLib/DuiLib/Render/UIRender_CairoWin32.h
 	"UIObject_Cairo.h"
+
+1692347098 /home/test/Desktop/DuiLib/DuiLib/Utils/Utils2.h
+	<vector>
+	<map>
+	"OAIdl.h"
+	<mutex>
+
+1692675289 source:/home/test/Desktop/DuiLib/DuiLib/Utils/Utils2.cpp
+	"StdAfx.h"
 

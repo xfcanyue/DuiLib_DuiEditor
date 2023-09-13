@@ -418,7 +418,7 @@
       <Filter>Source Files\Control</Filter>
     </ClCompile>
     <ClCompile Include="Render\UIRender_CairoWin32.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -806,8 +806,11 @@
     <ClInclude Include="Utils\QREncode.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Render\UIRender_CairoWin32.h">
+    <ClInclude Include="compat.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\UIRender_CairoWin32.h">
+      <Filter>Header Files\Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

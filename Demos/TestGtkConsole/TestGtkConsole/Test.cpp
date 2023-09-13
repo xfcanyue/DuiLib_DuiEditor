@@ -23,6 +23,9 @@ int main(int argc, char* argv[])
 	uiApp.SetResType_ZipResource(_T("skin"), _T(""), IDR_ZIPRES1, _T("ZIPRES"));	//从程序资源文件中载入xml文件
 #endif
 
+	HMODULE hModule = GetModuleHandle(NULL);
+	CPaintManagerUI::SetInstance(hModule);
+
 	CPaintManagerUI::SetRenderEngineType(DuiLib_Render_Cairo);
 
 	//初始化duilib, 注册插件，创建主窗口

@@ -1156,6 +1156,7 @@
     <ClCompile Include="Utils\UIShadowGtk.cpp" />
     <ClCompile Include="Utils\UIShadowWin32.cpp" />
     <ClCompile Include="Utils\Utils.cpp" />
+    <ClCompile Include="Utils\Utils2.cpp" />
     <ClCompile Include="Utils\WinImplBase.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -1285,6 +1286,7 @@
     <ClInclude Include="Utils\UIShadowGtk.h" />
     <ClInclude Include="Utils\UIShadowWin32.h" />
     <ClInclude Include="Utils\Utils.h" />
+    <ClInclude Include="Utils\Utils2.h" />
     <ClInclude Include="Utils\VersionHelpers.h" />
     <ClInclude Include="Utils\WebBrowserEventHandler.h" />
     <ClInclude Include="Utils\WinImplBase.h" />

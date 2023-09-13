@@ -52,6 +52,8 @@ namespace DuiLib {
 		//文本外边距
 		virtual RECT GetTextPadding() const;
 		virtual void SetTextPadding(RECT rc);
+		virtual RECT GetPushedTextPadding() const;
+		virtual void SetPushedTextPadding(RECT rc);
 
 		//是否使用资源替换文本
 		virtual bool IsResourceText() const;
@@ -518,7 +520,8 @@ namespace DuiLib {
 
 		CDuiString m_sText;				//文本内容
 		UINT m_uTextStyle;				//文本对齐
-		RECT m_rcTextPadding;			//文本外边距
+		CDuiRect m_rcTextPadding;		//文本外边距
+		CDuiRect m_rcPushedTextPadding;	//文本外边距
 		CDuiString m_sToolTip;			//浮动提示框文本
 		int m_nTooltipWidth;			//浮动提示框宽度
 		TCHAR m_chShortcut;				//快捷键, Alt+字母

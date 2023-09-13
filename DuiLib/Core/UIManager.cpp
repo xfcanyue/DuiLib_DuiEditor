@@ -21,7 +21,6 @@ namespace DuiLib {
 	int CPaintManagerUI::m_nResType = UILIB_FILE;
 	TResInfo CPaintManagerUI::m_SharedResInfo;
 	HINSTANCE CPaintManagerUI::m_hInstance = NULL;
-	CDuiString CPaintManagerUI::m_sInstancePath;
 	bool CPaintManagerUI::m_bUseHSL = false;
 	bool CPaintManagerUI::m_bForceHSL = false;
 	short CPaintManagerUI::m_H = 180;
@@ -202,24 +201,33 @@ namespace DuiLib {
 
 	CDuiString CPaintManagerUI::GetInstancePath()
 	{
-		if(!m_sInstancePath.IsEmpty())
-			return m_sInstancePath;
-
 #ifdef WIN32
 		if (m_hInstance == NULL) return _T("");
-
 		TCHAR tszModule[MAX_PATH + 1] = { 0 };
 		::GetModuleFileName(m_hInstance, tszModule, MAX_PATH);
-		m_sInstancePath = tszModule;
-		int pos = m_sInstancePath.ReverseFind(_T('\\'));
-		if (pos >= 0) m_sInstancePath = m_sInstancePath.Left(pos + 1);
+		CDuiString sInstancePath = tszModule;
+		int pos = sInstancePath.ReverseFind(_T('\\'));
+		if (pos >= 0) sInstancePath = sInstancePath.Left(pos + 1);
+		return sInstancePath;
+#elif defined __linux__
+		char  path[4096];
+		//获取当前程序绝对路径
+		int len = readlink("/proc/self/exe", path, 4096);
+		path[len] = '\0';
+		CDuiString sInstancePath = path;
+		int pos = sInstancePath.ReverseFind(_T('/'));
+		if (pos >= 0) sInstancePath = sInstancePath.Left(pos + 1);
+		return sInstancePath;
+#elif defined __APPLE__
+		char path[1025];
+        memset(path, 0, 1025*sizeof(char));
+		unsigned int size = 1024;
+		_NSGetExecutablePath(path, &size);
+		CDuiString sInstancePath = path;
+		int pos = sInstancePath.ReverseFind(_T('/'));
+		if (pos >= 0) sInstancePath = sInstancePath.Left(pos + 1);
+		return sInstancePath;
 #endif
-		return m_sInstancePath;
-	}
-
-	void CPaintManagerUI::SetInstancePath(LPCTSTR sInstancePath)
-	{
-		m_sInstancePath = sInstancePath;
 	}
 
 	CDuiString CPaintManagerUI::GetCurrentPath()
@@ -1698,10 +1706,8 @@ namespace DuiLib {
 		UIFont *pFontInfo = UIGlobal::CreateFont();
 		pFontInfo->CreateFont(this, id, pStrFontName, nSize, bBold, bUnderline, bItalic, true, bShared);
 
-// 		TCHAR idBuffer[16];
-// 		::ZeroMemory(idBuffer, sizeof(idBuffer));
-// 		_itot(id, idBuffer, 10);
-		CDuiString idBuffer(id);
+		CDuiString idBuffer;
+		idBuffer.Format(_T("%d"), id);
 		if (bShared || m_bForceUseSharedRes)
 		{
 			UIFont* pOldFontInfo = static_cast<UIFont*>(m_SharedResInfo.m_CustomFonts.Find(idBuffer));
@@ -1752,10 +1758,8 @@ namespace DuiLib {
 	{
 		if (id < 0) return GetDefaultFontInfo();
 
-// 		TCHAR idBuffer[16];
-// 		::ZeroMemory(idBuffer, sizeof(idBuffer));
-// 		_itot(id, idBuffer, 10);
-		CDuiString idBuffer(id);
+		CDuiString idBuffer;
+		idBuffer.Format(_T("%d"), id);
 		UIFont* pFontInfo = static_cast<UIFont*>(m_ResInfo.m_CustomFonts.Find(idBuffer));
 		if( !pFontInfo ) pFontInfo = static_cast<UIFont*>(m_SharedResInfo.m_CustomFonts.Find(idBuffer));
 		if (!pFontInfo) return GetDefaultFontInfo();
@@ -1845,10 +1849,8 @@ namespace DuiLib {
 
 	void CPaintManagerUI::RemoveFont(int id, bool bShared)
 	{
-// 		TCHAR idBuffer[16];
-// 		::ZeroMemory(idBuffer, sizeof(idBuffer));
-// 		_itot(id, idBuffer, 10);
-		CDuiString idBuffer(id);
+		CDuiString idBuffer;
+		idBuffer.Format(_T("%d"), id);
 
 		UIFont* pFontInfo = NULL;
 		if (bShared)

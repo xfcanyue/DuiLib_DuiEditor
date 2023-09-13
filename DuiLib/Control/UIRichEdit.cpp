@@ -368,7 +368,9 @@ namespace DuiLib {
 		::ZeroMemory(lpText, (cr.cpMax - cr.cpMin + 1) * sizeof(WCHAR));
 		TxSendMessage(EM_GETSELTEXT, 0, (LPARAM)lpText, 0);
 		CDuiString sText;
-		sText = (LPCWSTR)lpText;
+		//sText = (LPCWSTR)lpText;
+		UISTRING_CONVERSION;
+		sText = UIW2T(lpText);
 		delete[] lpText;
 		return sText;
 	}
@@ -452,7 +454,9 @@ namespace DuiLib {
 		tr.lpstrText = lpText;
 		TxSendMessage(EM_GETTEXTRANGE, 0, (LPARAM)&tr, 0);
 		CDuiString sText;
-		sText = (LPCWSTR)lpText;
+		//sText = (LPCWSTR)lpText;
+		UISTRING_CONVERSION;
+		sText = UIW2T(lpText);
 		delete[] lpText;
 		return sText;
 	}
@@ -627,7 +631,9 @@ namespace DuiLib {
 		*(LPWORD)lpText = (WORD)nMaxLength;
 		TxSendMessage(EM_GETLINE, nIndex, (LPARAM)lpText, 0);
 		CDuiString sText;
-		sText = (LPCWSTR)lpText;
+		//sText = (LPCWSTR)lpText;
+		UISTRING_CONVERSION;
+		sText = UIW2T(lpText);
 		delete[] lpText;
 		return sText;
 	}

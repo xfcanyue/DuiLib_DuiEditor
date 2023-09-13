@@ -75,6 +75,7 @@ protected:
 
 	static bool s_bHasInit;
 
+	CPaintManagerUI *m_ppm;
 	CPaintManagerUI	*m_pManager;		// 父窗体的CPaintManagerUI，用来获取素材资源和父窗体句柄
 	HWND			 m_hWnd;			// 阴影窗体的句柄
 	LONG_PTR		 m_OriParentProc;	// 子类化父窗体

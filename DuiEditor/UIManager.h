@@ -31,6 +31,8 @@ public:
 	void EnsureVisible(xml_node node);
 	void EnsureVisible(CControlUI *pControl);
 
+	CDuiRect GetRectFromXml(xml_node node);
+
 	BOOL UpdateControlPos(xml_node node, CRect rect, BOOL bUpdateWithHeight=TRUE);
 	BOOL UpdateControlWidth(xml_node node, int width);
 	BOOL UpdateControlHeight(xml_node node, int height);

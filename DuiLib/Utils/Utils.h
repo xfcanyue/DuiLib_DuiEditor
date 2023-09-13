@@ -534,15 +534,14 @@ namespace DuiLib
 		bool Find(LPCTSTR element);
 
 		CDuiString GetAt(int iIndex) const;
-		CDuiString& operator[] (int nIndex) const;
+		CDuiString& operator[] (int nIndex);
 
 		//分割字符串来构造数组，src=需要分割的字符串，sp=分割符. 若分隔符为NULL，则非字母数字为分割符号。
 		void SplitString(LPCTSTR src, LPCTSTR sp = NULL);
 
 	private:
-		CStdStringPtrMap m_map;
+		std::vector<CDuiString> m_arrString;
 	};
-
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
@@ -638,7 +637,7 @@ namespace DuiLib
 	//////////////////////////////////////////////////////////////////////////
 	//
 	//双向链表类接口
-	struct ILinkedList
+	struct UILIB_API ILinkedList
 	{
 		ILinkedList()
 		{

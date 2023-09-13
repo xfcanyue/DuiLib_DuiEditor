@@ -128,8 +128,28 @@ BEGIN_MESSAGE_MAP(CDuiEditorViewDesign, CScrollView)
 	ON_UPDATE_COMMAND_UI(ID_FORMAT_SHOW_MOUSE, &CDuiEditorViewDesign::OnUpdateFormatShowMouse)
 	ON_COMMAND(ID_FORMAT_SHOW_UI_PREVIEW, &CDuiEditorViewDesign::OnFormatShowUiPreview)
 	ON_UPDATE_COMMAND_UI(ID_FORMAT_SHOW_UI_PREVIEW, &CDuiEditorViewDesign::OnUpdateFormatShowUiPreview)
-	ON_COMMAND_RANGE(ID_EDIT_DPI, ID_EDIT_DPI_200, OnSetDPI)
-	ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_DPI, ID_EDIT_DPI_200, OnUpdateSetDPI)
+	//ON_COMMAND_RANGE(ID_EDIT_DPI, ID_EDIT_DPI_200, OnSetDPI)
+	//ON_UPDATE_COMMAND_UI_RANGE(ID_EDIT_DPI, ID_EDIT_DPI_200, OnUpdateSetDPI)
+
+	ON_COMMAND(ID_EDIT_DPI_100, &CDuiEditorViewDesign::OnSetDPI_100)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_DPI_100, &CDuiEditorViewDesign::OnUpdateSetDPI_100)
+	ON_COMMAND(ID_EDIT_DPI_125, &CDuiEditorViewDesign::OnSetDPI_125)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_DPI_125, &CDuiEditorViewDesign::OnUpdateSetDPI_125)
+	ON_COMMAND(ID_EDIT_DPI_150, &CDuiEditorViewDesign::OnSetDPI_150)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_DPI_150, &CDuiEditorViewDesign::OnUpdateSetDPI_150)
+	ON_COMMAND(ID_EDIT_DPI_175, &CDuiEditorViewDesign::OnSetDPI_175)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_DPI_175, &CDuiEditorViewDesign::OnUpdateSetDPI_175)
+	ON_COMMAND(ID_EDIT_DPI_200, &CDuiEditorViewDesign::OnSetDPI_200)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_DPI_200, &CDuiEditorViewDesign::OnUpdateSetDPI_200)
+	ON_COMMAND(ID_EDIT_DPI_225, &CDuiEditorViewDesign::OnSetDPI_225)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_DPI_225, &CDuiEditorViewDesign::OnUpdateSetDPI_225)
+	ON_COMMAND(ID_EDIT_DPI_250, &CDuiEditorViewDesign::OnSetDPI_250)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_DPI_250, &CDuiEditorViewDesign::OnUpdateSetDPI_250)
+	ON_COMMAND(ID_EDIT_DPI_300, &CDuiEditorViewDesign::OnSetDPI_300)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_DPI_300, &CDuiEditorViewDesign::OnUpdateSetDPI_300)
+	ON_COMMAND(ID_EDIT_DPI_CUSTOM, &CDuiEditorViewDesign::OnSetDPI_Custom)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_DPI_CUSTOM, &CDuiEditorViewDesign::OnUpdateSetDPI_Custom)
+
 	ON_COMMAND(ID_FILE_SAVE_TEMPLATE, &CDuiEditorViewDesign::OnFileSaveTemplate)
 	ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_TEMPLATE, &CDuiEditorViewDesign::OnUpdateFileSaveTemplate)
 	ON_WM_CREATE()
@@ -256,6 +276,8 @@ void CDuiEditorViewDesign::InitView()
 
 	//设置定时器，刷新一下duilib窗口，不然duilib会抢焦点
 	//SetTimer(1, 100, NULL);
+
+	GetUIManager()->SetZoom(GetUIManager()->GetManager()->GetDPIObj()->GetMainMonitorDPI());
 }
 
 void CDuiEditorViewDesign::OnDestroy()
@@ -760,7 +782,7 @@ void CDuiEditorViewDesign::OnEditGenerateCode_ddxText()
 		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
 
 		CString strText;
-		strText.Format(_T("ddxText(_T(\"%s\"), m_.);"), sControlName);
+		strText.Format(_T("ddxText(_T(\"%s\"), m_);"), sControlName);
 		strMuiltiText += _T("\r\n");
 		strMuiltiText += strText;
 	}
@@ -788,7 +810,7 @@ void CDuiEditorViewDesign::OnEditGenerateCode_ddxCheckBox()
 		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
 
 		CString strText;
-		strText.Format(_T("ddxCheckBox(_T(\"%s\"), m_.);"), sControlName);
+		strText.Format(_T("ddxCheckBox(_T(\"%s\"), m_);"), sControlName);
 		strMuiltiText += _T("\r\n");
 		strMuiltiText += strText;
 	}
@@ -816,7 +838,7 @@ void CDuiEditorViewDesign::OnEditGenerateCode_ddxCombo()
 		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
 
 		CString strText;
-		strText.Format(_T("ddxCombo(_T(\"%s\"), m_.);"), sControlName);
+		strText.Format(_T("ddxCombo(_T(\"%s\"), m_);"), sControlName);
 		strMuiltiText += _T("\r\n");
 		strMuiltiText += strText;
 	}
@@ -844,7 +866,7 @@ void CDuiEditorViewDesign::OnEditGenerateCode_ddxComboItemData()
 		CString sControlName = XML2T(pTrackElem->m_node.attribute(XTEXT("name")).as_string());
 
 		CString strText;
-		strText.Format(_T("ddxComboItemData(_T(\"%s\"), m_.);"), sControlName);
+		strText.Format(_T("ddxComboItemData(_T(\"%s\"), m_);"), sControlName);
 		strMuiltiText += _T("\r\n");
 		strMuiltiText += strText;
 	}
@@ -1640,7 +1662,7 @@ void CDuiEditorViewDesign::OnUpdateFormatShowUiPreview(CCmdUI *pCmdUI)
 	pCmdUI->SetCheck(m_bShowUiPreview);
 }
 
-
+/*
 void CDuiEditorViewDesign::OnSetDPI(UINT id)
 {
 	CLockWindowUpdate lock(this);
@@ -1667,6 +1689,104 @@ void CDuiEditorViewDesign::OnSetDPI(UINT id)
 void CDuiEditorViewDesign::OnUpdateSetDPI(CCmdUI *pCmdUI)
 {
 
+}
+*/
+
+void CDuiEditorViewDesign::OnSetDPI_100()
+{
+	GetUIManager()->SetZoom(96);
+}
+
+void CDuiEditorViewDesign::OnSetDPI_125()
+{
+	GetUIManager()->SetZoom(120);
+}
+
+void CDuiEditorViewDesign::OnSetDPI_150()
+{
+	GetUIManager()->SetZoom(144);
+}
+
+void CDuiEditorViewDesign::OnSetDPI_175()
+{
+	GetUIManager()->SetZoom(168);
+}
+
+void CDuiEditorViewDesign::OnSetDPI_200()
+{
+	GetUIManager()->SetZoom(192);
+}
+
+void CDuiEditorViewDesign::OnSetDPI_225()
+{
+	GetUIManager()->SetZoom(216);
+}
+
+void CDuiEditorViewDesign::OnSetDPI_250()
+{
+	GetUIManager()->SetZoom(240);
+}
+
+void CDuiEditorViewDesign::OnSetDPI_300()
+{
+	GetUIManager()->SetZoom(270);
+}
+
+void CDuiEditorViewDesign::OnSetDPI_Custom()
+{
+
+}
+
+void CDuiEditorViewDesign::OnUpdateSetDPI_100(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(GetUIManager()->GetManager()->GetDPIObj()->GetDPI() == 96);
+}
+
+void CDuiEditorViewDesign::OnUpdateSetDPI_125(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(GetUIManager()->GetManager()->GetDPIObj()->GetDPI() == 120);
+}
+
+void CDuiEditorViewDesign::OnUpdateSetDPI_150(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(GetUIManager()->GetManager()->GetDPIObj()->GetDPI() == 144);
+}
+
+void CDuiEditorViewDesign::OnUpdateSetDPI_175(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(GetUIManager()->GetManager()->GetDPIObj()->GetDPI() == 168);
+}
+
+void CDuiEditorViewDesign::OnUpdateSetDPI_200(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(GetUIManager()->GetManager()->GetDPIObj()->GetDPI() == 192);
+}
+
+void CDuiEditorViewDesign::OnUpdateSetDPI_225(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(GetUIManager()->GetManager()->GetDPIObj()->GetDPI() == 216);
+}
+
+void CDuiEditorViewDesign::OnUpdateSetDPI_250(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(GetUIManager()->GetManager()->GetDPIObj()->GetDPI() == 240);
+}
+
+void CDuiEditorViewDesign::OnUpdateSetDPI_300(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(GetUIManager()->GetManager()->GetDPIObj()->GetDPI() == 270);
+}
+
+void CDuiEditorViewDesign::OnUpdateSetDPI_Custom(CCmdUI *pCmdUI)
+{
+	int dpi = GetUIManager()->GetManager()->GetDPIObj()->GetDPI();
+	if(dpi == 96 || dpi == 120 || dpi == 144 || dpi == 168 || 
+		dpi == 192 || dpi == 216 || dpi == 240 || dpi == 270)
+	{
+		pCmdUI->SetCheck(FALSE);
+		return;
+	}
+	pCmdUI->SetCheck(TRUE);
 }
 
 void CDuiEditorViewDesign::OnFileSaveTemplate()

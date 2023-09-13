@@ -142,7 +142,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>/home/test/projects/DuiLib/DuiLib;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DUILIB_GTK</PreprocessorDefinitions>
+      <PreprocessorDefinitions>
+      </PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>DuiLib</LibraryDependencies>
@@ -156,7 +157,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='xsDebug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>/home/test/projects/DuiLib/DuiLib;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DUILIB_GTK</PreprocessorDefinitions>
+      <PreprocessorDefinitions>
+      </PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>DuiLib;gtk-3; gobject-2.0; glib-2.0;gdk-3;cairo;gdk_pixbuf-2.0;pango-1.0;pangocairo-1.0;</LibraryDependencies>

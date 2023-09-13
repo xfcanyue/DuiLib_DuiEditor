@@ -3,6 +3,15 @@
 #ifndef HEADER_UIDataExchange_HPP
 #define HEADER_UIDataExchange_HPP
 
+#ifndef cstdstring
+#include <string>
+#ifdef _UNICODE
+#define cstdstring std::wstring
+#else
+#define cstdstring std::string
+#endif
+#endif
+
 namespace DuiLib
 {
 
@@ -25,6 +34,7 @@ public:
 		_value_BOOL,
 		_value_int,
 		_value_duistring,
+		_value_cstdstring,
 #ifdef _AFX
 		_value_cstring,
 		_value_coledatetime,
@@ -71,6 +81,9 @@ public:
 	bool ddxText(LPCTSTR pControlName, CDuiString &va);
 	bool ddxText(CControlUI *pControl, int &va);
 	bool ddxText(LPCTSTR pControlName, int &va);
+
+	bool ddxText(CControlUI *pControl, cstdstring &va);
+	bool ddxText(LPCTSTR pControlName, cstdstring &va);
 
 #ifdef _AFX
 	bool ddxText(CControlUI *pControl, CString &va);

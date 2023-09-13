@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
 	//	uiApp.SetSingleApplication(true, _T("CBD4DD1F-3B18-4DA4-A043-0EA9AEC8D570"));
 
 	//设置xml资源载入方式，选择一种就行
-	uiApp.SetResType_File(_T("../skin"));								//从文件夹中载入xml文件
+	uiApp.SetResType_File(_T("skin"));								//从文件夹中载入xml文件
 
 
 	CPaintManagerUI::SetRenderEngineType(DuiLib_Render_Cairo);

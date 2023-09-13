@@ -55,7 +55,6 @@ namespace DuiLib {
 		//////////////////////////////////////////////////////////////////////////
 
 		m_uTextStyle = 0;	
-		memset(&m_rcTextPadding, 0, sizeof(m_rcTextPadding));
 
 		m_iFont					= -1;
 		m_iHotFont				= -1;
@@ -242,6 +241,18 @@ namespace DuiLib {
 	void CControlUI::SetTextPadding(RECT rc)
 	{
 		m_rcTextPadding = rc;
+		Invalidate();
+	}
+
+	RECT CControlUI::GetPushedTextPadding() const
+	{
+		if(m_pManager != NULL) return m_pManager->GetDPIObj()->ScaleRect(m_rcPushedTextPadding);
+		return m_rcPushedTextPadding;
+	}
+
+	void CControlUI::SetPushedTextPadding(RECT rc)
+	{
+		m_rcPushedTextPadding = rc;
 		Invalidate();
 	}
 
@@ -1448,6 +1459,15 @@ namespace DuiLib {
 			rcTextPadding.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);    
 			rcTextPadding.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);    
 			SetTextPadding(rcTextPadding);
+		}
+		else if( _tcsicmp(pstrName, _T("pushedtextpadding")) == 0 ) {
+			RECT rcTextPadding = { 0 };
+			LPTSTR pstr = NULL;
+			rcTextPadding.left = _tcstol(pstrValue, &pstr, 10);  ASSERT(pstr);    
+			rcTextPadding.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);    
+			rcTextPadding.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);    
+			rcTextPadding.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);    
+			SetPushedTextPadding(rcTextPadding);
 		}
 		//////////////////////////////////////////////////////////////////////////
 		else if( _tcsicmp(pstrName, _T("pos")) == 0 ) {

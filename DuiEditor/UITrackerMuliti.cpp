@@ -440,7 +440,10 @@ void CUITrackerMuliti::OnChangedRect()
 			if(pCurrentControl->IsFloat())
 			{
 				pArrTracker->m_rect = rc;
-				GetUIManager()->UpdateControlPos(pArrTracker->m_node, rc);
+
+				CRect rcNoDPI = rc;
+				pArrTracker->m_pControl->GetManager()->GetDPIObj()->ScaleRectBack(rcNoDPI);
+				GetUIManager()->UpdateControlPos(pArrTracker->m_node, rcNoDPI);
 			}
 			else
 			{
@@ -575,6 +578,7 @@ void CUITrackerMuliti::OnChangedRect(const CRect& rectOld)
 				pArrTracker->m_rect = m_rect;
 
 				CRect rc = m_rect;
+				pArrTracker->m_pControl->GetManager()->GetDPIObj()->ScaleRectBack(rc);
 				rc.NormalizeRect();
 				GetUIManager()->UpdateControlPos(pArrTracker->m_node, rc);
 				break;
@@ -592,6 +596,7 @@ void CUITrackerMuliti::OnChangedRect(const CRect& rectOld)
 				pArrTracker->m_rect = m_rect;
 
 				CRect rc = m_rect;
+				pArrTracker->m_pControl->GetManager()->GetDPIObj()->ScaleRectBack(rc);
 				rc.NormalizeRect();
 				GetUIManager()->UpdateControlHeight(pArrTracker->m_node, rc.Height());
 				break;
@@ -609,6 +614,7 @@ void CUITrackerMuliti::OnChangedRect(const CRect& rectOld)
 				pArrTracker->m_rect = m_rect;
 
 				CRect rc = m_rect;
+				pArrTracker->m_pControl->GetManager()->GetDPIObj()->ScaleRectBack(rc);
 				rc.NormalizeRect();
 				GetUIManager()->UpdateControlWidth(pArrTracker->m_node, rc.Width());
 				break;

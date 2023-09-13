@@ -55,10 +55,10 @@ public:
 	virtual int GetFixedRowCount();
 
 	virtual BOOL SetRowHeight(int row, int height);
-	virtual int  GetRowHeight(int row);
+	virtual int  GetRowHeight(int row, BOOL bScaleByDPI=FALSE);
 
 	virtual BOOL SetColumnWidth(int col, int width);
-	virtual int  GetColumnWidth(int col);
+	virtual int  GetColumnWidth(int col, BOOL bScaleByDPI=FALSE);
 
 	//设置整列单元格类型
 	void SetCellType(int col, GridCellType cellType);
@@ -71,6 +71,9 @@ public:
 
 	//获取单元格类型
 	GridCellType GetCellType(int row, int col);
+
+	virtual void ClearSelectedRows() override;
+	virtual void SelectRow(int row, BOOL bSelected=TRUE, BOOL bTriggerEvent= FALSE) override;
 
 	virtual void SetVirtualGrid(BOOL bVirtual) override;
 	virtual void SetVirtualRowCount(int nRows);

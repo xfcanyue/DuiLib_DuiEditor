@@ -263,6 +263,13 @@ namespace DuiLib {
 		m_curBmp->Clear();
 	}
 
+	void UIRender_gdi::ClearAlpha(const RECT &rc, int alpha)
+	{
+		if(!m_curBmp) 
+			return;
+		m_curBmp->ClearAlpha(rc, alpha);
+	}
+
 	void UIRender_gdi::SaveDC()
 	{
 		m_iSaveDC = ::SaveDC(m_hDC);

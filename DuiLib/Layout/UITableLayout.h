@@ -34,8 +34,8 @@ namespace DuiLib
 		RECT GetColTextPadding(int col) const;
 		void SetColTextPadding(int col, RECT rc);
 
-		void SetDefRowHeight(int height)			{ m_nDefRowHeight = height; }
-		int GetDefRowHeight() const					{ return m_nDefRowHeight; }
+		void SetDefRowHeight(int height);
+		int GetDefRowHeight() const;
 
 		virtual void DoInit() override;
 		virtual void DoEvent(TEventUI& event) override;

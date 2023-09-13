@@ -143,10 +143,10 @@ public:
 	DWORD GetLineColor() const					{ return m_dwLineColor; }
 
 	virtual BOOL SetRowHeight(int row, int height)		= 0;
-	virtual int  GetRowHeight(int row)					= 0;
+	virtual int  GetRowHeight(int row, BOOL bScaleByDPI=FALSE)					= 0;
 
 	virtual BOOL SetColumnWidth(int col, int width)	= 0;
-	virtual int  GetColumnWidth(int col)				= 0;
+	virtual int  GetColumnWidth(int col, BOOL bScaleByDPI=FALSE)				= 0;
 
 	void EnableSizeColumn(BOOL bEnable)			{ m_bEnableSizeColumn = bEnable; }
 	BOOL IsEnableSizeColumn()					{ return m_bEnableSizeColumn; }
@@ -171,6 +171,9 @@ public:
 
 	void SetSingleRowSelection(BOOL bSingle)	{ m_bSingleRowSelection = bSingle; }
 	BOOL IsSingleRowSelection()					{ return m_bSingleRowSelection; }
+
+	void SetCheckBoxSelection(BOOL bSingle)		{ m_bCheckBoxSelection = bSingle; }
+	BOOL IsCheckBoxSelection()					{ return m_bCheckBoxSelection; }
 
 	void SetHeaderSort(BOOL bSort)				{ m_bHeaderSort = bSort; }
 	BOOL IsHeaderSort()	const					{ return m_bHeaderSort; }
@@ -231,6 +234,7 @@ protected:
 		
 	BOOL  m_bListMode;					//click to select a full row
 	BOOL  m_bSingleRowSelection;		//only single row can be selected, not multi rows selected.
+	BOOL  m_bCheckBoxSelection;			//列表模式下选中行时，联动最左边的非固定列checkbox单元格。
 
 
 	BOOL  m_bHeaderSort;				//enable click fixed row to sort column
@@ -264,8 +268,8 @@ public:
 	TCellData &Cell(int row, int col);
 	TCellData &Cell(const TCellID &cell);
 
-	void ClearSelectedRows();
-	void SelectRow(int row, BOOL bSelected=TRUE, BOOL bTriggerEvent= FALSE);
+	virtual void ClearSelectedRows();
+	virtual void SelectRow(int row, BOOL bSelected=TRUE, BOOL bTriggerEvent= FALSE);
 	BOOL IsSelectedRow(int row);
 
 	void ClearSelectedCells();

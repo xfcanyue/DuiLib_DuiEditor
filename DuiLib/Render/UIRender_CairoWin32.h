@@ -29,7 +29,7 @@ namespace DuiLib {
 		virtual int GetWidth() const override;
 		virtual int GetHeight() const override;
 		virtual void Clear() override;
-		//virtual void ClearAlpha(const RECT &rc) override;
+		virtual void ClearAlpha(const RECT &rc, int alpha = 0) override;
 
 		virtual void SaveDC() override;
 		virtual void RestoreDC() override;

@@ -33,6 +33,15 @@ void CUIFrameWndWin32::OnFinalMessage( HWND hWnd )
 	GetManager()->ReapObjects(GetManager()->GetRoot());
 }
 
+UIWND CUIFrameWndWin32::Create(UIWND hwndParent, LPCTSTR pstrName, DWORD dwStyle, DWORD dwExStyle, int x, int y, int cx, int cy)
+{
+	UIWND hWnd = CWindowWnd::Create(hwndParent, pstrName, dwStyle, dwExStyle, x, y, cx, cy);
+	if(hWnd != NULL)
+	{
+		GetManager()->SetDPI(GetManager()->GetDPIObj()->GetMainMonitorDPI());
+	}
+	return hWnd;
+}
 
 UINT CUIFrameWndWin32::GetClassStyle() const
 {

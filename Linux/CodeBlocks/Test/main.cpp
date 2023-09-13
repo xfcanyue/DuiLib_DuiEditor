@@ -2,11 +2,15 @@
 
 #include "App.h"
 
+LPCTSTR GetText2()
+{
+    return _T("");
+}
 int main (int argc, char *argv[])
 {
     //printf("%d, %s", argc, argv[0]);
 
-
+    CDuiString s = GetText2();
 
     //设置主窗口的名字
 	uiApp.SetAppName(_T("DuiLib Tutorial"));

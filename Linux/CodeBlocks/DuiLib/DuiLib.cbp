@@ -16,7 +16,6 @@
 				<Compiler>
 					<Add option="-fPIC" />
 					<Add option="-g" />
-					<Add option="-DDUILIB_GTK" />
 					<Add directory="../../../DuiLib" />
 					<Add directory="/usr/include/gtk-3.0" />
 					<Add directory="/usr/include/cairo" />

@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0C8664432A4BCB0A00076737 /* libDuiLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C8664422A4BCB0A00076737 /* libDuiLib.a */; };
+		0C1A03D22A8B4B8700026EBB /* libDuiLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C1A03D12A8B4B8700026EBB /* libDuiLib.a */; };
 		0C86644A2A4BCE1100076737 /* libcairo.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C8664492A4BCE1100076737 /* libcairo.dylib */; };
 		0C86644C2A4BCE2500076737 /* libgtk-3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C86644B2A4BCE2500076737 /* libgtk-3.0.dylib */; };
 		0C86644E2A4BCE3800076737 /* libgobject-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C86644D2A4BCE3800076737 /* libgobject-2.0.dylib */; };
@@ -34,6 +34,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0C1A03D02A8B4AD700026EBB /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		0C1A03D12A8B4B8700026EBB /* libDuiLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libDuiLib.a; path = ../../bin/libDuiLib.a; sourceTree = "<group>"; };
+		0C1A03D32A8DB64700026EBB /* FileList.xcfilelist */ = {isa = PBXFileReference; lastKnownFileType = text.xcfilelist; path = FileList.xcfilelist; sourceTree = "<group>"; };
 		0C8664422A4BCB0A00076737 /* libDuiLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libDuiLib.a; path = ../../DuiLib/Lib/Release/libDuiLib.a; sourceTree = "<group>"; };
 		0C8664442A4BCCED00076737 /* libcairo.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcairo.a; path = ../../../../../../opt/homebrew/Cellar/cairo/1.16.0_5/lib/libcairo.a; sourceTree = "<group>"; };
 		0C8664462A4BCD6A00076737 /* libcairo.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcairo.a; path = ../../../../../../opt/homebrew/lib/libcairo.a; sourceTree = "<group>"; };
@@ -59,7 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C8664432A4BCB0A00076737 /* libDuiLib.a in Frameworks */,
+				0C1A03D22A8B4B8700026EBB /* libDuiLib.a in Frameworks */,
 				0C86644A2A4BCE1100076737 /* libcairo.dylib in Frameworks */,
 				0C86644C2A4BCE2500076737 /* libgtk-3.0.dylib in Frameworks */,
 				0C86644E2A4BCE3800076737 /* libgobject-2.0.dylib in Frameworks */,
@@ -77,6 +80,8 @@
 		10F0E6E02A4979CB0013A3B1 = {
 			isa = PBXGroup;
 			children = (
+				0C1A03D02A8B4AD700026EBB /* Config.xcconfig */,
+				0C1A03D32A8DB64700026EBB /* FileList.xcfilelist */,
 				10F0E6EB2A4979CB0013A3B1 /* Test */,
 				10F0E6EA2A4979CB0013A3B1 /* Products */,
 				10F0E6F92A4985EA0013A3B1 /* Frameworks */,
@@ -106,6 +111,7 @@
 		10F0E6F92A4985EA0013A3B1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0C1A03D12A8B4B8700026EBB /* libDuiLib.a */,
 				0C8664572A4BCEDC00076737 /* libglib-2.0.dylib */,
 				0C8664552A4BCEB600076737 /* libpangocairo-1.0.0.dylib */,
 				0C8664532A4BCEAF00076737 /* libpango-1.0.dylib */,
@@ -190,6 +196,7 @@
 /* Begin XCBuildConfiguration section */
 		10F0E6EE2A4979CB0013A3B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0C1A03D02A8B4AD700026EBB /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -248,6 +255,7 @@
 		};
 		10F0E6EF2A4979CB0013A3B1 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0C1A03D02A8B4AD700026EBB /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;

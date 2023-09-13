@@ -245,7 +245,7 @@ bool CMainFrame::OnMenuUpdateCommandUI(CMenuCmdUI *cmdUI)
 	if(IsMenuCommand(cmdUI, _T("menu_lang")))
 	{
 		CFileFind finder;
-		BOOL bFind = finder.FindFile(uiApp.GetAppPath() + ("skin\\Lang\\*.*"));
+		BOOL bFind = finder.FindFile(uiApp.GetAppPath() + _T("skin\\Lang\\*.*"));
 		if(!bFind) return true;
 		while (bFind)
 		{

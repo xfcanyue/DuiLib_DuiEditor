@@ -231,7 +231,8 @@ namespace DuiLib {
 		pkg->SetSkinFile(lpstrSkinFile);
 
 		CDuiString sPath = CLangManagerUI::GetLangPath();
-		if(sPath.GetAt(sPath.GetLength()-1) != '\\')	sPath += '\\';
+		if(sPath.GetAt(sPath.GetLength()-1) != '\\')	
+			sPath += '\\';
 		CDuiString sFile = lpstrSkinFile;
 		if(sFile.ReverseFind('.') >= 0)
 		{

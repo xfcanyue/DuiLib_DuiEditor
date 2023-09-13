@@ -1159,6 +1159,7 @@
     <ClCompile Include="Utils\WinImplBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="compat.h" />
     <ClInclude Include="Control\IGridUI.h" />
     <ClInclude Include="Control\ITreeUI.h" />
     <ClInclude Include="Control\TxtWinHost.h" />

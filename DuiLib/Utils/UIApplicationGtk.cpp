@@ -15,17 +15,6 @@ CUIApplicationGtk::~CUIApplicationGtk(void)
 
 bool CUIApplicationGtk::InitInstance(int argc, char* argv[])
 {
-	if(argc > 0)
-	{
-		UISTRING_CONVERSION;
-		CDuiString sPath = UIA2T(argv[0]);
-		int n = sPath.ReverseFind(_T('\\'));
-		if (n < 0)
-			n = sPath.ReverseFind(_T('/'));
-		CDuiString sIntancePath = sPath.Left(n+1);
-		CPaintManagerUI::SetInstancePath(sIntancePath);
-	}
-
 	m_strAppPath = CPaintManagerUI::GetInstancePath();
 
 	// 初始化资源

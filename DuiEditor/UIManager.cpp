@@ -201,6 +201,26 @@ BOOL CUIManager::UpdateControlUI(CControlUI *pControl)
 	return TRUE;
 }
 
+//从xml中获取pos参数，由于dpi的原因，这类数值直接从xml中获得
+//按照CContolUI::SetAttribute()解析顺序, pos先解析, 然后width,height。也就是width,height会覆盖pos大小。
+CDuiRect CUIManager::GetRectFromXml(xml_node node)
+{
+	xml_attribute attrPos = node.attribute(XTEXT("pos"));
+	xml_attribute attrWidth = node.attribute(XTEXT("width"));
+	xml_attribute attrHeight = node.attribute(XTEXT("height"));
+
+	CDuiRect rc = CDuiRect(XML2T(attrPos.as_string(XTEXT("0,0,0,0"))));
+	if(attrWidth)
+	{
+		rc.right = rc.left + attrWidth.as_int();
+	}
+	if(attrHeight)
+	{
+		rc.bottom = rc.top + attrHeight.as_int();
+	}
+	return rc;
+}
+
 BOOL CUIManager::UpdateControlPos(xml_node node, CRect rect, BOOL bUpdateWithHeight)
 {
 	CControlUI *pControl = (CControlUI *)node.get_tag();
@@ -217,6 +237,29 @@ BOOL CUIManager::UpdateControlPos(xml_node node, CRect rect, BOOL bUpdateWithHei
 		return TRUE;
 	}
 
+	CDuiRect rc = rect;
+	//float控件
+	if(pControl->IsFloat())
+	{
+// 		CRect rcParent = pControl->GetParent()->GetPos();
+// 		CRect rcControl;
+// 		rcControl.left = rect.left - rcParent.left;
+// 		rcControl.right = rcControl.left + rect.Width();
+// 		rcControl.top = rect.top - rcParent.top;//rcParent.top - rect.top;//rect.top - rcParent.top;
+// 		rcControl.bottom = rcControl.top + rect.Height();
+
+		CRect rcParent = pControl->GetParent()->GetPos();
+		pControl->GetManager()->GetDPIObj()->ScaleRectBack(rcParent);
+		rc.left = rect.left - rcParent.left;
+		rc.right = rc.left + rect.Width();
+		rc.top = rect.top - rcParent.top;//rcParent.top - rect.top;//rect.top - rcParent.top;
+		rc.bottom = rc.top + rect.Height();
+	}
+	else
+	{
+		rc.ResetOffset();
+	}
+	/*
 	//float控件
 	if(pControl->IsFloat())
 	{
@@ -249,15 +292,15 @@ BOOL CUIManager::UpdateControlPos(xml_node node, CRect rect, BOOL bUpdateWithHei
 	rcDoc.right = rect.Width();
 	rcDoc.top = 0;
 	rcDoc.bottom = rect.Height();
-
-	pControl->SetAttribute(_T("pos"), rcDoc.ToString());	//不能调用pControl->SetPos();
+	*/
+	pControl->SetAttribute(_T("pos"), rc.ToString());	//不能调用pControl->SetPos();
 	UpdateControlUI(pControl);
 
 	if(bUpdateWithHeight)
 	{
-		g_duiProp.AddAttribute(node, _T("pos"), rcDoc, this);
-		g_duiProp.AddAttribute(node, _T("width"), rcDoc.GetWidth(), this);
-		g_duiProp.AddAttribute(node, _T("height"), rcDoc.GetHeight(), this);
+		g_duiProp.AddAttribute(node, _T("pos"), rc, this);
+		g_duiProp.AddAttribute(node, _T("width"), rc.GetWidth(), this);
+		g_duiProp.AddAttribute(node, _T("height"), rc.GetHeight(), this);
 	}
 	return TRUE;
 }
@@ -281,6 +324,10 @@ BOOL CUIManager::UpdateControlWidth(xml_node node, int width)
 		return TRUE;
 	}
 
+
+	CDuiRect rc = GetRectFromXml(node);
+	rc.right = rc.left + width;
+	/*
 	if(pControl->IsFloat())
 	{
 		CRect rc = pControl->GetPos();
@@ -291,6 +338,8 @@ BOOL CUIManager::UpdateControlWidth(xml_node node, int width)
 	//非float控件比较特殊, UI库自动布局.
 	CDuiRect rcDoc;
 	xml_attribute attrPos = node.attribute(XTEXT("pos"));
+	xml_attribute attrWidth = node.attribute(XTEXT("width"));
+	xml_attribute attrHeight = node.attribute(XTEXT("height"));
 	if(attrPos)
 	{
 		rcDoc = CDuiRect(XML2T(attrPos.as_string(XTEXT("0,0,0,0"))));
@@ -299,15 +348,16 @@ BOOL CUIManager::UpdateControlWidth(xml_node node, int width)
 	else
 	{
 		rcDoc.left = 0; rcDoc.right = width;
-		rcDoc.top = 0;	rcDoc.bottom = pControl->GetFixedHeight();
+		//rcDoc.top = 0;	rcDoc.bottom = pControl->GetFixedHeight();
+		rcDoc.top = 0;	rcDoc.bottom = attrHeight.as_int();
 	}
-
-	pControl->SetAttribute(_T("pos"), rcDoc.ToString());	//不能调用pControl->SetPos();
+	*/
+	pControl->SetAttribute(_T("pos"), rc.ToString());	//不能调用pControl->SetPos();
 	UpdateControlUI(pControl);
 
-	g_duiProp.AddAttribute(node, _T("pos"), rcDoc, this);
-	g_duiProp.AddAttribute(node, _T("width"), rcDoc.GetWidth(), this);
-	g_duiProp.AddAttribute(node, _T("height"), rcDoc.GetHeight(), this);
+	g_duiProp.AddAttribute(node, _T("pos"), rc, this);
+	g_duiProp.AddAttribute(node, _T("width"), rc.GetWidth(), this);
+	g_duiProp.AddAttribute(node, _T("height"), rc.GetHeight(), this);
 	return TRUE;
 }
 
@@ -329,6 +379,10 @@ BOOL CUIManager::UpdateControlHeight(xml_node node, int height)
 		return TRUE;
 	}
 
+	CDuiRect rc = GetRectFromXml(node);
+	rc.bottom = rc.top + height;
+
+/*
 	if(pControl->IsFloat())
 	{
 		CRect rc = pControl->GetPos();
@@ -339,6 +393,8 @@ BOOL CUIManager::UpdateControlHeight(xml_node node, int height)
 	//非float控件比较特殊, UI库自动布局.
 	CDuiRect rcDoc;
 	xml_attribute attrPos = node.attribute(XTEXT("pos"));
+	xml_attribute attrWidth = node.attribute(XTEXT("width"));
+	xml_attribute attrHeight = node.attribute(XTEXT("height"));
 	if(attrPos)
 	{
 		rcDoc = CDuiRect(XML2T(attrPos.as_string(XTEXT("0,0,0,0"))));
@@ -346,16 +402,17 @@ BOOL CUIManager::UpdateControlHeight(xml_node node, int height)
 	}
 	else
 	{
-		rcDoc.left = 0; rcDoc.right = pControl->GetFixedWidth();
+		rcDoc.left = 0; rcDoc.right = attrWidth.as_int();
 		rcDoc.top = 0;	rcDoc.bottom = height;
 	}
+	*/
 
-	pControl->SetAttribute(_T("pos"), rcDoc.ToString());	//不能调用pControl->SetPos();
+	pControl->SetAttribute(_T("pos"), rc.ToString());	//不能调用pControl->SetPos();
 	UpdateControlUI(pControl);
 
-	g_duiProp.AddAttribute(node, _T("pos"), rcDoc, this);
-	g_duiProp.AddAttribute(node, _T("width"), rcDoc.GetWidth(),	this);
-	g_duiProp.AddAttribute(node, _T("height"), rcDoc.GetHeight(),	this);
+	g_duiProp.AddAttribute(node, _T("pos"), rc, this);
+	g_duiProp.AddAttribute(node, _T("width"), rc.GetWidth(),	this);
+	g_duiProp.AddAttribute(node, _T("height"), rc.GetHeight(),	this);
 	return TRUE;
 }
 
@@ -546,6 +603,7 @@ void CUIManager::DeleteLangText(xml_node node)
 void CUIManager::SetScrollSize()
 {
 	CSize szForm = GetManager()->GetInitSize();
+	GetManager()->GetDPIObj()->ScaleSize(&szForm);
 
 	if(GetDesignView()->m_bViewRuleBar)
 	{
@@ -572,7 +630,7 @@ void CUIManager::SetZoom(int zoom)
 	else
 		GetUiWindow()->MoveWindow(-point.x, -point.y, rc.Width(), rc.Height(), TRUE);
 
-	SetUIFormWindowSize(rc.Width(), rc.Height());
+	//SetUIFormWindowSize(rc.Width(), rc.Height());
 
 	SetScrollSize();
 }
@@ -605,6 +663,7 @@ void CUIManager::SetUIFormWindowSize(int cx, int cy)
 			if(GetDesignView()->IsViewRuleBar()) szForm.cy -= RULEBAR_SIZE_Y;
 		}
 	}
+	//GetManager()->GetDPIObj()->ScaleSize(&szForm);
 	GetUiFrom()->SetInitSize(szForm.cx, szForm.cy);
 	SetScrollSize();
 }

@@ -134,8 +134,8 @@ LRESULT CUIWindowContainer::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 
 	ResizeWindow();
 
-	GetManager()->GetDPIObj()->SetDPIAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
-	GetManager()->SetDPI(GetManager()->GetDPIObj()->GetMainMonitorDPI());
+	//GetManager()->GetDPIObj()->SetDPIAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
+	//GetManager()->SetDPI(GetManager()->GetDPIObj()->GetMainMonitorDPI());
 
 	return 0;
 }

@@ -273,7 +273,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		10F0E48D2A491AF80013A3B1 /* libDuiLib.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libDuiLib.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		0C1A03CF2A8B494800026EBB /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		10F0E48D2A491AF80013A3B1 /* libDuiLib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDuiLib.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		10F0E49B2A491BB00013A3B1 /* StdAfx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StdAfx.cpp; path = ../../../DuiLib/StdAfx.cpp; sourceTree = "<group>"; };
 		10F0E49C2A491BB00013A3B1 /* UIlib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIlib.cpp; path = ../../../DuiLib/UIlib.cpp; sourceTree = "<group>"; };
 		10F0E49D2A491BB00013A3B1 /* StdAfx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StdAfx.h; path = ../../../DuiLib/StdAfx.h; sourceTree = "<group>"; };
@@ -565,6 +566,7 @@
 		10F0E4842A491AF80013A3B1 = {
 			isa = PBXGroup;
 			children = (
+				0C1A03CF2A8B494800026EBB /* Config.xcconfig */,
 				10F0E6852A492CA00013A3B1 /* PrefixHeader.pch */,
 				10F0E48F2A491AF80013A3B1 /* DuiLib */,
 				10F0E48E2A491AF80013A3B1 /* Products */,
@@ -575,7 +577,7 @@
 		10F0E48E2A491AF80013A3B1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				10F0E48D2A491AF80013A3B1 /* libDuiLib.dylib */,
+				10F0E48D2A491AF80013A3B1 /* libDuiLib.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1230,6 +1232,7 @@
 /* Begin XCBuildConfiguration section */
 		10F0E4962A491AF80013A3B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0C1A03CF2A8B494800026EBB /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1316,6 +1319,7 @@
 		};
 		10F0E4972A491AF80013A3B1 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0C1A03CF2A8B494800026EBB /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ANALYZER_NONNULL = YES;

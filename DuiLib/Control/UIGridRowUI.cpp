@@ -103,7 +103,7 @@ SIZE CGridRowUI::EstimateSize(SIZE szAvailable)
 	if(GetOwner())
 	{
 		CGridUI *pGrid = (CGridUI *)GetOwner();
-		sz.cy = pGrid->GetRowHeight(m_row);
+		sz.cy = pGrid->GetRowHeight(m_row, TRUE);
 		return sz;
 	}
 	return COptionLayoutUI::EstimateSize(szAvailable);

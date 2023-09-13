@@ -314,6 +314,7 @@ namespace DuiLib {
 
 		//²Á³ýµ±Ç°»­²¼¡£
 		virtual void Clear() = 0;
+		virtual void ClearAlpha(const RECT &rc, int alpha = 0) = 0;
 
 		virtual void SaveDC() = 0;
 		virtual void RestoreDC() = 0;

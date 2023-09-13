@@ -1,0 +1,18 @@
+//
+//  Config.xcconfig
+//  Test
+//
+//  Created by cst on 2023/8/15.
+//  Copyright © 2023 liqs99. All rights reserved.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+APP_NAME = DuiLib
+
+HEADER_SEARCH_PATHS = $(PROJECT_DIR)/../../DuiLib/
+
+LIBRARY_SEARCH_PATHS = ../../bin/ /opt/homebrew/Cellar/cairo/1.16.0_5/lib /opt/homebrew/lib
+
+CONFIGURATION_BUILD_DIR = $(BUILD_DIR)
