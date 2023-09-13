@@ -478,7 +478,7 @@ namespace DuiLib {
 		for (int i = 0; i < m_aSelItems.GetSize(); ++i)
 		{
 			//index = (int)m_aSelItems.GetAt(i);
-			index = *(int*)(m_aSelItems.GetAt(i));
+			index = static_cast<int>((UINT_PTR)m_aSelItems.GetAt(i));
 			if (min > index)
 				min = index;
 		}
@@ -490,12 +490,12 @@ namespace DuiLib {
 		if (m_aSelItems.GetSize() <= 0)
 			return -1;
 		//int max = (int)m_aSelItems.GetAt(0);
-		int max = *(int*)(m_aSelItems.GetAt(0));
+		int max = static_cast<int>((UINT_PTR)m_aSelItems.GetAt(0));
 		int index;
 		for (int i = 0; i < m_aSelItems.GetSize(); ++i)
 		{
 			//index = (int)m_aSelItems.GetAt(i);
-			index = *(int*)(m_aSelItems.GetAt(i));
+			index = static_cast<int>((UINT_PTR)m_aSelItems.GetAt(i));
 			if (max < index)
 				max = index;
 		}
@@ -622,7 +622,7 @@ namespace DuiLib {
 		}
 		else {
 			//return (int)m_aSelItems.GetAt(0);
-			return *(int*)(m_aSelItems.GetAt(0));
+			return static_cast<int>((UINT_PTR)m_aSelItems.GetAt(0));
 		}
 
 		return -1;
@@ -697,7 +697,7 @@ namespace DuiLib {
 		if(bOthers) {
 			for (int i = m_aSelItems.GetSize() - 1; i >= 0; --i) {
 				//int iSelIndex = (int)m_aSelItems.GetAt(i);
-				int iSelIndex = *(int*)(m_aSelItems.GetAt(i));
+				int iSelIndex = static_cast<int>((UINT_PTR)m_aSelItems.GetAt(i));
 				if(iSelIndex == iIndex) continue;
 				CControlUI* pControl = GetItemAt(iSelIndex);
 				if(pControl == NULL) continue;
@@ -744,7 +744,7 @@ namespace DuiLib {
 	{
 		for (int i = 0; i < m_aSelItems.GetSize(); ++i) {
 			//int iSelIndex = (int)m_aSelItems.GetAt(i);
-			int iSelIndex = *(int*)(m_aSelItems.GetAt(i));
+			int iSelIndex = static_cast<int>((UINT_PTR)m_aSelItems.GetAt(i));
 			CControlUI* pControl = GetItemAt(iSelIndex);
 			if(pControl == NULL) continue;
 			if(!pControl->IsEnabled()) continue;
@@ -768,14 +768,14 @@ namespace DuiLib {
 
 		if (nItem < 0) {
 			//return (int)m_aSelItems.GetAt(0);
-			return *(int*)(m_aSelItems.GetAt(0));
+			return static_cast<int>((UINT_PTR)m_aSelItems.GetAt(0));
 		}
 		int aIndex = m_aSelItems.Find(reinterpret_cast<LPVOID>(nItem));
 		if (aIndex < 0) return -1;
 		if (aIndex + 1 > m_aSelItems.GetSize() - 1)
 			return -1;
 		//return (int)m_aSelItems.GetAt(aIndex + 1);
-		return *(int*)(m_aSelItems.GetAt(aIndex + 1));
+		return static_cast<int>((UINT_PTR)m_aSelItems.GetAt(aIndex+1));
 	}
 
 	UINT CListUI::GetListType()
