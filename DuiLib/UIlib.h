@@ -229,6 +229,8 @@
 #include "Control/UITree.h"
 #include "Control/UITreeItem.h"
 
+#include "Control/UITracker.h"
+
 #include "Layout/UITableLayout.h"
 
 #include "Layout/UIChildWindow.h"

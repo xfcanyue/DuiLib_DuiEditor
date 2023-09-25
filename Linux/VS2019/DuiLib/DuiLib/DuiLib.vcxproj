@@ -125,6 +125,7 @@
     <ClInclude Include="..\..\..\..\DuiLib\Control\UISlider.h" />
     <ClInclude Include="..\..\..\..\DuiLib\Control\UITabCtrl.h" />
     <ClInclude Include="..\..\..\..\DuiLib\Control\UIText.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UITracker.h" />
     <ClInclude Include="..\..\..\..\DuiLib\Control\UITree.h" />
     <ClInclude Include="..\..\..\..\DuiLib\Control\UITreeItem.h" />
     <ClInclude Include="..\..\..\..\DuiLib\Control\UITreeView.h" />
@@ -264,6 +265,7 @@
     <ClCompile Include="..\..\..\..\DuiLib\Control\UISlider.cpp" />
     <ClCompile Include="..\..\..\..\DuiLib\Control\UITabCtrl.cpp" />
     <ClCompile Include="..\..\..\..\DuiLib\Control\UIText.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UITracker.cpp" />
     <ClCompile Include="..\..\..\..\DuiLib\Control\UITree.cpp" />
     <ClCompile Include="..\..\..\..\DuiLib\Control\UITreeItem.cpp" />
     <ClCompile Include="..\..\..\..\DuiLib\Control\UITreeView.cpp" />

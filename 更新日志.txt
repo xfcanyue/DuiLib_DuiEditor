@@ -379,4 +379,20 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
 4，部分调整。
 
 
+2023-09-15
+1, 增加xmake.lua
+ usage:
+ xmake f [options]
+ [options]
+ -p windows linux macosx
+ -a x64 x86
+ -k static shared
+ -m debug release
+ 
+ xmake build
 
+2, xmake project -k cmakelists  生成 CMakeLists.txt
+
+2023-09-25
+1，增加CTrackerUI，选取区域的工具。
+2，DuiStringT有个bug，strcat(dst,src)，若src不带结尾，整个世界都乱了。

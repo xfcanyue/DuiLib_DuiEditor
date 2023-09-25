@@ -126,5 +126,6 @@
 			<Label text="二维码" autocalcwidth="true" />
 			<QRCode qrversion="6" qrmark="0" text="1234512345678912345中文字符" encoding="utf8" width="150" height="150" bkcolor="0xFFFFFFFF" />
 		</HorizontalLayout>
+		<Tracker width="160" height="149" pos="587,130,747,279" float="true" />
 	</VerticalLayout>
 </Window>

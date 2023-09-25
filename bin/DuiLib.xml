@@ -979,6 +979,17 @@ INT类型(最小值，最大值)：
 		<Attribute name="text" default="" type="STRING" comment="条码内容" />
 	</BarCode>
 	
+	<Tracker parent="Container" comment="Tracker拾取工具" >
+		<Attribute name="name" default="" type="STRING" comment="控件名字" />
+		<Attribute name="inset" default="4,4,4,4" type="RECT" comment="容器的内边距,如(2,2,2,2)" />
+		<Attribute name="bordercolor" default="0xFF000000" type="DWORD" comment="边框颜色,如(0xFF000000)" />
+		<Attribute name="borderstyle" default="2" type="INT" comment="边框样式的设置,数值范围0-5" />		
+		<Attribute name="leftbordersize" default="1" type="INT" comment="左边边框大小，如(1)，设置该值大于0，则将忽略bordersize属性的设置" />
+		<Attribute name="topbordersize" default="1" type="INT" comment="顶部边框大小，如(1)，设置该值大于0，则将忽略bordersize属性的设置" />
+		<Attribute name="rightbordersize" default="1" type="INT" comment="右边边框大小，如(1)，设置该值大于0，则将忽略bordersize属性的设置" />
+		<Attribute name="bottombordersize" default="1" type="INT" comment="底部边框大小，如(1)，设置该值大于0，则将忽略bordersize属性的设置" />
+	</Tracker>
+	
 	<!-- 以下只给设计器使用 -->
 	<Font>
 		<Attribute name="id" default="" type="INT" comment="font=xx 字体编号" />

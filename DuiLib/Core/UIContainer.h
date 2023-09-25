@@ -122,7 +122,7 @@ namespace DuiLib {
 		virtual void ProcessScrollBar(RECT rc, int cxRequired, int cyRequired);
 	protected:
 		CStdPtrArray m_items;
-		RECT m_rcInset;
+		CDuiRect m_rcInset;
 		int m_iChildPadding;
 		UINT m_iChildAlign;
 		UINT m_iChildVAlign;

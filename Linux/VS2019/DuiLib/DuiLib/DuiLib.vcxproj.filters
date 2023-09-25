@@ -417,6 +417,7 @@
     <ClInclude Include="..\..\..\..\DuiLib\Control\UIComboEditWndGtk.h" />
     <ClInclude Include="..\..\..\..\DuiLib\Control\UIComboEditWndWin32.h" />
     <ClInclude Include="..\..\..\..\DuiLib\Render\UIRender_CairoWin32.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Control\UITracker.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\DuiLib\Control\IGridUI.cpp">
@@ -751,5 +752,6 @@
     <ClCompile Include="..\..\..\..\DuiLib\Control\UIComboEditWndGtk.cpp" />
     <ClCompile Include="..\..\..\..\DuiLib\Control\UIComboEditWndWin32.cpp" />
     <ClCompile Include="..\..\..\..\DuiLib\Render\UIRender_CairoWin32.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Control\UITracker.cpp" />
   </ItemGroup>
 </Project>

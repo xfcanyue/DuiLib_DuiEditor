@@ -260,13 +260,14 @@ namespace DuiLib
 #ifdef WIN32
 		return ::strupr(str); 
 #else
-		while (*str != '\0')
+		char *pTemp = str;
+		while (*pTemp != '\0')
 		{
-			if (*str >= 'a' && *str <= 'z') {
+			if (*pTemp >= 'a' && *pTemp <= 'z') {
 				//*src -= 32;
-				*str = static_cast<char>(*str - 32);
+				*pTemp = static_cast<char>(*pTemp - 32);
 			}
-			str++;
+			pTemp++;
 		}
 		return str;
 #endif
@@ -277,12 +278,13 @@ namespace DuiLib
 #ifdef WIN32
 		return ::strlwr(str);
 #else
-		while (*str != '\0')
+		char *pTemp = str;
+		while (*pTemp != '\0')
 		{
-			if (*str >= 'A' && *str <= 'Z') {
-				*str = static_cast<char>(*str + 32);
+			if (*pTemp >= 'A' && *pTemp <= 'Z') {
+				*pTemp = static_cast<char>(*pTemp + 32);
 			}
-			str++;
+			pTemp++;
 		}
 		return str;
 #endif
@@ -618,12 +620,13 @@ namespace DuiLib
 #ifdef WIN32
 		return ::wcsupr(str); 
 #else
-		while (*str != '\0')
+		wchar_t *pTemp = str;
+		while (*pTemp != '\0')
 		{
-			if (*str >= 'a' && *str <= 'z') {
-				*str = static_cast<wchar_t>(*str - 32);
+			if (*pTemp >= 'a' && *pTemp <= 'z') {
+				*pTemp = static_cast<wchar_t>(*pTemp - 32);
 			}
-			str++;
+			pTemp++;
 		}
 		return str;
 #endif
@@ -634,12 +637,13 @@ namespace DuiLib
 #ifdef WIN32
 		return ::wcslwr(str);
 #else
-		while (*str != '\0')
+		wchar_t *pTemp = str;
+		while (*pTemp != '\0')
 		{
-			if (*str >= 'A' && *str <= 'Z') {
-				*str = static_cast<wchar_t>(*str + 32);
+			if (*pTemp >= 'A' && *pTemp <= 'Z') {
+				*pTemp = static_cast<wchar_t>(*pTemp + 32);
 			}
-			str++;
+			pTemp++;
 		}
 		return str;
 #endif

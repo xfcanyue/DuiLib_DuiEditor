@@ -921,6 +921,13 @@ void CUIPropertyGridCtrl::InsertDuiLibProperty(xml_node TreeNode, xml_node attrN
 			if(strArray.GetSize() > 2) nRight = _tstoi(strArray[2]);
 			if(strArray.GetSize() > 3) nBottom = _tstoi(strArray[3]);
 		}
+		else
+		{
+			nLeft = nDefLeft;
+			nTop = nDefTop;
+			nRight = nDefRight;
+			nBottom = nDefBottom;
+		}
 
 		pProperty = new CMFCPropertyGridProperty(_T("left"), _variant_t((long)nLeft, VT_I4), XML2T(attrComment.value()));
 		pProperty->EnableSpinControl(TRUE, 0, 9999);

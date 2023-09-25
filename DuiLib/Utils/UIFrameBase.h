@@ -59,6 +59,7 @@ public:
 	virtual void OnNotifyItemActivate(TNotifyUI& msg) {}
 	virtual void OnNotifyValueChanged(TNotifyUI& msg) {}
 	virtual void OnNotifySelectChanged(TNotifyUI& msg) {}  
+	virtual void OnNotifySizeChanged(TNotifyUI& msg) {}  
 
 	virtual void OnNotifyAcceptFile(TNotifyUI& msg) {}
 

@@ -19,8 +19,6 @@ inline LPTSTR CharNext(LPCTSTR lpsz)
 }
 #endif
 
-#define USE_DUISTRING_TEMPLATE
-
 namespace DuiLib
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -117,8 +115,6 @@ namespace DuiLib
 		static void TrimRight(wchar_t *&pstr);
 	};
 
-
-#ifdef USE_DUISTRING_TEMPLATE
 	template< typename uichar, class DuiTraits, DuiStringEncoding StringEncoding > class DuiStringT;
 	typedef DuiStringT<wchar_t, DuiStringTraitsW, duistring_encoding_unicode>	CDuiStringW;
 	typedef DuiStringT<char, DuiStringTraitsA, duistring_encoding_ansi>			CDuiStringA;
@@ -131,38 +127,17 @@ namespace DuiLib
 	typedef CDuiStringA	CDuiString;
 #endif
 
-#else //USE_DUISTRING_TEMPLATE
-
-#ifdef _UNICODE
-#define DuiTraits DuiStringTraitsW
-#define uichar wchar_t
-#define StringEncoding duistring_encoding_unicode
-#else
-#define DuiTraits DuiStringTraitsA
-#define uichar char
-#define StringEncoding duistring_encoding_ansi
-#endif
-
-class DuiStringT;
-typedef	DuiStringT CDuiString;
-#endif //USE_DUISTRING_TEMPLATE
-
 	/////////////////////////////////////////////////////////////////////////////////////
 	// DuiStringTÄ£°åÀà
 	//
-#ifdef USE_DUISTRING_TEMPLATE
 	template< typename uichar, class DuiTraits, DuiStringEncoding StringEncoding >
 	class DuiStringT
-#else
-	class UILIB_API DuiStringT
-#endif
 	{
 	public:
 		DuiStringT()									{ m_pstr = DuiTraits::GetNullString();						}
 		DuiStringT(const uichar ch)						{ m_pstr = DuiTraits::GetNullString(); Assign(&ch, 1);		}
 		DuiStringT(const uichar *lpsz, int nLen = -1)	{ m_pstr = DuiTraits::GetNullString(); Assign(lpsz, nLen);	}
 
-#ifdef USE_DUISTRING_TEMPLATE
 		DuiStringT(const CDuiStringA &str)
 		{
 			m_pstr = DuiTraits::GetNullString();
@@ -180,13 +155,6 @@ typedef	DuiStringT CDuiString;
 			m_pstr = DuiTraits::GetNullString();
 			DuiTraits::assign_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), str.GetEncoding(), TRUE);
 		}
-#else
-		DuiStringT(const DuiStringT& src)
-		{
-			m_pstr = DuiTraits::GetNullString();
-			DuiTraits::assign_string(m_pstr, StringEncoding, src.toString(), src.GetLength(), src.GetEncoding(), TRUE);
-		}
-#endif
 
 		DuiStringT(int int_to_string) 
 		{ 
@@ -245,7 +213,6 @@ typedef	DuiStringT CDuiString;
 			DuiTraits::assign_string(m_pstr, StringEncoding, pstr, cchMax, StringEncoding, FALSE);
 		}
 
-#ifdef USE_DUISTRING_TEMPLATE
 		void Assign(const CDuiStringA &str)
 		{
 			DuiTraits::assign_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), str.GetEncoding(), TRUE);
@@ -260,16 +227,11 @@ typedef	DuiStringT CDuiString;
 		{
 			DuiTraits::assign_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), str.GetEncoding(), TRUE);
 		}
-#else
-		void Assign(const DuiStringT &str)
-		{
-			DuiTraits::assign_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), str.GetEncoding(), TRUE);
-		}
-#endif
 
 		void Append(uichar ch)
 		{
-			DuiTraits::append_string(m_pstr, StringEncoding, &ch, 1, StringEncoding);
+			uichar str[] = { ch, '\0' };
+			Append(str);
 		}
 
 		void Append(const uichar *pstr, int cchMax=-1) 
@@ -282,7 +244,6 @@ typedef	DuiStringT CDuiString;
 			DuiTraits::append_string(m_pstr, StringEncoding, pstr, srclen, StringEncoding); 
 		}
 
-#ifdef USE_DUISTRING_TEMPLATE
 		void Append(const CDuiStringA &str)
 		{
 			DuiTraits::append_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), str.GetEncoding());
@@ -297,12 +258,6 @@ typedef	DuiStringT CDuiString;
 		{
 			DuiTraits::append_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), str.GetEncoding());
 		}
-#else
-		void Append(const DuiStringT &str)
-		{
-			DuiTraits::append_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), str.GetEncoding());
-		}
-#endif
 
 		const uichar *GetData() const 
 		{ 
@@ -339,35 +294,23 @@ typedef	DuiStringT CDuiString;
 			DuiTraits::assign_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), StringEncoding, FALSE);
 		}
 
-		const DuiStringT& operator=(const uichar ch)		{ Assign(ch);	return *this; }
-		const DuiStringT& operator=(const uichar *pstr)		{ Assign(pstr); return *this; }
-#ifdef USE_DUISTRING_TEMPLATE
+		const DuiStringT& operator=(const uichar ch)			{ Assign(ch);		return *this; }
+		const DuiStringT& operator=(const uichar *pstr)			{ Assign(pstr);		return *this; }
 		const DuiStringT& operator=(const CDuiStringA& src)		{ Assign(src);		return *this; }
 		const DuiStringT& operator=(const CDuiStringUtf8& src)	{ Assign(src);		return *this; }
 		const DuiStringT& operator=(const CDuiStringW& src)		{ Assign(src);		return *this; }
-#else
-		const DuiStringT& operator=(const DuiStringT& src)	{ Assign(src);	return *this; }
-#endif
 
-		const DuiStringT& operator+=(const uichar ch)		{ Append(ch);	return *this; }
-		const DuiStringT& operator+=(const uichar *pstr)	{ Append(pstr);	return *this; }
-#ifdef USE_DUISTRING_TEMPLATE
-		const DuiStringT& operator+=(const CDuiStringA& src)	{ Append(src);					return *this; }
-		const DuiStringT& operator+=(const CDuiStringUtf8& src) { Append(src);					return *this; }
-		const DuiStringT& operator+=(const CDuiStringW& src)	{ Append(src);					return *this; }
-#else
-		const DuiStringT& operator+=(const DuiStringT& src) { Append(src);	return *this; }
-#endif
+		const DuiStringT& operator+=(const uichar ch)			{ Append(ch);		return *this; }
+		const DuiStringT& operator+=(const uichar *pstr)		{ Append(pstr);		return *this; }
+		const DuiStringT& operator+=(const CDuiStringA& src)	{ Append(src);		return *this; }
+		const DuiStringT& operator+=(const CDuiStringUtf8& src) { Append(src);		return *this; }
+		const DuiStringT& operator+=(const CDuiStringW& src)	{ Append(src);		return *this; }
 
 		DuiStringT operator+(const uichar ch)		const	{ DuiStringT sTemp = *this; sTemp.Append(ch);		return sTemp; }
 		DuiStringT operator+(const uichar *lpStr)	const	{ DuiStringT sTemp = *this; sTemp.Append(lpStr);	return sTemp; }
-#ifdef USE_DUISTRING_TEMPLATE
 		DuiStringT operator+(const CDuiStringA& src) const		{ DuiStringT sTemp = *this; sTemp.Append(src);	return sTemp; }
 		DuiStringT operator+(const CDuiStringUtf8& src) const	{ DuiStringT sTemp = *this; sTemp.Append(src);	return sTemp; }
 		DuiStringT operator+(const CDuiStringW& src) const		{ DuiStringT sTemp = *this; sTemp.Append(src);	return sTemp; }
-#else
-		DuiStringT operator+(const DuiStringT& src) const	{ DuiStringT sTemp = *this; sTemp.Append(src);		return sTemp; }
-#endif
 
 		bool operator == (const uichar *str) const { return (Compare(str) == 0); };
 		bool operator != (const uichar *str) const { return (Compare(str) != 0); };
@@ -504,7 +447,7 @@ typedef	DuiStringT CDuiString;
 
 		int __cdecl FormatV(const uichar *pstrFormat, va_list Args)
 		{
-			DuiTraits::formatV(m_pstr, pstrFormat, Args);
+			return DuiTraits::formatV(m_pstr, pstrFormat, Args);
 		}
 
 		int __cdecl SmallFormat(const uichar *pstrFormat, ...)
@@ -537,11 +480,10 @@ typedef	DuiStringT CDuiString;
 		double toDouble(double def = 0) const	{ return DuiTraits::ui_strtod(m_pstr); }
 		float toFloat(float def = 0) const		{ return DuiTraits::ui_atof(m_pstr); }
 
-#ifdef USE_DUISTRING_TEMPLATE
 		CDuiStringA convert_to_ansi() const		{ CDuiStringA s;	s=(*this);		return s; }
 		CDuiStringUtf8 convert_to_utf8() const	{ CDuiStringUtf8 s;	s=(*this);		return s; }
 		CDuiStringW convert_to_unicode() const	{ CDuiStringW s;	s=(*this);		return s; }
-#endif
+
 		DuiStringEncoding GetEncoding() const { return StringEncoding; }
 	protected:
 		uichar *m_pstr;

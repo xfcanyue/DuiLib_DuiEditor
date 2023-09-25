@@ -588,7 +588,7 @@ namespace DuiLib {
 		//////////////////////////////////////////////////////////////////////////
 		//边框
 		int m_nBorderSize;				//边框大小
-		RECT m_rcBorderSize;			//边框大小, 分别设置左上右下边框大小
+		CDuiRect m_rcBorderSize;			//边框大小, 分别设置左上右下边框大小
 		SIZE m_cxyBorderRound;			//边框圆角
 		int m_nBorderStyle;				//边框样式
 		DWORD m_dwBorderColor;			//边框颜色, 普通状态

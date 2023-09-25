@@ -46,7 +46,7 @@ namespace DuiLib {
 		::ZeroMemory(&m_rcPadding, sizeof(RECT));
 		//::ZeroMemory(&m_rcItem, sizeof(RECT));
 		//::ZeroMemory(&m_rcPaint, sizeof(RECT));
-		::ZeroMemory(&m_rcBorderSize,sizeof(RECT));
+		//::ZeroMemory(&m_rcBorderSize,sizeof(RECT));
 		m_piFloatPercent.left = m_piFloatPercent.top = m_piFloatPercent.right = m_piFloatPercent.bottom = 0.0f;
 
 		::ZeroMemory(&m_ptFloatPosition,sizeof(POINT));

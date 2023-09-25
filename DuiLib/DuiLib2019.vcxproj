@@ -1586,6 +1586,7 @@
     <ClCompile Include="Control\UISlider.cpp" />
     <ClCompile Include="Control\UITabCtrl.cpp" />
     <ClCompile Include="Control\UIText.cpp" />
+    <ClCompile Include="Control\UITracker.cpp" />
     <ClCompile Include="Control\UITree.cpp" />
     <ClCompile Include="Control\UITreeItem.cpp" />
     <ClCompile Include="Control\UITreeView.cpp" />
@@ -1750,6 +1751,7 @@
     <ClInclude Include="Control\UISlider.h" />
     <ClInclude Include="Control\UITabCtrl.h" />
     <ClInclude Include="Control\UIText.h" />
+    <ClInclude Include="Control\UITracker.h" />
     <ClInclude Include="Control\UITree.h" />
     <ClInclude Include="Control\UITreeItem.h" />
     <ClInclude Include="Control\UITreeView.h" />

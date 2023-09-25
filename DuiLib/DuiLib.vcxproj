@@ -1014,6 +1014,7 @@
     <ClCompile Include="Control\UIAnimation.cpp" />
     <ClCompile Include="Control\UIBarCode.cpp" />
     <ClCompile Include="Control\UIButton.cpp" />
+    <ClCompile Include="Control\UITracker.cpp" />
     <ClCompile Include="Control\UIColorPalette.cpp" />
     <ClCompile Include="Control\UICombo.cpp" />
     <ClCompile Include="Control\UIComboEditWndGtk.cpp" />
@@ -1167,6 +1168,7 @@
     <ClInclude Include="Control\UIAnimation.h" />
     <ClInclude Include="Control\UIBarCode.h" />
     <ClInclude Include="Control\UIButton.h" />
+    <ClInclude Include="Control\UITracker.h" />
     <ClInclude Include="Control\UIColorPalette.h" />
     <ClInclude Include="Control\UICombo.h" />
     <ClInclude Include="Control\UIComboEditWndGtk.h" />

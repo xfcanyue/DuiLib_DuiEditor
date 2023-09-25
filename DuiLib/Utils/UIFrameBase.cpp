@@ -58,6 +58,7 @@ DUI_BEGIN_MESSAGE_MAP(CUIFrmBase,CNotifyPump)
 	DUI_ON_MSGTYPE(DUI_MSGTYPE_ITEMACTIVATE,	CUIFrmBase::OnNotifyItemActivate)	//(_T("itemactivate"))
 	DUI_ON_MSGTYPE(DUI_MSGTYPE_VALUECHANGED,	CUIFrmBase::OnNotifyValueChanged)	//(_T("valuechanged"))
 	DUI_ON_MSGTYPE(DUI_MSGTYPE_SELECTCHANGED,	CUIFrmBase::OnNotifySelectChanged)	//(_T("selectchanged"))
+	DUI_ON_MSGTYPE(DUI_MSGTYPE_SIZECHANGED,		CUIFrmBase::OnNotifySizeChanged)	//(_T("sizechanged"))
 
 	DUI_ON_MSGTYPE(DUI_MSGTYPE_ACCEPTFILE, CUIFrmBase::OnNotifyAcceptFile)	//(_T("selectchanged"))
 

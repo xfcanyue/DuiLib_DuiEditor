@@ -160,6 +160,9 @@ namespace DuiLib
 #define DUI_MSGTYPE_STARTSELCHANGE			(_T("startselchange"))		//开始选择
 #define DUI_MSGTYPE_ENDSELCHANGE			(_T("endselchange"))		//结束选择
 
+
+#define	 DUI_MSGTYPE_SIZECHANGED			(_T("sizechanged"))
+
 #define DUI_MSGTYPE_GRID_STARTEDIT          (_T("gridstartedit"))		//用于 MFCGridControl
 #define DUI_MSGTYPE_GRID_ENDEDIT			(_T("gridendedit"))			//用于 MFCGridControl
 #define DUI_MSGTYPE_GRID_STARTSELCHANGE		(_T("gridstartselchange"))	//用于 MFCGridControl
@@ -407,6 +410,8 @@ protected:                                                                \
 
 #define DUI_CTR_QRCODE					(_T("QRCode"))
 #define DUI_CTR_BARCODE					(_T("BarCode"))
+
+#define  DUI_CTR_TRACKER                (_T("Tracker"))
 
 // #define DUI_CTR_GRIDLIST					(_T("GridList"))
 // #define DUI_CTR_GRIDLISTHEADER				(_T("GridListHeader"))

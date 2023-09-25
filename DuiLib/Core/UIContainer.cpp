@@ -19,7 +19,7 @@ namespace DuiLib
 		m_pHorizontalScrollBar(NULL),
 		m_nScrollStepSize(0)
 	{
-		::ZeroMemory(&m_rcInset, sizeof(m_rcInset));
+		//::ZeroMemory(&m_rcInset, sizeof(m_rcInset));
 	}
 
 	CContainerUI::~CContainerUI()

@@ -12,16 +12,15 @@ void UILIB_API DUI__Trace(LPCTSTR pstrFormat, ...)
 	TCHAR szBuffer[2048] = {0};
     va_list args;
     va_start(args, pstrFormat);
-	_vsntprintf(szBuffer, 2048, pstrFormat, args); 
+	_vsntprintf(szBuffer, 2047, pstrFormat, args); 
     va_end(args);
     
-	CDuiString strMsg = szBuffer;
-	strMsg += _T("\n");
+	_tcscat(szBuffer, _T("\n"));
 #ifdef DUILIB_WIN32
-	OutputDebugString(strMsg.GetData());
+	OutputDebugString(szBuffer);
 #else
 	UISTRING_CONVERSION;
-	g_print(UIT2UTF8(strMsg));
+	g_print(UIT2UTF8(szBuffer));
 #endif //#ifdef WIN32
 #endif //#ifdef _DEBUG
 }
