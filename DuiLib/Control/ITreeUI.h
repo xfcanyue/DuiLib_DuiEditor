@@ -12,10 +12,11 @@ public:
 	{
 		m_bSelected = false;
 		m_bCheckBoxCheck = false;
-		m_bExpand = true;
+		m_bExpand = false;
 		m_tag = 0;
 		m_pParent = NULL;
 		m_childs.SetSaveIndexMap(true);
+		m_bHasChildren = false;
 	}
 
 	CDuiString GetText() const { return m_sText; }
@@ -47,10 +48,14 @@ public:
 	void Expand(bool bExpand=true) { m_bExpand = bExpand; }
 	bool IsExpand() const { return m_bExpand; }
 
+	void SetFouceHasChildren(bool bHas) { m_bHasChildren = bHas; }
+	bool IsFouceHasChildren() const { return m_bHasChildren; }
 protected:
 	void SetTag(UINT_PTR tag) { m_tag = tag; }
+	void SetUserData(LPCTSTR sUserData) { m_sUserData = sUserData; }
 public:
 	UINT_PTR GetTag() const { return m_tag; }
+	CDuiString GetUserData() const { return m_sUserData; }
 
 	int GetLevel()
 	{
@@ -65,18 +70,21 @@ public:
 	}
 
 	TNodeData *GetParent() const { return m_pParent; }
-	BOOL NodeHasChildren() const { return m_childs.GetSize() > 0; }
+	BOOL NodeHasChildren() const { return m_childs.GetSize() > 0 || m_bHasChildren; }
 	TNodeData *GetChild(int n) const { return (TNodeData *)m_childs.GetAt(n); }
 
 	bool m_bSelected;
 	bool m_bCheckBoxCheck;
 	bool m_bExpand;
 	UINT_PTR m_tag;
+	CDuiString m_sUserData;
 	CDuiString m_sText;
 	CDuiString m_sImageIcon;
 
 	TNodeData *m_pParent;
 	CStdPtrArray m_childs;
+
+	bool m_bHasChildren; //强制设定有子节点
 };
 
 #define TNODE_ROOT                ((TNodeData *)(ULONG_PTR)-0x10000)
@@ -117,10 +125,15 @@ public:
 	virtual void Refresh(bool bNeedUpdate=false)		= 0;
 	virtual void SendNotify(LPCTSTR pstrMessage, WPARAM wParam = 0, LPARAM lParam = 0, bool bAsync = false) = 0;
 
+	virtual void OnDeleteNode(TNodeData *pNodeData) {}
+	virtual void OnExpandItem(TNodeData *pNodeData) = 0;
+	virtual void OnCollapseItem(TNodeData *pNodeData) = 0;
+
 	TNodeData *GetFocusNode() const { return m_pFocusNode; }
 	void SetFocusNode(TNodeData *pNode) { m_pFocusNode = pNode; }
 
 	void SetNodeTag(TNodeData *pNode, UINT_PTR tag);
+	void SetNodeUserData(TNodeData *pNode, LPCTSTR sUserData);
 	TNodeData *FindNodeByTag(UINT tag);
 
 	//插入节点
@@ -129,6 +142,9 @@ public:
 
 	//删除节点，连子项一起删除的。
 	void DeleteNode(TNodeData *pNode);
+
+	//删除所有子节点
+	void DeleteAllChildNode(TNodeData *pNodeParentData);
 
 	//删除所有节点
 	void DeleteAllNode();
@@ -150,6 +166,9 @@ public:
 
 	//获得pNode的上一个兄弟
 	TNodeData *GetNextPrevNode(TNodeData *pNode);
+
+	void Expand(TNodeData *pNode, BOOL bExpand);
+	bool IsExpand(TNodeData *pNode) const;
 
 	void ClearSeletedNodes();
 	void SelectNode(TNodeData *pNode, bool bSeleted=true);

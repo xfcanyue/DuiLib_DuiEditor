@@ -128,7 +128,9 @@ namespace DuiLib
 						for( int i = 0; i < aOptionGroup->GetSize(); i++ ) 
 						{
 							CControlUI* pControlx = static_cast<CControlUI*>(aOptionGroup->GetAt(i));
-							if(pControlx->GetInterface(DUI_CTR_OPTION))
+							if(pControlx->GetInterface(DUI_CTR_OPTION_LAYOUT) ||
+								pControlx->GetInterface(DUI_CTR_OPTION_HLAYOUT) ||
+								pControlx->GetInterface(DUI_CTR_OPTION_VLAYOUT))
 							{
 								TemplateOptionUI<T> *pControl = static_cast<TemplateOptionUI<T>*>(aOptionGroup->GetAt(i));
 								if( pControl != this ) {

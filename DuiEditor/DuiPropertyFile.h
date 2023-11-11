@@ -78,6 +78,7 @@ public:
 
 	xml_node FindControl(LPCTSTR className); //查找控件的定义
 	xml_node FindAttribute(LPCTSTR className, LPCTSTR attrName); //查找控件定义的属性
+	xml_node FindAttribute(xml_node node, LPCTSTR attrName); //查找控件定义的属性
 
 	//获得控件的图标序号
 	static UINT GetControlIconIndex(xml_node nodeDoc);

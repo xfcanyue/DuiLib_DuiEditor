@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<Window size="1000,600" sizebox="0,0,4,4" caption="0,0,0,80" roundcorner="4,4" defaultfontcolor="0xFF4A4A4A" showshadow="true" shadowcorner="8,8,8,8" shadowsize="5" shadowcolor="0xFF696969" renderengine="gdiplus">
+	<Include source="config.xml" />
+	<VerticalLayout inset="1,1,1,1" bkcolor="0xFFFFFFFF" bordercolor="0xFF808080" bordersize="1">
+		<HorizontalLayout height="30" inset="0,0,5,0" bkimage="images\topbg.png" foreimage="images\toplight.png">
+			<HorizontalLayout inset="10,0,0,0" childvalign="vcenter" bkimage="images\topline.png">
+				<Label text="设备信息" font="0" textcolor="0xFFFFFFFF" resourceid="1" />
+			</HorizontalLayout>
+			<HorizontalLayout inset="0,0,5,0" childpadding="10" childalign="right" childvalign="vcenter" autocalcwidth="true">
+				<FadeButton name="windowminbtn" width="20" height="20" resourceid="3" tooltip="最小化" style="style_windowminbtn" />
+				<FadeButton name="windowrestorebtn" width="20" height="20" resourceid="5" tooltip="恢复" style="style_windowrestorebtn" />
+				<FadeButton name="windowmaxbtn" width="20" height="20" resourceid="6" tooltip="最大化" style="style_windowmaxbtn" />
+				<FadeButton name="windowclosebtn" width="20" height="20" resourceid="4" tooltip="关闭" style="style_windowclosebtn" />
+			</HorizontalLayout>
+		</HorizontalLayout>
+		<VerticalLayout>
+			<VerticalLayout>
+				<HorizontalLayout>
+					<HorizontalLayout sepwidth="8" sepimm="true" inset="0,0,2,0" widthpercent="45">
+						<TreeDevice custombasedfrom="Tree" name="tree_device_info" folderattr="width=&quot;25&quot; height=&quot;25&quot; selectedimage=&quot;file='images\common\shousuo.svg' width='25' height='25' &quot; normalimage=&quot;file='images\common\zhankai.svg' width='25' height='25' &quot; " checkboxattr="visible=&quot;false&quot; " textattr="selectedbkcolor=&quot;0xFFD5E4F2&quot; selectedbordercolor=&quot;0xFFA0A0A4&quot; hotbkcolor=&quot;0xFFE9E9FF&quot; pushedbkcolor=&quot;0xFFD5E4F2&quot; textpadding=&quot;5,0,5,0&quot; hotbordercolor=&quot;0xFFB4B4B4&quot; bordersize=&quot;1&quot; " bordercolor="0xFFC0C0C0" bordersize="1" iconattr="width=&quot;16&quot; height=&quot;16&quot; " />
+					</HorizontalLayout>
+					<Grid name="grid_info" fitcolumnbytext="true" style="style_grid_view">
+						<GridHeader>
+							<GridRow>
+								<GridCell width="30" />
+								<GridCell width="200" text="参数" resourceid="7" />
+								<GridCell text="值" resourceid="8" />
+							</GridRow>
+						</GridHeader>
+					</Grid>
+				</HorizontalLayout>
+			</VerticalLayout>
+		</VerticalLayout>
+	</VerticalLayout>
+</Window>

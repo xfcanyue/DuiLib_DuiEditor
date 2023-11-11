@@ -62,10 +62,9 @@ namespace DuiLib
 		case BTN_FOLDER:
 			if(pItemUI->GetNodeData()->NodeHasChildren())
 			{
-				pItemUI->GetNodeData()->Expand(bSelected);
+				pTree->Expand(pItemUI->GetNodeData(), bSelected);
 				pTree->NeedUpdate();
 			}
-			else pItemUI->GetNodeData()->Expand(true);
 			break;
 		case BTN_CHECKBOX:
 			pItemUI->GetNodeData()->SetCheckBoxCheck(bSelected);
@@ -157,7 +156,8 @@ namespace DuiLib
 			//if( ::PtInRect(&m_rcItem, event.ptMouse) && IsEnabled() )
 			if( m_rcItem.PtInRect(event.ptMouse) && IsEnabled() )
 			{
-				pItemUI->GetNodeData()->Expand(!pItemUI->GetNodeData()->IsExpand());
+				bool bExpand = pTree->IsExpand(pItemUI->GetNodeData());
+				pTree->Expand(pItemUI->GetNodeData(), !bExpand);
 				pTree->NeedUpdate();
 			}
 			return;
@@ -165,6 +165,107 @@ namespace DuiLib
 
 		COptionUI::DoEvent(event);
 	}
+
+// 	void CTreeInnerCheckBoxUI::PaintStatusImage(UIRender *pRender)
+// 	{
+// 		if(m_type != BTN_FOLDER) 
+// 			return CCheckBoxUI::PaintStatusImage(pRender);
+// 
+// 		if(!m_pOwner) return;
+// 		CTreeItemUI *pItemUI = (CTreeItemUI *)GetOwner();
+// 		CTreeUI *pTree = (CTreeUI *)pItemUI->GetOwner();
+// 		if(!pItemUI || !pTree || !pItemUI->GetNodeData())
+// 			return;
+// 
+// 		if(!pItemUI->GetNodeData()->NodeHasChildren())
+// 			return;
+// 
+// 		CCheckBoxUI::PaintStatusImage(pRender);
+// 	}
+
+	void CTreeInnerCheckBoxUI::PaintBkColor(UIRender *pRender)
+	{
+		if(!m_pOwner) return;
+		CTreeItemUI *pItemUI = (CTreeItemUI *)GetOwner();
+		CTreeUI *pTree = (CTreeUI *)pItemUI->GetOwner();
+		if(!pItemUI || !pTree || !pItemUI->GetNodeData())
+			return;
+		if(!pTree->OnPaintItemBkColor(pRender, this))
+			return CCheckBoxUI::PaintBkColor(pRender);
+	}
+
+	void CTreeInnerCheckBoxUI::PaintBkImage(UIRender *pRender)
+	{
+		if(!m_pOwner) return;
+		CTreeItemUI *pItemUI = (CTreeItemUI *)GetOwner();
+		CTreeUI *pTree = (CTreeUI *)pItemUI->GetOwner();
+		if(!pItemUI || !pTree || !pItemUI->GetNodeData())
+			return;
+		if(!pTree->OnPaintItemBkImage(pRender, this))
+			return CCheckBoxUI::PaintBkImage(pRender);
+	}
+
+	void CTreeInnerCheckBoxUI::PaintStatusImage(UIRender *pRender)
+	{
+		if(!m_pOwner) return;
+		CTreeItemUI *pItemUI = (CTreeItemUI *)GetOwner();
+		CTreeUI *pTree = (CTreeUI *)pItemUI->GetOwner();
+		if(!pItemUI || !pTree || !pItemUI->GetNodeData())
+			return;
+
+		if(m_type == BTN_FOLDER && !pItemUI->GetNodeData()->NodeHasChildren()) 
+		{
+			return;
+		}
+
+		if(!pTree->OnPaintItemStatusImage(pRender, this))
+			return CCheckBoxUI::PaintStatusImage(pRender);
+	}
+
+	void CTreeInnerCheckBoxUI::PaintForeColor(UIRender *pRender)
+	{
+		if(!m_pOwner) return;
+		CTreeItemUI *pItemUI = (CTreeItemUI *)GetOwner();
+		CTreeUI *pTree = (CTreeUI *)pItemUI->GetOwner();
+		if(!pItemUI || !pTree || !pItemUI->GetNodeData())
+			return;
+		if(!pTree->OnPaintItemForeColor(pRender, this))
+			return CCheckBoxUI::PaintForeColor(pRender);
+	}
+
+	void CTreeInnerCheckBoxUI::PaintForeImage(UIRender *pRender)
+	{
+		if(!m_pOwner) return;
+		CTreeItemUI *pItemUI = (CTreeItemUI *)GetOwner();
+		CTreeUI *pTree = (CTreeUI *)pItemUI->GetOwner();
+		if(!pItemUI || !pTree || !pItemUI->GetNodeData())
+			return;
+		if(!pTree->OnPaintItemForeImage(pRender, this))
+			return CCheckBoxUI::PaintForeImage(pRender);
+	}
+
+	void CTreeInnerCheckBoxUI::PaintText(UIRender *pRender)
+	{
+		if(!m_pOwner) return;
+		CTreeItemUI *pItemUI = (CTreeItemUI *)GetOwner();
+		CTreeUI *pTree = (CTreeUI *)pItemUI->GetOwner();
+		if(!pItemUI || !pTree || !pItemUI->GetNodeData())
+			return;
+		if(!pTree->OnPaintItemText(pRender, this))
+			return CCheckBoxUI::PaintText(pRender);
+	}
+
+	void CTreeInnerCheckBoxUI::PaintBorder(UIRender *pRender)
+	{
+		if(!m_pOwner) return;
+		CTreeItemUI *pItemUI = (CTreeItemUI *)GetOwner();
+		CTreeUI *pTree = (CTreeUI *)pItemUI->GetOwner();
+		if(!pItemUI || !pTree || !pItemUI->GetNodeData())
+			return;
+		if(!pTree->OnPaintItemBorder(pRender, this))
+			return CCheckBoxUI::PaintBorder(pRender);
+	}
+
 	//////////////////////////////////////////////////////////////////////////
 	IMPLEMENT_DUICONTROL(CTreeItemUI)
 	CTreeItemUI::CTreeItemUI()
@@ -299,7 +400,8 @@ namespace DuiLib
 		{
 			if( IsEnabled() ) 
 			{
-				m_pNodeData->Expand(!m_pNodeData->IsExpand());
+				bool bExpand = pTree->IsExpand(m_pNodeData);
+				pTree->Expand(m_pNodeData, !bExpand);
 				GetOwner()->Refresh(true);
 				m_pManager->SendNotify(pTree, DUI_MSGTYPE_DBCLICK, (WPARAM)this);			
 			}

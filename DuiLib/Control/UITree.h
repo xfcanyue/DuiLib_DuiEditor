@@ -28,7 +28,7 @@ public:
 	virtual void EndDown() override;
 
 	void SetCxNeeded(int cxNeeded) { m_nCxNeeded = cxNeeded; }
-	int GetCxNeeded() const { return m_nCxNeeded; }
+	int GetCxNeeded() const { return -1;}//m_nCxNeeded; } //先注释掉，需要处理dpi缩放产生的死循环问题。
 
 	void SetCyNeeded(int cyNeeded) { m_nCyNeeded = cyNeeded; }
 	int GetCyNeeded() const { return m_nCyNeeded; }
@@ -52,6 +52,17 @@ public:
 
 	virtual void Refresh(bool bNeedUpdate = false) override;
 	virtual void SendNotify(LPCTSTR pstrMessage, WPARAM wParam = 0, LPARAM lParam = 0, bool bAsync = false) override;
+	virtual void OnDeleteNode(TNodeData *pNodeData) override;
+	virtual void OnExpandItem(TNodeData *pNodeData) override;
+	virtual void OnCollapseItem(TNodeData *pNodeData) override;
+
+	virtual bool OnPaintItemBkColor(UIRender *pRender, CControlUI *pItem);
+	virtual bool OnPaintItemBkImage(UIRender *pRender, CControlUI *pItem);
+	virtual bool OnPaintItemStatusImage(UIRender *pRender, CControlUI *pItem);
+	virtual bool OnPaintItemForeColor(UIRender *pRender, CControlUI *pItem);
+	virtual bool OnPaintItemForeImage(UIRender *pRender, CControlUI *pItem);
+	virtual bool OnPaintItemText(UIRender *pRender, CControlUI *pItem);
+	virtual bool OnPaintItemBorder(UIRender *pRender, CControlUI *pItem);
 public:
 	virtual void DoInit() override;
 	virtual void DoEvent(TEventUI& event) override;

@@ -16,7 +16,7 @@
 	"gdk-pixbuf/gdk-pixbuf.h"
 	"gdk/gdk.h"
 
-1688302806 /home/test/Desktop/DuiLib/DuiLib/UIlib.h
+1694854079 /home/test/Desktop/DuiLib/DuiLib/UIlib.h
 	"compat.h"
 	<windows.h>
 	<windowsx.h>
@@ -117,6 +117,7 @@
 	"Control/ITreeUI.h"
 	"Control/UITree.h"
 	"Control/UITreeItem.h"
+	"Control/UITracker.h"
 	"Layout/UITableLayout.h"
 	"Layout/UIChildWindow.h"
 	"Utils/UIApplication.h"
@@ -146,9 +147,9 @@
 	<sys/stat.h>
 	<dirent.h>
 
-1693535358 /home/test/Desktop/DuiLib/DuiLib/Utils/DuiString.h
+1695710813 /home/test/Desktop/DuiLib/DuiLib/Utils/DuiString.h
 
-1693535358 /home/test/Desktop/DuiLib/DuiLib/Utils/Utils.h
+1694573816 /home/test/Desktop/DuiLib/DuiLib/Utils/Utils.h
 	"OAIdl.h"
 	<vector>
 	<map>
@@ -187,7 +188,7 @@
 
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/DpiGtk.h
 
-1687835001 /home/test/Desktop/DuiLib/DuiLib/Core/UIDefine.h
+1694854079 /home/test/Desktop/DuiLib/DuiLib/Core/UIDefine.h
 
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/UIShadowBase.h
 	<map>
@@ -226,9 +227,9 @@
 
 1687156353 /home/test/Desktop/DuiLib/DuiLib/Control/UIAnimation.h
 
-1687156353 /home/test/Desktop/DuiLib/DuiLib/Core/UIControl.h
+1694854079 /home/test/Desktop/DuiLib/DuiLib/Core/UIControl.h
 
-1687156353 /home/test/Desktop/DuiLib/DuiLib/Core/UIContainer.h
+1694854079 /home/test/Desktop/DuiLib/DuiLib/Core/UIContainer.h
 
 1687156353 /home/test/Desktop/DuiLib/DuiLib/Core/UIDlgBuilder.h
 
@@ -385,7 +386,7 @@
 
 1687333054 /home/test/Desktop/DuiLib/DuiLib/Utils/UIApplicationGtk.h
 
-1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/UIFrameBase.h
+1694854079 /home/test/Desktop/DuiLib/DuiLib/Utils/UIFrameBase.h
 
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/UIFrameWnd.h
 	<list>
@@ -3419,7 +3420,7 @@
 	"StdAfx.h"
 	<math.h>
 
-1687156353 source:/home/test/Desktop/DuiLib/DuiLib/Control/UICombo.cpp
+1694573816 source:/home/test/Desktop/DuiLib/DuiLib/Control/UICombo.cpp
 	"StdAfx.h"
 	"UIComboWndWin32.h"
 	"UIComboWndGtk.h"
@@ -3521,7 +3522,7 @@
 	"StdAfx.h"
 	"UIGifAnim.h"
 
-1691132476 source:/home/test/Desktop/DuiLib/DuiLib/Control/UIGrid.cpp
+1694573816 source:/home/test/Desktop/DuiLib/DuiLib/Control/UIGrid.cpp
 	"StdAfx.h"
 	"UIGrid.h"
 
@@ -3569,11 +3570,11 @@
 	<string>
 	<Shlwapi.h>
 
-1691132476 source:/home/test/Desktop/DuiLib/DuiLib/Control/UILabel.cpp
+1694573816 source:/home/test/Desktop/DuiLib/DuiLib/Control/UILabel.cpp
 	"StdAfx.h"
 	"UILabel.h"
 
-1687333054 source:/home/test/Desktop/DuiLib/DuiLib/Control/UIList.cpp
+1694854039 source:/home/test/Desktop/DuiLib/DuiLib/Control/UIList.cpp
 	"StdAfx.h"
 
 1687333054 source:/home/test/Desktop/DuiLib/DuiLib/Control/UIListEx.cpp
@@ -3621,7 +3622,7 @@
 
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/QREncode.h
 
-1687156353 source:/home/test/Desktop/DuiLib/DuiLib/Control/UIRichEdit.cpp
+1694573816 source:/home/test/Desktop/DuiLib/DuiLib/Control/UIRichEdit.cpp
 	"StdAfx.h"
 	"UIRichEdit.h"
 	"TxtWinHost.h"
@@ -3682,17 +3683,17 @@
 	"unknwn.h"
 	"ocidl.h"
 
-1687156353 source:/home/test/Desktop/DuiLib/DuiLib/Core/ControlFactory.cpp
+1694854079 source:/home/test/Desktop/DuiLib/DuiLib/Core/ControlFactory.cpp
 	"StdAfx.h"
 	"ControlFactory.h"
 
-1687835001 source:/home/test/Desktop/DuiLib/DuiLib/Core/UIBase.cpp
+1695710813 source:/home/test/Desktop/DuiLib/DuiLib/Core/UIBase.cpp
 	"StdAfx.h"
 
-1687156353 source:/home/test/Desktop/DuiLib/DuiLib/Core/UIContainer.cpp
+1694854079 source:/home/test/Desktop/DuiLib/DuiLib/Core/UIContainer.cpp
 	"StdAfx.h"
 
-1687156353 source:/home/test/Desktop/DuiLib/DuiLib/Core/UIControl.cpp
+1694854079 source:/home/test/Desktop/DuiLib/DuiLib/Core/UIControl.cpp
 	"StdAfx.h"
 
 1687835001 source:/home/test/Desktop/DuiLib/DuiLib/Core/UIDlgBuilder.cpp
@@ -3730,7 +3731,7 @@
 	"StdAfx.h"
 	"UILangManager.h"
 
-1693535358 source:/home/test/Desktop/DuiLib/DuiLib/Core/UIManager.cpp
+1694573816 source:/home/test/Desktop/DuiLib/DuiLib/Core/UIManager.cpp
 	"StdAfx.h"
 	<zmouse.h>
 
@@ -3934,10 +3935,8 @@
 	<atlbase.h>
 	"DragDropImpl.h"
 
-1693535358 source:/home/test/Desktop/DuiLib/DuiLib/Utils/DuiString.cpp
+1695710813 source:/home/test/Desktop/DuiLib/DuiLib/Utils/DuiString.cpp
 	"StdAfx.h"
-	"DuiString.h"
-	"string.h"
 
 1687156354 source:/home/test/Desktop/DuiLib/DuiLib/Utils/pugixml/pugixml.cpp
 	"pugixml.hpp"
@@ -3982,7 +3981,7 @@
 1687156354 source:/home/test/Desktop/DuiLib/DuiLib/Utils/UIForm.cpp
 	"StdAfx.h"
 
-1687156354 source:/home/test/Desktop/DuiLib/DuiLib/Utils/UIFrameBase.cpp
+1694854079 source:/home/test/Desktop/DuiLib/DuiLib/Utils/UIFrameBase.cpp
 	"StdAfx.h"
 
 1687156354 source:/home/test/Desktop/DuiLib/DuiLib/Utils/UIFrameWnd.cpp
@@ -4009,7 +4008,7 @@
 	"math.h"
 	"crtdbg.h"
 
-1692347098 source:/home/test/Desktop/DuiLib/DuiLib/Utils/Utils.cpp
+1694573815 source:/home/test/Desktop/DuiLib/DuiLib/Utils/Utils.cpp
 	"StdAfx.h"
 	<time.h>
 	<time.h>
@@ -4029,4 +4028,6 @@
 
 1692675289 source:/home/test/Desktop/DuiLib/DuiLib/Utils/Utils2.cpp
 	"StdAfx.h"
+
+1695710813 /home/test/Desktop/DuiLib/DuiLib/Control/UITracker.h
 

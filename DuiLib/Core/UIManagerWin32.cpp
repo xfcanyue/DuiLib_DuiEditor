@@ -281,10 +281,16 @@ namespace DuiLib {
 			if(hDrop != NULL)
 			{
 				UINT cFiles = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
-				if(cFiles > 0)
+// 				if(cFiles > 0)
+// 				{
+// 					TCHAR szFileName[MAX_PATH];
+// 					DragQueryFile(hDrop, 0, szFileName, sizeof(szFileName)); 
+// 					SendNotify(pControl, DUI_MSGTYPE_ACCEPTFILE, (WPARAM)szFileName, 0);
+// 				}
+				for(int i=0; i<cFiles; i++)
 				{
 					TCHAR szFileName[MAX_PATH];
-					DragQueryFile(hDrop, 0, szFileName, sizeof(szFileName)); 
+					DragQueryFile(hDrop, i, szFileName, sizeof(szFileName)); 
 					SendNotify(pControl, DUI_MSGTYPE_ACCEPTFILE, (WPARAM)szFileName, 0);
 				}
 			}

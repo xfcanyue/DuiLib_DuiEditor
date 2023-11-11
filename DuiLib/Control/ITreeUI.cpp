@@ -34,6 +34,11 @@ void ITreeUI::SetNodeTag(TNodeData *pNode, UINT_PTR tag)
 	pNode->SetTag(tag);
 }
 
+void ITreeUI::SetNodeUserData(TNodeData *pNode, LPCTSTR sUserData)
+{
+	pNode->SetUserData(sUserData);
+}
+
 TNodeData *ITreeUI::FindNodeByTag(UINT tag)
 {
 	std::map<UINT_PTR, TNodeData *>::iterator it = m_mapTag.find(tag);
@@ -119,9 +124,19 @@ void ITreeUI::DeleteNode(TNodeData *pNodeData)
 	{
 		pNodeData->m_pParent->m_childs.Remove(pNodeData);
 	}
-	SendNotify(DUI_MSGTYPE_DELETEITEM, (WPARAM)pNodeData, 0, false);
+	//SendNotify(DUI_MSGTYPE_DELETEITEM, (WPARAM)pNodeData, 0, false);
+	OnDeleteNode(pNodeData);
 	FreeNodeData(pNodeData);
 	Refresh(true);
+}
+
+void ITreeUI::DeleteAllChildNode(TNodeData *pNodeParentData)
+{
+	for (int i=0; i<pNodeParentData->m_childs.GetSize(); i++)
+	{
+		DeleteNode(pNodeParentData->GetChild(i));
+	}
+	pNodeParentData->m_childs.Empty();
 }
 
 void ITreeUI::DeleteAllNode()
@@ -248,6 +263,20 @@ TNodeData *ITreeUI::GetNextPrevNode(TNodeData *pNode)
 	return NULL;
 }
 
+void ITreeUI::Expand(TNodeData *pNode, BOOL bExpand)
+{
+	pNode->Expand(bExpand);
+	if(bExpand)
+		OnExpandItem(pNode);
+	else
+		OnCollapseItem(pNode);
+}
+
+bool ITreeUI::IsExpand(TNodeData *pNode) const
+{
+	return pNode->IsExpand();
+}
+
 void ITreeUI::ClearSeletedNodes()
 {
 	std::map<TNodeData *, TNodeData *>::iterator it;
@@ -327,6 +356,8 @@ void ITreeUI::_DeleteAllItem(TNodeData *pNodeData)
 		_DeleteAllItem(pNodeData->GetChild(i));
 	}
 	pNodeData->m_childs.Empty();
+	//SendNotify(DUI_MSGTYPE_DELETEITEM, (WPARAM)pNodeData, 0, false);
+	OnDeleteNode(pNodeData);
 	FreeNodeData(pNodeData);
 }
 

@@ -284,7 +284,8 @@ void CUIPropertyGridAttributeListProperty::OnClickButton(CPoint point)
 		m_strClassName = pGridCtrl->m_TreeNode.attribute(XTEXT("class")).value();
 	else
 	{
-		xml_node nodeAttr = g_duiProp.FindAttribute(XML2T(pGridCtrl->m_TreeNode.name()), GetName());
+		//xml_node nodeAttr = g_duiProp.FindAttribute(XML2T(pGridCtrl->m_TreeNode.name()), GetName());
+		xml_node nodeAttr = g_duiProp.FindAttribute(pGridCtrl->m_TreeNode, GetName());
 		if(nodeAttr)
 		{
 			m_strClassName = nodeAttr.attribute(XTEXT("value")).value();

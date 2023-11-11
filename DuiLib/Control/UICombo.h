@@ -53,6 +53,7 @@ namespace DuiLib {
 		virtual void DoEvent(TEventUI& event) override;
 		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;
 
+		virtual void PaintText(UIRender *pRender) override;
 	protected:
 		CComboWnd* m_pWindow;
 

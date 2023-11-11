@@ -416,5 +416,27 @@ namespace DuiLib {
 		else CContainerUI::SetAttribute(pstrName, pstrValue);
 	}
 
+
+	void CComboUI::PaintText(UIRender *pRender)
+	{
+		if( m_dwTextColor == 0 ) m_dwTextColor = m_pManager->GetDefaultFontColor();
+		if( m_dwDisabledTextColor == 0 ) m_dwDisabledTextColor = m_pManager->GetDefaultDisabledColor();
+
+		CDuiRect rc = m_rcItem;
+		rc.left += m_rcTextPadding.left;
+		rc.right -= m_rcTextPadding.right;
+		rc.top += m_rcTextPadding.top;
+		rc.bottom -= m_rcTextPadding.bottom;
+
+		CDuiString sText = GetText();
+		DWORD dwTextColor = m_dwTextColor;
+
+		if( sText.IsEmpty() ) 
+		{
+			return;
+		}
+
+		pRender->DrawText(rc, CDuiRect(0,0,0,0), sText, dwTextColor, GetFont(), GetTextStyle());
+	}
 } // namespace DuiLib
 

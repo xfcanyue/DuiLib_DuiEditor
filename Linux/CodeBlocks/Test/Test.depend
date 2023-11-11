@@ -4054,7 +4054,7 @@
 1687336273 /home/test/Desktop/DuiLib/Linux/CodeBlocks/TestCodeBlocks/MainFrame.h
 	"UIlib.h"
 
-1688302806 /home/test/Desktop/DuiLib/DuiLib/UIlib.h
+1694854079 /home/test/Desktop/DuiLib/DuiLib/UIlib.h
 	"compat.h"
 	<windows.h>
 	<windowsx.h>
@@ -4155,6 +4155,7 @@
 	"Control/ITreeUI.h"
 	"Control/UITree.h"
 	"Control/UITreeItem.h"
+	"Control/UITracker.h"
 	"Layout/UITableLayout.h"
 	"Layout/UIChildWindow.h"
 	"Utils/UIApplication.h"
@@ -4184,9 +4185,9 @@
 	<sys/stat.h>
 	<dirent.h>
 
-1693535358 /home/test/Desktop/DuiLib/DuiLib/Utils/DuiString.h
+1695710813 /home/test/Desktop/DuiLib/DuiLib/Utils/DuiString.h
 
-1693535358 /home/test/Desktop/DuiLib/DuiLib/Utils/Utils.h
+1694573816 /home/test/Desktop/DuiLib/DuiLib/Utils/Utils.h
 	"OAIdl.h"
 	<vector>
 	<map>
@@ -4225,7 +4226,7 @@
 
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/DpiGtk.h
 
-1687835001 /home/test/Desktop/DuiLib/DuiLib/Core/UIDefine.h
+1694854079 /home/test/Desktop/DuiLib/DuiLib/Core/UIDefine.h
 
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/UIShadowBase.h
 	<map>
@@ -4264,9 +4265,9 @@
 
 1687156353 /home/test/Desktop/DuiLib/DuiLib/Control/UIAnimation.h
 
-1687156353 /home/test/Desktop/DuiLib/DuiLib/Core/UIControl.h
+1694854079 /home/test/Desktop/DuiLib/DuiLib/Core/UIControl.h
 
-1687156353 /home/test/Desktop/DuiLib/DuiLib/Core/UIContainer.h
+1694854079 /home/test/Desktop/DuiLib/DuiLib/Core/UIContainer.h
 
 1687156353 /home/test/Desktop/DuiLib/DuiLib/Core/UIDlgBuilder.h
 
@@ -4423,7 +4424,7 @@
 
 1687333054 /home/test/Desktop/DuiLib/DuiLib/Utils/UIApplicationGtk.h
 
-1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/UIFrameBase.h
+1694854079 /home/test/Desktop/DuiLib/DuiLib/Utils/UIFrameBase.h
 
 1687156354 /home/test/Desktop/DuiLib/DuiLib/Utils/UIFrameWnd.h
 	<list>
@@ -4452,4 +4453,6 @@
 	<map>
 	"OAIdl.h"
 	<mutex>
+
+1695710813 /home/test/Desktop/DuiLib/DuiLib/Control/UITracker.h
 

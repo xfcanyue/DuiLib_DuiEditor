@@ -126,6 +126,56 @@ void CTreeUI::SendNotify(LPCTSTR pstrMessage, WPARAM wParam, LPARAM lParam, bool
 		GetManager()->SendNotify(this, pstrMessage, wParam, lParam, bAsync);
 }
 
+void CTreeUI::OnDeleteNode(TNodeData *pNodeData)
+{
+
+}
+
+void CTreeUI::OnExpandItem(TNodeData *pNodeData)
+{
+	SendNotify(DUI_MSGTYPE_ITEMEXPAND, (WPARAM)pNodeData, 1);
+}
+
+void CTreeUI::OnCollapseItem(TNodeData *pNodeData)
+{
+	SendNotify(DUI_MSGTYPE_ITEMEXPAND, (WPARAM)pNodeData, 0);
+}
+
+bool CTreeUI::OnPaintItemBkColor(UIRender *pRender, CControlUI *pItem)
+{
+	return false;
+}
+
+bool CTreeUI::OnPaintItemBkImage(UIRender *pRender, CControlUI *pItem)
+{
+	return false;
+}
+
+bool CTreeUI::OnPaintItemStatusImage(UIRender *pRender, CControlUI *pItem)
+{
+	return false;
+}
+
+bool CTreeUI::OnPaintItemForeColor(UIRender *pRender, CControlUI *pItem)
+{
+	return false;
+}
+
+bool CTreeUI::OnPaintItemForeImage(UIRender *pRender, CControlUI *pItem)
+{
+	return false;
+}
+
+bool CTreeUI::OnPaintItemText(UIRender *pRender, CControlUI *pItem)
+{
+	return false;
+}
+
+bool CTreeUI::OnPaintItemBorder(UIRender *pRender, CControlUI *pItem)
+{
+	return false;
+}
+
 void CTreeUI::DoInit()
 {
 	EnableScrollBar(true, true);
@@ -275,6 +325,8 @@ void CTreeUI::BuildRows(RECT rc, bool bNeedInvalidate)
 	{
 		CTreeItemUI *pRowUI = (CTreeItemUI *)m_pBody->GetItemAt(i);
 		pRowUI->SetNodeData(pNode);
+
+		//pRowUI->GetFolderButton()->SetVisible(pNode->NodeHasChildren());
 
 		int nNodeWidth = pRowUI->GetCxNeeded(CDuiSize(rc.right-rc.left, GetNodeHeight()));
 		cxNeeded = MAX(cxNeeded, nNodeWidth);

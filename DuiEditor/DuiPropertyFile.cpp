@@ -264,6 +264,20 @@ xml_node CDuiPropertyFile::FindAttribute(LPCTSTR className, LPCTSTR attrName)
 	}	
 }
 
+xml_node CDuiPropertyFile::FindAttribute(xml_node node, LPCTSTR attrName) //查找控件定义的属性
+{
+	xml_node nodeAttr = FindAttribute(XML2T(node.name()), attrName);
+	if(nodeAttr)
+		return nodeAttr;
+
+	//是不是自定义控件？
+	CString sBaseClass = XML2T(node.attribute("custombasedfrom").as_string());
+	if(sBaseClass.IsEmpty())
+		return nodeAttr;
+
+	return FindAttribute(sBaseClass, attrName);
+}
+
 void CDuiPropertyFile::InitToolBoxIcon()
 {
 	HINSTANCE hInstance = AfxGetApp()->m_hInstance;
