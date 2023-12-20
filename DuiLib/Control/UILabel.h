@@ -116,7 +116,7 @@ namespace DuiLib
 			if(dwColor == 0 && T::GetManager())
 				dwColor = T::GetManager()->GetDefaultFontColor();
 
-			pRender->DrawText(rcText, T::GetTextPadding(), sText, dwColor, iFont, T::GetTextStyle());
+			pRender->DrawText(rcText, this->GetTextPadding(), sText, dwColor, iFont, T::GetTextStyle());
 			return;
 		}
 	};

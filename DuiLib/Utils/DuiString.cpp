@@ -241,7 +241,40 @@ namespace DuiLib
 	char *DuiStringTraitsA::ui_strchr(char *string, int ch)							{ return ::strchr(string, ch); }
 	char *DuiStringTraitsA::ui_strrchr(char *string, int ch)						{ return ::strrchr(string, ch); }
 	char *DuiStringTraitsA::ui_strstr(char *_Str, const char *_SubStr)				{ return ::strstr(_Str, _SubStr); }
+	char *DuiStringTraitsA::ui_strrstr(char *_Str, const char *_SubStr)				
+	{ 
+		int len = ui_strlen(_Str);
+		if(len == 0) 
+			return NULL;
+
+		char *cpstart = _Str;
+		char *cp = (char *) _Str + len - 1;
+		char *s1, *s2;
+
+		if ( !*_SubStr )
+			return((char *)_Str);
+
+		while (*cp)
+		{
+			s1 = cp;
+			s2 = (char *) _SubStr;
+
+			while ( *s1 && *s2 && !(*s1-*s2) )
+				s1++, s2++;
+
+			if (!*s2)
+				return(cp);
+
+			if(cp == cpstart)
+				break;
+
+			cp--;
+		}
+
+		return(NULL);
+	}
 	char *DuiStringTraitsA::ui_strcat(char *dst, const char *src)					{ return ::strcat(dst, src); }
+	char *DuiStringTraitsA::ui_strncat(char *dst, const char *src, size_t n)		{ return ::strncat(dst, src, n); }
 	char *DuiStringTraitsA::ui_strcpy(char *dest,const char *source)				{ return ::strcpy(dest, source); }
 	char *DuiStringTraitsA::ui_strncpy(char *dest,const char *source, size_t count) { return ::strncpy(dest, source, count); }
 	int DuiStringTraitsA::ui_strcmp (const char *src, const char *dst)				{ return ::strcmp(src, dst); }
@@ -291,6 +324,14 @@ namespace DuiLib
 	}
 
 	int DuiStringTraitsA::ui_atoi(const char *str)		{ return ::atoi(str); }
+	DuiLib::Int64 ui_atoi64(const char *str)			
+	{ 
+#ifdef WIN32
+		return _atoi64(str);
+#else
+		return (DuiLib::Int64)strtoll(str, NULL, 10);
+#endif
+	}
 	float DuiStringTraitsA::ui_atof(const char *str)	{ return static_cast<float>(::atof(str)); }
 	double DuiStringTraitsA::ui_strtod (const char *nptr) { return ::strtod(nptr, 0); }
 
@@ -337,6 +378,11 @@ namespace DuiLib
 	void DuiStringTraitsA::int_to_string(char *str, int n)
 	{
 		sprintf(str, "%d", n);
+	}
+
+	void DuiStringTraitsA::int64_to_string(char *str, DuiLib::Int64 n)
+	{
+		sprintf(str, "%I64d", n);
 	}
 
 	void DuiStringTraitsA::double_to_string(char *str, double s, int base)
@@ -504,7 +550,7 @@ namespace DuiLib
 		{
 			int oldLen = ui_strlen(pstr);
 			AllocString(pstr, oldLen + src_strlength,  sizeof(char));
-			ui_strcat(pstr, (char *)src_string);
+			ui_strncat(pstr, (char *)src_string, src_strlength);
 			pstr[oldLen + src_strlength] = '\0';
 			return;
 		}
@@ -519,20 +565,18 @@ namespace DuiLib
 			else if(src_encoding == duistring_encoding_utf8)
 			{
 				const char *pNewString = conv.utf8_to_A(src_string, src_strlength);
-				int newLen = ui_strlen(pNewString);
 				int oldLen = ui_strlen(pstr);
-				AllocString(pstr, oldLen + newLen, sizeof(char));
-				ui_strcat((char *)pstr, pNewString);
-				pstr[oldLen + newLen] = '\0';
+				AllocString(pstr, oldLen + src_strlength, sizeof(char));
+				ui_strncat((char *)pstr, pNewString, src_strlength);
+				pstr[oldLen + src_strlength] = '\0';
 			}
 			else if(src_encoding == duistring_encoding_unicode)
 			{
 				const char *pNewString = conv.W_to_A(src_string, src_strlength);
-				int newLen = ui_strlen(pNewString);
 				int oldLen = ui_strlen(pstr);
-				AllocString(pstr, oldLen + newLen, sizeof(char));
-				ui_strcat((char *)pstr, pNewString);
-				pstr[oldLen + newLen] = '\0';
+				AllocString(pstr, oldLen + src_strlength, sizeof(char));
+				ui_strncat((char *)pstr, pNewString, src_strlength);
+				pstr[oldLen + src_strlength] = '\0';
 			}
 		}
 		else if(dst_encoding == duistring_encoding_utf8)
@@ -540,11 +584,10 @@ namespace DuiLib
 			if(src_encoding == duistring_encoding_ansi)
 			{
 				const char *pNewString = conv.A_to_utf8(src_string, src_strlength);
-				int newLen = ui_strlen(pNewString);
 				int oldLen = ui_strlen(pstr);
-				AllocString(pstr, oldLen + newLen, sizeof(char));
-				ui_strcat((char *)pstr, pNewString);
-				pstr[oldLen + newLen] = '\0';
+				AllocString(pstr, oldLen + src_strlength, sizeof(char));
+				ui_strncat((char *)pstr, pNewString, src_strlength);
+				pstr[oldLen + src_strlength] = '\0';
 			}
 			else if(src_encoding == duistring_encoding_utf8)
 			{
@@ -553,11 +596,10 @@ namespace DuiLib
 			else if(src_encoding == duistring_encoding_unicode)
 			{
 				const char *pNewString = conv.W_to_utf8(src_string, src_strlength);
-				int newLen = ui_strlen(pNewString);
 				int oldLen = ui_strlen(pstr);
-				AllocString(pstr, oldLen + newLen, sizeof(char));
-				ui_strcat((char *)pstr, pNewString);
-				pstr[oldLen + newLen] = '\0';
+				AllocString(pstr, oldLen + src_strlength, sizeof(char));
+				ui_strncat((char *)pstr, pNewString, src_strlength);
+				pstr[oldLen + src_strlength] = '\0';
 			}
 		}
 	}
@@ -594,7 +636,40 @@ namespace DuiLib
 	wchar_t *DuiStringTraitsW::ui_strchr(wchar_t *string, int ch)				{ return ::wcschr(string, ch); }
 	wchar_t *DuiStringTraitsW::ui_strrchr(wchar_t *string, int ch)				{ return ::wcsrchr(string, ch); }
 	wchar_t *DuiStringTraitsW::ui_strstr(wchar_t *_Str, const wchar_t *_SubStr) { return ::wcsstr(_Str, _SubStr); }
+	wchar_t *DuiStringTraitsW::ui_strrstr(wchar_t *_Str, const wchar_t *_SubStr) 
+	{ 
+		int len = ui_strlen(_Str);
+		if(len == 0) 
+			return NULL;
+
+		wchar_t *cpstart = _Str;
+		wchar_t *cp = (wchar_t *)_Str + len - 1;
+		wchar_t *s1, *s2;
+
+		if ( !*_SubStr )
+			return((wchar_t *)_Str);
+
+		while (*cp)
+		{
+			s1 = cp;
+			s2 = (wchar_t *) _SubStr;
+
+			while ( *s1 && *s2 && !(*s1-*s2) )
+				s1++, s2++;
+
+			if (!*s2)
+				return(cp);
+
+			if(cp == cpstart)
+				break;
+
+			cp--;
+		}
+
+		return(NULL);
+	}
 	wchar_t *DuiStringTraitsW::ui_strcat(wchar_t *dst, const wchar_t *src)		{ return ::wcscat(dst, src); }
+	wchar_t *DuiStringTraitsW::ui_strncat(wchar_t *dst, const wchar_t *src, size_t n)	{ return ::wcsncat(dst, src, n); }
 	wchar_t *DuiStringTraitsW::ui_strcpy(wchar_t *dest, const wchar_t *source)	{ return ::wcscpy(dest, source); }
 	wchar_t *DuiStringTraitsW::ui_strncpy(wchar_t *dest, const wchar_t *source, size_t count) { return ::wcsncpy(dest, source, count); }
 	int DuiStringTraitsW::ui_strcmp(const wchar_t *src, const wchar_t *dst)		{ return ::wcscmp(src, dst); }
@@ -654,6 +729,15 @@ namespace DuiLib
 		return (int)wcstol(str, NULL, 10);
 	}
 
+	DuiLib::Int64 DuiStringTraitsW::ui_atoi64(const wchar_t *str) 
+	{ 
+#ifdef WIN32
+		return (DuiLib::Int64)_wcstoi64(str, NULL, 10);
+#else
+		return (DuiLib::Int64)wcstoll(str, NULL, 10);
+#endif
+	}
+
 	float DuiStringTraitsW::ui_atof(const wchar_t *str) 
 	{ 
 		return static_cast<float>(::wcstod(str, 0));
@@ -707,6 +791,11 @@ namespace DuiLib
 	void DuiStringTraitsW::int_to_string(wchar_t *str, int n)
 	{
 		swprintf(str, 64, L"%d", n);
+	}
+
+	void DuiStringTraitsW::int64_to_string(wchar_t *str, DuiLib::Int64 n)
+	{
+		swprintf(str, 64, L"%I64d", n);
 	}
 
 	void DuiStringTraitsW::double_to_string(wchar_t *str, double s, int base)
@@ -862,11 +951,10 @@ namespace DuiLib
 
 		if(pNewString)
 		{
-			int newLen = ui_strlen(pNewString);
 			int oldLen = ui_strlen(pstr);
-			AllocString(pstr, oldLen + newLen, sizeof(wchar_t));
-			ui_strcat((wchar_t *)pstr, pNewString);
-			pstr[oldLen + newLen] = L'\0';
+			AllocString(pstr, oldLen + src_strlength, sizeof(wchar_t));
+			ui_strncat((wchar_t *)pstr, pNewString, src_strlength);
+			pstr[oldLen + src_strlength] = L'\0';
 		}
 	}
 

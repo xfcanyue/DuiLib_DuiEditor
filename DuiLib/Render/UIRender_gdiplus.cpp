@@ -334,9 +334,9 @@ namespace DuiLib {
 		{
 			Gdiplus::RectF bounds;
 
-			//UIFont_gdiplus *pFont = *(UIFont_gdiplus **)&m_curFont;
-			//graphics.MeasureString(pstrText, -1, pFont->GetGdiPlusFont(), rectFCalc, &stringFormat, &bounds);
-			graphics.MeasureString(pstrText, -1, &font, rectF, &stringFormat, &bounds);
+			//gdiplus计算宽度不会超过rectF的设定，所以这里需要把rectF改大一点。
+			Gdiplus::RectF rectFcalc((Gdiplus::REAL)rc.left, (Gdiplus::REAL)rc.top, (Gdiplus::REAL)(rc.right - rc.left) + 9999, (Gdiplus::REAL)(rc.bottom - rc.top));
+			graphics.MeasureString(pstrText, -1, &font, rectFcalc, &stringFormat, &bounds);
 
 			// MeasureString存在计算误差，这里加一像素
 			rc.bottom = rc.top + (long)bounds.Height + 1;

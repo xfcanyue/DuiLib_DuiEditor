@@ -403,3 +403,9 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
 3，ComoUI无法选择列表项，实际上是没有PaintText。
 4，TemplateOptionUI的group失效。
 5，xmake.lua还不完善，希望有会的同学帮忙做一下。
+
+2023-12-20
+1，DuiStringT还是有个bug，增加strncat。
+2，完善xmake.lua。支持Windows和Linux编译。
+3，更新stbimage和nanosvg
+4，部分调整。

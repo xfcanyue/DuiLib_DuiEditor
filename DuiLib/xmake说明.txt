@@ -1,0 +1,44 @@
+
+1, 清理：xmake clean
+
+2, 配置： xmake f
+   编译静态库：xmake f -k static
+   编译动态库：xmake f -k shared
+   Debug：xmake f -m debug
+   Release: xmake f -m release
+   编译x64: xmake f -a x64
+   编译x86: xmake f -a x86
+   使用vs2010编译：xmake f --vs=2010
+   使用vs2019编译：xmake f --vs=2019
+
+   编译unicode版本:  xmake f --unicode=true 
+   
+3, 编译：xmake
+
+=============================
+//windows
+
+编译2010 x86 release 动态库
+xmake f -a x86 -m release -k shared  --vs=2010  --unicode=true
+
+编译2010 x86 release 静态库
+xmake f -a x86 -m release -k static  --vs=2010  --unicode=true
+
+编译2010 x64 release 动态库
+xmake f -a x64 -m release -k shared  --vs=2010  --unicode=true
+
+编译2010 x64 release 静态库
+xmake f -a x64 -m release -k static  --vs=2010  --unicode=true
+
+
+=============================
+//Linux
+
+1，进入目录DuiLib/DuiLib
+     xmake
+     xmake install --root	//需要root权限，默认安装位置为 usr/local/include/DuiLib/ 和 usr/local/lib/
+
+2，进入目录DuiLib/Linux/gcc，生成可执行文件 TestDuiLib
+     xmake
+
+注意：xmake非常不建议root下编译项目，但是安装似乎不可避免。	

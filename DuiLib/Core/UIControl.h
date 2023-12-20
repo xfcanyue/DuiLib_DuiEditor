@@ -46,8 +46,8 @@ namespace DuiLib {
 		virtual void SetTextV(LPCTSTR lpszFormat, ...);
 
 		//文本对齐
-		void SetTextStyle(UINT uStyle);
-		UINT GetTextStyle() const;
+		virtual void SetTextStyle(UINT uStyle);
+		virtual UINT GetTextStyle() const;
 
 		//文本外边距
 		virtual RECT GetTextPadding() const;

@@ -275,9 +275,12 @@ namespace DuiLib {
 	//
 	//
 #ifdef WIN32
-#ifndef strtoll
-#define strtoll _strtoi64
-#endif
+#	ifndef strtoll
+#		define strtoll _strtoi64
+#	endif
+#	if _MSC_VER <= 1600
+		double roundf(double r){ return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);}
+#	endif
 #endif
 #define STB_IMAGE_IMPLEMENTATION
 #include "../Utils/stb_image.h"

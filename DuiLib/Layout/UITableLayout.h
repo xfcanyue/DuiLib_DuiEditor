@@ -108,6 +108,8 @@ namespace DuiLib
 		virtual RECT GetTextPadding() const override;
 		virtual void SetTextPadding(RECT rc) override;
 
+		virtual void SetTextStyle(UINT uStyle) override; //需要在代码中设定，xml中配置不生效。
+
 		virtual void DoInit() override;
 		virtual SIZE EstimateSize(SIZE szAvailable) override;
 		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue) override;

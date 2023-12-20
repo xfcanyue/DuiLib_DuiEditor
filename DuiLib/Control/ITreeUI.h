@@ -20,7 +20,7 @@ public:
 	}
 
 	CDuiString GetText() const { return m_sText; }
-	int GetTextN() const { return _ttoi(m_sText); }
+	int GetTextN() const { return m_sText.toInt(); }
 
 	void SetText(LPCTSTR pstrText) { m_sText = pstrText; }
 	void SetTextN(int n) { m_sText.Format(_T("%d"), n); }

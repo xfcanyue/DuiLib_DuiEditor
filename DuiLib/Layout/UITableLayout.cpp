@@ -578,6 +578,34 @@ namespace DuiLib
 			pTable->NeedUpdate();
 	}
 
+	void CTDUI::SetTextStyle(UINT uStyle)
+	{
+		CTRUI *pRow = GetRow();
+		CTableLayoutUI *pTable = GetTable();
+		if(!pRow || !pTable)
+		{
+			return COptionLayoutUI::SetTextStyle(uStyle);
+		}
+
+		int row = pTable->GetItemIndex(pRow);
+		if(row == 0)
+		{
+			int col = pRow->GetItemIndex(this);
+			for (int i=1; i<pTable->GetCount(); i++)
+			{
+				CTRUI *pRow2 = static_cast<CTRUI*>(pTable->GetItemAt(i));
+				if(!pRow2) continue;
+				CTDUI *pCol = static_cast<CTDUI*>(pRow2->GetItemAt(col));
+				if(!pCol) continue;
+				pCol->SetTextStyle(uStyle);
+			}
+		}
+
+		COptionLayoutUI::SetTextStyle(uStyle);
+		if(GetParent() && GetParent()->GetParent())
+			pTable->NeedUpdate();
+	}
+
 	void CTDUI::DoInit()
 	{
 
