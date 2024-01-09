@@ -277,10 +277,19 @@ namespace DuiLib
 	char *DuiStringTraitsA::ui_strncat(char *dst, const char *src, size_t n)		{ return ::strncat(dst, src, n); }
 	char *DuiStringTraitsA::ui_strcpy(char *dest,const char *source)				{ return ::strcpy(dest, source); }
 	char *DuiStringTraitsA::ui_strncpy(char *dest,const char *source, size_t count) { return ::strncpy(dest, source, count); }
-	int DuiStringTraitsA::ui_strcmp (const char *src, const char *dst)				{ return ::strcmp(src, dst); }
+	int DuiStringTraitsA::ui_strcmp (const char *src, const char *dst)				
+	{ 
+		if(!src && !dst) return 0;
+		if(!src && dst) return -1;
+		if(src && !dst) return 1;
+		return ::strcmp(src, dst); 
+	}
 
 	int DuiStringTraitsA::ui_stricmp (const char *src, const char *dst) 
 	{
+		if(!src && !dst) return 0;
+		if(!src && dst) return -1;
+		if(src && !dst) return 1;
 #ifdef WIN32
 		return ::stricmp(src, dst); 
 #else
@@ -425,7 +434,13 @@ namespace DuiLib
 		if(mem->GetAllocLength() < nNeedAlloc || mem->IsShared() || mem->IsLock())
 		{
 			duistringdata *newdata = DuiStringMgr::GetInstance()->Alloc(nNeedAlloc);
-			ui_strcpy((char *)newdata->data(), pstr);
+
+			int oldLen = DuiStringTraitsA::ui_strlen(pstr);
+			if(oldLen > 0 && oldLen <= nStrLength) //新分配的字符串短，原来的字符串长，就越界了！！！
+			{
+				DuiStringTraitsA::ui_strcpy((char *)newdata->data(), pstr);
+			}
+
 			DuiStringMgr::GetInstance()->Free(mem);
 			pstr = (char *)newdata->data();
 		}
@@ -672,9 +687,18 @@ namespace DuiLib
 	wchar_t *DuiStringTraitsW::ui_strncat(wchar_t *dst, const wchar_t *src, size_t n)	{ return ::wcsncat(dst, src, n); }
 	wchar_t *DuiStringTraitsW::ui_strcpy(wchar_t *dest, const wchar_t *source)	{ return ::wcscpy(dest, source); }
 	wchar_t *DuiStringTraitsW::ui_strncpy(wchar_t *dest, const wchar_t *source, size_t count) { return ::wcsncpy(dest, source, count); }
-	int DuiStringTraitsW::ui_strcmp(const wchar_t *src, const wchar_t *dst)		{ return ::wcscmp(src, dst); }
+	int DuiStringTraitsW::ui_strcmp(const wchar_t *src, const wchar_t *dst)		
+	{ 
+		if(!src && !dst) return 0;
+		if(!src && dst) return -1;
+		if(src && !dst) return 1;
+		return ::wcscmp(src, dst); 
+	}
 	int DuiStringTraitsW::ui_stricmp(const wchar_t *src, const wchar_t *dst) 
 	{  
+		if(!src && !dst) return 0;
+		if(!src && dst) return -1;
+		if(src && !dst) return 1;
 #ifdef WIN32
 		return ::wcsicmp(src, dst); 
 #else
@@ -839,7 +863,12 @@ namespace DuiLib
 		if(mem->GetAllocLength() < nNeedAlloc || mem->IsShared() || mem->IsLock())
 		{
 			duistringdata *newdata = DuiStringMgr::GetInstance()->Alloc(nNeedAlloc);
-			DuiStringTraitsW::ui_strcpy((wchar_t *)newdata->data(), pstr);
+
+			int oldLen = DuiStringTraitsW::ui_strlen(pstr);
+			if(oldLen > 0 && oldLen <= nStrLength) //新分配的字符串短，原来的字符串长，就越界了！！！
+			{
+				DuiStringTraitsW::ui_strcpy((wchar_t *)newdata->data(), pstr);
+			}
 			DuiStringMgr::GetInstance()->Free(mem);
 			pstr = (wchar_t *)newdata->data();
 		}

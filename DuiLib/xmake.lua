@@ -1,4 +1,4 @@
-﻿
+
 
 -- set the project information
 set_project("DuiLib")
@@ -42,7 +42,29 @@ if is_plat("linux") then
         	os.rm(target:installdir() .. "/include/DuiLib/")
     	end)
 elseif is_plat("macosx") then
-
+	add_includedirs("/usr/local/include/gtk-3.0")
+	add_includedirs("/usr/local/include/cairo")
+	add_includedirs("/usr/local/include/harfbuzz")
+	add_includedirs("/usr/local/include/gdk-pixbuf-2.0")
+	add_includedirs("/usr/local/lib/glib-2.0/include")
+	add_includedirs("/usr/local/lib/glib-2.0/include")
+	add_includedirs("/usr/local/include/glib-2.0/glib")
+	add_includedirs("/usr/local/include/glib-2.0")
+	add_includedirs("/usr/local/include/pango-1.0")
+	add_includedirs("/usr/local/include/atk-1.0")
+	
+	add_installfiles("compat.h", {prefixdir = "include/DuiLib"})
+	add_installfiles("DuiLib.h", {prefixdir = "include/DuiLib"})
+	add_installfiles("UIlib.h", {prefixdir = "include/DuiLib"})
+	add_installfiles("Control/*.h", {prefixdir = "include/DuiLib/Control"})
+	add_installfiles("Core/*.h", {prefixdir = "include/DuiLib/Core"})
+	add_installfiles("Layout/*.h", {prefixdir = "include/DuiLib/Layout"})
+	add_installfiles("Render/*.h", {prefixdir = "include/DuiLib/Render"})
+	add_installfiles("Utils/*.h", {prefixdir = "include/DuiLib/Utils"})
+	
+	after_uninstall(function (target)
+        	os.rm(target:installdir() .. "/include/DuiLib/")
+    	end)
 elseif is_plat("windows") then
 	add_defines("WIN32","_WIN32", "WINDOWS")
 	

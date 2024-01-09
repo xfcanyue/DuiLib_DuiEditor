@@ -1,4 +1,4 @@
-﻿
+
 
 -- set the project information
 set_project("TestDuiLib")
@@ -22,7 +22,8 @@ if is_plat("linux") then
 	add_includedirs("/usr/local/include/DuiLib")
 	
 	add_links("DuiLib")
-	add_links("gtk-3") add_links("gobject-2.0")
+	add_links("gtk-3") 
+	add_links("gobject-2.0")
 	add_links("glib-2.0")
 	add_links("gdk-3")
 	add_links("cairo")
@@ -39,7 +40,24 @@ if is_plat("linux") then
     	end)
 	
 elseif is_plat("macosx") then
-
+	add_includedirs("/usr/local/include/DuiLib")
+	
+	add_linkdirs("/usr/local/lib")
+	add_links("DuiLib")
+	add_links("gtk-3") 
+	add_links("gobject-2.0")
+	add_links("glib-2.0")
+	add_links("gdk-3")
+	add_links("cairo")
+	add_links("gdk_pixbuf-2.0")
+	add_links("pango-1.0")
+	add_links("pangocairo-1.0")
+	
+	--编译结束时，把TestDuiLib拷贝到当前目录
+	after_build(function (target)
+		local destfile = target:scriptdir() .. "/" .. target:filename()
+        	os.cp(target:targetfile(), destfile)
+    	end)
 elseif is_plat("windows") then
 		
 end
