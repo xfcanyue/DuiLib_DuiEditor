@@ -36,6 +36,8 @@
 #include "../../../DuiLib/Duilib.h"
 #include "../../../DuiPlugins/Include/DuiPlugins.h"
 #include "../../../DuiScript/Include/DuiScriptInterface.h"
+#include "../../../DuiScript/ScriptManager.h"
+#include "../../../DuiScript/ScriptContext.h"
 //#include "../../../3rd/CxImage/Include/image.h"
 using namespace DuiLib;
 

@@ -671,7 +671,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>E:/wingtk/gtk-build/gtk/Win32/debug/include/gtk-3.0;E:/wingtk/gtk-build/gtk/Win32/debug/include/cairo;E:/wingtk/gtk-build/gtk/Win32/debug/include/pango-1.0;E:/wingtk/gtk-build/gtk/Win32/debug/include/glib-2.0;E:/wingtk/gtk-build/gtk/Win32/debug/lib/glib-2.0/include;E:/wingtk/gtk-build/gtk/Win32/debug/include/gdk-pixbuf-2.0;E:/wingtk/gtk-build/gtk/Win32/debug/include/atk-1.0;E:/wingtk/gtk-build/gtk/Win32/debug/include/harfbuzz;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;UILIB_EXPORTS;DUILIB_USE_RENDER_CAIRO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;UILIB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -1141,6 +1141,7 @@
     <ClCompile Include="Utils\DpiWin32.cpp" />
     <ClCompile Include="Utils\DragDropImpl.cpp" />
     <ClCompile Include="Utils\DuiString.cpp" />
+    <ClCompile Include="Utils\Md5.cpp" />
     <ClCompile Include="Utils\QREncode.cpp" />
     <ClCompile Include="Utils\TrayIcon.cpp" />
     <ClCompile Include="Utils\UIApplication.cpp" />
@@ -1271,6 +1272,7 @@
     <ClInclude Include="Utils\DpiWin32.h" />
     <ClInclude Include="Utils\DragDropImpl.h" />
     <ClInclude Include="Utils\DuiString.h" />
+    <ClInclude Include="Utils\Md5.h" />
     <ClInclude Include="Utils\observer_impl_base.h" />
     <ClInclude Include="Utils\QREncode.h" />
     <ClInclude Include="Utils\TrayIcon.h" />

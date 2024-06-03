@@ -212,46 +212,19 @@ namespace DuiLib {
 		bool bPickNext;
 	} FINDSHORTCUT;
 
-	//duilib script interface  add by liqs99
-	class UILIB_API IScriptManager
-	{
-	public:
-		//加入脚本文件
-		virtual bool AddScriptFile(LPCTSTR pstrFileName) = 0;
-
-		//加入脚本代码
-		virtual bool AddScriptCode(LPCTSTR pstrCode) = 0;
-
-		//编译脚本。 一次性加入脚本文件完毕，然后只能编译一次。
-		virtual bool CompileScript() = 0;
-
-		//执行脚本函数，传入参数：(CControlUI *)
-		virtual bool ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl) = 0;
-
-		//执行脚本函数，传入参数：(CControlUI *, TEventUI *); duilib控件事件响应函数。
-		virtual bool ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, TEventUI *ev) = 0;
-
-		//执行脚本函数，传入参数：(CControlUI *, TNotifyUI *pMsg); duilib消息响应函数。
-		virtual bool ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, TNotifyUI *pMsg) = 0;
-
-		//执行脚本函数，传入参数：(CControlUI *, UIRender *, const RECT&, CControlUI*); duilib绘图类函数。
-		virtual bool ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl) = 0;
-		
-		//执行脚本函数，通用函数调用
-		virtual bool ExecuteScript(IScriptFunction *pFun) = 0;
-	};
-	typedef IScriptManager* (__stdcall *CREATE_SCRIPT_ENGINE_INSTANCE)();
-	typedef void (__stdcall *DELETE_SCRIPT_ENGINE_INSTANCE)(IScriptManager *pEngine);
-
-//跨线程操作控件
-#define UIACTION_BEGIN			0
-#define UIACTION_Close			1	//关闭窗口
-#define UIACTION_SetText		2	//设置文本
-#define UIACTION_SetTextColor	3	//设置文本颜色
-#define UIACTION_SetValue		4	//设置进度条当前值
-#define UIACTION_SetMinValue	5	//设置进度条之最小值
-#define UIACTION_SetMaxValue	6	//设置进度条之最大值
-#define UIACTION_END			7	//库外部可以定义 #define UIACTION_END+xxx, 并重写 void CUIFrameWnd::UIAction(TUIAction *act, bool bAsync)
+	//////////////////////////////////////////////////////////////////////////
+	//跨线程操作控件
+	#define UIACTION_BEGIN				0
+	#define UIACTION_Close				1	//关闭窗口
+	#define UIACTION_SetText			2	//设置文本
+	#define UIACTION_SetTextColor		3	//设置文本颜色
+	#define UIACTION_SetValue			4	//设置进度条当前值
+	#define UIACTION_SetMinValue		5	//设置进度条之最小值
+	#define UIACTION_SetMaxValue		6	//设置进度条之最大值
+	#define UIACTION_SetGridCellText		7
+	#define UIACTION_SetGridCellTextColor	8
+	#define UIACTION_GridRefresh			9
+	#define UIACTION_END				10	//库外部可以定义 #define UIACTION_END+xxx, 并重写 void CUIFrameWnd::UIAction(TUIAction *act, bool bAsync)
 	typedef struct UILIB_API tagUIAction
 	{
 		CDuiString sControlName;
@@ -300,9 +273,9 @@ namespace DuiLib {
 		void SetCaptionRect(RECT& rcCaption);
 		SIZE GetRoundCorner() const;
 		void SetRoundCorner(int cx, int cy);
-		SIZE GetMinInfo() const;
+		SIZE GetMinInfo();
 		void SetMinInfo(int cx, int cy);
-		SIZE GetMaxInfo() const;
+		SIZE GetMaxInfo();
 		void SetMaxInfo(int cx, int cy);
 		bool IsShowUpdateRect() const;
 		void SetShowUpdateRect(bool show);
@@ -538,7 +511,7 @@ namespace DuiLib {
 		CControlUI* GetRoot() const;
 		CControlUI* FindControl(POINT pt) const;
 		CControlUI* FindControl(LPCTSTR pstrName) const;
-		CControlUI* FindControl(const CDuiString &strName) const;
+		//CControlUI* FindControl(const CDuiString &strName) const;
 		CControlUI* FindSubControlByPoint(CControlUI* pParent, POINT pt) const;
 		CControlUI* FindSubControlByName(CControlUI* pParent, LPCTSTR pstrName) const;
 		CControlUI* FindSubControlByClass(CControlUI* pParent, LPCTSTR pstrClass, int iIndex = 0);

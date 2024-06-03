@@ -94,7 +94,7 @@ void CMyDocument::SetModifiedFlag(BOOL bModified)
 		}
 
 		if(bModified)
-			SetTitle(strTitle + " *");
+			SetTitle(strTitle + _T(" *"));
 		else
 			SetTitle(strTitle);
 	}

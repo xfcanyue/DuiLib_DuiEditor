@@ -344,6 +344,19 @@ void CMainFrame::OnNotifyClick(TNotifyUI& msg)
 		GetManager()->SetDPI(192);
 		GetManager()->ResetDPIAssets();
 	}
+
+	if(IsControl(msg, _T("btn_test_script_dialog")))
+	{
+		int r = 0;
+		CAutoScriptContext ctx(CPaintManagerUI::GetScriptEngine());
+//		CScriptContext * ctx = (CScriptContext *)CPaintManagerUI::GetScriptEngine()->CreateContext();
+		ctx->SetTimeOut(-1);
+		r = ctx->SetFunByName(_T("TestDialog"));	assert( r >= 0 );
+		r = ctx->SetArgAddress(0, GetManager());	assert( r >= 0 );
+		r = ctx->Execute();							assert( r >= 0 );
+		//CPaintManagerUI::GetScriptEngine()->ReleaseContext(ctx);
+		return;
+	}
 }
 
 void CMainFrame::OnNotifyTimer(TNotifyUI& msg)

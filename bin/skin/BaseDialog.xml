@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window size="400,300" sizebox="0,0,4,4" caption="0,0,0,20" showshadow="true" shadowsize="5" shadowposition="4,4" shadowcolor="0xFF4B4B4B">
+	<Include source="config.xml" />
+	<VerticalLayout inset="1,1,1,1" bkcolor="0xFFD1E8F5" bordercolor="0xFF969696" bordersize="1">
+		<HorizontalLayout height="20" childpadding="5" childvalign="vcenter" bkcolor="0xFFC0DCC0">
+			<Control width="16" height="16" foreimage="images\ico.jpg" />
+			<Label name="dialog_title" text="Dialog" resourceid="7" />
+			<HorizontalLayout autocalcwidth="true">
+				<FadeButton name="windowclosebtn" width="45" height="17" normalimage="file='images\sys_dlg_close.png' source='90,0,135,17'" hotimage="file='images\sys_dlg_close.png' source='45,0,90,17'" pushedimage="file='images\sys_dlg_close.png' source='0,0,45,17'" />
+			</HorizontalLayout>
+		</HorizontalLayout>
+		<VerticalLayout name="dialog_body" />
+		<HorizontalLayout name="dialog_bottom" height="40" inset="10,0,10,0" childpadding="10" pos="0,0,0,40">
+			<Control />
+			<Button name="btn_ok" width="100" height="30" text="确定" pos="0,0,100,30" style="style_button" />
+			<Button name="btn_cancel" width="100" height="30" text="取消" pos="0,0,100,30" style="style_button" />
+		</HorizontalLayout>
+	</VerticalLayout>
+</Window>

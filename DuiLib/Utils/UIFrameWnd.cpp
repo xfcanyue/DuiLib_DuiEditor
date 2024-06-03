@@ -107,6 +107,47 @@ void CUIFrameWndBase::UIAction(TUIAction *act, bool bAsync)
 		}
 		return;
 	}
+
+	if (act->action == UIACTION_SetGridCellText)
+	{
+		CGridUI *pGrid = dynamic_cast<CGridUI *>(pControl);
+		if(pGrid)
+		{
+			TCellID *p = (TCellID *)act->lParam;
+			TCellData *pCell = pGrid->GetCellData(p->row, p->col);
+			if(pCell)
+			{
+				pCell->SetText((LPCTSTR)act->wParam);
+			}
+		}
+		return;
+	}
+
+	if (act->action == UIACTION_SetGridCellTextColor)
+	{
+		CGridUI *pGrid = dynamic_cast<CGridUI *>(pControl);
+		if(pGrid)
+		{
+			TCellID *p = (TCellID *)act->lParam;
+			TCellData *pCell = pGrid->GetCellData(p->row, p->col);
+			if(pCell)
+			{
+				pCell->SetTextColor(act->wParam);
+			}
+		}
+		return;
+	}
+
+	if (act->action == UIACTION_GridRefresh)
+	{
+		CGridUI *pGrid = dynamic_cast<CGridUI *>(pControl);
+		if(pGrid)
+		{
+			BOOL bNeedUpdate = (BOOL)act->wParam;
+			pGrid->Refresh(bNeedUpdate);
+		}
+		return;
+	}
 }
 
 BOOL CUIFrameWndBase::IsInStaticControl(CControlUI *pControl)

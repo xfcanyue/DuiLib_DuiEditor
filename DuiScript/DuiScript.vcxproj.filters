@@ -226,6 +226,12 @@
     <ClInclude Include="regTFontInfo.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ScriptContext.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RegCDialog.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -370,6 +376,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="angelscript\angelscript\source\as_callfunc_arm64.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptContext.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -393,12 +393,12 @@ void CGridCellUI::CreateInnerControl()
 	case celltypeCheckBox:
 		{
 			CGridCellInnerCheckBoxUI *pControl = new CGridCellInnerCheckBoxUI;
+			Add(pControl);
 			pControl->OnEvent += MakeDelegate(this, &CGridCellUI::OnEventInnerControl);
 			pControl->OnNotify += MakeDelegate(this, &CGridCellUI::OnNotifyInnerControl);
 			if(GetOwner())
 				pControl->ApplyAttributeList(GetOwner()->GetStyleCheckBox());
 			pControl->SetOwner(this);
-			Add(pControl);
 			m_pInnerControl = pControl;
 		}
 		break;
@@ -695,21 +695,32 @@ void CGridCellUI::PaintText(UIRender *pRender)
 	rc.bottom -= rcTextPadding.bottom;
 
 	DWORD dwColor = IsEnabled() ? GetTextColor() : GetDisabledTextColor();
-	if((IsSelected() || IsFocused()) && (GetSelectedTextColor() != 0))
+	if(IsEnabled())
 	{
-		dwColor = GetSelectedTextColor();
-	}
-	else if( IsPushedState() && (GetPushedTextColor() != 0) )
-	{
-		dwColor = GetPushedTextColor();
-	}
-	else if( IsHotState() && (GetHotTextColor() != 0) )
-	{
-		dwColor = GetHotTextColor();
-	}
-	else if( IsFocused() && (GetFocusedTextColor() != 0) )
-	{
-		dwColor = GetFocusedTextColor();
+		if((IsSelected() || IsFocused()) && (GetSelectedTextColor() != 0))
+		{
+			dwColor = GetSelectedTextColor();
+		}
+		else if( IsPushedState() && (GetPushedTextColor() != 0) )
+		{
+			dwColor = GetPushedTextColor();
+		}
+		else if( IsHotState() && (GetHotTextColor() != 0) )
+		{
+			dwColor = GetHotTextColor();
+		}
+		else if( IsFocused() && (GetFocusedTextColor() != 0) )
+		{
+			dwColor = GetFocusedTextColor();
+		}
+
+		//如果表格行设置了选中行文本颜色，优先使用。
+		CGridRowUI *pRow = dynamic_cast<CGridRowUI*>(GetParent());
+		if(pRow && pRow->IsSelected())
+		{
+			if(pRow->GetSelectedTextColor() != 0)
+				dwColor = pRow->GetSelectedTextColor();
+		}
 	}
 
 	if(dwColor == 0)

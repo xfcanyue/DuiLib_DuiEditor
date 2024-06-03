@@ -10,6 +10,7 @@
 #include "angelscript/add_on/scriptarray/scriptarray.h"
 #include "angelscript/add_on/scriptarray/scriptarray.cpp"
 #include "RegCDuiString.h"
+#include "RegCBufferUI.h"
 #include "RegPoint.h"
 #include "regSIZE.h"
 #include "regRECT.h"
@@ -22,6 +23,8 @@
 #include "regTFontInfo.h"
 #include "regTImageInfo.h"
 #include "regTDrawInfo.h"
+#include "RegCDialog.h"
+#include "RegCDuiMd5.h"
 
 namespace DuiLib
 {
@@ -42,11 +45,6 @@ static CDuiString formatdatetime(const CDuiString &strtime, const datetime &dt)
 	}
 
 	return szBuffer;
-}
-
-static void ScriptMsgBox(const CDuiString &str)
-{
-	MessageBox(NULL, str, _T("duilib angelscript"), MB_OK);
 }
 
 static void ScriptMsgBox(LPCTSTR str)
@@ -209,6 +207,15 @@ DECL_PROP_UINT( OT_IMAGE );
 
 DECL_PROP_BOOL( TRUE );
 DECL_PROP_BOOL( FALSE );
+DECL_PROP_UINT( IDOK );
+DECL_PROP_UINT( IDCANCEL );
+DECL_PROP_UINT( DT_CENTER );
+DECL_PROP_UINT( DT_LEFT );
+DECL_PROP_UINT( DT_RIGHT );
+DECL_PROP_UINT( DT_VCENTER );
+DECL_PROP_UINT( DT_TOP );
+DECL_PROP_UINT( DT_BOTTOM );
+DECL_PROP_UINT( DT_SINGLELINE );
 //////////////////////////////////////////////////////////////////////////
 CScriptEngine g_ScriptEngine;
 
@@ -273,13 +280,14 @@ void CScriptEngine::Init()
 	r = engine->RegisterTypedef("LPARAM", "uint");	assert( r >= 0 );
 	r = engine->RegisterTypedef("DWORD", "int");	assert( r >= 0 );
 	r = engine->RegisterTypedef("WORD", "int16");	assert( r >= 0 );
-	r = engine->RegisterTypedef("BYTE", "int8");	assert( r >= 0 );
+	r = engine->RegisterTypedef("BYTE", "uint8");	assert( r >= 0 );
 	r = engine->RegisterTypedef("char", "int8");	assert( r >= 0 );
 	r = engine->RegisterTypedef("short", "int8");	assert( r >= 0 );
 	r = engine->RegisterTypedef("wchar_t", "int16");assert( r >= 0 );
 	r = engine->RegisterTypedef("UINT_PTR", "int64");assert( r >= 0 );
 	r = engine->RegisterTypedef("BOOL", "bool");		assert( r >= 0 );
 	r = engine->RegisterObjectType("LPVOID", sizeof(LPVOID), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_PRIMITIVE);	assert( r >= 0 );
+	r = engine->RegisterObjectType("LPCVOID", sizeof(LPCVOID), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_PRIMITIVE);	assert( r >= 0 );
 
 #ifdef _UNICODE
 	r = engine->RegisterTypedef("TCHAR", "int16");	assert( r >= 0 );
@@ -294,9 +302,13 @@ void CScriptEngine::Init()
 	r = engine->RegisterObjectType("LPCTSTR", sizeof(const char *), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_PRIMITIVE);		assert( r >= 0 );
 #endif
 
+	r = engine->RegisterObjectType("LPCWSTR", sizeof(const wchar_t *), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_PRIMITIVE);	assert( r >= 0 );
+	r = engine->RegisterObjectType("LPCSTR", sizeof(const char *), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_PRIMITIVE);		assert( r >= 0 );
+
 	//LPBYTE
 	r = engine->RegisterObjectType("LPBYTE", sizeof(const BYTE *), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_PRIMITIVE);		assert( r >= 0 );
-
+	
+	r = engine->RegisterObjectType("HWND", sizeof(HWND), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_PRIMITIVE);	assert( r >= 0 );
 	r = engine->RegisterObjectType("HINSTANCE", sizeof(HINSTANCE), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_PRIMITIVE);	assert( r >= 0 );
 	r = engine->RegisterObjectType("HDC", sizeof(HDC), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_PRIMITIVE);	assert( r >= 0 );
 	r = engine->RegisterObjectType("HBITMAP", sizeof(HBITMAP), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_PRIMITIVE);	assert( r >= 0 );
@@ -305,6 +317,8 @@ void CScriptEngine::Init()
 
 	//把CDuiString注册到脚本中，使成为脚本标准字符串类型
 	regCDuiString::Register(engine);
+	regCBufferUI::Register(engine);
+	regCDuiMd5::Register(engine);
 
 	//时间类
 	RegisterStdTime(engine);
@@ -392,18 +406,26 @@ void CScriptEngine::Init()
 	//REGISTER_CONTROL( CRingUI );
 	REGISTER_CONTROL( CRollTextUI );
 	REGISTER_CONTROL( CTextUI );
-	
+
+	REGISTER_CONTROL( CGridBodyUI );
+	regTCellData::Register(engine);
+	REGISTER_CONTROL( CGridCellUI );
+	REGISTER_CONTROL( CGridHeaderUI );
+	REGISTER_CONTROL( CGridRowUI );
+	REGISTER_CONTROL( CGridUI );
+
 	reg_ControlHierarchies(); 
 
 	regCPaintManagerUI::Register_Extra(engine);
 	regTNotifyUI::Register(engine);
 	regTEventUI::Register_Extra(engine);
 
+	regCDialog::Register(engine);
+
 	reg_GlobalFunction();
 	
 	//注册MsgBox函数
-	r = engine->RegisterGlobalFunction("void MsgBox(const string &in)", asFUNCTIONPR(ScriptMsgBox, (const CDuiString&), void), asCALL_CDECL); assert( r >= 0 );
-	r = engine->RegisterGlobalFunction("void MsgBox(LPCTSTR)", asFUNCTIONPR(ScriptMsgBox, (LPCTSTR), void), asCALL_CDECL); assert( r >= 0 );
+	r = engine->RegisterGlobalFunction("void MsgBox(string)", asFUNCTIONPR(ScriptMsgBox, (LPCTSTR), void), asCALL_CDECL); assert( r >= 0 );
 	
 	//注册调试信息输出函数
 	r = engine->RegisterGlobalFunction("void OutputDebugString(string &in)", asFUNCTIONPR(ScriptOutputDebugString, (CDuiString&), void), asCALL_CDECL); assert( r >= 0 );
@@ -567,14 +589,27 @@ void CScriptEngine::reg_GlobalProperty()
 	//
 	REGI_PROP_BOOL( TRUE );
 	REGI_PROP_BOOL( FALSE );
+	REGI_PROP_UINT( IDOK );
+	REGI_PROP_UINT( IDCANCEL );
+	REGI_PROP_UINT( DT_CENTER );
+	REGI_PROP_UINT( DT_LEFT );
+	REGI_PROP_UINT( DT_RIGHT );
+	REGI_PROP_UINT( DT_VCENTER );
+	REGI_PROP_UINT( DT_TOP );
+	REGI_PROP_UINT( DT_BOTTOM );
+	REGI_PROP_UINT( DT_SINGLELINE );
+
 }
 
 void CScriptEngine::reg_ControlHierarchies()
 {
-	int r = 0;
 	//////////////////////////////////////////////////////////////////////////
 	//注册类的层次关系
 	//REG_CONTROL_HIERARCHIES(父类, 子类);
+
+	int r = 0;
+
+	//////////////////////////////////////////////////////////////////////////
 	REG_CLASS_HIERARCHIES(CControlUI, CActiveXUI);
 	REG_CLASS_HIERARCHIES(CControlUI, CColorPaletteUI);
 	REG_CLASS_HIERARCHIES(CControlUI, CContainerUI);
@@ -584,51 +619,103 @@ void CScriptEngine::reg_ControlHierarchies()
 	REG_CLASS_HIERARCHIES(CControlUI, CScrollBarUI);
 
 	REG_CLASS_HIERARCHIES(CActiveXUI, CWebBrowserUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CWebBrowserUI);
 
+	//////////////////////////////////////////////////////////////////////////
 	REG_CLASS_HIERARCHIES(CContainerUI, CChildLayoutUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CChildLayoutUI);
+
 	REG_CLASS_HIERARCHIES(CContainerUI, CChildWindowUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CChildWindowUI);
+
 	REG_CLASS_HIERARCHIES(CContainerUI, CComboUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CComboUI);
+
 	REG_CLASS_HIERARCHIES(CContainerUI, CHorizontalLayoutUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CHorizontalLayoutUI);
+
 	REG_CLASS_HIERARCHIES(CContainerUI, CLabelLayoutUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CLabelLayoutUI);
+
 	REG_CLASS_HIERARCHIES(CContainerUI, CListHeaderItemUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CListHeaderItemUI);
+
 	REG_CLASS_HIERARCHIES(CContainerUI, CRichEditUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CRichEditUI);
+
 	REG_CLASS_HIERARCHIES(CContainerUI, CTabLayoutUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CTabLayoutUI);
+
 	REG_CLASS_HIERARCHIES(CContainerUI, CTileLayoutUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CTileLayoutUI);
+
 	REG_CLASS_HIERARCHIES(CContainerUI, CVerticalLayoutUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CVerticalLayoutUI);
+
+	//////////////////////////////////////////////////////////////////////////
 
 	REG_CLASS_HIERARCHIES(CHorizontalLayoutUI, CListContainerElementUI);
+	REG_CLASS_HIERARCHIES(CContainerUI, CListContainerElementUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CListContainerElementUI);
+
 	REG_CLASS_HIERARCHIES(CHorizontalLayoutUI, CListContainerHeaderItemUI);
+	REG_CLASS_HIERARCHIES(CContainerUI, CListContainerHeaderItemUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CListContainerHeaderItemUI);
+
 	REG_CLASS_HIERARCHIES(CHorizontalLayoutUI, CListHeaderUI);
+	REG_CLASS_HIERARCHIES(CContainerUI, CListHeaderUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CListHeaderUI);
 
 	REG_CLASS_HIERARCHIES(CLabelLayoutUI, CButtonLayoutUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CButtonLayoutUI);
 	REG_CLASS_HIERARCHIES(CButtonLayoutUI, COptionLayoutUI);
+	REG_CLASS_HIERARCHIES(CControlUI, COptionLayoutUI);
 
 	REG_CLASS_HIERARCHIES(CTabLayoutUI, CAnimationTabLayoutUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CAnimationTabLayoutUI);
 
 	REG_CLASS_HIERARCHIES(CVerticalLayoutUI, CGroupBoxUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CGroupBoxUI);
 	//REG_CLASS_HIERARCHIES(CVerticalLayoutUI, CListBodyUI);
 	REG_CLASS_HIERARCHIES(CVerticalLayoutUI, CListUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CListUI);
 
 	REG_CLASS_HIERARCHIES(CLabelUI, CButtonUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CButtonUI);
 	REG_CLASS_HIERARCHIES(CLabelUI, CDateTimeUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CDateTimeUI);
 	REG_CLASS_HIERARCHIES(CLabelUI, CEditUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CEditUI);
 	REG_CLASS_HIERARCHIES(CLabelUI, CHotKeyUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CHotKeyUI);
 	REG_CLASS_HIERARCHIES(CLabelUI, CIPAddressUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CIPAddressUI);
 	REG_CLASS_HIERARCHIES(CLabelUI, CProgressUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CProgressUI);
 	//REG_CLASS_HIERARCHIES(CLabelUI, CRingUI);
 	REG_CLASS_HIERARCHIES(CLabelUI, CRollTextUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CRollTextUI);
 	REG_CLASS_HIERARCHIES(CLabelUI, CTextUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CTextUI);
 
 	REG_CLASS_HIERARCHIES(CButtonUI, CFadeButtonUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CFadeButtonUI);
 	REG_CLASS_HIERARCHIES(CButtonUI, COptionUI);
+	REG_CLASS_HIERARCHIES(CControlUI, COptionUI);
 
 	REG_CLASS_HIERARCHIES(COptionUI, CCheckBoxUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CCheckBoxUI);
 	REG_CLASS_HIERARCHIES(COptionUI, CTabCtrlUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CTabCtrlUI);
 
 	REG_CLASS_HIERARCHIES(CProgressUI, CSliderUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CSliderUI);
 
 	REG_CLASS_HIERARCHIES(CListElementUI, CListLabelElementUI);
-	
+	REG_CLASS_HIERARCHIES(CControlUI, CListLabelElementUI);
+
+	REG_CLASS_HIERARCHIES(CVerticalLayoutUI, CGridUI);
+	REG_CLASS_HIERARCHIES(CControlUI, CGridUI);
 }
 
 static void script_CreateMenu(CPaintManagerUI *pManager, LPCTSTR xml)

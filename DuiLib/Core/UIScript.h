@@ -6,75 +6,78 @@
 namespace DuiLib {
 	/////////////////////////////////////////////////////////////////////////////////////
 	//
-
-	//脚本参数类型
-	enum emUIArgTypes
-	{
-		UIArg_void		= 0,
-		UIArg_bool,
-		UIArg_BYTE,
-		UIArg_WORD,
-		UIArg_DWORD,
-		UIArg_float,
-		UIArg_double,
-		UIArg_address,
-		UIArg_object,
-	};
-
-	//通用脚本函数调用
-	class UILIB_API IScriptFunction
+	//脚本执行上下文，脚本运行实例
+	class UILIB_API IScriptContext
 	{
 	public:
-		struct TArgItem
-		{
-			emUIArgTypes _type;
-			bool _bool;
-			BYTE _byte;
-			WORD _word;
-			DWORD _dword;
-			float _float;
-			double _double;
-			void *_addr;
-			void *_obj;
-		};
-	public:
-		IScriptFunction();
-		virtual ~IScriptFunction();
+		virtual ~IScriptContext(void) {}
 
-		//设置函数返回值类型
-		virtual void SetReturnType(emUIArgTypes argType);
+		//设置入口函数, 按函数名。
+		virtual int SetFunByName(LPCTSTR lpszFunName) = 0;
+		//设置入口函数, 按函数声明。
+		virtual int SetFunByDecl(LPCTSTR lpszFunDecl) = 0;
 
-		//设置函数名
-		virtual void SetFuctionName(LPCTSTR sFunName);
+		//传入参数
+		virtual int	SetArgByte(UINT arg, BYTE value) = 0;
+		virtual int	SetArgWord(UINT arg, WORD value) = 0;
+		virtual int	SetArgDWord(UINT arg, DWORD value) = 0;
+		virtual int	SetArgFloat(UINT arg, float value) = 0;
+		virtual int	SetArgDouble(UINT arg, double value) = 0;
+		virtual int	SetArgAddress(UINT arg, void *addr) = 0;
+		virtual int	SetArgObject(UINT arg, void *obj) = 0;
+		virtual void *GetAddressOfArg(UINT arg) = 0;
 
-		//从左到右入栈参数
-		virtual void PushArgBool(bool value);
-		virtual void PushArgByte(BYTE value);
-		virtual void PushArgWord(WORD value);
-		virtual void PushArgDWord(DWORD value);
-		virtual void PushArgFloat(float value);
-		virtual void PushArgDouble(double value);
-		virtual void PushArgAddress(void *addr);
-		virtual void PushArgObject(void *obj);
+		//脚本执行超时时间，毫秒, dwTimeOut < 0，不判断超时。默认值：5秒。
+		virtual void SetTimeOut(int dwTimeOut) = 0;
+
+		//执行脚本
+		virtual int Execute() = 0;
 
 		//获取返回值
-		virtual bool	GetReturnBool();
-		virtual BYTE	GetReturnByte();
-		virtual WORD	GetReturnWord();
-		virtual DWORD	GetReturnDWord();
-		virtual float	GetReturnFloat();
-		virtual double	GetReturnDouble();
-		virtual void *	GetReturnAddress();
-		virtual void *	GetReturnObject();
-
-
-		emUIArgTypes m_emReturnArgTypes;
-		CDuiString m_sFunName;
-		CStdPtrArray m_arrArgs;
-		TArgItem m_result;
+		virtual BYTE	GetReturnByte() = 0;
+		virtual WORD	GetReturnWord() = 0;
+		virtual DWORD	GetReturnDWord() = 0;
+		virtual float	GetReturnFloat() = 0;
+		virtual double	GetReturnDouble() = 0;
+		virtual void *	GetReturnAddress() = 0;
+		virtual void *	GetReturnObject() = 0;
+		virtual void *	GetAddressOfReturnValue() = 0;
 	};
-	
 
+	class UILIB_API IScriptManager
+	{
+	public:
+		//加入脚本文件
+		virtual bool AddScriptFile(LPCTSTR pstrFileName) = 0;
+
+		//加入脚本代码
+		virtual bool AddScriptCode(LPCTSTR pstrCode) = 0;
+
+		//编译脚本。 一次性加入脚本文件完毕，然后只能编译一次。
+		virtual bool CompileScript() = 0;
+
+		//创建执行上下文
+		virtual IScriptContext *CreateContext() = 0;
+
+		//删除执行上下文
+		virtual void ReleaseContext(IScriptContext *ctx) = 0;
+	};
+	typedef IScriptManager* (__stdcall *CREATE_SCRIPT_ENGINE_INSTANCE)();
+	typedef void (__stdcall *DELETE_SCRIPT_ENGINE_INSTANCE)(IScriptManager *pEngine);
+
+	class UILIB_API CAutoScriptContext
+	{
+	public:
+		CAutoScriptContext(IScriptManager *mgr);
+		~CAutoScriptContext();
+
+		IScriptContext* operator->() const throw();
+		bool operator!() const throw();
+	protected:
+		IScriptManager *mgr;
+		IScriptContext *ctx;
+	private:
+	};
 } // namespace DuiLib
 
 #endif // __UISCRIPT_H__

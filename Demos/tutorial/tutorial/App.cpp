@@ -25,6 +25,7 @@ bool CApp::InitInstance(HINSTANCE hInstance)
 
 	//加入脚本文件
 	CPaintManagerUI::AddScriptFile(_T("Script\\Script.as"));
+	CPaintManagerUI::AddScriptFile(_T("Script\\TestDialog.as"));
 
 	//编译脚本
 	CPaintManagerUI::CompileScript();

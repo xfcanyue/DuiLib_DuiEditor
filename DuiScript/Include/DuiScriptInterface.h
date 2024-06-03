@@ -1,7 +1,7 @@
 #pragma once	
 
-#ifndef __DUISCRIPT_H__
-#define __DUISCRIPT_H__
+#ifndef __DUISCRIPT_INTERFACE_H__
+#define __DUISCRIPT_INTERFACE_H__
 
 #ifdef UILIB_STATIC
 #define UISCRIPT_API 
@@ -56,6 +56,8 @@ class IScriptHelper
 public:
 	virtual void SetScriptMessageCallBack(SCRIPTMESSAGECALLBACK pFun, UINT_PTR userdata) = 0;
 	virtual asIScriptEngine *GetEngine() const = 0;
+// 	virtual IScriptContext *CreateContext() = 0;
+// 	virtual void ReleaseContext(IScriptContext *ctx) = 0;
 	//////////////////////////////////////////////////////////////////////////
 	virtual bool CreateModule(LPCTSTR moduleName = NULL) = 0;
 	virtual void DeleteModule() = 0;
@@ -76,32 +78,6 @@ public:
 	virtual BOOL IsCanDebugStepReturn() = 0;
 	virtual void DebugStepCursor()		= 0;
 	virtual BOOL IsCanDebugStepCursor() = 0;
-
-	//设置入口函数
-	virtual bool SetMainFun(LPCTSTR lpszMainFun) = 0;
-
-	//传入入口函数参数
-	virtual BOOL	SetArgByte(UINT arg, BYTE value) = 0;
-	virtual BOOL	SetArgWord(UINT arg, WORD value) = 0;
-	virtual BOOL	SetArgDWord(UINT arg, DWORD value) = 0;
-	virtual BOOL	SetArgFloat(UINT arg, float value) = 0;
-	virtual BOOL	SetArgDouble(UINT arg, double value) = 0;
-	virtual BOOL	SetArgAddress(UINT arg, void *addr) = 0;
-	virtual BOOL	SetArgObject(UINT arg, void *obj) = 0;
-	virtual void *  GetAddressOfArg(UINT arg) = 0;
-
-	//执行脚本
-	virtual bool	Excute() = 0;
-
-	//获取函数的返回值
-	virtual BYTE	GetReturnByte() = 0;
-	virtual WORD	GetReturnWord() = 0;
-	virtual DWORD	GetReturnDWord() = 0;
-	virtual float	GetReturnFloat() = 0;
-	virtual double	GetReturnDouble() = 0;
-	virtual void *	GetReturnAddress() = 0;
-	virtual void *	GetReturnObject() = 0;
-	virtual void *	GetAddressOfReturnValue() = 0;
 };
 
 UISCRIPT_API DuiLib::IScriptManager* __stdcall CreateScriptEngine();

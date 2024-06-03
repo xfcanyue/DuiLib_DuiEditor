@@ -28,6 +28,10 @@
 	assert( r >= 0 );	\
 }
 
+/*
+注：注册到脚本中的函数，参数或返回值包含LPCTSTR的, 将转为string类型
+*/
+
 //////////////////////////////////////////////////////////////////////////
 //注册类函数
 #define REG_METHOD_FUNPR(class, ret, n, p)	{	\
@@ -36,8 +40,22 @@
 	sFun.Replace("CDuiPoint", "CPoint");		\
 	sFun.Replace("CDuiRect", "CRect");			\
 	sFun.Replace("CDuiSize", "CSize");			\
-	sFun.Replace("*", "@");	\
+	sFun.Replace("*", "@");						\
+	sFun.Replace("LPCTSTR", "string");			\
 	r = engine->RegisterObjectMethod(#class, sFun, asMETHODPR(class, n, p, ret), asCALL_THISCALL);  \
+	assert( r >= 0 ); \
+}
+
+//注册类函数, 直接使用类名
+#define REG_METHOD_FUNPR2(regclassname, class, ret, n, p)	{	\
+	CStringA sFun = DEFUNC(ret n##p);			\
+	sFun.Replace("CDuiString", "string");		\
+	sFun.Replace("CDuiPoint", "CPoint");		\
+	sFun.Replace("CDuiRect", "CRect");			\
+	sFun.Replace("CDuiSize", "CSize");			\
+	sFun.Replace("*", "@");						\
+	sFun.Replace("LPCTSTR", "string");			\
+	r = engine->RegisterObjectMethod(regclassname, sFun, asMETHODPR(class, n, p, ret), asCALL_THISCALL);  \
 	assert( r >= 0 ); \
 }
 
@@ -48,7 +66,8 @@
 	sFun.Replace("CDuiPoint", "CPoint");		\
 	sFun.Replace("CDuiRect", "CRect");			\
 	sFun.Replace("CDuiSize", "CSize");			\
-	sFun.Replace("*", "@");	\
+	sFun.Replace("*", "@");						\
+	sFun.Replace("LPCTSTR", "string");			\
 	r = engine->RegisterObjectProperty(#class, sFun, asOFFSET(class, value)); \
 	assert( r >= 0 ); \
 }
@@ -56,12 +75,13 @@
 //////////////////////////////////////////////////////////////////////////
 //注册全局函数, 注册时若是类的静态函数如Class::Fun(), 需要把"Class::"移除，注册为全局函数;
 #define REG_GLOBAL_FUNPR(ret, n, p)	{			\
-	CStringA sFun = DEFUNC(ret n##p);	\
+	CStringA sFun = DEFUNC(ret n##p);			\
 	sFun.Replace("CDuiString", "string");		\
 	sFun.Replace("CDuiPoint", "CPoint");		\
 	sFun.Replace("CDuiRect", "CRect");			\
 	sFun.Replace("CDuiSize", "CSize");			\
 	sFun.Replace("*", "@");						\
+	sFun.Replace("LPCTSTR", "string");			\
 	if(sFun.Find("::") >= 0)					\
 	{											\
 		int start = sFun.Find(" ");				\
@@ -86,6 +106,7 @@
 	sFun.Replace("CDuiRect", "CRect");			\
 	sFun.Replace("CDuiSize", "CSize");			\
 	sFun.Replace("*", "@");	\
+	sFun.Replace("LPCTSTR", "string");			\
 	r = engine->RegisterObjectMethod(classname, sFun, asMETHODPR(T, n, p, ret), asCALL_THISCALL);  \
 	assert( r >= 0 ); \
 }

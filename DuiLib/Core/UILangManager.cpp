@@ -231,8 +231,8 @@ namespace DuiLib {
 		pkg->SetSkinFile(lpstrSkinFile);
 
 		CDuiString sPath = CLangManagerUI::GetLangPath();
-		if(sPath.GetAt(sPath.GetLength()-1) != '\\')	
-			sPath += '\\';
+		if(sPath.GetAt(sPath.GetLength()-1) != _T('\\'))	
+			sPath += _T('\\');
 		CDuiString sFile = lpstrSkinFile;
 		if(sFile.ReverseFind('.') >= 0)
 		{
@@ -301,7 +301,7 @@ namespace DuiLib {
 	{
 		ReleaseStringTable();
 		CDuiString sPath = CLangManagerUI::GetLangPath();
-		if(sPath.GetAt(sPath.GetLength()-1) != '\\')	sPath += '\\';
+		if(sPath.GetAt(sPath.GetLength()-1) != _T('\\'))	sPath += _T('\\');
 		sPath += _T("StringTable.lng");
 
 		STRINGorID xml(sPath.GetData());
@@ -411,7 +411,7 @@ namespace DuiLib {
 		m_mStringResource.clear();
 
 		CDuiString sPath = CLangManagerUI::GetLangPath();
-		if (sPath.GetAt(sPath.GetLength() - 1) != '\\')	sPath += '\\';
+		if (sPath.GetAt(sPath.GetLength() - 1) != _T('\\'))	sPath += _T('\\');
 		sPath += _T("StringResource.lng");
 
 		m_xmlStringRecource.load_file(sPath);

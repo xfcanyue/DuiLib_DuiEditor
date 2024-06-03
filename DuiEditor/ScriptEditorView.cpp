@@ -197,7 +197,7 @@ int CScriptEditorView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		m_pHelper = (* ((CDuiEditorApp *)AfxGetApp())->m_funCreateScriptHelper)();
 		//m_pHelper->GetEngine()->RegisterGlobalFunction("void print(LPCTSTR)", asFUNCTION(print), asCALL_CDECL);
 		m_pHelper->SetScriptMessageCallBack(ScriptMessageCallback, (UINT_PTR)this);
-		m_lexer.SetEngine(m_pHelper->GetEngine());
+		m_lexer.SetEngine((asIScriptEngine *)m_pHelper->GetEngine());
 	}
 
 	sci.execute(SCI_SETMOUSEDWELLTIME, 500);
@@ -849,7 +849,7 @@ LRESULT CScriptEditorView::OnRefreshStack(WPARAM wparam, LPARAM lparam)
 				pProp->AllowEdit(FALSE);
 				pProp->SetName(name);
 				pProp->SetValue(val);
-				pProp->SetDescription(name + " = " + val);
+				pProp->SetDescription(name + _T(" = ") + val);
 				pGroup->AddSubItem(pProp);
 			}
 		}
@@ -865,12 +865,12 @@ LRESULT CScriptEditorView::OnRefreshStack(WPARAM wparam, LPARAM lparam)
 		int typeId;
 		mod->GetGlobalVar(n, &vname, 0, &typeId);
 		CString name = LSUTF82T(mod->GetGlobalVarDeclaration(n));
-		CString val = LSUTF82T(VariantToString(mod->GetAddressOfGlobalVar(n), typeId, false, m_pHelper->GetEngine()));
+		CString val = LSUTF82T(VariantToString(mod->GetAddressOfGlobalVar(n), typeId, false, (asIScriptEngine *)m_pHelper->GetEngine()));
 		CMFCPropertyGridProperty* pProp = new CMFCPropertyGridProperty(_T(""),  _T(""), _T(""));
 		pProp->AllowEdit(FALSE);
 		pProp->SetName(name);
 		pProp->SetValue(val);
-		pProp->SetDescription(name + " = " + val);
+		pProp->SetDescription(name + _T(" = ") + val);
 		pGroup->AddSubItem(pProp);
 	}
 	pPropList->AddProperty(pGroup);
@@ -1003,6 +1003,8 @@ void CScriptEditorView::OnScriptExcute()
 	CDlgScriptTest dlg;
 	if(dlg.DoModal() != IDOK)
 		return;
+
+	int r = 0;
 	
 	//清理之前加载的脚本内容
 	m_pHelper->DeleteModule();
@@ -1014,8 +1016,10 @@ void CScriptEditorView::OnScriptExcute()
 	//编译脚本
 	m_pHelper->CompileScript();
 
+	CAutoScriptContext ctx((CScriptHelper *)m_pHelper);
+
 	//设置入口函数
-	m_pHelper->SetMainFun(_T("int main(datetime t1, datetime t2)"));
+	r = ctx->SetFunByName(_T("main"));
 
 	datetime t1, t2;
 	t1.SetDateTime(CDlgScriptTest::m_t1.GetYear(), CDlgScriptTest::m_t1.GetMonth(), CDlgScriptTest::m_t1.GetDay(),
@@ -1024,14 +1028,14 @@ void CScriptEditorView::OnScriptExcute()
 		CDlgScriptTest::m_t2.GetHour(), CDlgScriptTest::m_t2.GetMinute(), CDlgScriptTest::m_t2.GetSecond());
 
 	//传入参数
-	m_pHelper->SetArgObject(0, &t1); 
-	m_pHelper->SetArgObject(1, &t2); 
+	ctx->SetArgObject(0, &t1); 
+	ctx->SetArgObject(1, &t2); 
 
 	//运行脚本
-	if(m_pHelper->Excute())
+	if(ctx->Execute())
 	{
 		//获取返回值
-		InsertMsgV(_T("返回值：%d"), m_pHelper->GetReturnDWord());
+		InsertMsgV(_T("返回值：%d"), ctx->GetReturnDWord());
 	}
 }
 
@@ -1055,6 +1059,8 @@ void CScriptEditorView::OnScriptRun()
 	if(dlg.DoModal() != IDOK)
 		return;
 
+	CAutoScriptContext ctx((CScriptHelper *)m_pHelper);
+
 	//清理之前加载的脚本内容
 	m_pHelper->DeleteModule();
 	m_pHelper->CreateModule(GetDocument()->GetPathName());
@@ -1066,7 +1072,7 @@ void CScriptEditorView::OnScriptRun()
 	m_pHelper->CompileScript();
 
 	//设置入口函数
-	m_pHelper->SetMainFun(_T("int main(datetime t1, datetime t2)"));
+	ctx->SetFunByName(_T("main"));
 
 	datetime t1, t2;
 	t1.SetDateTime(CDlgScriptTest::m_t1.GetYear(), CDlgScriptTest::m_t1.GetMonth(), CDlgScriptTest::m_t1.GetDay(),
@@ -1075,8 +1081,8 @@ void CScriptEditorView::OnScriptRun()
 		CDlgScriptTest::m_t2.GetHour(), CDlgScriptTest::m_t2.GetMinute(), CDlgScriptTest::m_t2.GetSecond());
 
 	//传入参数
-	m_pHelper->SetArgObject(0, &t1); 
-	m_pHelper->SetArgObject(1, &t2); 
+	ctx->SetArgObject(0, &t1); 
+	ctx->SetArgObject(1, &t2); 
 
 	//进入调试
 	m_pHelper->DebugRun();

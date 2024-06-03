@@ -22,6 +22,10 @@ inline LPTSTR CharNext(LPCTSTR lpsz)
 
 namespace DuiLib
 {
+#ifndef DUISTRING_DEFAULT_BASE_RADIX
+	#define DUISTRING_DEFAULT_BASE_RADIX 2	//DuiString中，float/double转字符串时，默认的小数点长度。
+#endif
+
 	//////////////////////////////////////////////////////////////////////////
 	enum DuiStringEncoding
 	{
@@ -58,6 +62,9 @@ namespace DuiLib
 		static DuiLib::Int64 ui_atoi64(const char *str);
 		static float ui_atof(const char *str);
 		static double ui_strtod (const char *nptr);
+
+		static BYTE Char2Hex(char ch);
+		static DuiLib::Int64 ui_hextoi64(const char *str);
 
 		static int __cdecl formatV(char *&pstr, const char *pstrFormat, va_list ap);
 		static int __cdecl format(char *string, size_t count, const char *format, va_list ap);
@@ -102,6 +109,9 @@ namespace DuiLib
 		static float ui_atof(const wchar_t *str);
 		static double ui_strtod (const wchar_t *nptr);
 
+		static BYTE Char2Hex(wchar_t ch);
+		static DuiLib::Int64 ui_hextoi64(const wchar_t *str);
+
 		static int __cdecl formatV(wchar_t *&pstr, const wchar_t *pstrFormat, va_list ap);
 		static int __cdecl format(wchar_t *string, size_t count, const wchar_t *format, va_list ap);
 
@@ -144,8 +154,10 @@ namespace DuiLib
 	{
 	public:
 		DuiStringT()									{ m_pstr = DuiTraits::GetNullString();						}
-		DuiStringT(const uichar ch)						{ m_pstr = DuiTraits::GetNullString(); Assign(&ch, 1);		}
-		DuiStringT(const uichar *lpsz, int nLen = -1)	{ m_pstr = DuiTraits::GetNullString(); Assign(lpsz, nLen);	}
+		DuiStringT(char ch)								{ m_pstr = DuiTraits::GetNullString(); Assign(ch);			}
+		DuiStringT(wchar_t ch)							{ m_pstr = DuiTraits::GetNullString(); Assign(ch);			}
+		DuiStringT(const char *lpsz, int nLen = -1)		{ m_pstr = DuiTraits::GetNullString(); Assign(lpsz, nLen);	}
+		DuiStringT(const wchar_t *lpsz, int nLen = -1)	{ m_pstr = DuiTraits::GetNullString(); Assign(lpsz, nLen);	}
 
 		DuiStringT(const CDuiStringA &str)
 		{
@@ -165,10 +177,35 @@ namespace DuiLib
 			DuiTraits::assign_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), str.GetEncoding(), TRUE);
 		}
 
-		DuiStringT(int int_to_string) 
-		{ 
-			ASSERT(FALSE); //因为在以前的版本中，有这个构造函数，去掉。
-		} 
+		DuiStringT(bool val)
+		{
+			m_pstr = DuiTraits::GetNullString();
+			Assign(val);
+		}
+
+		DuiStringT(int val)
+		{
+			m_pstr = DuiTraits::GetNullString();
+			Assign(val);
+		}
+
+		DuiStringT(DuiLib::Int64 val)
+		{
+			m_pstr = DuiTraits::GetNullString();
+			Assign(val);
+		}
+
+		DuiStringT(double val, int base=DUISTRING_DEFAULT_BASE_RADIX)
+		{
+			m_pstr = DuiTraits::GetNullString();
+			DuiTraits::AllocString(m_pstr, 64, sizeof(uichar)); DuiTraits::double_to_string(m_pstr, val, base);
+		}
+
+		DuiStringT(float val, int base=DUISTRING_DEFAULT_BASE_RADIX)
+		{
+			m_pstr = DuiTraits::GetNullString();
+			DuiTraits::AllocString(m_pstr, 64, sizeof(uichar)); DuiTraits::float_to_string(m_pstr, val, base);
+		}
 
 		~DuiStringT() 
 		{ 
@@ -211,63 +248,6 @@ namespace DuiLib
 			return DuiTraits::ui_strlen(m_pstr) == 0; 
 		}
 
-		void Assign(uichar ch)
-		{
-			DuiTraits::assign_string(m_pstr, StringEncoding, &ch, 1, StringEncoding, FALSE);
-		}
-
-		void Assign(const uichar *pstr, int cchMax = -1)
-		{
-			cchMax = (cchMax < 0 ? (int)DuiTraits::ui_strlen(pstr) : cchMax);
-			DuiTraits::assign_string(m_pstr, StringEncoding, pstr, cchMax, StringEncoding, FALSE);
-		}
-
-		void Assign(const CDuiStringA &str)
-		{
-			DuiTraits::assign_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), str.GetEncoding(), TRUE);
-		}
-
-		void Assign(const CDuiStringUtf8 &str)
-		{
-			DuiTraits::assign_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), str.GetEncoding(), TRUE);
-		}
-
-		void Assign(const CDuiStringW &str)
-		{
-			DuiTraits::assign_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), str.GetEncoding(), TRUE);
-		}
-
-		void Append(uichar ch)
-		{
-			uichar str[] = { ch, '\0' };
-			Append(str);
-		}
-
-		void Append(const uichar *pstr, int cchMax=-1) 
-		{ 
-			int srclen = DuiTraits::ui_strlen(pstr);
-			if(srclen == 0 || cchMax == 0)
-				return;
-			if(cchMax > 0 && cchMax < srclen)
-				srclen = cchMax;
-			DuiTraits::append_string(m_pstr, StringEncoding, pstr, srclen, StringEncoding); 
-		}
-
-		void Append(const CDuiStringA &str)
-		{
-			DuiTraits::append_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), str.GetEncoding());
-		}
-
-		void Append(const CDuiStringUtf8 &str)
-		{
-			DuiTraits::append_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), str.GetEncoding());
-		}
-
-		void Append(const CDuiStringW &str)
-		{
-			DuiTraits::append_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), str.GetEncoding());
-		}
-
 		const uichar *GetData() const 
 		{ 
 			return m_pstr; 
@@ -289,8 +269,7 @@ namespace DuiLib
 			return m_pstr; 
 		}
 
-		//由于地址复用的关系，这里可能会存在bug。 也就是，自己改了，别人的也改了。所以最好用SetAt()
-		uichar &operator[] (int nIndex) const 
+		const uichar &operator[] (int nIndex) const 
 		{ 
 			ASSERT(nIndex>=0 && nIndex<GetLength());
 			return m_pstr[nIndex];
@@ -303,24 +282,193 @@ namespace DuiLib
 			DuiTraits::assign_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), StringEncoding, FALSE);
 		}
 
-		const DuiStringT& operator=(const uichar ch)			{ Assign(ch);		return *this; }
-		const DuiStringT& operator=(const uichar *pstr)			{ Assign(pstr);		return *this; }
-		const DuiStringT& operator=(const CDuiStringA& src)		{ Assign(src);		return *this; }
-		const DuiStringT& operator=(const CDuiStringUtf8& src)	{ Assign(src);		return *this; }
-		const DuiStringT& operator=(const CDuiStringW& src)		{ Assign(src);		return *this; }
+		//////////////////////////////////////////////////////////////////////////
+		DuiStringT& Assign(char ch)
+		{
+			DuiTraits::assign_string(m_pstr, StringEncoding, &ch, 1, duistring_encoding_ansi, FALSE); 
+			return *this;
+		}	
+		DuiStringT& Append(char ch)
+		{
+			DuiTraits::append_string(m_pstr, StringEncoding, &ch, 1, duistring_encoding_ansi); 
+			return *this;
+		}
+		DuiStringT& operator=(const char ch)			{ Assign(ch);		return *this; }
+		DuiStringT& operator+=(const char ch)			{ Append(ch);		return *this; }
+		DuiStringT operator+(const char ch) const		{ DuiStringT sTemp = *this; sTemp.Append(ch);		return sTemp; }
+		friend CDuiString UILIB_API operator+(char lpStr, const CDuiString& string2);
 
-		const DuiStringT& operator+=(const uichar ch)			{ Append(ch);		return *this; }
-		const DuiStringT& operator+=(const uichar *pstr)		{ Append(pstr);		return *this; }
-		const DuiStringT& operator+=(const CDuiStringA& src)	{ Append(src);		return *this; }
-		const DuiStringT& operator+=(const CDuiStringUtf8& src) { Append(src);		return *this; }
-		const DuiStringT& operator+=(const CDuiStringW& src)	{ Append(src);		return *this; }
+		//////////////////////////////////////////////////////////////////////////
+		DuiStringT& Assign(wchar_t ch)
+		{
+			DuiTraits::assign_string(m_pstr, StringEncoding, &ch, 1, duistring_encoding_unicode, FALSE); 
+			return *this;
+		}	
+		DuiStringT& Append(wchar_t ch)
+		{
+			DuiTraits::append_string(m_pstr, StringEncoding, &ch, 1, duistring_encoding_unicode);   
+			return *this;
+		}
+		DuiStringT& operator=(const wchar_t ch)			{ Assign(ch);		return *this; }
+		DuiStringT& operator+=(const wchar_t ch)		{ Append(ch);		return *this; }
+		DuiStringT operator+(const wchar_t ch) const	{ DuiStringT sTemp = *this; sTemp.Append(ch);		return sTemp; }
+		friend CDuiString UILIB_API operator+(wchar_t lpStr, const CDuiString& string2);
 
-		DuiStringT operator+(const uichar ch)		const	{ DuiStringT sTemp = *this; sTemp.Append(ch);		return sTemp; }
-		DuiStringT operator+(const uichar *lpStr)	const	{ DuiStringT sTemp = *this; sTemp.Append(lpStr);	return sTemp; }
-		DuiStringT operator+(const CDuiStringA& src) const		{ DuiStringT sTemp = *this; sTemp.Append(src);	return sTemp; }
+		//////////////////////////////////////////////////////////////////////////
+		DuiStringT& Assign(const char *pstr, int cchMax = -1)
+		{
+			cchMax = (cchMax < 0 ? (int)DuiStringTraitsA::ui_strlen(pstr) : cchMax);
+#ifdef _UTF8CODE
+			DuiTraits::assign_string(m_pstr, StringEncoding, pstr, cchMax, duistring_encoding_utf8, FALSE);
+#else
+			DuiTraits::assign_string(m_pstr, StringEncoding, pstr, cchMax, duistring_encoding_ansi, FALSE);
+#endif
+			 return *this;
+		}
+		DuiStringT& Append(const char *pstr, int cchMax=-1) 
+		{ 
+			int srclen = DuiStringTraitsA::ui_strlen(pstr);
+			if(srclen == 0 || cchMax == 0)
+				return *this;
+			if(cchMax > 0 && cchMax < srclen)
+				srclen = cchMax;
+#ifdef _UTF8CODE
+			DuiTraits::append_string(m_pstr, StringEncoding, pstr, srclen, duistring_encoding_utf8);  
+#else
+			DuiTraits::append_string(m_pstr, StringEncoding, pstr, srclen, duistring_encoding_ansi);  
+#endif
+			return *this;
+		}
+		DuiStringT& operator=(const char *pstr)			{ Assign(pstr);		return *this; }
+		DuiStringT& operator+=(const char *pstr)		{ Append(pstr);		return *this; }
+		DuiStringT operator+(const char *lpStr) const	{ DuiStringT sTemp = *this; sTemp.Append(lpStr);	return sTemp; }
+		friend CDuiString UILIB_API operator+(const char *lpStr, const CDuiString& string2);
+
+		//////////////////////////////////////////////////////////////////////////
+		DuiStringT& Assign(const wchar_t *pstr, int cchMax = -1)
+		{
+			cchMax = (cchMax < 0 ? (int)DuiStringTraitsW::ui_strlen(pstr) : cchMax);
+			DuiTraits::assign_string(m_pstr, StringEncoding, pstr, cchMax, duistring_encoding_unicode, FALSE);
+			return *this;
+		}
+		DuiStringT& Append(const wchar_t *pstr, int cchMax=-1) 
+		{ 
+			int srclen = DuiStringTraitsW::ui_strlen(pstr);
+			if(srclen == 0 || cchMax == 0)
+				return *this;
+			if(cchMax > 0 && cchMax < srclen)
+				srclen = cchMax;
+			DuiTraits::append_string(m_pstr, StringEncoding, pstr, srclen, duistring_encoding_unicode);  
+			return *this;
+		}
+		DuiStringT& operator=(const wchar_t *pstr)			{ Assign(pstr);		return *this; }
+		DuiStringT& operator+=(const wchar_t *pstr)			{ Append(pstr);		return *this; }
+		DuiStringT operator+(const wchar_t *lpStr) const	{ DuiStringT sTemp = *this; sTemp.Append(lpStr);	return sTemp; }
+		friend CDuiString UILIB_API operator+(const wchar_t *lpStr, const CDuiString& string2);
+
+		//////////////////////////////////////////////////////////////////////////
+		DuiStringT& Assign(const CDuiStringA &str)
+		{
+			DuiTraits::assign_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), str.GetEncoding(), TRUE); return *this;
+		}
+		DuiStringT& Append(const CDuiStringA &str)
+		{
+			DuiTraits::append_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), str.GetEncoding()); return *this;
+		}
+		DuiStringT& operator=(const CDuiStringA& src)		{ Assign(src);		return *this; }
+		DuiStringT& operator+=(const CDuiStringA& src)		{ Append(src);		return *this; }
+		DuiStringT operator+(const CDuiStringA& src) const	{ DuiStringT sTemp = *this; sTemp.Append(src);	return sTemp; }
+
+		//////////////////////////////////////////////////////////////////////////
+		DuiStringT& Assign(const CDuiStringUtf8 &str)
+		{
+			DuiTraits::assign_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), str.GetEncoding(), TRUE); return *this;
+		}
+		DuiStringT& Append(const CDuiStringUtf8 &str)
+		{
+			DuiTraits::append_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), str.GetEncoding()); return *this;
+		}
+		DuiStringT& operator=(const CDuiStringUtf8& src)		{ Assign(src);		return *this; }
+		DuiStringT& operator+=(const CDuiStringUtf8& src)		{ Append(src);		return *this; }
 		DuiStringT operator+(const CDuiStringUtf8& src) const	{ DuiStringT sTemp = *this; sTemp.Append(src);	return sTemp; }
+
+		//////////////////////////////////////////////////////////////////////////
+		DuiStringT& Assign(const CDuiStringW &str)
+		{
+			DuiTraits::assign_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), str.GetEncoding(), TRUE); return *this;
+		}
+		DuiStringT& Append(const CDuiStringW &str)
+		{
+			DuiTraits::append_string(m_pstr, StringEncoding, str.toString(), str.GetLength(), str.GetEncoding()); return *this;
+		}
+		DuiStringT& operator=(const CDuiStringW& src)			{ Assign(src);		return *this; }
+		DuiStringT& operator+=(const CDuiStringW& src)			{ Append(src);		return *this; }
 		DuiStringT operator+(const CDuiStringW& src) const		{ DuiStringT sTemp = *this; sTemp.Append(src);	return sTemp; }
 
+		//////////////////////////////////////////////////////////////////////////
+		DuiStringT& Assign(bool val)					{ DuiTraits::AllocString(m_pstr, 64, sizeof(uichar)); DuiTraits::bool_to_string(m_pstr, val);		return *this;	}
+		DuiStringT& Append(bool val)					{ DuiStringT sTemp; sTemp.Assign(val); Append(sTemp); return *this; }
+		DuiStringT& operator=(bool src)					{ Assign(src);		return *this; }
+		DuiStringT& operator+=(bool src)				{ Append(src);		return *this; }
+		DuiStringT operator+(bool src) const			{ DuiStringT sTemp = *this; sTemp.Append(src);	return sTemp; }
+		friend CDuiString UILIB_API operator+(bool lpStr, const CDuiString& string2);
+		
+		//////////////////////////////////////////////////////////////////////////
+		DuiStringT& Assign(int val)						{ DuiTraits::AllocString(m_pstr, 64, sizeof(uichar)); DuiTraits::int_to_string(m_pstr, val);		return *this;	}
+		DuiStringT& Append(int val)						{ DuiStringT sTemp; sTemp.Assign(val); Append(sTemp); return *this; }
+		DuiStringT& operator=(int src)					{ Assign(src);		return *this; }
+		DuiStringT& operator+=(int src)					{ Append(src);		return *this; }
+		DuiStringT operator+(int src) const				{ DuiStringT sTemp = *this; sTemp.Append(src);	return sTemp; }
+		friend CDuiString UILIB_API operator+(int lpStr, const CDuiString& string2);
+
+		//////////////////////////////////////////////////////////////////////////
+		DuiStringT& Assign(DuiLib::Int64 val)			{ DuiTraits::AllocString(m_pstr, 64, sizeof(uichar)); DuiTraits::int64_to_string(m_pstr, val);		return *this;	}
+		DuiStringT& Append(DuiLib::Int64 val)			{ DuiStringT sTemp; sTemp.Assign(val); Append(sTemp); return *this; }
+		DuiStringT& operator=(DuiLib::Int64 src)		{ Assign(src);		return *this; }
+		DuiStringT& operator+=(DuiLib::Int64 src)		{ Append(src);		return *this; }
+		DuiStringT operator+(DuiLib::Int64 src) const	{ DuiStringT sTemp = *this; sTemp.Append(src);	return sTemp; }
+		friend CDuiString UILIB_API operator+(DuiLib::Int64 lpStr, const CDuiString& string2);
+
+		//////////////////////////////////////////////////////////////////////////	
+		DuiStringT& Assign(double val, int base=DUISTRING_DEFAULT_BASE_RADIX)		
+		{ 
+			DuiTraits::AllocString(m_pstr, 64, sizeof(uichar)); DuiTraits::double_to_string(m_pstr, val, base); return *this;	
+		}
+		DuiStringT& Append(double val, int base=DUISTRING_DEFAULT_BASE_RADIX)		
+		{ 
+			DuiStringT sTemp; sTemp.Assign(val,base); Append(sTemp); return *this; 
+		}
+		DuiStringT& operator=(double src)				{ Assign(src,DUISTRING_DEFAULT_BASE_RADIX);		return *this; }
+		DuiStringT& operator+=(double src)				{ Append(src,DUISTRING_DEFAULT_BASE_RADIX);		return *this;}
+		DuiStringT operator+(double src) const			{ DuiStringT sTemp = *this; sTemp.Append(src,2);	return sTemp; }
+		friend CDuiString UILIB_API operator+(double lpStr, const CDuiString& string2);
+
+		//////////////////////////////////////////////////////////////////////////
+		DuiStringT& Assign(float val, int base=DUISTRING_DEFAULT_BASE_RADIX)		
+		{ 
+			DuiTraits::AllocString(m_pstr, 64, sizeof(uichar)); DuiTraits::float_to_string(m_pstr, val, base); return *this;	
+		}
+		DuiStringT& Append(float val, int base=DUISTRING_DEFAULT_BASE_RADIX)		
+		{ 
+			DuiStringT sTemp; sTemp.Assign(val,base); Append(sTemp); return *this; 
+		}
+		DuiStringT& operator=(float src)				{ Assign(src,DUISTRING_DEFAULT_BASE_RADIX);		return *this; }
+		DuiStringT& operator+=(float src)				{ Append(src,DUISTRING_DEFAULT_BASE_RADIX);		return *this; }
+		DuiStringT operator+(float src) const			{ DuiStringT sTemp = *this; sTemp.Append(src,2);	return sTemp; }
+		friend CDuiString UILIB_API operator+(float lpStr, const CDuiString& string2);
+
+		//////////////////////////////////////////////////////////////////////////
+		const uichar *toString() const						{ return (const uichar *)m_pstr; }
+		bool toBool(bool def = false) const					{ return m_pstr[0]=='1' || m_pstr[0]=='t' || m_pstr[0]=='T' || m_pstr[0]=='Y' || m_pstr[0]=='y'; }
+		int toInt(int def = 0) const						{ return DuiTraits::ui_atoi(m_pstr); }
+		DuiLib::Int64 toInt64(DuiLib::Int64 def = 0) const	{ return DuiTraits::ui_atoi64(m_pstr); }
+		double toDouble(double def = 0) const				{ return DuiTraits::ui_strtod(m_pstr); }
+		float toFloat(float def = 0) const					{ return DuiTraits::ui_atof(m_pstr); }
+
+		//把整个字符串 当成 16进制格式 转为 Int64
+		DuiLib::Int64 HexToInt64() const					{ return DuiTraits::ui_hextoi64(m_pstr); }
+
+		//////////////////////////////////////////////////////////////////////////
 		bool operator == (const uichar *str) const { return (Compare(str) == 0); };
 		bool operator != (const uichar *str) const { return (Compare(str) != 0); };
 		bool operator <= (const uichar *str) const { return (Compare(str) <= 0); };
@@ -341,6 +489,8 @@ namespace DuiLib
 				return 0;
 			return DuiTraits::ui_stricmp(m_pstr, pstr);
 		}
+
+		bool IsEquals(const uichar *str) const { return (Compare(str) == 0); }
 
 		void MakeUpper()
 		{
@@ -410,7 +560,7 @@ namespace DuiLib
 			}
 
 			if(end < 0 || end < start)
-				return Mid(pos1+1, GetLength()-pos1-1);
+				return Mid(pos1+cchlen, GetLength()-pos1-cchlen);
 
 			int posTemp = pos1;
 			while (end+1 != findTimes)
@@ -424,7 +574,7 @@ namespace DuiLib
 				findTimes++;
 				posTemp = pos2;
 			}
-			return Mid(pos1+1, pos2-pos1-1);
+			return Mid(pos1+cchlen, pos2-pos1-cchlen);
 		}
 
 // 		CDuiString sTemp = _T("aaa_bbb_ccc_ddd_eee");
@@ -546,6 +696,13 @@ namespace DuiLib
 			return *this;
 		}
 
+		DuiStringT &Trim()
+		{
+			DuiTraits::TrimLeft(m_pstr);
+			DuiTraits::TrimRight(m_pstr);
+			return *this;
+		}
+
 		DuiStringT &Remove(const uichar *pstr)
 		{
 			int pos = Find(pstr);
@@ -624,21 +781,6 @@ namespace DuiLib
 		{
 			return DuiTraits::formatV(m_pstr, pstrFormat, Args);
 		}
-
-		void setString(const uichar *s)			{ Assign(s, -1); }
-		void setString(const uichar val)		{ Assign(&val, 1); }
-		void setBool(bool val)					{ DuiTraits::AllocString(m_pstr, 64, sizeof(uichar)); DuiTraits::bool_to_string(m_pstr, val);			}
-		void setInt(int val)					{ DuiTraits::AllocString(m_pstr, 64, sizeof(uichar)); DuiTraits::int_to_string(m_pstr, val);			}
-		void setInt64(DuiLib::Int64 val)		{ DuiTraits::AllocString(m_pstr, 64, sizeof(uichar)); DuiTraits::int64_to_string(m_pstr, val);			}
-		void setDouble(double val, int base=-1) { DuiTraits::AllocString(m_pstr, 64, sizeof(uichar)); DuiTraits::double_to_string(m_pstr, val, base);	}
-		void setFloat(float val, int base=-1)	{ DuiTraits::AllocString(m_pstr, 64, sizeof(uichar)); DuiTraits::float_to_string(m_pstr, val, base);	}
-
-		const uichar *toString() const						{ return (const uichar *)m_pstr; }
-		bool toBool(bool def = false) const					{ return m_pstr[0]=='1' || m_pstr[0]=='t' || m_pstr[0]=='T' || m_pstr[0]=='Y' || m_pstr[0]=='y'; }
-		int toInt(int def = 0) const						{ return DuiTraits::ui_atoi(m_pstr); }
-		DuiLib::Int64 toInt64(DuiLib::Int64 def = 0) const	{ return DuiTraits::ui_atoi64(m_pstr); }
-		double toDouble(double def = 0) const				{ return DuiTraits::ui_strtod(m_pstr); }
-		float toFloat(float def = 0) const					{ return DuiTraits::ui_atof(m_pstr); }
 
 		CDuiStringA convert_to_ansi() const		{ CDuiStringA s;	s=(*this);		return s; }
 		CDuiStringUtf8 convert_to_utf8() const	{ CDuiStringUtf8 s;	s=(*this);		return s; }
@@ -829,18 +971,34 @@ namespace DuiLib
 		CBufferUI();
 		~CBufferUI();
 
-		void Reset();
-
 		LPBYTE GetBuffer();
 		int GetLength();
 
-		int AddBuffer(const void *buffer, int len);
+		void SetMaxBufferSize(int size);
 
-	protected:
-		void Alloc(UINT size);
-	protected:
-		BYTE *_buffer;
-		int _bufferLen;
+		void SetBufferSize(int size);
+
+		//newBufferSize > 0时，强行设置新的 _bufferLen = newBufferSize
+		//否则，只是清空内容。
+		void InitBuffer(int newBufferSize = 0);
+		
+		void AddInt(int n);		//插入数字, 转为字符串
+		void AddByte(BYTE buffer);
+		void AddString(LPCTSTR str);
+		void AddStringW(const wchar_t* str);
+		void AddStringA(const char* msg);
+		void AddBuffer(const void *buffer, int len);
+		void DeleteBuffer(int len);
+		void CopyFrom(CBufferUI &buf);
+		int GetMemSize();
+
+		BYTE GetAt(int n);
+	public:
+		int _bufferLen;		//当前buffer大小
+		BYTE *_buffer;		//当前buffer
+	private:
+		int m_nMemSize;		//当前内存大小
+		int m_nMaxMemSize;	//允许分配的最大内存大小
 	};
 	//////////////////////////////////////////////////////////////////////////
 	//

@@ -423,6 +423,9 @@
     <ClCompile Include="Control\UITracker.cpp">
       <Filter>Source Files\Control</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\Md5.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Control\UIWebBrowser.h">
@@ -817,6 +820,9 @@
     </ClInclude>
     <ClInclude Include="Control\UITracker.h">
       <Filter>Header Files\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Md5.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

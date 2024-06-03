@@ -299,7 +299,8 @@ public:
 		REG_CONTROL_FUNPR(void,		 RemoveAllCustomAttribute,	()										);
 
 		REG_CONTROL_FUNPR(void,		 SetAttribute,				(LPCTSTR pstrName, LPCTSTR pstrValue)	);
-		r = engine->RegisterObjectMethod(classname, "CControlUI @ApplyAttributeList()", asMETHODPR(T, ApplyAttributeList, (LPCTSTR pstrList), CControlUI*), asCALL_THISCALL); assert( r >= 0 );
+		//r = engine->RegisterObjectMethod(classname, "CControlUI @ApplyAttributeList()", asMETHODPR(T, ApplyAttributeList, (LPCTSTR pstrList), CControlUI*), asCALL_THISCALL); assert( r >= 0 );
+		REG_CONTROL_FUNPR(void,		 ApplyAttributeList,		(LPCTSTR pstrList)	);
 
 		REG_CONTROL_FUNPR(SIZE,		 EstimateSize,				(SIZE szAvailable)						);
 
@@ -1552,6 +1553,135 @@ public:
 	}
 };
 
+//////////////////////////////////////////////////////////////////////////
+//CGridHeaderUI
+template <typename T>
+class regCGridHeaderUI : public regCVerticalLayoutUI<T>
+{
+	DECL_CONTROL_FACTORY(CGridHeaderUI);
+	DECL_CONTROL_REGFACT(CGridHeaderUI);
+public:
+	virtual void reg(asIScriptEngine *engine)
+	{
+		__super::reg(engine);
+		int r = 0;
+	}
+};
 
+//////////////////////////////////////////////////////////////////////////
+//CGridBodyUI
+template <typename T>
+class regCGridBodyUI : public regCContainerUI<T>
+{
+	DECL_CONTROL_FACTORY(CGridBodyUI);
+	DECL_CONTROL_REGFACT(CGridBodyUI);
+public:
+	virtual void reg(asIScriptEngine *engine)
+	{
+		__super::reg(engine);
+		int r = 0;
+	}
+};
+
+class regTCellData
+{
+protected:
+	static TCellData *TCellData_Ref_Factory() { return new TCellData(); };
+
+public:
+	static bool Register(asIScriptEngine *engine)
+	{
+		int r = 0;
+		r = engine->RegisterObjectType("TCellData", 0, asOBJ_REF|asOBJ_NOCOUNT); 
+		r = engine->RegisterObjectBehaviour("TCellData", asBEHAVE_FACTORY, "TCellData@ f()", asFunctionPtr(TCellData_Ref_Factory), asCALL_CDECL);
+		
+		REG_METHOD_FUNPR(TCellData, void,		SetCheckBoxCheck,	(BOOL bSelected));
+		REG_METHOD_FUNPR(TCellData, BOOL,		IsCheckBoxCheck,	() const);
+		REG_METHOD_FUNPR(TCellData, CDuiString,	GetText,			() const);
+		REG_METHOD_FUNPR(TCellData, void,		SetText,			(LPCTSTR pstrText));
+		REG_METHOD_FUNPR(TCellData, void,		SetTextColor,		(DWORD dwColor));
+		REG_METHOD_FUNPR(TCellData, DWORD,		GetTextColor,		() const);
+
+		return r >= 0;
+	}
+};
+
+//////////////////////////////////////////////////////////////////////////
+//CGridCellUI
+template <typename T>
+class regCGridCellUI : public regCOptionLayoutUI<T>
+{
+	DECL_CONTROL_FACTORY(CGridCellUI);
+	DECL_CONTROL_REGFACT(CGridCellUI);
+public:
+	virtual void reg(asIScriptEngine *engine)
+	{
+		__super::reg(engine);
+		int r = 0;
+	}
+};
+
+//////////////////////////////////////////////////////////////////////////
+//CGridRowUI
+template <typename T>
+class regCGridRowUI : public regCOptionLayoutUI<T>
+{
+	DECL_CONTROL_FACTORY(CGridRowUI);
+	DECL_CONTROL_REGFACT(CGridRowUI);
+public:
+	virtual void reg(asIScriptEngine *engine)
+	{
+		__super::reg(engine);
+		int r = 0;
+	}
+};
+
+//////////////////////////////////////////////////////////////////////////
+//CGridUI
+template <typename T>
+class regCGridUI : public regCVerticalLayoutUI<T>
+{
+	DECL_CONTROL_FACTORY(CGridUI);
+	DECL_CONTROL_REGFACT(CGridUI);
+public:
+	virtual void reg(asIScriptEngine *engine)
+	{
+		__super::reg(engine);
+		int r = 0;
+
+		REG_CONTROL_FUNPR(void, Refresh,		(bool bNeedUpdate));
+
+		REG_CONTROL_FUNPR(BOOL, SetRowCount,	(int rows));
+		REG_CONTROL_FUNPR(int, GetRowCount,	());
+
+		REG_CONTROL_FUNPR(BOOL, SetColumnCount,	(int cols));
+		REG_CONTROL_FUNPR(int, GetColumnCount,	());
+
+		REG_CONTROL_FUNPR(BOOL, SetFixedRowCount,	(int rows));
+		REG_CONTROL_FUNPR(int, GetFixedRowCount,	());
+
+		REG_CONTROL_FUNPR(void, SetFixedColumnCount,	(int cols));
+		REG_CONTROL_FUNPR(int, GetFixedColumnCount,	());
+
+		REG_CONTROL_FUNPR(void, SetViewListNumber,	(BOOL bView));
+		REG_CONTROL_FUNPR(BOOL, IsViewListNumber,	());
+
+		REG_CONTROL_FUNPR(BOOL, SetRowHeight,	(int row, int height));
+		REG_CONTROL_FUNPR(int,  GetRowHeight,	(int row, BOOL bScaleByDPI));
+
+		REG_CONTROL_FUNPR(BOOL, SetColumnWidth,	(int col, int width));
+		REG_CONTROL_FUNPR(int,  GetColumnWidth,	(int col, BOOL bScaleByDPI));
+
+		//REG_CONTROL_FUNPR(TCellData &, Cell,	(int row, int col));
+		r = engine->RegisterObjectMethod("CGridUI", "TCellData &Cell(int, int)", asMETHODPR(CGridUI, Cell, (int row, int col), TCellData&), asCALL_THISCALL); assert( r >= 0 );
+
+		REG_CONTROL_FUNPR(int, InsertRow,		(int nIndex));
+		REG_CONTROL_FUNPR(bool, DeleteRow,		(int nIndex));
+
+		REG_CONTROL_FUNPR(int, InsertColumn,	(int nIndex));
+		REG_CONTROL_FUNPR(void, DeleteColumn,	(int nIndex));
+
+	}
+};
 } //namespace DuiLib
 

@@ -21,6 +21,4 @@ protected:
 	asIScriptEngine  *engine;
 };
 
-extern CScriptEngine g_ScriptEngine;
-
 } //namespace DuiLib

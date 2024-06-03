@@ -36,6 +36,7 @@ namespace DuiLib {
 		if( event.Type == UIEVENT_MOUSEENTER && !IsAnimationRunning( FADE_IN_ID ) )
 		{
 			m_bFadeAlpha = 0;
+			m_bMouseLeave = FALSE;
 			m_bMouseHove = TRUE;
 			StopAnimation( FADE_OUT_ID );
 			StartAnimation( FADE_ELLAPSE, FADE_FRAME_COUNT, FADE_IN_ID );
@@ -45,6 +46,7 @@ namespace DuiLib {
 		else if( event.Type == UIEVENT_MOUSELEAVE && !IsAnimationRunning( FADE_OUT_ID ) )
 		{
 			m_bFadeAlpha = 0;
+			m_bMouseHove = FALSE;
 			m_bMouseLeave = TRUE;
 			StopAnimation(FADE_IN_ID);
 			StartAnimation(FADE_ELLAPSE, FADE_FRAME_COUNT, FADE_OUT_ID);
@@ -82,49 +84,35 @@ namespace DuiLib {
 				if( !DrawImage(pRender, (LPCTSTR)m_sFocusedImage) ) {}
 				else return;
 			}
-		}
+		}  
 
 		if( !m_sNormalImage.IsEmpty() ) {
 			if( IsAnimationRunning(FADE_IN_ID) || IsAnimationRunning(FADE_OUT_ID)) {
-				if( m_bMouseHove ) {
-					m_bMouseHove = FALSE;
-					m_sLastImage = m_sHotImage;
-					if( !DrawImage(pRender, (LPCTSTR)m_sNormalImage) ) {}
-					return;
-				}
-
-				if( m_bMouseLeave ) {
-					m_bMouseLeave = FALSE;
-					m_sLastImage = m_sNormalImage;
-					if( !DrawImage(pRender, (LPCTSTR)m_sHotImage) ) {}
-					return;
-				}
-
-				m_sOldImage = m_sNormalImage;
-				m_sNewImage = m_sHotImage;
+    CDuiString sFadeOut, sFadeIn;
+    sFadeIn.Format(_T("fade='255'"));
+				 sFadeOut.Format(_T("fade='%d'"), m_bFadeAlpha);
+ 
 				if( IsAnimationRunning(FADE_OUT_ID) ) {
-					m_sOldImage = m_sHotImage;
-					m_sNewImage = m_sNormalImage;
+				 sFadeOut.Format(_T("fade='%d'"), 255 - m_bFadeAlpha); 
 				}
-				CDuiString sFadeOut, sFadeIn;
-				sFadeOut.Format(_T("fade='%d'"), 255 - m_bFadeAlpha);
-				sFadeIn.Format(_T("fade='%d'"), m_bFadeAlpha);
-				if( !DrawImage(pRender, (LPCTSTR)m_sOldImage, sFadeOut) ) {}
-				if( !DrawImage(pRender, (LPCTSTR)m_sNewImage, sFadeIn) ) {}
+				 
+		 	if( !DrawImage(pRender, (LPCTSTR)m_sNormalImage, sFadeIn) ) {}
+				if( !DrawImage(pRender, (LPCTSTR)m_sHotImage, sFadeOut) ) {}
+	
 				return;
 			}
 			else {
 				if( m_bMouseHove ) {
 					m_bMouseHove = FALSE;
 					m_sLastImage = m_sHotImage;
-					if( !DrawImage(pRender, (LPCTSTR)m_sNormalImage) ) {}
+					if( !DrawImage(pRender, (LPCTSTR)m_sHotImage) ) {}
 					return;
 				}
 
 				if( m_bMouseLeave ) {
 					m_bMouseLeave = FALSE;
 					m_sLastImage = m_sNormalImage;
-					if( !DrawImage(pRender, (LPCTSTR)m_sHotImage) ) {}
+					if( !DrawImage(pRender, (LPCTSTR)m_sNormalImage) ) {}
 					return;
 				}
 
@@ -138,7 +126,7 @@ namespace DuiLib {
 	void CFadeButtonUI::OnAnimationStep(INT nTotalFrame, INT nCurFrame, INT nAnimationID)
 	{
 		m_bFadeAlpha = (BYTE)((nCurFrame / (double)nTotalFrame) * 255);
-		m_bFadeAlpha = m_bFadeAlpha == 0 ? 10 : m_bFadeAlpha;
+	//	m_bFadeAlpha = m_bFadeAlpha == 0 ? 10 : m_bFadeAlpha;
 		Invalidate();
 	}
 

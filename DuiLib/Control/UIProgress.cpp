@@ -7,7 +7,7 @@ namespace DuiLib
 
 	CProgressUI::CProgressUI() : m_bShowText(false), m_bHorizontal(true), m_nMin(0), m_nMax(100), m_nValue(0), m_bStretchForeImage(true)
 	{
-		m_uTextStyle = DT_SINGLELINE | DT_CENTER;
+		m_uTextStyle = DT_SINGLELINE | DT_VCENTER;
 		//SetFixedHeight(12);
 	}
 

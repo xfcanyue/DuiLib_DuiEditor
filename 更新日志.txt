@@ -409,3 +409,10 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
 2，完善xmake.lua。支持Windows和Linux编译。
 3，更新stbimage和nanosvg
 4，部分调整。
+
+2024-06-03
+1，更新DuiString，支持 char,wchar_t, bool, int, int64, double, float。
+2，更新脚本。
+3，部分调整。
+
+

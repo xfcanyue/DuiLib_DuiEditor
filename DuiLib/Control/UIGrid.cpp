@@ -1126,7 +1126,7 @@ OUT_FOR:
 				goto LABEL_END;
 
 			int ypos = 0;
-			for (int i=0; i<=row; i++)
+			for (int i=0; i<=row-1; i++)
 			{
 				ypos += GetRowHeight(i, TRUE);
 			}

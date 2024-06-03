@@ -34,7 +34,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 
 	CDuiString s14;
-	s14.setInt(1);
+	s14.Assign(1);
 
 
 	CDuiString s24;
@@ -57,7 +57,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	CDuiString s25_2 = s25; //地址复用
 	CDuiString s25_3; 
 	s25_3.CopyFrom(s25); //创建新的内存，并且拷贝字符串
-	s25[0] = _T('x');		//s25_2也改了。s25_3没有改动。
+	//s25[0] = _T('x');		//s25_2也改了。s25_3没有改动。
 	s25.SetAt(1, _T('y'));	//不会再改动s25_2，因为创建了新的内存
 	TCHAR ch = s25.GetAt(2);
 
@@ -85,14 +85,14 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	s33.Format(_T("我是%d"), 33);
 
 	CDuiString s34;
-	s34.setString(_T("1234"));
-	s34.setString(_T('A'));
-	s34.setBool(true);
-	s34.setBool(false);
-	s34.setInt(2023);
-	s34.setFloat(2023.123f, 3);
+	s34.Assign(_T("1234"));
+	s34.Assign(_T('A'));
+	s34.Assign(true);
+	s34.Assign(false);
+	s34.Assign(2023);
+	s34.Assign(2023.123f, 3);
 	float f = s34.toFloat();
-	s34.setDouble(2023.1, 5);
+	s34.Assign(2023.1, 5);
 	double d = s34.toDouble();
 
 	double d2 = (double)1/10;
@@ -111,6 +111,36 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	CDuiString s42;
 	s42.Format(_T("*DefaultPageRegion: w%dh%d"), 280, 510);
+
+	wchar_t *p = _T("1234");
+	CDuiString s43;
+	s43.Append(p);
+
+	CDuiString s44(1.01f, 2);
+
+	CDuiString s45 = _T("abc") + s44;
+	CDuiString s46 = _T('A') + s45;
+	CDuiString s47 = false + s46;
+	CDuiString s48 = 123 + s47;
+	CDuiString s49 = 123333333333333 + s48;
+	CDuiString s50 = 1.01 + s49;
+	CDuiString s51 = 2.34f + s50;
+
+	CDuiString s52 = 1.01;
+	TCHAR *p2 = s52.GetBuffer();
+	p2[0] = _T('2');
+
+	CDuiString s53('A');
+	s53 += 'B';
+
+	CDuiString s54(L'B');
+	s54 += "B";
+
+	s53 = "aa" + s53;
+	s53 = s53 + "aa";
+
+	s53 = L"bb" + s53;
+	s53 = s53 + L"bb";
 
 	//_CrtSetBreakAlloc();
 

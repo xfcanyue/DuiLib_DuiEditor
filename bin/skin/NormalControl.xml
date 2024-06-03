@@ -14,6 +14,7 @@
 			</OptionLayout>
 			<Button name="btn_domodal" width="120" text="打开模态对话框" style="style_button" />
 			<Button name="btn_show_dialog" width="120" text="打开非模态对话框" resourceid="7" style="style_button" />
+			<Button name="btn_test_script_dialog" width="100" height="50" text="脚本弹窗" pos="0,0,100,50" style="style_button" />
 		</HorizontalLayout>
 		<HorizontalLayout height="30" childpadding="10" childvalign="vcenter">
 			<Label text="单选框" autocalcwidth="true" resourceid="8" />

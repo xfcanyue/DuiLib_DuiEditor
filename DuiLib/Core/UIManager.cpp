@@ -539,28 +539,35 @@ namespace DuiLib {
 		m_szRoundCorner.cy = cy;
 	}
 
-	SIZE CPaintManagerUI::GetMinInfo() const
-	{
-		return m_szMinWindow;
+	SIZE CPaintManagerUI::GetMinInfo()  
+	{ 
+		SIZE sz;
+		sz.cx = GetDPIObj()->ScaleInt(	m_szMinWindow.cx );
+		sz.cy = GetDPIObj()->ScaleInt(	m_szMinWindow.cy);
+		return sz;
 	}
 
 	void CPaintManagerUI::SetMinInfo(int cx, int cy)
 	{
 		ASSERT(cx>=0 && cy>=0);
+		
 		m_szMinWindow.cx = cx;
 		m_szMinWindow.cy = cy;
 	}
 
-	SIZE CPaintManagerUI::GetMaxInfo() const
-	{
-		return m_szMaxWindow;
+	SIZE CPaintManagerUI::GetMaxInfo()  
+	{ 
+		SIZE sz;
+		sz.cx = GetDPIObj()->ScaleInt(m_szMaxWindow.cx);
+  sz.cy = GetDPIObj()->ScaleInt(m_szMaxWindow.cy);
+		return sz;
 	}
 
 	void CPaintManagerUI::SetMaxInfo(int cx, int cy)
 	{
 		ASSERT(cx>=0 && cy>=0);
-		m_szMaxWindow.cx = cx;
-		m_szMaxWindow.cy = cy;
+		m_szMaxWindow.cx =   cx;
+		m_szMaxWindow.cy =  cy;
 	}
 
 	bool CPaintManagerUI::IsShowUpdateRect() const
@@ -2445,11 +2452,11 @@ namespace DuiLib {
 		return static_cast<CControlUI*>(m_mNameHash.Find(pstrName));
 	}
 
-	CControlUI* CPaintManagerUI::FindControl(const CDuiString &strName) const
-	{
-		if(!m_pRoot) return NULL;
-		return static_cast<CControlUI*>(m_mNameHash.Find(strName));
-	}
+// 	CControlUI* CPaintManagerUI::FindControl(const CDuiString &strName) const
+// 	{
+// 		if(!m_pRoot) return NULL;
+// 		return static_cast<CControlUI*>(m_mNameHash.Find(strName));
+// 	}
 
 	CControlUI* CPaintManagerUI::FindSubControlByPoint(CControlUI* pParent, POINT pt) const
 	{
@@ -2861,29 +2868,63 @@ namespace DuiLib {
 	bool CPaintManagerUI::ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl)
 	{
 		IScriptManager *pScriptEngine = GetScriptEngine();
-		if(pScriptEngine)
+		if(!pScriptEngine)
+			return false;
+
+		int r = 0;
+		CAutoScriptContext ctx(pScriptEngine);
+		if(!ctx)
+			return false;
+
+		r = ctx->SetFunByName(lpszFunName); if( r < 0 ) return false;
+		r = ctx->SetArgObject(0, pControl); if( r < 0 ) return false;
+		if(ctx->Execute() == 0)
 		{
-			return pScriptEngine->ExecuteScript(lpszFunName, pControl);
+			return ctx->GetReturnByte() == 1;
 		}
+
 		return false;
 	}
 
 	bool CPaintManagerUI::ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, TEventUI *ev)
 	{
 		IScriptManager *pScriptEngine = GetScriptEngine();
-		if(pScriptEngine)
+		if(!pScriptEngine)
+			return false;
+
+		int r = 0;
+		CAutoScriptContext ctx(pScriptEngine);
+		if(!ctx)
+			return false;
+
+		r = ctx->SetFunByName(lpszFunName); if( r < 0 ) return false;
+		r = ctx->SetArgObject(0, pControl); if( r < 0 ) return false;
+		r = ctx->SetArgObject(1, ev); if( r < 0 ) return false;
+		if(ctx->Execute() == 0)
 		{
-			return pScriptEngine->ExecuteScript(lpszFunName, pControl, ev);
+			return ctx->GetReturnByte() == 1;
 		}
+
 		return false;
 	}
 
 	bool CPaintManagerUI::ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, TNotifyUI *pMsg)
 	{
 		IScriptManager *pScriptEngine = GetScriptEngine();
-		if(pScriptEngine)
+		if(!pScriptEngine)
+			return false;
+
+		int r = 0;
+		CAutoScriptContext ctx(pScriptEngine);
+		if(!ctx)
+			return false;
+
+		r = ctx->SetFunByName(lpszFunName); if( r < 0 ) return false;
+		r = ctx->SetArgObject(0, pControl); if( r < 0 ) return false;
+		r = ctx->SetArgObject(1, pMsg); if( r < 0 ) return false;
+		if(ctx->Execute() == 0)
 		{
-			return pScriptEngine->ExecuteScript(lpszFunName, pControl, pMsg);
+			return ctx->GetReturnByte() == 1;
 		}
 
 		return false;
@@ -2892,9 +2933,22 @@ namespace DuiLib {
 	bool CPaintManagerUI::ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 	{
 		IScriptManager *pScriptEngine = GetScriptEngine();
-		if(pScriptEngine)
+		if(!pScriptEngine)
+			return false;
+
+		int r = 0;
+		CAutoScriptContext ctx(pScriptEngine);
+		if(!ctx)
+			return false;
+
+		r = ctx->SetFunByName(lpszFunName); if( r < 0 ) return false;
+		r = ctx->SetArgObject(0, pControl); if( r < 0 ) return false;
+		r = ctx->SetArgAddress(1, pRender); if( r < 0 ) return false;
+		r = ctx->SetArgObject(2, (void *)&rcPaint); if( r < 0 ) return false;
+		r = ctx->SetArgObject(3, pStopControl); if( r < 0 ) return false;
+		if(ctx->Execute() == 0)
 		{
-			return pScriptEngine->ExecuteScript(lpszFunName, pControl, pRender, rcPaint, pStopControl);
+			return ctx->GetReturnByte() == 1;
 		}
 
 		return false;

@@ -35,8 +35,8 @@ namespace DuiLib {
 		enum{
 			FADE_IN_ID			= 8,
 			FADE_OUT_ID			= 9,
-			FADE_ELLAPSE		= 10,
-			FADE_FRAME_COUNT	= 30,
+			FADE_ELLAPSE		= 5,
+			FADE_FRAME_COUNT	= 10,
 		};
 	};
 

@@ -1488,7 +1488,8 @@ namespace DuiLib {
 
 	DWORD CListHeaderItemUI::GetSepWidth() const
 	{
-		return m_iSepWidth;
+		DWORD sep_width = GetManager()->GetDPIObj()->ScaleInt(m_iSepWidth);
+		return sep_width;
 	}
 
 	void CListHeaderItemUI::SetSepWidth(int iWidth)
@@ -1550,7 +1551,7 @@ namespace DuiLib {
 		{
 			if( !IsEnabled() ) return;
 			CDuiRect rcSeparator = GetThumbRect();
-			if (m_iSepWidth>=0)
+			if (GetSepWidth()>=0)
 				rcSeparator.left-=4;
 			else
 				rcSeparator.right+=4;
@@ -1589,7 +1590,7 @@ namespace DuiLib {
 			if( IsCaptureState() ) {
 				RECT rcPadding = GetPadding();
 				RECT rc = m_rcItem;
-				if( m_iSepWidth >= 0 ) {
+				if( GetSepWidth() >= 0 ) {
 					rc.right -= m_ptLastMouse.x - event.ptMouse.x;
 				}
 				else {
@@ -1608,7 +1609,7 @@ namespace DuiLib {
 		if( event.Type == UIEVENT_SETCURSOR )
 		{
 			CDuiRect rcSeparator = GetThumbRect();
-			if (m_iSepWidth>=0)//111024 by cddjr, 增加分隔符区域，方便用户拖动
+			if (GetSepWidth()>=0)//111024 by cddjr, 增加分隔符区域，方便用户拖动
 				rcSeparator.left-=4;
 			else
 				rcSeparator.right+=4;
@@ -1647,8 +1648,8 @@ namespace DuiLib {
 
 	RECT CListHeaderItemUI::GetThumbRect() const
 	{
-		if( m_iSepWidth >= 0 ) return CDuiRect(m_rcItem.right - m_iSepWidth, m_rcItem.top, m_rcItem.right, m_rcItem.bottom);
-		else return CDuiRect(m_rcItem.left, m_rcItem.top, m_rcItem.left - m_iSepWidth, m_rcItem.bottom);
+		if( GetSepWidth() >= 0 ) return CDuiRect(m_rcItem.right - GetSepWidth(), m_rcItem.top, m_rcItem.right, m_rcItem.bottom);
+		else return CDuiRect(m_rcItem.left, m_rcItem.top, m_rcItem.left - GetSepWidth(), m_rcItem.bottom);
 	}
 
 	void CListHeaderItemUI::PaintStatusImage(UIRender *pRender)
@@ -1662,24 +1663,34 @@ namespace DuiLib {
 			rcThumb.right -= m_rcItem.left;
 			rcThumb.bottom -= m_rcItem.top;
 
+			rcThumb.left = m_pManager->GetDPIObj()->ScaleIntBack(rcThumb.left);
+			rcThumb.top = m_pManager->GetDPIObj()->ScaleIntBack(rcThumb.top);
+			rcThumb.right = m_pManager->GetDPIObj()->ScaleIntBack(rcThumb.right);
+			rcThumb.bottom = m_pManager->GetDPIObj()->ScaleIntBack(rcThumb.bottom);
+	  
 			m_sSepImageModify.Empty();
 			m_sSepImageModify.SmallFormat(_T("dest='%d,%d,%d,%d'"), rcThumb.left, rcThumb.top, rcThumb.right, rcThumb.bottom);
 			if( !DrawImage(pRender, (LPCTSTR)m_sSepImage, (LPCTSTR)m_sSepImageModify) ) {}
 		}
 	}
 
-	void CListHeaderItemUI::PaintText(UIRender *pRender)
-	{
-		if( m_dwTextColor == 0 ) m_dwTextColor = m_pManager->GetDefaultFontColor();
+	void CListHeaderItemUI::PaintText(UIRender* pRender) {
+          if (m_dwTextColor == 0)
+            m_dwTextColor = m_pManager->GetDefaultFontColor();
 
-		RECT rcText = m_rcItem;
+          RECT rcText = m_rcItem;
+          rcText.left += m_rcTextPadding.left;
+          rcText.top += m_rcTextPadding.top;
+          rcText.right -= m_rcTextPadding.right;
+          rcText.bottom -= m_rcTextPadding.bottom;
 
-		CDuiString sText = GetText();
-		if( sText.IsEmpty() ) return;
-		
-			pRender->DrawText(rcText, GetTextPadding(), sText, m_dwTextColor, \
-			m_iFont, m_uTextStyle);
-	}
+          CDuiString sText = GetText();
+          if (sText.IsEmpty()) return;
+
+          pRender->DrawText(rcText, GetTextPadding(), sText, m_dwTextColor,
+                            m_iFont, m_uTextStyle);
+       
+        }
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	//

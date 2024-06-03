@@ -10,11 +10,34 @@ CUIDialog::CUIDialog(void)
 	_bModal = false;
 	m_bEnterCloseOK=TRUE;
 	m_bEscCloseCancel=TRUE;
+	__refCount = 1;
+}
+
+CUIDialog::CUIDialog(LPCTSTR sSkinFile)
+{
+	m_nMode = 0;
+	_bModal = false;
+	m_bEnterCloseOK=TRUE;
+	m_bEscCloseCancel=TRUE;
+
+	m_sSkinFile = sSkinFile;
+	m_sWindowClassName = m_sSkinFile;
+	__refCount = 1;
 }
 
 CUIDialog::~CUIDialog(void)
 {
-	
+	m_mScriptNotify.clear();
+}
+
+LPCTSTR CUIDialog::GetWindowClassName() const
+{
+	return m_sSkinFile;
+}
+
+CDuiString CUIDialog::GetSkinFile()
+{
+	return m_sWindowClassName;
 }
 
 void CUIDialog::OnFinalMessage( HWND hWnd )
@@ -43,7 +66,12 @@ LRESULT CUIDialog::ResponseDefaultKeyEvent(WPARAM wParam)
 			return S_FALSE;
 
 		::SetFocus(GetManager()->GetPaintWindow()); //让主窗口获取焦点，使内部的子窗口隐藏，从而获取子窗口内容。
-		OnClickOK();
+
+		CButtonUI *pBtnOk = dynamic_cast<CButtonUI *>(FindControl(_T("btn_ok")));
+		if(pBtnOk)
+			pBtnOk->Activate();
+		else
+			OnClickOK();
 		return S_OK;
 	}
 	else if (wParam == VK_ESCAPE)
@@ -55,7 +83,11 @@ LRESULT CUIDialog::ResponseDefaultKeyEvent(WPARAM wParam)
 		if(pFocus && !pFocus->OnEnableResponseDefaultKeyEvent(wParam))
 			return S_FALSE;
 
-		OnClickCancel();
+		CButtonUI *pBtnCancel = dynamic_cast<CButtonUI *>(FindControl(_T("btn_cancel")));
+		if(pBtnCancel)
+			pBtnCancel->Activate();
+		else
+			OnClickCancel();
 		return S_OK;
 	}
 
@@ -134,6 +166,21 @@ void CUIDialog::InitWindow()
 
 void CUIDialog::Notify(TNotifyUI& msg)
 {
+	IScriptManager *pScriptEngine = CPaintManagerUI::GetScriptEngine();
+	if(pScriptEngine)
+	{
+		std::map<CDuiString, CDuiString>::iterator it = m_mScriptNotify.find(msg.sType);
+		if (it != m_mScriptNotify.end())
+		{
+			int r = 0;
+			CAutoScriptContext ctx(pScriptEngine);
+			r = ctx->SetFunByName(it->second);	assert( r >= 0 );
+			r = ctx->SetArgObject(0, GetManager());		assert( r >= 0 );
+			r = ctx->SetArgObject(1, &msg);		assert( r >= 0 );
+			r = ctx->Execute();
+		}
+	}
+
 	if(msg.sType == DUI_MSGTYPE_CLICK)
 	{
 		if(IsControl(msg, _T("btn_ok")))
@@ -204,6 +251,22 @@ bool CUIDialog::on_tmd_modify()
 bool CUIDialog::on_tmd_delete()
 {
 	return true;
+}
+
+void CUIDialog::__AddRef()
+{
+	__refCount++;
+}
+
+void CUIDialog::__ReleaseRef()
+{
+	if( --__refCount == 0 )
+		delete this;
+}
+
+void CUIDialog::RegScriptNotify(LPCTSTR sNotifyType, LPCTSTR sFunName)
+{
+	m_mScriptNotify[sNotifyType] = sFunName;
 }
 
 } // namespace DuiLib{

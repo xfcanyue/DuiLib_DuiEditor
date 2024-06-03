@@ -344,6 +344,36 @@ namespace DuiLib
 	float DuiStringTraitsA::ui_atof(const char *str)	{ return static_cast<float>(::atof(str)); }
 	double DuiStringTraitsA::ui_strtod (const char *nptr) { return ::strtod(nptr, 0); }
 
+	BYTE DuiStringTraitsA::Char2Hex(char ch)
+	{
+		if(ch>='0' && ch <='9')
+			return ch - '0';
+		else if(ch >='A' && ch<='F')
+			return ch - 'A' + 10;
+		else if(ch>='a' && ch<='f')
+			return ch - 'a' + 10;
+		return 0;
+	}
+
+	DuiLib::Int64 DuiStringTraitsA::ui_hextoi64(const char *str)
+	{
+		int len = ui_strlen(str);
+		if(len == 0 || len%2 != 0)
+			return 0;
+		
+		DuiLib::Int64 ret = 0;
+		int i = 0;
+		while ( i < len)
+		{
+			BYTE bt1 = Char2Hex(str[i]);
+			BYTE bt2 = Char2Hex(str[i+1]);
+			BYTE bt = (bt1 << 4) | bt2;
+			ret = (ret << 8) + bt;
+			i += 2;
+		}
+		return ret;
+	}
+
 	int __cdecl DuiStringTraitsA::formatV(char *&pstr, const char *pstrFormat, va_list Args)
 	{
 #if _MSC_VER <= 1400
@@ -772,6 +802,36 @@ namespace DuiLib
 		return ::wcstod(nptr, 0); 
 	}
 
+	BYTE DuiStringTraitsW::Char2Hex(wchar_t ch)
+	{
+		if(ch>=L'0' && ch <=L'9')
+			return ch - L'0';
+		else if(ch >=L'A' && ch<=L'F')
+			return ch - L'A' + 10;
+		else if(ch>=L'a' && ch<=L'f')
+			return ch - L'a' + 10;
+		return 0;
+	}
+
+	DuiLib::Int64 DuiStringTraitsW::ui_hextoi64(const wchar_t *str)
+	{
+		int len = ui_strlen(str);
+		if(len == 0 || len%2 != 0)
+			return 0;
+
+		DuiLib::Int64 ret = 0;
+		int i = 0;
+		while ( i < len)
+		{
+			BYTE bt1 = Char2Hex(str[i]);
+			BYTE bt2 = Char2Hex(str[i+1]);
+			BYTE bt = (bt1 << 4) | bt2;
+			ret = (ret << 8) + bt;
+			i += 2;
+		}
+		return ret;
+	}
+
 	int __cdecl DuiStringTraitsW::formatV(wchar_t *&pstr, const wchar_t *pstrFormat, va_list Args)
 	{
 #if _MSC_VER <= 1400
@@ -1014,29 +1074,76 @@ namespace DuiLib
 	}
 
 	//////////////////////////////////////////////////////////////////////////
+	CDuiString UILIB_API operator+(char lpStr, const CDuiString& string2)
+	{
+		CDuiString s(lpStr);
+		return s + string2;
+	}
+
+	CDuiString UILIB_API operator+(wchar_t lpStr, const CDuiString& string2)
+	{
+		CDuiString s(lpStr);
+		return s + string2;
+	}
+
+	CDuiString UILIB_API operator+(const char *lpStr, const CDuiString& string2)
+	{
+		CDuiString s(lpStr);
+		return s + string2;
+	}
+
+	CDuiString UILIB_API operator+(const wchar_t *lpStr, const CDuiString& string2)
+	{
+		CDuiString s(lpStr);
+		return s + string2;
+	}
+
+	CDuiString UILIB_API operator+(bool lpStr, const CDuiString& string2)
+	{
+		CDuiString s(lpStr);
+		return s + string2;
+	}
+	CDuiString UILIB_API operator+(int lpStr, const CDuiString& string2)
+	{
+		CDuiString s(lpStr);
+		return s + string2;
+	}
+	CDuiString UILIB_API operator+(DuiLib::Int64 lpStr, const CDuiString& string2)
+	{
+		CDuiString s(lpStr);
+		return s + string2;
+	}
+	CDuiString UILIB_API operator+(double lpStr, const CDuiString& string2)
+	{
+		CDuiString s(lpStr,2);
+		return s + string2;
+	}
+	CDuiString UILIB_API operator+(float lpStr, const CDuiString& string2)
+	{
+		CDuiString s(lpStr,2);
+		return s + string2;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	//
 	//
 	CBufferUI::CBufferUI()
 	{
-		DuiStringMgr::GetInstance();
 		_buffer = NULL;
 		_bufferLen = 0;
+		m_nMemSize = 0;
+		m_nMaxMemSize = 100*1024*1024; //最大100MB
+
+		SetBufferSize(1024);
+		InitBuffer();
 	}
 
 	CBufferUI::~CBufferUI()
 	{
-		Reset();
-	}
-
-	void CBufferUI::Reset()
-	{
-		if(_buffer != NULL)
-		{
-			duistringdata *data = ((duistringdata *)_buffer)-1;
-			DuiStringMgr::GetInstance()->Free(data);
-			_buffer = NULL;
-			_bufferLen = 0;
-		}
+		if(_buffer != NULL) delete []_buffer;
+		_buffer = NULL;
+		_bufferLen = 0;
+		m_nMemSize = 0;
+		m_nMaxMemSize = 0;
 	}
 
 	LPBYTE CBufferUI::GetBuffer()
@@ -1049,35 +1156,124 @@ namespace DuiLib
 		return _bufferLen;
 	}
 
-	int CBufferUI::AddBuffer(const void *buffer, int len)
+	void CBufferUI::SetMaxBufferSize(int size)
 	{
-		int newSize = _bufferLen + len;
-		Alloc(newSize);
-		if(buffer)
-		{
-			memcpy(_buffer+_bufferLen, buffer, len);
-		}
-		_bufferLen += len;
-		return _bufferLen;
+		m_nMaxMemSize = size;
 	}
 
-	void CBufferUI::Alloc(UINT size)
+	void CBufferUI::SetBufferSize(int size)
 	{
 		if(_buffer == NULL)
 		{
-			duistringdata *newdata = DuiStringMgr::GetInstance()->Alloc(size);
-			_buffer = (BYTE *)newdata->data();
+			_buffer = new BYTE[size];
+			m_nMemSize = size;
 		}
 		else
 		{
-			duistringdata *data = ((duistringdata *)_buffer)-1;
-			if(data->GetAllocLength() < size)
+			if(m_nMemSize < size)
 			{
-				duistringdata *newdata = DuiStringMgr::GetInstance()->Alloc(size);
-				LPVOID pNewBuffer = newdata->data();
-				memcpy(pNewBuffer, _buffer, _bufferLen);
+				_buffer = (BYTE *)realloc(_buffer, size);
+				m_nMemSize = size;
 			}
 		}
+	}
+
+	void CBufferUI::InitBuffer(int newBufferSize)
+	{
+		if (newBufferSize > 0)
+		{
+			SetBufferSize(newBufferSize);
+			ZeroMemory(_buffer, m_nMemSize * sizeof(BYTE));
+			_bufferLen = newBufferSize;
+		}
+		else
+		{
+			ZeroMemory(_buffer, m_nMemSize * sizeof(BYTE));
+			_bufferLen = 0;
+		}
+	}
+
+	//插入数字字符串
+	void CBufferUI::AddInt(int n)
+	{
+		char msg[255];
+		sprintf(msg, "%d", n);
+		AddStringA(msg);
+	}
+
+	void CBufferUI::AddByte(BYTE buffer)
+	{
+		AddBuffer(&buffer, 1);
+	}
+
+	// 	void AddBuffer(BYTE buffer)
+	// 	{
+	// 		AddBuffer(&buffer, 1);
+	// 	}
+
+	void CBufferUI::AddString(LPCTSTR str)
+	{
+		AddBuffer(str, _tcslen(str) * sizeof(TCHAR));
+	}
+
+	void CBufferUI::AddStringW(const wchar_t* str)
+	{
+		AddBuffer(str, wcslen(str) * sizeof(wchar_t));
+	}
+
+	void CBufferUI::AddStringA(const char* msg)
+	{
+		AddBuffer(msg, strlen(msg));
+	}
+
+	void CBufferUI::AddBuffer(const void *buffer, int len)
+	{
+		int newSize = _bufferLen + len;
+		if( newSize > m_nMemSize)  
+		{
+			//超出内存限制，清零buffer
+			if(newSize > m_nMaxMemSize && m_nMaxMemSize > 0)
+				InitBuffer();
+			else
+				SetBufferSize(newSize);
+		}
+
+		memcpy(_buffer+_bufferLen, buffer, len);
+		_bufferLen += len;
+	}
+
+	void CBufferUI::DeleteBuffer(int len) //需要删除的数据长度, 往左移动
+	{
+		if(len <= 0)	return;
+
+		if(_bufferLen < len)
+			len = _bufferLen;
+
+		if(len <= 0)	return;
+
+		int taillen = m_nMemSize-len; //剩余的长度
+		memcpy(_buffer, _buffer+len, taillen); //往左移动
+		ZeroMemory(_buffer+taillen, len); //清空尾部的数据
+		_bufferLen -= len;
+	}
+
+	void CBufferUI::CopyFrom(CBufferUI &buf)
+	{
+		SetBufferSize(buf.m_nMemSize);
+		memcpy(_buffer, buf._buffer, buf._bufferLen);
+		_bufferLen = buf._bufferLen;
+	}
+
+	int CBufferUI::GetMemSize() 
+	{ 
+		return m_nMemSize; 
+	}
+
+	BYTE CBufferUI::GetAt(int n)
+	{
+		if(n >= _bufferLen)
+			return 0;
+		return _buffer[n];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//

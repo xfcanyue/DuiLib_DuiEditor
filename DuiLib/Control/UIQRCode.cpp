@@ -98,7 +98,7 @@ int CQRCodeUI::GetQrMargin() const
 
 void CQRCodeUI::SetQrCodeText(LPVOID pData, int len)
 {
-	m_qrText.Reset();
+	m_qrText.InitBuffer();
 	m_qrText.AddBuffer(pData, len);
 	Invalidate();
 }
@@ -167,7 +167,7 @@ void CQRCodeUI::MakeQrImage()
 
 	if(!GetText().IsEmpty())
 	{
-		m_qrText.Reset();
+		m_qrText.InitBuffer();
 		UISTRING_CONVERSION;
 		if(m_sEncoding.CompareNoCase(_T("ascii")) == 0)
 		{

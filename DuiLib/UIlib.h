@@ -108,6 +108,7 @@
 #endif //#ifdef DUILIB_WIN32
 
 #include "Utils/DuiString.h"
+#include "Utils/Md5.h"
 #include "Utils/Utils.h"
 #ifdef WIN32
 #include "Utils/unzip.h"

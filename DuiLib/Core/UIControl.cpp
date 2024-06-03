@@ -883,7 +883,8 @@ namespace DuiLib {
 	void CControlUI::SetToolTip(LPCTSTR pstrText)
 	{
 		CDuiString strTemp(pstrText);
-		strTemp.Replace(_T("<n>"),_T("\r\n"));
+		if(!strTemp.IsEmpty())
+			strTemp.Replace(_T("<n>"),_T("\r\n"));
 		m_sToolTip = strTemp;
 	}
 
@@ -962,6 +963,11 @@ namespace DuiLib {
 		m_bVisible = bVisible;
 		if( IsFocused() ) SetFocusState(false);
 
+		if(!m_bVisible)
+		{
+			m_state.m_uState &= ~(UISTATE_FOCUSED | UISTATE_HOT | UISTATE_CAPTURED | UISTATE_PUSHED);
+		}
+
 		if (!bVisible && m_pManager && m_pManager->GetFocus() == this) 
 		{
 			m_pManager->SetFocus(NULL) ;
@@ -1039,7 +1045,7 @@ namespace DuiLib {
 	bool CControlUI::IsCaptureState() const				{ return m_state.IsCapture();		}
 	void CControlUI::SetCaptureState(bool bCaptured)	{ m_state.SetCapture(bCaptured);	}
 
-	bool CControlUI::IsPushedState() const				{ return m_state.IsCapture();		}
+	bool CControlUI::IsPushedState() const				{ return m_state.IsPushed();		}
 	void CControlUI::SetPushedState(bool bPushed)		{ m_state.SetPushed(bPushed);		}
 
 	void CControlUI::SetSelectedState(bool bSelected)	{ m_state.SetSelected(bSelected);	}
@@ -1813,7 +1819,7 @@ namespace DuiLib {
 		}
 	}
 
-	CControlUI* CControlUI::ApplyAttributeList(LPCTSTR pstrValue)
+	void CControlUI::ApplyAttributeList(LPCTSTR pstrValue)
 	{
 		// 解析样式表
 		if(m_pManager != NULL) {
@@ -1838,14 +1844,14 @@ namespace DuiLib {
 				}
 			}
 			//ASSERT( *pstrList == _T('=') ); //可能让设计器崩溃
-			if( *pstrList != _T('=') ) return this;	
+			if( *pstrList != _T('=') ) return;	
 
-			if( *pstrList++ != _T('=') ) return this;
+			if( *pstrList++ != _T('=') ) return;
 
 			//ASSERT( *pstrList == _T('\"') ); //可能让设计器崩溃
-			if( *pstrList != _T('\"') )	return this;
+			if( *pstrList != _T('\"') )	return;
 
-			if( *pstrList++ != _T('\"') ) return this;
+			if( *pstrList++ != _T('\"') ) return;
 
 			//这段无法满足嵌套的style定义
 // 			while( *pstrList != _T('\0') && *pstrList != _T('\"') ) {
@@ -1883,13 +1889,13 @@ namespace DuiLib {
 			}
 
 			//ASSERT( *pstrList == _T('\"') ); //可能让设计器崩溃
-			if( *pstrList != _T('\"') )	return this;
+			if( *pstrList != _T('\"') )	return;
 
-			if( *pstrList++ != _T('\"') ) return this;
+			if( *pstrList++ != _T('\"') ) return;
 			SetAttribute(sItem, sValue);
-			if( *pstrList++ != _T(' ') && *pstrList++ != _T(',') ) return this;
+			if( *pstrList++ != _T(' ') && *pstrList++ != _T(',') ) return;
 		}
-		return this;
+		return;
 	}
 
 	SIZE CControlUI::EstimateSize(SIZE szAvailable)

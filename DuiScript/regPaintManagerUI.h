@@ -36,7 +36,8 @@ public:
 		CStringA classname = "CPaintManagerUI";
 		int r = 0;
 		REG_METHOD_FUNPR(CPaintManagerUI, CControlUI*, GetRoot, () const);
-		REG_METHOD_FUNPR(CPaintManagerUI, CControlUI*, FindControl, (const CDuiString &pstrName) const);
+		REG_METHOD_FUNPR(CPaintManagerUI, CControlUI*, FindControl, (LPCTSTR pstrName) const);
+		REG_METHOD_FUNPR(CPaintManagerUI, UIWND, GetPaintWindow, () const);
 
 		//r = engine->RegisterObjectMethod("CPaintManagerUI", "CControlUI *FindControl(const string &sName)", asFUNCTIONPR(CPaintManagerUI_FindControl, (const CDuiString &, CPaintManagerUI *), CControlUI *), asCALL_CDECL_OBJLAST); assert( r >= 0 );
 		//r = engine->RegisterObjectMethod("CPaintManagerUI", "CControlUI *FindControl(const string &sName)", asFUNCTION(CPaintManagerUI_FindControl), asCALL_CDECL_OBJLAST); assert( r >= 0 );

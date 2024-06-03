@@ -50,7 +50,7 @@ void CScriptHelper::AddCommand(int nCmd, int line)
 	m_nCmdLine = line;
 	if (m_nCmd==SCRIPT_DEBUG_SETP_OVER ||m_nCmd==SCRIPT_DEBUG_SETP_OUT)
 	{
-		m_lastCommandAtStackLevel = ctx->GetCallstackSize();
+		m_lastCommandAtStackLevel = m_ctx->CTX()->GetCallstackSize();
 	}
 	SetEvent(m_hEventDebug);
 }
@@ -78,7 +78,7 @@ void CScriptHelper::PrintContext()
 	tagScriptMessage msg;
 	msg.type = usMsg_PrintContext;
 	msg.line = 0;
-	msg.ctx = ctx;
+	msg.ctx = m_ctx->CTX();
 	CallMessageCallback(&msg);
 }
 
@@ -174,13 +174,13 @@ UINT CScriptHelper::ThreadFunDebug()
 	msg.message = NULL;
 
 	int r = 0;
-	r = ctx->Execute();
+	r = m_ctx->Execute();
 	
 	if( r == asEXECUTION_FINISHED )
 	{
 		//脚本执行成功
 		msg.type = usMsg_RunEnd;
-		msg.ctx = ctx;
+		msg.ctx = m_ctx->CTX();
 		CallMessageCallback(&msg);
 	}
 	else
@@ -197,13 +197,13 @@ UINT CScriptHelper::ThreadFunDebug()
 		else if( r == asEXECUTION_EXCEPTION )
 		{
 			// Write some information about the script exception
-			asIScriptFunction *func = ctx->GetExceptionFunction();
+			asIScriptFunction *func = m_ctx->CTX()->GetExceptionFunction();
 			sprintf_s(MsgStr, "func: %s\r\nmodl: %s\r\nsect: %s\r\nline: %d\r\ndesc: %s", 
 				func->GetDeclaration(),
 				func->GetModuleName(),
 				func->GetScriptSectionName(),
-				ctx->GetExceptionLineNumber(),
-				ctx->GetExceptionString());
+				m_ctx->CTX()->GetExceptionLineNumber(),
+				m_ctx->CTX()->GetExceptionString());
 			msg.message = MsgStr;
 		}
 		else
@@ -222,6 +222,16 @@ UINT CScriptHelper::ThreadFunDebug()
 	if(_hThreadDebug != NULL){ ::CloseHandle(_hThreadDebug); _hThreadDebug = NULL; }
 	return 0;
 }
+
+// IScriptContext *CScriptHelper::CreateContext()
+// {
+// 	return CScriptManager::CreateContext();
+// }
+// 
+// void CScriptHelper::ReleaseContext(IScriptContext *ctx)
+// {
+// 	return CScriptManager::ReleaseContext((IScriptContext *)ctx);
+// }
 
 bool CScriptHelper::CreateModule(LPCTSTR moduleName)
 {
@@ -250,7 +260,7 @@ bool CScriptHelper::CompileScript()
 
 BOOL CScriptHelper::IsRunning()
 {
-	return ctx->GetState() == asEXECUTION_ACTIVE;
+	return m_ctx->CTX()->GetState() == asEXECUTION_ACTIVE;
 }
 
 void CScriptHelper::DebugRun()
@@ -266,7 +276,7 @@ void CScriptHelper::DebugRun()
 	m_lastCommandAtStackLevel = 0;
 	m_lastLine = 0;
 
-	int x = ctx->GetState();
+	int x = m_ctx->CTX()->GetState();
 	//ThreadFunDebug();
  	UINT id;
  	_hThreadDebug = (HANDLE)_beginthreadex(NULL, 0, _ThreadFunDebug, this, 0, &id);
@@ -287,7 +297,7 @@ void CScriptHelper::DebugStop()
 
 BOOL CScriptHelper::IsCanDebugStop()
 {
-	return ctx->GetState() == asEXECUTION_ACTIVE;
+	return m_ctx->CTX()->GetState() == asEXECUTION_ACTIVE;
 }
 
 void CScriptHelper::DebugStepInto()
@@ -297,7 +307,7 @@ void CScriptHelper::DebugStepInto()
 
 BOOL CScriptHelper::IsCanDebugStepInto()
 {
-	return ctx->GetState() == asEXECUTION_ACTIVE ;
+	return m_ctx->CTX()->GetState() == asEXECUTION_ACTIVE ;
 }
 
 void CScriptHelper::DebugStepOver()
@@ -307,7 +317,7 @@ void CScriptHelper::DebugStepOver()
 
 BOOL CScriptHelper::IsCanDebugStepOver()
 {
-	return ctx->GetState() == asEXECUTION_ACTIVE ;
+	return m_ctx->CTX()->GetState() == asEXECUTION_ACTIVE ;
 }
 
 void CScriptHelper::DebugStepReturn()
@@ -317,7 +327,7 @@ void CScriptHelper::DebugStepReturn()
 
 BOOL CScriptHelper::IsCanDebugStepReturn()
 {
-	return ctx->GetState() == asEXECUTION_ACTIVE ;
+	return m_ctx->CTX()->GetState() == asEXECUTION_ACTIVE ;
 }
 
 void CScriptHelper::DebugStepCursor()
@@ -327,157 +337,9 @@ void CScriptHelper::DebugStepCursor()
 
 BOOL CScriptHelper::IsCanDebugStepCursor()
 {
-	return ctx->GetState() == asEXECUTION_ACTIVE ;
+	return m_ctx->CTX()->GetState() == asEXECUTION_ACTIVE ;
 }
 
 //////////////////////////////////////////////////////////////////////////
-bool CScriptHelper::SetMainFun(LPCTSTR lpszMainFun)
-{	
-	int r = 0;
-	LSSTRING_CONVERSION;
-	asIScriptFunction *pFun = m_builder.GetModule()->GetFunctionByDecl(LST2UTF8(lpszMainFun));
-	if(!pFun) return false;
-	return ctx->Prepare(pFun) >= 0;
-}
-
-BOOL CScriptHelper::SetArgByte(UINT arg, BYTE value)
-{
-	if(ctx == NULL)
-		return FALSE;
-
-	int r = ctx->SetArgByte(arg, value);
-	return r>=0;
-}
-
-BOOL CScriptHelper::SetArgWord(UINT arg, WORD value)
-{
-	if(ctx == NULL)
-		return FALSE;
-
-	int r = ctx->SetArgWord(arg, value);
-	return r>=0;	
-}
-
-BOOL CScriptHelper::SetArgDWord(UINT arg, DWORD value)
-{
-	if(ctx == NULL)
-		return FALSE;
-
-	int r = ctx->SetArgDWord(arg, value);
-	return r>=0;	
-}
-
-BOOL CScriptHelper::SetArgFloat(UINT arg, float value)
-{
-	if(ctx == NULL)
-		return FALSE;
-
-	int r = ctx->SetArgFloat(arg, value);
-	return r>=0;	
-}
-
-BOOL CScriptHelper::SetArgDouble(UINT arg, double value)
-{
-	if(ctx == NULL)
-		return FALSE;
-
-	int r = ctx->SetArgDouble(arg, value);
-	return r>=0;
-}
-
-BOOL CScriptHelper::SetArgAddress(UINT arg, void *addr)
-{
-	if(ctx == NULL)
-		return FALSE;
-
-	int r = ctx->SetArgAddress(arg, addr);
-	return r>=0;
-}
-
-BOOL CScriptHelper::SetArgObject(UINT arg, void *obj)
-{
-	if(ctx == NULL)
-		return FALSE;
-
-	int r = ctx->SetArgObject(arg, obj);
-	return r>=0;
-}
-
-void * CScriptHelper::GetAddressOfArg(UINT arg)
-{
-	if(ctx == NULL)
-		return NULL;
-
-	return ctx->GetAddressOfArg(arg);	
-}
-
-bool CScriptHelper::Excute()
-{
-	return CScriptManager::Execute();
-}
-
-BYTE CScriptHelper::GetReturnByte()
-{
-	if(ctx == NULL)
-		return 0;
-
-	return ctx->GetReturnByte();
-}
-
-WORD CScriptHelper::GetReturnWord()
-{
-	if(ctx == NULL)
-		return 0;
-
-	return ctx->GetReturnWord();	
-}
-
-DWORD CScriptHelper::GetReturnDWord()
-{
-	if(ctx == NULL)
-		return 0;
-
-	return ctx->GetReturnDWord();
-}
-
-float CScriptHelper::GetReturnFloat()
-{
-	if(ctx == NULL)
-		return 0;
-
-	return ctx->GetReturnFloat();
-}
-
-double CScriptHelper::GetReturnDouble()
-{
-	if(ctx == NULL)
-		return 0;
-
-	return ctx->GetReturnDouble();
-}
-
-void * CScriptHelper::GetReturnAddress()
-{
-	if(ctx == NULL)
-		return 0;
-
-	return ctx->GetReturnAddress();	
-}
-
-void * CScriptHelper::GetReturnObject()
-{
-	if(ctx == NULL)
-		return 0;
-
-	return ctx->GetReturnObject();	
-}
-
-void * CScriptHelper::GetAddressOfReturnValue()
-{
-	if(ctx == NULL)
-		return 0;
-
-	return ctx->GetAddressOfReturnValue();	
-}
 
 }

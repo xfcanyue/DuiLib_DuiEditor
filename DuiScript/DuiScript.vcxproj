@@ -677,6 +677,7 @@
     <ClInclude Include="basedefine.h" />
     <ClInclude Include="Include\DuiScriptInterface.h" />
     <ClInclude Include="RegCControlUI.h" />
+    <ClInclude Include="RegCDialog.h" />
     <ClInclude Include="RegCDuiString.h" />
     <ClInclude Include="regCLangManagerUI.h" />
     <ClInclude Include="regCRenderEngine.h" />
@@ -689,6 +690,7 @@
     <ClInclude Include="regTFontInfo.h" />
     <ClInclude Include="regTImageInfo.h" />
     <ClInclude Include="RegTNotifyUI.h" />
+    <ClInclude Include="ScriptContext.h" />
     <ClInclude Include="ScriptEngine.h" />
     <ClInclude Include="ScriptManager.h" />
     <ClInclude Include="ScriptHelper.h" />
@@ -789,6 +791,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="DuiScript.cpp" />
+    <ClCompile Include="ScriptContext.cpp" />
     <ClCompile Include="ScriptEngine.cpp" />
     <ClCompile Include="ScriptManager.cpp" />
     <ClCompile Include="ScriptHelper.cpp" />

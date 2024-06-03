@@ -445,7 +445,7 @@ namespace DuiLib {
 		void RemoveAllCustomAttribute();
 
 		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
-		CControlUI* ApplyAttributeList(LPCTSTR pstrList);
+		void ApplyAttributeList(LPCTSTR pstrList);
 
 		virtual SIZE EstimateSize(SIZE szAvailable);
 		virtual bool Paint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl = NULL); // 返回要不要继续绘制

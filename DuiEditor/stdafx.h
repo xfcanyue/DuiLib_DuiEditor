@@ -80,6 +80,7 @@ using namespace pugi;
 #define XML_PARSER_OPTIONS pugi::parse_full//parse_default|parse_declaration|parse_comments
 
 #include "../DuiScript/Include/DuiScriptInterface.h"
+#include "../DuiScript/ScriptHelper.h"
 //////////////////////////////////////////////////////////////////////////
 #include "MemDCEx.h"
 #include "LsStringConverter.h"
