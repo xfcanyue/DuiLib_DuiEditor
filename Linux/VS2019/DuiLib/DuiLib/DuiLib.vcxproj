@@ -180,6 +180,7 @@
     <ClInclude Include="..\..\..\..\DuiLib\Utils\DragDropImpl.h" />
     <ClInclude Include="..\..\..\..\DuiLib\Utils\DuiString.h" />
     <ClInclude Include="..\..\..\..\DuiLib\Utils\FlashEventHandler.h" />
+    <ClInclude Include="..\..\..\..\DuiLib\Utils\Md5.h" />
     <ClInclude Include="..\..\..\..\DuiLib\Utils\nanosvg.h" />
     <ClInclude Include="..\..\..\..\DuiLib\Utils\nanosvgrast.h" />
     <ClInclude Include="..\..\..\..\DuiLib\Utils\observer_impl_base.h" />
@@ -317,6 +318,7 @@
     <ClCompile Include="..\..\..\..\DuiLib\Utils\DpiWin32.cpp" />
     <ClCompile Include="..\..\..\..\DuiLib\Utils\DragDropImpl.cpp" />
     <ClCompile Include="..\..\..\..\DuiLib\Utils\DuiString.cpp" />
+    <ClCompile Include="..\..\..\..\DuiLib\Utils\Md5.cpp" />
     <ClCompile Include="..\..\..\..\DuiLib\Utils\pugixml\pugixml.cpp" />
     <ClCompile Include="..\..\..\..\DuiLib\Utils\QREncode.cpp" />
     <ClCompile Include="..\..\..\..\DuiLib\Utils\TrayIcon.cpp" />

@@ -285,12 +285,16 @@ namespace DuiLib
 		//////////////////////////////////////////////////////////////////////////
 		DuiStringT& Assign(char ch)
 		{
-			DuiTraits::assign_string(m_pstr, StringEncoding, &ch, 1, duistring_encoding_ansi, FALSE); 
+			//DuiTraits::assign_string(m_pstr, StringEncoding, &ch, 1, StringEncoding, FALSE);
+			char str[] = { ch, '\0' };
+			Assign(str, 1);
 			return *this;
 		}	
 		DuiStringT& Append(char ch)
 		{
-			DuiTraits::append_string(m_pstr, StringEncoding, &ch, 1, duistring_encoding_ansi); 
+			//DuiTraits::append_string(m_pstr, StringEncoding, &ch, 1, StringEncoding);
+			char str[] = { ch, '\0' };
+			Append(str, 1);
 			return *this;
 		}
 		DuiStringT& operator=(const char ch)			{ Assign(ch);		return *this; }
@@ -301,12 +305,16 @@ namespace DuiLib
 		//////////////////////////////////////////////////////////////////////////
 		DuiStringT& Assign(wchar_t ch)
 		{
-			DuiTraits::assign_string(m_pstr, StringEncoding, &ch, 1, duistring_encoding_unicode, FALSE); 
+			//DuiTraits::assign_string(m_pstr, StringEncoding, &ch, 1, duistring_encoding_unicode, FALSE);
+			wchar_t str[] = { ch, L'\0' };
+			Assign(str, 1);
 			return *this;
 		}	
 		DuiStringT& Append(wchar_t ch)
 		{
-			DuiTraits::append_string(m_pstr, StringEncoding, &ch, 1, duistring_encoding_unicode);   
+			//DuiTraits::append_string(m_pstr, StringEncoding, &ch, 1, duistring_encoding_unicode);
+			wchar_t str[] = { ch, L'\0' };
+			Append(str, 1);
 			return *this;
 		}
 		DuiStringT& operator=(const wchar_t ch)			{ Assign(ch);		return *this; }
@@ -318,13 +326,19 @@ namespace DuiLib
 		DuiStringT& Assign(const char *pstr, int cchMax = -1)
 		{
 			cchMax = (cchMax < 0 ? (int)DuiStringTraitsA::ui_strlen(pstr) : cchMax);
-// #ifdef _UTF8CODE
-// 			DuiTraits::assign_string(m_pstr, StringEncoding, pstr, cchMax, duistring_encoding_utf8, FALSE);
-// #else
-// 			DuiTraits::assign_string(m_pstr, StringEncoding, pstr, cchMax, duistring_encoding_ansi, FALSE);
-// #endif
-			DuiTraits::assign_string(m_pstr, StringEncoding, pstr, cchMax, StringEncoding, FALSE);
-			 return *this;
+			if (StringEncoding == duistring_encoding_unicode)
+			{
+#ifdef _UTF8CODE
+				DuiTraits::assign_string(m_pstr, StringEncoding, pstr, cchMax, duistring_encoding_utf8, FALSE);
+#else
+				DuiTraits::assign_string(m_pstr, StringEncoding, pstr, cchMax, duistring_encoding_ansi, FALSE);
+#endif
+			}
+			else
+			{
+				DuiTraits::assign_string(m_pstr, StringEncoding, pstr, cchMax, StringEncoding, FALSE);
+			}
+			return *this;
 		}
 		DuiStringT& Append(const char *pstr, int cchMax=-1) 
 		{ 
@@ -333,12 +347,18 @@ namespace DuiLib
 				return *this;
 			if(cchMax > 0 && cchMax < srclen)
 				srclen = cchMax;
-// #ifdef _UTF8CODE
-// 			DuiTraits::append_string(m_pstr, StringEncoding, pstr, srclen, duistring_encoding_utf8);  
-// #else
-// 			DuiTraits::append_string(m_pstr, StringEncoding, pstr, srclen, duistring_encoding_ansi);  
-// #endif
-			DuiTraits::append_string(m_pstr, StringEncoding, pstr, srclen, StringEncoding); 
+			if (StringEncoding == duistring_encoding_unicode)
+			{
+#ifdef _UTF8CODE
+				DuiTraits::append_string(m_pstr, StringEncoding, pstr, srclen, duistring_encoding_utf8);
+#else
+				DuiTraits::append_string(m_pstr, StringEncoding, pstr, srclen, duistring_encoding_ansi);
+#endif
+			}
+			else
+			{
+				DuiTraits::append_string(m_pstr, StringEncoding, pstr, srclen, StringEncoding);
+			}
 			return *this;
 		}
 		DuiStringT& operator=(const char *pstr)			{ Assign(pstr);		return *this; }
