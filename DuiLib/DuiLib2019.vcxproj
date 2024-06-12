@@ -1675,6 +1675,7 @@
     <ClCompile Include="Utils\DpiWin32.cpp" />
     <ClCompile Include="Utils\DragDropImpl.cpp" />
     <ClCompile Include="Utils\DuiString.cpp" />
+    <ClCompile Include="Utils\Md5.cpp" />
     <ClCompile Include="Utils\QREncode.cpp" />
     <ClCompile Include="Utils\TrayIcon.cpp" />
     <ClCompile Include="Utils\UIApplication.cpp" />
@@ -1805,6 +1806,7 @@
     <ClInclude Include="Utils\DpiWin32.h" />
     <ClInclude Include="Utils\DragDropImpl.h" />
     <ClInclude Include="Utils\DuiString.h" />
+    <ClInclude Include="Utils\Md5.h" />
     <ClInclude Include="Utils\observer_impl_base.h" />
     <ClInclude Include="Utils\QREncode.h" />
     <ClInclude Include="Utils\TrayIcon.h" />
