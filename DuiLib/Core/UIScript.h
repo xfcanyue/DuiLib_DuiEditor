@@ -27,11 +27,11 @@ namespace DuiLib {
 		virtual int	SetArgObject(UINT arg, void *obj) = 0;
 		virtual void *GetAddressOfArg(UINT arg) = 0;
 
-		//脚本执行超时时间，毫秒, dwTimeOut < 0，不判断超时。默认值：5秒。
-		virtual void SetTimeOut(int dwTimeOut) = 0;
-
 		//执行脚本
 		virtual int Execute() = 0;
+
+		//中止脚本
+		virtual int Abort() = 0;
 
 		//获取返回值
 		virtual BYTE	GetReturnByte() = 0;
@@ -44,16 +44,22 @@ namespace DuiLib {
 		virtual void *	GetAddressOfReturnValue() = 0;
 	};
 
+	typedef void (CALLBACK *SCRIPT_MESSAGE_CALLBACK)(int type, int row, int col, const char *section, const char *msg);
+	typedef void (CALLBACK *SCRIPT_CONTEXT_LINE_CALLBACK)(IScriptContext *ctx);
 	class UILIB_API IScriptManager
 	{
 	public:
-		//加入脚本文件
-		virtual bool AddScriptFile(LPCTSTR pstrFileName) = 0;
+		//加入脚本文件, 返回模块名
+		virtual CDuiString AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pstrModuleName=NULL) = 0;
 
-		//加入脚本代码
-		virtual bool AddScriptCode(LPCTSTR pstrCode) = 0;
+		//加入脚本代码，返回模块名
+		virtual CDuiString AddScriptCode(LPCTSTR pstrCode, LPCTSTR pstrModuleName=NULL) = 0;
 
-		//编译脚本。 一次性加入脚本文件完毕，然后只能编译一次。
+		//删除代码模块
+		virtual bool RemoveScript(LPCTSTR pstrModuleName) = 0;
+		virtual void RemoveAllScript() = 0;
+
+		//编译脚本。允许重复编译，但是要防止冲突。
 		virtual bool CompileScript() = 0;
 
 		//创建执行上下文
@@ -61,6 +67,15 @@ namespace DuiLib {
 
 		//删除执行上下文
 		virtual void ReleaseContext(IScriptContext *ctx) = 0;
+
+		//脚本执行超时时间，毫秒, dwTimeOut <= 0，不判断超时。默认值：10秒。
+		virtual void SetTimeOut(int dwTimeOut) = 0;
+
+		//脚本引擎消息回调函数
+		virtual void SetMessageCallback(SCRIPT_MESSAGE_CALLBACK pfnCallback) = 0;
+
+		//执行上下文消息回调
+		virtual void SetContextLineCallback(SCRIPT_CONTEXT_LINE_CALLBACK pfnCallback) = 0;
 	};
 	typedef IScriptManager* (__stdcall *CREATE_SCRIPT_ENGINE_INSTANCE)();
 	typedef void (__stdcall *DELETE_SCRIPT_ENGINE_INSTANCE)(IScriptManager *pEngine);

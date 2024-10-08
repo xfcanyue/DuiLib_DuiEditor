@@ -157,6 +157,9 @@ BEGIN_MESSAGE_MAP(CDuiEditorViewDesign, CScrollView)
 	ON_WM_SETFOCUS()
 	ON_COMMAND(ID_EDIT_CREATE_RESOURCE_ID, &CDuiEditorViewDesign::OnEditCreateResourceId)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_CREATE_RESOURCE_ID, &CDuiEditorViewDesign::OnUpdateEditCreateResourceId)
+
+	ON_COMMAND(ID_EDIT_CLEAR_RESOURCE_ID, &CDuiEditorViewDesign::OnEditClearResourceId)
+
 	ON_COMMAND(ID_EDIT_CREATE_RESOURCEID_AUTO, &CDuiEditorViewDesign::OnEditCreateResourceidAuto)
 	ON_COMMAND(ID_EDIT_LANG_TEXT, &CDuiEditorViewDesign::OnEditLangText)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_LANG_TEXT, &CDuiEditorViewDesign::OnUpdateEditLangText)
@@ -1899,6 +1902,41 @@ void CDuiEditorViewDesign::OnUpdateEditCreateResourceId(CCmdUI *pCmdUI)
 		return;
 	}	
 	pCmdUI->Enable(FALSE);
+}
+
+
+void CDuiEditorViewDesign::OnEditClearResourceId()
+{
+	xml_node root = GetUIManager()->GetDocument()->m_doc.child(XTEXT("Window"));
+	if(!root)
+	{
+		root = GetUIManager()->GetDocument()->m_doc.child(XTEXT("Menu"));
+		if(!root)
+		{
+			AfxMessageBox(_T("只有根节点为Window或Menu才能生成语言包！"));
+			return;
+		}
+	}
+	if(AfxMessageBox(_T("清空所有ResourceId属性，请谨慎操作！\r\n\r\n确定清空吗？"), MB_OKCANCEL) != IDOK)
+		return;
+	_ClearResourceIDAuto(root);
+}
+
+void CDuiEditorViewDesign::_ClearResourceIDAuto(xml_node root)
+{
+	xml_attribute attr = root.attribute("resourceid");
+	if(attr)
+	{
+		//实时更新到XML页面
+		GetUIManager()->GetCodeView()->DeleteAttribute(root, attr);
+
+		root.remove_attribute(attr);
+	}
+
+	for (xml_node node = root.first_child(); node; node=node.next_sibling())
+	{
+		_ClearResourceIDAuto(node);
+	}	
 }
 
 

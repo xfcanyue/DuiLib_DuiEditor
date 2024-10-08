@@ -23,6 +23,9 @@ public:
 	void SetUIColor(LPCTSTR szColor);
 	void SetUIColorOriginal(LPCTSTR szColor);
 	CString GetUIColor();
+
+protected:
+	UINT m_uiTransparent;
 };
 
 class CUIPropertyGridImageProperty : public CMFCPropertyGridProperty

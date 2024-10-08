@@ -708,7 +708,7 @@ namespace DuiLib {
 		static bool LoadScriptPlugin(CREATE_SCRIPT_ENGINE_INSTANCE pFunCreate, DELETE_SCRIPT_ENGINE_INSTANCE pFunDelete);
 		static IScriptManager *GetScriptEngine();
 
-		static void AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pLanguageType=NULL);
+		static void AddScriptFile(LPCTSTR pstrFileName);
 		static bool CompileScript();
 		static bool ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl);
 		static bool ExecuteScript(LPCTSTR lpszFunName, CControlUI *pControl, TEventUI *ev);

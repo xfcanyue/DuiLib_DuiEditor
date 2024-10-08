@@ -191,6 +191,8 @@ public:
 	BOOL GetMaxResourceID(xml_node root, int &nMaxResourceID);
 	afx_msg void OnEditCreateResourceId();
 	afx_msg void OnUpdateEditCreateResourceId(CCmdUI *pCmdUI);
+	afx_msg void OnEditClearResourceId();
+	void _ClearResourceIDAuto(xml_node root);
 	afx_msg void OnEditCreateResourceidAuto();
 	void _CreateResourceIDAuto(xml_node root);
 	afx_msg void OnEditLangText();

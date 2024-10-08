@@ -2851,7 +2851,7 @@ namespace DuiLib {
 		return m_pSharedScriptEngine;
 	}
 
-	void CPaintManagerUI::AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pLanguageType)
+	void CPaintManagerUI::AddScriptFile(LPCTSTR pstrFileName)
 	{
 		IScriptManager *pScriptEngine = GetScriptEngine();
 		if(pScriptEngine == NULL) return;

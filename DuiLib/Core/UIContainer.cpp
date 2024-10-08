@@ -19,7 +19,8 @@ namespace DuiLib
 		m_pHorizontalScrollBar(NULL),
 		m_nScrollStepSize(0)
 	{
-		//::ZeroMemory(&m_rcInset, sizeof(m_rcInset));
+		m_pCalcControl = NULL;
+		m_bCalcResult = false;
 	}
 
 	CContainerUI::~CContainerUI()
@@ -708,91 +709,68 @@ namespace DuiLib
 		return CControlUI::EstimateSize(szAvailable);
 	}
 
-	void CContainerUI::SetPos(RECT rc, bool bNeedInvalidate)
+	void CContainerUI::SetPos(RECT rc1, bool bNeedInvalidate)
 	{
-		CControlUI::SetPos(rc, bNeedInvalidate);
+		CControlUI::SetPos(rc1, bNeedInvalidate);
 		if( m_items.IsEmpty() ) return;
 
-		rc = m_rcItem;
-		RECT rcInset = GetInset();
-		rc.left += rcInset.left;
-		rc.top += rcInset.top;
-		rc.right -= rcInset.right;
-		rc.bottom -= rcInset.bottom;
+		CDuiRect rc = m_rcItem;
+		rc.Deflate(GetInset());
 
-		if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) {
+		if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) 
+		{
 			rc.top -= m_pVerticalScrollBar->GetScrollPos();
 			rc.bottom -= m_pVerticalScrollBar->GetScrollPos();
 			rc.bottom += m_pVerticalScrollBar->GetScrollRange();
 			rc.right -= m_pVerticalScrollBar->GetFixedWidth();
 		}
-		if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) {
+		if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) 
+		{
 			rc.left -= m_pHorizontalScrollBar->GetScrollPos();
 			rc.right -= m_pHorizontalScrollBar->GetScrollPos();
 			rc.right += m_pHorizontalScrollBar->GetScrollRange();
 			rc.bottom -= m_pHorizontalScrollBar->GetFixedHeight();
 		}
 
-		for( int it = 0; it < m_items.GetSize(); it++ ) {
+		for( int it = 0; it < m_items.GetSize(); it++ ) 
+		{
 			CControlUI* pControl = static_cast<CControlUI*>(m_items[it]);
-			if( !pControl->IsVisible() ) continue;
-			if( pControl->IsFloat() ) {
+			if( !pControl->IsVisible() ) 
+				continue;
+			if( pControl->IsFloat() ) 
+			{
 				SetFloatPos(it);
 			}
-			else { 
-				SIZE sz = { rc.right - rc.left, rc.bottom - rc.top };
-				if( sz.cx < pControl->GetMinWidth() ) sz.cx = pControl->GetMinWidth();
-				if( sz.cx > pControl->GetMaxWidth() ) sz.cx = pControl->GetMaxWidth();
-				if( sz.cy < pControl->GetMinHeight() ) sz.cy = pControl->GetMinHeight();
-				if( sz.cy > pControl->GetMaxHeight() ) sz.cy = pControl->GetMaxHeight();
-				RECT rcCtrl = { rc.left, rc.top, rc.left + sz.cx, rc.top + sz.cy };
+			else 
+			{ 
+				CDuiSize sz(rc);
+				localControl_AdjustMaxMinSize(sz, pControl);
+
+				//铺满，不考虑pControl的padding
+				CDuiRect rcCtrl(rc.LeftTop(), sz);
+				if(m_pCalcControl) { m_rcCalcChild = rcCtrl; m_bCalcResult = true; return; }
 				pControl->SetPos(rcCtrl, false);
 			}
 		}
 	}
 
-	bool CContainerUI::CalcPos(CControlUI *pChildControl, RECT &rc)
+	bool CContainerUI::CalcPos(CControlUI *pChildControl, CDuiRect &rcChild)
 	{
-		rc = m_rcItem;
-		RECT rcInset = GetInset();
-		rc.left += rcInset.left;
-		rc.top += rcInset.top;
-		rc.right -= rcInset.right;
-		rc.bottom -= rcInset.bottom;
+		m_pCalcControl = pChildControl;
+		m_bCalcResult = false;
 
-		if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) {
-			rc.top -= m_pVerticalScrollBar->GetScrollPos();
-			rc.bottom -= m_pVerticalScrollBar->GetScrollPos();
-			rc.bottom += m_pVerticalScrollBar->GetScrollRange();
-			rc.right -= m_pVerticalScrollBar->GetFixedWidth();
-		}
-		if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) {
-			rc.left -= m_pHorizontalScrollBar->GetScrollPos();
-			rc.right -= m_pHorizontalScrollBar->GetScrollPos();
-			rc.right += m_pHorizontalScrollBar->GetScrollRange();
-			rc.bottom -= m_pHorizontalScrollBar->GetFixedHeight();
-		}
+		SetPos(GetPos(), false);
 
-		for( int it = 0; it < m_items.GetSize(); it++ ) {
-			CControlUI* pControl = static_cast<CControlUI*>(m_items[it]);
-			if(pControl == pChildControl)
-			{
-				if( pControl->IsFloat() ) 
-				{
-					break;
-				}
-				else { 
-					SIZE sz = { rc.right - rc.left, rc.bottom - rc.top };
-					if( sz.cx < pControl->GetMinWidth() ) sz.cx = pControl->GetMinWidth();
-					if( sz.cx > pControl->GetMaxWidth() ) sz.cx = pControl->GetMaxWidth();
-					if( sz.cy < pControl->GetMinHeight() ) sz.cy = pControl->GetMinHeight();
-					if( sz.cy > pControl->GetMaxHeight() ) sz.cy = pControl->GetMaxHeight();
-					RECT rcCtrl = { rc.left, rc.top, rc.left + sz.cx, rc.top + sz.cy };
-					rc = rcCtrl;
-				}
-				return true;
-			}
+		if(m_bCalcResult)
+		{
+			rcChild = m_rcCalcChild;
+			m_rcCalcChild.Empty();
+			m_pCalcControl = NULL;
+			//CMsgWndUI::InsertMsgV(_T("CalcPos pControl=%p, rcChild=%s"), pChildControl, rcChild.ToString().toString());
+			return true;
 		}
+		m_rcCalcChild.Empty();
+		m_pCalcControl = NULL;
 		return false;
 	}
 
@@ -1289,6 +1267,517 @@ namespace DuiLib
 		CControlUI* pSubControl=NULL;
 		if(m_pManager != NULL) pSubControl = static_cast<CControlUI*>(m_pManager->FindSubControlByName(this,pstrSubControlName));
 		return pSubControl;
+	}
+
+	void CContainerUI::SetPosHorizontalLayout(RECT rc1, bool bNeedInvalidate)
+	{
+		if(!m_pCalcControl)
+		{
+			CControlUI::SetPos(rc1, bNeedInvalidate);
+		}
+		CDuiRect rc = m_rcItem;
+
+		// Adjust for inset
+		rc.Deflate(GetInset());
+
+		if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) 
+			rc.Deflate(0, 0, m_pVerticalScrollBar->GetFixedWidth(), 0);
+		if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) 
+			rc.Deflate(0,0,0,m_pHorizontalScrollBar->GetFixedHeight());
+
+		if( m_items.GetSize() == 0) 
+		{
+			if(m_pCalcControl)
+			{
+				m_bCalcResult = false;
+			}
+			else
+			{
+				ProcessScrollBar(rc, 0, 0);
+			}
+			return;
+		}
+
+		// Determine the minimum size
+		//SIZE szAvailable = { rc.right - rc.left, rc.bottom - rc.top };
+		CDuiSize szAvailable(rc);
+		if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) 
+			szAvailable.Inflate(m_pHorizontalScrollBar->GetScrollRange(), 0);
+		if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) 
+			szAvailable.Inflate(0, m_pVerticalScrollBar->GetScrollRange());
+
+		//第一次循环，计算哪些控件需要自动布局，以及剩余可自动布局的尺寸。
+		int nAutoSizeCount = 0;	//需要自动布局的数量
+		int nUsedSize = 0;		//已使用的尺寸
+		int nEstimateCount = 0;	//需要布局的数量，Visible 和 非Float 的
+		for (int i=0; i<m_items.GetSize(); i++) //注意这里一定要用m_Items，CListUI有重写GetCount()
+		{
+			CControlUI *pControl = static_cast<CControlUI*>(m_items.GetAt(i));//注意这里一定要用m_Items，CListUI有重写GetItemAt()
+			if(m_pCalcControl)
+			{
+				if( !pControl->IsVisible() && !IsPaneVisible())
+					continue;
+			}
+			else
+			{
+				if( !pControl->IsVisible() ) 
+					continue;
+			}
+
+			if( pControl->IsFloat() ) 
+			{
+				if(m_pCalcControl)
+				{
+					if(m_pCalcControl == pControl)
+					{
+						m_rcCalcChild = pControl->GetPos(); m_bCalcResult = true; return;
+					}
+				}
+				continue;
+			}
+
+			RECT rcPadding = pControl->GetPadding();
+			CDuiSize szControlAvailable = szAvailable;
+			LocalControl_GetAvailableMaxSize(szControlAvailable, pControl);
+			SIZE sz = pControl->EstimateSize(szControlAvailable);
+			localControl_AdjustMaxMinSize(sz, pControl);
+			if(sz.cx == 0 && pControl->GetFixedWidthPercent() > 0)
+			{
+				sz.cx = szAvailable.cx * pControl->GetFixedWidthPercent() / 100;
+			}
+			localControl_AdjustMaxMinSize(sz, pControl);
+
+			if( sz.cx == 0 ) //控件的宽度为0，需要自动布局
+			{ 
+				nAutoSizeCount++;		
+			}
+
+			nUsedSize += sz.cx + rcPadding.left + rcPadding.right;
+			nEstimateCount++;
+		}
+		nUsedSize += (nEstimateCount - 1) * GetChildPadding();
+
+		//////////////////////////////////////////////////////////////////////////
+		int xPos = rc.left;
+		//计算布局的初始位置
+		if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) 
+		{
+			xPos -= m_pHorizontalScrollBar->GetScrollPos();
+		}
+		else 
+		{	
+			if(nAutoSizeCount == 0) //没有自动布局的控件，才支持横向对齐。
+			{
+				UINT iChildAlign = GetChildAlign(); 
+				if (iChildAlign == DT_CENTER) 
+				{
+					xPos += (szAvailable.cx - nUsedSize) / 2;
+				}
+				else if (iChildAlign == DT_RIGHT) 
+				{
+					xPos += (szAvailable.cx - nUsedSize);
+				}
+			}
+		}
+
+		//第二次循环，设置子控件位置，剩余可自动布局的空间分给需要自动布局的子控件。
+		int cxNeededEx = 0;
+		int cyNeededEx = 0;
+		int nIndex = 0;
+		int nAdjustUsedSize = 0;
+		for (int i=0; i<m_items.GetSize(); i++)
+		{
+			CControlUI *pControl = static_cast<CControlUI*>(m_items.GetAt(i));;
+			if(m_pCalcControl)
+			{
+				if( !pControl->IsVisible() && !IsPaneVisible())
+					continue;
+			}
+			else
+			{
+				if( !pControl->IsVisible() ) 
+					continue;
+			}
+			if( pControl->IsFloat() ) 
+			{
+				if(m_pCalcControl)
+				{
+					if(m_pCalcControl == pControl)
+					{
+						m_rcCalcChild = pControl->GetPos(); m_bCalcResult = true; return;
+					}
+				}
+				else
+				{
+					SetFloatPos(i);
+				}
+				continue;
+			}
+
+			RECT rcPadding = pControl->GetPadding();
+			CDuiSize szControlAvailable = szAvailable;
+			LocalControl_GetAvailableMaxSize(szControlAvailable, pControl);
+			SIZE sz = pControl->EstimateSize(szControlAvailable);
+			localControl_AdjustMaxMinSize(sz, pControl);
+			if(sz.cx == 0 && pControl->GetFixedWidthPercent() > 0)
+			{
+				sz.cx = szAvailable.cx * pControl->GetFixedWidthPercent() / 100;
+			}
+			if( sz.cx == 0 ) //控件的宽度为0，需要自动布局
+			{ 
+				sz.cx = (szAvailable.cx - nUsedSize - nAdjustUsedSize) / (nAutoSizeCount - nIndex);
+				nIndex++;
+				localControl_AdjustMaxMinSize(sz, pControl);
+				nAdjustUsedSize += sz.cx;	
+			}
+			else
+			{
+				localControl_AdjustMaxMinSize(sz, pControl);
+			}
+
+			if(sz.cy == 0 && pControl->GetFixedHeightPercent() > 0) 
+				sz.cy = szAvailable.cy * pControl->GetFixedHeightPercent() / 100;
+			if( sz.cy == 0 ) 
+				sz.cy = szAvailable.cy - rcPadding.top - rcPadding.bottom;
+			if( sz.cy > szControlAvailable.cy ) 
+				sz.cy = szControlAvailable.cy;
+			localControl_AdjustMaxMinSize(sz, pControl);
+
+			UINT iChildVAlign = GetChildVAlign(); 
+			CDuiRect rcCtrl;
+			if (iChildVAlign == DT_VCENTER) 
+			{
+				int yPos = rc.top + rc.GetHeight()/2;
+				if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) 
+				{
+					yPos += m_pVerticalScrollBar->GetScrollRange() / 2;
+					yPos -= m_pVerticalScrollBar->GetScrollPos();
+				}
+				rcCtrl.SetRect(xPos + rcPadding.left,
+					yPos - sz.cy/2,
+					xPos + rcPadding.left + sz.cx,
+					yPos - sz.cy/2 + sz.cy);
+
+				if(m_pCalcControl) 
+				{ 
+					if(m_pCalcControl == pControl)
+					{
+						m_rcCalcChild = rcCtrl; m_bCalcResult = true; return;
+					}
+				}
+				else
+					pControl->SetPos(rcCtrl, false);
+			}
+			else if (iChildVAlign == DT_BOTTOM) 
+			{
+				int yPos = rc.bottom;
+				if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) 
+				{
+					yPos += m_pVerticalScrollBar->GetScrollRange();
+					yPos -= m_pVerticalScrollBar->GetScrollPos();
+				}
+				rcCtrl.SetRect(xPos + rcPadding.left,
+					yPos - rcPadding.bottom - sz.cy,
+					xPos + rcPadding.left + sz.cx,
+					yPos - rcPadding.bottom);
+
+				if(m_pCalcControl) 
+				{ 
+					if(m_pCalcControl == pControl)
+					{
+						m_rcCalcChild = rcCtrl; m_bCalcResult = true; return;
+					}
+				}
+				else
+					pControl->SetPos(rcCtrl, false);
+			}
+			else //DT_TOP
+			{
+				int yPos = rc.top;
+				if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) 
+				{
+					yPos -= m_pVerticalScrollBar->GetScrollPos();
+				}
+				rcCtrl.SetRect(xPos + rcPadding.left,
+					yPos - rcPadding.top,
+					xPos + rcPadding.left + sz.cx,
+					yPos - rcPadding.top + sz.cy);
+
+				if(m_pCalcControl) 
+				{ 
+					if(m_pCalcControl == pControl)
+					{
+						m_rcCalcChild = rcCtrl; m_bCalcResult = true; return;
+					}
+				}
+				else
+					pControl->SetPos(rcCtrl, false);
+			}
+
+			xPos += sz.cx + GetChildPadding() + rcPadding.left + rcPadding.right;
+			cxNeededEx += sz.cx + rcPadding.left + rcPadding.right;
+			if(cyNeededEx < sz.cy + rcPadding.top + rcPadding.bottom)
+				cyNeededEx = sz.cy + rcPadding.top + rcPadding.bottom;
+		}
+		cxNeededEx += (nEstimateCount - 1) * GetChildPadding();
+
+		// Process the scrollbar
+		ProcessScrollBar(rc, cxNeededEx, cyNeededEx);
+	}
+
+	void CContainerUI::SetPosVerticalLayout(RECT rc1, bool bNeedInvalidate)
+	{
+		if(!m_pCalcControl)
+		{
+			CControlUI::SetPos(rc1, bNeedInvalidate);
+		}
+		CDuiRect rc = m_rcItem;
+
+		// Adjust for inset
+		rc.Deflate(GetInset());
+
+		if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) 
+			rc.Deflate(0, 0, m_pVerticalScrollBar->GetFixedWidth(), 0);
+		if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) 
+			rc.Deflate(0, 0, 0, m_pHorizontalScrollBar->GetFixedHeight());
+
+		if( m_items.GetSize() == 0) 
+		{
+			if(m_pCalcControl)
+			{
+				m_bCalcResult = false;
+			}
+			else
+			{
+				ProcessScrollBar(rc, 0, 0);
+			}
+			return;
+		}
+
+		// Determine the minimum size
+		CDuiSize szAvailable(rc);
+		if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) 
+			szAvailable.Inflate(m_pHorizontalScrollBar->GetScrollRange(), 0);
+		if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) 
+			szAvailable.Inflate(0, m_pVerticalScrollBar->GetScrollRange());
+
+		//第一次循环，计算哪些控件需要自动布局，以及剩余可自动布局的尺寸。
+		int nAutoSizeCount = 0;	//需要自动布局的数量
+		int nUsedSize = 0;		//已使用的尺寸
+		int nEstimateCount = 0;	//需要布局的数量，Visible 和 非Float 的
+		for (int i=0; i<m_items.GetSize(); i++) //注意这里一定要用m_Items，CListUI有重写GetCount()
+		{
+			CControlUI *pControl = static_cast<CControlUI*>(m_items.GetAt(i));//注意这里一定要用m_Items，CListUI有重写GetItemAt()
+ 			if(m_pCalcControl)
+ 			{
+				if( !pControl->IsVisible() && !IsPaneVisible())
+					continue;
+			}
+			else
+			{
+				if( !pControl->IsVisible() ) 
+					continue;
+			}
+
+			if( pControl->IsFloat() ) 
+			{
+				if(m_pCalcControl)
+				{
+					if(m_pCalcControl == pControl)
+					{
+						m_rcCalcChild = pControl->GetPos(); m_bCalcResult = true; return;
+					}
+				}
+				continue;
+			}
+
+			RECT rcPadding = pControl->GetPadding();
+			CDuiSize szControlAvailable = szAvailable;
+			LocalControl_GetAvailableMaxSize(szControlAvailable, pControl);
+			SIZE sz = pControl->EstimateSize(szControlAvailable);
+			localControl_AdjustMaxMinSize(sz, pControl);
+			if(sz.cy == 0 && pControl->GetFixedHeightPercent() > 0)
+			{
+				sz.cy = szAvailable.cy * pControl->GetFixedHeightPercent() / 100;
+			}
+			localControl_AdjustMaxMinSize(sz, pControl);
+
+			if( sz.cy == 0 ) //控件的高度为0，需要自动布局
+			{ 
+				nAutoSizeCount++;		
+			}
+
+			nUsedSize += sz.cy + rcPadding.top + rcPadding.bottom;
+			nEstimateCount++;
+		}
+		nUsedSize += (nEstimateCount - 1) * GetChildPadding();
+
+		//////////////////////////////////////////////////////////////////////////
+		int yPos = rc.top;
+		//计算布局的初始位置
+		if( m_pVerticalScrollBar && m_pVerticalScrollBar->IsVisible() ) 
+		{
+			yPos -= m_pVerticalScrollBar->GetScrollPos();
+		}
+		else 
+		{	
+			if(nAutoSizeCount == 0) //没有自动布局的控件，才支持横向对齐。
+			{
+				UINT iChildVAlign = GetChildVAlign(); 
+				if (iChildVAlign == DT_VCENTER) 
+				{
+					yPos += (szAvailable.cy - nUsedSize) / 2;
+				}
+				else if (iChildVAlign == DT_BOTTOM) 
+				{
+					yPos += (szAvailable.cy - nUsedSize);
+				}
+			}
+		}
+
+		//第二次循环，设置子控件位置，剩余可自动布局的空间分给需要自动布局的子控件。
+		int cyNeededEx = 0;
+		int cxNeededEx = 0;
+		int nIndex = 0;
+		int nAdjustUsedSize = 0;
+		for (int i=0; i<m_items.GetSize(); i++)
+		{
+			CControlUI *pControl = static_cast<CControlUI*>(m_items.GetAt(i));
+ 			if(m_pCalcControl)
+ 			{
+				if( !pControl->IsVisible() && !IsPaneVisible())
+					continue;
+			}
+			else
+			{
+				if( !pControl->IsVisible() ) 
+					continue;
+			}
+			if( pControl->IsFloat() ) 
+			{
+				if(m_pCalcControl)
+				{
+					if(m_pCalcControl == pControl)
+					{
+						m_rcCalcChild = pControl->GetPos(); m_bCalcResult = true; return;
+					}
+				}
+				else
+				{
+					SetFloatPos(i);
+				}
+				continue;
+			}
+
+			RECT rcPadding = pControl->GetPadding();
+			CDuiSize szControlAvailable = szAvailable;
+			LocalControl_GetAvailableMaxSize(szControlAvailable, pControl);
+			SIZE sz = pControl->EstimateSize(szControlAvailable);
+			localControl_AdjustMaxMinSize(sz, pControl);
+			if(sz.cy == 0 && pControl->GetFixedHeightPercent() > 0)
+			{
+				sz.cy = szAvailable.cy * pControl->GetFixedHeightPercent() / 100;
+			}
+			if( sz.cy == 0 ) //控件的高度为0，需要自动布局
+			{ 
+				sz.cy = (szAvailable.cy - nUsedSize - nAdjustUsedSize) / (nAutoSizeCount - nIndex);
+				nIndex++;
+				localControl_AdjustMaxMinSize(sz, pControl);
+				nAdjustUsedSize += sz.cy;	
+			}
+			else
+			{
+				localControl_AdjustMaxMinSize(sz, pControl);
+			}
+
+			if(sz.cx == 0 && pControl->GetFixedWidthPercent() > 0) 
+				sz.cx = szAvailable.cx * pControl->GetFixedWidthPercent() / 100;
+			if( sz.cx == 0 ) 
+				sz.cx = szAvailable.cx - rcPadding.left - rcPadding.right;
+			if( sz.cx > szControlAvailable.cx ) 
+				sz.cx = szControlAvailable.cx;
+			localControl_AdjustMaxMinSize(sz, pControl);
+
+			UINT iChildAlign = GetChildAlign(); 
+			CDuiRect rcCtrl;
+			if (iChildAlign == DT_CENTER) 
+			{
+				int xPos = rc.left + rc.GetWidth()/2;
+				if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) 
+				{
+					xPos += m_pHorizontalScrollBar->GetScrollRange() / 2;
+					xPos -= m_pHorizontalScrollBar->GetScrollPos();
+				}
+				rcCtrl.SetRect(xPos - sz.cx/2,
+					yPos + rcPadding.top,
+					xPos - sz.cx/2 + sz.cx,
+					yPos + rcPadding.top + sz.cy);
+
+				if(m_pCalcControl) 
+				{ 
+					if(m_pCalcControl == pControl)
+					{
+						m_rcCalcChild = rcCtrl; m_bCalcResult = true; return;
+					}
+				}
+				else
+					pControl->SetPos(rcCtrl, false);
+			}
+			else if (iChildAlign == DT_RIGHT) 
+			{
+				int xPos = rc.right;
+				if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) 
+				{
+					xPos += m_pHorizontalScrollBar->GetScrollRange();
+					xPos -= m_pHorizontalScrollBar->GetScrollPos();
+				}
+				rcCtrl.SetRect(xPos - rcPadding.right - sz.cx,
+					yPos + rcPadding.top,
+					xPos - rcPadding.right,
+					yPos + rcPadding.top + sz.cy);
+
+				if(m_pCalcControl) 
+				{ 
+					if(m_pCalcControl == pControl)
+					{
+						m_rcCalcChild = rcCtrl; m_bCalcResult = true; return;
+					}
+				}
+				else
+					pControl->SetPos(rcCtrl, false);
+			}
+			else //DT_LEFT
+			{
+				int xPos = rc.left;
+				if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) 
+				{
+					xPos -= m_pHorizontalScrollBar->GetScrollPos();
+				}
+				rcCtrl.SetRect(xPos + rcPadding.left,
+					yPos + rcPadding.top,
+					xPos + rcPadding.left + sz.cx,
+					yPos + rcPadding.top + sz.cy);
+
+				if(m_pCalcControl) 
+				{ 
+					if(m_pCalcControl == pControl)
+					{
+						m_rcCalcChild = rcCtrl; m_bCalcResult = true; return;
+					}
+				}
+				else
+					pControl->SetPos(rcCtrl, false);
+			}
+
+			yPos += sz.cy + GetChildPadding() + rcPadding.top + rcPadding.bottom;
+			cyNeededEx += sz.cy + rcPadding.top + rcPadding.bottom;
+			if(cxNeededEx < sz.cx + rcPadding.left + rcPadding.right)
+				cxNeededEx = sz.cx + rcPadding.left + rcPadding.right;
+		}
+		cyNeededEx += (nEstimateCount - 1) * GetChildPadding();
+
+		// Process the scrollbar
+		ProcessScrollBar(rc, cxNeededEx, cyNeededEx);
 	}
 } // namespace DuiLib
 

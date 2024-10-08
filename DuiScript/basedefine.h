@@ -111,6 +111,12 @@
 	assert( r >= 0 ); \
 }
 
+//注册控件的成员函数，使用全局函数注册
+#define REG_CONTROL_FUNPR2(fun,ret,n,p)	{			\
+	r = engine->RegisterObjectMethod(classname, fun, asFUNCTIONPR(n, p, ret), asCALL_CDECL_OBJLAST);  \
+	assert( r >= 0 ); \
+}
+
 //注册duilib控件
 #define REGISTER_CONTROL(x) { reg##x<x> ctrl; ctrl.classname=#x;  ctrl.reg(engine); }	
 

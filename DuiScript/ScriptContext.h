@@ -23,8 +23,9 @@ public:
 	virtual int	SetArgObject(UINT arg, void *obj) override;
 	virtual void *  GetAddressOfArg(UINT arg) override;
 
-	virtual void SetTimeOut(int dwTimeOut) override;
 	virtual int Execute() override;
+
+	virtual int Abort() override;
 
 	virtual BYTE	GetReturnByte() override;
 	virtual WORD	GetReturnWord() override;
@@ -42,7 +43,6 @@ protected:
 	IScriptManager *m_pScriptManager;
 	asIScriptEngine *m_pEngine;
 	asIScriptContext *m_ctx;
-	int m_dwTimeOut;
 	DWORD m_dwStartTime;
 };
 

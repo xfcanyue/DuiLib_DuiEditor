@@ -120,9 +120,18 @@ void CUIPropertyGridColorProperty::SetUIColor(LPCTSTR szrColor)
 		strColor.Delete(0, 2);
 	}
 
+	if(6 == strColor.GetLength())
+	{
+		strColor = L"FF" + strColor;
+	}
+
 	CString strColor2 = strColor.Mid(6,2) + strColor.Mid(4,2) + strColor.Mid(2, 2);
 	LPTSTR pstr = NULL;
 	m_Color = _tcstoul(strColor2, &pstr, 16);
+
+	strColor2 = strColor.Mid(0,2);
+	pstr = NULL;
+	m_uiTransparent = _tcstoul(strColor2, &pstr, 16);
 }
 
 void CUIPropertyGridColorProperty::SetUIColorOriginal(LPCTSTR szrColor)
@@ -143,6 +152,11 @@ void CUIPropertyGridColorProperty::SetUIColorOriginal(LPCTSTR szrColor)
 		strColor.Delete(0, 2);
 	}
 
+	if(6 == strColor.GetLength())
+	{
+		strColor = L"FF" + strColor;
+	}
+
 	CString strColor2 = strColor.Mid(6,2) + strColor.Mid(4,2) + strColor.Mid(2, 2);
 	LPTSTR pstr = NULL;
 	m_ColorOrig = _tcstoul(strColor2, &pstr, 16);
@@ -158,7 +172,7 @@ CString CUIPropertyGridColorProperty::GetUIColor()
 	}
 	else
 	{
-		strRet.Format(_T("0xFF%02X%02X%02X"), (m_Color) & 0x00FF, (m_Color>>8) & 0x00FF, (m_Color>>16) & 0x00FF);
+		strRet.Format(_T("0x%02X%02X%02X%02X"), m_uiTransparent, (m_Color) & 0x00FF, (m_Color>>8) & 0x00FF, (m_Color>>16) & 0x00FF);
 	}
 
 	return strRet;

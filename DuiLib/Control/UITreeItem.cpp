@@ -68,6 +68,7 @@ namespace DuiLib
 			break;
 		case BTN_CHECKBOX:
 			pItemUI->GetNodeData()->SetCheckBoxCheck(bSelected);
+			pTree->SendNotify(DUI_MSGTYPE_SELECTCHANGED, bSelected, 0);
 			pTree->Invalidate();
 			break;
 		case BTN_ICON:

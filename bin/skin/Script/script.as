@@ -11,7 +11,7 @@ bool OnClockControlEvent(CControlUI &obj, TEventUI &ev)
 	{
 		datetime dt;
 		dt.GetCurrentTime();
-		string s = dt.Format("%Y-%m-%d %H:%M:%S");
+		string s = "时间:" + dt.Format("%Y-%m-%d %H:%M:%S");
 		obj.SetText(s);
 	}
 	return false;

@@ -133,7 +133,7 @@ void CDlgCreateLangPackage::OnClickOK()
 		{
 			tagLanguageCode &code = GetMainWnd()->m_arrLangCode[i];
 
-			CString newPath = CString(sParentPath) + code.sNameEn + _T('\\');
+			CString newPath = CString(sParentPath) + code.sNameEn.toString() + _T('\\');
 			if(newPath == strBasePath)
 				continue;
 
@@ -162,7 +162,7 @@ void CDlgCreateLangPackage::OnClickOK()
 		{
 			tagLanguageCode &code = GetMainWnd()->m_arrLangCode[i];
 
-			CString newFile = sFileFolder + code.sNameEn + _T(".xml");
+			CString newFile = sFileFolder + code.sNameEn.toString() + _T(".xml");
 			if(strBaseFile == newFile)
 				continue;
 
@@ -193,7 +193,7 @@ void CDlgCreateLangPackage::CopyFromPath(LPCTSTR sBaseFolder, LPCTSTR newFolder,
 	}
 
 	CFileFind finder;
-	BOOL bFind = finder.FindFile(CString(sParentPath) + sBaseFolder + ("\\*.*"));
+	BOOL bFind = finder.FindFile(CString(sParentPath) + sBaseFolder + _T("\\*.*"));
 	if(!bFind) return;
 	while (bFind)
 	{
@@ -206,7 +206,7 @@ void CDlgCreateLangPackage::CopyFromPath(LPCTSTR sBaseFolder, LPCTSTR newFolder,
 		if(finder.IsDirectory())
 		{
 			//取出相对路径
-			CString s = CString(sParentPath) + sBaseFolder + ("\\");
+			CString s = CString(sParentPath) + sBaseFolder + _T("\\");
 			CString s1 = finder.GetFilePath();
 			int n = s1.Find(s);
 			CString s2 = s1.Right(s1.GetLength()-s.GetLength());

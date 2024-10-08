@@ -399,7 +399,7 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
 
 2023-11-11
 1，修改TreeUI，增加DeviceManager(设备管理器)。作为TreeUI和GridUI的范例，不知道如何遍历windows设备的同学，也可以参考一下。DeviceManager不支持windows xp。
-2，设计器针针对自定义控件时，右侧属性列表无法打开属性设置窗口。如：ATTRIBUTELIST。
+2，设计器针对自定义控件时，右侧属性列表无法打开属性设置窗口。如：ATTRIBUTELIST。
 3，ComoUI无法选择列表项，实际上是没有PaintText。
 4，TemplateOptionUI的group失效。
 5，xmake.lua还不完善，希望有会的同学帮忙做一下。
@@ -415,4 +415,15 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
 2，更新脚本。
 3，部分调整。
 
+2024-07-05
+1，重写 CHori..CVerti...SetPos函数。
+解决问题：(1) 平铺时，控件之间的大小误差最大为1。
+          (2) 平铺时，没有计算MinWidth 和 MinHeight。 
+
+2024-10-08
+1，更新：脚本内容。
+2，修复：CXmlDocumentUI无法保存文件的问题。
+3，修复：GridUI动态创建的列没有ApplyAttributeList。
+4，修复：DuiEditor增加清除页面中所有的ResourceID功能，用于重建语言包。
+5，修复：DuiEditor修改颜色值时，保留xml里的颜色透明度。感谢”纪飞 Jackie(2159893394)“。
 

@@ -44,8 +44,7 @@ BEGIN_MESSAGE_MAP(CDockControlTreeCtrl, CTreeCtrl)
 	ON_WM_MOUSEMOVE()
 	ON_NOTIFY_REFLECT(NM_CLICK, &CDockControlTreeCtrl::OnNMClick)
 	ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, &CDockControlTreeCtrl::OnNMCustomdraw)
-	ON_NOTIFY_EX_RANGE(TTN_NEEDTEXTW, 0, 0xFFFF, OnToolTipText)
-	ON_NOTIFY_EX_RANGE(TTN_NEEDTEXTA, 0, 0xFFFF, OnToolTipText)
+	ON_NOTIFY_EX(TTN_NEEDTEXTW, 0, OnToolTipText)
 END_MESSAGE_MAP()
 
 
@@ -688,7 +687,7 @@ INT_PTR CDockControlTreeCtrl::OnToolHitTest(CPoint point, TOOLINFO* pTI) const
 BOOL CDockControlTreeCtrl::OnToolTipText( UINT id, NMHDR * pNMHDR, LRESULT * pResult )
 {
 	// need to handle both ANSI and UNICODE versions of the message
-	TOOLTIPTEXT* pToolTipText = (TOOLTIPTEXT*)pNMHDR;
+	TOOLTIPTEXTW* pToolTipText = (TOOLTIPTEXTW*)pNMHDR;
 
 	CString strTipText;
 	UINT nID = (UINT)pNMHDR->idFrom;
@@ -721,7 +720,8 @@ BOOL CDockControlTreeCtrl::OnToolTipText( UINT id, NMHDR * pNMHDR, LRESULT * pRe
 	}
 	strTipText += _T(">");
 
-	_tcscpy_s(pToolTipText->szText, 80, strTipText.Left(79));
+	CDuiStringW s = strTipText;
+	wcscpy_s(pToolTipText->szText, 80, s.Left(79));
 	*pResult = 0;
 	return TRUE;    // message was handled
 }

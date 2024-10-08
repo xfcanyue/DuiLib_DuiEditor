@@ -105,8 +105,10 @@ public:
 		r = engine->RegisterObjectMethod("CRect", "void ResetOffset()", asMETHOD(CDuiRect, ResetOffset), asCALL_THISCALL);  assert( r >= 0 );
 		r = engine->RegisterObjectMethod("CRect", "void Normalize()", asMETHOD(CDuiRect, Normalize), asCALL_THISCALL);  assert( r >= 0 );
 		r = engine->RegisterObjectMethod("CRect", "void Offset(int cx, int cy)", asMETHOD(CDuiRect, Offset), asCALL_THISCALL);  assert( r >= 0 );
-		r = engine->RegisterObjectMethod("CRect", "void Inflate(int cx, int cy)", asMETHOD(CDuiRect, Inflate), asCALL_THISCALL);  assert( r >= 0 );
-		r = engine->RegisterObjectMethod("CRect", "void Deflate(int cx, int cy)", asMETHOD(CDuiRect, Deflate), asCALL_THISCALL);  assert( r >= 0 );
+		
+		r = engine->RegisterObjectMethod("CRect", "void Inflate(int cx, int cy)", asMETHODPR(CDuiRect, Inflate, (int cx, int cy), void), asCALL_THISCALL);  assert( r >= 0 );
+		r = engine->RegisterObjectMethod("CRect", "void Deflate(int cx, int cy)", asMETHODPR(CDuiRect, Deflate, (int cx, int cy), void), asCALL_THISCALL);  assert( r >= 0 );
+		
 		r = engine->RegisterObjectMethod("CRect", "void Union(CRect rc)", asMETHOD(CDuiRect, Union), asCALL_THISCALL);  assert( r >= 0 );
 
 		r = engine->RegisterObjectProperty("CRect", "long left", asOFFSET(CDuiRect,left)); assert( r >= 0 );

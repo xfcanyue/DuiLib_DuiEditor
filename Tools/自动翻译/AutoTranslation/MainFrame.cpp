@@ -194,7 +194,7 @@ void CMainFrame::on_btn_open_file()
 	fileDlg.m_ofn.nMaxFile = 1000 * MAX_PATH;
 
 	CBufferUI buff;
-	buff.AddBuffer(NULL, fileDlg.m_ofn.nMaxFile * sizeof(TCHAR));
+	buff.InitBuffer(fileDlg.m_ofn.nMaxFile * sizeof(TCHAR));
 	fileDlg.m_ofn.lpstrFile = (LPTSTR)buff.GetBuffer();//设定一个文件名缓存
 
 	if(fileDlg.DoModal() != IDOK)	
@@ -294,7 +294,7 @@ void CMainFrame::on_btn_open_path()
 void CMainFrame::AddFileFromPath(LPCTSTR sPath)
 {
 	CFileFind finder;
-	BOOL bFind = finder.FindFile(CString(sPath) + _T("\\") + ("*.*"));
+	BOOL bFind = finder.FindFile(CString(sPath) + _T("\\") + _T("*.*"));
 	if(!bFind) return;
 	while (bFind)
 	{

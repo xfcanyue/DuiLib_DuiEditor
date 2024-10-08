@@ -237,6 +237,7 @@ public:
 		REG_METHOD_FUNPR2("string", CDuiString, float, toFloat, (float def) const); assert( r >= 0 );
 
 		r = engine->RegisterObjectMethod("string", "int64 HexToInt64()", asMETHOD(CDuiString, HexToInt64), asCALL_THISCALL); assert( r >= 0 );
+		r = engine->RegisterObjectMethod("string", "string toHex()", asMETHOD(CDuiString, toHex), asCALL_THISCALL); assert( r >= 0 );
 
 		//×Ö·û´®ÊÇ·ñÏàµÈ
 		//bool operator == (LPCTSTR str) const;

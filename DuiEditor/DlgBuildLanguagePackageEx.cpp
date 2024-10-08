@@ -121,8 +121,8 @@ void CDlgBuildLanguagePackageEx::OnBnClickedOk()
 	m_cbLang.GetWindowText(strLang);
 	if(GetUIManager()->GetDocument()->m_mLangPackage.Find(strLang))
 	{
-		AfxMessageBox(_T("已经存在相同语言的语言包！"));
-		return;
+		if(AfxMessageBox(_T("已经存在相同语言的语言包，是否覆盖？"), MB_OKCANCEL) != IDOK)
+			return;
 	}
 
 	xml_document *xml = new xml_document;

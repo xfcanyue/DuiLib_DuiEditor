@@ -76,7 +76,7 @@ namespace DuiLib {
 		RECT GetClientPos() const;
 		virtual SIZE EstimateSize(SIZE szAvailable) override;
 		virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
-		virtual bool CalcPos(CControlUI *pChildControl, RECT &rcChild) override; //子控件调用询问父控件，你将会给我分配多大的rect。
+		virtual bool CalcPos(CControlUI *pChildControl, CDuiRect &rcChild) override; //子控件调用, 询问父控件，你将会给我分配多大的rect。
 		virtual void Move(SIZE szOffset, bool bNeedInvalidate = true) override;
 		virtual bool DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl) override;
 
@@ -121,6 +121,9 @@ namespace DuiLib {
 		virtual void SetFloatPos(int iIndex);
 		virtual void ProcessScrollBar(RECT rc, int cxRequired, int cyRequired);
 	protected:
+		void SetPosHorizontalLayout(RECT rc, bool bNeedInvalidate = true);
+		void SetPosVerticalLayout(RECT rc, bool bNeedInvalidate = true);
+	protected:
 		CStdPtrArray m_items;
 		CDuiRect m_rcInset;
 		int m_iChildPadding;
@@ -136,6 +139,9 @@ namespace DuiLib {
 		CDuiString	m_sVerticalScrollBarStyle;
 		CDuiString	m_sHorizontalScrollBarStyle;
 
+		CControlUI *m_pCalcControl;
+		CDuiRect m_rcCalcChild;
+		bool m_bCalcResult;
 	};
 
 } // namespace DuiLib

@@ -1007,8 +1007,7 @@ void CScriptEditorView::OnScriptExcute()
 	int r = 0;
 	
 	//清理之前加载的脚本内容
-	m_pHelper->DeleteModule();
-	m_pHelper->CreateModule(GetDocument()->GetPathName());
+	m_pHelper->RemoveAllScript();
 
 	//加载脚本文件
 	m_pHelper->AddScriptFile(GetDocument()->GetPathName());
@@ -1062,8 +1061,7 @@ void CScriptEditorView::OnScriptRun()
 	CAutoScriptContext ctx((CScriptHelper *)m_pHelper);
 
 	//清理之前加载的脚本内容
-	m_pHelper->DeleteModule();
-	m_pHelper->CreateModule(GetDocument()->GetPathName());
+	m_pHelper->RemoveAllScript();
 
 	//加载脚本文件
 	m_pHelper->AddScriptFile(GetDocument()->GetPathName());

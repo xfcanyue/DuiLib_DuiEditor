@@ -59,10 +59,11 @@ public:
 // 	virtual IScriptContext *CreateContext() = 0;
 // 	virtual void ReleaseContext(IScriptContext *ctx) = 0;
 	//////////////////////////////////////////////////////////////////////////
-	virtual bool CreateModule(LPCTSTR moduleName = NULL) = 0;
-	virtual void DeleteModule() = 0;
-	virtual bool AddScriptFile(LPCTSTR pstrFileName) = 0;
-	virtual bool AddScriptCode(LPCTSTR pstrCode) = 0;
+	virtual DuiLib::CDuiString AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pstrModuleName=NULL) = 0;
+	virtual DuiLib::CDuiString AddScriptCode(LPCTSTR pstrCode, LPCTSTR pstrModuleName=NULL) = 0;
+	virtual bool RemoveScript(LPCTSTR pstrModuleName) = 0;
+	virtual void RemoveAllScript() = 0;
+
 	virtual bool CompileScript() = 0;
 
 	virtual BOOL IsRunning()			= 0;

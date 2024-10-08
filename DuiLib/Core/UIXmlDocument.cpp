@@ -10,6 +10,7 @@ inline ui_pugi::xml_document *impxmldoc(PVOID pdoc) { return (ui_pugi::xml_docum
 CXmlDocumentUI::CXmlDocumentUI()
 {
 	_xml_document = new ui_pugi::xml_document;
+	_root = impxmldoc(_xml_document)->root().internal_object();
 }
 
 CXmlDocumentUI::~CXmlDocumentUI()

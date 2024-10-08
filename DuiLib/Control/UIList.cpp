@@ -1312,9 +1312,9 @@ namespace DuiLib {
 			cXY.cy = MAX(cXY.cy,nMin);
 		}
 
-// 		for( int it = 0; it < m_items.GetSize(); it++ ) {
-// 			cXY.cx +=  static_cast<CControlUI*>(m_items[it])->EstimateSize(szAvailable).cx;
-// 		}
+		for( int it = 0; it < m_items.GetSize(); it++ ) {
+			cXY.cx +=  static_cast<CControlUI*>(m_items[it])->EstimateSize(szAvailable).cx;
+		}
 
 		return cXY;
 	}

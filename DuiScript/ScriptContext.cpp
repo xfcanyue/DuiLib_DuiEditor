@@ -20,7 +20,6 @@ CScriptContext::CScriptContext(IScriptManager *pScriptManager)
 
 	int r = 0;
 	r = m_ctx->SetLineCallback(asMETHOD(CScriptContext, ContextLineCallback), this, asCALL_THISCALL); assert( r >= 0 );
-	m_dwTimeOut = 5000;
 	m_dwStartTime = timeGetTime();
 }
 
@@ -91,11 +90,6 @@ void *CScriptContext::GetAddressOfArg(UINT arg)
 	return m_ctx->GetAddressOfArg(arg);
 }
 
-void CScriptContext::SetTimeOut(int dwTimeOut)
-{
-	m_dwTimeOut = dwTimeOut;
-}
-
 int CScriptContext::Execute()
 {
 	int r = 0;
@@ -120,6 +114,10 @@ int CScriptContext::Execute()
 	return r;
 }
 
+int CScriptContext::Abort()
+{
+	return m_ctx->Abort();
+}
 
 BYTE CScriptContext::GetReturnByte()
 {
@@ -163,11 +161,18 @@ void *CScriptContext::GetAddressOfReturnValue()
 
 void CScriptContext::ContextLineCallback(asIScriptContext *ctx)
 {
-	if(m_dwTimeOut < 0)
-		return;
+	CScriptManager *pMgr = (CScriptManager *)m_pScriptManager;
+	SCRIPT_CONTEXT_LINE_CALLBACK pfn = pMgr->GetContextLineCallback();
+	if(pfn)
+	{
+		(*pfn)(this);
+	}
 
-	if( timeGetTime() - m_dwStartTime >= (DWORD)m_dwTimeOut )
-		ctx->Abort();
+	if(pMgr->GetTimeOut() > 0)
+	{
+		if( timeGetTime() - m_dwStartTime >= (DWORD)pMgr->GetTimeOut() )
+			ctx->Abort();
+	}	
 }
 
 }

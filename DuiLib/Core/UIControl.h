@@ -277,7 +277,7 @@ namespace DuiLib {
 		virtual void Move(SIZE szOffset, bool bNeedInvalidate = true);
 
 		//子控件调用, 询问父控件，你将会给我分配多大的rect。
-		virtual bool CalcPos(CControlUI *pChildControl, RECT &rcChild); 
+		virtual bool CalcPos(CControlUI *pChildControl, CDuiRect &rcChild); 
 
 		//实际宽度和高度
 		virtual int GetWidth() const;
@@ -624,8 +624,8 @@ namespace DuiLib {
 		DuiAnim m_animation;			//动画类型
 		int m_nFrameCount;				//动画总帧数
 		int m_nFrameDelay;				//动画帧延时
-		SIZE m_szAnimationTotal;		//总的动画区域
-		SIZE m_szAnimationCurrect;		//当前动画区域
+		CDuiSize m_szAnimationTotal;		//总的动画区域
+		CDuiSize m_szAnimationCurrect;		//当前动画区域
 
 	public:
 		CDuiString m_asOnInit;		//事件发生时，调用脚本的函数指针
@@ -653,6 +653,25 @@ namespace DuiLib {
 	protected:
 		CControlUI *m_pExtraParent;
 	};
+
+#define LocalControl_GetAvailableMaxSize(szControlAvailable, pControl) {\
+	int iControlMaxWidth = 0;	\
+	int iControlMaxHeight = 0;	\
+	szControlAvailable.Deflate(0, rcPadding.top + rcPadding.bottom); \
+	iControlMaxWidth = pControl->GetFixedWidth(); \
+	iControlMaxHeight = pControl->GetFixedHeight(); \
+	if (iControlMaxWidth <= 0) iControlMaxWidth = pControl->GetMaxWidth(); \
+	if (iControlMaxHeight <= 0) iControlMaxHeight = pControl->GetMaxHeight(); \
+	if (szControlAvailable.cx > iControlMaxWidth) szControlAvailable.cx = iControlMaxWidth; \
+	if (szControlAvailable.cy > iControlMaxHeight) szControlAvailable.cy = iControlMaxHeight; \
+} 
+
+#define localControl_AdjustMaxMinSize(sz, pControl) {	\
+	if( sz.cx < pControl->GetMinWidth() ) sz.cx = pControl->GetMinWidth();		\
+	if( sz.cx > pControl->GetMaxWidth() ) sz.cx = pControl->GetMaxWidth();		\
+	if( sz.cy < pControl->GetMinHeight() ) sz.cy = pControl->GetMinHeight();	\
+	if( sz.cy > pControl->GetMaxHeight() ) sz.cy = pControl->GetMaxHeight();	\
+}
 
 } // namespace DuiLib
 

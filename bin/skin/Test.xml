@@ -27,6 +27,5 @@
 		</VerticalLayout>
 		<Control pos="601,69,701,146" width="100" height="77" float="true" bordercolor="0xFF000080" bordersize="1" />
 		<Label text="qdqqwd" width="163" height="46" pos="524,229,687,275" float="true" />
-		<Tracker width="129" height="127" pos="377,79,506,206" float="true" />
 	</VerticalLayout>
 </Window>

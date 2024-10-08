@@ -24,7 +24,7 @@ namespace DuiLib
 
 		virtual SIZE EstimateSize(SIZE szAvailable) override;
 		virtual void SetPos(RECT rc, bool bNeedInvalidate = true) override;
-		virtual bool CalcPos(CControlUI *pChildControl, RECT &rcChild) override; //子控件调用询问父控件，你将会给我分配多大的rect。
+		virtual bool CalcPos(CControlUI *pChildControl, CDuiRect &rcChild) override;
 		virtual void DoPostPaint(UIRender *pRender, const RECT& rcPaint) override;
 
 		RECT GetThumbRect(bool bUseNew = false) const;

@@ -16,15 +16,21 @@ protected:
 		thisPointer->~CBufferUI();
 	}
 
-	static void CBufferUI_AddStringA(const CDuiString &w, CBufferUI &dest)
+	static void CBufferUI_AddStringA(const CDuiString &s, CBufferUI &dest)
 	{
-		CDuiStringA a = w;
+		CDuiStringA a = s;
 		dest.AddStringA(a);
 	}
 
-	static void CBufferUI_AddStringW(const CDuiString &w, CBufferUI &dest)
+	static void CBufferUI_AddStringW(const CDuiString &s, CBufferUI &dest)
 	{
+		CDuiStringW w = s;
 		dest.AddStringW(w);
+	}
+
+	static void CBufferUI_AddBuffer(LPBYTE pBits, int len, CBufferUI &dest)
+	{
+		dest.AddBuffer(pBits, len);
 	}
 public:
 	static bool Register(asIScriptEngine *engine)
@@ -41,15 +47,19 @@ public:
 		REG_METHOD_FUNPR2("CBuffer", CBufferUI, int, GetLength, ());
 		REG_METHOD_FUNPR2("CBuffer", CBufferUI, void, SetMaxBufferSize, (int size));
 		REG_METHOD_FUNPR2("CBuffer", CBufferUI, void, SetBufferSize, (int size));
-		REG_METHOD_FUNPR2("CBuffer", CBufferUI, void, InitBuffer, (int newBufferSize));
+		//REG_METHOD_FUNPR2("CBuffer", CBufferUI, void, InitBuffer, (int newBufferSize));
+		r = engine->RegisterObjectMethod("CBuffer", "void InitBuffer(int newBufferSize=0)", asMETHODPR(CBufferUI, InitBuffer, (int), void), asCALL_THISCALL); assert( r >= 0 );
 		REG_METHOD_FUNPR2("CBuffer", CBufferUI, void, AddInt, (int n));	
 		REG_METHOD_FUNPR2("CBuffer", CBufferUI, void, AddByte, (BYTE buffer));
+		REG_METHOD_FUNPR2("CBuffer", CBufferUI, void, AddByteFromHexString, (CDuiString str));
 
 		r = engine->RegisterObjectMethod("CBuffer", "void AddStringA(string &buf)", asFUNCTIONPR(CBufferUI_AddStringA, (const CDuiString &, CBufferUI &), void), asCALL_CDECL_OBJLAST); assert( r >= 0 );
 		r = engine->RegisterObjectMethod("CBuffer", "void AddStringW(string &buf)", asFUNCTIONPR(CBufferUI_AddStringW, (const CDuiString &, CBufferUI &), void), asCALL_CDECL_OBJLAST); assert( r >= 0 );
 
-		REG_METHOD_FUNPR2("CBuffer", CBufferUI, void, AddBuffer, (LPCVOID buffer, int len));
-		REG_METHOD_FUNPR2("CBuffer", CBufferUI, void, DeleteBuffer, (int len));
+		//REG_METHOD_FUNPR2("CBuffer", CBufferUI, void, AddBuffer, (LPCVOID buffer, int len));
+		r = engine->RegisterObjectMethod("CBuffer", "void AddBuffer(LPBYTE,int)", asFUNCTIONPR(CBufferUI_AddBuffer, (LPBYTE, int, CBufferUI&), void), asCALL_CDECL_OBJLAST); assert( r >= 0 );
+
+		REG_METHOD_FUNPR2("CBuffer", CBufferUI, void, DeleteBuffer, (int));
 		r = engine->RegisterObjectMethod("CBuffer", "void CopyFrom(CBuffer &buf)", asMETHOD(CBufferUI, CopyFrom), asCALL_THISCALL);  assert( r >= 0 );
 		REG_METHOD_FUNPR2("CBuffer", CBufferUI, int, GetMemSize, ());
 		REG_METHOD_FUNPR2("CBuffer", CBufferUI, BYTE, GetAt, (int n));

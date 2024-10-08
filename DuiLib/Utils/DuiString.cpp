@@ -333,7 +333,7 @@ namespace DuiLib
 	}
 
 	int DuiStringTraitsA::ui_atoi(const char *str)		{ return ::atoi(str); }
-	DuiLib::Int64 ui_atoi64(const char *str)			
+	DuiLib::Int64 DuiStringTraitsA::ui_atoi64(const char *str)			
 	{ 
 #ifdef WIN32
 		return _atoi64(str);
@@ -372,6 +372,12 @@ namespace DuiLib
 			i += 2;
 		}
 		return ret;
+	}
+
+	void DuiStringTraitsA::ui_tohex(const char *str, char *dst_str)
+	{
+		int nBase = ui_atoi(str);
+		sprintf(dst_str, "%02X", nBase);
 	}
 
 	int __cdecl DuiStringTraitsA::formatV(char *&pstr, const char *pstrFormat, va_list Args)
@@ -832,6 +838,12 @@ namespace DuiLib
 		return ret;
 	}
 
+	void DuiStringTraitsW::ui_tohex(const wchar_t *str, wchar_t *dst_str)
+	{
+		int nBase = ui_atoi(str);
+		swprintf(dst_str, 64, L"%02X", nBase);
+	}
+
 	int __cdecl DuiStringTraitsW::formatV(wchar_t *&pstr, const wchar_t *pstrFormat, va_list Args)
 	{
 #if _MSC_VER <= 1400
@@ -1206,6 +1218,41 @@ namespace DuiLib
 		AddBuffer(&buffer, 1);
 	}
 
+	void CBufferUI::AddByteFromHexString(CDuiString str) //从字符串"10 FF 10 01"构造Byte数组。
+	{
+		CDuiString s;
+		for (int i=0; i<str.GetLength(); i++)
+		{
+			TCHAR ch = str.GetAt(i);
+			if( (ch >= _T('0') && ch <= _T('9'))	||
+				(ch >= _T('A') && ch <= _T('Z'))	||
+				(ch >= _T('a') && ch <= _T('z'))	||
+				ch == _T('x')						||
+				ch == _T('X')						)
+			{
+				s.Append(ch);
+			}
+			else
+			{
+				if(!s.IsEmpty())
+				{
+					s.Remove(_T("0x"));
+					s.Remove(_T("0X"));
+					AddByte(s.HexToInt64());
+					s.Empty();
+				}
+			}
+		}
+
+		if(!s.IsEmpty())
+		{
+			s.Remove(_T("0x"));
+			s.Remove(_T("0X"));
+			AddByte(s.HexToInt64());
+			s.Empty();
+		}
+	}
+
 	// 	void AddBuffer(BYTE buffer)
 	// 	{
 	// 		AddBuffer(&buffer, 1);
@@ -1274,6 +1321,17 @@ namespace DuiLib
 		if(n >= _bufferLen)
 			return 0;
 		return _buffer[n];
+	}
+
+	CDuiString CBufferUI::FormatString()
+	{
+		CDuiString sRet;
+		for (int i=0; i<_bufferLen; i++)
+		{
+			if(!sRet.IsEmpty()) sRet += _T(" ");
+			sRet.AppendFormat(_T("%02X"), _buffer[i]);
+		}
+		return sRet;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//

@@ -233,24 +233,24 @@ UINT CScriptHelper::ThreadFunDebug()
 // 	return CScriptManager::ReleaseContext((IScriptContext *)ctx);
 // }
 
-bool CScriptHelper::CreateModule(LPCTSTR moduleName)
+CDuiString CScriptHelper::AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pstrModuleName)
 {
-	return CScriptManager::CreateModule(moduleName);
+	return CScriptManager::AddScriptFile(pstrFileName, pstrModuleName);
 }
 
-void CScriptHelper::DeleteModule()
+CDuiString CScriptHelper::AddScriptCode(LPCTSTR pstrCode, LPCTSTR pstrModuleName)
 {
-	CScriptManager::DeleteModule();
+	return CScriptManager::AddScriptCode(pstrCode, pstrModuleName);
 }
 
-bool CScriptHelper::AddScriptFile(LPCTSTR pstrFileName)
+bool CScriptHelper::RemoveScript(LPCTSTR pstrModuleName)
 {
-	return CScriptManager::AddScriptFile(pstrFileName);
+	return CScriptManager::RemoveScript(pstrModuleName);
 }
 
-bool CScriptHelper::AddScriptCode(LPCTSTR pstrCode)
+void CScriptHelper::RemoveAllScript()
 {
-	return CScriptManager::AddScriptCode(pstrCode);
+	return CScriptManager::RemoveAllScript();
 }
 
 bool CScriptHelper::CompileScript()

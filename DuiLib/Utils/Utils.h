@@ -97,11 +97,17 @@ namespace DuiLib
 	public:
 		CDuiSize();
 		CDuiSize(const SIZE& src);
-		CDuiSize(const RECT rc);
+		CDuiSize(const RECT& rc);
 		CDuiSize(int cx, int cy);
 		CDuiSize(LPCTSTR pstrValue);
 		bool FromString(LPCTSTR pstrValue); //从"cx,cy"构造SIZE
 		CDuiString ToString();				//输出字符串"cx,cy"
+
+		//放大
+		void Inflate(int x, int y);
+
+		//缩小
+		void Deflate(int x, int y);
 	};
 
 
@@ -113,13 +119,23 @@ namespace DuiLib
 	public:
 		CDuiRect();
 		CDuiRect(const RECT& src);
+		CDuiRect(LPCRECT src);
 		CDuiRect(int iLeft, int iTop, int iRight, int iBottom);
+		CDuiRect(const POINT &ptLeftTop, const SIZE &szWidthHeight);
+		CDuiRect(const POINT &ptLeftTop, const POINT &ptRightBottom);
 		CDuiRect(LPCTSTR pstrValue);
 		bool FromString(LPCTSTR pstrValue); //从"left,top,right,bottom"构造RECT
 		CDuiString ToString();				//输出字符串"left,top,right,bottom"
 
 		operator LPRECT() throw();
 		operator LPCRECT() const throw();
+
+		CDuiPoint LeftTop();
+		CDuiPoint RightBottom();
+
+		void SetRect(int left, int top, int right, int bottom);
+		void SetRect(const POINT &ptLeftTop, const SIZE &szWidthHeight);
+		void SetRect(const POINT &ptLeftTop, const POINT &ptRightBottom);
 
 		int GetWidth() const;
 		int GetHeight() const;
@@ -141,9 +157,13 @@ namespace DuiLib
 
 		//放大
 		void Inflate(int cx, int cy);
+		void Inflate(int left, int top, int right, int bottom);
+		void Inflate(const RECT &rc);
 
 		//缩小
 		void Deflate(int cx, int cy);
+		void Deflate(int left, int top, int right, int bottom);
+		void Deflate(const RECT &rc);
 
 		//并集，合并矩形
 		void Union(const RECT& rc1, const RECT& rc2);

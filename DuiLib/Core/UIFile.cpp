@@ -396,13 +396,15 @@ namespace DuiLib {
 #ifdef WIN32
 		return ::DeleteFile(sFilePathName);
 #elif defined __linux__
-		CDuiString s;
-		s.Format(_T("rm \"%s\""), sFilePathName);
-		system(s.GetData());
+		//CDuiString s;
+		//s.Format(_T("rm \"%s\""), sFilePathName);
+		//system(s.GetData());
+		return remove(sFilePathName) == 0;
 #elif defined __APPLE__
-        CDuiString s;
-        s.Format(_T("rm \"%s\""), sFilePathName);
-        system(s.GetData());
+        //CDuiString s;
+        //s.Format(_T("rm \"%s\""), sFilePathName);
+		//system(s.GetData());
+		return remove(sFilePathName) == 0;
 #endif
 		return FALSE;
 	}
@@ -469,13 +471,50 @@ namespace DuiLib {
 
 	BOOL CUIFile::RemoveDirectory(LPCTSTR sPathName, BOOL bDeleteNoEmptyDirectory)
 	{
-#ifdef WIN32
-		::RemoveDirectory(sPathName);
-#elif defined __linux__
-		::rmdir(sPathName) == 0;
-#elif defined __APPLE__
-        ::rmdir(sPathName) == 0;
+		if (bDeleteNoEmptyDirectory)
+		{
+			if (!IsDirectoryExist(sPathName))
+				return FALSE;
+
+			CUIFileFind finder;
+			CDuiString sFindPath = sPathName;
+			if(sFindPath.GetAt(sFindPath.GetLength()-1) != _T('\\') 
+				|| sFindPath.GetAt(sFindPath.GetLength()-1) != _T('/'))
+				sFindPath += _T("/");
+#ifdef _WIN32
+			sFindPath += _T("*.*");
 #endif
+			BOOL bFind = finder.FindFile(sFindPath);
+			while (bFind)
+			{
+				bFind = finder.FindNextFile();
+				if (finder.IsDots())
+					continue;
+
+				CDuiString sFilePath = finder.GetFilePath();
+				if (finder.IsDirectory())
+				{
+					RemoveDirectory(sFilePath, TRUE);
+					continue;
+				}
+
+				if (!DeleteFile(sFilePath))
+				{
+					return FALSE;
+				}
+			}
+			return RemoveDirectory(sPathName, FALSE);
+		}
+		else
+		{
+#ifdef WIN32
+			return ::RemoveDirectory(sPathName);
+#elif defined __linux__
+			return ::rmdir(sPathName) == 0;
+#elif defined __APPLE__
+			return ::rmdir(sPathName) == 0;
+#endif
+		}
 		return FALSE;
 	}
 
@@ -559,6 +598,12 @@ namespace DuiLib {
 			LPCTSTR pstr = _tfullpath(m_strRoot.GetBuffer(_MAX_PATH), lpFileName, _MAX_PATH);
 			if (pstr != NULL)
 			{
+				TCHAR strDrive[_MAX_DRIVE], strDir[_MAX_DIR];
+				TCHAR strPath[_MAX_PATH+1];					
+				::_tsplitpath_s(m_strRoot.toString(), strDrive, _MAX_DRIVE, strDir, _MAX_DIR, NULL, 0, NULL, 0);
+				::_tmakepath_s(strPath, _MAX_PATH, strDrive, strDir, NULL, NULL);
+				m_strRoot = strPath;
+
 				m_pNextInfo = new WIN32_FIND_DATA;
 				m_hFind = ::FindFirstFile(lpFileName, (LPWIN32_FIND_DATA)m_pNextInfo);
 				if (m_hFind != INVALID_HANDLE_VALUE)
@@ -709,18 +754,24 @@ namespace DuiLib {
 		if (m_pFoundInfo != NULL)
 		{
 			sFile = m_strRoot;
+			if(sFile.GetAt(sFile.GetLength()-1) != _T('\\') || sFile.GetAt(sFile.GetLength() - 1) != _T('/'))
+				sFile += _T("\\");
 			sFile += ((LPWIN32_FIND_DATA)m_pFoundInfo)->cFileName;
 		}
 #elif defined __linux__
 		if (m_dirFoundInfo)
 		{
 			sFile = m_strRoot;
+			if(sFile.GetAt(sFile.GetLength() - 1) != _T('/'))
+				sFile += _T("/");
 			sFile += m_dirFoundInfo->d_name;
 		}
 #elif defined __APPLE__
         if (m_dirFoundInfo)
         {
-            sFile = m_strRoot;
+			sFile = m_strRoot;
+			if(sFile.GetAt(sFile.GetLength() - 1) != _T('/'))
+				sFile += _T("/");
             sFile += m_dirFoundInfo->d_name;
         }
 #endif

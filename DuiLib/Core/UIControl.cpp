@@ -33,7 +33,7 @@ namespace DuiLib {
 		m_wCursor(0),
 		m_instance(NULL),
 		m_bAutoCalcWidth(false), m_bAutoCalcHeight(false),
-		CUIAnimation( this ), m_animation(DuiAnim_null), m_nFrameCount(24), m_nFrameDelay(5), m_szAnimationTotal(CDuiSize(0,0)), m_szAnimationCurrect(CDuiSize(0,0)),
+		CUIAnimation( this ), m_animation(DuiAnim_null), m_nFrameCount(24), m_nFrameDelay(5),
 		m_pExtraParent(NULL)
 	{
 		m_cXY.cx = m_cXY.cy = 0;
@@ -635,7 +635,7 @@ namespace DuiLib {
 		}
 	}
 
-	bool CControlUI::CalcPos(CControlUI *pChildControl, RECT &rcChild)
+	bool CControlUI::CalcPos(CControlUI *pChildControl, CDuiRect &rcChild)
 	{
 		return false;
 	}
@@ -2260,7 +2260,7 @@ namespace DuiLib {
 				//SetVisible(true);
 
 				m_szAnimationTotal = m_cxyFixed;
-				RECT rcChild;
+				CDuiRect rcChild;
 				if(GetParent() && GetParent()->CalcPos(this, rcChild))
 				{
 					m_szAnimationTotal.cx = rcChild.right - rcChild.left;
@@ -2286,7 +2286,7 @@ namespace DuiLib {
 				StopAnimation(ANIMATION_ID_HIDE);
 
 				m_szAnimationTotal = m_cxyFixed;
-				RECT rcChild;
+				CDuiRect rcChild;
 				if(GetParent() && GetParent()->CalcPos(this, rcChild))
 				{
 					m_szAnimationTotal.cx = rcChild.right - rcChild.left;
@@ -2336,6 +2336,7 @@ namespace DuiLib {
 				m_szAnimationCurrect.cx = m_szAnimationTotal.cx / nTotalFrame * nCurFrame;
 				m_szAnimationCurrect.cy = m_szAnimationTotal.cy / nTotalFrame * nCurFrame;
 			}	
+			//CMsgWndUI::InsertMsgV(_T("OnAnimationStep SHOW pControl=%p, m_szAnimationCurrect=%s"), this, m_szAnimationCurrect.ToString().toString());
 		}
 		else if(nAnimationID == ANIMATION_ID_HIDE)
 		{
@@ -2349,6 +2350,7 @@ namespace DuiLib {
 				m_szAnimationCurrect.cx = m_szAnimationTotal.cx - m_szAnimationTotal.cx / nTotalFrame * nCurFrame;
 				m_szAnimationCurrect.cy = m_szAnimationTotal.cy - m_szAnimationTotal.cy / nTotalFrame * nCurFrame;
 			}
+			//CMsgWndUI::InsertMsgV(_T("OnAnimationStep HIDE pControl=%p, m_szAnimationCurrect=%s"), this, m_szAnimationCurrect.ToString().toString());
 		}
 		NeedUpdate();
 		NeedParentUpdate();

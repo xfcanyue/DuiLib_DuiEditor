@@ -67,7 +67,7 @@ namespace DuiLib
 		cy = src.cy;
 	}
 
-	CDuiSize::CDuiSize(const RECT rc)
+	CDuiSize::CDuiSize(const RECT& rc)
 	{
 		cx = rc.right - rc.left;
 		cy = rc.bottom - rc.top;
@@ -101,6 +101,19 @@ namespace DuiLib
 		return sSize;
 	}
 
+	//·Å´ó
+	void CDuiSize::Inflate(int x, int y)
+	{
+		cx += x;
+		cy += y;
+	}
+
+	//ËõÐ¡
+	void CDuiSize::Deflate(int x, int y)
+	{
+		cx -= x;
+		cy -= y;
+	}
 /////////////////////////////////////////////////////////////////////////////////////
 //
 //
@@ -120,12 +133,30 @@ namespace DuiLib
 		bottom = src.bottom;
 	}
 
+	CDuiRect::CDuiRect(LPCRECT src)
+	{
+		left = src->left;
+		top = src->top;
+		right = src->right;
+		bottom = src->bottom;
+	}
+
 	CDuiRect::CDuiRect(int iLeft, int iTop, int iRight, int iBottom)
 	{
 		left = iLeft;
 		top = iTop;
 		right = iRight;
 		bottom = iBottom;
+	}
+
+	CDuiRect::CDuiRect(const POINT &ptLeftTop, const SIZE &szWidthHeight)
+	{
+		SetRect(ptLeftTop, szWidthHeight);
+	}
+
+	CDuiRect::CDuiRect(const POINT &ptLeftTop, const POINT &ptRightBottom)
+	{
+		SetRect(ptLeftTop, ptRightBottom);
 	}
 
 	CDuiRect::CDuiRect(LPCTSTR pstrValue)
@@ -160,6 +191,40 @@ namespace DuiLib
 	CDuiRect::operator LPCRECT() const throw()
 	{
 		return this;
+	}
+
+	CDuiPoint CDuiRect::LeftTop()
+	{
+		return CDuiPoint(left,top);
+	}
+
+	CDuiPoint CDuiRect::RightBottom()
+	{
+		return CDuiPoint(right,bottom);
+	}
+
+	void CDuiRect::SetRect(int left, int top, int right, int bottom)
+	{
+		CDuiRect::left = left;
+		CDuiRect::top = top;
+		CDuiRect::right = right;
+		CDuiRect::bottom = bottom;
+	}
+
+	void CDuiRect::SetRect(const POINT &ptLeftTop, const SIZE &szWidthHeight)
+	{
+		CDuiRect::left = ptLeftTop.x;
+		CDuiRect::top = ptLeftTop.y;
+		CDuiRect::right = ptLeftTop.x + szWidthHeight.cx;
+		CDuiRect::bottom = ptLeftTop.y + szWidthHeight.cy;
+	}
+
+	void CDuiRect::SetRect(const POINT &ptLeftTop, const POINT &ptRightBottom)
+	{
+		left = ptLeftTop.x;
+		top = ptLeftTop.y;
+		right = ptRightBottom.x;
+		bottom = ptRightBottom.y;
 	}
 
 	int CDuiRect::GetWidth() const
@@ -241,9 +306,41 @@ namespace DuiLib
 #endif
 	}
 
+	void CDuiRect::Inflate(int left, int top, int right, int bottom)
+	{
+		CDuiRect::left -= left;
+		CDuiRect::top -= top;
+		CDuiRect::right += right;
+		CDuiRect::bottom += bottom;
+	}
+
+	void CDuiRect::Inflate(const RECT &rc)
+	{
+		left -= rc.left;
+		top -= rc.top;
+		right += rc.right;
+		bottom += rc.bottom;
+	}
+
 	void CDuiRect::Deflate(int cx, int cy)
 	{
 		Inflate(-cx, -cy);
+	}
+
+	void CDuiRect::Deflate(int left, int top, int right, int bottom)
+	{
+		CDuiRect::left += left;
+		CDuiRect::top += top;
+		CDuiRect::right -= right;
+		CDuiRect::bottom -= bottom;
+	}
+
+	void CDuiRect::Deflate(const RECT &rc)
+	{
+		left += rc.left;
+		top += rc.top;
+		right -= rc.right;
+		bottom -= rc.bottom;
 	}
 
 	void CDuiRect::Union(const RECT& rc1, const RECT& rc2)

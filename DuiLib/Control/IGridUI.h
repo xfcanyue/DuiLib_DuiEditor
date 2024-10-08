@@ -186,6 +186,10 @@ public:
 
 	void SetSortIconSize(SIZE sz)				{ m_szSortIconSize = sz; }
 	SIZE GetSortIconSize()						{ return m_szSortIconSize; }
+
+	void SetEditable(BOOL bEditable)			{ m_bEditable = bEditable; }
+	BOOL GetEditable() const					{ return m_bEditable; }
+
 	//////////////////////////////////////////////////////////////////////////
 	void SetStyleFixedRow(LPCTSTR pstrValue)			{ m_sStyleFixedRow = pstrValue; }
 	LPCTSTR GetStyleFixedRow()							{ return m_sStyleFixedRow; }
@@ -241,6 +245,8 @@ protected:
 	CDuiString m_sSortAscendingImage;	//ascending icon
 	CDuiString m_sSortDescendingImage;	//descending icon
 	SIZE m_szSortIconSize;
+
+	BOOL m_bEditable;
 
 	CDuiString m_sStyleFixedRow;
 	CDuiString m_sStyleFixedCell;

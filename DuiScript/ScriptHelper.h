@@ -35,10 +35,11 @@ public:
 
 	virtual asIScriptEngine *GetEngine() const override;
 	//////////////////////////////////////////////////////////////////////////
-	virtual bool CreateModule(LPCTSTR moduleName) override;
-	virtual void DeleteModule() override;
-	virtual bool AddScriptFile(LPCTSTR pstrFileName) override;
-	virtual bool AddScriptCode(LPCTSTR pstrCode) override;
+	virtual CDuiString AddScriptFile(LPCTSTR pstrFileName, LPCTSTR pstrModuleName=NULL) override;
+	virtual CDuiString AddScriptCode(LPCTSTR pstrCode, LPCTSTR pstrModuleName=NULL) override;
+	virtual bool RemoveScript(LPCTSTR pstrModuleName) override;
+	virtual void RemoveAllScript() override;
+
 	virtual bool CompileScript() override;
 
 	virtual BOOL IsRunning();

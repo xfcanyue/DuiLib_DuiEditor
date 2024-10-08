@@ -65,6 +65,7 @@ namespace DuiLib
 
 		static BYTE Char2Hex(char ch);
 		static DuiLib::Int64 ui_hextoi64(const char *str);
+		static void ui_tohex(const char *str, char *dst_str);
 
 		static int __cdecl formatV(char *&pstr, const char *pstrFormat, va_list ap);
 		static int __cdecl format(char *string, size_t count, const char *format, va_list ap);
@@ -111,6 +112,7 @@ namespace DuiLib
 
 		static BYTE Char2Hex(wchar_t ch);
 		static DuiLib::Int64 ui_hextoi64(const wchar_t *str);
+		static void ui_tohex(const wchar_t *str, wchar_t *dst_str);
 
 		static int __cdecl formatV(wchar_t *&pstr, const wchar_t *pstrFormat, va_list ap);
 		static int __cdecl format(wchar_t *string, size_t count, const wchar_t *format, va_list ap);
@@ -489,6 +491,9 @@ namespace DuiLib
 
 		//把整个字符串 当成 16进制格式 转为 Int64
 		DuiLib::Int64 HexToInt64() const					{ return DuiTraits::ui_hextoi64(m_pstr); }
+
+		//把整个字符串 当成 10进制格式 转为 Hex
+		DuiStringT toHex() const							{ DuiStringT sTemp; sTemp.SetBufferLength(64); DuiTraits::ui_tohex(m_pstr, sTemp.m_pstr); return sTemp; }
 
 		//////////////////////////////////////////////////////////////////////////
 		bool operator == (const uichar *str) const { return (Compare(str) == 0); };
@@ -1006,6 +1011,7 @@ namespace DuiLib
 		
 		void AddInt(int n);		//插入数字, 转为字符串
 		void AddByte(BYTE buffer);
+		void AddByteFromHexString(CDuiString str); //从字符串"10 FF 10 01"构造Byte数组。 
 		void AddString(LPCTSTR str);
 		void AddStringW(const wchar_t* str);
 		void AddStringA(const char* msg);
@@ -1015,6 +1021,8 @@ namespace DuiLib
 		int GetMemSize();
 
 		BYTE GetAt(int n);
+
+		CDuiString FormatString();
 	public:
 		int _bufferLen;		//当前buffer大小
 		BYTE *_buffer;		//当前buffer

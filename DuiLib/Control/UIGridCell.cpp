@@ -35,14 +35,19 @@ void CGridCellInnerCheckBoxUI::Selected(bool bSelected, bool bTriggerEvent)
 {
 	if(IsSelected() == bSelected) return;
 
-	SetSelectedState(bSelected);
-
 	if(!m_pOwner) return;
 	CGridCellUI *pCellUI = (CGridCellUI *)m_pOwner;
 	CGridUI *pGrid = (CGridUI *)pCellUI->GetOwner();
 	if(!pGrid) return;
 	TCellData *pCellData = pGrid->GetCellData(pCellUI->GetRow(), pCellUI->GetCol());
 	if(!pCellData) return;
+
+	if(!pGrid->GetEditable())
+	{
+		return;
+	}
+
+	SetSelectedState(bSelected);
 
 	pCellData->SetCheckBoxCheck(bSelected);
 	if(GetManager())

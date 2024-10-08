@@ -2,7 +2,10 @@
 
 namespace DuiLib
 {
-
+	static BOOL UIFile_LoadFile(LPCTSTR pStrImage, CUIFile &dest)
+	{
+		return dest.LoadFile(pStrImage, 0, NULL);
+	}
 
 class regUIFile
 {
@@ -21,8 +24,10 @@ public:
 		REG_METHOD_FUNPR(CUIFile, void,		Empty,		()			);
 
 		//REG_METHOD_FUNPR(CUIFile, BOOL, LoadFile, (const STRINGorID &bitmap, LPCTSTR type, HINSTANCE instance)	);
-		REG_METHOD_FUNPR(CUIFile, BOOL, LoadFile, (LPCTSTR pStrImage, LPCTSTR type, HINSTANCE instance)			);
-		REG_METHOD_FUNPR(CUIFile, BOOL, LoadFile, (UINT nID, LPCTSTR type, HINSTANCE instance)					);
+		//REG_METHOD_FUNPR(CUIFile, BOOL, LoadFile, (LPCTSTR pStrImage, LPCTSTR type, HINSTANCE instance)			);
+		//REG_METHOD_FUNPR(CUIFile, BOOL, LoadFile, (UINT nID, LPCTSTR type, HINSTANCE instance)					);
+
+		r = engine->RegisterObjectMethod("CUIFile", "BOOL LoadFile(string)", asFUNCTIONPR(UIFile_LoadFile, (LPCTSTR, CUIFile &), BOOL), asCALL_CDECL_OBJLAST); assert( r >= 0 );
 	}	
 };
 

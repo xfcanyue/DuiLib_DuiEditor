@@ -112,7 +112,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	CDuiString s42;
 	s42.Format(_T("*DefaultPageRegion: w%dh%d"), 280, 510);
 
-	wchar_t *p = _T("1234");
+	wchar_t *p = L"1234";
 	CDuiString s43;
 	s43.Append(p);
 
@@ -141,6 +141,16 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	s53 = L"bb" + s53;
 	s53 = s53 + L"bb";
+
+	CDuiString s55(_T("0A"));
+	Int64 xss = s55.HexToInt64();
+
+	CDuiString s56(10);
+	CDuiString sHex = s56.toHex();
+
+	CBufferUI buff;
+	buff.AddByteFromHexString(_T("0x10 0Xff D0"));
+	CDuiString s57 = buff.FormatString();
 
 	//_CrtSetBreakAlloc();
 

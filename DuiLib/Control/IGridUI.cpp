@@ -114,6 +114,7 @@ IGridUI::IGridUI(void)
 	m_szSortIconSize.cx = 16;
 	m_szSortIconSize.cy = 16;
 
+	m_bEditable = TRUE;
 	//////////////////////////////////////////////////////////////////////////
 	m_FocusCell.row = -1;
 	m_FocusCell.col = -1;

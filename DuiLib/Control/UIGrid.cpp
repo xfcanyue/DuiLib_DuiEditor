@@ -246,19 +246,30 @@ namespace DuiLib
 				pCellUI->SetCellIndex(i, nIndex);
 			else
 				pCellUI->SetCellIndex(i, m_nColCount-1);
+
+			pCellUI->ApplyAttributeList(GetStyleFixedCell());
+			pCellUI->InitCell();
+			pCellUI->CreateInnerControl();
 		}
 
 		for (int i=0; i<m_pBody->GetCount(); i++)
 		{
 			CGridRowUI *pRow = (CGridRowUI *)m_pBody->GetItemAt(i);
-			CGridCellUI *pCell = new CGridCellUI();
+			CGridCellUI *pCellUI = new CGridCellUI();
 
 			if(nIndex >= 0)
-				pRow->AddAt(pCell, nIndex);
+				pRow->AddAt(pCellUI, nIndex);
 			else
-				pRow->Add(pCell);
+				pRow->Add(pCellUI);
 
-			pCell->SetOwner(this);
+			pCellUI->SetOwner(this);
+			if(nIndex >= 0)
+				pCellUI->SetCellIndex(i, nIndex);
+			else
+				pCellUI->SetCellIndex(i, m_nColCount-1);
+			pCellUI->ApplyAttributeList(GetStyleCell());
+			pCellUI->InitCell();
+			pCellUI->CreateInnerControl();
 		}
 
 		for (int i=0; i<m_RowData.GetSize(); i++)
