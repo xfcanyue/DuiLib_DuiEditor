@@ -51,6 +51,7 @@ void CUIPropertyGridStringProperty::OnClickButton(CPoint point)
 CUIPropertyGridColorProperty::CUIPropertyGridColorProperty(const CString& strName, const COLORREF& color,CPalette* pPalette/*=NULL*/,LPCTSTR lpszDescr/*=NULL*/,DWORD_PTR dwData/*=0*/)
 	:CMFCPropertyGridColorProperty(strName,color,pPalette,lpszDescr,dwData)
 {
+	m_uiTransparent = 0xFF;
 }
 
 void CUIPropertyGridColorProperty::OnDrawValue(CDC* pDC, CRect rect)
