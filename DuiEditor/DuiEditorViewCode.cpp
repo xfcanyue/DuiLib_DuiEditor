@@ -5,6 +5,8 @@
 #include "DuiEditor.h"
 #include "DuiEditorViewCode.h"
 
+#include <algorithm>
+
 #include "TinyXml2/tinyxml2.h"
 
 #include "DuiEditorDoc.h"
@@ -559,9 +561,18 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 			}
 			else if(pMsg->ch == ' ')
 			{
-				CString strShow = AutoCompleteProperty(GetNodeName(), _T(""));
-				if(!strShow.IsEmpty())
-					sci.sci_AutocShow(0, LST2UTF8(strShow));
+				std::vector<CString> properties;
+				AutoCompleteProperty(GetNodeName(), TEXT(""), &properties);
+
+				CString propertiesName;
+
+				for (auto& it : properties) {
+					propertiesName += it + L" ";
+				}
+
+				if (!propertiesName.IsEmpty()) {
+					sci.sci_AutocShow(0, LST2UTF8(propertiesName));
+				}
 			}
 			else if(pMsg->ch == '>')
 			{
@@ -591,10 +602,17 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 				}
 				else
 				{
-					CString strShow = AutoCompleteProperty(GetNodeName(), LSUTF82T(objectNameA));
-					if(!strShow.IsEmpty())
-					{
-						sci.sci_AutocShow(0, LST2UTF8(strShow));
+					std::vector<CString> properties;
+					AutoCompleteProperty(GetNodeName(), LSUTF82T(objectNameA), &properties);
+
+					CString propertiesName;
+
+					for (auto& it : properties) {
+						propertiesName += it + L" ";
+					}
+
+					if (!propertiesName.IsEmpty()) {
+						sci.sci_AutocShow(0, LST2UTF8(propertiesName));
 					}
 				}
 			}			
@@ -772,39 +790,44 @@ void CDuiEditorViewCode::AutoCompleteNode(CString objectName)		//自动完成控件名
 	}
 }
 
-CString CDuiEditorViewCode::AutoCompleteProperty(CString objectName, CString AttrName)	//自动完成属性名
-{
-	CString strShow;
-
+void CDuiEditorViewCode::AutoCompleteProperty(CString objectName, CString AttrName, std::vector<CString>* PtrProperties) {
 	xml_node node = g_duiProp.FindControl(objectName);
-	for (xml_node nodeAttr = node.first_child(); nodeAttr; nodeAttr=nodeAttr.next_sibling())
+
+	for (xml_node nodeAttr = node.first_child(); nodeAttr; nodeAttr = nodeAttr.next_sibling())
 	{
 		CString className = XML2T(nodeAttr.attribute(XTEXT("name")).value());
-		if(AttrName.IsEmpty())
+
+		auto FindPropertiesName = [className](const CString& name) {
+			return name == className;
+		};
+
+		if (AttrName.IsEmpty())
 		{
-			strShow += className;
-			strShow += _T(" ");
+			if (!std::any_of(PtrProperties->begin(), PtrProperties->end(), FindPropertiesName))
+			{
+				PtrProperties->emplace_back(className);
+			}
 		}
 		else
 		{
 			CString strClass = className;
 			strClass.MakeUpper();
 			AttrName.MakeUpper();
-			if(strClass.Find(AttrName) >= 0)
+			if (strClass.Find(AttrName) >= 0)
 			{
-				strShow += className;
-				strShow += _T(" ");
+				if (!std::any_of(PtrProperties->begin(), PtrProperties->end(), FindPropertiesName))
+				{
+					PtrProperties->emplace_back(className);
+				}
 			}
 		}
 	}
 
 	CString parentName = XML2T(node.attribute(XTEXT("parent")).as_string());
-	if(!parentName.IsEmpty())
+	if (!parentName.IsEmpty())
 	{
-		strShow += AutoCompleteProperty(parentName, AttrName);
+		AutoCompleteProperty(parentName, AttrName, PtrProperties);
 	}
-
-	return strShow;
 }
 
 void CDuiEditorViewCode::findMatchingBracePos(int & braceAtCaret, int & braceOpposite)
