@@ -84,6 +84,8 @@ public:
 
 	BOOL IsMergedCell(int row, int col);
 	TGridMergeRange GetCellMergeRange(int row, int col);
+	TGridMergeRange GetCellMergeRangeEx(int row, int col);
+	void SetMergeCellsNeedPaint(int row0, int col0, bool bPaint);
 	void MergeCells(int nStartRow, int nStartCol, int nEndRow, int nEndCol);
 
 	CGridCellUI *GetCellUI(int row, int col);

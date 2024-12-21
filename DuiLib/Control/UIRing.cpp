@@ -110,6 +110,8 @@ namespace DuiLib
 			::GlobalUnlock(hMem);
 			return 0;
 		}
+		pStm->Release();
+		::GlobalUnlock(hMem);
 		return pImg;
 	}
 }

@@ -566,9 +566,17 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 
 				CString propertiesName;
 
-				for (auto& it : properties) {
-					propertiesName += it + L" ";
+#ifdef USE_CPP_VER_11
+				for (auto& it : properties)
+				{
+					propertiesName += it + _T(" ");
 				}
+#else
+				for (std::vector<CString>::iterator it=properties.begin(); it!=properties.end(); it++)
+				{
+					propertiesName += (*it) + _T(" ");
+				}
+#endif
 
 				if (!propertiesName.IsEmpty()) {
 					sci.sci_AutocShow(0, LST2UTF8(propertiesName));
@@ -607,9 +615,17 @@ BOOL CDuiEditorViewCode::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult
 
 					CString propertiesName;
 
-					for (auto& it : properties) {
-						propertiesName += it + L" ";
+#ifdef USE_CPP_VER_11
+					for (auto& it : properties)
+					{
+						propertiesName += it + _T(" ");
 					}
+#else
+					for (std::vector<CString>::iterator it=properties.begin(); it!=properties.end(); it++)
+					{
+						propertiesName += (*it) + _T(" ");
+					}
+#endif
 
 					if (!propertiesName.IsEmpty()) {
 						sci.sci_AutocShow(0, LST2UTF8(propertiesName));

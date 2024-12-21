@@ -427,3 +427,20 @@ BUG或者建议可以给我发邮件, 53751257@qq.com, 欢迎赞助.
 4，修复：DuiEditor增加清除页面中所有的ResourceID功能，用于重建语言包。
 5，修复：DuiEditor修改颜色值时，保留xml里的颜色透明度。感谢”纪飞 Jackie(2159893394)“。
 
+2024-12-30
+1，CXmlNodeUI，CXmlAttributeUI 操作优化
+增加类似这样的函数：
+CXmlNodeUI child(LPCSTR name) const;
+CXmlNodeUI child(LPCWSTR name) const;
+避免无数次输入类似node.child(_T(""))。
+需要追求效率的场合还是应该用_T("")，毕竟内部进行了字符编码转换。
+2，一个BUG，ITreeUI::Expand，企图对TNODE_ROOT操作时，会崩溃。
+
+2024-12-21
+1，xml编辑器列出属性，但子控件和父控件重复属性时，会重复。典型的就是name属性。
+
+
+
+
+
+

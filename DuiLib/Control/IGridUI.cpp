@@ -37,6 +37,13 @@ void TCellData::SetMergedWidthOthers(bool bMerged)
 }
 bool TCellData::IsMergedWithOthers() const { return (m_state & 0x04) == 0x04; }
 
+void TCellData::SetNeedPaint(bool bNeedPaint)
+{
+	if(bNeedPaint) m_state |= 0x08;
+	else m_state &= static_cast<BYTE>(~0x08);
+}
+bool TCellData::IsNeedPaint() const { return (m_state & 0x08) == 0x08; }
+
 CDuiString TCellData::GetText() const { return m_sText; }
 int TCellData::GetTextN() const { return _ttoi(m_sText); }
 

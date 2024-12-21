@@ -5,6 +5,18 @@ namespace DuiLib {
 //
 //
 //
+#ifdef _UNICODE
+	//
+	#define XMLSTRA(x)	CDuiString(x)
+	//
+	#define XMLSTRW(x)	x
+#else
+	//
+	#define XMLSTRA(x)	x
+	//
+	#define XMLSTRW(x)	CDuiString(x)
+#endif
+
 inline ui_pugi::xml_attribute impxmlattr(PVOID attr) { return ui_pugi::xml_attribute((ui_pugi::xml_attribute_struct *)attr); }
 
 CXmlAttributeUI::CXmlAttributeUI() : _attr(0)
@@ -128,9 +140,14 @@ DWORD CXmlAttributeUI::as_uicolor(DWORD def_color) const
 	return clrColor;
 }
 
-bool CXmlAttributeUI::set_name(LPCTSTR rhs)
+bool CXmlAttributeUI::set_name(LPCSTR rhs)
 {
-	return impxmlattr(_attr).set_name(rhs);
+	return impxmlattr(_attr).set_name(XMLSTRA(rhs));
+}
+
+bool CXmlAttributeUI::set_name(LPCWSTR rhs)
+{
+	return impxmlattr(_attr).set_name(XMLSTRW(rhs));
 }
 
 bool CXmlAttributeUI::set_value(LPCTSTR rhs)

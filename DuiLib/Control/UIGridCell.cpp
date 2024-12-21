@@ -335,7 +335,22 @@ RECT CGridCellUI::GetCellPos()
 	}
 	else if(IsMergedWithOthers())
 	{
-		return CDuiRect(0,0,0,0);
+		//return CDuiRect(0,0,0,0);
+		TGridMergeRange rcMerge = pGrid->GetCellMergeRangeEx(m_row, m_col);
+		CDuiRect rcItem;
+		for (int i=rcMerge.begin_row; i<=rcMerge.end_row; i++)
+		{
+			for (int j=rcMerge.begin_col; j<=rcMerge.end_col; j++)
+			{
+				CGridCellUI *pCell = pGrid->GetCellUI(i,j);
+				if(pCell)
+				{
+					if(rcItem.IsNull()) rcItem = pCell->GetPos();
+					else rcItem.Join(pCell->GetPos());
+				}
+			}
+		}
+		return rcItem;
 	}
 	return COptionLayoutUI::GetPos();
 }
@@ -627,7 +642,7 @@ void CGridCellUI::PaintBkColor(UIRender *pRender)
 
 	if(dwBackColor == 0) return;
 
-	pRender->DrawBackColor(m_rcItem, CDuiSize(0,0),
+	pRender->DrawBackColor(GetCellPos(), CDuiSize(0,0),
 		GetAdjustColor(dwBackColor), 
 		GetAdjustColor(GetBkColor2()), 
 		GetAdjustColor(GetBkColor3()), 

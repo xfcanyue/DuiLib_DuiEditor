@@ -58,27 +58,38 @@ namespace DuiLib {
 		CXmlNodeUI root() const;
 
 		// Get child, attribute or next/previous sibling with the specified name
-		CXmlNodeUI child(LPCTSTR name) const;
-		CXmlAttributeUI attribute(LPCTSTR name) const;
-		CXmlNodeUI next_sibling(LPCTSTR name) const;
-		CXmlNodeUI previous_sibling(LPCTSTR name) const;
+		CXmlNodeUI child(LPCSTR name) const;
+		CXmlNodeUI child(LPCWSTR name) const;
+		CXmlAttributeUI attribute(LPCSTR name) const;
+		CXmlAttributeUI attribute(LPCWSTR name) const;
+		CXmlNodeUI next_sibling(LPCSTR name) const;
+		CXmlNodeUI next_sibling(LPCWSTR name) const;
+		CXmlNodeUI previous_sibling(LPCSTR name) const;
+		CXmlNodeUI previous_sibling(LPCWSTR name) const;
 
 		//child不存在时，自动插入新的并且返回
-		CXmlNodeUI child_auto(LPCTSTR name);
+		CXmlNodeUI child_auto(LPCSTR name);
+		CXmlNodeUI child_auto(LPCWSTR name);
 
 		//attr不存在时，自动插入新的并且返回
-		CXmlAttributeUI attribute_auto(LPCTSTR name);
+		CXmlAttributeUI attribute_auto(LPCSTR name);
+		CXmlAttributeUI attribute_auto(LPCWSTR name);
 
 		// Set node name/value (returns false if node is empty, there is not enough memory, or node can not have name/value)
-		bool set_name(LPCTSTR rhs);
+		bool set_name(LPCSTR rhs);
+		bool set_name(LPCWSTR rhs);
 		bool set_value(LPCTSTR rhs);
 
 
 		// Add attribute with specified name. Returns added attribute, or empty attribute on errors.
-		CXmlAttributeUI append_attribute(LPCTSTR name);
-		CXmlAttributeUI prepend_attribute(LPCTSTR name);
-		CXmlAttributeUI insert_attribute_after(LPCTSTR name, const CXmlAttributeUI& attr);
-		CXmlAttributeUI insert_attribute_before(LPCTSTR name, const CXmlAttributeUI& attr);
+		CXmlAttributeUI append_attribute(LPCSTR name);
+		CXmlAttributeUI append_attribute(LPCWSTR name);
+		CXmlAttributeUI prepend_attribute(LPCSTR name);
+		CXmlAttributeUI prepend_attribute(LPCWSTR name);
+		CXmlAttributeUI insert_attribute_after(LPCSTR name, const CXmlAttributeUI& attr);
+		CXmlAttributeUI insert_attribute_after(LPCWSTR name, const CXmlAttributeUI& attr);
+		CXmlAttributeUI insert_attribute_before(LPCSTR name, const CXmlAttributeUI& attr);
+		CXmlAttributeUI insert_attribute_before(LPCWSTR name, const CXmlAttributeUI& attr);
 
 		// Add a copy of the specified attribute. Returns added attribute, or empty attribute on errors.
 		CXmlAttributeUI append_copy(const CXmlAttributeUI& proto);
@@ -93,10 +104,14 @@ namespace DuiLib {
 		CXmlNodeUI insert_child_before(xml_node_type_ui type, const CXmlNodeUI& node);
 
 		// Add child element with specified name. Returns added node, or empty node on errors.
-		CXmlNodeUI append_child(LPCTSTR name);
-		CXmlNodeUI prepend_child(LPCTSTR name);
-		CXmlNodeUI insert_child_after(LPCTSTR name, const CXmlNodeUI& node);
-		CXmlNodeUI insert_child_before(LPCTSTR name, const CXmlNodeUI& node);
+		CXmlNodeUI append_child(LPCSTR name);
+		CXmlNodeUI append_child(LPCWSTR name);
+		CXmlNodeUI prepend_child(LPCSTR name);
+		CXmlNodeUI prepend_child(LPCWSTR name);
+		CXmlNodeUI insert_child_after(LPCSTR name, const CXmlNodeUI& node);
+		CXmlNodeUI insert_child_after(LPCWSTR name, const CXmlNodeUI& node);
+		CXmlNodeUI insert_child_before(LPCSTR name, const CXmlNodeUI& node);
+		CXmlNodeUI insert_child_before(LPCWSTR name, const CXmlNodeUI& node);
 
 		// Add a copy of the specified node as a child. Returns added node, or empty node on errors.
 		CXmlNodeUI append_copy(const CXmlNodeUI& proto);
@@ -112,20 +127,23 @@ namespace DuiLib {
 
 		// Remove specified attribute
 		bool remove_attribute(const CXmlAttributeUI& a);
-		bool remove_attribute(LPCTSTR name);
+		bool remove_attribute(LPCSTR name);
+		bool remove_attribute(LPCWSTR name);
 
 		// Remove all attributes
 		bool remove_attributes();
 
 		// Remove specified child
 		bool remove_child(const CXmlNodeUI& n);
-		bool remove_child(LPCTSTR name);
+		bool remove_child(LPCSTR name);
+		bool remove_child(LPCWSTR name);
 
 		// Remove all children
 		bool remove_children();
 
 		//根据子节点属性值查询子节点
-		CXmlNodeUI find_child_by_attribute(LPCTSTR name, LPCTSTR attr_name, LPCTSTR attr_value);
+		CXmlNodeUI find_child_by_attribute(LPCSTR name, LPCSTR attr_name, LPCTSTR attr_value);
+		CXmlNodeUI find_child_by_attribute(LPCWSTR name, LPCWSTR attr_name, LPCTSTR attr_value);
 
 		// Get internal pointer
 		PVOID internal_object() const;

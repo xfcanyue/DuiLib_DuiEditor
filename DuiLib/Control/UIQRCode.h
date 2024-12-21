@@ -3,7 +3,7 @@
 namespace DuiLib
 {
 
-class CQRCodeUI : public CDynamicLayoutUI
+class UILIB_API CQRCodeUI : public CDynamicLayoutUI
 {
 	DECLARE_DUICONTROL(CQRCodeUI)
 public:

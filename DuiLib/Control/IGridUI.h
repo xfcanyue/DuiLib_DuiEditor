@@ -54,6 +54,9 @@ public:
 	void SetMergedWidthOthers(bool bMerged);
 	bool IsMergedWithOthers() const;
 
+	void SetNeedPaint(bool bNeedPaint);
+	bool IsNeedPaint() const;
+
 	CDuiString GetText() const;
 	int GetTextN() const;
 
@@ -73,6 +76,7 @@ protected:
 	//bt0 = 单元格是否选中
 	//bt1 = 单选框选中状态
 	//bt2 = IsMergedWidthOthers 是否被合并
+	//bt3 = 是否需要绘制
 	BYTE m_state;
 
 	DWORD m_dwTextColor;

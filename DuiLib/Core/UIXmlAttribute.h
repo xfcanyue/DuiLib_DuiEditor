@@ -35,7 +35,8 @@ namespace DuiLib {
 		RECT		as_rect(int def_left=0, int def_top=0, int def_right=0, int def_bottom=0) const;
 		DWORD		as_uicolor(DWORD def_color = 0) const;
 
-		bool set_name(LPCTSTR rhs);
+		bool set_name(LPCSTR rhs);
+		bool set_name(LPCWSTR rhs);
 
 		bool set_value(LPCTSTR rhs);
 		bool set_value(int rhs);

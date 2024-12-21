@@ -85,6 +85,18 @@ using namespace pugi;
 #include "MemDCEx.h"
 #include "LsStringConverter.h"
 
+#if __cplusplus >= 201103L
+#	ifndef USE_CPP_VER_11
+#		define USE_CPP_VER_11
+#	endif
+#endif
+
+#if (defined(_MSC_VER) && _MSC_VER >= 1800) //vs2015
+#	ifndef USE_CPP_VER_11
+#		define USE_CPP_VER_11
+#	endif
+#endif
+
 #define RULEBAR_SIZE_X	20
 #define RULEBAR_SIZE_Y	20
 

@@ -713,6 +713,76 @@ namespace DuiLib
 		return rc;
 	}
 
+	TGridMergeRange CGridUI::GetCellMergeRangeEx(int row0, int col0)
+	{
+		TGridMergeRange rc = {0};
+		std::map<INT64, TGridMergeRange>::iterator it;
+		for (it=m_mapCellMergeRange.begin(); it!=m_mapCellMergeRange.end(); it++)
+		{
+			for (int row=it->second.begin_row; row<=it->second.end_row; row++)
+			{
+				for (int col=it->second.begin_col; col<=it->second.end_col; col++)
+				{
+					if(row0 == row && col0 == col)
+					{
+						return it->second;
+					}
+				}
+			}
+		}
+		return rc;
+	}
+
+	void CGridUI::SetMergeCellsNeedPaint(int row0, int col0, bool bPaint)
+	{
+		if(row0 < 0 || col0 < 0) //重置所有
+		{
+			std::map<INT64, TGridMergeRange>::iterator it;
+			for (it=m_mapCellMergeRange.begin(); it!=m_mapCellMergeRange.end(); it++)
+			{
+				for (int row=it->second.begin_row; row<=it->second.end_row; row++)
+				{
+					for (int col=it->second.begin_col; col<=it->second.end_col; col++)
+					{
+						TCellData *pCellData = GetCellData(row, col);
+						if(pCellData)
+						{
+							pCellData->SetNeedPaint(bPaint);
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			std::map<INT64, TGridMergeRange>::iterator it;
+			for (it=m_mapCellMergeRange.begin(); it!=m_mapCellMergeRange.end(); it++)
+			{
+				for (int row=it->second.begin_row; row<=it->second.end_row; row++)
+				{
+					for (int col=it->second.begin_col; col<=it->second.end_col; col++)
+					{
+						if(row0 == row && col0 == col)
+						{
+							for (int row1=it->second.begin_row; row1<=it->second.end_row; row1++)
+							{
+								for (int col1=it->second.begin_col; col1<=it->second.end_col; col1++)
+								{
+									TCellData *pCellData = GetCellData(row1, col1);
+									if(pCellData)
+									{
+										pCellData->SetNeedPaint(bPaint);
+									}
+								}
+							}
+							return;
+						}
+					}
+				}
+			}
+		}
+	}
+
 	void CGridUI::MergeCells(int nStartRow, int nStartCol, int nEndRow, int nEndCol)
 	{
 		INT64 key = (((INT64)nStartRow) << 32) + nStartCol;
@@ -1311,7 +1381,7 @@ LABEL_END:
 							ClearSelectedCells();
 
 						//选中整行，不包含固定列
-						CGridRowUI *pRowUI = (CGridRowUI *)GetParent();
+						CGridRowUI *pRowUI = (CGridRowUI *)m_pCellLButtonDown->GetParent();
 						if(pRowUI)
 						{
 							for (int i=1; i<pRowUI->GetCount(); i++)
@@ -1977,6 +2047,8 @@ LABEL_END:
 
 	bool CGridUI::DoPaint(UIRender *pRender, const RECT& rcPaint, CControlUI* pStopControl)
 	{
+		SetMergeCellsNeedPaint(-1, -1, true);
+
 		bool bPaint = CVerticalLayoutUI::DoPaint(pRender, rcPaint, pStopControl);
 		if(!bPaint) return false;
 
@@ -2032,16 +2104,39 @@ LABEL_END:
 
 			for (int j=0; j<pRow->GetCount(); j++)
 			{
-				CGridCellUI *pCell = (CGridCellUI *)pRow->GetItemAt(j);
-				if(IsMergedCell(pCell->GetRow(), pCell->GetCol()))
+				CGridCellUI *pCellUI = (CGridCellUI *)pRow->GetItemAt(j);
+				TCellData *pCellData = GetCellData(pCellUI->GetRow(), pCellUI->GetCol());
+				if(IsMergedCell(pCellUI->GetRow(), pCellUI->GetCol()))
 				{
-					pCell->PaintBkColor(pRender);
-					pCell->PaintBkImage(pRender);
-					pCell->PaintStatusImage(pRender);
-					pCell->PaintForeColor(pRender);
-					pCell->PaintForeImage(pRender);
-					pCell->PaintText(pRender);
-					pCell->PaintBorder(pRender);
+					if(pCellData->IsNeedPaint())
+					{
+						pCellUI->PaintBkColor(pRender);
+						pCellUI->PaintBkImage(pRender);
+						pCellUI->PaintStatusImage(pRender);
+						pCellUI->PaintForeColor(pRender);
+						pCellUI->PaintForeImage(pRender);
+						pCellUI->PaintText(pRender);
+						pCellUI->PaintBorder(pRender);
+
+						SetMergeCellsNeedPaint(pCellUI->GetRow(), pCellUI->GetCol(), false);
+					}
+				}
+				else if(pCellUI->IsMergedWithOthers())
+				{
+					if(pCellData->IsNeedPaint())
+					{
+						//当主格不可见时，会走到这里。
+						//被合并的格子显然需要绘制主格的内容，所以这里会有bug，暂时搁置。
+						pCellUI->PaintBkColor(pRender);
+						pCellUI->PaintBkImage(pRender);
+						pCellUI->PaintStatusImage(pRender);
+						pCellUI->PaintForeColor(pRender);
+						pCellUI->PaintForeImage(pRender);
+						pCellUI->PaintText(pRender);
+						pCellUI->PaintBorder(pRender);
+
+						SetMergeCellsNeedPaint(pCellUI->GetRow(), pCellUI->GetCol(), false);
+					}
 				}
 			}
 		}	
@@ -2053,14 +2148,14 @@ LABEL_END:
 			pRender->DrawRect(rcRect, 1, GetAdjustColor(GetLineColor()), PS_SOLID);
 		}
 
-		CDuiRect rcTemp;
-		if( m_pVerticalScrollBar != NULL && m_pVerticalScrollBar->IsVisible() ) {
-			if( m_pVerticalScrollBar == pStopControl ) return false;
-			//if( ::IntersectRect(&rcTemp, &rcPaint, &m_pVerticalScrollBar->GetPos()) ) {
-			if( rcTemp.Intersect(rcPaint, m_pVerticalScrollBar->GetPos()) ) {
-				if( !m_pVerticalScrollBar->Paint(pRender, rcPaint, pStopControl) ) return false;
-			}
-		}
+// 		CDuiRect rcTemp;
+// 		if( m_pVerticalScrollBar != NULL && m_pVerticalScrollBar->IsVisible() ) {
+// 			if( m_pVerticalScrollBar == pStopControl ) return false;
+// 			//if( ::IntersectRect(&rcTemp, &rcPaint, &m_pVerticalScrollBar->GetPos()) ) {
+// 			if( rcTemp.Intersect(rcPaint, m_pVerticalScrollBar->GetPos()) ) {
+// 				if( !m_pVerticalScrollBar->Paint(pRender, rcPaint, pStopControl) ) return false;
+// 			}
+// 		}
 		PaintBorder(pRender);
 		return bPaint;
 	}

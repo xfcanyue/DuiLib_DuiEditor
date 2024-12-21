@@ -5,6 +5,18 @@ namespace DuiLib {
 //
 //
 //
+#ifdef _UNICODE
+	//
+	#define XMLSTRA(x)	CDuiString(x)
+	//
+	#define XMLSTRW(x)	x
+#else
+	//
+	#define XMLSTRA(x)	x
+	//
+	#define XMLSTRW(x)	CDuiString(x)
+#endif
+
 inline static ui_pugi::xml_node impxmlnode(PVOID node_struct) { return ui_pugi::xml_node((ui_pugi::xml_node_struct *)node_struct); }
 
 inline static ui_pugi::xml_node_type impnodetype(xml_node_type_ui type)
@@ -117,45 +129,86 @@ CXmlNodeUI CXmlNodeUI::root() const
 	return CXmlNodeUI(impxmlnode(_root).root().internal_object());
 }
 
-CXmlNodeUI CXmlNodeUI::child(LPCTSTR name) const
+CXmlNodeUI CXmlNodeUI::child(LPCSTR name) const
 {
-	return CXmlNodeUI(impxmlnode(_root).child(name).internal_object());
+	return CXmlNodeUI(impxmlnode(_root).child(XMLSTRA(name)).internal_object());
 }
 
-CXmlAttributeUI CXmlNodeUI::attribute(LPCTSTR name) const
+CXmlNodeUI CXmlNodeUI::child(LPCWSTR name) const
 {
-	return CXmlAttributeUI(impxmlnode(_root).attribute(name).internal_object());
+	return CXmlNodeUI(impxmlnode(_root).child(XMLSTRW(name)).internal_object());
 }
 
-CXmlNodeUI CXmlNodeUI::next_sibling(LPCTSTR name) const
+CXmlAttributeUI CXmlNodeUI::attribute(LPCSTR name) const
 {
-	return CXmlNodeUI(impxmlnode(_root).next_sibling(name).internal_object());
+	return CXmlAttributeUI(impxmlnode(_root).attribute(XMLSTRA(name)).internal_object());
 }
 
-CXmlNodeUI CXmlNodeUI::previous_sibling(LPCTSTR name) const
+CXmlAttributeUI CXmlNodeUI::attribute(LPCWSTR name) const
 {
-	return CXmlNodeUI(impxmlnode(_root).previous_sibling(name).internal_object());
+	return CXmlAttributeUI(impxmlnode(_root).attribute(XMLSTRW(name)).internal_object());
 }
 
-CXmlNodeUI CXmlNodeUI::child_auto(LPCTSTR name)
+CXmlNodeUI CXmlNodeUI::next_sibling(LPCSTR name) const
 {
-	CXmlNodeUI node = child(name);
+	return CXmlNodeUI(impxmlnode(_root).next_sibling(XMLSTRA(name)).internal_object());
+}
+
+CXmlNodeUI CXmlNodeUI::next_sibling(LPCWSTR name) const
+{
+	return CXmlNodeUI(impxmlnode(_root).next_sibling(XMLSTRW(name)).internal_object());
+}
+
+CXmlNodeUI CXmlNodeUI::previous_sibling(LPCSTR name) const
+{
+	return CXmlNodeUI(impxmlnode(_root).previous_sibling(XMLSTRA(name)).internal_object());
+}
+
+CXmlNodeUI CXmlNodeUI::previous_sibling(LPCWSTR name) const
+{
+	return CXmlNodeUI(impxmlnode(_root).previous_sibling(XMLSTRW(name)).internal_object());
+}
+
+CXmlNodeUI CXmlNodeUI::child_auto(LPCSTR name)
+{
+	CXmlNodeUI node = child(XMLSTRA(name));
 	if(!node)
-		node = append_child(name);
+		node = append_child(XMLSTRA(name));
 	return node;
 }
 
-CXmlAttributeUI CXmlNodeUI::attribute_auto(LPCTSTR name)
+CXmlNodeUI CXmlNodeUI::child_auto(LPCWSTR name)
 {
-	CXmlAttributeUI attr = attribute(name);
+	CXmlNodeUI node = child(XMLSTRW(name));
+	if(!node)
+		node = append_child(XMLSTRW(name));
+	return node;
+}
+
+CXmlAttributeUI CXmlNodeUI::attribute_auto(LPCSTR name)
+{
+	CXmlAttributeUI attr = attribute(XMLSTRA(name));
 	if(!attr)
-		attr = append_attribute(name);
+		attr = append_attribute(XMLSTRA(name));
 	return attr;
 }
 
-bool CXmlNodeUI::set_name(LPCTSTR rhs)
+CXmlAttributeUI CXmlNodeUI::attribute_auto(LPCWSTR name)
 {
-	return impxmlnode(_root).set_name(rhs);
+	CXmlAttributeUI attr = attribute(XMLSTRW(name));
+	if(!attr)
+		attr = append_attribute(XMLSTRW(name));
+	return attr;
+}
+
+bool CXmlNodeUI::set_name(LPCSTR rhs)
+{
+	return impxmlnode(_root).set_name(XMLSTRA(rhs));
+}
+
+bool CXmlNodeUI::set_name(LPCWSTR rhs)
+{
+	return impxmlnode(_root).set_name(XMLSTRW(rhs));
 }
 
 bool CXmlNodeUI::set_value(LPCTSTR rhs)
@@ -163,24 +216,44 @@ bool CXmlNodeUI::set_value(LPCTSTR rhs)
 	return impxmlnode(_root).set_value(rhs);
 }
 
-CXmlAttributeUI CXmlNodeUI::append_attribute(LPCTSTR name)
+CXmlAttributeUI CXmlNodeUI::append_attribute(LPCSTR name)
 {
-	return CXmlAttributeUI(impxmlnode(_root).append_attribute(name).internal_object());
+	return CXmlAttributeUI(impxmlnode(_root).append_attribute(XMLSTRA(name)).internal_object());
 }
 
-CXmlAttributeUI CXmlNodeUI::prepend_attribute(LPCTSTR name)
+CXmlAttributeUI CXmlNodeUI::append_attribute(LPCWSTR name)
 {
-	return CXmlAttributeUI(impxmlnode(_root).prepend_attribute(name).internal_object());
+	return CXmlAttributeUI(impxmlnode(_root).append_attribute(XMLSTRW(name)).internal_object());
 }
 
-CXmlAttributeUI CXmlNodeUI::insert_attribute_after(LPCTSTR name, const CXmlAttributeUI& attr)
+CXmlAttributeUI CXmlNodeUI::prepend_attribute(LPCSTR name)
 {
-	return CXmlAttributeUI(impxmlnode(_root).insert_attribute_after(name, ui_pugi::xml_attribute((ui_pugi::xml_attribute_struct *)attr.internal_object())).internal_object());
+	return CXmlAttributeUI(impxmlnode(_root).prepend_attribute(XMLSTRA(name)).internal_object());
 }
 
-CXmlAttributeUI CXmlNodeUI::insert_attribute_before(LPCTSTR name, const CXmlAttributeUI& attr)
+CXmlAttributeUI CXmlNodeUI::prepend_attribute(LPCWSTR name)
 {
-	return CXmlAttributeUI(impxmlnode(_root).insert_attribute_before(name, ui_pugi::xml_attribute((ui_pugi::xml_attribute_struct *)attr.internal_object())).internal_object());
+	return CXmlAttributeUI(impxmlnode(_root).prepend_attribute(XMLSTRW(name)).internal_object());
+}
+
+CXmlAttributeUI CXmlNodeUI::insert_attribute_after(LPCSTR name, const CXmlAttributeUI& attr)
+{
+	return CXmlAttributeUI(impxmlnode(_root).insert_attribute_after(XMLSTRA(name), ui_pugi::xml_attribute((ui_pugi::xml_attribute_struct *)attr.internal_object())).internal_object());
+}
+
+CXmlAttributeUI CXmlNodeUI::insert_attribute_after(LPCWSTR name, const CXmlAttributeUI& attr)
+{
+	return CXmlAttributeUI(impxmlnode(_root).insert_attribute_after(XMLSTRW(name), ui_pugi::xml_attribute((ui_pugi::xml_attribute_struct *)attr.internal_object())).internal_object());
+}
+
+CXmlAttributeUI CXmlNodeUI::insert_attribute_before(LPCSTR name, const CXmlAttributeUI& attr)
+{
+	return CXmlAttributeUI(impxmlnode(_root).insert_attribute_before(XMLSTRA(name), ui_pugi::xml_attribute((ui_pugi::xml_attribute_struct *)attr.internal_object())).internal_object());
+}
+
+CXmlAttributeUI CXmlNodeUI::insert_attribute_before(LPCWSTR name, const CXmlAttributeUI& attr)
+{
+	return CXmlAttributeUI(impxmlnode(_root).insert_attribute_before(XMLSTRW(name), ui_pugi::xml_attribute((ui_pugi::xml_attribute_struct *)attr.internal_object())).internal_object());
 }
 
 CXmlAttributeUI CXmlNodeUI::append_copy(const CXmlAttributeUI& proto)
@@ -223,24 +296,44 @@ CXmlNodeUI CXmlNodeUI::insert_child_before(xml_node_type_ui type, const CXmlNode
 	return CXmlNodeUI(impxmlnode(_root).insert_child_before(impnodetype(type), ui_pugi::xml_node((ui_pugi::xml_node_struct *)node.internal_object())).internal_object());
 }
 
-CXmlNodeUI CXmlNodeUI::append_child(LPCTSTR name)
+CXmlNodeUI CXmlNodeUI::append_child(LPCSTR name)
 {
-	return CXmlNodeUI(impxmlnode(_root).append_child(name).internal_object());
+	return CXmlNodeUI(impxmlnode(_root).append_child(XMLSTRA(name)).internal_object());
 }
 
-CXmlNodeUI CXmlNodeUI::prepend_child(LPCTSTR name)
+CXmlNodeUI CXmlNodeUI::append_child(LPCWSTR name)
 {
-	return CXmlNodeUI(impxmlnode(_root).prepend_child(name).internal_object());
+	return CXmlNodeUI(impxmlnode(_root).append_child(XMLSTRW(name)).internal_object());
 }
 
-CXmlNodeUI CXmlNodeUI::insert_child_after(LPCTSTR name, const CXmlNodeUI& node)
+CXmlNodeUI CXmlNodeUI::prepend_child(LPCSTR name)
 {
-	return CXmlNodeUI(impxmlnode(_root).insert_child_after(name, ui_pugi::xml_node((ui_pugi::xml_node_struct *)node.internal_object())).internal_object());
+	return CXmlNodeUI(impxmlnode(_root).prepend_child(XMLSTRA(name)).internal_object());
 }
 
-CXmlNodeUI CXmlNodeUI::insert_child_before(LPCTSTR name, const CXmlNodeUI& node)
+CXmlNodeUI CXmlNodeUI::prepend_child(LPCWSTR name)
 {
-	return CXmlNodeUI(impxmlnode(_root).insert_child_before(name, ui_pugi::xml_node((ui_pugi::xml_node_struct *)node.internal_object())).internal_object());
+	return CXmlNodeUI(impxmlnode(_root).prepend_child(XMLSTRW(name)).internal_object());
+}
+
+CXmlNodeUI CXmlNodeUI::insert_child_after(LPCSTR name, const CXmlNodeUI& node)
+{
+	return CXmlNodeUI(impxmlnode(_root).insert_child_after(XMLSTRA(name), ui_pugi::xml_node((ui_pugi::xml_node_struct *)node.internal_object())).internal_object());
+}
+
+CXmlNodeUI CXmlNodeUI::insert_child_after(LPCWSTR name, const CXmlNodeUI& node)
+{
+	return CXmlNodeUI(impxmlnode(_root).insert_child_after(XMLSTRW(name), ui_pugi::xml_node((ui_pugi::xml_node_struct *)node.internal_object())).internal_object());
+}
+
+CXmlNodeUI CXmlNodeUI::insert_child_before(LPCSTR name, const CXmlNodeUI& node)
+{
+	return CXmlNodeUI(impxmlnode(_root).insert_child_before(XMLSTRA(name), ui_pugi::xml_node((ui_pugi::xml_node_struct *)node.internal_object())).internal_object());
+}
+
+CXmlNodeUI CXmlNodeUI::insert_child_before(LPCWSTR name, const CXmlNodeUI& node)
+{
+	return CXmlNodeUI(impxmlnode(_root).insert_child_before(XMLSTRW(name), ui_pugi::xml_node((ui_pugi::xml_node_struct *)node.internal_object())).internal_object());
 }
 
 CXmlNodeUI CXmlNodeUI::append_copy(const CXmlNodeUI& proto)
@@ -288,9 +381,14 @@ bool CXmlNodeUI::remove_attribute(const CXmlAttributeUI& a)
 	return impxmlnode(_root).remove_attribute(ui_pugi::xml_attribute((ui_pugi::xml_attribute_struct *)a.internal_object()));
 }
 
-bool CXmlNodeUI::remove_attribute(LPCTSTR name)
+bool CXmlNodeUI::remove_attribute(LPCSTR name)
 {
-	return impxmlnode(_root).remove_attribute(name);
+	return impxmlnode(_root).remove_attribute(XMLSTRA(name));
+}
+
+bool CXmlNodeUI::remove_attribute(LPCWSTR name)
+{
+	return impxmlnode(_root).remove_attribute(XMLSTRW(name));
 }
 
 bool CXmlNodeUI::remove_attributes()
@@ -303,9 +401,14 @@ bool CXmlNodeUI::remove_child(const CXmlNodeUI& n)
 	return impxmlnode(_root).remove_child(ui_pugi::xml_node((ui_pugi::xml_node_struct *)n.internal_object()));
 }
 
-bool CXmlNodeUI::remove_child(LPCTSTR name)
+bool CXmlNodeUI::remove_child(LPCSTR name)
 {
-	return impxmlnode(_root).remove_child(name);
+	return impxmlnode(_root).remove_child(XMLSTRA(name));
+}
+
+bool CXmlNodeUI::remove_child(LPCWSTR name)
+{
+	return impxmlnode(_root).remove_child(XMLSTRW(name));
 }
 
 bool CXmlNodeUI::remove_children()
@@ -313,10 +416,14 @@ bool CXmlNodeUI::remove_children()
 	return impxmlnode(_root).remove_children();
 }
 
-
-CXmlNodeUI CXmlNodeUI::find_child_by_attribute(LPCTSTR name, LPCTSTR attr_name, LPCTSTR attr_value)
+CXmlNodeUI CXmlNodeUI::find_child_by_attribute(LPCSTR name, LPCSTR attr_name, LPCTSTR attr_value)
 {
-	return CXmlNodeUI(impxmlnode(_root).find_child_by_attribute(name, attr_name, attr_value).internal_object());
+	return CXmlNodeUI(impxmlnode(_root).find_child_by_attribute(XMLSTRA(name), XMLSTRA(attr_name), attr_value).internal_object());
+}
+
+CXmlNodeUI CXmlNodeUI::find_child_by_attribute(LPCWSTR name, LPCWSTR attr_name, LPCTSTR attr_value)
+{
+	return CXmlNodeUI(impxmlnode(_root).find_child_by_attribute(XMLSTRW(name), XMLSTRW(attr_name), attr_value).internal_object());
 }
 
 PVOID CXmlNodeUI::internal_object() const

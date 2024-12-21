@@ -265,6 +265,8 @@ TNodeData *ITreeUI::GetNextPrevNode(TNodeData *pNode)
 
 void ITreeUI::Expand(TNodeData *pNode, BOOL bExpand)
 {
+	if(pNode == TNODE_ROOT)
+		return;
 	pNode->Expand(bExpand);
 	if(bExpand)
 		OnExpandItem(pNode);
