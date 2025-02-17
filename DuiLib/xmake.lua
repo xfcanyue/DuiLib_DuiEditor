@@ -32,91 +32,79 @@ function setup_gtk_includedirs()
     add_includedirs(base_dir.. "/atk-1.0")
 end
 
--- 定义目标文件名
-function get_target_file_name()
-    local target_file_name = "DuiLib"
-    local arch_suffix = is_arch("x64") and "64" or ""
-    local unicode_suffix = has_config("unicode", "true") and "u" or ""
-    local static_suffix = is_kind("static") and "s" or ""
-    local debug_suffix = is_mode("debug") and "d" or ""
-
-    return target_file_name.. "_".. arch_suffix.. unicode_suffix.. static_suffix.. debug_suffix
-end
-
 -----------------------------------------------------------------------------------------------
 -- Add target
 target("DuiLib")
---dll/lib输出文件名
-local target_file_name = get_target_file_name()
+    --dll/lib输出文件名
+    local target_file_name = get_target_file_name("DuiLib")
 
-if is_plat("linux", "macosx") then
-    setup_gtk_includedirs()
-    setup_install_files()
-elseif is_plat("windows") then
-	add_defines("WIN32","_WIN32", "WINDOWS")
-	
-	--unicode
-	if has_config("unicode", "true") then
-		add_defines("UNICODE", "_UNICODE")
-	end
-	
-	if is_kind("static") then
-		add_defines("UILIB_EXPORTS", "UILIB_STATIC")
-	else
-		add_defines("UILIB_EXPORTS")
-	end
+    if is_plat("linux", "macosx") then
+        setup_gtk_includedirs()
+        setup_install_files()
+    elseif is_plat("windows") then
+        add_defines("WIN32","_WIN32", "WINDOWS")
+        
+        --unicode
+        if has_config("unicode", "true") then
+            add_defines("UNICODE", "_UNICODE")
+        end
+        
+        if is_kind("static") then
+            add_defines("UILIB_EXPORTS", "UILIB_STATIC")
+        else
+            add_defines("UILIB_EXPORTS")
+        end
 
-	--编译结束时，把.dll拷贝到bin目录, 把.lib拷贝到Lib目录
-	if is_kind("shared") then
-		after_build(function (target)
-			local destfile = target:scriptdir() .. "/../bin/" .. target:filename()
-        	os.cp(target:targetfile(), destfile)
-			
-			local destfile = target:scriptdir() .. "/Lib/" .. target_file_name .. ".lib"
-			local srcfile = target:targetdir() .. "/" .. target_file_name .. ".lib"
-			os.cp(srcfile, destfile)
-		end)
-	else
-		after_build(function (target)
-		local destfile = target:scriptdir() .. "/Lib/" .. target:filename()
-        	os.cp(target:targetfile(), destfile)
-		end)
-	end
-	
-end
-	
--- set the kind of target through configuration
-set_kind("$(kind)")
+        --编译结束时，把.dll拷贝到bin目录, 把.lib拷贝到Lib目录
+        if is_kind("shared") then
+            after_build(function (target)
+                local destfile = target:scriptdir() .. "/../bin/" .. target:filename()
+                os.cp(target:targetfile(), destfile)
+                
+                local destfile = target:scriptdir() .. "/../Lib/" .. target_file_name .. ".lib"
+                local srcfile = target:targetdir() .. "/" .. target_file_name .. ".lib"
+                os.cp(srcfile, destfile)
+            end)
+        else
+            after_build(function (target)
+            local destfile = target:scriptdir() .. "/../Lib/" .. target:filename()
+                os.cp(target:targetfile(), destfile)
+            end)
+        end
+        
+    end
+        
+    -- set the kind of target through configuration
+    set_kind("$(kind)")
 
+    -- set the build modes (debug and release)
+    if is_mode("debug") then
+        -- Handle debug configuration
+        -- Prohibit optimization
+        set_optimize("none")
+        add_defines("DEBUG","_DEBUG")
+        set_symbols("debug")
+    elseif is_mode("release") then
+        -- Handle release configuration
+        set_optimize("fastest")
+        set_strip("all")
+        add_defines("NDEBUG")
+    end
 
--- set the build modes (debug and release)
-if is_mode("debug") then
-    -- Handle debug configuration
-	-- Prohibit optimization
-	set_optimize("none")
-    add_defines("DEBUG","_DEBUG")
-    set_symbols("debug")
-elseif is_mode("release") then
-    -- Handle release configuration
-    set_optimize("fastest")
-    set_strip("all")
-    add_defines("NDEBUG")
-end
-	
-set_targetdir("$(buildir)/$(plat)/$(arch)/$(mode)")
+    set_targetdir("$(buildir)/$(plat)/$(arch)/$(mode)")
 
-set_basename(target_file_name)
+    set_basename(target_file_name)
 
--- add source files
-add_files("**.cpp")
+    -- add source files
+    add_files("**.cpp")
 
--- remove source files from add_files.
-remove_files("Utils/unzip.cpp")
-    
--- add header files search paths
-add_includedirs(".")
+    -- remove source files from add_files.
+    remove_files("Utils/unzip.cpp")
+        
+    -- add header files search paths
+    add_includedirs(".", {public = true})
 
--- add precompiled header
-set_pcxxheader("./StdAfx.h") 
+    -- add precompiled header
+    set_pcxxheader("./StdAfx.h") 
 
 
