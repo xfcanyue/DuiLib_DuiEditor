@@ -123,7 +123,8 @@ void CUIPropertyGridColorProperty::SetUIColor(LPCTSTR szrColor)
 
 	if(6 == strColor.GetLength())
 	{
-		strColor = L"FF" + strColor;
+		CString prefix = _T("FF");
+		strColor = prefix + strColor;
 	}
 
 	CString strColor2 = strColor.Mid(6,2) + strColor.Mid(4,2) + strColor.Mid(2, 2);
@@ -155,7 +156,8 @@ void CUIPropertyGridColorProperty::SetUIColorOriginal(LPCTSTR szrColor)
 
 	if(6 == strColor.GetLength())
 	{
-		strColor = L"FF" + strColor;
+		CString prefix = _T("FF");
+		strColor = prefix + strColor;
 	}
 
 	CString strColor2 = strColor.Mid(6,2) + strColor.Mid(4,2) + strColor.Mid(2, 2);
