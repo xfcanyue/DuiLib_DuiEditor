@@ -1,16 +1,3 @@
--- set the project information
-set_project("DuiLib")
-set_version("1.0.0")
-
--- set xmake minimum version
-set_xmakever("2.7.9")
-
--- set language:cxx14
-set_languages("cxx14")
-
-option("unicode")
-option_end()
-
 -- 公共的安装文件配置
 function setup_install_files()
     add_installfiles("compat.h", {{prefixdir = "include/DuiLib"}})
