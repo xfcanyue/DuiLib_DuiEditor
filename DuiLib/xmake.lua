@@ -1,5 +1,3 @@
-
-
 -- set the project information
 set_project("DuiLib")
 set_version("1.0.0")
@@ -13,58 +11,60 @@ set_languages("cxx14")
 option("unicode")
 option_end()
 
+-- 公共的安装文件配置
+function setup_install_files()
+    add_installfiles("compat.h", {{prefixdir = "include/DuiLib"}})
+    add_installfiles("DuiLib.h", {{prefixdir = "include/DuiLib"}})
+    add_installfiles("UIlib.h", {{prefixdir = "include/DuiLib"}})
+    add_installfiles("Control/*.h", {{prefixdir = "include/DuiLib/Control"}})
+    add_installfiles("Core/*.h", {{prefixdir = "include/DuiLib/Core"}})
+    add_installfiles("Layout/*.h", {{prefixdir = "include/DuiLib/Layout"}})
+    add_installfiles("Render/*.h", {{prefixdir = "include/DuiLib/Render"}})
+    add_installfiles("Utils/*.h", {{prefixdir = "include/DuiLib/Utils"}})
+
+    after_uninstall(function (target)
+        os.rm(target:installdir()..  "/include/DuiLib/")
+    end)
+end
+
+-- 公共的 GTK 相关包含目录配置
+function setup_gtk_includedirs()
+    local base_dir = "/usr/include"
+    if is_plat("macosx") then
+        base_dir = "/usr/local/include"
+    end
+
+    add_includedirs(base_dir.. "/gtk-3.0")
+    add_includedirs(base_dir.. "/cairo")
+    add_includedirs(base_dir.. "/harfbuzz")
+    add_includedirs(base_dir.. "/gdk-pixbuf-2.0")
+    add_includedirs(base_dir.. "/../lib/x86_64-linux-gnu/glib-2.0/include")
+    add_includedirs(base_dir.. "/glib-2.0/glib")
+    add_includedirs(base_dir.. "/glib-2.0")
+    add_includedirs(base_dir.. "/pango-1.0")
+    add_includedirs(base_dir.. "/atk-1.0")
+end
+
+-- 定义目标文件名
+function get_target_file_name()
+    local target_file_name = "DuiLib"
+    local arch_suffix = is_arch("x64") and "64" or ""
+    local unicode_suffix = has_config("unicode", "true") and "u" or ""
+    local static_suffix = is_kind("static") and "s" or ""
+    local debug_suffix = is_mode("debug") and "d" or ""
+
+    return target_file_name.. "_".. arch_suffix.. unicode_suffix.. static_suffix.. debug_suffix
+end
+
 -----------------------------------------------------------------------------------------------
 -- Add target
 target("DuiLib")
-local target_file_name = "DuiLib"
+--dll/lib输出文件名
+local target_file_name = get_target_file_name()
 
-if is_plat("linux") then
-	add_includedirs("/usr/include/gtk-3.0")
-	add_includedirs("/usr/include/cairo")
-	add_includedirs("/usr/include/harfbuzz")
-	add_includedirs("/usr/include/gdk-pixbuf-2.0")
-	add_includedirs("/usr/lib/x86_64-linux-gnu/glib-2.0/include")
-	add_includedirs("/usr/include/glib-2.0/glib")
-	add_includedirs("/usr/include/glib-2.0")
-	add_includedirs("/usr/include/pango-1.0")
-	add_includedirs("/usr/include/atk-1.0")
-	
-	add_installfiles("compat.h", {prefixdir = "include/DuiLib"})
-	add_installfiles("DuiLib.h", {prefixdir = "include/DuiLib"})
-	add_installfiles("UIlib.h", {prefixdir = "include/DuiLib"})
-	add_installfiles("Control/*.h", {prefixdir = "include/DuiLib/Control"})
-	add_installfiles("Core/*.h", {prefixdir = "include/DuiLib/Core"})
-	add_installfiles("Layout/*.h", {prefixdir = "include/DuiLib/Layout"})
-	add_installfiles("Render/*.h", {prefixdir = "include/DuiLib/Render"})
-	add_installfiles("Utils/*.h", {prefixdir = "include/DuiLib/Utils"})
-	
-	after_uninstall(function (target)
-        	os.rm(target:installdir() .. "/include/DuiLib/")
-    	end)
-elseif is_plat("macosx") then
-	add_includedirs("/usr/local/include/gtk-3.0")
-	add_includedirs("/usr/local/include/cairo")
-	add_includedirs("/usr/local/include/harfbuzz")
-	add_includedirs("/usr/local/include/gdk-pixbuf-2.0")
-	add_includedirs("/usr/local/lib/glib-2.0/include")
-	add_includedirs("/usr/local/lib/glib-2.0/include")
-	add_includedirs("/usr/local/include/glib-2.0/glib")
-	add_includedirs("/usr/local/include/glib-2.0")
-	add_includedirs("/usr/local/include/pango-1.0")
-	add_includedirs("/usr/local/include/atk-1.0")
-	
-	add_installfiles("compat.h", {prefixdir = "include/DuiLib"})
-	add_installfiles("DuiLib.h", {prefixdir = "include/DuiLib"})
-	add_installfiles("UIlib.h", {prefixdir = "include/DuiLib"})
-	add_installfiles("Control/*.h", {prefixdir = "include/DuiLib/Control"})
-	add_installfiles("Core/*.h", {prefixdir = "include/DuiLib/Core"})
-	add_installfiles("Layout/*.h", {prefixdir = "include/DuiLib/Layout"})
-	add_installfiles("Render/*.h", {prefixdir = "include/DuiLib/Render"})
-	add_installfiles("Utils/*.h", {prefixdir = "include/DuiLib/Utils"})
-	
-	after_uninstall(function (target)
-        	os.rm(target:installdir() .. "/include/DuiLib/")
-    	end)
+if is_plat("linux", "macosx") then
+    setup_gtk_includedirs()
+    setup_install_files()
 elseif is_plat("windows") then
 	add_defines("WIN32","_WIN32", "WINDOWS")
 	
@@ -79,69 +79,6 @@ elseif is_plat("windows") then
 		add_defines("UILIB_EXPORTS")
 	end
 
-	--dll/lib输出文件名
-	if is_arch("x64") then
-		if has_config("unicode", "true") then
-			if is_kind("static") then
-				if is_mode("debug") then
-					target_file_name = target_file_name .. "_64usd"
-				else
-					target_file_name = target_file_name .. "_64us"
-				end
-			else
-				if is_mode("debug") then
-					target_file_name = target_file_name .. "_64ud"
-				else
-					target_file_name = target_file_name .. "_64u"
-				end
-			end
-		else
-			if is_kind("static") then
-				if is_mode("debug") then
-					target_file_name = target_file_name .. "_64sd"
-				else
-					target_file_name = target_file_name .. "_64s"
-				end
-			else
-				if is_mode("debug") then
-					target_file_name = target_file_name .. "_64d"
-				else
-					target_file_name = target_file_name .. "_64"
-				end
-			end
-		end
-	else
-		if has_config("unicode", "true") then
-			if is_kind("static") then
-				if is_mode("debug") then
-					target_file_name = target_file_name .. "_usd"
-				else
-					target_file_name = target_file_name .. "_us"
-				end
-			else
-				if is_mode("debug") then
-					target_file_name = target_file_name .. "_ud"
-				else
-					target_file_name = target_file_name .. "_u"
-				end
-			end
-		else
-			if is_kind("static") then
-				if is_mode("debug") then
-					target_file_name = target_file_name .. "_sd"
-				else
-					target_file_name = target_file_name .. "_s"
-				end
-			else
-				if is_mode("debug") then
-					target_file_name = target_file_name .. "_d"
-				else
-					target_file_name = target_file_name .. ""
-				end
-			end
-		end
-	end
-	
 	--编译结束时，把.dll拷贝到bin目录, 把.lib拷贝到Lib目录
 	if is_kind("shared") then
 		after_build(function (target)
@@ -180,9 +117,9 @@ elseif is_mode("release") then
 end
 	
 set_targetdir("$(buildir)/$(plat)/$(arch)/$(mode)")
-	
+
 set_basename(target_file_name)
-	
+
 -- add source files
 add_files("**.cpp")
 
@@ -194,5 +131,5 @@ add_includedirs(".")
 
 -- add precompiled header
 set_pcxxheader("./StdAfx.h") 
-	
+
 
