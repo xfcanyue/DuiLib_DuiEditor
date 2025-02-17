@@ -1,4 +1,4 @@
-c
+# DuiEditor
 
 ### 1. 开源说明
 
@@ -57,8 +57,8 @@ xsUnicodeRelease	静态库 - Unicode - 发行
 
 重要提醒：设计器非Unicode版本会出错！！！ Duilib库和相关插件无此限制。
 
-    
-   
+​    
+
    ### 4. 重要说明
 
 设计器创建控件和修改属性依据`bin\DuiLib.xml`，理论上只要遵循这个约定的duilib版本都可以使用这款设计器。
