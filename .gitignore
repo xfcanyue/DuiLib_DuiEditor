@@ -39,3 +39,8 @@
 /DuiScript/Build
 /DuiScript/out
 /DuiScript/.xmake
+
+.xmake/
+build/
+compile_commands.json
+.cache/
