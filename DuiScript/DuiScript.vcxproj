@@ -791,6 +791,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="DuiScript.cpp" />
+    <ClCompile Include="RegCDuiString.cpp" />
     <ClCompile Include="ScriptContext.cpp" />
     <ClCompile Include="ScriptEngine.cpp" />
     <ClCompile Include="ScriptManager.cpp" />

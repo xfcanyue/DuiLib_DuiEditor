@@ -11,6 +11,7 @@ var doc_advanced =
       [ "With a secondary thread", "doc_adv_timeout.html#doc_adv_timeout_2", null ]
     ] ],
     [ "Garbage collection", "doc_gc.html", [
+      [ "Callback for detected circular references", "doc_gc.html#doc_gc_circcallback", null ],
       [ "Garbage collection and multi-threading", "doc_gc.html#doc_gc_threads", null ]
     ] ],
     [ "Multithreading", "doc_adv_multithread.html", [
@@ -19,6 +20,7 @@ var doc_advanced =
     ] ],
     [ "Concurrent scripts", "doc_adv_concurrent.html", null ],
     [ "Co-routines", "doc_adv_coroutine.html", null ],
+    [ "Import functions", "doc_adv_import.html", null ],
     [ "Dynamic compilations", "doc_adv_dynamic_build.html", [
       [ "On demand builds", "doc_adv_dynamic_build.html#doc_adv_dynamic_build_ondemand", null ],
       [ "Incremental builds", "doc_adv_dynamic_build.html#doc_adv_dynamic_build_incr", null ],
@@ -55,6 +57,12 @@ var doc_advanced =
       [ "Enumerating variables and properties", "doc_adv_reflection.html#doc_adv_reflection_vars", null ],
       [ "Enumerating functions and methods", "doc_adv_reflection.html#doc_adv_reflection_funcs", null ],
       [ "Enumerating types", "doc_adv_reflection.html#doc_adv_reflection_types", null ]
+    ] ],
+    [ "Serialization", "doc_serialization.html", [
+      [ "Serialization of modules", "doc_serialization.html#doc_serialization_modules", null ],
+      [ "Serialization of global variables", "doc_serialization.html#doc_serialization_vars", null ],
+      [ "Serialization of objects", "doc_serialization.html#doc_serialization_objects", null ],
+      [ "Serialization of contexts", "doc_serialization.html#doc_serialization_contexts", null ]
     ] ],
     [ "Inheriting from application registered class", "doc_adv_inheritappclass.html", null ],
     [ "JIT compilation", "doc_adv_jit_topic.html", "doc_adv_jit_topic" ]

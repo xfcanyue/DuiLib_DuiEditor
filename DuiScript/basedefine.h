@@ -35,7 +35,7 @@
 //////////////////////////////////////////////////////////////////////////
 //注册类函数
 #define REG_METHOD_FUNPR(class, ret, n, p)	{	\
-	CStringA sFun = DEFUNC(ret n##p);			\
+	CDuiStringA sFun = DEFUNC(ret n##p);			\
 	sFun.Replace("CDuiString", "string");		\
 	sFun.Replace("CDuiPoint", "CPoint");		\
 	sFun.Replace("CDuiRect", "CRect");			\
@@ -48,7 +48,7 @@
 
 //注册类函数, 直接使用类名
 #define REG_METHOD_FUNPR2(regclassname, class, ret, n, p)	{	\
-	CStringA sFun = DEFUNC(ret n##p);			\
+	CDuiStringA sFun = DEFUNC(ret n##p);			\
 	sFun.Replace("CDuiString", "string");		\
 	sFun.Replace("CDuiPoint", "CPoint");		\
 	sFun.Replace("CDuiRect", "CRect");			\
@@ -61,7 +61,7 @@
 
 //注册类成员
 #define REG_OBJECT_PROPERTY(class, type, value) { \
-	CStringA sFun = DEFUNC(type value);	\
+	CDuiStringA sFun = DEFUNC(type value);	\
 	sFun.Replace("CDuiString", "string");		\
 	sFun.Replace("CDuiPoint", "CPoint");		\
 	sFun.Replace("CDuiRect", "CRect");			\
@@ -75,7 +75,7 @@
 //////////////////////////////////////////////////////////////////////////
 //注册全局函数, 注册时若是类的静态函数如Class::Fun(), 需要把"Class::"移除，注册为全局函数;
 #define REG_GLOBAL_FUNPR(ret, n, p)	{			\
-	CStringA sFun = DEFUNC(ret n##p);			\
+	CDuiStringA sFun = DEFUNC(ret n##p);			\
 	sFun.Replace("CDuiString", "string");		\
 	sFun.Replace("CDuiPoint", "CPoint");		\
 	sFun.Replace("CDuiRect", "CRect");			\
@@ -100,7 +100,7 @@
 
 //注册控件的成员函数
 #define REG_CONTROL_FUNPR(ret,n,p)	{			\
-	CStringA sFun = DEFUNC(ret n##p);			\
+	CDuiStringA sFun = DEFUNC(ret n##p);			\
 	sFun.Replace("CDuiString", "string");		\
 	sFun.Replace("CDuiPoint", "CPoint");		\
 	sFun.Replace("CDuiRect", "CRect");			\

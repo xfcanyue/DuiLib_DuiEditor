@@ -3,12 +3,35 @@
 namespace DuiLib
 {
 
+//注册控件的函数，参数中包含LPCTSTR的，通过这个外部函数中转
+//原因是64位系统中，脚本中的string值隐式转换成LPCTSTR实际上是类的指针，而不是像32位返回类的第一个成员指针。
+//还有很多这样的函数，用的到的朋友自己慢慢添加。
+template <typename T>
+class RegControlGeneric
+{
+public:
+	static void RegControlGeneric::SetName(CDuiString s, void *pControl)
+	{
+		static_cast<T*>(pControl)->SetName(s);
+	}
+
+	static LPVOID RegControlGeneric::GetInterface(CDuiString s, void *pControl)
+	{
+		return static_cast<T*>(pControl)->GetInterface(s);
+	}
+
+	static void RegControlGeneric::SetText(CDuiString s, void *pControl)
+	{
+		static_cast<T*>(pControl)->SetText(s);
+	}
+};
+
 template <typename T>
 class regCControlUI
 {
 public:
 	asIScriptEngine *engine;
-	CStringA classname;
+	CDuiStringA classname;
 	DECL_CONTROL_FACTORY(CControlUI);
 	DECL_CONTROL_REGFACT(CControlUI);
 public:
@@ -20,10 +43,10 @@ public:
 
 		REG_CONTROL_FACTORY();
 
-		REG_CONTROL_FUNPR(void,			SetName,			(LPCTSTR)		);
+		REG_CONTROL_FUNPR2("void SetName(string s)",		void, RegControlGeneric<T>::SetName,	(CDuiString,void*)	);
 		REG_CONTROL_FUNPR(CDuiString,	GetName,			() const		);
 		REG_CONTROL_FUNPR(LPCTSTR,		GetClass,			() const		);
-		REG_CONTROL_FUNPR(LPVOID,		GetInterface,		(LPCTSTR pstrName));
+		REG_CONTROL_FUNPR2("LPVOID GetInterface(string s)",	LPVOID, RegControlGeneric<T>::GetInterface,	(CDuiString,void*)	);
 		REG_CONTROL_FUNPR(UINT,			GetControlFlags,	() const		);
 		REG_CONTROL_FUNPR(bool,			Activate,			()				);
 
@@ -35,7 +58,7 @@ public:
 		REG_CONTROL_FUNPR(void,		  KillTimer,			(UINT nTimerID)					);
 
 		REG_CONTROL_FUNPR(CDuiString, GetText,				() const						);
-		REG_CONTROL_FUNPR(void,		  SetText,				(LPCTSTR pstrText)				);
+		REG_CONTROL_FUNPR2("void SetText(string s)",	void, RegControlGeneric<T>::SetText,	(CDuiString,void*)	);
 		REG_CONTROL_FUNPR(int,		  GetTextN,				()								);
 		REG_CONTROL_FUNPR(void,		  SetTextN,				(int n)							);
 
@@ -753,6 +776,10 @@ class regCMenuCmdUI
 // 	{
 // 		return new CMenuCmdUI();
 // 	}
+	static void SetText(CDuiString sText, CMenuCmdUI *pControl)
+	{
+		pControl->SetText(sText);
+	}
 public:
 	static void Register(asIScriptEngine *engine)
 	{
@@ -770,7 +797,7 @@ public:
 		r = engine->RegisterObjectMethod("CMenuCmdUI", "void SetCheck(BOOL bCheck)", asMETHOD(CMenuCmdUI, SetCheck), asCALL_THISCALL);  assert( r >= 0 );
 		r = engine->RegisterObjectMethod("CMenuCmdUI", "BOOL IsCheck()", asMETHOD(CMenuCmdUI, IsCheck), asCALL_THISCALL);  assert( r >= 0 );
 
-		r = engine->RegisterObjectMethod("CMenuCmdUI", "void SetText(LPCTSTR lpszText)", asMETHOD(CMenuCmdUI, SetText), asCALL_THISCALL);  assert( r >= 0 );
+		r = engine->RegisterObjectMethod("CMenuCmdUI", "void SetText(string sText)", asFUNCTION(SetText), asCALL_CDECL_OBJLAST);  assert( r >= 0 );
 		r = engine->RegisterObjectMethod("CMenuCmdUI", "string GetText()", asMETHOD(CMenuCmdUI, GetText), asCALL_THISCALL);  assert( r >= 0 );
 
 		r = engine->RegisterObjectMethod("CMenuCmdUI", "string GetName()", asMETHOD(CMenuCmdUI, GetName), asCALL_THISCALL);  assert( r >= 0 );

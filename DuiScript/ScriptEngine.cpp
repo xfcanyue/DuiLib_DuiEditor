@@ -11,7 +11,7 @@
 #include "angelscript/add_on/scriptarray/scriptarray.cpp"
 #include "RegCDuiString.h"
 #include "RegCBufferUI.h"
-#include "RegPoint.h"
+#include "RegPOINT.h"
 #include "regSIZE.h"
 #include "regRECT.h"
 #include "RegTNotifyUI.h"

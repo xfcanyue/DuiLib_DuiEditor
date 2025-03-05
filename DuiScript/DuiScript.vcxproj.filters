@@ -381,6 +381,9 @@
     <ClCompile Include="ScriptContext.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="RegCDuiString.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="angelscript\angelscript\source\as_callfunc_x64_msvc_asm.asm">

@@ -1499,9 +1499,9 @@ namespace DuiLib
 					yPos -= m_pVerticalScrollBar->GetScrollPos();
 				}
 				rcCtrl.SetRect(xPos + rcPadding.left,
-					yPos - rcPadding.top,
+					yPos + rcPadding.top,
 					xPos + rcPadding.left + sz.cx,
-					yPos - rcPadding.top + sz.cy);
+					yPos + rcPadding.top + sz.cy);
 
 				if(m_pCalcControl) 
 				{ 

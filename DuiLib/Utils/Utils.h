@@ -729,7 +729,7 @@ namespace DuiLib
 				m_pHeader->pLinkedPrev = NULL;
 				m_count--;
 			}
-			else if(pItem = m_pTail)
+			else if(pItem == m_pTail)
 			{
 				m_pTail = (T *)m_pTail->pLinkedPrev;
 				m_pTail->pLinkedNext = NULL;

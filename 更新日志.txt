@@ -442,5 +442,8 @@ CXmlNodeUI child(LPCWSTR name) const;
 
 
 
+2025-03-03
+1，升级angelscript到2.37.0，修复x64系统脚本调用SetText乱码问题。
+2，修改xmake脚本，可以正常编译DuiLib,DuiPlugin,DuiScript。但是DuiPreview和DuiEditor编译依然有点问题。
 
 

@@ -33,6 +33,7 @@ var doc_script_stdlib =
     ] ],
     [ "weakref", "doc_datatypes_weakref.html", [
       [ "Supporting weakref object", "doc_datatypes_weakref.html#doc_datatypes_weakref_addon", [
+        [ "Constructors", "doc_datatypes_weakref.html#doc_datatypes_weakref_addon_construct", null ],
         [ "Operators", "doc_datatypes_weakref.html#doc_datatypes_weakref_addon_ops", null ],
         [ "Methods", "doc_datatypes_weakref.html#doc_datatypes_weakref_addon_mthd", null ]
       ] ]
@@ -57,5 +58,8 @@ var doc_script_stdlib =
       [ "Supporting filesystem object", "doc_script_stdlib_filesystem.html#doc_script_stdlib_filesystem_1", [
         [ "Methods", "doc_script_stdlib_filesystem.html#doc_script_stdlib_filesystem_1_1", null ]
       ] ]
+    ] ],
+    [ "System functions", "doc_script_stdlib_system.html", [
+      [ "Functions", "doc_script_stdlib_system.html#doc_script_stdlib_system_1", null ]
     ] ]
 ];

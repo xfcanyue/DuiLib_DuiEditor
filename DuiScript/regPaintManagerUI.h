@@ -22,7 +22,7 @@ protected:
 public:
 	static bool Register_Prepare(asIScriptEngine *engine)
 	{
-		CStringA classname = "CPaintManagerUI";
+		CDuiStringA classname = "CPaintManagerUI";
 
 		int r = 0;
 		r = engine->RegisterObjectType(classname, 0, asOBJ_REF|asOBJ_NOCOUNT); 
@@ -33,7 +33,7 @@ public:
 
 	static void Register_Extra(asIScriptEngine *engine)
 	{
-		CStringA classname = "CPaintManagerUI";
+		CDuiStringA classname = "CPaintManagerUI";
 		int r = 0;
 		REG_METHOD_FUNPR(CPaintManagerUI, CControlUI*, GetRoot, () const);
 		REG_METHOD_FUNPR(CPaintManagerUI, CControlUI*, FindControl, (LPCTSTR pstrName) const);

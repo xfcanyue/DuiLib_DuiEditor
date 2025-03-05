@@ -103,7 +103,7 @@ int CScriptContext::Execute()
 	}
 	else if( r == asEXECUTION_EXCEPTION )
 	{
-		CStringA temp;
+		CDuiStringA temp;
 		temp.Format("Exception:%s \r\nFunction: %s \r\nLine: %d", 
 			m_ctx->GetExceptionString(), 
 			m_ctx->GetExceptionFunction()->GetDeclaration(), 

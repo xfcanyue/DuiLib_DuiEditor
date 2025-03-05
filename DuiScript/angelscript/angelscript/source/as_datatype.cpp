@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2016 Andreas Jonsson
+   Copyright (c) 2003-2024 Andreas Jonsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -173,7 +173,8 @@ asCString asCDataType::Format(asSNameSpace *currNs, bool includeNamespace) const
 	{
 		// If funcDef->nameSpace is null it means the funcDef was declared as member of 
 		// another type, in which case the scope should be built with the name of that type
-		str += CastToFuncdefType(typeInfo)->parentClass->name + "::";
+		asCDataType dt = asCDataType::CreateType(CastToFuncdefType(typeInfo)->parentClass, false);
+		str += dt.Format(currNs, includeNamespace) + "::";
 	}
 
 	if( tokenType != ttIdentifier )
@@ -292,6 +293,9 @@ int asCDataType::MakeArray(asCScriptEngine *engine, asCModule *module)
 	asCArray<asCDataType> subTypes;
 	subTypes.PushLast(*this);
 	asCObjectType *at = engine->GetTemplateInstanceType(engine->defaultArrayObjectType, subTypes, module);
+	if (at == 0)
+		return asNOT_SUPPORTED;
+
 	isReadOnly = tmpIsReadOnly;
 
 	isObjectHandle = false;
@@ -395,15 +399,14 @@ bool asCDataType::CanBeCopied() const
 	// It must be possible to instantiate the type
 	if( !CanBeInstantiated() ) return false;
 
-	// It must have a default constructor or factory
+	// It must have a default constructor or factory and the opAssign
+	// Alternatively it must have the copy constructor
 	asCObjectType *ot = CastToObjectType(typeInfo);
-	if( ot && ot->beh.construct == 0 &&
-		ot->beh.factory == 0 ) return false;
+	if (ot && (((ot->beh.construct != 0 || ot->beh.factory != 0) && ot->beh.copy != 0) || 
+		       (ot->beh.copyconstruct != 0 || ot->beh.copyfactory != 0)) )
+		return true;
 
-	// It must be possible to copy the type
-	if( ot && ot->beh.copy == 0 ) return false;
-
-	return true;
+	return false;
 }
 
 bool asCDataType::IsReadOnly() const
@@ -603,6 +606,9 @@ bool asCDataType::IsFuncdef() const
 
 int asCDataType::GetSizeInMemoryBytes() const
 {
+	if( isObjectHandle )
+		return 4 * AS_PTR_SIZE;
+
 	if( typeInfo != 0 )
 		return typeInfo->size;
 
@@ -624,6 +630,10 @@ int asCDataType::GetSizeInMemoryBytes() const
 
 	if( tokenType == ttBool )
 		return AS_SIZEOF_BOOL;
+
+	// ?& is actually a reference + an int 
+	if (tokenType == ttQuestion)
+		return AS_PTR_SIZE * 4 + 4;
 
 	// null handle
 	if( tokenType == ttUnrecognizedToken )
@@ -651,6 +661,10 @@ int asCDataType::GetSizeOnStackDWords() const
 	int size = tokenType == ttQuestion ? 1 : 0;
 
 	if( isReference ) return AS_PTR_SIZE + size;
+
+	// TODO: bug: Registered value types are also stored on the stack. Before changing though, check how GetSizeOnStackDWords is used
+	//            When called to determine size of type as parameter then it is correct, as objects are implicitly passed by reference in AngelScript
+	//            To correct this it would be necessary to know if the method is called for a parameter, or for a local variable
 	if( typeInfo && !IsEnumType() ) return AS_PTR_SIZE + size;
 
 	return GetSizeInMemoryDWords() + size;

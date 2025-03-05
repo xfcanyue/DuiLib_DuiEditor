@@ -34,7 +34,7 @@ class regTDrawInfo
 public:
 	static void Register(asIScriptEngine *engine)
 	{
-		CStringA classname = "TDrawInfo";
+		CDuiStringA classname = "TDrawInfo";
 
 		int r = 0;
 		r = engine->RegisterObjectType(classname, 0, asOBJ_REF|asOBJ_NOCOUNT); 

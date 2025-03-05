@@ -844,7 +844,11 @@ LRESULT CScriptEditorView::OnRefreshStack(WPARAM wparam, LPARAM lparam)
 			if(ctx->IsVarInScope(i)) 
 			{	
 				CString name = LSUTF82T(fun->GetVarDecl(i));
-				CString val = LSUTF82T(VariantToString(ctx->GetAddressOfVar(i), ctx->GetVarTypeId(i), false, ctx->GetEngine()));
+				//CString val = LSUTF82T(VariantToString(ctx->GetAddressOfVar(i), ctx->GetVarTypeId(i), false, ctx->GetEngine()));
+				int nVarTypeId = 0;
+				ctx->GetVar(i,n,NULL, &nVarTypeId);
+				CString val = LSUTF82T(VariantToString(ctx->GetAddressOfVar(i), nVarTypeId, false, ctx->GetEngine()));
+
 				CMFCPropertyGridProperty* pProp = new CMFCPropertyGridProperty(_T(""),  _T(""), _T(""));
 				pProp->AllowEdit(FALSE);
 				pProp->SetName(name);

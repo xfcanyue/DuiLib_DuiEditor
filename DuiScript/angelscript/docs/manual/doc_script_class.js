@@ -1,9 +1,11 @@
 var doc_script_class =
 [
-    [ "Script class overview", "doc_script_class_desc.html", [
-      [ "Class constructors", "doc_script_class_desc.html#doc_script_class_construct", null ],
-      [ "Class destructor", "doc_script_class_desc.html#doc_script_class_destruct", null ],
-      [ "Const methods", "doc_script_class_desc.html#doc_script_class_const", null ]
+    [ "Script class overview", "doc_script_class_desc.html", null ],
+    [ "Class constructors", "doc_script_class_construct.html", null ],
+    [ "Initialization of class members", "doc_script_class_memberinit.html", null ],
+    [ "Class destructor", "doc_script_class_destruct.html", null ],
+    [ "Class methods", "doc_script_class_methods.html", [
+      [ "Const methods", "doc_script_class_methods.html#doc_script_class_const", null ]
     ] ],
     [ "Inheritance and polymorphism", "doc_script_class_inheritance.html", [
       [ "Extra control with final, abstract, and override", "doc_script_class_inheritance.html#doc_script_class_inheritance_2", null ]
@@ -21,6 +23,5 @@ var doc_script_class =
     ] ],
     [ "Property accessors", "doc_script_class_prop.html", [
       [ "Indexed property accessors", "doc_script_class_prop.html#doc_script_class_prop_index", null ]
-    ] ],
-    [ "Initialization of class members", "doc_script_class_memberinit.html", null ]
+    ] ]
 ];

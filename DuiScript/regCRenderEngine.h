@@ -13,7 +13,7 @@ class regUIFile
 public:
 	static void Register(asIScriptEngine *engine)
 	{
-		CStringA classname = "CUIFile";
+		CDuiStringA classname = "CUIFile";
 
 		int r = 0;
 		r = engine->RegisterObjectType(classname, 0, asOBJ_REF|asOBJ_NOCOUNT); 
@@ -53,7 +53,7 @@ class regUIRender
 public:
 	static void Register(asIScriptEngine *engine)
 	{
-		CStringA classname = "UIRender";
+		CDuiStringA classname = "UIRender";
 
 		int r = 0;
 		r = engine->RegisterObjectType(classname, 0, asOBJ_REF|asOBJ_NOCOUNT); 

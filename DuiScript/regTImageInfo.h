@@ -10,7 +10,7 @@ class regUIFont
 public:
 	static void Register(asIScriptEngine *engine)
 	{
-		CStringA classname = "UIFont";
+		CDuiStringA classname = "UIFont";
 
 		int r = 0;
 		r = engine->RegisterObjectType(classname, 0, asOBJ_REF|asOBJ_NOCOUNT); 
@@ -26,7 +26,7 @@ class regUIPen
 public:
 	static void Register(asIScriptEngine *engine)
 	{
-		CStringA classname = "UIPen";
+		CDuiStringA classname = "UIPen";
 
 		int r = 0;
 		r = engine->RegisterObjectType(classname, 0, asOBJ_REF|asOBJ_NOCOUNT); 
@@ -42,7 +42,7 @@ class regUIBitmap
 public:
 	static void Register(asIScriptEngine *engine)
 	{
-		CStringA classname = "UIBitmap";
+		CDuiStringA classname = "UIBitmap";
 
 		int r = 0;
 		r = engine->RegisterObjectType(classname, 0, asOBJ_REF|asOBJ_NOCOUNT); 
@@ -56,7 +56,7 @@ class regUIImage
 public:
 	static void Register(asIScriptEngine *engine)
 	{
-		CStringA classname = "UIImage";
+		CDuiStringA classname = "UIImage";
 
 		int r = 0;
 		r = engine->RegisterObjectType(classname, 0, asOBJ_REF|asOBJ_NOCOUNT); 
@@ -70,7 +70,7 @@ class regUIBrush
 public:
 	static void Register(asIScriptEngine *engine)
 	{
-		CStringA classname = "UIBrush";
+		CDuiStringA classname = "UIBrush";
 
 		int r = 0;
 		r = engine->RegisterObjectType(classname, 0, asOBJ_REF|asOBJ_NOCOUNT); 
